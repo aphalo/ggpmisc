@@ -22,9 +22,6 @@
 #' @param na.rm	a logical value indicating whether NA values should be stripped
 #'   before the computation proceeds.
 #' @param formula a formula object
-#' @param label.fmt character string giving a format definition for converting
-#'   y-integral values into character strings by means of function
-#'   \code{\link{sprintf}}.
 #'
 #' @section Computed variables:
 #' \describe{
@@ -37,23 +34,21 @@
 #' @export
 #' @family utility functions
 #'
-
 stat_poly_eq <- function(mapping = NULL, data = NULL, geom = "text",
-                            formula = NULL,
-                            label.fmt = "%.3g",
-                            position = "identity", na.rm = FALSE, show.legend = NA,
-                            inherit.aes = TRUE, ...) {
+                         formula = NULL,
+                         position = "identity",
+                         na.rm = FALSE, show.legend = FALSE,
+                         inherit.aes = TRUE, ...) {
   ggplot2::layer(
     stat = StatPolyEq, data = data, mapping = mapping, geom = geom,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
     params = list(formula = formula,
-                  label.fmt = label.fmt,
                   na.rm = na.rm,
                   ...)
   )
 }
 
-#' @rdname gg2spectra-ggproto
+#' @rdname stat_poly_eq
 #' @format NULL
 #' @usage NULL
 #' @export
@@ -61,20 +56,23 @@ StatPolyEq <-
   ggplot2::ggproto("StatPolyEq", ggplot2::Stat,
                    compute_group = function(data,
                                             scales,
-                                            formula,
-                                            label.fmt) {
-                     model.fit <- lm(formula, data)
-                     my.eq <- as.character(signif(polynom::as.polynomial(coef(m)), 3))
-                     my.r2 <- format(summary(m)$r.squared, digits = 2)
-                     out.data <- data.frame(x = min(data$x),
-                                            y = max(data$y) - 0.1 * diff(range(data$y)),
-                                            eq.label = gsub("x", "~italic(x)", my.eq, fixed = TRUE),
-                                            r2.label = paste("italic(R)^2",  
-                                                             format(summary(m)$r.squared, digits = 2), 
-                                                             sep = "~`=`~"))
+                                            formula) {
+                     mf <- lm(formula, data)
+                     coefs <- coef(mf)
+                     rr <- summary(mf)$r.squared
+                     adj.rr <- summary(mf)$adj.r.squared
+                     eq.char <- as.character(signif(polynom::as.polynomial(coefs), 3))
+                     rr.char <- format(rr, digits = 2)
+                     adj.rr.char <- format(adj.rr, digits = 2)
+                     data.frame(x = min(data$x),
+                                y = max(data$y) - 0.1 * diff(range(data$y)),
+                                eq.label = gsub("x", "~italic(x)", eq.char, fixed = TRUE),
+                                rr.label = paste("italic(R)^2", rr.char, sep = "~`=`~"),
+                                adj.rr.label = paste("italic(R)[adj]^2", adj.rr.char, sep = "~`=`~"),
+                                hjust = 0)
                    },
-                   default_aes = ggplot2::aes(label = paste(..eq.label.., ..r2.label.., sep = "~~~~"),
-                   ),
+                   default_aes =
+                     ggplot2::aes(label = ..rr.label.., hjust = ..hjust..),
                    required_aes = c("x", "y")
   )
 
