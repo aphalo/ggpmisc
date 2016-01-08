@@ -42,16 +42,19 @@ can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 }
 \description{
-\code{stat_poly_eq} fits a polynomial and generates a label with an equation and/r .
+\code{stat_poly_eq} fits a polynomial and generates a label with an equation
+and/or coefficient of determination (R^2).
 }
 \section{Computed variables}{
 
-\describe{
-  \item{eq.label}{equation for the fitted polynomial as a character string to be parsed}
-  \item{r2.label}{$R^2 of the fitted model as a character string to be parsed}
-  \item{x}{x position for left edge}
+  \describe{ \item{x}{x position for left edge}
   \item{y}{y position near upper edge}
-}
+  \item{eq.label}{equation for the
+  fitted polynomial as a character string to be parsed}
+  \item{rr.label}{\eqn{R^2} of the fitted model as a character string to be parsed}
+  \item{adj.rr.label}{Adjusted \eqn{R^2} of the fitted model as a character string
+  to be parsed}
+  \item{hjust}{Set to zero to override the default of the "text" geom.}}
 }
 \keyword{datasets}
 

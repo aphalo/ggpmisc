@@ -1,6 +1,8 @@
-#' Add a curve from a fitted linear model and a label to a plot.
+#' @title Add a curve from a fitted linear model and a label to a plot.
 #'
-#' \code{stat_poly_eq} fits a polynomial and generates a label with an equation and/r .
+#' @description \code{stat_poly_eq} fits a polynomial and generates a label with an equation
+#' and/or coefficient of determination (R^2).
+#'
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_string}}. Only needs
 #'   to be set at the layer level if you are overriding the plot defaults.
@@ -24,12 +26,14 @@
 #' @param formula a formula object
 #'
 #' @section Computed variables:
-#' \describe{
-#'   \item{eq.label}{equation for the fitted polynomial as a character string to be parsed}
-#'   \item{r2.label}{$R^2 of the fitted model as a character string to be parsed}
-#'   \item{x}{x position for left edge}
+#'   \describe{ \item{x}{x position for left edge}
 #'   \item{y}{y position near upper edge}
-#' }
+#'   \item{eq.label}{equation for the
+#'   fitted polynomial as a character string to be parsed}
+#'   \item{rr.label}{\eqn{R^2} of the fitted model as a character string to be parsed}
+#'   \item{adj.rr.label}{Adjusted \eqn{R^2} of the fitted model as a character string
+#'   to be parsed}
+#'   \item{hjust}{Set to zero to override the default of the "text" geom.}}
 #'
 #' @export
 #' @family utility functions
