@@ -2,3 +2,6 @@ ggpmisc 0.1.0
 =============
 
 First version.
+Add stat_poly_eq()
+Add stat_debug()
+

@@ -117,3 +117,34 @@ ggplot(my.data, aes(x, y)) +
   geom_smooth(method = "lm", formula = formula) +
   stat_poly_eq(aes(label = ..eq.label..), formula = formula, parse = TRUE)
 ```
+
+## stat_debug
+
+```{r}
+ggplot(my.data, aes(x, y)) + geom_point() + stat_debug()
+```
+
+```{r}
+ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
+  stat_debug(vjust = c(-0.5,1.5))
+```
+
+```{r}
+ggplot(my.data, aes(x, y, shape = group)) + geom_point() + 
+  stat_debug(vjust = c(-0.5,1.5))
+```
+
+```{r}
+ggplot(my.data, aes(x, y)) + geom_point() + 
+  facet_wrap(~group) + stat_debug()
+```
+
+```{r}
+ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
+  facet_wrap(~group) + stat_debug()
+```
+
+```{r}
+ggplot(my.data, aes(x, y, colour = group, shape = group)) + geom_point() + 
+  facet_wrap(~group) + stat_debug()
+```

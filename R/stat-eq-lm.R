@@ -35,6 +35,19 @@
 #'   to be parsed}
 #'   \item{hjust}{Set to zero to override the default of the "text" geom.}}
 #'
+#' @examples
+#' library(ggplot2)
+#' set.seed(4321)
+#' # generate artificial data
+#' x <- 1:100
+#' y <- (x + x^2 + x^3) + rnorm(length(x), mean = 0, sd = mean(x^3) / 4)
+#' my.data <- data.frame(x, y, group = c("A", "B"), y2 = y * c(0.5,2))
+#' formula <- y ~ poly(x, 3, raw = TRUE)
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   geom_smooth(method = "lm", formula = formula) +
+#'   stat_poly_eq(formula = formula, parse = TRUE)
+#'
 #' @export
 #' @family utility functions
 #'
