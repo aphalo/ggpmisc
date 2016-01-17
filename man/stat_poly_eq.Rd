@@ -71,7 +71,7 @@ ggplot(my.data, aes(x, y)) +
 
 }
 \seealso{
-Other utility.functions: \code{\link{stat_debug}}
+Other utility functions: \code{\link{stat_debug}}
 }
 \keyword{datasets}
 

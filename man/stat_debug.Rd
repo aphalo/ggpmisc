@@ -65,7 +65,7 @@ ggplot(my.df, aes(x,y)) + geom_point() + facet_wrap(~group) + stat_debug()
 
 }
 \seealso{
-Other utility.functions: \code{\link{stat_poly_eq}}
+Other utility functions: \code{\link{stat_poly_eq}}
 }
 \keyword{datasets}
 

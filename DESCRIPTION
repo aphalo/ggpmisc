@@ -1,8 +1,8 @@
 Package: ggpmisc
 Type: Package
-Title: Miscelaneous extensions to ggplot2
-Version: 0.1.0
-Date: 2016-01-09
+Title: Pedro's miscelaneous extensions to ggplot2
+Version: 0.2.0
+Date: 2016-01-13
 Author: Pedro J. Aphalo [aut, cre]
 Maintainer: Pedro J. Aphalo <pedro.aphalo@helsinki.fi>
 Description: This package provides additional annotations, stats and
@@ -16,7 +16,8 @@ Depends:
     R (>= 3.2.0)
 Imports:
     ggplot2 (>= 2.0.0),
-    polynom (>= 1.3-8)
+    polynom (>= 1.3-8),
+    splus2R (>= 1.2-0)
 Suggests:
     knitr,
     rmarkdown
