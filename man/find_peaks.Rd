@@ -37,5 +37,7 @@ This function is a wrapper built on function
 }
 \seealso{
 \code{\link[splus2R]{peaks}}
+
+Other peaks.and.valleys.functions: \code{\link{stat_peaks}}
 }
 

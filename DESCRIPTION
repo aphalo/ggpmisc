@@ -1,13 +1,11 @@
 Package: ggpmisc
 Type: Package
-Title: Pedro's miscelaneous extensions to ggplot2
+Title: Miscelaneous Extensions to ggplot2
 Version: 0.2.0
-Date: 2016-01-13
+Date: 2016-01-23
 Author: Pedro J. Aphalo [aut, cre]
 Maintainer: Pedro J. Aphalo <pedro.aphalo@helsinki.fi>
-Description: This package provides additional annotations, stats and
-    scales for plotting spectra with ggplot2, and plot methods
-    for miscelaneous uses.
+Description: This package provides additional stats for ggplot.
 License: GPL (>=3)
 LazyData: TRUE
 LazyLoad: TRUE

@@ -1,5 +1,5 @@
 ---
-title: "Examples"
+title: "`ggpmisc` `r packageVersion('ggpmisc')`<br>Additional examples"
 author: "Pedro J. Aphalo"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -16,13 +16,46 @@ opts_chunk$set(fig.path = 'figure/pos-', fig.align = 'center', fig.show = 'hold'
 options(warnPartialMatchArgs = FALSE)
 ```
 
-## Polynomial equation
+## Preliminaries
 
 ```{r}
 library(ggplot2)
 library(ggpmisc)
 ```
 
+## `stat_peaks()` and `stat_valleys()`
+
+```{r}
+lynx.df <- data.frame(year = as.numeric(time(lynx)), lynx = as.matrix(lynx))
+```
+
+```{r}
+ggplot(lynx.df, aes(year, lynx)) + geom_line() + 
+  stat_peaks(colour = "red") +
+  stat_peaks(geom = "text", colour = "red", vjust = -0.5, x.label.fmt = "%4.0f") +
+  stat_valleys(colour = "blue") +
+  stat_valleys(geom = "text", colour = "blue", vjust = 1.5, x.label.fmt = "%4.0f") +
+  ylim(-100, 7300)
+```
+
+```{r}
+ggplot(lynx.df, aes(year, lynx)) + geom_line() + 
+  stat_peaks(colour = "red") +
+  stat_peaks(geom = "rug", colour = "red") +
+  stat_peaks(geom = "text", colour = "red", angle = 66,
+             hjust = -0.1, x.label.fmt = "%4.0f") +
+  ylim(NA, 7300)
+```
+
+```{r}
+ggplot(lynx.df, aes(year, lynx)) + geom_line() + 
+  stat_peaks(colour = "red") +
+  stat_peaks(geom = "rug", colour = "red") +
+  stat_valleys(colour = "blue") +
+  stat_valleys(geom = "rug", colour = "blue")
+```
+
+## `stat_poly_eq()`
 
 ```{r}
 set.seed(4321)
@@ -118,65 +151,48 @@ ggplot(my.data, aes(x, y)) +
   stat_poly_eq(aes(label = ..eq.label..), formula = formula, parse = TRUE)
 ```
 
-## stat_debug
+## `stat_debug()`
 
 ```{r}
-ggplot(my.data, aes(x, y)) + geom_point() + stat_debug()
+ggplot(my.data, aes(x, y)) + geom_point() + stat_debug_group()
+```
+
+```{r}
+ggplot(my.data, aes(x, y)) + geom_point() + stat_debug_panel()
 ```
 
 ```{r}
 ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
-  stat_debug(vjust = c(-0.5,1.5))
+  stat_debug_group(vjust = c(-0.5,1.5))
+```
+
+```{r}
+ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
+  stat_debug_panel()
 ```
 
 ```{r}
 ggplot(my.data, aes(x, y, shape = group)) + geom_point() + 
-  stat_debug(vjust = c(-0.5,1.5))
+  stat_debug_group(vjust = c(-0.5,1.5))
 ```
 
 ```{r}
 ggplot(my.data, aes(x, y)) + geom_point() + 
-  facet_wrap(~group) + stat_debug()
+  facet_wrap(~group) + stat_debug_group()
+```
+
+```{r}
+ggplot(my.data, aes(x, y)) + geom_point() + 
+  facet_wrap(~group) + stat_debug_panel()
 ```
 
 ```{r}
 ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
-  facet_wrap(~group) + stat_debug()
+  facet_wrap(~group) + stat_debug_group()
 ```
 
 ```{r}
 ggplot(my.data, aes(x, y, colour = group, shape = group)) + geom_point() + 
-  facet_wrap(~group) + stat_debug()
+  facet_wrap(~group) + stat_debug_group()
 ```
 
-## `stat_peaks` and `stat_valleys`
-
-```{r}
-lynx.df <- data.frame(year = as.numeric(time(lynx)), lynx = as.matrix(lynx))
-
-```
-
-```{r}
-ggplot(lynx.df, aes(year, lynx)) + geom_line() + 
-  stat_peaks(colour = "red") +
-  stat_peaks(geom = "text", colour = "red", vjust = -0.5, x.label.fmt = "%4.0f") +
-  stat_valleys(colour = "blue") +
-  stat_valleys(geom = "text", colour = "blue", vjust = 1.5, x.label.fmt = "%4.0f") +
-  ylim(-100, 7300)
-```
-
-```{r}
-ggplot(lynx.df, aes(year, lynx)) + geom_line() + 
-  stat_peaks(colour = "red") +
-  stat_peaks(geom = "rug", colour = "red") +
-  stat_peaks(geom = "text", colour = "red", vjust = -0.5, x.label.fmt = "%4.0f") +
-  ylim(NA, 7300)
-```
-
-```{r}
-ggplot(lynx.df, aes(year, lynx)) + geom_line() + 
-  stat_peaks(colour = "red") +
-  stat_peaks(geom = "rug", colour = "red") +
-  stat_valleys(colour = "blue") +
-  stat_valleys(geom = "rug", colour = "blue")
-```

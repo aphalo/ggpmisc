@@ -39,30 +39,30 @@
 #' my.df <- data.frame(x = rep(1:10, 2),
 #'                     y = rep(c(1,2), c(10,10)),
 #'                     group = rep(c("A","B"), c(10,10)))
-#' ggplot(my.df, aes(x,y)) + geom_point() + stat_debug()
-#' ggplot(my.df, aes(x,y, colour = group)) + geom_point() + stat_debug()
-#' ggplot(my.df, aes(x,y)) + geom_point() + facet_wrap(~group) + stat_debug()
+#' ggplot(my.df, aes(x,y)) + geom_point() + stat_debug_group()
+#' ggplot(my.df, aes(x,y, colour = group)) + geom_point() + stat_debug_group()
+#' ggplot(my.df, aes(x,y)) + geom_point() + facet_wrap(~group) + stat_debug_group()
 #'
 #' @export
-#' @family utility functions
+#' @family diagnosis functions
 #'
-stat_debug <- function(mapping = NULL, data = NULL, geom = "label",
+stat_debug_group <- function(mapping = NULL, data = NULL, geom = "label",
                        position = "identity", na.rm = FALSE, show.legend = FALSE,
                        inherit.aes = TRUE, ...) {
   ggplot2::layer(
-    stat = StatDebug, data = data, mapping = mapping, geom = geom,
+    stat = StatDebugGroup, data = data, mapping = mapping, geom = geom,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
     params = list(na.rm = na.rm,
                   ...)
   )
 }
 
-#' @rdname stat_debug
+#' @rdname gg2spectra-ggproto
 #' @format NULL
 #' @usage NULL
 #' @export
-StatDebug <-
-  ggplot2::ggproto("StatDebug", ggplot2::Stat,
+StatDebugGroup <-
+  ggplot2::ggproto("StatDebugGroup", ggplot2::Stat,
                    compute_group = function(data,
                                             scales) {
                      my.diagnostic <- data.frame(x = mean(range(data$x)),

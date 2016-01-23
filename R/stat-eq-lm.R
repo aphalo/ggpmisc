@@ -49,7 +49,6 @@
 #'   stat_poly_eq(formula = formula, parse = TRUE)
 #'
 #' @export
-#' @family utility functions
 #'
 stat_poly_eq <- function(mapping = NULL, data = NULL, geom = "text",
                          formula = NULL,
@@ -65,7 +64,7 @@ stat_poly_eq <- function(mapping = NULL, data = NULL, geom = "text",
   )
 }
 
-#' @rdname stat_poly_eq
+#' @rdname gg2spectra-ggproto
 #' @format NULL
 #' @usage NULL
 #' @export

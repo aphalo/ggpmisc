@@ -9,6 +9,32 @@ library(ggplot2)
 library(ggpmisc)
 
 ## ------------------------------------------------------------------------
+lynx.df <- data.frame(year = as.numeric(time(lynx)), lynx = as.matrix(lynx))
+
+## ------------------------------------------------------------------------
+ggplot(lynx.df, aes(year, lynx)) + geom_line() + 
+  stat_peaks(colour = "red") +
+  stat_peaks(geom = "text", colour = "red", vjust = -0.5, x.label.fmt = "%4.0f") +
+  stat_valleys(colour = "blue") +
+  stat_valleys(geom = "text", colour = "blue", vjust = 1.5, x.label.fmt = "%4.0f") +
+  ylim(-100, 7300)
+
+## ------------------------------------------------------------------------
+ggplot(lynx.df, aes(year, lynx)) + geom_line() + 
+  stat_peaks(colour = "red") +
+  stat_peaks(geom = "rug", colour = "red") +
+  stat_peaks(geom = "text", colour = "red", angle = 66,
+             hjust = -0.1, x.label.fmt = "%4.0f") +
+  ylim(NA, 7300)
+
+## ------------------------------------------------------------------------
+ggplot(lynx.df, aes(year, lynx)) + geom_line() + 
+  stat_peaks(colour = "red") +
+  stat_peaks(geom = "rug", colour = "red") +
+  stat_valleys(colour = "blue") +
+  stat_valleys(geom = "rug", colour = "blue")
+
+## ------------------------------------------------------------------------
 set.seed(4321)
 # generate artificial data
 x <- 1:100
@@ -90,51 +116,36 @@ ggplot(my.data, aes(x, y)) +
   stat_poly_eq(aes(label = ..eq.label..), formula = formula, parse = TRUE)
 
 ## ------------------------------------------------------------------------
-ggplot(my.data, aes(x, y)) + geom_point() + stat_debug()
+ggplot(my.data, aes(x, y)) + geom_point() + stat_debug_group()
+
+## ------------------------------------------------------------------------
+ggplot(my.data, aes(x, y)) + geom_point() + stat_debug_panel()
 
 ## ------------------------------------------------------------------------
 ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
-  stat_debug(vjust = c(-0.5,1.5))
+  stat_debug_group(vjust = c(-0.5,1.5))
+
+## ------------------------------------------------------------------------
+ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
+  stat_debug_panel()
 
 ## ------------------------------------------------------------------------
 ggplot(my.data, aes(x, y, shape = group)) + geom_point() + 
-  stat_debug(vjust = c(-0.5,1.5))
+  stat_debug_group(vjust = c(-0.5,1.5))
 
 ## ------------------------------------------------------------------------
 ggplot(my.data, aes(x, y)) + geom_point() + 
-  facet_wrap(~group) + stat_debug()
+  facet_wrap(~group) + stat_debug_group()
+
+## ------------------------------------------------------------------------
+ggplot(my.data, aes(x, y)) + geom_point() + 
+  facet_wrap(~group) + stat_debug_panel()
 
 ## ------------------------------------------------------------------------
 ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
-  facet_wrap(~group) + stat_debug()
+  facet_wrap(~group) + stat_debug_group()
 
 ## ------------------------------------------------------------------------
 ggplot(my.data, aes(x, y, colour = group, shape = group)) + geom_point() + 
-  facet_wrap(~group) + stat_debug()
-
-## ------------------------------------------------------------------------
-lynx.df <- data.frame(year = as.numeric(time(lynx)), lynx = as.matrix(lynx))
-
-
-## ------------------------------------------------------------------------
-ggplot(lynx.df, aes(year, lynx)) + geom_line() + 
-  stat_peaks(colour = "red") +
-  stat_peaks(geom = "text", colour = "red", vjust = -0.5, x.label.fmt = "%4.0f") +
-  stat_valleys(colour = "blue") +
-  stat_valleys(geom = "text", colour = "blue", vjust = 1.5, x.label.fmt = "%4.0f") +
-  ylim(-100, 7300)
-
-## ------------------------------------------------------------------------
-ggplot(lynx.df, aes(year, lynx)) + geom_line() + 
-  stat_peaks(colour = "red") +
-  stat_peaks(geom = "rug", colour = "red") +
-  stat_peaks(geom = "text", colour = "red", vjust = -0.5, x.label.fmt = "%4.0f") +
-  ylim(NA, 7300)
-
-## ------------------------------------------------------------------------
-ggplot(lynx.df, aes(year, lynx)) + geom_line() + 
-  stat_peaks(colour = "red") +
-  stat_peaks(geom = "rug", colour = "red") +
-  stat_valleys(colour = "blue") +
-  stat_valleys(geom = "rug", colour = "blue")
+  facet_wrap(~group) + stat_debug_group()
 

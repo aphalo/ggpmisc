@@ -96,7 +96,7 @@ find_peaks <-
 #' @seealso \code{\link[photobiology]{find_peaks}}, which is used internally.
 #'
 #' @export
-#' @family stats functions
+#' @family peaks and valleys functions
 #'
 stat_peaks <- function(mapping = NULL, data = NULL, geom = "point",
                        span = 5, ignore_threshold = 0, strict = FALSE,
@@ -188,6 +188,8 @@ stat_valleys <- function(mapping = NULL, data = NULL, geom = "point",
 }
 
 #' @rdname gg2spectra-ggproto
+#' @format NULL
+#' @usage NULL
 #'
 #' @export
 #'
