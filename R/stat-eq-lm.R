@@ -64,7 +64,7 @@ stat_poly_eq <- function(mapping = NULL, data = NULL, geom = "text",
   )
 }
 
-#' @rdname gg2spectra-ggproto
+#' @rdname ggpmisc-ggproto
 #' @format NULL
 #' @usage NULL
 #' @export

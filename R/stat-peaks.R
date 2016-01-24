@@ -130,7 +130,7 @@ stat_peaks <- function(mapping = NULL, data = NULL, geom = "point",
 #' implement one or more of the following:
 #'
 #' @name Stats
-#' @rdname gg2spectra-ggproto
+#' @rdname ggpmisc-ggproto
 #' @format NULL
 #' @usage NULL
 #' @export
@@ -187,7 +187,7 @@ stat_valleys <- function(mapping = NULL, data = NULL, geom = "point",
   )
 }
 
-#' @rdname gg2spectra-ggproto
+#' @rdname ggpmisc-ggproto
 #' @format NULL
 #' @usage NULL
 #'

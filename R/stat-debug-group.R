@@ -57,30 +57,32 @@ stat_debug_group <- function(mapping = NULL, data = NULL, geom = "label",
   )
 }
 
-#' @rdname gg2spectra-ggproto
+#' @rdname ggpmisc-ggproto
 #' @format NULL
 #' @usage NULL
 #' @export
 StatDebugGroup <-
-  ggplot2::ggproto("StatDebugGroup", ggplot2::Stat,
-                   compute_group = function(data,
-                                            scales) {
-                     my.diagnostic <- data.frame(x = mean(range(data$x)),
-                                                 y = mean(range(data$y)),
-                                                 nrow = nrow(data),
-                                                 ncol = ncol(data),
-                                                 colnames = paste(colnames(data), collapse = ", "),
-                                                 group = paste(unique(data$group), sep = ", "),
-                                                 PANEL = paste(unique(data$PANEL), sep = ", "))
-                     print(my.diagnostic)
-                     my.diagnostic
-                   },
-                   default_aes = ggplot2::aes(label = paste("group: ", ..group.., "; ",
-                                                            "PANEL: ", ..PANEL.., "\n",
-                                                            "nrow: ", ..nrow.., "; ",
-                                                            "ncol: ", ..ncol.., "\n",
-                                                            "cols: ", ..colnames..,
-                                                            sep = "")
-                   ),
-                   required_aes = c("x", "y")
+  ggplot2::ggproto(
+    "StatDebugGroup",
+    ggplot2::Stat,
+    compute_group = function(data, scales) {
+      my.diagnostic <-
+        data.frame(x = mean(range(data$x)),
+                   y = mean(range(data$y)),
+                   nrow = nrow(data),
+                   ncol = ncol(data),
+                   colnames = paste(colnames(data), collapse = ", "),
+                   group = paste(unique(data$group), sep = ", "),
+                   PANEL = paste(unique(data$PANEL), sep = ", "))
+      #                     print(my.diagnostic)
+      my.diagnostic
+    },
+    default_aes = ggplot2::aes(label = paste("group: ", ..group.., "; ",
+                                             "PANEL: ", ..PANEL.., "\n",
+                                             "nrow: ", ..nrow.., "; ",
+                                             "ncol: ", ..ncol.., "\n",
+                                             "cols: ", ..colnames..,
+                                             sep = "")
+    ),
+    required_aes = c("x", "y")
   )
