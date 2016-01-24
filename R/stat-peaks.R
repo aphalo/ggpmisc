@@ -49,7 +49,6 @@ find_peaks <-
     }
   }
 
-
 #' Find peaks and valleys.
 #'
 #' \code{stat_peaks} finds at which x positions local maxima are located. If

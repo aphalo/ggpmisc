@@ -21,6 +21,5 @@ Suggests:
     rmarkdown
 URL: http://www.r4photobiology.info
 BugReports: https://bitbucket.org/aphalo/ggpmisc
-Encoding: UTF-8
 RoxygenNote: 5.0.1
 VignetteBuilder: knitr
