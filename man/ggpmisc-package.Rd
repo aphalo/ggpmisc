@@ -17,7 +17,7 @@ are passed within ggplot statistics.
 Package: \tab ggpmisc\cr
 Type: \tab Package\cr
 Version: \tab 0.2.0\cr
-Date: \tab 2016-01-23\cr
+Date: \tab 2016-01-24\cr
 License: \tab GPL (>= 3.0)\cr
 URL: \tab \url{http://www.r4photobiology.info},\cr
 }

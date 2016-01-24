@@ -29,7 +29,7 @@ This function finds all peaks (local maxima) in a spectrum, using a user
 selectable size threshold relative to the tallest peak (global maximum). This
 is a wrapper built on top of function peaks from package splus2R.
 }
-\note{
+\details{
 This function is a wrapper built on function
   \code{\link[splus2R]{peaks}} from \pkg{splus2R} and handles non-finite
   (including NA) values differently than \code{peaks}, instead of giving an
@@ -40,4 +40,5 @@ This function is a wrapper built on function
 
 Other peaks.and.valleys.functions: \code{\link{stat_peaks}}
 }
+\keyword{internal}
 

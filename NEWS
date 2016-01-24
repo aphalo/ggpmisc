@@ -1,4 +1,4 @@
-ggpmisc 0.2.0
+ggpmisc 0.2.1
 =============
 
 Rename stat_debug() as stat_debug_group() and add stat_debug_panel().

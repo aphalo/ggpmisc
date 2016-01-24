@@ -43,6 +43,20 @@ my.data <- data.frame(x, y, group = c("A", "B"), y2 = y * c(0.5,2))
 
 
 ## ------------------------------------------------------------------------
+formula <- y ~ x + I(x^2) + I(x^3)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_eq(formula = formula, parse = TRUE)
+
+## ------------------------------------------------------------------------
+formula <- y ~ x + I(x^2) + I(x^3) - 1
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_eq(formula = formula, parse = TRUE)
+
+## ------------------------------------------------------------------------
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
@@ -55,6 +69,20 @@ ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
   stat_poly_eq(aes(label = ..adj.rr.label..), formula = formula, parse = TRUE)
+
+## ------------------------------------------------------------------------
+formula <- y ~ x + I(x^2) + I(x^3)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_eq(aes(label = ..eq.label..), formula = formula, parse = TRUE)
+
+## ------------------------------------------------------------------------
+formula <- y ~ x + I(x^2) + I(x^3) - 1
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_eq(aes(label = ..eq.label..), formula = formula, parse = TRUE)
 
 ## ------------------------------------------------------------------------
 formula <- y ~ poly(x, 3, raw = TRUE)

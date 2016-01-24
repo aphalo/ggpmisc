@@ -1,7 +1,9 @@
 #' @title Diagnosis statistics on data grouping.
 #'
-#' @description \code{stat_debug} reports \code{group}, \code{PANEL} and
-#'   \code{nrow} for each group and panel of a ggplot.
+#' @description \code{stat_debug} reports all distinct values in \code{group}
+#'   and \code{PANEL}, and \code{nrow}, \code{ncol} and the names of the columns
+#'   or variables for each group in a ggplot as passed to the
+#'   \code{compute_group} function in the \code{ggproto} object.
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_string}}. Only needs
@@ -27,10 +29,10 @@
 #' @section Computed variables:
 #' \describe{ \item{x}{x at centre of range}
 #'   \item{y}{y at centre of range}
-#'   \item{group}{group as passed in \code{data} object}
-#'   \item{PANEL}{PANEL as passed in \code{data} object}
-#'   \item{nrow}{nrow of \code{data} object}
-#'   \item{ncol}{ncol of \code{data} object}
+#'   \item{group}{all distinct values in group as passed in \code{data} object}
+#'   \item{PANEL}{all distinct values in PANEL as passed in \code{data} object}
+#'   \item{nrow}{\code{nrow()} of \code{data} object}
+#'   \item{ncol}{\code{ncol()} of \code{data} object}
 #'   \item{colnames}{\code{colnames()} of \code{data} object}
 #'   }
 #'

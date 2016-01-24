@@ -28,7 +28,8 @@ the plot defaults.}
 \item{span}{a peak is defined as an element in a sequence which is greater
 than all other elements within a window of width span centered at that
 element. The default value is 5, meaning that a peak is bigger than two
-consequtive neighbors on each side. Default: 5.}
+consequtive neighbors on each side. A \code{NULL} value for \code{span}
+is taken as a span covering the whole of the data range.}
 
 \item{ignore_threshold}{numeric value between 0.0 and 1.0 indicating the size
 threshold below which peaks will be ignored.}
@@ -65,14 +66,51 @@ include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 }
 \description{
-\code{stat_peaks} finds at which x positions local maxima are located. If
-you want find local minima, you can use \code{stat_valleys} instead.
+\code{stat_peaks} finds at which x positions of local y maxima are located and
+\code{stat_valleys} finds at which x positions local y minima are located.
+Both stats return x and y numeric values for the peaks and formatted
+character labels. The formatting is determined by a format string suitable
+for \code{sprintf()}.
+}
+\details{
+These stats use \code{geom_point} by default as it is the geom most
+  likely to work well in almost any situation without need of tweaking. The
+  default aesthetics set by these stats allow their direct use with
+  \code{geom_text}, \code{geom_label}, \code{geom_line}, \code{geom_rug},
+  \code{geom_hline} and \code{geom_vline}. The formatting of the labels
+  returned can be controlled by the user.
+}
+\note{
+These stats work nicely together with geoms
+  \code{\link[ggrepel]{geom_text_repel}} and
+  \code{\link[ggrepel]{geom_label_repel}} from package
+  \code{\link[ggrepel]{ggrepel}} to solve the problem of overlapping labels
+  by displacing them. To discard overlapping labels use \code{check_overlap =
+  TRUE} as argument to \code{geom_text}.
+ By default the labels are character values suitable to be plotted as is, but
+ with a suitable \code{label.fmt} labels suitable for parsing by the geoms
+ (e.g. into expressions containing greek letters or super or subscripts) can
+ be also easily obtained.
 }
 \section{Computed variables}{
 
 \describe{
-  \item{x.label}{x-value at the peak}
+  \item{x}{x-value at the peak (or valley) as numeric}
+  \item{y}{y-value at the peak (or valley) as numeric}
+  \item{x.label}{x-value at the peak (or valley) as character}
+  \item{y.label}{y-value at the peak (or valley) as character}
 }
+}
+\examples{
+library(ggplot2)
+library(ggpmisc)
+lynx.df <- data.frame(year = as.numeric(time(lynx)), lynx = as.matrix(lynx))
+ggplot(lynx.df, aes(year, lynx)) + geom_line() +
+  stat_peaks(colour = "red")
+ggplot(lynx.df, aes(year, lynx)) + geom_line() +
+  stat_peaks(colour = "red") +
+  stat_peaks(colour = "red", geom = "rug")
+
 }
 \seealso{
 \code{\link[photobiology]{find_peaks}}, which is used internally.

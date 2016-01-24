@@ -43,6 +43,22 @@ can include aesthetics whose values you want to set, not map. See
 \code{stat_poly_eq} fits a polynomial and generates a label with an equation
 and/or coefficient of determination (R^2).
 }
+\details{
+This stat can be used to automatically annotate a plot with R^2,
+adjusted R^2 or the fitted model equation. It supports only linear models
+fitted with function \code{lm()}. The R^2 and adjusted R^2 annotations can be
+used with any linear model formula. The fitted equation label is correclty
+generated for polynomials or quasi-polynomials through the origin. Model
+formulas can use \code{poly()} or be defined algebraically with terms of
+powers of increasing magnitude with no missing intermediate terms, except
+possibly for the intercept indicated by "- 1" or "-1" in the formula. The
+validity of the \code{formula} is not checked in the current implementation,
+and for this reason the default aesthetics sets R^2 as label for the
+annotation. This stat only generates the label, the predicted values need
+to be sepearately added to the plot, so to make sure that the same model
+formula is used in all steps it is best to save the formula as an object
+and supply this object as argument to the different statistics.
+}
 \section{Computed variables}{
 
   \describe{ \item{x}{x position for left edge}
@@ -56,12 +72,14 @@ and/or coefficient of determination (R^2).
 }
 \examples{
 library(ggplot2)
-set.seed(4321)
 # generate artificial data
+set.seed(4321)
 x <- 1:100
 y <- (x + x^2 + x^3) + rnorm(length(x), mean = 0, sd = mean(x^3) / 4)
 my.data <- data.frame(x, y, group = c("A", "B"), y2 = y * c(0.5,2))
+# give a name to a formula
 formula <- y ~ poly(x, 3, raw = TRUE)
+# plot
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
