@@ -333,18 +333,18 @@ ggplot(my.data, aes(x, y, colour = group, shape = group)) + geom_point() +
 
 ## Datetime variables and ggplot statistics
 
-Data frame `lynx.df` contains `time` as numeric,
+Data frame `lynx_n.df` contains `time` as numeric,
 
 ```{r}
-lynx.df <- try_data_frame(lynx)
-lapply(lynx.df, "class")
-head(lynx.df, 3)
+lynx_n.df <- try_data_frame(lynx, "year", as.numeric = TRUE)
+lapply(lynx_n.df, "class")
+head(lynx_n.df, 3)
 ```
 
 and the compute function in the stat receives `x` as numeric.
 
 ```{r}
-ggplot(lynx.df, aes(time, V.lynx)) + geom_line() +
+ggplot(lynx_n.df, aes(time, V.lynx)) + geom_line() +
   stat_debug_panel()
 ```
 
