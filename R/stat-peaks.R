@@ -91,7 +91,8 @@ find_peaks <-
 #' @param label.fmt character  string giving a format definition for converting
 #'   values into character strings by means of function \code{\link{sprintf}}.
 #' @param x.label.fmt character  string giving a format definition for converting
-#'   $x$-values into character strings by means of function \code{\link{sprintf}}.
+#'   $x$-values into character strings by means of function \code{\link{sprintf}}
+#'   or \code{\link{strftime}}.
 #' @param y.label.fmt character  string giving a format definition for converting
 #'   $y$-values into character strings by means of function \code{\link{sprintf}}.
 #'
@@ -112,7 +113,11 @@ find_peaks <-
 #'   \code{geom_hline} and \code{geom_vline}. The formatting of the labels
 #'   returned can be controlled by the user.
 #'
-#' @note These stats work nicely together with geoms
+#' @note This stats check the scale of the \code{x} aesthetic and if is Datetime it
+#'   correctly generates the labels by transforming the numeric x values to
+#'   POSIXct objects, in which case the \code{x.label.fmt} must be suitable for
+#'   \code{strftime()} rather than for \code{sprintf()}.
+#' These stats work nicely together with geoms
 #'   \code{\link[ggrepel]{geom_text_repel}} and
 #'   \code{\link[ggrepel]{geom_label_repel}} from package
 #'   \code{\link[ggrepel]{ggrepel}} to solve the problem of overlapping labels
@@ -125,7 +130,6 @@ find_peaks <-
 #'
 #' @examples
 #' library(ggplot2)
-#' library(ggpmisc)
 #' lynx.df <- data.frame(year = as.numeric(time(lynx)), lynx = as.matrix(lynx))
 #' ggplot(lynx.df, aes(year, lynx)) + geom_line() +
 #'   stat_peaks(colour = "red")
@@ -138,8 +142,8 @@ find_peaks <-
 #'
 stat_peaks <- function(mapping = NULL, data = NULL, geom = "point",
                        span = 5, ignore_threshold = 0, strict = FALSE,
-                       label.fmt = "%.3g",
-                       x.label.fmt = label.fmt, y.label.fmt = label.fmt,
+                       label.fmt = "%.4g",
+                       x.label.fmt = NULL, y.label.fmt = label.fmt,
                        position = "identity", na.rm = FALSE, show.legend = FALSE,
                        inherit.aes = TRUE, ...) {
   ggplot2::layer(
@@ -184,6 +188,24 @@ StatPeaks <-
                                             label.fmt,
                                             x.label.fmt,
                                             y.label.fmt) {
+                     if (inherits(scales$x, c("ScaleContinuousDatetime",
+                                              "ScaleContinuousDate"))) {
+                       as_label <- function(fmt, x) {
+                         x <- as.POSIXct(x,
+                                    origin = lubridate::origin)
+                         strftime(x, fmt)
+                       }
+                       if (is.null(x.label.fmt)) {
+                         x.label.fmt <- "%Y-%m-%d"
+                       }
+                     } else {
+                       as_label <- function(fmt, x) {
+                         sprintf(fmt, x)
+                       }
+                       if (is.null(x.label.fmt)) {
+                         x.label.fmt <- label.fmt
+                       }
+                     }
                      if (is.null(span)) {
                        peaks.df <- data[which.max(data$y), , drop = FALSE]
                      } else {
@@ -193,7 +215,7 @@ StatPeaks <-
                                         strict = strict), , drop = FALSE]
                      }
                      dplyr::mutate(peaks.df,
-                                   x.label = sprintf(x.label.fmt, x),
+                                   x.label = as_label(x.label.fmt, x),
                                    y.label = sprintf(y.label.fmt, y))
                    },
                    default_aes = ggplot2::aes(label = ..x.label..,
@@ -208,8 +230,8 @@ StatPeaks <-
 #'
 stat_valleys <- function(mapping = NULL, data = NULL, geom = "point",
                          span = 5, ignore_threshold = 0, strict = FALSE,
-                         label.fmt = "%.3g",
-                         x.label.fmt = label.fmt, y.label.fmt = label.fmt,
+                         label.fmt = "%.4g",
+                         x.label.fmt = NULL, y.label.fmt = label.fmt,
                          position = "identity", na.rm = FALSE, show.legend = FALSE,
                          inherit.aes = TRUE, ...) {
   ggplot2::layer(
@@ -242,6 +264,24 @@ StatValleys <-
                                             label.fmt,
                                             x.label.fmt,
                                             y.label.fmt) {
+                     if (inherits(scales$x, c("ScaleContinuousDatetime",
+                                              "ScaleContinuousDate"))) {
+                       as_label <- function(fmt, x) {
+                         x <- as.POSIXct(x,
+                                         origin = lubridate::origin)
+                         strftime(x, fmt)
+                       }
+                       if (is.null(x.label.fmt)) {
+                         x.label.fmt <- "%Y-%m-%d"
+                       }
+                     } else {
+                       as_label <- function(fmt, x) {
+                         sprintf(fmt, x)
+                       }
+                       if (is.null(x.label.fmt)) {
+                         x.label.fmt <- label.fmt
+                       }
+                     }
                      if (is.null(span)) {
                        valleys.df <- data[which.min(data$y), , drop = FALSE]
                      } else {
@@ -251,7 +291,7 @@ StatValleys <-
                                           strict = strict), , drop = FALSE]
                      }
                      dplyr::mutate(valleys.df,
-                                   x.label = sprintf(x.label.fmt, x),
+                                   x.label = as_label(x.label.fmt, x),
                                    y.label = sprintf(y.label.fmt, y))
                    },
                    default_aes = ggplot2::aes(label = ..x.label..,

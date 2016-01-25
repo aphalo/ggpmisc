@@ -2,7 +2,7 @@
 #'
 #' @description \code{stat_debug} reports all distinct values in \code{group}
 #'   and \code{PANEL}, and \code{nrow}, \code{ncol} and the names of the columns
-#'   or variables for each panel in a ggplot as passed to the
+#'   or variables, and the class of x and y for each panel in a ggplot as passed to the
 #'   \code{compute_panel} function in the \code{ggproto} object.
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
@@ -27,13 +27,15 @@
 #'   before the computation proceeds.
 #'
 #' @section Computed variables:
-#' \describe{ \item{x}{x at centre of range}
+#' \describe{
+#'   \item{x}{x at centre of range}
 #'   \item{y}{y at centre of range}
-#'   \item{group}{all distinct values in group as passed in \code{data} object}
-#'   \item{PANEL}{all distinct values in PANEL as passed in \code{data} object}
 #'   \item{nrow}{\code{nrow()} of \code{data} object}
 #'   \item{ncol}{\code{ncol()} of \code{data} object}
 #'   \item{colnames}{\code{colnames()} of \code{data} object}
+#'   \item{colclasses}{\code{class()} of \code{x} and \code{y} columns in \code{data} object}
+#'   \item{group}{all distinct values in group as passed in \code{data} object}
+#'   \item{PANEL}{all distinct values in PANEL as passed in \code{data} object}
 #'   }
 #'
 #' @examples
@@ -69,12 +71,16 @@ StatDebugPanel <-
     ggplot2::Stat,
     compute_panel =
       function(data, scales) {
+        print(class(scales$x))
         my.diagnostic <-
           data.frame(x = mean(range(data$x)),
                      y = mean(range(data$y)),
                      nrow = nrow(data),
                      ncol = ncol(data),
                      colnames = paste(colnames(data), collapse = ", "),
+                     colclasses = paste("x: ", class(data$x),
+                                        "; y: ",  class(data$y),
+                                        collapse = ", ", sep = ""),
                      group = paste(unique(data$group), collapse = ", "),
                      PANEL = paste(unique(data$PANEL), collapse = ", "))
         # print(my.diagnostic)
@@ -84,7 +90,8 @@ StatDebugPanel <-
                                              "PANEL: ", ..PANEL.., "\n",
                                              "nrow: ", ..nrow.., "; ",
                                              "ncol: ", ..ncol.., "\n",
-                                             "cols: ", ..colnames..,
+                                             "cols: ", ..colnames.., "\n",
+                                             "classes: ", ..colclasses..,
                                              sep = "")
     ),
     required_aes = c("x", "y")

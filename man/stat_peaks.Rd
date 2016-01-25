@@ -6,13 +6,13 @@
 \title{Find peaks and valleys.}
 \usage{
 stat_peaks(mapping = NULL, data = NULL, geom = "point", span = 5,
-  ignore_threshold = 0, strict = FALSE, label.fmt = "\%.3g",
-  x.label.fmt = label.fmt, y.label.fmt = label.fmt, position = "identity",
+  ignore_threshold = 0, strict = FALSE, label.fmt = "\%.4g",
+  x.label.fmt = NULL, y.label.fmt = label.fmt, position = "identity",
   na.rm = FALSE, show.legend = FALSE, inherit.aes = TRUE, ...)
 
 stat_valleys(mapping = NULL, data = NULL, geom = "point", span = 5,
-  ignore_threshold = 0, strict = FALSE, label.fmt = "\%.3g",
-  x.label.fmt = label.fmt, y.label.fmt = label.fmt, position = "identity",
+  ignore_threshold = 0, strict = FALSE, label.fmt = "\%.4g",
+  x.label.fmt = NULL, y.label.fmt = label.fmt, position = "identity",
   na.rm = FALSE, show.legend = FALSE, inherit.aes = TRUE, ...)
 }
 \arguments{
@@ -41,7 +41,8 @@ all other values in its window to be considered a peak. Default: FALSE.}
 values into character strings by means of function \code{\link{sprintf}}.}
 
 \item{x.label.fmt}{character  string giving a format definition for converting
-$x$-values into character strings by means of function \code{\link{sprintf}}.}
+$x$-values into character strings by means of function \code{\link{sprintf}}
+or \code{\link{strftime}}.}
 
 \item{y.label.fmt}{character  string giving a format definition for converting
 $y$-values into character strings by means of function \code{\link{sprintf}}.}
@@ -81,6 +82,10 @@ These stats use \code{geom_point} by default as it is the geom most
   returned can be controlled by the user.
 }
 \note{
+This stats check the scale of the \code{x} aesthetic and if is Datetime it
+  correctly generates the labels by transforming the numeric x values to
+  POSIXct objects, in which case the \code{x.label.fmt} must be suitable for
+  \code{strftime()} rather than for \code{sprintf()}.
 These stats work nicely together with geoms
   \code{\link[ggrepel]{geom_text_repel}} and
   \code{\link[ggrepel]{geom_label_repel}} from package
@@ -103,7 +108,6 @@ These stats work nicely together with geoms
 }
 \examples{
 library(ggplot2)
-library(ggpmisc)
 lynx.df <- data.frame(year = as.numeric(time(lynx)), lynx = as.matrix(lynx))
 ggplot(lynx.df, aes(year, lynx)) + geom_line() +
   stat_peaks(colour = "red")

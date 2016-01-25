@@ -40,18 +40,20 @@ can include aesthetics whose values you want to set, not map. See
 \description{
 \code{stat_debug} reports all distinct values in \code{group}
   and \code{PANEL}, and \code{nrow}, \code{ncol} and the names of the columns
-  or variables for each panel in a ggplot as passed to the
+  or variables, and the class of x and y for each panel in a ggplot as passed to the
   \code{compute_panel} function in the \code{ggproto} object.
 }
 \section{Computed variables}{
 
-\describe{ \item{x}{x at centre of range}
+\describe{
+  \item{x}{x at centre of range}
   \item{y}{y at centre of range}
-  \item{group}{all distinct values in group as passed in \code{data} object}
-  \item{PANEL}{all distinct values in PANEL as passed in \code{data} object}
   \item{nrow}{\code{nrow()} of \code{data} object}
   \item{ncol}{\code{ncol()} of \code{data} object}
   \item{colnames}{\code{colnames()} of \code{data} object}
+  \item{colclasses}{\code{class()} of \code{x} and \code{y} columns in \code{data} object}
+  \item{group}{all distinct values in group as passed in \code{data} object}
+  \item{PANEL}{all distinct values in PANEL as passed in \code{data} object}
   }
 }
 \examples{
