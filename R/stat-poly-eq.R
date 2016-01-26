@@ -21,9 +21,11 @@
 #' @param ... other arguments passed on to \code{\link[ggplot2]{layer}}. This
 #'   can include aesthetics whose values you want to set, not map. See
 #'   \code{\link[ggplot2]{layer}} for more details.
-#' @param na.rm	a logical value indicating whether NA values should be stripped
+#' @param na.rm	a logical indicating whether NA values should be stripped
 #'   before the computation proceeds.
 #' @param formula a formula object
+#' @param eq.with.lhs logical indicating whether lhs of equation is to be
+#'   included in label.
 #'
 #' @details This stat can be used to automatically annotate a plot with R^2,
 #' adjusted R^2 or the fitted model equation. It supports only linear models
@@ -68,14 +70,14 @@
 #' @export
 #'
 stat_poly_eq <- function(mapping = NULL, data = NULL, geom = "text",
-                         formula = NULL,
+                         formula = NULL, eq.with.lhs = TRUE,
                          position = "identity",
                          na.rm = FALSE, show.legend = FALSE,
                          inherit.aes = TRUE, ...) {
   ggplot2::layer(
     stat = StatPolyEq, data = data, mapping = mapping, geom = geom,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
-    params = list(formula = formula,
+    params = list(formula = formula, eq.with.lhs = eq.with.lhs,
                   na.rm = na.rm,
                   ...)
   )
@@ -89,7 +91,8 @@ StatPolyEq <-
   ggplot2::ggproto("StatPolyEq", ggplot2::Stat,
                    compute_group = function(data,
                                             scales,
-                                            formula) {
+                                            formula,
+                                            eq.with.lhs) {
                      mf <- lm(formula, data)
                      coefs <- coef(mf)
                      formula.rhs.chr <- as.character(formula)[3]
@@ -99,13 +102,17 @@ StatPolyEq <-
                      rr <- summary(mf)$r.squared
                      adj.rr <- summary(mf)$adj.r.squared
                      eq.char <- as.character(signif(polynom::as.polynomial(coefs), 3))
+                     if (eq.with.lhs) {
+                       eq.char <- paste("italic(y)", eq.char, sep = "~`=`~")
+                     }
                      rr.char <- format(rr, digits = 2)
                      adj.rr.char <- format(adj.rr, digits = 2)
                      data.frame(x = min(data$x),
                                 y = max(data$y) - 0.1 * diff(range(data$y)),
                                 eq.label = gsub("x", "~italic(x)", eq.char, fixed = TRUE),
                                 rr.label = paste("italic(R)^2", rr.char, sep = "~`=`~"),
-                                adj.rr.label = paste("italic(R)[adj]^2", adj.rr.char, sep = "~`=`~"),
+                                adj.rr.label = paste("italic(R)[adj]^2",
+                                                     adj.rr.char, sep = "~`=`~"),
                                 hjust = 0)
                    },
                    default_aes =

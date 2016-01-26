@@ -1,12 +1,10 @@
-#' @details
-#' Pakage \code{ggpmisc} is a package with extensions to ggplot2.
-#' It defines statistics for finding peaks and valleys, constructing labels
-#' for polynomial equations fitted with \code{lm()}, and for debugging
-#' or discovering the data that \code{compute_group} and \code{compute_panel}
-#' are passed within ggplot statistics. It also defines function
-#' \code{try_data_frame()} which attempts to convert time series objects
-#' supported by \code{\link[xts]{try.xts}()} into data frame objects
-#' usable as \code{data} argument to \code{ggplot()}.
+#' @details The new facilities for cleanly defining new stats and geoms added to
+#' ggplot2 in version 2.0.0 have made this package easy to code. However, this
+#' means that this package requires version 2.0.0 or later of ggplot2.
+#'
+#' The stats for peaks and valleys are coded so as to work correctly both with
+#' numeric and POSIXct variables mapped to the x aesthetic. Special handling was
+#' needed as text labels are generated from the data.
 #'
 #' @author Pedro J. Aphalo
 #'
@@ -15,13 +13,12 @@
 #' \code{ggplot2} source code at \url{https://github.com/hadley/ggplot2}
 #'
 #' @note The signatures of \code{stat_peaks()} and \code{stat_valleys()} are
-#' identical to those of \code{\link[ggspectra]{stat_peaks}} and
-#' \code{\link[ggspectra]{stat_valleys}} from package
-#' \code{\link[photobiology]{photobiology}}
-#' but the variables returned are a subset as values related to light spectra
-#' are missing. Furthermore the stats from package \code{ggpmisc} work
-#' correctly when the x aesthetic uses a date or datetime scale, while those
-#' from package \code{photobiology} do not generate correct labels in
-#' this case.
+#'   identical to those of \code{\link[ggspectra]{stat_peaks}} and
+#'   \code{\link[ggspectra]{stat_valleys}} from package
+#'   \code{\link[photobiology]{photobiology}} but the variables returned are a
+#'   subset as values related to light spectra are missing. Furthermore the
+#'   stats from package \code{ggpmisc} work correctly when the x aesthetic uses
+#'   a date or datetime scale, while those from package \code{photobiology} do
+#'   not generate correct labels in this case.
 #'
 "_PACKAGE"

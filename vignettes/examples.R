@@ -155,7 +155,8 @@ formula <- y ~ x + I(x^2) + I(x^3)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = ..eq.label..), formula = formula, parse = TRUE)
+  stat_poly_eq(aes(label = ..eq.label..), formula = formula, 
+               parse = TRUE)
 
 ## ------------------------------------------------------------------------
 formula <- y ~ x + I(x^2) + I(x^3) - 1
@@ -184,7 +185,8 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = ..eq.label..), formula = formula, parse = TRUE) +
+  stat_poly_eq(aes(label = ..eq.label..), size = rel(2.8),
+               formula = formula, parse = TRUE) +
   facet_wrap(~group)
 
 ## ------------------------------------------------------------------------
@@ -192,7 +194,8 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = ..eq.label..), formula = formula, parse = TRUE) +
+  stat_poly_eq(aes(label = ..eq.label..), size = rel(2.8),
+               formula = formula, parse = TRUE) +
   facet_wrap(~group, scales = "free_y")
 
 ## ------------------------------------------------------------------------
@@ -200,7 +203,9 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2, colour = group)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = ..eq.label..), formula = formula, parse = TRUE)
+  stat_poly_eq(aes(label = ..eq.label..), vjust = c(-8, 0),
+               formula = formula, parse = TRUE) +
+  theme_bw()
 
 ## ------------------------------------------------------------------------
 formula <- y ~ poly(x, 1, raw = TRUE)
@@ -258,12 +263,12 @@ ggplot(my.data, aes(x, y, colour = group, shape = group)) + geom_point() +
   facet_wrap(~group) + stat_debug_group()
 
 ## ------------------------------------------------------------------------
-lynx.df <- try_data_frame(lynx)
-lapply(lynx.df, "class")
-head(lynx.df, 3)
+lynx_n.df <- try_data_frame(lynx, "year", as.numeric = TRUE)
+lapply(lynx_n.df, "class")
+head(lynx_n.df, 3)
 
 ## ------------------------------------------------------------------------
-ggplot(lynx.df, aes(time, V.lynx)) + geom_line() +
+ggplot(lynx_n.df, aes(time, V.lynx)) + geom_line() +
   stat_debug_panel()
 
 ## ------------------------------------------------------------------------

@@ -208,7 +208,8 @@ formula <- y ~ x + I(x^2) + I(x^3)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = ..eq.label..), formula = formula, parse = TRUE)
+  stat_poly_eq(aes(label = ..eq.label..), formula = formula, 
+               parse = TRUE)
 ```
 
 ```{r}
@@ -241,7 +242,8 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = ..eq.label..), formula = formula, parse = TRUE) +
+  stat_poly_eq(aes(label = ..eq.label..), size = rel(2.8),
+               formula = formula, parse = TRUE) +
   facet_wrap(~group)
 ```
 
@@ -250,7 +252,8 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = ..eq.label..), formula = formula, parse = TRUE) +
+  stat_poly_eq(aes(label = ..eq.label..), size = rel(2.8),
+               formula = formula, parse = TRUE) +
   facet_wrap(~group, scales = "free_y")
 ```
 
@@ -259,7 +262,9 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2, colour = group)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = ..eq.label..), formula = formula, parse = TRUE)
+  stat_poly_eq(aes(label = ..eq.label..), vjust = c(-8, 0),
+               formula = formula, parse = TRUE) +
+  theme_bw()
 ```
 
 ```{r}
