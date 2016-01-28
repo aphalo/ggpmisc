@@ -18,7 +18,7 @@ objects of all classes accepted by try.xts() into data frames suitable for
 plotting with ggplot.
 
 Update stat_peaks() and stat_valleys() to work correctly when the x aesthetic
-uses a Date or Datetime continuous scale such as ggplot sets authomatically
+uses a Date or Datetime continuous scale such as ggplot sets automatically
 for POSIXct variables mapped to the x aesthetic.
 
 ggpmisc 0.2.1
