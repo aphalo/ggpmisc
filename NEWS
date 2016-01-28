@@ -1,3 +1,15 @@
+ggpmisc 0.2.4
+=============
+
+Improve handling of time zones in try_data_frame().
+Revise documentation and vignette.
+
+ggpmisc 0.2.3
+=============
+
+stat_poly_eq() changed to include the lhs (left hand side) of the equation by
+default.
+
 ggpmisc 0.2.2
 =============
 

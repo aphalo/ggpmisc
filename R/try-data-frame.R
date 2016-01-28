@@ -17,7 +17,21 @@
 #'
 #' @return A dataframe.
 #'
-#' @note This function can be used to easily plot time series data with ggplot2.
+#' @note This function can be used to easily converttime series data into a
+#'   format that can be easily plotted with pacakge \code{ggplot2}.
+#'
+#' @section Warning!: The time zone was set to "UTC" by try.xts() in the test
+#'   cases I used. Setting TZ to "UTC" can cause some trouble as several
+#'   frequently used functions have as default the local or system TZ and will
+#'   apply a conversion before printing or plotting time data, which in addition
+#'   is affected by summer/winter time transitions. This should be taken into
+#'   account as even for yearly data when conversion is to POSIXct a day (1st of
+#'   Jannuary) will be set, but then shifted some hours if printed on a TZ
+#'   different from "UTC". I recommend reading the documentation of package
+#'   \code{\link[lubridate]{lubridate}} where the irregularities of time data
+#'   and the difficulties they cause are very well described. In many cases when
+#'   working with time series with yearly observations it is best to work with
+#'   numeric values for years.
 #'
 #' @export
 #'
@@ -30,24 +44,30 @@
 #' try_data_frame(cars)
 #' try_data_frame(photobiology::sun.spct)
 #'
-try_data_frame <- function(x, time.resolution = "second", as.numeric = FALSE) {
+try_data_frame <- function(x,
+                           time.resolution = "second",
+                           as.numeric = FALSE) {
   if (inherits(x, "data.frame")) {
     return(x)
   }
-  if (!inherits(x, c("ts", "zoo", "timeSeries", "irts", "fts")) &&
+  if (!xts::xtsible(x) &&
       (is.list(x) || is.factor(x) || is.vector(x) || is.matrix(x))) {
     return(as.data.frame(x))
   }
   if (!xts::is.xts(x)) {
+    stopifnot(xts::xtsible(x))
     data.xts <- xts::try.xts(x)
   } else {
     data.xts <- x
   }
-  times.raw <- zoo::index(data.xts)
+  times.raw <- zoo::index(data.xts) # TZ = "UTC"
   if (lubridate::is.POSIXct(times.raw[1])) {
     times <- times.raw
   } else {
     times <- as.POSIXct(times.raw) # handles conversion from classes in xts and zoo
+  }
+  if (lubridate::tz(times) == "") {
+    times <- lubridate::with_tz(times, tz = "UTC")
   }
   if (is.null(names(x))) {
     data.names <- paste("V.", as.character(substitute(x)), sep = "")

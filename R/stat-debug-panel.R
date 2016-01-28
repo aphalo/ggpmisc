@@ -71,7 +71,7 @@ StatDebugPanel <-
     ggplot2::Stat,
     compute_panel =
       function(data, scales) {
-        print(class(scales$x))
+#        print(class(scales$x))
         my.diagnostic <-
           data.frame(x = mean(range(data$x)),
                      y = mean(range(data$y)),

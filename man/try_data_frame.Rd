@@ -29,7 +29,22 @@ containing times as \code{POSIXct} and the remaining data columns with
 the time series data. In this conversion row names are stripped.
 }
 \note{
-This function can be used to easily plot time series data with ggplot2.
+This function can be used to easily converttime series data into a
+  format that can be easily plotted with pacakge \code{ggplot2}.
+}
+\section{Warning!}{
+ The time zone was set to "UTC" by try.xts() in the test
+  cases I used. Setting TZ to "UTC" can cause some trouble as several
+  frequently used functions have as default the local or system TZ and will
+  apply a conversion before printing or plotting time data, which in addition
+  is affected by summer/winter time transitions. This should be taken into
+  account as even for yearly data when conversion is to POSIXct a day (1st of
+  Jannuary) will be set, but then shifted some hours if printed on a TZ
+  different from "UTC". I recommend reading the documentation of package
+  \code{\link[lubridate]{lubridate}} where the irregularities of time data
+  and the difficulties they cause are very well described. In many cases when
+  working with time series with yearly observations it is best to work with
+  numeric values for years.
 }
 \examples{
 library(xts)
