@@ -29,7 +29,7 @@ library(lubridate)
 
 ### Time series
 
-Several different formats for storing time series data are used in R. Here we use in the examples objects of class `ts` but several other classes are supported as `try.xts()` is used internally. The first example is a quaterly series.
+Several different formats for storing time series data are used in R. Here we use in the examples objects of class `ts` but several other classes are supported as `try.xts()` is used internally. The first example is a quarterly series.
 
 ```{r}
 class(austres)
@@ -39,7 +39,7 @@ lapply(austres.df, "class")
 head(austres.df, 4)
 ```
 
-The next chunk demonstrates that numeric times are expresed as decimal years in the returned data frame.
+The next chunk demonstrates that numeric times are expressed as decimal years in the returned data frame.
 
 ```{r}
 austres.df <- try_data_frame(austres, as.numeric = TRUE)
@@ -281,7 +281,7 @@ ggplot(my.data, aes(x, y2, colour = group)) +
 
 These stats are very simple and simply echo to labels on the plot itself a summary of the data received by the compute functions. 
 
-In the abscence of facets or groups we get just one label.
+In the absence of facets or groups we get just one label.
 
 ```{r}
 ggplot(my.data, aes(x, y)) + geom_point() + stat_debug_group()
@@ -291,7 +291,7 @@ ggplot(my.data, aes(x, y)) + geom_point() + stat_debug_group()
 ggplot(my.data, aes(x, y)) + geom_point() + stat_debug_panel()
 ```
 
-In the case of grouping if the groups do not have very different centers in the x y space tweaking of postions can be needed to avoid overlaps.
+In the case of grouping if the groups do not have very different centres in the x y space tweaking of positions can be needed to avoid overlaps.
 
 ```{r}
 ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
