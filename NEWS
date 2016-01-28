@@ -13,7 +13,7 @@ default.
 ggpmisc 0.2.2
 =============
 
-Add function try_data_frame() to convert other objects including time series
+Add function try_data_frame() to convert R objects including time series
 objects of all classes accepted by try.xts() into data frames suitable for
 plotting with ggplot.
 
