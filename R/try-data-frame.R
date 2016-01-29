@@ -42,7 +42,6 @@
 #' try_data_frame(austres)
 #' try_data_frame(austres, "quarter")
 #' try_data_frame(cars)
-#' try_data_frame(photobiology::sun.spct)
 #'
 try_data_frame <- function(x,
                            time.resolution = "second",

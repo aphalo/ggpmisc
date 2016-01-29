@@ -4,14 +4,14 @@
 \name{ggpmisc-package}
 \alias{ggpmisc}
 \alias{ggpmisc-package}
-\title{Miscelaneous Extensions to ggplot2}
+\title{Miscellaneous Extensions to 'ggplot2'}
 \description{
-Implements extensions to ggplot2 respecting the grammar of graphics
-paradigm. provides new stats to locate and tag peaks and valleys in 2D
+Implements extensions to 'ggplot2' respecting the grammar of graphics
+paradigm. Provides new stats to locate and tag peaks and valleys in 2D
 plots, a stat to add a label by group with the equation of a polynomial
 fitted with lm(), or R^2 or adjusted R^2 values for any model fitted with
 function lm(). Provides a function for flexibly converting time series to
-data frames suitable for plotting with ggplot(). In addtion provides two
+data frames suitable for plotting with ggplot(). In addition provides two
 stats useful for diagnosing what data are passed to compute_group() and
 compute_panel() functions.
 }
@@ -26,13 +26,12 @@ needed as text labels are generated from the data.
 }
 \note{
 The signatures of \code{stat_peaks()} and \code{stat_valleys()} are
-  identical to those of \code{\link[ggspectra]{stat_peaks}} and
-  \code{\link[ggspectra]{stat_valleys}} from package
-  \code{\link[photobiology]{photobiology}} but the variables returned are a
-  subset as values related to light spectra are missing. Furthermore the
-  stats from package \code{ggpmisc} work correctly when the x aesthetic uses
-  a date or datetime scale, while those from package \code{photobiology} do
-  not generate correct labels in this case.
+  identical to those of \code{stat_peaks} and \code{stat_valleys} from
+  package \code{photobiology} but the variables returned are a subset as
+  values related to light spectra are missing. Furthermore the stats from
+  package \code{ggpmisc} work correctly when the x aesthetic uses a date or
+  datetime scale, while those from package \code{photobiology} do not
+  generate correct labels in this case.
 }
 \author{
 Pedro J. Aphalo

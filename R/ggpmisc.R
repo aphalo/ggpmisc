@@ -13,12 +13,11 @@
 #' \code{ggplot2} source code at \url{https://github.com/hadley/ggplot2}
 #'
 #' @note The signatures of \code{stat_peaks()} and \code{stat_valleys()} are
-#'   identical to those of \code{\link[ggspectra]{stat_peaks}} and
-#'   \code{\link[ggspectra]{stat_valleys}} from package
-#'   \code{\link[photobiology]{photobiology}} but the variables returned are a
-#'   subset as values related to light spectra are missing. Furthermore the
-#'   stats from package \code{ggpmisc} work correctly when the x aesthetic uses
-#'   a date or datetime scale, while those from package \code{photobiology} do
-#'   not generate correct labels in this case.
+#'   identical to those of \code{stat_peaks} and \code{stat_valleys} from
+#'   package \code{photobiology} but the variables returned are a subset as
+#'   values related to light spectra are missing. Furthermore the stats from
+#'   package \code{ggpmisc} work correctly when the x aesthetic uses a date or
+#'   datetime scale, while those from package \code{photobiology} do not
+#'   generate correct labels in this case.
 #'
 "_PACKAGE"

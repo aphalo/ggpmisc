@@ -1,16 +1,16 @@
 Package: ggpmisc
 Type: Package
-Title: Miscelaneous Extensions to ggplot2
-Version: 0.2.4
+Title: Miscellaneous Extensions to 'ggplot2'
+Version: 0.2.5
 Date: 2016-01-28
 Author: Pedro J. Aphalo [aut, cre]
 Maintainer: Pedro J. Aphalo <pedro.aphalo@helsinki.fi>
-Description: Implements extensions to ggplot2 respecting the grammar of graphics
-    paradigm. provides new stats to locate and tag peaks and valleys in 2D
+Description: Implements extensions to 'ggplot2' respecting the grammar of graphics
+    paradigm. Provides new stats to locate and tag peaks and valleys in 2D
     plots, a stat to add a label by group with the equation of a polynomial
     fitted with lm(), or R^2 or adjusted R^2 values for any model fitted with
     function lm(). Provides a function for flexibly converting time series to
-    data frames suitable for plotting with ggplot(). In addtion provides two
+    data frames suitable for plotting with ggplot(). In addition provides two
     stats useful for diagnosing what data are passed to compute_group() and
     compute_panel() functions.
 License: GPL (>=3)
@@ -28,8 +28,7 @@ Imports:
     lubridate (>= 1.5.0)
 Suggests:
     knitr (>= 1.12.3),
-    rmarkdown (>= 0.9.2),
-    photobiology (>= 0.9.3)
+    rmarkdown (>= 0.9.2)
 URL: http://www.r4photobiology.info
 BugReports: https://bitbucket.org/aphalo/ggpmisc
 RoxygenNote: 5.0.1

@@ -53,7 +53,6 @@ try_data_frame(lynx, "year")
 try_data_frame(austres)
 try_data_frame(austres, "quarter")
 try_data_frame(cars)
-try_data_frame(photobiology::sun.spct)
 
 }
 

@@ -1,3 +1,8 @@
+ggpmisc 0.2.5
+=============
+
+Remove one example to remove a package dependency.
+
 ggpmisc 0.2.4
 =============
 
@@ -15,10 +20,10 @@ ggpmisc 0.2.2
 
 Add function try_data_frame() to convert R objects including time series
 objects of all classes accepted by try.xts() into data frames suitable for
-plotting with ggplot.
+plotting with ggplot().
 
 Update stat_peaks() and stat_valleys() to work correctly when the x aesthetic
-uses a Date or Datetime continuous scale such as ggplot sets automatically
+uses a Date or Datetime continuous scale such as ggplot() sets automatically
 for POSIXct variables mapped to the x aesthetic.
 
 ggpmisc 0.2.1

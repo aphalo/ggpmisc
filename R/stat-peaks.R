@@ -37,7 +37,8 @@ find_peaks <-
     min_x <- range_x[1]
     max_x <- range_x[2]
     x <- ifelse(!is.finite(x), min_x, x)
-    # the next two lines catter for the case when max_x < 0, which is quite common with logs
+    # the next two lines catter for the case when max_x < 0, which is quite
+    # common with logs
     delta <- max_x - min_x
     top_flag <- ignore_threshold > 0.0
     scaled_threshold <- delta * abs(ignore_threshold)
@@ -60,7 +61,8 @@ find_peaks <-
 #' for \code{sprintf()}.
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
-#'    \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_string}}. Only needs to be set
+#'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_string}}. Only needs
+#'   to be set
 #'    at the layer level if you are overriding the plot defaults.
 #' @param data A layer specific dataset - only needed if you want to override
 #'    the plot defaults.
@@ -103,8 +105,6 @@ find_peaks <-
 #'   \item{x.label}{x-value at the peak (or valley) as character}
 #'   \item{y.label}{y-value at the peak (or valley) as character}
 #' }
-#'
-#' @seealso \code{\link[photobiology]{find_peaks}}, which is used internally.
 #'
 #' @details These stats use \code{geom_point} by default as it is the geom most
 #'   likely to work well in almost any situation without need of tweaking. The
