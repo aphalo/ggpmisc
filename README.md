@@ -7,4 +7,5 @@ calculations including the quantification of biologically effective radiation
 in meteorology are available as part of a suite described at the same
 website.
 
-The current release of __ggpmisc__ is available through [CRAN](https://cran.r-project.org/web/packages/ggpmisc/index.html) for R (>= 3.2.0). 
+The current release of __ggpmisc__ is available through [CRAN](https://cran.r-project.org/web/packages/ggpmisc/index.html) 
+for R (>= 3.2.0). 
