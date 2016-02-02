@@ -6,3 +6,5 @@ details and update notices. Other packages, aimed at easing photobiology-related
 calculations including the quantification of biologically effective radiation
 in meteorology are available as part of a suite described at the same
 website.
+
+The current release of __ggpmisc__ is vailable through [CRAN](https://cran.r-project.org/web/packages/ggpmisc/index.html) for R (>= 3.2.0). 
