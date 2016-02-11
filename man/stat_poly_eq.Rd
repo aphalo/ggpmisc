@@ -43,8 +43,8 @@ can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 }
 \description{
-\code{stat_poly_eq} fits a polynomial and generates a label with an equation
-and/or coefficient of determination (R^2).
+\code{stat_poly_eq} fits a polynomial and generates a label with
+  an equation and/or coefficient of determination (R^2).
 }
 \details{
 This stat can be used to automatically annotate a plot with R^2,

@@ -6,7 +6,7 @@
 \alias{ggpmisc-package}
 \title{Miscellaneous Extensions to 'ggplot2'}
 \description{
-Implements extensions to 'ggplot2' respecting the grammar of graphics
+Extensions to 'ggplot2' respecting the grammar of graphics
 paradigm. Provides new stats to locate and tag peaks and valleys in 2D
 plots, a stat to add a label by group with the equation of a polynomial
 fitted with lm(), or R^2 or adjusted R^2 values for any model fitted with
