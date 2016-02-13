@@ -94,8 +94,8 @@ compute_group_fun <- function(data,
                               scales,
                               formula,
                               eq.with.lhs) {
-  mf <- lm(formula, data)
-  coefs <- coef(mf)
+  mf <- stats::lm(formula, data)
+  coefs <- stats::coef(mf)
   formula.rhs.chr <- as.character(formula)[3]
   if (grepl("-1", formula.rhs.chr) || grepl("- 1", formula.rhs.chr)) {
     coefs <- c(0, coefs)
