@@ -121,6 +121,7 @@ poly_eq_compute_group_fun <- function(data,
   BIC <- BIC(mf)
   adj.rr <- summary(mf)$adj.r.squared
   eq.char <- as.character(signif(polynom::as.polynomial(coefs), 3))
+  eq.char <- gsub("e([+-]?[0-9]*)", "%*%10^\\1", eq.char)
   if (is.character(eq.with.lhs)) {
     lhs <- eq.with.lhs
     eq.with.lhs <- TRUE

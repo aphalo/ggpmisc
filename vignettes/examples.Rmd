@@ -201,16 +201,8 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = ..AIC.label..), formula = formula, 
-               parse = TRUE)
-```
-
-```{r}
-formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y)) +
-  geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = ..BIC.label..), formula = formula, 
+  stat_poly_eq(aes(label = ..AIC.label..), 
+               formula = formula, 
                parse = TRUE)
 ```
 
@@ -232,6 +224,16 @@ ggplot(my.data, aes(x, y)) +
   geom_smooth(method = "lm", formula = formula) +
   stat_poly_eq(aes(label =  paste(..eq.label.., ..adj.rr.label.., sep = "~~~~")),
                formula = formula, parse = TRUE)
+```
+
+```{r}
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_eq(aes(label = paste("atop(", ..AIC.label.., ",", ..BIC.label.., ")", sep = "")), 
+               formula = formula, 
+               parse = TRUE)
 ```
 
 Two examples of removing and changing the _lhs_ and/or _rhs_ of the equation.
@@ -265,6 +267,18 @@ ggplot(my.data, aes(x, y)) +
   stat_poly_eq(aes(label = ..eq.label..),
                eq.with.lhs = "italic(h)~`=`~",
                eq.x.rhs = "~italic(z)",
+               formula = formula, parse = TRUE)
+```
+
+As any valid R expression can be used, greek letters are also supported, as well as the inclussion in the label of variable transformations used in the model formula.
+
+```{r}
+formula <- y ~ poly(x, 2, raw = TRUE)
+ggplot(my.data, aes(x, log10(y + 1e6))) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_eq(aes(label = ..eq.label..),
+               eq.with.lhs = "plain(log)[10](italic(y)+10^6)~`=`~",
                formula = formula, parse = TRUE)
 ```
 
