@@ -160,6 +160,98 @@ stat_peaks <- function(mapping = NULL, data = NULL, geom = "point",
   )
 }
 
+# Define here to avoid a note in check as the import from 'dplyr' is not seen
+# when the function is defined in-line in the ggproto object.
+#' @rdname ggpmisc-ggproto
+#'
+#' @format NULL
+#' @usage NULL
+#'
+peaks_compute_group_fun <- function(data,
+                                    scales,
+                                    span,
+                                    ignore_threshold,
+                                    strict,
+                                    label.fmt,
+                                    x.label.fmt,
+                                    y.label.fmt) {
+  if (inherits(scales$x, c("ScaleContinuousDatetime",
+                           "ScaleContinuousDate"))) {
+    as_label <- function(fmt, x) {
+      x <- as.POSIXct(x,
+                      origin = lubridate::origin)
+      strftime(x, fmt)
+    }
+    if (is.null(x.label.fmt)) {
+      x.label.fmt <- "%Y-%m-%d"
+    }
+  } else {
+    as_label <- function(fmt, x) {
+      sprintf(fmt, x)
+    }
+    if (is.null(x.label.fmt)) {
+      x.label.fmt <- label.fmt
+    }
+  }
+  if (is.null(span)) {
+    peaks.df <- data[which.max(data$y), , drop = FALSE]
+  } else {
+    peaks.df <- data[find_peaks(data$y,
+                                span = span,
+                                ignore_threshold = ignore_threshold,
+                                strict = strict), , drop = FALSE]
+  }
+  dplyr::mutate_(peaks.df,
+                x.label = ~as_label(x.label.fmt, x),
+                y.label = ~sprintf(y.label.fmt, y))
+}
+
+# Define here to avoid a note in check as the import from 'dplyr' is not seen
+# when the function is defined in-line in the ggproto object.
+#' @rdname ggpmisc-ggproto
+#'
+#' @format NULL
+#' @usage NULL
+#'
+valleys_compute_group_fun <- function(data,
+                                      scales,
+                                      span,
+                                      ignore_threshold,
+                                      strict,
+                                      label.fmt,
+                                      x.label.fmt,
+                                      y.label.fmt) {
+  if (inherits(scales$x, c("ScaleContinuousDatetime",
+                           "ScaleContinuousDate"))) {
+    as_label <- function(fmt, x) {
+      x <- as.POSIXct(x,
+                      origin = lubridate::origin)
+      strftime(x, fmt)
+    }
+    if (is.null(x.label.fmt)) {
+      x.label.fmt <- "%Y-%m-%d"
+    }
+  } else {
+    as_label <- function(fmt, x) {
+      sprintf(fmt, x)
+    }
+    if (is.null(x.label.fmt)) {
+      x.label.fmt <- label.fmt
+    }
+  }
+  if (is.null(span)) {
+    valleys.df <- data[which.min(data$y), , drop = FALSE]
+  } else {
+    valleys.df <- data[find_peaks(-data$y,
+                                  span = span,
+                                  ignore_threshold = ignore_threshold,
+                                  strict = strict), , drop = FALSE]
+  }
+  dplyr::mutate_(valleys.df,
+                x.label = ~as_label(x.label.fmt, x),
+                y.label = ~sprintf(y.label.fmt, y))
+}
+
 #' \code{Stat*} Objects
 #'
 #' All \code{stat_*} functions (like \code{stat_bin}) return a layer that
@@ -180,44 +272,7 @@ stat_peaks <- function(mapping = NULL, data = NULL, geom = "point",
 #' @keywords internal
 StatPeaks <-
   ggplot2::ggproto("StatPeaks", ggplot2::Stat,
-                   compute_group = function(data,
-                                            scales,
-                                            span,
-                                            ignore_threshold,
-                                            strict,
-                                            label.fmt,
-                                            x.label.fmt,
-                                            y.label.fmt) {
-                     if (inherits(scales$x, c("ScaleContinuousDatetime",
-                                              "ScaleContinuousDate"))) {
-                       as_label <- function(fmt, x) {
-                         x <- as.POSIXct(x,
-                                    origin = lubridate::origin)
-                         strftime(x, fmt)
-                       }
-                       if (is.null(x.label.fmt)) {
-                         x.label.fmt <- "%Y-%m-%d"
-                       }
-                     } else {
-                       as_label <- function(fmt, x) {
-                         sprintf(fmt, x)
-                       }
-                       if (is.null(x.label.fmt)) {
-                         x.label.fmt <- label.fmt
-                       }
-                     }
-                     if (is.null(span)) {
-                       peaks.df <- data[which.max(data$y), , drop = FALSE]
-                     } else {
-                       peaks.df <- data[find_peaks(data$y,
-                                        span = span,
-                                        ignore_threshold = ignore_threshold,
-                                        strict = strict), , drop = FALSE]
-                     }
-                     dplyr::mutate(peaks.df,
-                                   x.label = as_label(x.label.fmt, x),
-                                   y.label = sprintf(y.label.fmt, y))
-                   },
+                   compute_group = peaks_compute_group_fun,
                    default_aes = ggplot2::aes(label = ..x.label..,
                                               xintercept = ..x..,
                                               yintercept = ..y..),
@@ -256,44 +311,7 @@ stat_valleys <- function(mapping = NULL, data = NULL, geom = "point",
 #'
 StatValleys <-
   ggplot2::ggproto("StatValleys", ggplot2::Stat,
-                   compute_group = function(data,
-                                            scales,
-                                            span,
-                                            ignore_threshold,
-                                            strict,
-                                            label.fmt,
-                                            x.label.fmt,
-                                            y.label.fmt) {
-                     if (inherits(scales$x, c("ScaleContinuousDatetime",
-                                              "ScaleContinuousDate"))) {
-                       as_label <- function(fmt, x) {
-                         x <- as.POSIXct(x,
-                                         origin = lubridate::origin)
-                         strftime(x, fmt)
-                       }
-                       if (is.null(x.label.fmt)) {
-                         x.label.fmt <- "%Y-%m-%d"
-                       }
-                     } else {
-                       as_label <- function(fmt, x) {
-                         sprintf(fmt, x)
-                       }
-                       if (is.null(x.label.fmt)) {
-                         x.label.fmt <- label.fmt
-                       }
-                     }
-                     if (is.null(span)) {
-                       valleys.df <- data[which.min(data$y), , drop = FALSE]
-                     } else {
-                       valleys.df <- data[find_peaks(-data$y,
-                                          span = span,
-                                          ignore_threshold = ignore_threshold,
-                                          strict = strict), , drop = FALSE]
-                     }
-                     dplyr::mutate(valleys.df,
-                                   x.label = as_label(x.label.fmt, x),
-                                   y.label = sprintf(y.label.fmt, y))
-                   },
+                   compute_group = valleys_compute_group_fun,
                    default_aes = ggplot2::aes(label = ..x.label..,
                                               xintercept = ..x..,
                                               yintercept = ..y..),

@@ -24,8 +24,17 @@
 #' @param na.rm	a logical indicating whether NA values should be stripped
 #'   before the computation proceeds.
 #' @param formula a formula object
-#' @param eq.with.lhs logical indicating whether lhs of equation is to be
-#'   included in label.
+#' @param eq.with.lhs If \code{character} the string is pasted to the front
+#'   of the equation label before parsing or a \code{logical} (see note).
+#' @param eq.x.rhs \code{character} this string will be used as replacement
+#'   for \code{"x"} in the model equation when generating the label before
+#'   parsing it.
+#'
+#' @note For backward compatibility a logical is accepted as argument for
+#'   \code{eq.with.lhs}, giving the same output than the current default
+#'   character value. By default "x" is retained as independent variable as
+#'   this is the name of the aesthetic. However, it can be substituted by
+#'   providing a suitable replacement character string through \code{eq.x.rhs}.
 #'
 #' @details This stat can be used to automatically annotate a plot with R^2,
 #' adjusted R^2 or the fitted model equation. It supports only linear models
@@ -50,6 +59,8 @@
 #'   \item{rr.label}{\eqn{R^2} of the fitted model as a character string to be parsed}
 #'   \item{adj.rr.label}{Adjusted \eqn{R^2} of the fitted model as a character string
 #'   to be parsed}
+#'   \item{AIC.label}{AIC for the fitted model.}
+#'   \item{BIC.label}{BIC for the fitted model.}
 #'   \item{hjust}{Set to zero to override the default of the "text" geom.}}
 #'
 #' @examples
@@ -70,30 +81,35 @@
 #' @export
 #'
 stat_poly_eq <- function(mapping = NULL, data = NULL, geom = "text",
-                         formula = NULL, eq.with.lhs = TRUE,
+                         formula = NULL,
+                         eq.with.lhs = "italic(y)~`=`~",
+                         eq.x.rhs = "~italic(x)",
                          position = "identity",
                          na.rm = FALSE, show.legend = FALSE,
                          inherit.aes = TRUE, ...) {
   ggplot2::layer(
     stat = StatPolyEq, data = data, mapping = mapping, geom = geom,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
-    params = list(formula = formula, eq.with.lhs = eq.with.lhs,
+    params = list(formula = formula,
+                  eq.with.lhs = eq.with.lhs,
+                  eq.x.rhs = eq.x.rhs,
                   na.rm = na.rm,
                   ...)
   )
 }
 
-# Put here to avoid a note in check as the import from 'polynom' is not seen
+# Define here to avoid a note in check as the import from 'polynom' is not seen
 # when the function is defined in-line in the ggproto object.
 #' @rdname ggpmisc-ggproto
 #'
 #' @format NULL
 #' @usage NULL
 #'
-compute_group_fun <- function(data,
-                              scales,
-                              formula,
-                              eq.with.lhs) {
+poly_eq_compute_group_fun <- function(data,
+                                     scales,
+                                     formula,
+                                     eq.with.lhs,
+                                     eq.x.rhs) {
   mf <- stats::lm(formula, data)
   coefs <- stats::coef(mf)
   formula.rhs.chr <- as.character(formula)[3]
@@ -101,19 +117,31 @@ compute_group_fun <- function(data,
     coefs <- c(0, coefs)
   }
   rr <- summary(mf)$r.squared
+  AIC <- AIC(mf)
+  BIC <- BIC(mf)
   adj.rr <- summary(mf)$adj.r.squared
   eq.char <- as.character(signif(polynom::as.polynomial(coefs), 3))
+  if (is.character(eq.with.lhs)) {
+    lhs <- eq.with.lhs
+    eq.with.lhs <- TRUE
+  } else if (eq.with.lhs) {
+    lhs <- "italic(y)~`=`~"
+  }
   if (eq.with.lhs) {
-    eq.char <- paste("italic(y)", eq.char, sep = "~`=`~")
+    eq.char <- paste(lhs, eq.char, sep = "")
   }
   rr.char <- format(rr, digits = 2)
   adj.rr.char <- format(adj.rr, digits = 2)
+  AIC.char <- sprintf("%.4g", AIC)
+  BIC.char <- sprintf("%.4g", BIC)
   data.frame(x = min(data$x),
              y = max(data$y) - 0.1 * diff(range(data$y)),
-             eq.label = gsub("x", "~italic(x)", eq.char, fixed = TRUE),
+             eq.label = gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
              rr.label = paste("italic(R)^2", rr.char, sep = "~`=`~"),
              adj.rr.label = paste("italic(R)[adj]^2",
                                   adj.rr.char, sep = "~`=`~"),
+             AIC.label = paste("AIC", AIC.char, sep = "~`=`~"),
+             BIC.label = paste("BIC", BIC.char, sep = "~`=`~"),
              hjust = 0)
 }
 
@@ -123,7 +151,7 @@ compute_group_fun <- function(data,
 #' @export
 StatPolyEq <-
   ggplot2::ggproto("StatPolyEq", ggplot2::Stat,
-                   compute_group = compute_group_fun,
+                   compute_group = poly_eq_compute_group_fun,
                    default_aes =
                      ggplot2::aes(label = ..rr.label.., hjust = ..hjust..),
                    required_aes = c("x", "y")

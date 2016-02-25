@@ -1,7 +1,13 @@
+ggpmisc 0.2.7
+=============
+
+Add support for AIC and BIC labels to stat_poly_eq().
+
 ggpmisc 0.2.6
 =============
 
-Cure a Note in check --as-cran.
+Add support for user-supplied lhs and for user-supplied rhs-variable name in
+the equation label in stat_poly_eq().
 
 ggpmisc 0.2.5
 =============

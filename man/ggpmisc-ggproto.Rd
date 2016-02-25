@@ -8,7 +8,9 @@
 \alias{StatPolyEq}
 \alias{StatValleys}
 \alias{Stats}
-\alias{compute_group_fun}
+\alias{peaks_compute_group_fun}
+\alias{poly_eq_compute_group_fun}
+\alias{valleys_compute_group_fun}
 \title{\code{Stat*} Objects}
 \description{
 All \code{stat_*} functions (like \code{stat_bin}) return a layer that

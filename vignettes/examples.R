@@ -89,7 +89,7 @@ ggplot(lynx.df, aes(time, V.lynx)) + geom_line() +
   stat_peaks(colour = "red") +
   stat_peaks(geom = "text", colour = "red", angle = 66,
              hjust = -0.1, x.label.fmt = "%Y") +
-  ylim(NA, 7300)
+  ylim(NA, 7800)
 
 ## ------------------------------------------------------------------------
 ggplot(lynx.df, aes(time, V.lynx)) + geom_line() + 
@@ -135,6 +135,35 @@ ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
   stat_poly_eq(aes(label =  paste(..eq.label.., ..adj.rr.label.., sep = "~~~~")),
+               formula = formula, parse = TRUE)
+
+## ------------------------------------------------------------------------
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_eq(aes(label = ..eq.label..),
+               eq.with.lhs = FALSE,
+               formula = formula, parse = TRUE)
+
+## ------------------------------------------------------------------------
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_eq(aes(label = ..eq.label..),
+               eq.with.lhs = "italic(hat(y))~`=`~",
+               formula = formula, parse = TRUE)
+
+## ------------------------------------------------------------------------
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  labs(x = expression(italic(z)), y = expression(italic(h)) ) + 
+  stat_poly_eq(aes(label = ..eq.label..),
+               eq.with.lhs = "italic(h)~`=`~",
+               eq.x.rhs = "~italic(z)",
                formula = formula, parse = TRUE)
 
 ## ------------------------------------------------------------------------
