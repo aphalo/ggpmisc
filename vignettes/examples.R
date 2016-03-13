@@ -126,6 +126,15 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
+  stat_poly_eq(aes(label = ..AIC.label..), 
+               formula = formula, 
+               parse = TRUE)
+
+## ------------------------------------------------------------------------
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
   stat_poly_eq(aes(label = ..eq.label..), formula = formula, 
                parse = TRUE)
 
@@ -136,6 +145,15 @@ ggplot(my.data, aes(x, y)) +
   geom_smooth(method = "lm", formula = formula) +
   stat_poly_eq(aes(label =  paste(..eq.label.., ..adj.rr.label.., sep = "~~~~")),
                formula = formula, parse = TRUE)
+
+## ------------------------------------------------------------------------
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_eq(aes(label = paste("atop(", ..AIC.label.., ",", ..BIC.label.., ")", sep = "")), 
+               formula = formula, 
+               parse = TRUE)
 
 ## ------------------------------------------------------------------------
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -164,6 +182,15 @@ ggplot(my.data, aes(x, y)) +
   stat_poly_eq(aes(label = ..eq.label..),
                eq.with.lhs = "italic(h)~`=`~",
                eq.x.rhs = "~italic(z)",
+               formula = formula, parse = TRUE)
+
+## ------------------------------------------------------------------------
+formula <- y ~ poly(x, 2, raw = TRUE)
+ggplot(my.data, aes(x, log10(y + 1e6))) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_eq(aes(label = ..eq.label..),
+               eq.with.lhs = "plain(log)[10](italic(y)+10^6)~`=`~",
                formula = formula, parse = TRUE)
 
 ## ------------------------------------------------------------------------

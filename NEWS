@@ -2,6 +2,8 @@ ggpmisc 0.2.7
 =============
 
 Add support for AIC and BIC labels to stat_poly_eq().
+Add pretty-printing of parameter values expressed in engineering notation in
+stat_poly_eq().
 
 ggpmisc 0.2.6
 =============
