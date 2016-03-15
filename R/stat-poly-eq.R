@@ -29,6 +29,8 @@
 #' @param eq.x.rhs \code{character} this string will be used as replacement
 #'   for \code{"x"} in the model equation when generating the label before
 #'   parsing it.
+#' @param label.x,label.y \code{numeric} Coordinates to be used in output. If
+#'   too short they will be recycled.
 #'
 #' @note For backward compatibility a logical is accepted as argument for
 #'   \code{eq.with.lhs}, giving the same output than the current default
@@ -84,6 +86,7 @@ stat_poly_eq <- function(mapping = NULL, data = NULL, geom = "text",
                          formula = NULL,
                          eq.with.lhs = "italic(y)~`=`~",
                          eq.x.rhs = "~italic(x)",
+                         label.x = NULL, label.y = NULL,
                          position = "identity",
                          na.rm = FALSE, show.legend = FALSE,
                          inherit.aes = TRUE, ...) {
@@ -93,6 +96,8 @@ stat_poly_eq <- function(mapping = NULL, data = NULL, geom = "text",
     params = list(formula = formula,
                   eq.with.lhs = eq.with.lhs,
                   eq.x.rhs = eq.x.rhs,
+                  label.x = label.x,
+                  label.y = label.y,
                   na.rm = na.rm,
                   ...)
   )
@@ -109,7 +114,9 @@ poly_eq_compute_group_fun <- function(data,
                                      scales,
                                      formula,
                                      eq.with.lhs,
-                                     eq.x.rhs) {
+                                     eq.x.rhs,
+                                     label.x,
+                                     label.y) {
   mf <- stats::lm(formula, data)
   coefs <- stats::coef(mf)
   formula.rhs.chr <- as.character(formula)[3]
@@ -135,8 +142,12 @@ poly_eq_compute_group_fun <- function(data,
   adj.rr.char <- format(adj.rr, digits = 2)
   AIC.char <- sprintf("%.4g", AIC)
   BIC.char <- sprintf("%.4g", BIC)
-  data.frame(x = min(data$x),
-             y = max(data$y) - 0.1 * diff(range(data$y)),
+  data.frame(x = ifelse(is.null(label.x),
+                        min(data$x),
+                        label.x),
+             y = ifelse(is.null(label.y),
+                        max(data$y) - 0.1 * diff(range(data$y)),
+                        label.y),
              eq.label = gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
              rr.label = paste("italic(R)^2", rr.char, sep = "~`=`~"),
              adj.rr.label = paste("italic(R)[adj]^2",

@@ -5,9 +5,9 @@
 \title{Add a curve from a fitted linear model and a label to a plot.}
 \usage{
 stat_poly_eq(mapping = NULL, data = NULL, geom = "text", formula = NULL,
-  eq.with.lhs = "italic(y)~`=`~", eq.x.rhs = "~italic(x)",
-  position = "identity", na.rm = FALSE, show.legend = FALSE,
-  inherit.aes = TRUE, ...)
+  eq.with.lhs = "italic(y)~`=`~", eq.x.rhs = "~italic(x)", label.x = NULL,
+  label.y = NULL, position = "identity", na.rm = FALSE,
+  show.legend = FALSE, inherit.aes = TRUE, ...)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
@@ -27,6 +27,9 @@ of the equation label before parsing or a \code{logical} (see note).}
 \item{eq.x.rhs}{\code{character} this string will be used as replacement
 for \code{"x"} in the model equation when generating the label before
 parsing it.}
+
+\item{label.x, label.y}{\code{numeric} Coordinates to be used in output. If
+too short they will be recycled.}
 
 \item{position}{The position adjustment to use for overlapping points on this
 layer}

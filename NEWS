@@ -1,9 +1,14 @@
+TODO:
+Add support for fitted model labels implemented with package 'broom'.
+Add stat_smooth() equivalent implemented using package 'broom'.
+
 ggpmisc 0.2.7
 =============
 
 Add support for AIC and BIC labels to stat_poly_eq().
 Add pretty-printing of parameter values expressed in engineering notation in
 stat_poly_eq().
+Add support for user-supplied label coordinates in stat_poly_eq().
 
 ggpmisc 0.2.6
 =============
