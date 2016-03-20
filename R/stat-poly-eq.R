@@ -133,7 +133,7 @@ poly_eq_compute_group_fun <- function(data,
   } else {
     if (length(label.y < group.idx)) {
       # we simulate recycling
-      label.x <- rep(label.x, length.out = group.idx)
+      label.y <- rep(label.y, length.out = group.idx)
     }
     label.y <- label.y[group.idx]
   }
