@@ -5,8 +5,9 @@
 \title{Diagnosis statistics on data grouping.}
 \usage{
 stat_debug_group(mapping = NULL, data = NULL, geom = "null",
-  summary.fun = NULL, summary.fun.args = list(), position = "identity",
-  na.rm = FALSE, show.legend = FALSE, inherit.aes = TRUE, ...)
+  summary.fun = dplyr::as_data_frame, summary.fun.args = list(),
+  position = "identity", na.rm = FALSE, show.legend = FALSE,
+  inherit.aes = TRUE, ...)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with

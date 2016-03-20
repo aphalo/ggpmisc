@@ -236,7 +236,6 @@ ggplot(my.data, aes(x, y2, colour = group)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
   stat_poly_eq(aes(label = ..eq.label..),
-               hjust = c(0, -0.3),
                formula = formula, parse = TRUE,
                label.x = 0, label.y = c(1.8e6, 2e6)) +
   theme_bw()
@@ -248,7 +247,8 @@ ggplot(my.data, aes(x, y2, colour = group)) +
   geom_smooth(method = "lm", formula = formula) +
   stat_poly_eq(aes(label = ..eq.label..),
                formula = formula, parse = TRUE,
-               label.x = 0, label.y = c(2e6, 1.8e6)) +
+               label.x = 0, label.y = 2e6,
+               vjust = c(1.2, 0)) +
   theme_bw()
 
 ## ------------------------------------------------------------------------
@@ -278,6 +278,9 @@ ggplot(my.data, aes(x, y2, fill = block)) +
   theme_bw()
 
 ## ------------------------------------------------------------------------
+ggplot(my.data, aes(x, y)) + stat_debug_group()
+
+## ------------------------------------------------------------------------
 ggplot(my.data, aes(x, y)) + geom_point() + stat_debug_group()
 
 ## ------------------------------------------------------------------------
@@ -285,7 +288,7 @@ ggplot(my.data, aes(x, y)) + geom_point() + stat_debug_panel()
 
 ## ------------------------------------------------------------------------
 ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
-  stat_debug_group(vjust = c(-0.5,1.5))
+  stat_debug_group()
 
 ## ------------------------------------------------------------------------
 ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
@@ -293,7 +296,11 @@ ggplot(my.data, aes(x, y, colour = group)) + geom_point() +
 
 ## ------------------------------------------------------------------------
 ggplot(my.data, aes(x, y, shape = group)) + geom_point() + 
-  stat_debug_group(vjust = c(-0.5,1.5))
+  stat_debug_group()
+
+## ------------------------------------------------------------------------
+ggplot(my.data, aes(x, y, shape = group)) + geom_point() + 
+  stat_debug_group(geom = "label", vjust = c(-0.5,1.5))
 
 ## ------------------------------------------------------------------------
 ggplot(my.data, aes(x, y)) + geom_point() + 
@@ -302,6 +309,10 @@ ggplot(my.data, aes(x, y)) + geom_point() +
 ## ------------------------------------------------------------------------
 ggplot(my.data, aes(x, y)) + geom_point() + 
   stat_debug_group(summary.fun = head)
+
+## ------------------------------------------------------------------------
+ggplot(my.data, aes(x, y)) + geom_point() + 
+  stat_debug_group(summary.fun = nrow)
 
 ## ------------------------------------------------------------------------
 ggplot(my.data, aes(x, y)) + geom_point() + 
@@ -317,18 +328,16 @@ ggplot(my.data, aes(x, y)) + geom_point() +
 
 ## ------------------------------------------------------------------------
 ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
-  stat_debug_group(summary.fun = head, summary.fun.args = list(n = 3), 
-                   vjust = c(-0.75,0.75))
+  stat_debug_group(summary.fun = head, summary.fun.args = list(n = 3))
 
 ## ------------------------------------------------------------------------
 ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
-  stat_debug_group(summary.fun = summary, 
-                   vjust = c(-0.75,0.75,-0.75,0.75)) +
+  stat_debug_group(summary.fun = nrow) +
   facet_wrap(~block)
 
 ## ------------------------------------------------------------------------
 ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
-  stat_debug_panel(summary.fun = summary) +
+  stat_debug_panel(summary.fun = nrow) +
   facet_wrap(~block)
 
 ## ------------------------------------------------------------------------
@@ -341,4 +350,7 @@ ggplot(my.data, aes(x, y, colour = group)) + geom_point() +
              geom = "debug", 
              summary.fun = function(x) {x}, 
              summary.fun.args = list())
+
+## ------------------------------------------------------------------------
+ggplot(my.data, aes(x, y, colour = group)) + geom_null()
 
