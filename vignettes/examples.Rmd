@@ -388,11 +388,20 @@ ggplot(my.data, aes(x, y2, fill = block)) +
   theme_bw()
 ```
 
-## `stat_debug()`
+## Debugging ggplots
 
-These stats are very simple and simply echo to labels on the plot itself a summary of the data received by the compute functions. 
-
-In the absence of facets or groups we get just one label.
+These stats are very simple and print a summary of their `data` input to the
+console. In addition they also return a data frame containing labels suitable
+for plotting as with geom "text" or geom "label". However, starting from 
+version 0.2.7 of the package the default geom is "null". The values are liste
+to the console at the time when the `ggplot` object is printed.
+ 
+```{r}
+ggplot(my.data, aes(x, y)) + stat_debug_group()
+```
+ 
+In the absence of facets or groups we get just get the summary from one data 
+frame.
 
 ```{r}
 ggplot(my.data, aes(x, y)) + geom_point() + stat_debug_group()
@@ -402,7 +411,8 @@ ggplot(my.data, aes(x, y)) + geom_point() + stat_debug_group()
 ggplot(my.data, aes(x, y)) + geom_point() + stat_debug_panel()
 ```
 
-In the case of grouping if the groups do not have very different centres in the x y space tweaking of positions can be needed to avoid overlaps.
+In the case of grouping then one data frame is summarized for each group
+in the ggplot object.
 
 ```{r}
 ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
@@ -416,14 +426,14 @@ ggplot(my.data, aes(x, y, colour = group)) + geom_point() +
   stat_debug_panel()
 ```
 
-The text would be similar, except for the column named after the aesthetic, for other aesthetics used for grouping, but the labels will visually differ only if the geom used for the debug stat is affected by them.
+The data are similar, except for the column named after the aesthetic, for the aesthetics used for grouping.
 
 ```{r}
 ggplot(my.data, aes(x, y, shape = group)) + geom_point() + 
   stat_debug_group(vjust = c(-0.5,1.5))
 ```
 
-These statistics can also summarize to the console the data argument received. As the summary function can be a user defined one, this allows lots of flexibility.
+The summary function can be a user defined one, which allows lots of flexibility.
 
 ```{r}
 ggplot(my.data, aes(x, y)) + geom_point() + 
@@ -434,6 +444,13 @@ ggplot(my.data, aes(x, y)) + geom_point() +
 ggplot(my.data, aes(x, y)) + geom_point() + 
   stat_debug_group(summary.fun = head)
 ```
+
+```{r}
+ggplot(my.data, aes(x, y)) + geom_point() + 
+  stat_debug_group(summary.fun = nrow)
+```
+
+The default.
 
 ```{r}
 ggplot(my.data, aes(x, y)) + geom_point() + 
@@ -477,15 +494,20 @@ ggplot(my.data, aes(x, y, colour = group)) + geom_point() +
   facet_wrap(~block)
 ```
 
-Finally we show how `geom_debug()` can be used.
+Finally we show how `geom_debug()` can be used. First to print to the console the data as passed to geoms.
 
 ```{r}
 ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
   geom_debug(summary.fun = head)
 ```
 
+And also to print to the console the data returned by a stat. 
+
 ```{r}
 ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
-  stat_peaks(geom = "debug", summary.fun = head)
+  stat_peaks(span = NULL,
+             geom = "debug", 
+             summary.fun = function(x) {x}, 
+             summary.fun.args = list())
 ```
 

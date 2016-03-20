@@ -9,7 +9,10 @@ Add support for AIC and BIC labels to stat_poly_eq().
 Add pretty-printing of parameter values expressed in engineering notation in
 stat_poly_eq().
 Add support for user-supplied label coordinates in stat_poly_eq().
-Improve stat_debug_panel() and stat_debug_group() so that they can optionally print to the console a summary of the data recieved as input.
+Improve stat_debug_panel() and stat_debug_group() so that they can optionally
+print to the console a summary of the data received as input.
+Add geom_debug(), a geom that summarizes its data input to the console, and
+produces no visible graphical output.
 
 ggpmisc 0.2.6
 =============

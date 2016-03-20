@@ -331,3 +331,14 @@ ggplot(my.data, aes(x, y, colour = group)) + geom_point() +
   stat_debug_panel(summary.fun = summary) +
   facet_wrap(~block)
 
+## ------------------------------------------------------------------------
+ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
+  geom_debug(summary.fun = head)
+
+## ------------------------------------------------------------------------
+ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
+  stat_peaks(span = NULL,
+             geom = "debug", 
+             summary.fun = function(x) {x}, 
+             summary.fun.args = list())
+

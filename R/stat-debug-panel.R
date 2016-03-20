@@ -54,8 +54,8 @@
 #' @family diagnosis functions
 #'
 stat_debug_panel <-
-  function(mapping = NULL, data = NULL, geom = "label",
-           summary.fun = NULL, summary.fun.args = list(),
+  function(mapping = NULL, data = NULL, geom = "null",
+           summary.fun = dplyr::as_data_frame, summary.fun.args = list(),
            position = "identity", na.rm = FALSE, show.legend = FALSE,
            inherit.aes = TRUE, ...) {
     ggplot2::layer(
@@ -80,6 +80,7 @@ StatDebugPanel <-
       function(data, scales, summary.fun, summary.fun.args) {
         if (!is.null(summary.fun)) {
           data.summary <-  do.call(summary.fun, c(quote(data), summary.fun.args))
+          print("Input 'data' to 'compute_panel()':")
           print(data.summary)
         }
         my.diagnostic <-

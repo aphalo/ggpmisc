@@ -4,7 +4,7 @@
 \alias{stat_debug_panel}
 \title{Diagnosis statistics on data in panels.}
 \usage{
-stat_debug_panel(mapping = NULL, data = NULL, geom = "label",
+stat_debug_panel(mapping = NULL, data = NULL, geom = "null",
   summary.fun = NULL, summary.fun.args = list(), position = "identity",
   na.rm = FALSE, show.legend = FALSE, inherit.aes = TRUE, ...)
 }
