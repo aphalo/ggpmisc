@@ -196,6 +196,8 @@ ggplot(my.data, aes(x, y)) +
                parse = TRUE)
 ```
 
+BIC and AIC labels are also returned.
+
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
@@ -270,7 +272,7 @@ ggplot(my.data, aes(x, y)) +
                formula = formula, parse = TRUE)
 ```
 
-As any valid R expression can be used, greek letters are also supported, as well as the inclussion in the label of variable transformations used in the model formula.
+As any valid R expression can be used, Greek letters are also supported, as well as the inclusion in the label of variable transformations used in the model formula.
 
 ```{r}
 formula <- y ~ poly(x, 2, raw = TRUE)
@@ -307,15 +309,16 @@ ggplot(my.data, aes(x, y)) +
 
 We give below several examples to demonstrate how other components of the `ggplot` object affect the behaviour of this statistic.
 
-Facets work as expected either with fixed or free scales. Although bellow we had to adjust the size of the font used for the equation.
+Facets work as expected either with fixed or free scales. Although bellow we had to adjust the size of the font used for the equation. In addition to we manually position the equation label by supplying coordinates.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = ..eq.label..), size = rel(2.8),
-               formula = formula, parse = TRUE) +
+  stat_poly_eq(aes(label = ..eq.label..), size = rel(3),
+               formula = formula, parse = TRUE,
+               label.x = 0, label.y = 2e6) +
   facet_wrap(~group)
 ```
 
@@ -324,7 +327,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = ..eq.label..), size = rel(2.8),
+  stat_poly_eq(aes(label = ..eq.label..), size = rel(3),
                formula = formula, parse = TRUE) +
   facet_wrap(~group, scales = "free_y")
 ```
@@ -337,7 +340,8 @@ ggplot(my.data, aes(x, y2, colour = group)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
   stat_poly_eq(aes(label = ..eq.label..), vjust = c(-8, 0),
-               formula = formula, parse = TRUE) +
+               formula = formula, parse = TRUE,
+               label.x = 0) +
   theme_bw()
 ```
 
