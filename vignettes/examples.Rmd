@@ -332,16 +332,28 @@ ggplot(my.data, aes(x, y2)) +
   facet_wrap(~group, scales = "free_y")
 ```
 
-Grouping, in this example using colour aesthetic also works as expected.
+Grouping, in this example using the colour aesthetic also works as expected. We can use justification and supply an absolute location for the equation.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2, colour = group)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = ..eq.label..), vjust = c(-8, 0),
+  stat_poly_eq(aes(label = ..eq.label..),
+               hjust = c(0, -0.3),
                formula = formula, parse = TRUE,
-               label.x = 0) +
+               label.x = 0, label.y = c(1.8e6, 2e6)) +
+  theme_bw()
+```
+
+```{r}
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y2, colour = group)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_eq(aes(label = ..eq.label..),
+               formula = formula, parse = TRUE,
+               label.x = 0, label.y = c(2e6, 1.8e6)) +
   theme_bw()
 ```
 

@@ -117,6 +117,26 @@ poly_eq_compute_group_fun <- function(data,
                                      eq.x.rhs,
                                      label.x,
                                      label.y) {
+ #  print(head(data))
+  group.idx <- abs(data$group[1])
+  if (length(label.x) == 0) { # TRUE also for NULL
+    label.x <- min(data$x)
+  } else {
+    if (length(label.x < group.idx)) {
+      # we simulate recycling
+      label.x <- rep(label.x, length.out = group.idx)
+    }
+    label.x <- label.x[group.idx]
+  }
+  if (length(label.y) == 0) { # TRUE also for NULL
+    label.y <- max(data$y) - 0.1 * diff(range(data$y))
+  } else {
+    if (length(label.y < group.idx)) {
+      # we simulate recycling
+      label.x <- rep(label.x, length.out = group.idx)
+    }
+    label.y <- label.y[group.idx]
+  }
   mf <- stats::lm(formula, data)
   coefs <- stats::coef(mf)
   formula.rhs.chr <- as.character(formula)[3]
@@ -142,12 +162,8 @@ poly_eq_compute_group_fun <- function(data,
   adj.rr.char <- format(adj.rr, digits = 2)
   AIC.char <- sprintf("%.4g", AIC)
   BIC.char <- sprintf("%.4g", BIC)
-  data.frame(x = ifelse(is.null(label.x),
-                        min(data$x),
-                        label.x),
-             y = ifelse(is.null(label.y),
-                        max(data$y) - 0.1 * diff(range(data$y)),
-                        label.y),
+  z <- data.frame(x = label.x,
+             y = label.y,
              eq.label = gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
              rr.label = paste("italic(R)^2", rr.char, sep = "~`=`~"),
              adj.rr.label = paste("italic(R)[adj]^2",
@@ -155,6 +171,8 @@ poly_eq_compute_group_fun <- function(data,
              AIC.label = paste("AIC", AIC.char, sep = "~`=`~"),
              BIC.label = paste("BIC", BIC.char, sep = "~`=`~"),
              hjust = 0)
+  print(z)
+  z
 }
 
 #' @rdname ggpmisc-ggproto
