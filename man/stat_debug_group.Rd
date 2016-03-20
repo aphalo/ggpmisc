@@ -5,8 +5,8 @@
 \title{Diagnosis statistics on data grouping.}
 \usage{
 stat_debug_group(mapping = NULL, data = NULL, geom = "label",
-  position = "identity", na.rm = FALSE, show.legend = FALSE,
-  inherit.aes = TRUE, ...)
+  summary.fun = NULL, summary.fun.args = list(), position = "identity",
+  na.rm = FALSE, show.legend = FALSE, inherit.aes = TRUE, ...)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
@@ -17,6 +17,11 @@ to be set at the layer level if you are overriding the plot defaults.}
 the plot defaults.}
 
 \item{geom}{The geometric object to use display the data}
+
+\item{summary.fun}{A function used to print the \code{data} object received as
+input.}
+
+\item{summary.fun.args}{A list.}
 
 \item{position}{The position adjustment to use for overlapping points on this
 layer}
@@ -44,17 +49,14 @@ can include aesthetics whose values you want to set, not map. See
   to the \code{compute_group} function in the \code{ggproto} object.
 }
 \section{Computed variables}{
-
-\describe{
-  \item{x}{x at centre of range}
-  \item{y}{y at centre of range}
-  \item{nrow}{\code{nrow()} of \code{data} object}
-  \item{ncol}{\code{ncol()} of \code{data} object}
+ \describe{ \item{x}{x at centre of range}
+  \item{y}{y at centre of range} \item{nrow}{\code{nrow()} of \code{data}
+  object} \item{ncol}{\code{ncol()} of \code{data} object}
   \item{colnames}{\code{colnames()} of \code{data} object}
-  \item{colclasses}{\code{class()} of \code{x} and \code{y} columns in \code{data} object}
-  \item{group}{all distinct values in group as passed in \code{data} object}
-  \item{PANEL}{all distinct values in PANEL as passed in \code{data} object}
-  }
+  \item{colclasses}{\code{class()} of \code{x} and \code{y} columns in
+  \code{data} object} \item{group}{all distinct values in group as passed in
+  \code{data} object} \item{PANEL}{all distinct values in PANEL as passed in
+  \code{data} object} }
 }
 \examples{
 library(ggplot2)

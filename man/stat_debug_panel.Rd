@@ -5,8 +5,8 @@
 \title{Diagnosis statistics on data in panels.}
 \usage{
 stat_debug_panel(mapping = NULL, data = NULL, geom = "label",
-  position = "identity", na.rm = FALSE, show.legend = FALSE,
-  inherit.aes = TRUE, ...)
+  summary.fun = NULL, summary.fun.args = list(), position = "identity",
+  na.rm = FALSE, show.legend = FALSE, inherit.aes = TRUE, ...)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
@@ -17,6 +17,11 @@ to be set at the layer level if you are overriding the plot defaults.}
 the plot defaults.}
 
 \item{geom}{The geometric object to use display the data}
+
+\item{summary.fun}{A function used to print the \code{data} object received as
+input.}
+
+\item{summary.fun.args}{A list.}
 
 \item{position}{The position adjustment to use for overlapping points on this
 layer}

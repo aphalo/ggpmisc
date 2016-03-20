@@ -103,8 +103,11 @@ set.seed(4321)
 # generate artificial data
 x <- 1:100
 y <- (x + x^2 + x^3) + rnorm(length(x), mean = 0, sd = mean(x^3) / 4)
-my.data <- data.frame(x, y, group = c("A", "B"), y2 = y * c(0.5,2))
-
+my.data <- data.frame(x, 
+                      y, 
+                      group = c("A", "B"), 
+                      y2 = y * c(0.5,2),
+                      block = c("a", "a", "b", "b"))
 
 ## ------------------------------------------------------------------------
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -213,8 +216,9 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = ..eq.label..), size = rel(2.8),
-               formula = formula, parse = TRUE) +
+  stat_poly_eq(aes(label = ..eq.label..), size = rel(3),
+               formula = formula, parse = TRUE,
+               label.x = 0, label.y = 2e6) +
   facet_wrap(~group)
 
 ## ------------------------------------------------------------------------
@@ -222,7 +226,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = ..eq.label..), size = rel(2.8),
+  stat_poly_eq(aes(label = ..eq.label..), size = rel(3),
                formula = formula, parse = TRUE) +
   facet_wrap(~group, scales = "free_y")
 
@@ -231,8 +235,46 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2, colour = group)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = ..eq.label..), vjust = c(-8, 0),
-               formula = formula, parse = TRUE) +
+  stat_poly_eq(aes(label = ..eq.label..),
+               hjust = c(0, -0.3),
+               formula = formula, parse = TRUE,
+               label.x = 0, label.y = c(1.8e6, 2e6)) +
+  theme_bw()
+
+## ------------------------------------------------------------------------
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y2, colour = group)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_eq(aes(label = ..eq.label..),
+               formula = formula, parse = TRUE,
+               label.x = 0, label.y = c(2e6, 1.8e6)) +
+  theme_bw()
+
+## ------------------------------------------------------------------------
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y2, colour = group, fill = block)) +
+  geom_point(shape = 21, size = rel(3)) +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_eq(aes(label = ..rr.label..), size = rel(3),
+               geom = "label", alpha = 0.2,
+               formula = formula, parse = TRUE,
+               label.x = 0, label.y = c(5e5, 5e5, 2e6, 2e6),
+               vjust = c(1.2,0,1.2,0)) +
+  facet_wrap(~group, scales = "free_y") +
+  theme_bw()
+
+## ------------------------------------------------------------------------
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y2, fill = block)) +
+  geom_point(shape = 21, size = rel(3)) +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_eq(aes(label = ..rr.label..), size = rel(3),
+               geom = "label", alpha = 0.33,
+               formula = formula, parse = TRUE,
+               label.x = 0,
+               vjust = c(1.2,0,1.2,0)) +
+  facet_wrap(~group, scales = "free_y") +
   theme_bw()
 
 ## ------------------------------------------------------------------------
@@ -252,4 +294,40 @@ ggplot(my.data, aes(x, y, colour = group)) + geom_point() +
 ## ------------------------------------------------------------------------
 ggplot(my.data, aes(x, y, shape = group)) + geom_point() + 
   stat_debug_group(vjust = c(-0.5,1.5))
+
+## ------------------------------------------------------------------------
+ggplot(my.data, aes(x, y)) + geom_point() + 
+  stat_debug_group(summary.fun = summary)
+
+## ------------------------------------------------------------------------
+ggplot(my.data, aes(x, y)) + geom_point() + 
+  stat_debug_group(summary.fun = head)
+
+## ------------------------------------------------------------------------
+ggplot(my.data, aes(x, y)) + geom_point() + 
+  stat_debug_group(summary.fun = dplyr::as_data_frame)
+
+## ------------------------------------------------------------------------
+ggplot(my.data, aes(x, y)) + geom_point() + 
+  stat_debug_group(summary.fun = head, summary.fun.args = list(n = 3))
+
+## ---- eval=FALSE---------------------------------------------------------
+#  ggplot(my.data, aes(x, y)) + geom_point() +
+#    stat_debug_group(summary.fun = function(x) {x})
+
+## ------------------------------------------------------------------------
+ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
+  stat_debug_group(summary.fun = head, summary.fun.args = list(n = 3), 
+                   vjust = c(-0.75,0.75))
+
+## ------------------------------------------------------------------------
+ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
+  stat_debug_group(summary.fun = summary, 
+                   vjust = c(-0.75,0.75,-0.75,0.75)) +
+  facet_wrap(~block)
+
+## ------------------------------------------------------------------------
+ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
+  stat_debug_panel(summary.fun = summary) +
+  facet_wrap(~block)
 

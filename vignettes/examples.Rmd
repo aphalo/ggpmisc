@@ -171,8 +171,11 @@ set.seed(4321)
 # generate artificial data
 x <- 1:100
 y <- (x + x^2 + x^3) + rnorm(length(x), mean = 0, sd = mean(x^3) / 4)
-my.data <- data.frame(x, y, group = c("A", "B"), y2 = y * c(0.5,2))
-
+my.data <- data.frame(x, 
+                      y, 
+                      group = c("A", "B"), 
+                      y2 = y * c(0.5,2),
+                      block = c("a", "a", "b", "b"))
 ```
 
 First one example using defaults.
@@ -357,6 +360,34 @@ ggplot(my.data, aes(x, y2, colour = group)) +
   theme_bw()
 ```
 
+```{r}
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y2, colour = group, fill = block)) +
+  geom_point(shape = 21, size = rel(3)) +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_eq(aes(label = ..rr.label..), size = rel(3),
+               geom = "label", alpha = 0.2,
+               formula = formula, parse = TRUE,
+               label.x = 0, label.y = c(5e5, 5e5, 2e6, 2e6),
+               vjust = c(1.2,0,1.2,0)) +
+  facet_wrap(~group, scales = "free_y") +
+  theme_bw()
+```
+
+```{r}
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y2, fill = block)) +
+  geom_point(shape = 21, size = rel(3)) +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_eq(aes(label = ..rr.label..), size = rel(3),
+               geom = "label", alpha = 0.33,
+               formula = formula, parse = TRUE,
+               label.x = 0,
+               vjust = c(1.2,0,1.2,0)) +
+  facet_wrap(~group, scales = "free_y") +
+  theme_bw()
+```
+
 ## `stat_debug()`
 
 These stats are very simple and simply echo to labels on the plot itself a summary of the data received by the compute functions. 
@@ -391,3 +422,70 @@ The text would be similar, except for the column named after the aesthetic, for 
 ggplot(my.data, aes(x, y, shape = group)) + geom_point() + 
   stat_debug_group(vjust = c(-0.5,1.5))
 ```
+
+These statistics can also summarize to the console the data argument received. As the summary function can be a user defined one, this allows lots of flexibility.
+
+```{r}
+ggplot(my.data, aes(x, y)) + geom_point() + 
+  stat_debug_group(summary.fun = summary)
+```
+
+```{r}
+ggplot(my.data, aes(x, y)) + geom_point() + 
+  stat_debug_group(summary.fun = head)
+```
+
+```{r}
+ggplot(my.data, aes(x, y)) + geom_point() + 
+  stat_debug_group(summary.fun = dplyr::as_data_frame)
+```
+
+```{r}
+ggplot(my.data, aes(x, y)) + geom_point() + 
+  stat_debug_group(summary.fun = head, summary.fun.args = list(n = 3))
+```
+
+This next chunck showing how to print the whole data frame is not run as its output is more than 100 lines long as the data set contains 100 observations.
+
+```{r, eval=FALSE}
+ggplot(my.data, aes(x, y)) + geom_point() + 
+  stat_debug_group(summary.fun = function(x) {x})
+```
+
+With grouping, for each _group_ the `compute_group()` function is called with a subset of the data.
+
+```{r}
+ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
+  stat_debug_group(summary.fun = head, summary.fun.args = list(n = 3), 
+                   vjust = c(-0.75,0.75))
+```
+
+In this example with grouping and facets, within each _panel_ the `compute_group()` function is called for each group, in total four times.
+
+```{r}
+ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
+  stat_debug_group(summary.fun = summary, 
+                   vjust = c(-0.75,0.75,-0.75,0.75)) +
+  facet_wrap(~block)
+```
+
+With facets, for each _panel_ the `compute_panel()` function is called with a subset of the data that is not split by groups. For our example, it is called twice.
+
+```{r}
+ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
+  stat_debug_panel(summary.fun = summary) +
+  facet_wrap(~block)
+```
+
+Finally we show how `geom_debug()` can be used.
+
+```{r}
+ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
+  geom_debug(summary.fun = head)
+```
+
+```{r}
+ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
+  stat_peaks(geom = "debug", summary.fun = head)
+```
+

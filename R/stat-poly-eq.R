@@ -117,7 +117,6 @@ poly_eq_compute_group_fun <- function(data,
                                      eq.x.rhs,
                                      label.x,
                                      label.y) {
- #  print(head(data))
   group.idx <- abs(data$group[1])
   if (length(label.x) == 0) { # TRUE also for NULL
     label.x <- min(data$x)
@@ -162,7 +161,7 @@ poly_eq_compute_group_fun <- function(data,
   adj.rr.char <- format(adj.rr, digits = 2)
   AIC.char <- sprintf("%.4g", AIC)
   BIC.char <- sprintf("%.4g", BIC)
-  z <- data.frame(x = label.x,
+  data.frame(x = label.x,
              y = label.y,
              eq.label = gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
              rr.label = paste("italic(R)^2", rr.char, sep = "~`=`~"),
@@ -171,8 +170,6 @@ poly_eq_compute_group_fun <- function(data,
              AIC.label = paste("AIC", AIC.char, sep = "~`=`~"),
              BIC.label = paste("BIC", BIC.char, sep = "~`=`~"),
              hjust = 0)
-  print(z)
-  z
 }
 
 #' @rdname ggpmisc-ggproto
