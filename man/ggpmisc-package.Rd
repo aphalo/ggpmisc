@@ -7,13 +7,13 @@
 \title{Miscellaneous Extensions to 'ggplot2'}
 \description{
 Extensions to 'ggplot2' respecting the grammar of graphics
-paradigm. Provides new stats to locate and tag peaks and valleys in 2D
-plots, a stat to add a label with the equation of a polynomial fitted with
-lm(), or R^2 or adjusted R^2 or AIC or BIC values for any model fitted with
-function lm(). Provides a function for flexibly converting time series to
-data frames suitable for plotting with ggplot(). In addition provides two
-stats and two geoms useful for diagnosing what data are passed to
-compute_group() and compute_panel() functions and to geoms.
+paradigm. Provides new statistics to locate and tag peaks and valleys in 2D
+plots, a statistics to add a label with the equation of a polynomial fitted
+with lm(), or R^2 or adjusted R^2 or information criteria for any model
+fitted with function lm(). Provides a function for flexibly converting time
+series to data frames suitable for plotting with ggplot(). In addition
+provides two statistics and two geometry useful for diagnosing what data are
+passed to compute_group() and compute_panel() functions and to geometries.
 }
 \details{
 The new facilities for cleanly defining new stats and geoms added to

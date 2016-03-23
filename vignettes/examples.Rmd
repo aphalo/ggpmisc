@@ -393,7 +393,7 @@ ggplot(my.data, aes(x, y2, fill = block)) +
 These stats are very simple and print a summary of their `data` input to the
 console. In addition they also return a data frame containing labels suitable
 for plotting as with geom "text" or geom "label". However, starting from 
-version 0.2.7 of the package the default geom is "null". The values are liste
+version 0.2.7 of the package the default geom is "null". The values are listed
 to the console at the time when the `ggplot` object is printed.
 
 As shown here, no other _geom_ or _stat_ is required, however in the remaining
@@ -474,7 +474,7 @@ ggplot(my.data, aes(x, y)) + geom_point() +
   stat_debug_group(summary.fun = head, summary.fun.args = list(n = 3))
 ```
 
-This next chunck showing how to print the whole data frame is not run as its output is more than 100 lines long as the data set contains 100 observations.
+This next chunk showing how to print the whole data frame is not run as its output is more than 100 lines long as the data set contains 100 observations.
 
 ```{r, eval=FALSE}
 ggplot(my.data, aes(x, y)) + geom_point() + 
