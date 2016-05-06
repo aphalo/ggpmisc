@@ -278,6 +278,55 @@ ggplot(my.data, aes(x, y2, fill = block)) +
   theme_bw()
 
 ## ------------------------------------------------------------------------
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  stat_fit_residuals(formula = formula)
+
+## ------------------------------------------------------------------------
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  stat_fit_residuals(formula = formula, resid.type = "working")
+
+## ------------------------------------------------------------------------
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_fit_deviations(formula = formula, color = "red") +
+  geom_point()
+
+## ------------------------------------------------------------------------
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_fit_deviations(formula = formula, color = "red",
+                      arrow = arrow(length = unit(0.015, "npc"), 
+                                   ends = "both")) +
+  geom_point()
+
+## ------------------------------------------------------------------------
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_fit_glance(method = "lm", 
+                  method.args = list(formula = formula),
+                  geom = "text",
+                  aes(label = signif(..p.value.., digits = 4)))
+
+## ------------------------------------------------------------------------
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_fit_augment(method = "lm", 
+                   method.args = list(formula = formula),
+                   geom = "smooth",
+                   aes(y = ..fitted..,
+                       ymax = ..fitted.. + ..se.fit.. * 2,
+                       ymin = ..fitted.. - ..se.fit.. * 2))
+
+## ------------------------------------------------------------------------
 ggplot(my.data, aes(x, y)) + stat_debug_group()
 
 ## ------------------------------------------------------------------------
@@ -346,10 +395,25 @@ ggplot(my.data, aes(x, y, colour = group)) + geom_point() +
 
 ## ------------------------------------------------------------------------
 ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
+  stat_smooth(method = "lm",
+             geom = "debug", 
+             summary.fun = function(x) {x}, 
+             summary.fun.args = list())
+
+## ------------------------------------------------------------------------
+ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
   stat_peaks(span = NULL,
              geom = "debug", 
              summary.fun = function(x) {x}, 
              summary.fun.args = list())
+
+## ------------------------------------------------------------------------
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  stat_fit_residuals(formula = formula, 
+                     geom = "debug",
+                     summary.fun = dplyr::as_data_frame, 
+                     summary.fun.args = list())
 
 ## ------------------------------------------------------------------------
 ggplot(my.data, aes(x, y, colour = group)) + geom_null()

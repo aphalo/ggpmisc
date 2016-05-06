@@ -1,8 +1,8 @@
 Package: ggpmisc
 Type: Package
 Title: Miscellaneous Extensions to 'ggplot2'
-Version: 0.2.7
-Date: 2016-03-22
+Version: 0.2.7.9001
+Date: 2016-05-06
 Author: Pedro J. Aphalo [aut, cre]
 Maintainer: Pedro J. Aphalo <pedro.aphalo@helsinki.fi>
 Description: Extensions to 'ggplot2' respecting the grammar of graphics
@@ -26,6 +26,7 @@ Imports:
     dplyr (>= 0.4.3),
     xts (>= 0.9-7),
     zoo (>= 1.7-12),
+    broom (>= 0.4.0),
     lubridate (>= 1.5.0)
 Suggests:
     knitr (>= 1.12.3),

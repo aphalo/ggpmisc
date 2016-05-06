@@ -1,7 +1,7 @@
-#' Add a curve from a fitted linear model and a label to a plot.
+#' Add a label for a fitted linear model to a plot.
 #'
-#' \code{stat_poly_eq} fits a polynomial and generates a label with
-#'   an equation and/or coefficient of determination (R^2).
+#' \code{stat_poly_eq} fits a polynomial and generates several labela with
+#'   an equation and/or coefficient of determination (R^2) and other estimates.
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_string}}. Only needs
@@ -103,8 +103,8 @@ stat_poly_eq <- function(mapping = NULL, data = NULL, geom = "text",
   )
 }
 
-# Define here to avoid a note in check as the import from 'polynom' is not seen
-# when the function is defined in-line in the ggproto object.
+# Defined here to avoid a note in check --as-cran as the import from 'polynom'
+# is not seen when the function is defined in-line in the ggproto object.
 #' @rdname ggpmisc-ggproto
 #'
 #' @format NULL

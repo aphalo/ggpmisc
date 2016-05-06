@@ -388,6 +388,77 @@ ggplot(my.data, aes(x, y2, fill = block)) +
   theme_bw()
 ```
 
+## `stat_fit_residuals`
+
+I had the need to quickly plot residuals matching fits plotted with `geom_smooth()`
+using grouping and facets, so a new (simple) statistic was born.
+
+```{r}
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  stat_fit_residuals(formula = formula)
+```
+
+```{r}
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  stat_fit_residuals(formula = formula, resid.type = "working")
+```
+
+## `stat_fit_deviations`
+
+As I also had the need to highlight residuals in slides and notes to be used in teaching, 
+another statistic was born. 
+
+```{r}
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_fit_deviations(formula = formula, color = "red") +
+  geom_point()
+```
+
+```{r}
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_fit_deviations(formula = formula, color = "red",
+                      arrow = arrow(length = unit(0.015, "npc"), 
+                                   ends = "both")) +
+  geom_point()
+```
+
+## `stat_fit_glance`
+
+```{r}
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_fit_glance(method = "lm", 
+                  method.args = list(formula = formula),
+                  geom = "text",
+                  aes(label = signif(..p.value.., digits = 4)))
+```
+
+## `stat_fit_augment`
+
+```{r}
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_fit_augment(method = "lm", 
+                   method.args = list(formula = formula),
+                   geom = "smooth",
+                   aes(y = ..fitted..,
+                       ymax = ..fitted.. + ..se.fit.. * 2,
+                       ymin = ..fitted.. - ..se.fit.. * 2))
+```
+
+ADD EXAMPLES FOR MIXED MODELS, etc.
+
 ## Debugging ggplots
 
 These stats are very simple and print a summary of their `data` input to the
@@ -515,10 +586,27 @@ And also to print to the console the data returned by a stat.
 
 ```{r}
 ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
+  stat_smooth(method = "lm",
+             geom = "debug", 
+             summary.fun = function(x) {x}, 
+             summary.fun.args = list())
+```
+
+```{r}
+ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
   stat_peaks(span = NULL,
              geom = "debug", 
              summary.fun = function(x) {x}, 
              summary.fun.args = list())
+```
+
+```{r}
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  stat_fit_residuals(formula = formula, 
+                     geom = "debug",
+                     summary.fun = dplyr::as_data_frame, 
+                     summary.fun.args = list())
 ```
 
 The package also defines a "null" geom, which is used as default by the _debug_

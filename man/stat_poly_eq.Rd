@@ -2,7 +2,7 @@
 % Please edit documentation in R/stat-poly-eq.R
 \name{stat_poly_eq}
 \alias{stat_poly_eq}
-\title{Add a curve from a fitted linear model and a label to a plot.}
+\title{Add a label for a fitted linear model to a plot.}
 \usage{
 stat_poly_eq(mapping = NULL, data = NULL, geom = "text", formula = NULL,
   eq.with.lhs = "italic(y)~`=`~", eq.x.rhs = "~italic(x)", label.x = NULL,
@@ -51,8 +51,8 @@ can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 }
 \description{
-\code{stat_poly_eq} fits a polynomial and generates a label with
-  an equation and/or coefficient of determination (R^2).
+\code{stat_poly_eq} fits a polynomial and generates several labela with
+  an equation and/or coefficient of determination (R^2) and other estimates.
 }
 \details{
 This stat can be used to automatically annotate a plot with R^2,
