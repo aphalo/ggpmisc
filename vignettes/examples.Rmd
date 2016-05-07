@@ -495,6 +495,8 @@ ggplot(my.data, aes(x, y, color = group)) +
 
 ## `stat_fit_augment`
 
+Experimental! Use ggplot2::stat_smooth() instead.
+
 ```{r}
 # formula <- y ~ poly(x, 3, raw = TRUE)
 # broom::augment does not handle poly correctly!
@@ -505,23 +507,12 @@ ggplot(my.data, aes(x, y)) +
                    method.args = list(formula = formula))
 ```
 
-
 ```{r}
 formula <- y ~ x + I(x^2) + I(x^3)
 ggplot(my.data, aes(x, y, color = group)) +
   geom_point() +
   stat_fit_augment(method = "lm", 
                    method.args = list(formula = formula))
-```
-
-```{r}
-formula <- y ~ x + I(x^2) + I(x^3)
-ggplot(my.data, aes(x, y, color = group)) +
-#  geom_point() +
-  stat_fit_augment(method = "lm", 
-                   geom = "point",
-                   method.args = list(formula = formula),
-                   aes(y = ...std.resid..))
 ```
 
 ## Debugging ggplots

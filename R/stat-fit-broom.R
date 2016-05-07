@@ -161,6 +161,9 @@ StatFitGlance <-
 #' @section Computed variables:
 #'   The output of \code{\link[broom]{glance}} is returned as is.
 #'
+#' @note This statistic does not do much at the moment. Use
+#'   \code{ggplot2::stat_smooth()} instead.
+#'
 #' @export
 #'
 stat_fit_augment <- function(mapping = NULL, data = NULL, geom = "smooth",
@@ -203,7 +206,7 @@ fit_augment_compute_group_fun <- function(data,
   z <- broom::augment(mf)
   z[["y.observed"]] <- z[["y"]]
   z[["y"]] <- z[[".fitted"]]
-  print(dplyr::as_data_frame(z))
+#  print(dplyr::as_data_frame(z))
   z
 }
 
