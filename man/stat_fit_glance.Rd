@@ -5,9 +5,9 @@
 \title{Return one row summary data frame for a fitted linear model.}
 \usage{
 stat_fit_glance(mapping = NULL, data = NULL, geom = "null",
-  method = "lm", method.args = list(formula = y ~ x),
-  position = "identity", na.rm = FALSE, show.legend = FALSE,
-  inherit.aes = TRUE, ...)
+  method = "lm", method.args = list(formula = y ~ x), label.x = NULL,
+  label.y = NULL, position = "identity", na.rm = FALSE,
+  show.legend = FALSE, inherit.aes = TRUE, ...)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
@@ -22,6 +22,9 @@ the plot defaults.}
 \item{method}{character.}
 
 \item{method.args}{list of arguments to pass to \code{method}.}
+
+\item{label.x, label.y}{\code{numeric} Coordinates to be used in output. If
+too short they will be recycled.}
 
 \item{position}{The position adjustment to use for overlapping points on this
 layer}

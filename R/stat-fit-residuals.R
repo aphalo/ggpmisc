@@ -84,9 +84,9 @@ residuals_compute_group_fun <- function(data,
                                         resid.type) {
   if (method == "lm") {
     if (is.null(resid.type)) {
-      fit.residuals <- stats::residuals(stats::lm(formula, data))
+      fit.residuals <- stats::residuals(stats::lm(formula, data = data))
     } else {
-      fit.residuals <- stats::residuals(stats::lm(formula, data), type = resid.type)
+      fit.residuals <- stats::residuals(stats::lm(formula, data = data), type = resid.type)
     }
   } else {
     stop("Method '", method, "' not yet implemented.")

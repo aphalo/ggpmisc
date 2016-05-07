@@ -9,6 +9,7 @@ library(ggplot2)
 library(ggpmisc)
 library(xts)
 library(lubridate)
+library(nlme)
 
 ## ------------------------------------------------------------------------
 class(austres)
@@ -291,9 +292,22 @@ ggplot(my.data, aes(x, y)) +
 
 ## ------------------------------------------------------------------------
 formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y, color = group)) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  stat_fit_residuals(formula = formula)
+
+## ------------------------------------------------------------------------
+formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_smooth(method = "lm", formula = formula) +
   stat_fit_deviations(formula = formula, color = "red") +
+  geom_point()
+
+## ------------------------------------------------------------------------
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y, color = group)) +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_fit_deviations(formula = formula) +
   geom_point()
 
 ## ------------------------------------------------------------------------
@@ -317,104 +331,11 @@ ggplot(my.data, aes(x, y)) +
 
 ## ------------------------------------------------------------------------
 formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y)) +
+ggplot(my.data, aes(x, y, color = group)) +
   geom_point() +
-  stat_fit_augment(method = "lm", 
-                   method.args = list(formula = formula),
-                   geom = "smooth",
-                   aes(y = ..fitted..,
-                       ymax = ..fitted.. + ..se.fit.. * 2,
-                       ymin = ..fitted.. - ..se.fit.. * 2))
-
-## ------------------------------------------------------------------------
-ggplot(my.data, aes(x, y)) + stat_debug_group()
-
-## ------------------------------------------------------------------------
-ggplot(my.data, aes(x, y)) + geom_point() + stat_debug_group()
-
-## ------------------------------------------------------------------------
-ggplot(my.data, aes(x, y)) + geom_point() + stat_debug_panel()
-
-## ------------------------------------------------------------------------
-ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
-  stat_debug_group()
-
-## ------------------------------------------------------------------------
-ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
-  stat_debug_panel()
-
-## ------------------------------------------------------------------------
-ggplot(my.data, aes(x, y, shape = group)) + geom_point() + 
-  stat_debug_group()
-
-## ------------------------------------------------------------------------
-ggplot(my.data, aes(x, y, shape = group)) + geom_point() + 
-  stat_debug_group(geom = "label", vjust = c(-0.5,1.5))
-
-## ------------------------------------------------------------------------
-ggplot(my.data, aes(x, y)) + geom_point() + 
-  stat_debug_group(summary.fun = summary)
-
-## ------------------------------------------------------------------------
-ggplot(my.data, aes(x, y)) + geom_point() + 
-  stat_debug_group(summary.fun = head)
-
-## ------------------------------------------------------------------------
-ggplot(my.data, aes(x, y)) + geom_point() + 
-  stat_debug_group(summary.fun = nrow)
-
-## ------------------------------------------------------------------------
-ggplot(my.data, aes(x, y)) + geom_point() + 
-  stat_debug_group(summary.fun = dplyr::as_data_frame)
-
-## ------------------------------------------------------------------------
-ggplot(my.data, aes(x, y)) + geom_point() + 
-  stat_debug_group(summary.fun = head, summary.fun.args = list(n = 3))
-
-## ---- eval=FALSE---------------------------------------------------------
-#  ggplot(my.data, aes(x, y)) + geom_point() +
-#    stat_debug_group(summary.fun = function(x) {x})
-
-## ------------------------------------------------------------------------
-ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
-  stat_debug_group(summary.fun = head, summary.fun.args = list(n = 3))
-
-## ------------------------------------------------------------------------
-ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
-  stat_debug_group(summary.fun = nrow) +
-  facet_wrap(~block)
-
-## ------------------------------------------------------------------------
-ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
-  stat_debug_panel(summary.fun = nrow) +
-  facet_wrap(~block)
-
-## ------------------------------------------------------------------------
-ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
-  geom_debug(summary.fun = head)
-
-## ------------------------------------------------------------------------
-ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
-  stat_smooth(method = "lm",
-             geom = "debug", 
-             summary.fun = function(x) {x}, 
-             summary.fun.args = list())
-
-## ------------------------------------------------------------------------
-ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
-  stat_peaks(span = NULL,
-             geom = "debug", 
-             summary.fun = function(x) {x}, 
-             summary.fun.args = list())
-
-## ------------------------------------------------------------------------
-formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y)) +
-  stat_fit_residuals(formula = formula, 
-                     geom = "debug",
-                     summary.fun = dplyr::as_data_frame, 
-                     summary.fun.args = list())
-
-## ------------------------------------------------------------------------
-ggplot(my.data, aes(x, y, colour = group)) + geom_null()
+  geom_smooth(method = "lm", formula = formula) +
+  stat_fit_glance(method = "lm", 
+                  method.args = list(formula = formula),
+                  geom = "text",
+                  aes(label = signif(..p.value.., digits = 4)))
 

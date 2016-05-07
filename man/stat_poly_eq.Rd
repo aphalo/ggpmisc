@@ -5,9 +5,9 @@
 \title{Add a label for a fitted linear model to a plot.}
 \usage{
 stat_poly_eq(mapping = NULL, data = NULL, geom = "text", formula = NULL,
-  eq.with.lhs = "italic(y)~`=`~", eq.x.rhs = "~italic(x)", label.x = NULL,
-  label.y = NULL, position = "identity", na.rm = FALSE,
-  show.legend = FALSE, inherit.aes = TRUE, ...)
+  eq.with.lhs = "italic(y)~`=`~", eq.x.rhs = "~italic(x)",
+  label.x = "left", label.y = "top", position = "identity",
+  na.rm = FALSE, show.legend = FALSE, inherit.aes = TRUE, ...)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with

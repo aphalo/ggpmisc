@@ -4,8 +4,8 @@
 \alias{stat_fit_augment}
 \title{Return the data augmented with fitted values and statistics.}
 \usage{
-stat_fit_augment(mapping = NULL, data = NULL, geom = "null",
-  method = "lm", method.args = list(formula = y ~ x),
+stat_fit_augment(mapping = NULL, data = NULL, geom = "smooth",
+  method = "lm", method.args = list(formula = y ~ x), level = 0.95,
   position = "identity", na.rm = FALSE, show.legend = FALSE,
   inherit.aes = TRUE, ...)
 }

@@ -27,6 +27,8 @@
 #'   before the computation proceeds.
 #' @param method character.
 #' @param method.args list of arguments to pass to \code{method}.
+#' @param label.x,label.y \code{numeric} Coordinates to be used in output. If
+#'   too short they will be recycled.
 #'
 #' @section Computed variables:
 #'   The output of \code{\link[broom]{glance}} is returned as is.
@@ -36,6 +38,7 @@
 stat_fit_glance <- function(mapping = NULL, data = NULL, geom = "null",
                             method = "lm",
                             method.args = list(formula = y ~ x),
+                            label.x = NULL, label.y = NULL,
                             position = "identity",
                             na.rm = FALSE, show.legend = FALSE,
                             inherit.aes = TRUE, ...) {
@@ -44,6 +47,8 @@ stat_fit_glance <- function(mapping = NULL, data = NULL, geom = "null",
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
     params = list(method = method,
                   method.args = method.args,
+                  label.x = label.x,
+                  label.y = label.y,
                   na.rm = na.rm,
                   ...)
   )
@@ -60,10 +65,53 @@ stat_fit_glance <- function(mapping = NULL, data = NULL, geom = "null",
 fit_glance_compute_group_fun <- function(data,
                                          scales,
                                          method,
-                                         method.args) {
+                                         method.args,
+                                         label.x,
+                                         label.y) {
+  if (length(unique(data$x)) < 2) {
+    # Not enough data to perform fit
+    return(data.frame())
+  }
+  group.idx <- abs(data$group[1])
+  method.args <- c(method.args, list(data = quote(data)))
+  if (is.character(method)) method <- match.fun(method)
   z <- broom::glance(do.call(method, method.args))
-  z$x <- mean(data$x)
-  z$y <- mean(data$y)
+  if (is.numeric(label.x)) {
+    if (label.x <= 1 & label.x >= 0) {
+      z$x <- scales$x$dimension()[1] + label.x *
+        diff(scales$x$dimension())
+    } else {
+      z$x <- label.x
+    }
+    z$hjust <- 0.5
+  } else if (is.character(label.x) && label.x == "right") {
+    z$x <- scales$x$dimension()[2]
+    z$hjust <- 1
+  } else if (is.character(label.x) && label.x == "center") {
+    z$x <- mean(scales$x$dimension())
+    z$hjust <- 0.5
+  } else {
+    z$x <- scales$x$dimension()[1]
+    z$hjust <- 0
+  }
+  if (is.numeric(label.y)) {
+    if (label.y <= 1 & label.y >= 0) {
+      z$y <- scales$y$dimension()[1] + label.y *
+        diff(scales$y$dimension())
+    } else {
+      z$y <- label.y
+    }
+    z$vjust <- 1.4 * group.idx - (0.7 * length(group.idx))
+  } else if (is.character(label.y) && label.y == "bottom") {
+    z$y <- scales$y$dimension()[1]
+    z$vjust <- -1.4 * group.idx
+  } else if (is.character(label.y) && label.y == "center") {
+    z$y <- mean(scales$y$dimension())
+    z$vjust <- 1.4 * group.idx - (0.7 * length(group.idx))
+  } else {
+    z$y <- scales$y$dimension()[2]
+    z$vjust <- 1.4 * group.idx
+  }
   z
   }
 
@@ -74,6 +122,8 @@ fit_glance_compute_group_fun <- function(data,
 StatFitGlance <-
   ggplot2::ggproto("StatFitGlance", ggplot2::Stat,
                    compute_group = fit_glance_compute_group_fun,
+                   default_aes =
+                     ggplot2::aes(hjust = ..hjust.., vjust = ..vjust..),
                    required_aes = c("x", "y")
   )
 
@@ -113,17 +163,19 @@ StatFitGlance <-
 #'
 #' @export
 #'
-stat_fit_augment <- function(mapping = NULL, data = NULL, geom = "null",
-                            method = "lm",
-                            method.args = list(formula = y ~ x),
-                            position = "identity",
-                            na.rm = FALSE, show.legend = FALSE,
-                            inherit.aes = TRUE, ...) {
+stat_fit_augment <- function(mapping = NULL, data = NULL, geom = "smooth",
+                             method = "lm",
+                             method.args = list(formula = y ~ x),
+                             level = 0.95,
+                             position = "identity",
+                             na.rm = FALSE, show.legend = FALSE,
+                             inherit.aes = TRUE, ...) {
   ggplot2::layer(
     stat = StatFitAugment, data = data, mapping = mapping, geom = geom,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
     params = list(method = method,
                   method.args = method.args,
+                  level = level,
                   na.rm = na.rm,
                   ...)
   )
@@ -137,12 +189,21 @@ stat_fit_augment <- function(mapping = NULL, data = NULL, geom = "null",
 #' @usage NULL
 #'
 fit_augment_compute_group_fun <- function(data,
-                                         scales,
-                                         method,
-                                         method.args) {
-  z <- broom::augment(do.call(method, method.args))
-  names(z) <- gsub("^[.]{1}{1}", "", names(z), fixed = FALSE)
-  z$x <- data$x
+                                          scales,
+                                          method,
+                                          method.args,
+                                          level) {
+  if (length(unique(data$x)) < 2) {
+    # Not enough data to perform fit
+    return(data.frame())
+  }
+  method.args <- c(method.args, list(data = quote(data)))
+  if (is.character(method)) method <- match.fun(method)
+  mf <- do.call(method, method.args)
+  z <- broom::augment(mf)
+  z[["y.observed"]] <- z[["y"]]
+  z[["y"]] <- z[[".fitted"]]
+  print(dplyr::as_data_frame(z))
   z
 }
 
@@ -153,6 +214,9 @@ fit_augment_compute_group_fun <- function(data,
 StatFitAugment <-
   ggplot2::ggproto("StatFitAugment", ggplot2::Stat,
                    compute_group = fit_augment_compute_group_fun,
+                   default_aes =
+                     ggplot2::aes(ymax = ...fitted.. + ...se.fit.. * 2,
+                                  ymin = ...fitted.. - ...se.fit.. * 2),
                    required_aes = c("x", "y")
-  )
+)
 

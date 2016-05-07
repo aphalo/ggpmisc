@@ -86,7 +86,7 @@ stat_poly_eq <- function(mapping = NULL, data = NULL, geom = "text",
                          formula = NULL,
                          eq.with.lhs = "italic(y)~`=`~",
                          eq.x.rhs = "~italic(x)",
-                         label.x = NULL, label.y = NULL,
+                         label.x = "left", label.y = "top",
                          position = "identity",
                          na.rm = FALSE, show.legend = FALSE,
                          inherit.aes = TRUE, ...) {
@@ -117,24 +117,20 @@ poly_eq_compute_group_fun <- function(data,
                                      eq.x.rhs,
                                      label.x,
                                      label.y) {
-  group.idx <- abs(data$group[1])
-  if (length(label.x) == 0) { # TRUE also for NULL
-    label.x <- min(data$x)
-  } else {
-    if (length(label.x < group.idx)) {
-      # we simulate recycling
-      label.x <- rep(label.x, length.out = group.idx)
-    }
-    label.x <- label.x[group.idx]
+  if (length(unique(data$x)) < 2) {
+    # Not enough data to perform fit
+    return(data.frame())
   }
-  if (length(label.y) == 0) { # TRUE also for NULL
-    label.y <- max(data$y) - 0.1 * diff(range(data$y))
+  group.idx <- abs(data$group[1])
+  if (length(label.x) >= group.idx) {
+    label.x <- label.x[group.idx]
   } else {
-    if (length(label.y < group.idx)) {
-      # we simulate recycling
-      label.y <- rep(label.y, length.out = group.idx)
-    }
+    label.x <- label.x[1]
+  }
+  if (length(label.y) >= group.idx) {
     label.y <- label.y[group.idx]
+  } else {
+    label.y <- label.y[1]
   }
   mf <- stats::lm(formula, data)
   coefs <- stats::coef(mf)
@@ -161,15 +157,49 @@ poly_eq_compute_group_fun <- function(data,
   adj.rr.char <- format(adj.rr, digits = 2)
   AIC.char <- sprintf("%.4g", AIC)
   BIC.char <- sprintf("%.4g", BIC)
-  data.frame(x = label.x,
-             y = label.y,
-             eq.label = gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
+  z <- data.frame(eq.label = gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
              rr.label = paste("italic(R)^2", rr.char, sep = "~`=`~"),
              adj.rr.label = paste("italic(R)[adj]^2",
                                   adj.rr.char, sep = "~`=`~"),
              AIC.label = paste("AIC", AIC.char, sep = "~`=`~"),
-             BIC.label = paste("BIC", BIC.char, sep = "~`=`~"),
-             hjust = 0)
+             BIC.label = paste("BIC", BIC.char, sep = "~`=`~"))
+  if (is.numeric(label.x)) {
+    if (label.x <= 1 & label.x >= 0) {
+      z$x <- scales$x$dimension()[1] + label.x *
+        diff(scales$x$dimension())
+    } else {
+      z$x <- label.x
+    }
+    z$hjust <- 0.5
+  } else if (is.character(label.x) && label.x == "right") {
+    z$x <- scales$x$dimension()[2]
+    z$hjust <- 1
+  } else if (is.character(label.x) && label.x == "center") {
+    z$x <- mean(scales$x$dimension())
+    z$hjust <- 0.5
+  } else {
+    z$x <- scales$x$dimension()[1]
+    z$hjust <- 0
+  }
+  if (is.numeric(label.y)) {
+    if (label.y <= 1 & label.y >= 0) {
+      z$y <- scales$y$dimension()[1] + label.y *
+        diff(scales$y$dimension())
+    } else {
+      z$y <- label.y
+    }
+    z$vjust <- 1.4 * group.idx - (0.7 * length(group.idx))
+  } else if (is.character(label.y) && label.y == "bottom") {
+    z$y <- scales$y$dimension()[1]
+    z$vjust <- -1.4 * group.idx
+  } else if (is.character(label.y) && label.y == "center") {
+    z$y <- mean(scales$y$dimension())
+    z$vjust <- 1.4 * group.idx - (0.7 * length(group.idx))
+  } else {
+    z$y <- scales$y$dimension()[2]
+    z$vjust <- 1.4 * group.idx
+  }
+  z
 }
 
 #' @rdname ggpmisc-ggproto
@@ -180,7 +210,8 @@ StatPolyEq <-
   ggplot2::ggproto("StatPolyEq", ggplot2::Stat,
                    compute_group = poly_eq_compute_group_fun,
                    default_aes =
-                     ggplot2::aes(label = ..rr.label.., hjust = ..hjust..),
+                     ggplot2::aes(label = ..rr.label..,
+                                  hjust = ..hjust.., vjust = ..vjust..),
                    required_aes = c("x", "y")
   )
 
