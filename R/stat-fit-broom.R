@@ -27,8 +27,11 @@
 #'   before the computation proceeds.
 #' @param method character.
 #' @param method.args list of arguments to pass to \code{method}.
-#' @param label.x,label.y \code{numeric} Coordinates to be used in output. If
-#'   too short they will be recycled.
+#' @param label.x.npc,label.y.npc \code{numeric} with range 0..1 or character.
+#'   Coordinates to be used for positioning the output, expresed in "normalized
+#'   parent coordinates" or character string. If too short they will be recycled.
+#' @param label.x,label.y \code{numeric} Coordinates (in data units) to be used
+#'   for absolute positioning of the output. If too short they will be recycled.
 #'
 #' @section Computed variables:
 #'   The output of \code{\link[broom]{glance}} is returned as is.
@@ -38,6 +41,7 @@
 stat_fit_glance <- function(mapping = NULL, data = NULL, geom = "null",
                             method = "lm",
                             method.args = list(formula = y ~ x),
+                            label.x.npc = "left", label.y.npc = "top",
                             label.x = NULL, label.y = NULL,
                             position = "identity",
                             na.rm = FALSE, show.legend = FALSE,
@@ -47,6 +51,8 @@ stat_fit_glance <- function(mapping = NULL, data = NULL, geom = "null",
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
     params = list(method = method,
                   method.args = method.args,
+                  label.x.npc = label.x.npc,
+                  label.y.npc = label.y.npc,
                   label.x = label.x,
                   label.y = label.y,
                   na.rm = na.rm,
@@ -66,54 +72,102 @@ fit_glance_compute_group_fun <- function(data,
                                          scales,
                                          method,
                                          method.args,
+                                         label.x.npc,
+                                         label.y.npc,
                                          label.x,
                                          label.y) {
   if (length(unique(data$x)) < 2) {
     # Not enough data to perform fit
     return(data.frame())
   }
+
   group.idx <- abs(data$group[1])
+  if (length(label.x.npc) >= group.idx) {
+    label.x.npc <- label.x.npc[group.idx]
+  } else {
+    label.x.npc <- label.x.npc[1]
+  }
+  if (length(label.y.npc) >= group.idx) {
+    label.y.npc <- label.y.npc[group.idx]
+  } else {
+    label.y.npc <- label.y.npc[1]
+  }
+
+  if (length(label.x) >= group.idx) {
+    label.x <- label.x[group.idx]
+  } else {
+    label.x <- label.x[1]
+  }
+  if (length(label.y) >= group.idx) {
+    label.y <- label.y[group.idx]
+  } else {
+    label.y <- label.y[1]
+  }
+
   method.args <- c(method.args, list(data = quote(data)))
   if (is.character(method)) method <- match.fun(method)
   z <- broom::glance(do.call(method, method.args))
-  if (is.numeric(label.x)) {
-    if (label.x <= 1 & label.x >= 0) {
-      z$x <- scales$x$dimension()[1] + label.x *
+
+  if (length(label.x) > 0) {
+    z$x <- label.x
+    z$hjust <- 0.5
+  } else if (length(label.x.npc) > 0) {
+    if (is.numeric(label.x.npc)) {
+      if (any(label.x.npc < 0 | label.x.npc > 1)) {
+        warning("'label.x.npc' argument is numeric but outside range 0..1.")
+      }
+      z$x <- scales$x$dimension()[1] + label.x.npc *
         diff(scales$x$dimension())
+      z$hjust <- 0.5
+    } else if (is.character(label.x.npc)) {
+      if (label.x.npc == "right") {
+        z$x <- scales$x$dimension()[2]
+        z$hjust <- 1
+      } else if (label.x.npc %in% c("center", "centre", "middle")) {
+        z$x <- mean(scales$x$dimension())
+        z$hjust <- 0.5
+      } else if (label.x.npc == "left") {
+        z$x <- scales$x$dimension()[1]
+        z$hjust <- 0
+      } else {
+        stop("'label.x.npc' argument '", label.x.npc, " unsupported")
+      }
     } else {
-      z$x <- label.x
+      stop("'label.x.npc' argument is neither numeric nor character")
     }
-    z$hjust <- 0.5
-  } else if (is.character(label.x) && label.x == "right") {
-    z$x <- scales$x$dimension()[2]
-    z$hjust <- 1
-  } else if (is.character(label.x) && label.x == "center") {
-    z$x <- mean(scales$x$dimension())
-    z$hjust <- 0.5
-  } else {
-    z$x <- scales$x$dimension()[1]
-    z$hjust <- 0
   }
-  if (is.numeric(label.y)) {
-    if (label.y <= 1 & label.y >= 0) {
-      z$y <- scales$y$dimension()[1] + label.y *
+
+  if (length(label.y) > 0) {
+    z$y <- label.y
+    z$vjust <- 0.5
+  } else if (length(label.y.npc) > 0) {
+    if (is.numeric(label.y.npc)) {
+      if (any(label.y.npc < 0 | label.y.npc > 1)) {
+        warning("'label.y.npc' argument is numeric but outside range 0..1.")
+      }
+      z$y <- scales$y$dimension()[1] + label.y.npc *
         diff(scales$y$dimension())
+      z$vjust <- 1.4 * group.idx - (0.7 * length(group.idx))
+    } else if (is.character(label.y.npc)) {
+      if (label.y.npc == "bottom") {
+        z$y <- scales$y$dimension()[1]
+        z$vjust <- -1.4 * group.idx
+      } else if (label.y.npc %in% c("center", "centre", "middle")) {
+        z$y <- mean(scales$y$dimension())
+        z$vjust <- 1.4 * group.idx - (0.7 * length(group.idx))
+      } else if (label.y.npc == "top") {
+        z$y <- scales$y$dimension()[2]
+        z$vjust <- 1.4 * group.idx
+      } else {
+        stop("'label.y.npc' argument '", label.y.npc, " unsupported")
+      }
     } else {
-      z$y <- label.y
+      stop("'label.y.npc' argument is neither numeric nor character")
     }
-    z$vjust <- 1.4 * group.idx - (0.7 * length(group.idx))
-  } else if (is.character(label.y) && label.y == "bottom") {
-    z$y <- scales$y$dimension()[1]
-    z$vjust <- -1.4 * group.idx
-  } else if (is.character(label.y) && label.y == "center") {
-    z$y <- mean(scales$y$dimension())
-    z$vjust <- 1.4 * group.idx - (0.7 * length(group.idx))
-  } else {
-    z$y <- scales$y$dimension()[2]
-    z$vjust <- 1.4 * group.idx
   }
+
   z
-  }
+}
 
 #' @rdname ggpmisc-ggproto
 #' @format NULL
@@ -169,7 +223,6 @@ StatFitGlance <-
 stat_fit_augment <- function(mapping = NULL, data = NULL, geom = "smooth",
                              method = "lm",
                              method.args = list(formula = y ~ x),
-                             level = 0.95,
                              position = "identity",
                              na.rm = FALSE, show.legend = FALSE,
                              inherit.aes = TRUE, ...) {
@@ -178,7 +231,6 @@ stat_fit_augment <- function(mapping = NULL, data = NULL, geom = "smooth",
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
     params = list(method = method,
                   method.args = method.args,
-                  level = level,
                   na.rm = na.rm,
                   ...)
   )
@@ -194,8 +246,7 @@ stat_fit_augment <- function(mapping = NULL, data = NULL, geom = "smooth",
 fit_augment_compute_group_fun <- function(data,
                                           scales,
                                           method,
-                                          method.args,
-                                          level) {
+                                          method.args) {
   if (length(unique(data$x)) < 2) {
     # Not enough data to perform fit
     return(data.frame())

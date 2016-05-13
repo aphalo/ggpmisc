@@ -5,7 +5,7 @@
 \title{Return the data augmented with fitted values and statistics.}
 \usage{
 stat_fit_augment(mapping = NULL, data = NULL, geom = "smooth",
-  method = "lm", method.args = list(formula = y ~ x), level = 0.95,
+  method = "lm", method.args = list(formula = y ~ x),
   position = "identity", na.rm = FALSE, show.legend = FALSE,
   inherit.aes = TRUE, ...)
 }
@@ -45,6 +45,10 @@ can include aesthetics whose values you want to set, not map. See
 \description{
 \code{stat_fit_augment} fits a model and returns a summary "glance" of the
 model's statistics, using package 'broom'.
+}
+\note{
+This statistic does not do much at the moment. Use
+  \code{ggplot2::stat_smooth()} instead.
 }
 \section{Computed variables}{
 

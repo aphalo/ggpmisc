@@ -23,7 +23,6 @@ library(ggplot2)
 library(ggpmisc)
 library(xts)
 library(lubridate)
-library(nlme)
 ```
 
 ## `try_data_frame()`
@@ -353,7 +352,7 @@ ggplot(my.data, aes(x, y2, colour = group)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
   stat_poly_eq(aes(label = ..eq.label..),
-               formula = formula, parse = TRUE, label.y = "center") +
+               formula = formula, parse = TRUE, label.y.npc = "center") +
   theme_bw()
 ```
 
@@ -363,7 +362,7 @@ ggplot(my.data, aes(x, y2, colour = group)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
   stat_poly_eq(aes(label = ..eq.label..),
-               formula = formula, parse = TRUE, label.y = 0.75) +
+               formula = formula, parse = TRUE, label.y.npc = 0.75) +
   theme_bw()
 ```
 
@@ -387,7 +386,7 @@ ggplot(my.data, aes(x, y2, colour = group, fill = block)) +
   stat_poly_eq(aes(label = ..rr.label..), size = rel(3),
                geom = "label", alpha = 0.2,
                formula = formula, parse = TRUE,
-               label.y = 0.66) +
+               label.y.npc = 0.66) +
   facet_wrap(~group, scales = "free_y") +
   theme_bw()
 ```
@@ -467,7 +466,7 @@ ggplot(my.data, aes(x, y)) +
 
 ```{r}
 # formula <- y ~ poly(x, 3, raw = TRUE)
-# broom::augment does not handle poly correctly!
+# broom::augment does not handle poly() correctly!
 formula <- y ~ x + I(x^2) + I(x^3)
 ggplot(my.data, aes(x, y, color = group)) +
   geom_point() +
@@ -487,8 +486,8 @@ ggplot(my.data, aes(x, y, color = group)) +
   geom_smooth(method = "lm", formula = formula) +
   stat_fit_glance(method = "lm", 
                   method.args = list(formula = formula),
-                  label.x = "right",
-                  label.y = "bottom",
+                  label.x.npc = "right",
+                  label.y.npc = "bottom",
                   geom = "text", 
                   aes(label = paste("P-value = ", signif(..p.value.., digits = 4), sep = "")))
 ```

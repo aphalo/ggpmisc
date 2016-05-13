@@ -5,7 +5,8 @@
 \title{Return one row summary data frame for a fitted linear model.}
 \usage{
 stat_fit_glance(mapping = NULL, data = NULL, geom = "null",
-  method = "lm", method.args = list(formula = y ~ x), label.x = NULL,
+  method = "lm", method.args = list(formula = y ~ x),
+  label.x.npc = "left", label.y.npc = "top", label.x = NULL,
   label.y = NULL, position = "identity", na.rm = FALSE,
   show.legend = FALSE, inherit.aes = TRUE, ...)
 }
@@ -23,8 +24,12 @@ the plot defaults.}
 
 \item{method.args}{list of arguments to pass to \code{method}.}
 
-\item{label.x, label.y}{\code{numeric} Coordinates to be used in output. If
-too short they will be recycled.}
+\item{label.x.npc, label.y.npc}{\code{numeric} with range 0..1 or character.
+Coordinates to be used for positioning the output, expresed in "normalized
+parent coordinates" or character string. If too short they will be recycled.}
+
+\item{label.x, label.y}{\code{numeric} Coordinates (in data units) to be used
+for absolute positioning of the output. If too short they will be recycled.}
 
 \item{position}{The position adjustment to use for overlapping points on this
 layer}

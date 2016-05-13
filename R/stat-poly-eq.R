@@ -29,8 +29,11 @@
 #' @param eq.x.rhs \code{character} this string will be used as replacement
 #'   for \code{"x"} in the model equation when generating the label before
 #'   parsing it.
-#' @param label.x,label.y \code{numeric} Coordinates to be used in output. If
-#'   too short they will be recycled.
+#' @param label.x.npc,label.y.npc \code{numeric} with range 0..1 or character.
+#'   Coordinates to be used for positioning the output, expresed in "normalized
+#'   parent coordinates" or character string. If too short they will be recycled.
+#' @param label.x,label.y \code{numeric} Coordinates (in data units) to be used
+#'   for absolute positioning of the output. If too short they will be recycled.
 #'
 #' @note For backward compatibility a logical is accepted as argument for
 #'   \code{eq.with.lhs}, giving the same output than the current default
@@ -86,7 +89,8 @@ stat_poly_eq <- function(mapping = NULL, data = NULL, geom = "text",
                          formula = NULL,
                          eq.with.lhs = "italic(y)~`=`~",
                          eq.x.rhs = "~italic(x)",
-                         label.x = "left", label.y = "top",
+                         label.x.npc = "left", label.y.npc = "top",
+                         label.x = NULL, label.y = NULL,
                          position = "identity",
                          na.rm = FALSE, show.legend = FALSE,
                          inherit.aes = TRUE, ...) {
@@ -96,6 +100,8 @@ stat_poly_eq <- function(mapping = NULL, data = NULL, geom = "text",
     params = list(formula = formula,
                   eq.with.lhs = eq.with.lhs,
                   eq.x.rhs = eq.x.rhs,
+                  label.x.npc = label.x.npc,
+                  label.y.npc = label.y.npc,
                   label.x = label.x,
                   label.y = label.y,
                   na.rm = na.rm,
@@ -115,6 +121,8 @@ poly_eq_compute_group_fun <- function(data,
                                      formula,
                                      eq.with.lhs,
                                      eq.x.rhs,
+                                     label.x.npc,
+                                     label.y.npc,
                                      label.x,
                                      label.y) {
   if (length(unique(data$x)) < 2) {
@@ -122,6 +130,18 @@ poly_eq_compute_group_fun <- function(data,
     return(data.frame())
   }
   group.idx <- abs(data$group[1])
+
+  if (length(label.x.npc) >= group.idx) {
+    label.x.npc <- label.x.npc[group.idx]
+  } else {
+    label.x.npc <- label.x.npc[1]
+  }
+  if (length(label.y.npc) >= group.idx) {
+    label.y.npc <- label.y.npc[group.idx]
+  } else {
+    label.y.npc <- label.y.npc[1]
+  }
+
   if (length(label.x) >= group.idx) {
     label.x <- label.x[group.idx]
   } else {
@@ -132,6 +152,7 @@ poly_eq_compute_group_fun <- function(data,
   } else {
     label.y <- label.y[1]
   }
+
   mf <- stats::lm(formula, data)
   coefs <- stats::coef(mf)
   formula.rhs.chr <- as.character(formula)[3]
@@ -163,42 +184,65 @@ poly_eq_compute_group_fun <- function(data,
                                   adj.rr.char, sep = "~`=`~"),
              AIC.label = paste("AIC", AIC.char, sep = "~`=`~"),
              BIC.label = paste("BIC", BIC.char, sep = "~`=`~"))
-  if (is.numeric(label.x)) {
-    if (label.x <= 1 & label.x >= 0) {
-      z$x <- scales$x$dimension()[1] + label.x *
+
+  if (length(label.x) > 0) {
+    z$x <- label.x
+    z$hjust <- 0.5
+  } else if (length(label.x.npc) > 0) {
+    if (is.numeric(label.x.npc)) {
+      if (any(label.x.npc < 0 | label.x.npc > 1)) {
+        warning("'label.x.npc' argument is numeric but outside range 0..1.")
+      }
+      z$x <- scales$x$dimension()[1] + label.x.npc *
         diff(scales$x$dimension())
+      z$hjust <- 0.5
+    } else if (is.character(label.x.npc)) {
+      if (label.x.npc == "right") {
+        z$x <- scales$x$dimension()[2]
+        z$hjust <- 1
+      } else if (label.x.npc %in% c("center", "centre", "middle")) {
+        z$x <- mean(scales$x$dimension())
+        z$hjust <- 0.5
+      } else if (label.x.npc == "left") {
+        z$x <- scales$x$dimension()[1]
+        z$hjust <- 0
+      } else {
+        stop("'label.x.npc' argument '", label.x.npc, " unsupported")
+      }
     } else {
-      z$x <- label.x
+      stop("'label.x.npc' argument is neither numeric nor character")
     }
-    z$hjust <- 0.5
-  } else if (is.character(label.x) && label.x == "right") {
-    z$x <- scales$x$dimension()[2]
-    z$hjust <- 1
-  } else if (is.character(label.x) && label.x == "center") {
-    z$x <- mean(scales$x$dimension())
-    z$hjust <- 0.5
-  } else {
-    z$x <- scales$x$dimension()[1]
-    z$hjust <- 0
   }
-  if (is.numeric(label.y)) {
-    if (label.y <= 1 & label.y >= 0) {
-      z$y <- scales$y$dimension()[1] + label.y *
+
+  if (length(label.y) > 0) {
+    z$x <- label.y
+    z$vjust <- 0.5
+  } else if (length(label.y.npc) > 0) {
+    if (is.numeric(label.y.npc)) {
+      if (any(label.y.npc < 0 | label.y.npc > 1)) {
+        warning("'label.y.npc' argument is numeric but outside range 0..1.")
+      }
+      z$y <- scales$y$dimension()[1] + label.y.npc *
         diff(scales$y$dimension())
+      z$vjust <- 1.4 * group.idx - (0.7 * length(group.idx))
+    } else if (is.character(label.y.npc)) {
+      if (label.y.npc == "bottom") {
+        z$y <- scales$y$dimension()[1]
+        z$vjust <- -1.4 * group.idx
+      } else if (label.y.npc %in% c("center", "centre", "middle")) {
+        z$y <- mean(scales$y$dimension())
+        z$vjust <- 1.4 * group.idx - (0.7 * length(group.idx))
+      } else if (label.y.npc == "top") {
+        z$y <- scales$y$dimension()[2]
+        z$vjust <- 1.4 * group.idx
+      } else {
+        stop("'label.y.npc' argument '", label.y.npc, " unsupported")
+      }
     } else {
-      z$y <- label.y
+      stop("'label.y.npc' argument is neither numeric nor character")
     }
-    z$vjust <- 1.4 * group.idx - (0.7 * length(group.idx))
-  } else if (is.character(label.y) && label.y == "bottom") {
-    z$y <- scales$y$dimension()[1]
-    z$vjust <- -1.4 * group.idx
-  } else if (is.character(label.y) && label.y == "center") {
-    z$y <- mean(scales$y$dimension())
-    z$vjust <- 1.4 * group.idx - (0.7 * length(group.idx))
-  } else {
-    z$y <- scales$y$dimension()[2]
-    z$vjust <- 1.4 * group.idx
   }
+
   z
 }
 

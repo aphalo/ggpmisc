@@ -4,10 +4,12 @@ ggpmisc 0.2.8
 Add stat_fit_deviations() for easily highlighting residuals in plots of fitted
 models, and stat_fit_residuals() for easily plotting residuals in plots matching
 plots of lm fits plotted with stat_smooth() even with grouping or facets. They
-support lm() fits.
+support lm() fits only.
 
-Add stat_fit_glance() and stat_fit_augment() for maximum flexibility at the
-expense of always having to set aesthetics.
+Add stat_fit_glance() uses package 'broom' for maximum flexibility in model
+function choice at the expense of very frequently having to set aesthetics.
+
+Add preliminary version of stat_fit_augment().
 
 ggpmisc 0.2.7
 =============

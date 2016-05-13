@@ -9,7 +9,6 @@ library(ggplot2)
 library(ggpmisc)
 library(xts)
 library(lubridate)
-library(nlme)
 
 ## ------------------------------------------------------------------------
 class(austres)
@@ -218,8 +217,7 @@ ggplot(my.data, aes(x, y2)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
   stat_poly_eq(aes(label = ..eq.label..), size = rel(3),
-               formula = formula, parse = TRUE,
-               label.x = 0, label.y = 2e6) +
+               formula = formula, parse = TRUE) +
   facet_wrap(~group)
 
 ## ------------------------------------------------------------------------
@@ -237,8 +235,7 @@ ggplot(my.data, aes(x, y2, colour = group)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
   stat_poly_eq(aes(label = ..eq.label..),
-               formula = formula, parse = TRUE,
-               label.x = 0, label.y = c(1.8e6, 2e6)) +
+               formula = formula, parse = TRUE) +
   theme_bw()
 
 ## ------------------------------------------------------------------------
@@ -247,9 +244,27 @@ ggplot(my.data, aes(x, y2, colour = group)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
   stat_poly_eq(aes(label = ..eq.label..),
-               formula = formula, parse = TRUE,
-               label.x = 0, label.y = 2e6,
-               vjust = c(1.2, 0)) +
+               formula = formula, parse = TRUE, label.y.npc = "center") +
+  theme_bw()
+
+## ------------------------------------------------------------------------
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y2, colour = group)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_eq(aes(label = ..eq.label..),
+               formula = formula, parse = TRUE, label.y.npc = 0.75) +
+  theme_bw()
+
+## ------------------------------------------------------------------------
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y2, fill = block)) +
+  geom_point(shape = 21, size = rel(3)) +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_eq(aes(label = ..rr.label..), size = rel(3),
+               geom = "label", alpha = 0.33,
+               formula = formula, parse = TRUE) +
+  facet_wrap(~group, scales = "free_y") +
   theme_bw()
 
 ## ------------------------------------------------------------------------
@@ -260,21 +275,7 @@ ggplot(my.data, aes(x, y2, colour = group, fill = block)) +
   stat_poly_eq(aes(label = ..rr.label..), size = rel(3),
                geom = "label", alpha = 0.2,
                formula = formula, parse = TRUE,
-               label.x = 0, label.y = c(5e5, 5e5, 2e6, 2e6),
-               vjust = c(1.2,0,1.2,0)) +
-  facet_wrap(~group, scales = "free_y") +
-  theme_bw()
-
-## ------------------------------------------------------------------------
-formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y2, fill = block)) +
-  geom_point(shape = 21, size = rel(3)) +
-  geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = ..rr.label..), size = rel(3),
-               geom = "label", alpha = 0.33,
-               formula = formula, parse = TRUE,
-               label.x = 0,
-               vjust = c(1.2,0,1.2,0)) +
+               label.y.npc = 0.66) +
   facet_wrap(~group, scales = "free_y") +
   theme_bw()
 
@@ -320,7 +321,9 @@ ggplot(my.data, aes(x, y)) +
   geom_point()
 
 ## ------------------------------------------------------------------------
-formula <- y ~ poly(x, 3, raw = TRUE)
+# formula <- y ~ poly(x, 3, raw = TRUE)
+# broom::augment does not handle poly correctly!
+formula <- y ~ x + I(x^2) + I(x^3)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
@@ -330,12 +333,155 @@ ggplot(my.data, aes(x, y)) +
                   aes(label = signif(..p.value.., digits = 4)))
 
 ## ------------------------------------------------------------------------
-formula <- y ~ poly(x, 3, raw = TRUE)
+# formula <- y ~ poly(x, 3, raw = TRUE)
+# broom::augment does not handle poly() correctly!
+formula <- y ~ x + I(x^2) + I(x^3)
 ggplot(my.data, aes(x, y, color = group)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
   stat_fit_glance(method = "lm", 
                   method.args = list(formula = formula),
-                  geom = "text",
-                  aes(label = signif(..p.value.., digits = 4)))
+                  geom = "text", 
+                  aes(label = paste("P-value = ", signif(..p.value.., digits = 4), sep = "")))
+
+## ------------------------------------------------------------------------
+# formula <- y ~ poly(x, 3, raw = TRUE)
+# broom::augment does not handle poly correctly!
+formula <- y ~ x + I(x^2) + I(x^3)
+ggplot(my.data, aes(x, y, color = group)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_fit_glance(method = "lm", 
+                  method.args = list(formula = formula),
+                  label.x.npc = "right",
+                  label.y.npc = "bottom",
+                  geom = "text", 
+                  aes(label = paste("P-value = ", signif(..p.value.., digits = 4), sep = "")))
+
+## ------------------------------------------------------------------------
+# formula <- y ~ poly(x, 3, raw = TRUE)
+# broom::augment does not handle poly correctly!
+formula <- y ~ x + I(x^2) + I(x^3)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_fit_augment(method = "lm",
+                   method.args = list(formula = formula))
+
+## ------------------------------------------------------------------------
+formula <- y ~ x + I(x^2) + I(x^3)
+ggplot(my.data, aes(x, y, color = group)) +
+  geom_point() +
+  stat_fit_augment(method = "lm", 
+                   method.args = list(formula = formula))
+
+## ------------------------------------------------------------------------
+ggplot(my.data, aes(x, y)) + stat_debug_group()
+
+## ------------------------------------------------------------------------
+ggplot(my.data, aes(x, y)) + geom_point() + stat_debug_group()
+
+## ------------------------------------------------------------------------
+ggplot(my.data, aes(x, y)) + geom_point() + stat_debug_panel()
+
+## ------------------------------------------------------------------------
+ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
+  stat_debug_group()
+
+## ------------------------------------------------------------------------
+ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
+  stat_debug_panel()
+
+## ------------------------------------------------------------------------
+ggplot(my.data, aes(x, y, shape = group)) + geom_point() + 
+  stat_debug_group()
+
+## ------------------------------------------------------------------------
+ggplot(my.data, aes(x, y, shape = group)) + geom_point() + 
+  stat_debug_group(geom = "label", vjust = c(-0.5,1.5))
+
+## ------------------------------------------------------------------------
+ggplot(my.data, aes(x, y)) + geom_point() + 
+  stat_debug_group(summary.fun = summary)
+
+## ------------------------------------------------------------------------
+ggplot(my.data, aes(x, y)) + geom_point() + 
+  stat_debug_group(summary.fun = head)
+
+## ------------------------------------------------------------------------
+ggplot(my.data, aes(x, y)) + geom_point() + 
+  stat_debug_group(summary.fun = nrow)
+
+## ------------------------------------------------------------------------
+ggplot(my.data, aes(x, y)) + geom_point() + 
+  stat_debug_group(summary.fun = dplyr::as_data_frame)
+
+## ------------------------------------------------------------------------
+ggplot(my.data, aes(x, y)) + geom_point() + 
+  stat_debug_group(summary.fun = head, summary.fun.args = list(n = 3))
+
+## ---- eval=FALSE---------------------------------------------------------
+#  ggplot(my.data, aes(x, y)) + geom_point() +
+#    stat_debug_group(summary.fun = function(x) {x})
+
+## ------------------------------------------------------------------------
+ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
+  stat_debug_group(summary.fun = head, summary.fun.args = list(n = 3))
+
+## ------------------------------------------------------------------------
+ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
+  stat_debug_group(summary.fun = nrow) +
+  facet_wrap(~block)
+
+## ------------------------------------------------------------------------
+ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
+  stat_debug_panel(summary.fun = nrow) +
+  facet_wrap(~block)
+
+## ------------------------------------------------------------------------
+ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
+  geom_debug(summary.fun = head)
+
+## ------------------------------------------------------------------------
+ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
+  stat_smooth(method = "lm",
+             geom = "debug", 
+             summary.fun = function(x) {x}, 
+             summary.fun.args = list())
+
+## ------------------------------------------------------------------------
+ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
+  stat_peaks(span = NULL,
+             geom = "debug", 
+             summary.fun = function(x) {x}, 
+             summary.fun.args = list())
+
+## ------------------------------------------------------------------------
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  stat_fit_residuals(formula = formula, 
+                     geom = "debug",
+                     summary.fun = dplyr::as_data_frame, 
+                     summary.fun.args = list())
+
+## ------------------------------------------------------------------------
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y, color = group)) +
+  geom_point() +
+  stat_fit_augment(method = "lm", 
+                   method.args = list(formula = formula),
+                   geom = "debug",
+                     summary.fun = dplyr::as_data_frame, 
+                     summary.fun.args = list(),
+                   aes(y = ...fitted..,
+                       ymax = ...fitted.. + ...se.fit.. * 2,
+                       ymin = ...fitted.. - ...se.fit.. * 2))+
+  stat_fit_augment(method = "lm", 
+                   method.args = list(formula = formula),
+                   geom = "smooth",
+                   aes(y = ...fitted..,
+                       ymax = ...fitted.. + ...se.fit.. * 2,
+                       ymin = ...fitted.. - ...se.fit.. * 2))
+
+## ------------------------------------------------------------------------
+ggplot(my.data, aes(x, y, colour = group)) + geom_null()
 

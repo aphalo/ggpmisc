@@ -6,8 +6,9 @@
 \usage{
 stat_poly_eq(mapping = NULL, data = NULL, geom = "text", formula = NULL,
   eq.with.lhs = "italic(y)~`=`~", eq.x.rhs = "~italic(x)",
-  label.x = "left", label.y = "top", position = "identity",
-  na.rm = FALSE, show.legend = FALSE, inherit.aes = TRUE, ...)
+  label.x.npc = "left", label.y.npc = "top", label.x = NULL,
+  label.y = NULL, position = "identity", na.rm = FALSE,
+  show.legend = FALSE, inherit.aes = TRUE, ...)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
@@ -28,8 +29,12 @@ of the equation label before parsing or a \code{logical} (see note).}
 for \code{"x"} in the model equation when generating the label before
 parsing it.}
 
-\item{label.x, label.y}{\code{numeric} Coordinates to be used in output. If
-too short they will be recycled.}
+\item{label.x.npc, label.y.npc}{\code{numeric} with range 0..1 or character.
+Coordinates to be used for positioning the output, expresed in "normalized
+parent coordinates" or character string. If too short they will be recycled.}
+
+\item{label.x, label.y}{\code{numeric} Coordinates (in data units) to be used
+for absolute positioning of the output. If too short they will be recycled.}
 
 \item{position}{The position adjustment to use for overlapping points on this
 layer}
