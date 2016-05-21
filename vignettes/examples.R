@@ -5,10 +5,11 @@ opts_chunk$set(fig.path = 'figure/pos-', fig.align = 'center', fig.show = 'hold'
 options(warnPartialMatchArgs = FALSE)
 
 ## ------------------------------------------------------------------------
-library(ggplot2)
 library(ggpmisc)
+library(ggplot2)
 library(xts)
 library(lubridate)
+library(tibble)
 
 ## ------------------------------------------------------------------------
 class(austres)
@@ -413,7 +414,7 @@ ggplot(my.data, aes(x, y)) + geom_point() +
 
 ## ------------------------------------------------------------------------
 ggplot(my.data, aes(x, y)) + geom_point() + 
-  stat_debug_group(summary.fun = dplyr::as_data_frame)
+  stat_debug_group(summary.fun = as_data_frame)
 
 ## ------------------------------------------------------------------------
 ggplot(my.data, aes(x, y)) + geom_point() + 
@@ -445,14 +446,14 @@ ggplot(my.data, aes(x, y, colour = group)) + geom_point() +
 ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
   stat_smooth(method = "lm",
              geom = "debug", 
-             summary.fun = function(x) {x}, 
+             summary.fun = as_data_frame, 
              summary.fun.args = list())
 
 ## ------------------------------------------------------------------------
 ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
   stat_peaks(span = NULL,
              geom = "debug", 
-             summary.fun = function(x) {x}, 
+             summary.fun = as_data_frame, 
              summary.fun.args = list())
 
 ## ------------------------------------------------------------------------
@@ -460,7 +461,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   stat_fit_residuals(formula = formula, 
                      geom = "debug",
-                     summary.fun = dplyr::as_data_frame, 
+                     summary.fun = as_data_frame, 
                      summary.fun.args = list())
 
 ## ------------------------------------------------------------------------
@@ -470,7 +471,7 @@ ggplot(my.data, aes(x, y, color = group)) +
   stat_fit_augment(method = "lm", 
                    method.args = list(formula = formula),
                    geom = "debug",
-                     summary.fun = dplyr::as_data_frame, 
+                     summary.fun = as_data_frame, 
                      summary.fun.args = list(),
                    aes(y = ...fitted..,
                        ymax = ...fitted.. + ...se.fit.. * 2,

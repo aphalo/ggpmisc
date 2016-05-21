@@ -19,11 +19,23 @@ options(warnPartialMatchArgs = FALSE)
 ## Preliminaries
 
 ```{r}
-library(ggplot2)
 library(ggpmisc)
+library(ggplot2)
 library(xts)
 library(lubridate)
+library(tibble)
 ```
+
+## Introduction
+
+Many of the functions, including ggplot statistics and geoms, included in package 
+'ggpmisc' had their origin in my need to produce plots for use in teaching.
+Some of them are more generaly useful, such as `stat_poly_eq()`, but others
+like `stat_fit_deviations()` are squarely aimed and producing learning material.
+Finally, several statistics for debugging and learning how ggplot statistics
+and geoms interact with each other will be of use only to developers of new
+statistics and geoms. Function `try_data_frame()` opens the door to easily
+converting time series objects into data frames for plotting with `ggplot()`.
 
 ## `try_data_frame()`
 
@@ -346,6 +358,10 @@ ggplot(my.data, aes(x, y2, colour = group)) +
   theme_bw()
 ```
 
+Label positions relative to the ranges of the _x_ and _y_ scales are also
+supported, both through string constants and numeric values in the range
+0 to 1.
+
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2, colour = group)) +
@@ -365,6 +381,10 @@ ggplot(my.data, aes(x, y2, colour = group)) +
                formula = formula, parse = TRUE, label.y.npc = 0.75) +
   theme_bw()
 ```
+
+The default locations are now based on normalized coordinates, and conswquently
+these defaults work even when the range of the _x_ and _y_ scales varies from
+panel to panel.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -592,7 +612,7 @@ The default.
 
 ```{r}
 ggplot(my.data, aes(x, y)) + geom_point() + 
-  stat_debug_group(summary.fun = dplyr::as_data_frame)
+  stat_debug_group(summary.fun = as_data_frame)
 ```
 
 ```{r}
@@ -643,7 +663,7 @@ And also to print to the console the data returned by a stat.
 ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
   stat_smooth(method = "lm",
              geom = "debug", 
-             summary.fun = function(x) {x}, 
+             summary.fun = as_data_frame, 
              summary.fun.args = list())
 ```
 
@@ -651,7 +671,7 @@ ggplot(my.data, aes(x, y, colour = group)) + geom_point() +
 ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
   stat_peaks(span = NULL,
              geom = "debug", 
-             summary.fun = function(x) {x}, 
+             summary.fun = as_data_frame, 
              summary.fun.args = list())
 ```
 
@@ -660,7 +680,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   stat_fit_residuals(formula = formula, 
                      geom = "debug",
-                     summary.fun = dplyr::as_data_frame, 
+                     summary.fun = as_data_frame, 
                      summary.fun.args = list())
 ```
 
@@ -671,7 +691,7 @@ ggplot(my.data, aes(x, y, color = group)) +
   stat_fit_augment(method = "lm", 
                    method.args = list(formula = formula),
                    geom = "debug",
-                     summary.fun = dplyr::as_data_frame, 
+                     summary.fun = as_data_frame, 
                      summary.fun.args = list(),
                    aes(y = ...fitted..,
                        ymax = ...fitted.. + ...se.fit.. * 2,
@@ -684,8 +704,9 @@ ggplot(my.data, aes(x, y, color = group)) +
                        ymin = ...fitted.. - ...se.fit.. * 2))
 ```
 
-The package also defines a "null" geom, which is used as default by the _debug_
-_stats_ described above.
+The package also defines a `"null"` geom, which is used as default by the _debug_
+_stats_ described above. Currently this geom is similar to the recently added 
+`ggplot2::geom_blank()`, which should be preferred.
 
 ```{r}
 ggplot(my.data, aes(x, y, colour = group)) + geom_null()

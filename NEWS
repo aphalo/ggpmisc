@@ -1,15 +1,33 @@
 ggpmisc 0.2.8
 =============
 
-Add stat_fit_deviations() for easily highlighting residuals in plots of fitted
-models, and stat_fit_residuals() for easily plotting residuals in plots matching
-plots of lm fits plotted with stat_smooth() even with grouping or facets. They
-support lm() fits only.
+Enhance stat_poly_eq() so that 1) position of labels according to npc (relative
+positions using normalized coordinates), as well as by named positions "top",
+"bottom", "right", "left" and "center" is now implemented; 2) when grouping is
+present, suitable vjust values are computed to automatically position the
+labels for the different groups without overlap. Default label positions are
+now relative to the range of each panel's $x$ and $y$ scales, eliminating in
+most cases the need to manually tweak label positions.
 
 Add stat_fit_glance() uses package 'broom' for maximum flexibility in model
-function choice at the expense of very frequently having to set aesthetics.
+function choice when wanting to add labels based on information from a model
+fit, at the expense of very frequently having to explicitly set aesthetics,
+and always having to add code to do the formatting of the values to be used
+in labels. Label position is as described above for stat_poly_eq().
 
-Add preliminary version of stat_fit_augment().
+Add stat_fit_deviations() for highlighting residuals in plots of fitted
+models. This statistic currently supports only lm() fits. By default geom
+"segment" is used to highlight the deviations of the observations from a
+fitted model.
+
+Add stat_fit_residuals() for plotting residuals from a fitted model on their
+own in plots matching plots of lm fits plotted with stat_smooth() even with
+grouping or facets. This statistic currently supports only lm() fits.
+By default geom "point" is used to plot the residual from a fitted model.
+
+Add preliminary version of stat_fit_augment(), which uses package 'broom' for
+maximum flexibility in model function choice, to augment the data with
+additional columns of values derived from a model fit.
 
 ggpmisc 0.2.7
 =============
