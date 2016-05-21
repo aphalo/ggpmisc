@@ -73,7 +73,7 @@ my.data <- data.frame(x, y, group = c("A", "B"), y2 = y * c(0.5,2))
 my.formula <- y ~ poly(x, 3, raw = TRUE)
 # plot
 ggplot(my.data, aes(x, y)) +
-  stat_fit_residuals(formula = my.formula, resid.type = "")
+  stat_fit_residuals(formula = my.formula, resid.type = "working")
 
 }
 

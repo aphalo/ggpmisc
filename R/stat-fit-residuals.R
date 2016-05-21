@@ -50,7 +50,7 @@
 #' my.formula <- y ~ poly(x, 3, raw = TRUE)
 #' # plot
 #' ggplot(my.data, aes(x, y)) +
-#'   stat_fit_residuals(formula = my.formula, resid.type = "")
+#'   stat_fit_residuals(formula = my.formula, resid.type = "working")
 #'
 #' @export
 #'

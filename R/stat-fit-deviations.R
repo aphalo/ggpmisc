@@ -53,10 +53,9 @@
 #' my.formula <- y ~ poly(x, 3, raw = TRUE)
 #' # plot
 #' ggplot(my.data, aes(x, y)) +
-#'   geom_point() +
 #'   geom_smooth(method = "lm", formula = my.formula) +
-#'   stat_poly_eq(formula = my.formula, parse = TRUE) +
-#'   stat_fit_residuals(formula = my.formula)
+#'   stat_fit_deviations(formula = my.formula, color = "red") +
+#'   geom_point()
 #'
 #' @export
 #'
