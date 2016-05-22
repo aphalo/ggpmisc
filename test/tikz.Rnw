@@ -1,11 +1,13 @@
 \documentclass{article}
 
+\usepackage{tikz}
+
 \begin{document}
 
 <<setup, include=FALSE, cache=FALSE>>=
 library(knitr)
 opts_chunk$set(fig.path = 'figure/pos-', fig.align = 'center', fig.show = 'hold',
-               fig.width = 7, fig.height = 6, size = "footnotesize", dev="tikz")
+               fig.width = 5, fig.height = 4, size = "footnotesize", dev="tikz")
 # options(replace.assign=TRUE,width=60)
 options(warnPartialMatchArgs = FALSE)
 @
@@ -34,9 +36,11 @@ str(my.data)
 # plot
 ggplot(data = my.data, mapping=aes(x = x, y = y2, colour = group)) +
   geom_point() +
-  geom_smooth(method = "lm", se =  FALSE, formula = y ~ poly(x=x, degree = 2, raw = TRUE)) +
+  geom_smooth(method = "lm", se =  FALSE,
+              formula = y ~ poly(x=x, degree = 2, raw = TRUE)) +
   stat_poly_eq(
-    mapping     = aes(label = paste("$", ..eq.label.., "$\\ \\ \\ $", ..rr.label.., "$", sep = ""))
+    mapping     = aes(label = paste("$", ..eq.label.., "$\\ \\ \\ $",
+                                    ..rr.label.., "$", sep = ""))
     , geom        = "text"
     , formula     = y ~ poly(x, 2, raw = TRUE)
     , eq.with.lhs = "\\hat{Y} = "

@@ -48,6 +48,8 @@
 \newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
 
 \usepackage{alltt}
+
+\usepackage{tikz}
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 
@@ -95,9 +97,11 @@
 \hlcom{# plot}
 \hlkwd{ggplot}\hlstd{(}\hlkwc{data} \hlstd{= my.data,} \hlkwc{mapping}\hlstd{=}\hlkwd{aes}\hlstd{(}\hlkwc{x} \hlstd{= x,} \hlkwc{y} \hlstd{= y2,} \hlkwc{colour} \hlstd{= group))} \hlopt{+}
   \hlkwd{geom_point}\hlstd{()} \hlopt{+}
-  \hlkwd{geom_smooth}\hlstd{(}\hlkwc{method} \hlstd{=} \hlstr{"lm"}\hlstd{,} \hlkwc{se} \hlstd{=}  \hlnum{FALSE}\hlstd{,} \hlkwc{formula} \hlstd{= y} \hlopt{~} \hlkwd{poly}\hlstd{(}\hlkwc{x}\hlstd{=x,} \hlkwc{degree} \hlstd{=} \hlnum{2}\hlstd{,} \hlkwc{raw} \hlstd{=} \hlnum{TRUE}\hlstd{))} \hlopt{+}
+  \hlkwd{geom_smooth}\hlstd{(}\hlkwc{method} \hlstd{=} \hlstr{"lm"}\hlstd{,} \hlkwc{se} \hlstd{=}  \hlnum{FALSE}\hlstd{,}
+              \hlkwc{formula} \hlstd{= y} \hlopt{~} \hlkwd{poly}\hlstd{(}\hlkwc{x}\hlstd{=x,} \hlkwc{degree} \hlstd{=} \hlnum{2}\hlstd{,} \hlkwc{raw} \hlstd{=} \hlnum{TRUE}\hlstd{))} \hlopt{+}
   \hlkwd{stat_poly_eq}\hlstd{(}
-    \hlkwc{mapping}     \hlstd{=} \hlkwd{aes}\hlstd{(}\hlkwc{label} \hlstd{=} \hlkwd{paste}\hlstd{(}\hlstr{"$"}\hlstd{, ..eq.label..,} \hlstr{"$\textbackslash{}\textbackslash{} \textbackslash{}\textbackslash{} \textbackslash{}\textbackslash{} $"}\hlstd{, ..rr.label..,} \hlstr{"$"}\hlstd{,} \hlkwc{sep} \hlstd{=} \hlstr{""}\hlstd{))}
+    \hlkwc{mapping}     \hlstd{=} \hlkwd{aes}\hlstd{(}\hlkwc{label} \hlstd{=} \hlkwd{paste}\hlstd{(}\hlstr{"$"}\hlstd{, ..eq.label..,} \hlstr{"$\textbackslash{}\textbackslash{} \textbackslash{}\textbackslash{} \textbackslash{}\textbackslash{} $"}\hlstd{,}
+                                    \hlstd{..rr.label..,} \hlstr{"$"}\hlstd{,} \hlkwc{sep} \hlstd{=} \hlstr{""}\hlstd{))}
     \hlstd{,} \hlkwc{geom}        \hlstd{=} \hlstr{"text"}
     \hlstd{,} \hlkwc{formula}     \hlstd{= y} \hlopt{~} \hlkwd{poly}\hlstd{(x,} \hlnum{2}\hlstd{,} \hlkwc{raw} \hlstd{=} \hlnum{TRUE}\hlstd{)}
     \hlstd{,} \hlkwc{eq.with.lhs} \hlstd{=} \hlstr{"\textbackslash{}\textbackslash{}hat\{Y\} = "}

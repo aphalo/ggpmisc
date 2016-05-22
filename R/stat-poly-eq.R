@@ -191,7 +191,6 @@ poly_eq_compute_group_fun <- function(data,
   if (eq.with.lhs) {
     eq.char <- paste(lhs, eq.char, sep = "")
   }
-  print(eq.char)
   rr.char <- format(rr, digits = 2)
   adj.rr.char <- format(adj.rr, digits = 2)
   AIC.char <- sprintf("%.4g", AIC)
@@ -250,15 +249,15 @@ poly_eq_compute_group_fun <- function(data,
         warning("'label.y.npc' argument is numeric but outside range 0..1.")
       }
       z$y <- scales$y$dimension()[1] + label.y.npc *
-        diff(scales$y$dimension())
-      z$vjust <- 1.4 * group.idx - (0.7 * length(group.idx))
+        (scales$y$dimension()[2] - scales$y$dimension()[1])
+      z$vjust <- 1.4 * (group.idx - 1) - (0.7 * (length(group.idx) - 1))
     } else if (is.character(label.y.npc)) {
       if (label.y.npc == "bottom") {
         z$y <- scales$y$dimension()[1]
         z$vjust <- -1.4 * group.idx
       } else if (label.y.npc %in% c("center", "centre", "middle")) {
         z$y <- mean(scales$y$dimension())
-        z$vjust <- 1.4 * group.idx - (0.7 * length(group.idx))
+        z$vjust <- 1.4 * (group.idx - 1) - (0.7 * (length(group.idx) - 1))
       } else if (label.y.npc == "top") {
         z$y <- scales$y$dimension()[2]
         z$vjust <- 1.4 * group.idx
