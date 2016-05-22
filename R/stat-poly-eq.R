@@ -34,6 +34,7 @@
 #'   parent coordinates" or character string. If too short they will be recycled.
 #' @param label.x,label.y \code{numeric} Coordinates (in data units) to be used
 #'   for absolute positioning of the output. If too short they will be recycled.
+#' @param output.type character One of "expression", "LaTex" or "text".
 #'
 #' @note For backward compatibility a logical is accepted as argument for
 #'   \code{eq.with.lhs}, giving the same output than the current default
@@ -88,9 +89,10 @@
 stat_poly_eq <- function(mapping = NULL, data = NULL, geom = "text",
                          formula = NULL,
                          eq.with.lhs = "italic(y)~`=`~",
-                         eq.x.rhs = "~italic(x)",
+                         eq.x.rhs = NULL,
                          label.x.npc = "left", label.y.npc = "top",
                          label.x = NULL, label.y = NULL,
+                         output.type = "expression",
                          position = "identity",
                          na.rm = FALSE, show.legend = FALSE,
                          inherit.aes = TRUE, ...) {
@@ -104,6 +106,7 @@ stat_poly_eq <- function(mapping = NULL, data = NULL, geom = "text",
                   label.y.npc = label.y.npc,
                   label.x = label.x,
                   label.y = label.y,
+                  output.type = output.type,
                   na.rm = na.rm,
                   ...)
   )
@@ -124,7 +127,14 @@ poly_eq_compute_group_fun <- function(data,
                                      label.x.npc,
                                      label.y.npc,
                                      label.x,
-                                     label.y) {
+                                     label.y,
+                                     output.type) {
+  output.type = tolower(output.type)
+  if (is.null(eq.x.rhs) && output.type == "expression") {
+    eq.x.rhs = "~italic(x)"
+  } else {
+    eq.x.rhs = " x"
+  }
   if (length(unique(data$x)) < 2) {
     # Not enough data to perform fit
     return(data.frame())
@@ -165,25 +175,42 @@ poly_eq_compute_group_fun <- function(data,
   adj.rr <- summary(mf)$adj.r.squared
   eq.char <- as.character(signif(polynom::as.polynomial(coefs), 3))
   eq.char <- gsub("e([+-]?[0-9]*)", "%*%10^\\1", eq.char)
+  if (output.type %in% c("latex", "tex", "tikz")) {
+    eq.char <- gsub("*", " ", eq.char, fixed = TRUE)
+  }
   if (is.character(eq.with.lhs)) {
     lhs <- eq.with.lhs
     eq.with.lhs <- TRUE
   } else if (eq.with.lhs) {
-    lhs <- "italic(y)~`=`~"
+    if (output.type == "expression") {
+      lhs <- "italic(y)~`=`~"
+     } else if (output.type %in% c("latex", "tex", "tikz", "text")) {
+       lhs <- "y = "
+     }
   }
   if (eq.with.lhs) {
     eq.char <- paste(lhs, eq.char, sep = "")
   }
+  print(eq.char)
   rr.char <- format(rr, digits = 2)
   adj.rr.char <- format(adj.rr, digits = 2)
   AIC.char <- sprintf("%.4g", AIC)
   BIC.char <- sprintf("%.4g", BIC)
-  z <- data.frame(eq.label = gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
-             rr.label = paste("italic(R)^2", rr.char, sep = "~`=`~"),
-             adj.rr.label = paste("italic(R)[adj]^2",
-                                  adj.rr.char, sep = "~`=`~"),
-             AIC.label = paste("AIC", AIC.char, sep = "~`=`~"),
-             BIC.label = paste("BIC", BIC.char, sep = "~`=`~"))
+  if (output.type == "expression") {
+    z <- data.frame(eq.label = gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
+                    rr.label = paste("italic(R)^2", rr.char, sep = "~`=`~"),
+                    adj.rr.label = paste("italic(R)[adj]^2",
+                                         adj.rr.char, sep = "~`=`~"),
+                    AIC.label = paste("AIC", AIC.char, sep = "~`=`~"),
+                    BIC.label = paste("BIC", BIC.char, sep = "~`=`~"))
+  } else if (output.type %in% c("latex", "tex", "text")) {
+    z <- data.frame(eq.label = gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
+                    rr.label = paste("R^2", rr.char, sep = " = "),
+                    adj.rr.label = paste("R_{adj}^2",
+                                         adj.rr.char, sep = " = "),
+                    AIC.label = paste("AIC", AIC.char, sep = " = "),
+                    BIC.label = paste("BIC", BIC.char, sep = " = "))
+  }
 
   if (length(label.x) > 0) {
     z$x <- label.x

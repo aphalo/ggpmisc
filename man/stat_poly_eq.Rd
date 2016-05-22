@@ -5,9 +5,9 @@
 \title{Add a label for a fitted linear model to a plot.}
 \usage{
 stat_poly_eq(mapping = NULL, data = NULL, geom = "text", formula = NULL,
-  eq.with.lhs = "italic(y)~`=`~", eq.x.rhs = "~italic(x)",
-  label.x.npc = "left", label.y.npc = "top", label.x = NULL,
-  label.y = NULL, position = "identity", na.rm = FALSE,
+  eq.with.lhs = "italic(y)~`=`~", eq.x.rhs = NULL, label.x.npc = "left",
+  label.y.npc = "top", label.x = NULL, label.y = NULL,
+  output.type = "expression", position = "identity", na.rm = FALSE,
   show.legend = FALSE, inherit.aes = TRUE, ...)
 }
 \arguments{
@@ -35,6 +35,8 @@ parent coordinates" or character string. If too short they will be recycled.}
 
 \item{label.x, label.y}{\code{numeric} Coordinates (in data units) to be used
 for absolute positioning of the output. If too short they will be recycled.}
+
+\item{output.type}{character One of "expression", "LaTex" or "text".}
 
 \item{position}{The position adjustment to use for overlapping points on this
 layer}
