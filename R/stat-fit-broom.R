@@ -84,29 +84,30 @@ fit_glance_compute_group_fun <- function(data,
   group.idx <- abs(data$group[1])
   if (length(label.x.npc) >= group.idx) {
     label.x.npc <- label.x.npc[group.idx]
-  } else {
+  } else if (length(label.x.npc) > 0) {
     label.x.npc <- label.x.npc[1]
   }
   if (length(label.y.npc) >= group.idx) {
     label.y.npc <- label.y.npc[group.idx]
-  } else {
+  } else if (length(label.y.npc) > 0) {
     label.y.npc <- label.y.npc[1]
   }
 
   if (length(label.x) >= group.idx) {
     label.x <- label.x[group.idx]
-  } else {
+  } else if (length(label.x) > 0) {
     label.x <- label.x[1]
   }
   if (length(label.y) >= group.idx) {
     label.y <- label.y[group.idx]
-  } else {
+  } else if (length(label.y) > 0) {
     label.y <- label.y[1]
   }
 
   method.args <- c(method.args, list(data = quote(data)))
   if (is.character(method)) method <- match.fun(method)
-  z <- broom::glance(do.call(method, method.args))
+  mf <- do.call(method, method.args)
+  z <- broom::glance(mf)
   print(z)
 
   if (length(label.x) > 0) {
@@ -247,7 +248,16 @@ stat_fit_augment <- function(mapping = NULL, data = NULL, geom = "smooth",
 fit_augment_compute_group_fun <- function(data,
                                           scales,
                                           method,
-                                          method.args) {
+                                          method.args,
+                                          ...) {
+
+  unAsIs <- function(X) {
+    if ("AsIs" %in% class(X)) {
+      class(X) <- class(X)[-match("AsIs", class(X))]
+    }
+    X
+  }
+
   if (length(unique(data[["x"]])) < 2) {
     # Not enough data to perform fit
     return(data.frame())
@@ -256,10 +266,13 @@ fit_augment_compute_group_fun <- function(data,
   method.args <- c(method.args, list(data = quote(data)))
   if (is.character(method)) method <- match.fun(method)
   mf <- do.call(method, method.args)
-  z <- broom::augment(mf)
+#  print(mf)
+  z <- broom::augment(mf, ...)
+#  print(z)
+  z <- plyr::colwise(unAsIs)(z)
+  tibble::as_data_frame(z)
   z[["y.observed"]] <- z[["y"]]
   z[["y"]] <- z[[".fitted"]]
-#  print(dplyr::as_data_frame(z))
   z
 }
 

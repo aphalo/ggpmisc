@@ -2,7 +2,7 @@ Package: ggpmisc
 Type: Package
 Title: Miscellaneous Extensions to 'ggplot2'
 Version: 0.2.8.9001
-Date: 2016-06-06
+Date: 2016-06-09
 Author: Pedro J. Aphalo [aut, cre]
 Maintainer: Pedro J. Aphalo <pedro.aphalo@helsinki.fi>
 Description: Extensions to 'ggplot2' respecting the grammar of graphics
@@ -23,6 +23,7 @@ Imports:
     ggplot2 (>= 2.1.0),
     polynom (>= 1.3-8),
     splus2R (>= 1.2-0),
+    plyr (>= 1.8.3),
     dplyr (>= 0.4.3),
     xts (>= 0.9-7),
     zoo (>= 1.7-13),

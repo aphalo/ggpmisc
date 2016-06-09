@@ -141,25 +141,26 @@ poly_eq_compute_group_fun <- function(data,
   }
   group.idx <- abs(data$group[1])
 
+  group.idx <- abs(data$group[1])
   if (length(label.x.npc) >= group.idx) {
     label.x.npc <- label.x.npc[group.idx]
-  } else {
+  } else if (length(label.x.npc) > 0) {
     label.x.npc <- label.x.npc[1]
   }
   if (length(label.y.npc) >= group.idx) {
     label.y.npc <- label.y.npc[group.idx]
-  } else {
+  } else if (length(label.y.npc) > 0) {
     label.y.npc <- label.y.npc[1]
   }
 
   if (length(label.x) >= group.idx) {
     label.x <- label.x[group.idx]
-  } else {
+  } else if (length(label.x) > 0) {
     label.x <- label.x[1]
   }
   if (length(label.y) >= group.idx) {
     label.y <- label.y[group.idx]
-  } else {
+  } else if (length(label.y) > 0) {
     label.y <- label.y[1]
   }
 

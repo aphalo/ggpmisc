@@ -108,6 +108,3 @@ StatFitResiduals <-
   )
 
 
-# standardized residuals --------------------------------------------------
-
-
