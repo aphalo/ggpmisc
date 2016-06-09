@@ -465,17 +465,30 @@ ggplot(my.data, aes(x, y)) +
                      summary.fun.args = list())
 
 ## ------------------------------------------------------------------------
-formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y, color = group)) +
+formula <- y ~ x + I(x^2) + I(x^3)
+ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_fit_augment(method = "lm", 
                    method.args = list(formula = formula),
                    geom = "debug",
-                     summary.fun = as_data_frame, 
-                     summary.fun.args = list(),
+                   summary.fun = tibble::as_data_frame, 
+                   summary.fun.args = list()) +
+  stat_fit_augment(method = "lm", 
+                   method.args = list(formula = formula),
+                   geom = "smooth",
                    aes(y = ...fitted..,
                        ymax = ...fitted.. + ...se.fit.. * 2,
-                       ymin = ...fitted.. - ...se.fit.. * 2))+
+                       ymin = ...fitted.. - ...se.fit.. * 2))
+
+## ------------------------------------------------------------------------
+formula <- y ~ x + I(x^2) + I(x^3)
+ggplot(my.data, aes(x, y2, colour = group)) +
+  geom_point() +
+  stat_fit_augment(method = "lm", 
+                   method.args = list(formula = formula),
+                   geom = "debug",
+                   summary.fun = tibble::as_data_frame, 
+                   summary.fun.args = list()) +
   stat_fit_augment(method = "lm", 
                    method.args = list(formula = formula),
                    geom = "smooth",

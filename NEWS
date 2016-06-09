@@ -1,7 +1,9 @@
 ggpmisc 0.2.9
 =============
 
-Add support for tikz to stat_poly_eq().
+Add support for tikz in stat_poly_eq().
+Fix bug in stat_poly_eq().
+Fix bug in geom_debug().
 
 ggpmisc 0.2.8
 =============

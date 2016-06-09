@@ -241,7 +241,7 @@ poly_eq_compute_group_fun <- function(data,
   }
 
   if (length(label.y) > 0) {
-    z$x <- label.y
+    z$y <- label.y
     z$vjust <- 0.5
   } else if (length(label.y.npc) > 0) {
     if (is.numeric(label.y.npc)) {

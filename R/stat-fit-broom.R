@@ -107,6 +107,7 @@ fit_glance_compute_group_fun <- function(data,
   method.args <- c(method.args, list(data = quote(data)))
   if (is.character(method)) method <- match.fun(method)
   z <- broom::glance(do.call(method, method.args))
+  print(z)
 
   if (length(label.x) > 0) {
     z$x <- label.x
@@ -247,10 +248,11 @@ fit_augment_compute_group_fun <- function(data,
                                           scales,
                                           method,
                                           method.args) {
-  if (length(unique(data$x)) < 2) {
+  if (length(unique(data[["x"]])) < 2) {
     # Not enough data to perform fit
     return(data.frame())
   }
+#  print(tibble::as_data_frame(data))
   method.args <- c(method.args, list(data = quote(data)))
   if (is.character(method)) method <- match.fun(method)
   mf <- do.call(method, method.args)

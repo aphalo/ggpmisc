@@ -84,10 +84,10 @@ GeomDebug <-
                                          summary.fun,
                                          summary.fun.args) {
                      if (!is.null(summary.fun)) {
-                       data.summary <-  do.call(summary.fun,
-                                                c(quote(data), summary.fun.args))
-                       print("Input 'data' to 'geom_debug()':")
-                       print(data.summary)
+                       message("Input 'data' to 'geom_debug()':")
+                       print(
+                       do.call(summary.fun, c(quote(data), summary.fun.args))
+                       )
                      }
                      grid::nullGrob()
                    }
@@ -137,7 +137,8 @@ GeomDebug <-
 #' @export
 #'
 geom_debug <- function(mapping = NULL, data = NULL, stat = "identity",
-                       summary.fun = NULL, summary.fun.args = list(),
+                       summary.fun = tibble::as_data_frame,
+                       summary.fun.args = list(),
                        position = "identity", na.rm = FALSE,
                        show.legend = FALSE,
                        inherit.aes = TRUE, ...) {
