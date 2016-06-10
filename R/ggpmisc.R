@@ -9,7 +9,10 @@
 #' \item Stats for locating and tagging "peaks" and "valleys" (local or global
 #'  maxima and minima).
 #' \item Stat for generating labels from a \code{lm()} model fit, including
-#' formatted equation.
+#' formatted equation. By default labels are expressions but tikz device is
+#' supported optionally with LaTeX formatted labels.
+#' \item Stats for extracting information from a any model fit supported by
+#' package 'broom'.
 #' \item "Debug" stats and a "debug" geom that print to the console a summary
 #' ot their \code{data} input.
 #' }

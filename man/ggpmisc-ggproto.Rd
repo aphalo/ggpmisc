@@ -10,11 +10,13 @@
 \alias{StatFitDeviations}
 \alias{StatFitGlance}
 \alias{StatFitResiduals}
+\alias{StatPanelFitAugment}
 \alias{StatPeaks}
 \alias{StatPolyEq}
 \alias{StatValleys}
 \alias{Stats}
 \alias{fit_augment_compute_group_fun}
+\alias{fit_augment_compute_panel_fun}
 \alias{fit_glance_compute_group_fun}
 \alias{peaks_compute_group_fun}
 \alias{poly_eq_compute_group_fun}

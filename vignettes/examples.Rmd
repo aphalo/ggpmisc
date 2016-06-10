@@ -24,6 +24,7 @@ library(ggplot2)
 library(xts)
 library(lubridate)
 library(tibble)
+library(nlme)
 ```
 
 ## Introduction
@@ -514,7 +515,10 @@ ggplot(my.data, aes(x, y, color = group)) +
 
 ## `stat_fit_augment`
 
-Experimental! Use ggplot2::stat_smooth() instead.
+**Experimental!** 
+Use `ggplot2::stat_smooth` instead of `stat_fit_augment` if possible.
+
+For a single panel and no grouping, there is little advantage in using this statistic compared to the examples in the documentation of package 'broom'. With grouping and faceting `stat_fit_augment` may occasionally be more convenient than `ggplot2::stat_smooth` because of its flexibility.
 
 ```{r}
 # formula <- y ~ poly(x, 3, raw = TRUE)
@@ -532,6 +536,82 @@ ggplot(my.data, aes(x, y, color = group)) +
   geom_point() +
   stat_fit_augment(method = "lm", 
                    method.args = list(formula = formula))
+```
+
+We can override the variable returned as \code{y} to be any of the variables in the data frame returned by `broom::augment` while still preserving the original _y_ values. 
+
+```{r}
+formula <- y ~ x + I(x^2) + I(x^3)
+ggplot(my.data, aes(x, y)) +
+  stat_fit_augment(method = "lm",
+                   method.args = list(formula = formula),
+                   geom = "point",
+                   y.out = ".resid")
+```
+
+```{r}
+formula <- y ~ x + I(x^2) + I(x^3)
+ggplot(my.data, aes(x, y, color = group)) +
+  stat_fit_augment(method = "lm",
+                   method.args = list(formula = formula),
+                   geom = "point",
+                   y.out = ".std.resid")
+```
+
+```{r, eval=FALSE}
+formula <- y ~ x + I(x^2) + I(x^3)
+ggplot(my.data, aes(x, y, color = group)) +
+  stat_panel_fit_augment(method = "lm",
+                   method.args = list(formula = formula))
+```
+
+We can use any model fitting method for which `augment` is implemented.
+
+```{r}
+args <- list(formula = y ~ k * e ^ x,
+             start = list(k = 1, e = 2))
+ggplot(mtcars, aes(wt, mpg)) +
+  geom_point() +
+  stat_fit_augment(method = "nls",
+                   method.args = args)
+```
+
+```{r}
+args <- list(formula = y ~ k * e ^ x,
+             start = list(k = 1, e = 2))
+ggplot(mtcars, aes(wt, mpg)) +
+  stat_fit_augment(method = "nls",
+                   method.args = args,
+                   geom = "point",
+                   y.out = ".resid")
+```
+
+```{r}
+args <- list(model = y ~ SSlogis(x, Asym, xmid, scal),
+             fixed = Asym + xmid + scal ~1,
+             random = Asym ~1 | group,
+             start = c(Asym = 200, xmid = 725, scal = 350))
+ggplot(Orange, aes(age, circumference, color = Tree)) +
+  geom_point() +
+  stat_fit_augment(method = "nlme",
+                   method.args = args,
+                   augment.args = list(data = quote(data)))
+```
+
+```{r, eval=FALSE}
+args <- list(model = y ~ SSlogis(x, Asym, xmid, scal),
+             fixed = Asym + xmid + scal ~1,
+             random = Asym~1 | group,
+             start = c(Asym = 200, xmid = 725, scal = 350))
+ggplot(Orange, aes(age, circumference, colour = Tree)) +
+  geom_point() +
+  stat_panel_fit_augment(method = "nlme",
+                         method.args = args,
+                         augment.args = list(data = quote(data)),
+                         y.out = ".fixed",
+                         geom = "debug",
+                         summary.fun = as_data_frame,
+                         summary.fun.args = list(n = 20))
 ```
 
 ## Debugging ggplots
