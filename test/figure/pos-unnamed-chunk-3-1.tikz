@@ -1,4 +1,4 @@
-% Created by tikzDevice version 0.10.1 on 2016-05-22 23:58:06
+% Created by tikzDevice version 0.10.1 on 2016-06-16 21:34:51
 % !TEX encoding = UTF-8 Unicode
 \documentclass{article}
 \nonstopmode
@@ -665,10 +665,10 @@
 	(288.84,256.03);
 \definecolor{drawColor}{RGB}{248,118,109}
 
-\node[text=drawColor,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  1.10] at ( 71.33,259.57) {$\hat{Y} = 13900 - 2230  x + 67.5  x^2$\ \ \ $R^2 = 0.96$};
+\node[text=drawColor,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  1.10] at ( 71.33,261.09) {$\hat{Y} = 13900 - 2230  x + 67.5  x^2$\ \ \ $R^2 = 0.96$};
 \definecolor{drawColor}{RGB}{0,191,196}
 
-\node[text=drawColor,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  1.10] at ( 71.33,247.40) {$\hat{Y} = 169000 - 14400  x + 327  x^2$\ \ \ $R^2 = 0.96$};
+\node[text=drawColor,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  1.10] at ( 71.33,250.44) {$\hat{Y} = 169000 - 14400  x + 327  x^2$\ \ \ $R^2 = 0.96$};
 \definecolor{drawColor}{gray}{0.50}
 
 \path[draw=drawColor,line width= 0.6pt,line join=round,line cap=round] ( 60.46, 33.48) rectangle (299.72,283.08);

@@ -322,7 +322,7 @@ fit_augment_compute_group_fun <- function(data,
   z[["y.observed"]] <- z[["y"]]
   z[["y"]] <- z[[y.out]]
   if (exists("df.residual", mf) && y.out == ".fitted") {
-    z[["t.value"]] <- qt(1 - (1 - level) / 2, mf[["df.residual"]])
+    z[["t.value"]] <- stats::qt(1 - (1 - level) / 2, mf[["df.residual"]])
   } else {
     z[["t.value"]] <- NA_real_
   }

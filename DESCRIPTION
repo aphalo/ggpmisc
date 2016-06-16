@@ -34,7 +34,8 @@ Imports:
 Suggests:
     tibble (>= 1.0),
     knitr (>= 1.12.3),
-    rmarkdown (>= 0.9.6)
+    rmarkdown (>= 0.9.6),
+    nlme
 URL: http://www.r4photobiology.info
 BugReports: https://bitbucket.org/aphalo/ggpmisc
 RoxygenNote: 5.0.1
