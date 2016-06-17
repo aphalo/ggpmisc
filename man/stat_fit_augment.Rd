@@ -2,16 +2,9 @@
 % Please edit documentation in R/stat-fit-broom.R
 \name{stat_fit_augment}
 \alias{stat_fit_augment}
-\alias{stat_panel_fit_augment}
 \title{Return the data augmented with fitted values and statistics.}
 \usage{
 stat_fit_augment(mapping = NULL, data = NULL, geom = "smooth",
-  method = "lm", method.args = list(formula = y ~ x),
-  augment.args = list(), level = 0.95, y.out = ".fitted",
-  position = "identity", na.rm = FALSE, show.legend = FALSE,
-  inherit.aes = TRUE, ...)
-
-stat_panel_fit_augment(mapping = NULL, data = NULL, geom = "smooth",
   method = "lm", method.args = list(formula = y ~ x),
   augment.args = list(), level = 0.95, y.out = ".fitted",
   position = "identity", na.rm = FALSE, show.legend = FALSE,
@@ -57,8 +50,8 @@ can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 }
 \description{
-\code{stat_fit_augment} fits a model and returns a summary "glance" of the
-model's statistics, using package 'broom'.
+\code{stat_fit_augment} fits a model and returns the data augmented with
+information from the fitted model, using package 'broom'.
 }
 \note{
 The statistics \code{stat_fit_augment} and
@@ -67,7 +60,7 @@ The statistics \code{stat_fit_augment} and
   argument. Use \code{ggplot2::stat_smooth()} instead of
   \code{stat_fit_augment} in production code if the additional features are
   not needed. At the moment \code{stat_fit_augment} is under development and
-  may change in the future.
+  may change.
 }
 \section{Computed variables}{
 

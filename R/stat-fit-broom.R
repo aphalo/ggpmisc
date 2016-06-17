@@ -188,8 +188,8 @@ StatFitGlance <-
 
 #' Return the data augmented with fitted values and statistics.
 #'
-#' \code{stat_fit_augment} fits a model and returns a summary "glance" of the
-#' model's statistics, using package 'broom'.
+#' \code{stat_fit_augment} fits a model and returns the data augmented with
+#' information from the fitted model, using package 'broom'.
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_string}}. Only needs
@@ -228,7 +228,7 @@ StatFitGlance <-
 #'   argument. Use \code{ggplot2::stat_smooth()} instead of
 #'   \code{stat_fit_augment} in production code if the additional features are
 #'   not needed. At the moment \code{stat_fit_augment} is under development and
-#'   may change in the future.
+#'   may change.
 #'
 #' @export
 #'
@@ -254,31 +254,31 @@ stat_fit_augment <- function(mapping = NULL, data = NULL, geom = "smooth",
   )
 }
 
-#' @rdname stat_fit_augment
-#'
-#' @export
-#'
-stat_panel_fit_augment <- function(mapping = NULL, data = NULL, geom = "smooth",
-                                   method = "lm",
-                                   method.args = list(formula = y ~ x),
-                                   augment.args = list(),
-                                   level = 0.95,
-                                   y.out = ".fitted",
-                                   position = "identity",
-                                   na.rm = FALSE, show.legend = FALSE,
-                                   inherit.aes = TRUE, ...) {
-  ggplot2::layer(
-    stat = StatPanelFitAugment, data = data, mapping = mapping, geom = geom,
-    position = position, show.legend = show.legend, inherit.aes = inherit.aes,
-    params = list(method = method,
-                  method.args = method.args,
-                  augment.args = augment.args,
-                  level = level,
-                  y.out = y.out,
-                  na.rm = na.rm,
-                  ...)
-  )
-}
+# #' @rdname stat_fit_augment
+# #'
+# #' @export
+# #'
+# stat_panel_fit_augment <- function(mapping = NULL, data = NULL, geom = "smooth",
+#                                    method = "lm",
+#                                    method.args = list(formula = y ~ x),
+#                                    augment.args = list(),
+#                                    level = 0.95,
+#                                    y.out = ".fitted",
+#                                    position = "identity",
+#                                    na.rm = FALSE, show.legend = FALSE,
+#                                    inherit.aes = TRUE, ...) {
+#   ggplot2::layer(
+#     stat = StatPanelFitAugment, data = data, mapping = mapping, geom = geom,
+#     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
+#     params = list(method = method,
+#                   method.args = method.args,
+#                   augment.args = augment.args,
+#                   level = level,
+#                   y.out = y.out,
+#                   na.rm = na.rm,
+#                   ...)
+#   )
+# }
 
 # Defined here to avoid a note in check --as-cran as the imports from 'broom'
 # are not seen when the function is defined in-line in the ggproto object.
@@ -333,12 +333,12 @@ fit_augment_compute_group_fun <- function(data,
   z
 }
 
-#' @rdname ggpmisc-ggproto
-#'
-#' @format NULL
-#' @usage NULL
-#'
-fit_augment_compute_panel_fun <- fit_augment_compute_group_fun
+# #' @rdname ggpmisc-ggproto
+# #'
+# #' @format NULL
+# #' @usage NULL
+# #'
+# fit_augment_compute_panel_fun <- fit_augment_compute_group_fun
 
 #' @rdname ggpmisc-ggproto
 #' @format NULL
@@ -354,17 +354,17 @@ StatFitAugment <-
                    required_aes = c("x", "y")
 )
 
-#' @rdname ggpmisc-ggproto
-#' @format NULL
-#' @usage NULL
-#' @export
-StatPanelFitAugment <-
-  ggplot2::ggproto("StatPanelFitAugment",
-                   ggplot2::Stat,
-                   compute_panel = fit_augment_compute_panel_fun,
-                   default_aes =
-                     ggplot2::aes(ymax = ..y.. + ...se.fit.. * ..t.value..,
-                                  ymin = ..y.. - ...se.fit.. * ..t.value..),
-                   required_aes = c("x", "y")
-  )
+# #' @rdname ggpmisc-ggproto
+# #' @format NULL
+# #' @usage NULL
+# #' @export
+# StatPanelFitAugment <-
+#   ggplot2::ggproto("StatPanelFitAugment",
+#                    ggplot2::Stat,
+#                    compute_panel = fit_augment_compute_panel_fun,
+#                    default_aes =
+#                      ggplot2::aes(ymax = ..y.. + ...se.fit.. * ..t.value..,
+#                                   ymin = ..y.. - ...se.fit.. * ..t.value..),
+#                    required_aes = c("x", "y")
+#   )
 

@@ -558,7 +558,8 @@ ggplot(my.data, aes(x, y, color = group)) +
                    y.out = ".std.resid")
 ```
 
-```{r, eval=FALSE}
+```{r, eval=FALSE, echo=FALSE}
+# triggers error
 formula <- y ~ x + I(x^2) + I(x^3)
 ggplot(my.data, aes(x, y, color = group)) +
   stat_panel_fit_augment(method = "lm",
@@ -598,7 +599,8 @@ ggplot(Orange, aes(age, circumference, color = Tree)) +
                    augment.args = list(data = quote(data)))
 ```
 
-```{r, eval=FALSE}
+```{r, eval=FALSE, echo=FALSE}
+# triggers error!
 args <- list(model = y ~ SSlogis(x, Asym, xmid, scal),
              fixed = Asym + xmid + scal ~1,
              random = Asym~1 | group,
