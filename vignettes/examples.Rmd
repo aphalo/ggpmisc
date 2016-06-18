@@ -31,7 +31,7 @@ library(nlme)
 
 Many of the functions, including ggplot statistics and geoms, included in package 
 'ggpmisc' had their origin in my need to produce plots for use in teaching.
-Some of them are more generaly useful, such as `stat_poly_eq()`, but others
+Some of them are more generally useful, such as `stat_poly_eq()`, but others
 like `stat_fit_deviations()` are squarely aimed and producing learning material.
 Finally, several statistics for debugging and learning how ggplot statistics
 and geoms interact with each other will be of use only to developers of new
@@ -383,7 +383,7 @@ ggplot(my.data, aes(x, y2, colour = group)) +
   theme_bw()
 ```
 
-The default locations are now based on normalized coordinates, and conswquently
+The default locations are now based on normalized coordinates, and consequently
 these defaults work even when the range of the _x_ and _y_ scales varies from
 panel to panel.
 
