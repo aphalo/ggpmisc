@@ -12,7 +12,6 @@ opts_chunk$set(fig.path = 'figure/pos-', fig.align = 'center', fig.show = 'hold'
 options(warnPartialMatchArgs = FALSE)
 @
 
-
 <<>>=
 library(ggplot2)
 library(ggpmisc)
