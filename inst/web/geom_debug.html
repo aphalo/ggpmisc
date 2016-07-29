@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+<title>geom_debug. ggpmisc 0.2.9</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="">
+
+<link href="css/bootstrap.css" rel="stylesheet">
+<link href="css/bootstrap-responsive.css" rel="stylesheet">
+<link href="css/highlight.css" rel="stylesheet">
+<link href="css/staticdocs.css" rel="stylesheet">
+
+<!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+  </head>
+
+  <body>
+    <div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="#">ggpmisc 0.2.9</a>
+      <div class="nav">
+        <ul class="nav">
+          <li><a href="index.html"><i class="icon-home icon-white"></i> Index</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="container">
+      <header>
+        
+      </header>
+      
+      <h1>Debug, printing to console</h1>
+
+<div class="row">
+  <div class="span8">
+    <h2>Usage</h2>
+    <pre><div>geom_debug(mapping&nbsp;=&nbsp;NULL, data&nbsp;=&nbsp;NULL, stat&nbsp;=&nbsp;"identity", summary.fun&nbsp;=&nbsp;tibble::as_data_frame, summary.fun.args&nbsp;=&nbsp;list(), position&nbsp;=&nbsp;"identity", na.rm&nbsp;=&nbsp;FALSE, show.legend&nbsp;=&nbsp;FALSE, inherit.aes&nbsp;=&nbsp;TRUE, ...)</div></pre>
+    
+    <h2>Arguments</h2>
+    <dl>
+      <dt>mapping</dt>
+      <dd>Set of aesthetic mappings created by <code><a href='http://www.inside-r.org/packages/cran/ggplot2/docs/aes'>aes</a></code> or
+<code><a href='http://www.inside-r.org/packages/cran/ggplot2/docs/aes_'>aes_</a></code>. If specified and <code>inherit.aes = TRUE</code> (the
+default), is combined with the default mapping at the top level of the
+plot. You only need to supply <code>mapping</code> if there isn't a mapping
+defined for the plot.</dd>
+      <dt>data</dt>
+      <dd>A data frame. If specified, overrides the default data frame
+defined at the top level of the plot.</dd>
+      <dt>stat</dt>
+      <dd>The statistical transformation to use on the data for this layer,
+as a string.</dd>
+      <dt>summary.fun</dt>
+      <dd>A function used to print the <code>data</code> object received
+as input.</dd>
+      <dt>summary.fun.args</dt>
+      <dd>A list of additional arguments to be passed to
+<code>summary.fun</code>.</dd>
+      <dt>position</dt>
+      <dd>Position adjustment, either as a string, or the result of a
+call to a position adjustment function.</dd>
+      <dt>na.rm</dt>
+      <dd>If <code>FALSE</code> (the default), removes missing values with a
+warning.  If <code>TRUE</code> silently removes missing values.</dd>
+      <dt>show.legend</dt>
+      <dd>logical. Should this layer be included in the legends?
+<code>NA</code>, the default, includes if any aesthetics are mapped. <code>FALSE</code>
+never includes, and <code>TRUE</code> always includes.</dd>
+      <dt>inherit.aes</dt>
+      <dd>If <code>FALSE</code>, overrides the default aesthetics, rather
+than combining with them. This is most useful for helper functions that
+define both data and aesthetics and shouldn't inherit behaviour from the
+default plot specification, e.g. <code><a href='http://www.inside-r.org/packages/cran/ggplot2/docs/borders'>borders</a></code>.</dd>
+      <dt>...</dt>
+      <dd>other arguments passed on to <code><a href='http://www.inside-r.org/packages/cran/ggplot2/docs/layer'>layer</a></code>. There are three
+  types of arguments you can use here:
+
+  <ul>
+<li> Aesthetics: to set an aesthetic to a fixed value, like
+  <code>color = "red"</code> or <code>size = 3</code>. </li>
+<li> Other arguments to the
+  layer, for example you override the default <code>stat</code> associated with the
+  layer. </li>
+<li> Other arguments passed on to the stat. </li>
+</ul>
+</dd>
+    </dl>
+    
+    <div class="Description">
+      <h2>Description</h2>
+
+      <p>The debug geom is used to print to the console a summary of the data being
+received by geoms as input <code>data</code> data frame.</p>
+  
+    </div>
+
+    <div class="Details">
+      <h2>Details</h2>
+
+      <p>It can be useful when debugging the code of statistics or to learn how the
+stata and geoms work in 'ggplot2' (>= 2.0.0).</p>
+  
+    </div>
+
+    <div class="Note">
+      <h2>Note</h2>
+
+      <p>This _geom_ is very unusual in that it does not produce visible graphic
+  output. It only returns a <code>grid::grid_null()</code> grob (graphical object).</p>
+  
+    </div>
+      </div>
+  <div class="span4">
+    <!-- <ul>
+      <li>geom_debug</li>
+    </ul>
+    <ul>
+      
+    </ul> -->
+      
+        
+  </div>
+</div>
+      
+      <footer>
+      <p class="pull-right"><a href="#">Back to top</a></p>
+<p>Built by <a href="https://github.com/hadley/staticdocs">staticdocs</a>. Styled with <a href="https://getbootstrap.com/2.0.4/">bootstrap</a>.</p>
+      </footer>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+<title>find_peaks. ggpmisc 0.2.9</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="">
+
+<link href="css/bootstrap.css" rel="stylesheet">
+<link href="css/bootstrap-responsive.css" rel="stylesheet">
+<link href="css/highlight.css" rel="stylesheet">
+<link href="css/staticdocs.css" rel="stylesheet">
+
+<!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+  </head>
+
+  <body>
+    <div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="#">ggpmisc 0.2.9</a>
+      <div class="nav">
+        <ul class="nav">
+          <li><a href="index.html"><i class="icon-home icon-white"></i> Index</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="container">
+      <header>
+        
+      </header>
+      
+      <h1>Find local maxima (peaks)</h1>
+
+<div class="row">
+  <div class="span8">
+    <h2>Usage</h2>
+    <pre><div>find_peaks(x, ignore_threshold&nbsp;=&nbsp;0, span&nbsp;=&nbsp;3, strict&nbsp;=&nbsp;TRUE)</div></pre>
+    
+    <h2>Arguments</h2>
+    <dl>
+      <dt>x</dt>
+      <dd>numeric array</dd>
+      <dt>ignore_threshold</dt>
+      <dd>numeric value between 0.0 and 1.0 indicating the size
+threshold below which peaks will be ignored.</dd>
+      <dt>span</dt>
+      <dd>a peak is defined as an element in a sequence which is greater
+than all other elements within a window of width span centered at that
+element. The default value is 3, meaning that a peak is bigger than both of
+its neighbors. Default: 3.</dd>
+      <dt>strict</dt>
+      <dd>ogical flag: if TRUE, an element must be strictly greater than
+all other values in its window to be considered a peak. Default: TRUE.</dd>
+    </dl>
+    
+    <div class="Value">
+      <h2>Value</h2>
+
+      <p><dl>
+A vector of logical values. Values that are TRUE
+  correspond to local peaks in the data.
+</dl></p>
+  
+    </div>
+
+    <div class="Description">
+      <h2>Description</h2>
+
+      <p>This function finds all peaks (local maxima) in a spectrum, using a user
+selectable size threshold relative to the tallest peak (global maximum). This
+is a wrapper built on top of function peaks from package splus2R.</p>
+  
+    </div>
+
+    <div class="Details">
+      <h2>Details</h2>
+
+      <p>This function is a wrapper built on function
+  <code><a href='http://www.inside-r.org/packages/cran/splus2R/docs/peaks'>peaks</a></code> from <span class = "pkg">splus2R</span> and handles non-finite
+  (including NA) values differently than <code>peaks</code>, instead of giving an
+  error they are replaced with the smallest finite value in <code>x</code>.</p>
+  
+    </div>
+      </div>
+  <div class="span4">
+    <!-- <ul>
+      <li>find_peaks</li>
+    </ul>
+    <ul>
+      <li>internal</li>
+    </ul> -->
+      
+    <h2>See also</h2>
+    
+<code><a href='http://www.inside-r.org/packages/cran/splus2R/docs/peaks'>peaks</a></code>
+
+Other peaks.and.valleys.functions: <code><a href='stat_peaks.html'>stat_peaks</a></code>
+
+        
+  </div>
+</div>
+      
+      <footer>
+      <p class="pull-right"><a href="#">Back to top</a></p>
+<p>Built by <a href="https://github.com/hadley/staticdocs">staticdocs</a>. Styled with <a href="https://getbootstrap.com/2.0.4/">bootstrap</a>.</p>
+      </footer>
+    </div>
+  </body>
+</html>

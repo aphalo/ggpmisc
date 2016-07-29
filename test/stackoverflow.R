@@ -39,3 +39,45 @@ p <- ggplot(data = df, aes(x = x, y = y)) +
   geom_point()
 p
 
+
+library(ggplot2)
+library(ggpmisc)
+
+# generate artificial data
+set.seed(4321)
+x <- 1:100
+y <- (x + x^2 + x^3) + rnorm(length(x), mean = 0, sd = mean(x^3) / 4)
+my.data <- data.frame(x,
+                      y,
+                      group = c("A", "B"),
+                      y2 = y * c(0.5,2),
+                      block = c("a", "a", "b", "b"))
+
+str(my.data)
+
+# plot
+ggplot(data = my.data, mapping=aes(x = x, y = y2, colour = group)) +
+  geom_point() +
+  geom_smooth(method = "lm", se =  FALSE, formula = y ~ poly(x=x, degree = 2, raw = TRUE)) +
+  stat_poly_eq(
+    mapping     = aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~"))
+    , formula     = y ~ poly(x, 2, raw = TRUE)
+    , eq.with.lhs = "hat(Y)~`=`~"
+    , eq.x.rhs    = "X"
+    , parse       = TRUE
+  ) +
+  theme_bw()
+
+library(readr)
+library(dplyr)
+library(lubridate)
+library(ggplot2)
+library(ggpmisc)
+
+ozone.df <- read_csv("ggpmisc.csv", col_types = "cd")
+ozone.df <- mutate(ozone.df, datetime = dmy_hm(date))
+ggplot(ozone.df, aes(datetime, o3)) + geom_line() +
+  stat_peaks(colour = "red", span = 21, ignore_threshold = 0.5) +
+  stat_peaks(geom = "text", colour = "red", span = 21, ignore_threshold = 0.5,
+             hjust = -0.1, x.label.fmt = "%H:%M", angle = 90) +
+  ylim(0, 85)
