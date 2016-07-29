@@ -2,9 +2,9 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-<title>Index. ggpmisc 0.2.9</title>
+<title>Index. ggpmisc 0.2.10</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Pedro J. Aphalo [aut, cre]">
+<meta name="author" content="">
 
 <link href="css/bootstrap.css" rel="stylesheet">
 <link href="css/bootstrap-responsive.css" rel="stylesheet">
@@ -32,7 +32,7 @@
     <div class="navbar">
   <div class="navbar-inner">
     <div class="container">
-      <a class="brand" href="#">ggpmisc 0.2.9</a>
+      <a class="brand" href="#">ggpmisc 0.2.10</a>
       <div class="nav">
         <ul class="nav">
           <li><a href="index.html"><i class="icon-home icon-white"></i> Index</a></li>
@@ -49,74 +49,87 @@
       
       <div class="row">
   <div class="span8">
-    <p>Package <strong>ggpmisc</strong> is a small set of extensions to ggplot2 (&gt;= 2.0.0) which
-I hope will be useful when plotting diverse types of data and/or debugging
-ggplot plots.</p>
+    <p>Package &#39;<strong>ggpmisc</strong>&#39; (Miscellaneous Extensions to &#39;ggplot2&#39;) is a set of extensions to R package &#39;ggplot2&#39; (&gt;= 2.1.0) useful when plotting diverse types of data.  Currently available statistics, geoms and function add facilities for labeling
+peaks and valleys, generating labels for fitted models including polynomial
+equations, highlighting deviations from a model fit and for debugging new geoms
+and statistics (or learning how they work). Plottng of time series data is
+facilitated by a &#39;fortify-like&#39; function.</p>
 
-<p>Extensions:</p>
+<p>Documentation generated with package &#39;staticdocs&#39; is available on-line. </p>
 
-<ul>
-<li>Function for conversion of time series data into data frames that can be
-plotted with ggplot.</li>
-<li>Stats for locating and tagging &ldquo;peaks&rdquo; and &ldquo;valleys&rdquo; (local or global maxima
-and minima).</li>
-<li>Stat for generating labels from a <code>lm()</code> model fit, including formatted
-equation.</li>
-<li><em>Debug</em> stats and a geom that print to the console their <code>data</code> input.</li>
-</ul>
-
-<p>Please, see the web site <a href="http://www.r4photobiology.info">R4Photobiology</a> for 
+<p>Please, see the web site <a href="http://www.r4photobiology.info">r4photobiology</a> for 
 details and update notices. Other packages, aimed at easing photobiology-related
 calculations including the quantification of biologically effective radiation
 in meteorology are available as part of a suite described at the same
 website.</p>
 
-<p>The current release of <strong>ggpmisc</strong> is available through <a href="https://cran.r-project.org/package=ggpmisc">CRAN</a> 
-for R (&gt;= 3.2.0). </p>
+<p>The current release of &#39;<strong>ggpmisc</strong>&#39; is available through <a href="https://cran.r-project.org/package=ggpmisc">CRAN</a> 
+for R (&gt;= 3.2.0).</p>
 
 
     <h2>Help topics</h2>
 
-    <h3></h3>
-    
+    <h3>Geoms</h3>
+    <p>Geoms, short for geometric objects, describe the type of plot you will produce.</p>
+
     
     <ul class="index">
         
       <li>
-        <code><a href="geom_debug.html">geom_debug</a></code><br />Debug, printing to console</li>
+        <code><a href="geom_null.html">geom_null</a></code><br />A null geom or 'non-op' geom.</li>
             
       <li>
-        <code><a href="geom_null.html">geom_null</a></code><br />Null geom</li>
+        <code><a href="geom_debug.html">geom_debug</a></code><br />Geom which prints input data to console</li>
+    
+    </ul>
+    <h3>Statistics</h3>
+    <p>It&#39;s often useful to transform your data before plotting, and that&#39;s what statistical transformations do.</p>
+
+    
+    <ul class="index">
+        
+      <li>
+        <code><a href="stat_debug_group.html">stat_debug_group</a></code><br />Print to console data received by the compute group function.</li>
             
       <li>
-        <code><a href="ggpmisc-package.html">ggpmisc-package</a></code>(ggpmisc)<br />Miscellaneous Extensions to 'ggplot2'</li>
-            
-      <li>
-        <code><a href="stat_debug_group.html">stat_debug_group</a></code><br />Diagnosis statistics on data grouping.</li>
-            
-      <li>
-        <code><a href="stat_debug_panel.html">stat_debug_panel</a></code><br />Diagnosis statistics on data in panels.</li>
+        <code><a href="stat_debug_panel.html">stat_debug_panel</a></code><br />Print to console data received by the compute panel function.</li>
             
       <li>
         <code><a href="stat_fit_augment.html">stat_fit_augment</a></code><br />Return the data augmented with fitted values and statistics.</li>
             
       <li>
-        <code><a href="stat_fit_deviations.html">stat_fit_deviations</a></code><br />Display residuals from fit as segments.</li>
+        <code><a href="stat_fit_glance.html">stat_fit_glance</a></code><br />Return one row summary data frame for a fitted model.</li>
             
       <li>
-        <code><a href="stat_fit_glance.html">stat_fit_glance</a></code><br />Return one row summary data frame for a fitted linear model.</li>
+        <code><a href="stat_fit_deviations.html">stat_fit_deviations</a></code><br />Plot residuals from fit as segments.</li>
             
       <li>
-        <code><a href="stat_fit_residuals.html">stat_fit_residuals</a></code><br />Return residuals from a model fir.</li>
-            
-      <li>
-        <code><a href="stat_peaks.html">stat_peaks</a></code>(stat_valleys)<br />Find peaks and valleys.</li>
+        <code><a href="stat_fit_residuals.html">stat_fit_residuals</a></code><br />Plot residuals from a model fit.</li>
             
       <li>
         <code><a href="stat_poly_eq.html">stat_poly_eq</a></code><br />Add a label for a fitted linear model to a plot.</li>
             
       <li>
-        <code><a href="try_data_frame.html">try_data_frame</a></code><br />Convert an R object to a data frame</li>
+        <code><a href="stat_peaks.html">stat_peaks</a></code>(stat_valleys)<br />Find and label local maxima (peaks) or minima (valleys).</li>
+    
+    </ul>
+    <h3>Fortify or Try</h3>
+    <p>Convert R objects containing observations in other formats into &#39;tibble&#39; objects suitable for plotting.</p>
+
+    
+    <ul class="index">
+        
+      <li>
+        <code><a href="try_data_frame.html">try_data_frame</a></code>(try_tibble)<br />Convert an R object containing observations into a tibble.</li>
+    
+    </ul>
+    <h3>Other</h3>
+    
+    
+    <ul class="index">
+        
+      <li>
+        <code><a href="ggpmisc-package.html">ggpmisc-package</a></code>(ggpmisc)<br />Miscellaneous Extensions to 'ggplot2'</li>
     
     </ul>
   </div>
@@ -130,12 +143,13 @@ for R (&gt;= 3.2.0). </p>
     <h2>Dependencies</h2>
     <ul>
       
-      <li><strong>Imports</strong>: ggplot2, polynom, splus2R, plyr, dplyr, xts, zoo, broom, lubridate</li>
-      <li><strong>Suggests</strong>: tibble, knitr, rmarkdown, nlme</li>
+      <li><strong>Imports</strong>: tibble, ggplot2, polynom, splus2R, plyr, dplyr, xts, zoo, broom, lubridate</li>
+      <li><strong>Suggests</strong>: knitr, rmarkdown, nlme</li>
       
     </ul>
     <h2>Authors</h2>
     <ul>
+      <li><a href="mailto:pedro.aphalo@helsinki.fi">Pedro J. Aphalo</a> [aut, cre]</li>
     </ul>
 
   </div>
