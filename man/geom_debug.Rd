@@ -2,7 +2,7 @@
 % Please edit documentation in R/geom-debug.R
 \name{geom_debug}
 \alias{geom_debug}
-\title{Debug, printing to console}
+\title{Geom which prints input data to console}
 \usage{
 geom_debug(mapping = NULL, data = NULL, stat = "identity",
   summary.fun = tibble::as_data_frame, summary.fun.args = list(),

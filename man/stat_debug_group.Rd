@@ -2,7 +2,7 @@
 % Please edit documentation in R/stat-debug-group.R
 \name{stat_debug_group}
 \alias{stat_debug_group}
-\title{Diagnosis statistics on data grouping.}
+\title{Print to console data received by the compute group function.}
 \usage{
 stat_debug_group(mapping = NULL, data = NULL, geom = "null",
   summary.fun = dplyr::as_data_frame, summary.fun.args = list(),

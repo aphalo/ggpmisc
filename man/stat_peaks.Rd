@@ -3,7 +3,7 @@
 \name{stat_peaks}
 \alias{stat_peaks}
 \alias{stat_valleys}
-\title{Find peaks and valleys.}
+\title{Find and label local maxima (peaks) or minima (valleys).}
 \usage{
 stat_peaks(mapping = NULL, data = NULL, geom = "point", span = 5,
   ignore_threshold = 0, strict = FALSE, label.fmt = "\%.4g",
@@ -68,9 +68,9 @@ include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 }
 \description{
-\code{stat_peaks} finds at which x positions of local y maxima are located and
+\code{stat_peaks} finds at which x positions local y maxima are located and
 \code{stat_valleys} finds at which x positions local y minima are located.
-Both stats return x and y numeric values for the peaks and formatted
+Both stats return x and y numeric values for peaks or valleys and formatted
 character labels. The formatting is determined by a format string suitable
 for \code{sprintf()}.
 }

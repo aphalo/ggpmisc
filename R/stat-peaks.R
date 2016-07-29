@@ -1,7 +1,7 @@
-#' Find local maxima (peaks)
+#' Find local maxima or global maximum (peaks).
 #'
-#' This function finds all peaks (local maxima) in a spectrum, using a user
-#' selectable size threshold relative to the tallest peak (global maximum). This
+#' This method finds peaks (local maxima) in a spectrum, using a user selectable
+#' span and size threshold relative to the tallest peak (global maximum). This
 #' is a wrapper built on top of function peaks from package splus2R.
 #'
 #' @param x numeric array
@@ -52,11 +52,11 @@ find_peaks <-
     }
   }
 
-#' Find peaks and valleys.
+#' Find and label local maxima (peaks) or minima (valleys).
 #'
-#' \code{stat_peaks} finds at which x positions of local y maxima are located and
+#' \code{stat_peaks} finds at which x positions local y maxima are located and
 #' \code{stat_valleys} finds at which x positions local y minima are located.
-#' Both stats return x and y numeric values for the peaks and formatted
+#' Both stats return x and y numeric values for peaks or valleys and formatted
 #' character labels. The formatting is determined by a format string suitable
 #' for \code{sprintf()}.
 #'

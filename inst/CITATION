@@ -1,0 +1,10 @@
+citHeader("To cite ggpmisc in publications, please use:")
+
+citEntry(entry = "book",
+  author = "Pedro J. Aphalo",
+  title = "Learn R ...as you learnt your mother tongue",
+  publisher = "Leanpub",
+  year = "2016",
+  url = "http://leanpub.com/learnr",
+  textVersion = "Pedro J. Aphalo. Learn R ...as you learnt your mother tongue. Helsinki 2016."
+)

@@ -1,3 +1,13 @@
+ggpmisc 0.2.10
+==============
+
+Add user-requested feature: allow user to specify number 'digits' used in
+formatting numbers in labels in stat_poly_eq().
+Update try_data_frame() to return an object of class "tibble" and allow
+try_tibble() as synonim.
+Update documentation and start using package 'staticdocs' to build a
+documentation web site.
+
 ggpmisc 0.2.9
 =============
 

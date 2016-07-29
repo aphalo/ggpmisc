@@ -1,4 +1,4 @@
-#' @title Diagnosis statistics on data in panels.
+#' @title Print to console data received by the compute panel function.
 #'
 #' @description \code{stat_debug} reports all distinct values in \code{group}
 #'   and \code{PANEL}, and \code{nrow}, \code{ncol} and the names of the columns

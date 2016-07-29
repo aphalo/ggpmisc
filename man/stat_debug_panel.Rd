@@ -2,7 +2,7 @@
 % Please edit documentation in R/stat-debug-panel.R
 \name{stat_debug_panel}
 \alias{stat_debug_panel}
-\title{Diagnosis statistics on data in panels.}
+\title{Print to console data received by the compute panel function.}
 \usage{
 stat_debug_panel(mapping = NULL, data = NULL, geom = "null",
   summary.fun = dplyr::as_data_frame, summary.fun.args = list(),

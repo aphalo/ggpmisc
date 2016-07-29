@@ -2,7 +2,7 @@
 % Please edit documentation in R/stat-peaks.R
 \name{find_peaks}
 \alias{find_peaks}
-\title{Find local maxima (peaks)}
+\title{Find local maxima or global maximum (peaks).}
 \usage{
 find_peaks(x, ignore_threshold = 0, span = 3, strict = TRUE)
 }
@@ -25,8 +25,8 @@ A vector of logical values. Values that are TRUE
   correspond to local peaks in the data.
 }
 \description{
-This function finds all peaks (local maxima) in a spectrum, using a user
-selectable size threshold relative to the tallest peak (global maximum). This
+This method finds peaks (local maxima) in a spectrum, using a user selectable
+span and size threshold relative to the tallest peak (global maximum). This
 is a wrapper built on top of function peaks from package splus2R.
 }
 \details{

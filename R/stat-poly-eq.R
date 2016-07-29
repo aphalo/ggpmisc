@@ -1,7 +1,7 @@
 #' Add a label for a fitted linear model to a plot.
 #'
-#' \code{stat_poly_eq} fits a polynomial and generates several labela with
-#'   an equation and/or coefficient of determination (R^2) and other estimates.
+#' \code{stat_poly_eq} fits a polynomial and generates several labels with
+#'   an equation and/or coefficient of determination (R^2), 'AIC' or 'BIC'.
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_string}}. Only needs
@@ -29,6 +29,8 @@
 #' @param eq.x.rhs \code{character} this string will be used as replacement
 #'   for \code{"x"} in the model equation when generating the label before
 #'   parsing it.
+#' @param coef.digits,rr.digits integer Number of significant digits to use in
+#'   for the vector of fitted coefficients and for $R^2$ labels.
 #' @param label.x.npc,label.y.npc \code{numeric} with range 0..1 or character.
 #'   Coordinates to be used for positioning the output, expresed in "normalized
 #'   parent coordinates" or character string. If too short they will be recycled.
@@ -83,6 +85,23 @@
 #'   geom_point() +
 #'   geom_smooth(method = "lm", formula = formula) +
 #'   stat_poly_eq(formula = formula, parse = TRUE)
+#' # plot
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   geom_smooth(method = "lm", formula = formula) +
+#'   stat_poly_eq(formula = formula, rr.digits = 4, parse = TRUE)
+#' # plot
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   geom_smooth(method = "lm", formula = formula) +
+#'   stat_poly_eq(aes(label =  paste(..eq.label.., ..adj.rr.label.., sep = "~~~~")),
+#'                formula = formula, parse = TRUE)
+#' # plot
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   geom_smooth(method = "lm", formula = formula) +
+#'   stat_poly_eq(aes(label =  paste(..eq.label.., ..adj.rr.label.., sep = "~~~~")),
+#'                formula = formula, rr.digits = 3, coef.digits = 2, parse = TRUE)
 #'
 #' @export
 #'
@@ -90,6 +109,8 @@ stat_poly_eq <- function(mapping = NULL, data = NULL, geom = "text",
                          formula = NULL,
                          eq.with.lhs = "italic(y)~`=`~",
                          eq.x.rhs = NULL,
+                         coef.digits = 3,
+                         rr.digits = 2,
                          label.x.npc = "left", label.y.npc = "top",
                          label.x = NULL, label.y = NULL,
                          output.type = "expression",
@@ -102,6 +123,8 @@ stat_poly_eq <- function(mapping = NULL, data = NULL, geom = "text",
     params = list(formula = formula,
                   eq.with.lhs = eq.with.lhs,
                   eq.x.rhs = eq.x.rhs,
+                  coef.digits = coef.digits,
+                  rr.digits = rr.digits,
                   label.x.npc = label.x.npc,
                   label.y.npc = label.y.npc,
                   label.x = label.x,
@@ -124,6 +147,8 @@ poly_eq_compute_group_fun <- function(data,
                                      formula,
                                      eq.with.lhs,
                                      eq.x.rhs,
+                                     coef.digits,
+                                     rr.digits,
                                      label.x.npc,
                                      label.y.npc,
                                      label.x,
@@ -171,10 +196,10 @@ poly_eq_compute_group_fun <- function(data,
     coefs <- c(0, coefs)
   }
   rr <- summary(mf)$r.squared
+  adj.rr <- summary(mf)$adj.r.squared
   AIC <- AIC(mf)
   BIC <- BIC(mf)
-  adj.rr <- summary(mf)$adj.r.squared
-  eq.char <- as.character(signif(polynom::as.polynomial(coefs), 3))
+  eq.char <- as.character(signif(polynom::as.polynomial(coefs), coef.digits))
   eq.char <- gsub("e([+-]?[0-9]*)", "%*%10^\\1", eq.char)
   if (output.type %in% c("latex", "tex", "tikz")) {
     eq.char <- gsub("*", " ", eq.char, fixed = TRUE)
@@ -192,8 +217,8 @@ poly_eq_compute_group_fun <- function(data,
   if (eq.with.lhs) {
     eq.char <- paste(lhs, eq.char, sep = "")
   }
-  rr.char <- format(rr, digits = 2)
-  adj.rr.char <- format(adj.rr, digits = 2)
+  rr.char <- format(rr, digits = rr.digits)
+  adj.rr.char <- format(adj.rr, digits = rr.digits)
   AIC.char <- sprintf("%.4g", AIC)
   BIC.char <- sprintf("%.4g", BIC)
   if (output.type == "expression") {

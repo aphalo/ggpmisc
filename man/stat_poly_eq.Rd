@@ -5,10 +5,11 @@
 \title{Add a label for a fitted linear model to a plot.}
 \usage{
 stat_poly_eq(mapping = NULL, data = NULL, geom = "text", formula = NULL,
-  eq.with.lhs = "italic(y)~`=`~", eq.x.rhs = NULL, label.x.npc = "left",
-  label.y.npc = "top", label.x = NULL, label.y = NULL,
-  output.type = "expression", position = "identity", na.rm = FALSE,
-  show.legend = FALSE, inherit.aes = TRUE, ...)
+  eq.with.lhs = "italic(y)~`=`~", eq.x.rhs = NULL, coef.digits = 3,
+  rr.digits = 2, label.x.npc = "left", label.y.npc = "top",
+  label.x = NULL, label.y = NULL, output.type = "expression",
+  position = "identity", na.rm = FALSE, show.legend = FALSE,
+  inherit.aes = TRUE, ...)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
@@ -28,6 +29,9 @@ of the equation label before parsing or a \code{logical} (see note).}
 \item{eq.x.rhs}{\code{character} this string will be used as replacement
 for \code{"x"} in the model equation when generating the label before
 parsing it.}
+
+\item{coef.digits, rr.digits}{integer Number of significant digits to use in
+for the vector of fitted coefficients and for $R^2$ labels.}
 
 \item{label.x.npc, label.y.npc}{\code{numeric} with range 0..1 or character.
 Coordinates to be used for positioning the output, expresed in "normalized
@@ -58,8 +62,8 @@ can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 }
 \description{
-\code{stat_poly_eq} fits a polynomial and generates several labela with
-  an equation and/or coefficient of determination (R^2) and other estimates.
+\code{stat_poly_eq} fits a polynomial and generates several labels with
+  an equation and/or coefficient of determination (R^2), 'AIC' or 'BIC'.
 }
 \details{
 This stat can be used to automatically annotate a plot with R^2,
@@ -111,6 +115,23 @@ ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
   stat_poly_eq(formula = formula, parse = TRUE)
+# plot
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_eq(formula = formula, rr.digits = 4, parse = TRUE)
+# plot
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_eq(aes(label =  paste(..eq.label.., ..adj.rr.label.., sep = "~~~~")),
+               formula = formula, parse = TRUE)
+# plot
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_eq(aes(label =  paste(..eq.label.., ..adj.rr.label.., sep = "~~~~")),
+               formula = formula, rr.digits = 3, coef.digits = 2, parse = TRUE)
 
 }
 

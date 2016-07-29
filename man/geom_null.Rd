@@ -2,7 +2,7 @@
 % Please edit documentation in R/geom-debug.R
 \name{geom_null}
 \alias{geom_null}
-\title{Null geom}
+\title{A null geom or 'non-op' geom.}
 \usage{
 geom_null(mapping = NULL, data = NULL, stat = "identity",
   position = "identity", na.rm = FALSE, show.legend = FALSE,

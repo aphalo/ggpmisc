@@ -2,9 +2,12 @@
 % Please edit documentation in R/try-data-frame.R
 \name{try_data_frame}
 \alias{try_data_frame}
-\title{Convert an R object to a data frame}
+\alias{try_tibble}
+\title{Convert an R object containing observations into a tibble.}
 \usage{
 try_data_frame(x, time.resolution = "second", as.numeric = FALSE)
+
+try_tibble(x, time.resolution = "second", as.numeric = FALSE)
 }
 \arguments{
 \item{x}{An R object}
@@ -16,7 +19,7 @@ values will be rounded.}
 fractional calendar years.}
 }
 \value{
-A dataframe.
+A \code{tibble::tibble} object, derived from \code{data.frame}.
 }
 \description{
 This functions tries to convert any R object into a data.frame object.
@@ -31,6 +34,9 @@ the time series data. In this conversion row names are stripped.
 \note{
 This function can be used to easily converttime series data into a
   format that can be easily plotted with pacakge \code{ggplot2}.
+  \code{try_tibble} is another name for \code{try_data_frame} which tracks
+  the separation and re-naming of \code{data_frame} into
+  \code{tibble::tibble} in the imported packages.
 }
 \section{Warning!}{
  The time zone was set to "UTC" by try.xts() in the test
@@ -48,10 +54,13 @@ This function can be used to easily converttime series data into a
 }
 \examples{
 library(xts)
+class(lynx)
 try_data_frame(lynx)
 try_data_frame(lynx, "year")
+class(austres)
 try_data_frame(austres)
 try_data_frame(austres, "quarter")
+class(cars)
 try_data_frame(cars)
 
 }

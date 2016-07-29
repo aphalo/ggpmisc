@@ -2,7 +2,7 @@
 % Please edit documentation in R/stat-fit-residuals.R
 \name{stat_fit_residuals}
 \alias{stat_fit_residuals}
-\title{Return residuals from a model fir.}
+\title{Plot residuals from a model fit.}
 \usage{
 stat_fit_residuals(mapping = NULL, data = NULL, geom = "point",
   method = "lm", formula = NULL, resid.type = NULL,
@@ -47,7 +47,7 @@ can include aesthetics whose values you want to set, not map. See
 }
 \description{
 \code{stat_fit_residuals} fits a linear model and returns
-residuals ready to be plotted as points.
+   residuals ready to be plotted as points.
 }
 \details{
 This stat can be used to automatically plot residuals as points

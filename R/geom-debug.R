@@ -16,7 +16,7 @@ GeomNull <-
                    }
   )
 
-#' Null geom
+#' A null geom or 'non-op' geom.
 #'
 #' The null geom can be used to silence graphic output from a stat, such as
 #' stat_debug_group() and stat_debug_panel() defined in this same package. No
@@ -93,7 +93,7 @@ GeomDebug <-
                    }
   )
 
-#' Debug, printing to console
+#' Geom which prints input data to console
 #'
 #' The debug geom is used to print to the console a summary of the data being
 #' received by geoms as input \code{data} data frame.

@@ -2,7 +2,7 @@
 % Please edit documentation in R/stat-fit-broom.R
 \name{stat_fit_glance}
 \alias{stat_fit_glance}
-\title{Return one row summary data frame for a fitted linear model.}
+\title{Return one row summary data frame for a fitted model.}
 \usage{
 stat_fit_glance(mapping = NULL, data = NULL, geom = "null",
   method = "lm", method.args = list(formula = y ~ x),

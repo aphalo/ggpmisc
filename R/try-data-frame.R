@@ -1,4 +1,4 @@
-#' Convert an R object to a data frame
+#' Convert an R object containing observations into a tibble.
 #'
 #' This functions tries to convert any R object into a data.frame object.
 #' If \code{x} is already a data.frame, it is returned as is. If it is
@@ -15,10 +15,13 @@
 #' @param as.numeric logical If TRUE convert time to numeric, expressed as
 #'   fractional calendar years.
 #'
-#' @return A dataframe.
+#' @return A \code{tibble::tibble} object, derived from \code{data.frame}.
 #'
 #' @note This function can be used to easily converttime series data into a
 #'   format that can be easily plotted with pacakge \code{ggplot2}.
+#'   \code{try_tibble} is another name for \code{try_data_frame} which tracks
+#'   the separation and re-naming of \code{data_frame} into
+#'   \code{tibble::tibble} in the imported packages.
 #'
 #' @section Warning!: The time zone was set to "UTC" by try.xts() in the test
 #'   cases I used. Setting TZ to "UTC" can cause some trouble as several
@@ -37,21 +40,24 @@
 #'
 #' @examples
 #' library(xts)
+#' class(lynx)
 #' try_data_frame(lynx)
 #' try_data_frame(lynx, "year")
+#' class(austres)
 #' try_data_frame(austres)
 #' try_data_frame(austres, "quarter")
+#' class(cars)
 #' try_data_frame(cars)
 #'
 try_data_frame <- function(x,
                            time.resolution = "second",
                            as.numeric = FALSE) {
   if (inherits(x, "data.frame")) {
-    return(x)
+    return(tibble::as_tibble(x))
   }
   if (!xts::xtsible(x) &&
       (is.list(x) || is.factor(x) || is.vector(x) || is.matrix(x))) {
-    return(as.data.frame(x))
+    return(tibble::as_tibble(x))
   }
   if (!xts::is.xts(x)) {
     stopifnot(xts::xtsible(x))
@@ -81,5 +87,9 @@ try_data_frame <- function(x,
   z <- cbind(z, as.data.frame(data.xts))
   names(z)[-1] <- data.names
   rownames(z) <- NULL
-  z
+  tibble::as_tibble(z)
 }
+
+#' @export
+#' @rdname try_data_frame
+try_tibble <- try_data_frame

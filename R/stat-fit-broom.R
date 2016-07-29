@@ -1,6 +1,6 @@
 # broom::glance -----------------------------------------------------------
 
-#' Return one row summary data frame for a fitted linear model.
+#' Return one row summary data frame for a fitted model.
 #'
 #' \code{stat_fit_glance} fits a model and returns a summary "glance" of the
 #' model's statistics, using package 'broom'.
