@@ -72,7 +72,7 @@ try_data_frame <- function(x,
     times <- as.POSIXct(times.raw) # handles conversion from classes in xts and zoo
   }
   if (lubridate::tz(times) == "") {
-    times <- lubridate::with_tz(times, tz = "UTC")
+    times <- lubridate::with_tz(times, "UTC")
   }
   if (is.null(names(x))) {
     data.names <- paste("V.", as.character(substitute(x)), sep = "")
