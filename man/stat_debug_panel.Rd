@@ -5,7 +5,7 @@
 \title{Print to console data received by the compute panel function.}
 \usage{
 stat_debug_panel(mapping = NULL, data = NULL, geom = "null",
-  summary.fun = dplyr::as_data_frame, summary.fun.args = list(),
+  summary.fun = tibble::as_tibble, summary.fun.args = list(),
   position = "identity", na.rm = FALSE, show.legend = FALSE,
   inherit.aes = TRUE, ...)
 }

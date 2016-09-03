@@ -21,6 +21,7 @@ options(warnPartialMatchArgs = FALSE)
 ```{r}
 library(ggpmisc)
 library(ggplot2)
+library(ggrepel)
 library(xts)
 library(lubridate)
 library(tibble)
@@ -614,6 +615,112 @@ ggplot(Orange, aes(age, circumference, colour = Tree)) +
                          geom = "debug",
                          summary.fun = as_data_frame,
                          summary.fun.args = list(n = 20))
+```
+
+## `stat_dens2d_labels` and `stat_dens2d_filter`
+
+These stats had their origin in an enhancement suggestion for 'ggrepel' from 
+Hadley Wickham and discussion with Kamil Slowikowski (ggrepel's author) and 
+others. In fact the code is based on code Kamil gave during the discussion,
+but simplified and taking a few further ideas from `ggplot::stat_dens2d`.
+
+Some random data with random labels.
+
+```{r}
+random_string <- function(len = 6) {
+paste(sample(letters, len, replace = TRUE), collapse = "")
+}
+
+# Make random data.
+set.seed(1001)
+d <- tibble::tibble(
+  x = rnorm(100),
+  y = rnorm(100),
+  group = rep(c("A", "B"), c(50, 50)),
+  lab = replicate(100, { random_string() })
+)
+```
+
+### `stat_dens2d_filter`
+
+The stat `stat_dens2d_filter` _filters_ observations, in other words passes to 
+the geom a subset of the data received as input.
+
+Using defaults except for the color aesthetic. Highlight 1/10 of observations 
+in from lowest density areas of the plot panels.
+
+```{r}
+ggplot(data = d, aes(x, y)) +
+  geom_point() +
+  stat_dens2d_filter(color = "red")
+```
+
+A different way of highlighting the same observations.
+
+```{r}
+ggplot(data = d, aes(x, y, color = group)) +
+   geom_point() +
+   stat_dens2d_filter(shape = 1, size = 3, color = "black")
+```
+
+Highlighting  1/3 of the observations.
+
+```{r}
+ggplot(data = d, aes(x, y, color = group)) +
+   geom_point() +
+   stat_dens2d_filter(keep.fraction = 1/3,
+                      shape = 1, size = 3, color = "black")
+```
+
+Add text labels to 1/10 of the observations. The "text_repel" geom sees only
+these observations.
+
+```{r}
+ggplot(data = d, aes(x, y, label = lab, color = group)) +
+  geom_point() +
+  stat_dens2d_filter(geom = "text_repel")
+```
+
+Add text labels to 1/2 of the observations. 
+
+```{r}
+ggplot(data = d, aes(x, y, label = lab, color = group)) +
+  geom_point() +
+  stat_dens2d_filter(geom = "text_repel", keep.fraction = 0.5)
+```
+
+### `stat_dens2d_labels`
+
+The stat `stat_dens2d_labels` _replaces_ with `label.fill` the values of the 
+label (aesthetic) variable in data in the hight density regions of the panel
+before passing them to the geom. The default value of `label.fill` is NA which
+results in labels being ommitted.
+
+Label 1/10 of observations from lowest density areas of the plot panels.
+
+```{r}
+ggplot(data = d, aes(x, y, label = lab, color = group)) +
+  geom_point() +
+  stat_dens2d_labels(geom = "text_repel")
+```
+
+Add text labels to 1/2 of the observations. 
+
+```{r}
+ggplot(data = d, aes(x, y, label = lab, color = group)) +
+  geom_point() +
+  stat_dens2d_labels(geom = "text_repel", keep.fraction = 0.5)
+```
+
+Use `""` as label replacements. This avoids labels on top of unlabelled data
+poits, but leaves the segments visible for these empty text labels.
+
+```{r}
+ggplot(data = d, aes(x, y, label = lab, color = group)) +
+  geom_point() +
+  stat_dens2d_labels(geom = "text_repel", 
+                     keep.fraction = 0.5,
+                     label.fill = "")
 ```
 
 ## Debugging ggplots
