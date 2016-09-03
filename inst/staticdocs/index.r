@@ -11,6 +11,8 @@ sd_section("Statistics",
   c(
     "stat_debug_group",
     "stat_debug_panel",
+    "stat_dens2d_filter",
+    "stat_dens2d_labels",
     "stat_fit_augment",
     "stat_fit_glance",
     "stat_fit_deviations",
