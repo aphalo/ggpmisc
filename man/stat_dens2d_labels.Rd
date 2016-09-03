@@ -5,8 +5,9 @@
 \title{Reset labels of observations in high density regions.}
 \usage{
 stat_dens2d_labels(mapping = NULL, data = NULL, geom = "text",
-  position = "identity", keep.fraction = 0.1, label.fill = NA,
-  na.rm = TRUE, show.legend = FALSE, inherit.aes = TRUE, ...)
+  position = "identity", keep.fraction = 0.1, keep.number = Inf,
+  label.fill = NA, na.rm = TRUE, show.legend = FALSE,
+  inherit.aes = TRUE, ...)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
@@ -22,6 +23,8 @@ the plot defaults.}
 layer}
 
 \item{keep.fraction}{numeric [0..1].}
+
+\item{keep.number}{integer number of labels to keep.}
 
 \item{label.fill}{character.}
 

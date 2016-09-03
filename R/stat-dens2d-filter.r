@@ -10,6 +10,7 @@
 #'   the plot defaults.
 #' @param geom The geometric object to use display the data.
 #' @param keep.fraction numeric [0..1].
+#' @param keep.number integer number of labels to keep.
 #' @param position The position adjustment to use for overlapping points on this
 #'   layer
 #' @param show.legend logical. Should this layer be included in the legends?
@@ -48,6 +49,16 @@
 #'   geom_point() +
 #'   stat_dens2d_filter(color = "red")
 #'
+#' ggplot(data = d, aes(x, y)) +
+#'   geom_point() +
+#'   stat_dens2d_filter(color = "red", keep.fraction = 0.5)
+#'
+#' ggplot(data = d, aes(x, y)) +
+#'   geom_point() +
+#'   stat_dens2d_filter(color = "red",
+#'                      keep.fraction = 0.5,
+#'                      keep.number = 12)
+#'
 #' ggplot(data = d, aes(x, y, color = group)) +
 #'   geom_point() +
 #'   stat_dens2d_filter(shape = 1, size = 3, color = "black")
@@ -66,6 +77,7 @@ stat_dens2d_filter <-
   function(mapping = NULL, data = NULL,
            geom = "point", position = "identity",
            keep.fraction = 0.10,
+           keep.number = Inf,
            na.rm = TRUE, show.legend = FALSE,
            inherit.aes = TRUE,
            ...) {
@@ -74,6 +86,7 @@ stat_dens2d_filter <-
       position = position, show.legend = show.legend, inherit.aes = inherit.aes,
       params = list(na.rm = na.rm,
                     keep.fraction = keep.fraction,
+                    keep.number = keep.number,
                     ...)
     )
   }
@@ -81,7 +94,11 @@ stat_dens2d_filter <-
 dens2d_flt_compute_fun <-
   function(data,
            scales,
-           keep.fraction) {
+           keep.fraction,
+           keep.number) {
+    if (nrow(data) * keep.fraction > keep.number) {
+      keep.fraction <- keep.number / nrow(data)
+    }
 
     h <- c(MASS::bandwidth.nrd(data$x), MASS::bandwidth.nrd(data$y))
 
