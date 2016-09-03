@@ -694,7 +694,7 @@ ggplot(data = d, aes(x, y, label = lab, color = group)) +
 The stat `stat_dens2d_labels` _replaces_ with `label.fill` the values of the 
 label (aesthetic) variable in data in the hight density regions of the panel
 before passing them to the geom. The default value of `label.fill` is NA which
-results in labels being ommitted.
+results in labels being omitted.
 
 Label 1/10 of observations from lowest density areas of the plot panels.
 
@@ -713,7 +713,7 @@ ggplot(data = d, aes(x, y, label = lab, color = group)) +
 ```
 
 Use `""` as label replacements. This avoids labels on top of unlabelled data
-poits, but leaves the segments visible for these empty text labels.
+points, but leaves the segments visible for these empty text labels.
 
 ```{r}
 ggplot(data = d, aes(x, y, label = lab, color = group)) +

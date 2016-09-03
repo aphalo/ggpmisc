@@ -10,7 +10,6 @@
 #'   the plot defaults.
 #' @param geom The geometric object to use display the data.
 #' @param keep.fraction numeric [0..1].
-#' @param label.fill character.
 #' @param position The position adjustment to use for overlapping points on this
 #'   layer
 #' @param show.legend logical. Should this layer be included in the legends?
@@ -99,7 +98,7 @@ dens2d_flt_compute_fun <-
     kz <- sapply(seq_along(kx), function(i) kk$z[kx[i], ky[i]])
 
     # d$low <- kz < res$threshold
-    keep <- kz < quantile(kz, keep.fraction)
+    keep <- kz < stats::quantile(kz, keep.fraction)
     #  kz
     data[keep, ]
   }

@@ -38,8 +38,6 @@ default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
 \item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This
 can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
-
-\item{label.fill}{character.}
 }
 \description{
 \code{stat_dens2d_filter} Sets \code{labels} to NA in regions with
