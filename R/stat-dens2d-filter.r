@@ -11,6 +11,11 @@
 #' @param geom The geometric object to use display the data.
 #' @param keep.fraction numeric [0..1].
 #' @param keep.number integer number of labels to keep.
+#' @param h vector of bandwidths for x and y directions. Defaults to normal
+#'   reference bandwidth (see bandwidth.nrd). A scalar value will be taken to
+#'   apply to both directions.
+#' @param n Number of grid points in each direction. Can be scalar or a
+#'   length-2 integer vector
 #' @param position The position adjustment to use for overlapping points on this
 #'   layer
 #' @param show.legend logical. Should this layer be included in the legends?
@@ -27,6 +32,8 @@
 #'   before the computation proceeds.
 #'
 #' @section Computed variables: \describe{ \item{labels}{x at centre of range} }
+#'
+#' @seealso \code{\link[MASS]{kde2d}} used internally.
 #'
 #' @examples
 #'
@@ -80,6 +87,8 @@ stat_dens2d_filter <-
            keep.number = Inf,
            na.rm = TRUE, show.legend = FALSE,
            inherit.aes = TRUE,
+           h = NULL,
+           n = NULL,
            ...) {
     ggplot2::layer(
       stat = StatDens2dFilter, data = data, mapping = mapping, geom = geom,
@@ -87,6 +96,8 @@ stat_dens2d_filter <-
       params = list(na.rm = na.rm,
                     keep.fraction = keep.fraction,
                     keep.number = keep.number,
+                    h = h,
+                    n = n,
                     ...)
     )
   }
@@ -95,16 +106,25 @@ dens2d_flt_compute_fun <-
   function(data,
            scales,
            keep.fraction,
-           keep.number) {
+           keep.number,
+           h,
+           n) {
+    print(scales)
+    print(tibble::as_tibble(data))
     if (nrow(data) * keep.fraction > keep.number) {
       keep.fraction <- keep.number / nrow(data)
     }
 
-    h <- c(MASS::bandwidth.nrd(data$x), MASS::bandwidth.nrd(data$y))
+    if (is.null(h)) {
+      h <- c(MASS::bandwidth.nrd(data$x), MASS::bandwidth.nrd(data$y))
+    }
 
-    #    kk <- MASS::kde2d(x,y)
+    if (is.null(n)) {
+      n = trunc(sqrt(nrow(data))) * 4L
+    }
+
     kk <-  MASS::kde2d(
-      data$x, data$y, h = h, n = 500,
+      data$x, data$y, h = h, n = n,
       lims = c(scales$x$dimension(), scales$y$dimension()))
 
     dimnames(kk$z) <- list(kk$x,kk$y)
@@ -114,9 +134,7 @@ dens2d_flt_compute_fun <-
     ky <- cut(data$y, kk$y, labels = FALSE, include.lowest = TRUE)
     kz <- sapply(seq_along(kx), function(i) kk$z[kx[i], ky[i]])
 
-    # d$low <- kz < res$threshold
     keep <- kz < stats::quantile(kz, keep.fraction)
-    #  kz
     data[keep, ]
   }
 

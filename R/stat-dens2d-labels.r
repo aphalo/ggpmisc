@@ -11,6 +11,11 @@
 #' @param geom The geometric object to use display the data.
 #' @param keep.fraction numeric [0..1].
 #' @param keep.number integer number of labels to keep.
+#' @param h vector of bandwidths for x and y directions. Defaults to normal
+#'   reference bandwidth (see bandwidth.nrd). A scalar value will be taken to
+#'   apply to both directions.
+#' @param n Number of grid points in each direction. Can be scalar or a length-2
+#'   integer vector
 #' @param label.fill character.
 #' @param position The position adjustment to use for overlapping points on this
 #'   layer
@@ -28,6 +33,8 @@
 #'   before the computation proceeds.
 #'
 #' @section Computed variables: \describe{ \item{labels}{x at centre of range} }
+#'
+#' @seealso \code{\link[MASS]{kde2d}} used internally.
 #'
 #' @examples
 #'
@@ -65,6 +72,8 @@ stat_dens2d_labels <-
            geom = "text", position = "identity",
            keep.fraction = 0.10,
            keep.number = Inf,
+           h = NULL,
+           n = NULL,
            label.fill = NA,
            na.rm = TRUE, show.legend = FALSE,
            inherit.aes = TRUE,
@@ -75,6 +84,8 @@ stat_dens2d_labels <-
       params = list(na.rm = na.rm,
                     keep.fraction = keep.fraction,
                     keep.number = keep.number,
+                    h = h,
+                    n = n,
                     label.fill = label.fill,
                     ...)
     )
@@ -84,16 +95,24 @@ dens2d_labs_compute_fun <-
   function(data, scales,
            keep.fraction,
            keep.number,
+           h,
+           n,
            label.fill) {
     if (nrow(data) * keep.fraction > keep.number) {
       keep.fraction <- keep.number / nrow(data)
     }
 
-    h <- c(MASS::bandwidth.nrd(data$x), MASS::bandwidth.nrd(data$y))
+    if (is.null(h)) {
+      h <- c(MASS::bandwidth.nrd(data$x), MASS::bandwidth.nrd(data$y))
+    }
+
+    if (is.null(n)) {
+      n = trunc(sqrt(nrow(data))) * 4L
+    }
 
     #    kk <- MASS::kde2d(x,y)
     kk <-  MASS::kde2d(
-      data$x, data$y, h = h, n = 500,
+      data$x, data$y, h = h, n = n,
       lims = c(scales$x$dimension(), scales$y$dimension()))
 
     dimnames(kk$z) <- list(kk$x,kk$y)
