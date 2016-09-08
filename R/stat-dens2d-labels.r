@@ -107,7 +107,7 @@ dens2d_labs_compute_fun <-
     }
 
     if (is.null(n)) {
-      n = trunc(sqrt(nrow(data))) * 4L
+      n = trunc(sqrt(nrow(data))) * 8L
     }
 
     #    kk <- MASS::kde2d(x,y)

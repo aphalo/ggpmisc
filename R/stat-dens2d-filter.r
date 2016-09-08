@@ -109,8 +109,6 @@ dens2d_flt_compute_fun <-
            keep.number,
            h,
            n) {
-    print(scales)
-    print(tibble::as_tibble(data))
     if (nrow(data) * keep.fraction > keep.number) {
       keep.fraction <- keep.number / nrow(data)
     }
@@ -120,7 +118,7 @@ dens2d_flt_compute_fun <-
     }
 
     if (is.null(n)) {
-      n = trunc(sqrt(nrow(data))) * 4L
+      n = trunc(sqrt(nrow(data))) * 8L
     }
 
     kk <-  MASS::kde2d(
