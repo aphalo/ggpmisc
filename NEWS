@@ -7,8 +7,9 @@ density of observations.
 Add stat_den2d_filter(), a statistic that filters-out observations in regions
 of a panel with high density of observations.
 These two statistics are useful for labelling or highlighting observations in
-regions of a panel with low density. Both stats uses a compute_panel function,
-rather than a compute_group function.
+regions of a panel with low density. Both stats use a compute_panel function,
+rather than a compute_group function. They use internally `MASS:kde2d` to
+estimate densities and default values for parameters are calculated dynamically.
 
 ggpmisc 0.2.10
 ==============
