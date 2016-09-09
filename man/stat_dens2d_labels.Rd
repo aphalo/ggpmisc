@@ -6,8 +6,8 @@
 \usage{
 stat_dens2d_labels(mapping = NULL, data = NULL, geom = "text",
   position = "identity", keep.fraction = 0.1, keep.number = Inf,
-  label.fill = NA, na.rm = TRUE, show.legend = FALSE,
-  inherit.aes = TRUE, ...)
+  h = NULL, n = NULL, label.fill = NA, na.rm = TRUE,
+  show.legend = FALSE, inherit.aes = TRUE, ...)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
@@ -25,6 +25,13 @@ layer}
 \item{keep.fraction}{numeric [0..1].}
 
 \item{keep.number}{integer number of labels to keep.}
+
+\item{h}{vector of bandwidths for x and y directions. Defaults to normal
+reference bandwidth (see bandwidth.nrd). A scalar value will be taken to
+apply to both directions.}
+
+\item{n}{Number of grid points in each direction. Can be scalar or a length-2
+integer vector}
 
 \item{label.fill}{character.}
 
@@ -80,5 +87,8 @@ ggplot(data = d, aes(x, y, label = lab, color = group)) +
   geom_point() +
   stat_dens2d_labels(geom = "text_repel")
 
+}
+\seealso{
+\code{\link[MASS]{kde2d}} used internally.
 }
 

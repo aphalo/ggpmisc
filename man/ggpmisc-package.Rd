@@ -33,6 +33,8 @@ formatted equation. By default labels are expressions but tikz device is
 supported optionally with LaTeX formatted labels.
 \item Stats for extracting information from a any model fit supported by
 package 'broom'.
+\item Stats for filtering-out observations in regions of a panel where
+the density of observations is high.
 \item "Debug" stats and a "debug" geom that print to the console a summary
 ot their \code{data} input.
 }

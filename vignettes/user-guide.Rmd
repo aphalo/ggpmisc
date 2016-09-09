@@ -664,21 +664,35 @@ ggplot(data = d, aes(x, y)) +
   stat_dens2d_filter(color = "red")
 ```
 
-A different way of highlighting the same observations.
-
-```{r}
-ggplot(data = d, aes(x, y, color = group)) +
-   geom_point() +
-   stat_dens2d_filter(shape = 1, size = 3, color = "black")
-```
-
 Highlighting  1/3 of the observations.
 
 ```{r}
 ggplot(data = d, aes(x, y, color = group)) +
    geom_point() +
    stat_dens2d_filter(keep.fraction = 1/3,
-                      shape = 1, size = 3, color = "black")
+                      color = "red")
+```
+
+A different way of highlighting the same observations. We also shift one group
+with respect to the other.
+
+```{r}
+ggplot(data = d, aes(x + rep(c(-2,2), rep(50,2)), 
+                     y, color = group)) +
+   geom_point() +
+   stat_dens2d_filter(shape = 1, size = 3,
+                      keep.fraction = 0.25)
+```
+
+Highlight 1/10 of observations in from lowest density areas of the plot for each
+individual group.
+
+```{r}
+ggplot(data = d, aes(x + rep(c(-2,2), rep(50,2)), 
+                     y, color = group)) +
+   geom_point() +
+   stat_dens2d_filter_g(shape = 1, size = 3,
+                      keep.fraction = 0.25)
 ```
 
 Add text labels to 1/10 of the observations. The "text_repel" geom sees only
@@ -728,7 +742,14 @@ points, but leaves the segments visible for these empty text labels.
 ggplot(data = d, aes(x, y, label = lab, color = group)) +
   geom_point() +
   stat_dens2d_labels(geom = "text_repel", 
-                     keep.fraction = 0.5,
+                     keep.fraction = 0.25,
                      label.fill = "")
 ```
 
+```{r}
+ggplot(data = d, aes(x, y, label = lab, color = group)) +
+  geom_point() +
+  stat_dens2d_labels(geom = "label_repel", 
+                     keep.fraction = 0.25,
+                     label.fill = "")
+```

@@ -2,11 +2,18 @@
 % Please edit documentation in R/stat-dens2d-filter.r
 \name{stat_dens2d_filter}
 \alias{stat_dens2d_filter}
+\alias{stat_dens2d_filter_g}
 \title{Filter out observations in high density regions.}
 \usage{
 stat_dens2d_filter(mapping = NULL, data = NULL, geom = "point",
   position = "identity", keep.fraction = 0.1, keep.number = Inf,
-  na.rm = TRUE, show.legend = FALSE, inherit.aes = TRUE, ...)
+  na.rm = TRUE, show.legend = FALSE, inherit.aes = TRUE, h = NULL,
+  n = NULL, ...)
+
+stat_dens2d_filter_g(mapping = NULL, data = NULL, geom = "point",
+  position = "identity", keep.fraction = 0.1, keep.number = Inf,
+  na.rm = TRUE, show.legend = FALSE, inherit.aes = TRUE, h = NULL,
+  n = NULL, ...)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
@@ -37,13 +44,24 @@ than combining with them. This is most useful for helper functions that
 define both data and aesthetics and shouldn't inherit behaviour from the
 default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
 
+\item{h}{vector of bandwidths for x and y directions. Defaults to normal
+reference bandwidth (see bandwidth.nrd). A scalar value will be taken to
+apply to both directions.}
+
+\item{n}{Number of grid points in each direction. Can be scalar or a
+length-2 integer vector}
+
 \item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This
 can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 }
 \description{
-\code{stat_dens2d_filter} Sets \code{labels} to NA in regions with
-  high density of observations.
+\code{stat_dens2d_filter} Filters out observations in regions
+  of a plot panel with high density of observations.
+  \code{stat_dens2d_filter_g} does the filtering by group instead of by
+  panel. This second stat is useful for highlighting observations, while
+  the first one tends to be most useful when the aim is to prevent clashes
+  among text lables.
 }
 \section{Computed variables}{
  \describe{ \item{labels}{x at centre of range} }
@@ -81,7 +99,11 @@ ggplot(data = d, aes(x, y)) +
 
 ggplot(data = d, aes(x, y, color = group)) +
   geom_point() +
-  stat_dens2d_filter(shape = 1, size = 3, color = "black")
+  stat_dens2d_filter(shape = 1, size = 3, keep.fraction = 1/4)
+
+ggplot(data = d, aes(x, y, color = group)) +
+  geom_point() +
+  stat_dens2d_filter_g(shape = 1, size = 3, keep.fraction = 1/4)
 
 ggplot(data = d, aes(x, y, label = lab, color = group)) +
   geom_point() +
@@ -91,5 +113,8 @@ ggplot(data = d, aes(x, y, label = lab, color = group)) +
   geom_point() +
   stat_dens2d_filter(geom = "text_repel")
 
+}
+\seealso{
+\code{\link[MASS]{kde2d}} used internally.
 }
 

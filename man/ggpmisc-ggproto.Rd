@@ -7,6 +7,7 @@
 \alias{StatDebugGroup}
 \alias{StatDebugPanel}
 \alias{StatDens2dFilter}
+\alias{StatDens2dFilterG}
 \alias{StatDens2dLabels}
 \alias{StatFitAugment}
 \alias{StatFitDeviations}

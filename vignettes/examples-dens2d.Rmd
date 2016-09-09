@@ -49,8 +49,26 @@ make_data_tbl <- function(nrow = 100, rfun = rnorm, ...) {
 }
 ```
 
+## Tests with different data sets
+
+### Number of observations
+
+By default the fraction of observations kept is 1/10.
+
 ```{r}
-ggplot(data = make_data_tbl(100), aes(x, y)) +
+ggplot(data = make_data_tbl(5), aes(x, y)) +
+  geom_point() +
+  stat_dens2d_filter(color = "red")
+```
+
+```{r}
+ggplot(data = make_data_tbl(5), aes(x, y)) +
+  geom_point() +
+  stat_dens2d_filter(color = "red", keep.fraction = 1/2)
+```
+
+```{r}
+ggplot(data = make_data_tbl(20), aes(x, y)) +
   geom_point() +
   stat_dens2d_filter(color = "red")
 ```
@@ -58,7 +76,7 @@ ggplot(data = make_data_tbl(100), aes(x, y)) +
 ```{r}
 ggplot(data = make_data_tbl(100), aes(x, y)) +
   geom_point() +
-  stat_dens2d_filter(color = "red", keep.fraction = 0.667)
+  stat_dens2d_filter(color = "red")
 ```
 
 ```{r}
@@ -91,6 +109,8 @@ ggplot(data = make_data_tbl(10000), aes(x, y)) +
   stat_dens2d_filter(color = "red", keep.fraction = 0.01)
 ```
 
+### Random draws from different theoretical distributions
+
 ```{r}
 ggplot(data = make_data_tbl(1000, rfun = runif), aes(x, y)) +
   geom_point() +
@@ -114,6 +134,8 @@ ggplot(data = make_data_tbl(1000, rfun = rbeta, shape1 = 3, shape2 = 12), aes(x,
   geom_point() +
   stat_dens2d_filter(color = "red", keep.fraction = 0.1)
 ```
+
+### Transformed scales
 
 ```{r}
 ggplot(data = make_data_tbl(1000, rfun = rbeta, shape1 = 3, shape2 = 12), aes(x, y)) +

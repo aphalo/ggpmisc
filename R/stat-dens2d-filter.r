@@ -1,7 +1,11 @@
 #' @title Filter out observations in high density regions.
 #'
-#' @description \code{stat_dens2d_filter} Sets \code{labels} to NA in regions with
-#'   high density of observations.
+#' @description \code{stat_dens2d_filter} Filters out observations in regions
+#'   of a plot panel with high density of observations.
+#'   \code{stat_dens2d_filter_g} does the filtering by group instead of by
+#'   panel. This second stat is useful for highlighting observations, while
+#'   the first one tends to be most useful when the aim is to prevent clashes
+#'   among text lables.
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_string}}. Only needs
@@ -68,7 +72,11 @@
 #'
 #' ggplot(data = d, aes(x, y, color = group)) +
 #'   geom_point() +
-#'   stat_dens2d_filter(shape = 1, size = 3, color = "black")
+#'   stat_dens2d_filter(shape = 1, size = 3, keep.fraction = 1/4)
+#'
+#' ggplot(data = d, aes(x, y, color = group)) +
+#'   geom_point() +
+#'   stat_dens2d_filter_g(shape = 1, size = 3, keep.fraction = 1/4)
 #'
 #' ggplot(data = d, aes(x, y, label = lab, color = group)) +
 #'   geom_point() +
@@ -92,6 +100,32 @@ stat_dens2d_filter <-
            ...) {
     ggplot2::layer(
       stat = StatDens2dFilter, data = data, mapping = mapping, geom = geom,
+      position = position, show.legend = show.legend, inherit.aes = inherit.aes,
+      params = list(na.rm = na.rm,
+                    keep.fraction = keep.fraction,
+                    keep.number = keep.number,
+                    h = h,
+                    n = n,
+                    ...)
+    )
+  }
+
+#' @rdname stat_dens2d_filter
+#'
+#' @export
+#'
+stat_dens2d_filter_g <-
+  function(mapping = NULL, data = NULL,
+           geom = "point", position = "identity",
+           keep.fraction = 0.10,
+           keep.number = Inf,
+           na.rm = TRUE, show.legend = FALSE,
+           inherit.aes = TRUE,
+           h = NULL,
+           n = NULL,
+           ...) {
+    ggplot2::layer(
+      stat = StatDens2dFilterG, data = data, mapping = mapping, geom = geom,
       position = position, show.legend = show.legend, inherit.aes = inherit.aes,
       params = list(na.rm = na.rm,
                     keep.fraction = keep.fraction,
@@ -145,6 +179,19 @@ StatDens2dFilter <-
     "StatDens2dFilter",
     ggplot2::Stat,
     compute_panel =
+      dens2d_flt_compute_fun,
+    required_aes = c("x", "y")
+  )
+
+#' @rdname ggpmisc-ggproto
+#' @format NULL
+#' @usage NULL
+#' @export
+StatDens2dFilterG <-
+  ggplot2::ggproto(
+    "StatDens2dFilterG",
+    ggplot2::Stat,
+    compute_group =
       dens2d_flt_compute_fun,
     required_aes = c("x", "y")
   )
