@@ -735,8 +735,20 @@ ggplot(data = d, aes(x, y, label = lab, color = group)) +
   stat_dens2d_labels(geom = "text_repel", keep.fraction = 0.5)
 ```
 
-Use `""` as label replacements. This avoids labels on top of unlabelled data
-points, but leaves the segments visible for these empty text labels.
+Use `""` as label replacements.
+
+```{r}
+ggplot(data = d, aes(x, y, label = lab, color = group)) +
+  geom_point() +
+  stat_dens2d_labels(geom = "text", 
+                     keep.fraction = 0.25,
+                     label.fill = "", vjust = -0.3)
+```
+
+Using the geoms from package 'ggrepel' avoids clashes among labels or on top
+of data points. However the current version of these geoms draws segments for 
+these empty text labels making this stat of limited use. One example with 
+`text_repel` follows. 
 
 ```{r}
 ggplot(data = d, aes(x, y, label = lab, color = group)) +
@@ -745,6 +757,8 @@ ggplot(data = d, aes(x, y, label = lab, color = group)) +
                      keep.fraction = 0.25,
                      label.fill = "")
 ```
+
+With `label_repel` empty boxes are also output.
 
 ```{r}
 ggplot(data = d, aes(x, y, label = lab, color = group)) +
