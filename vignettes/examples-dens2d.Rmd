@@ -97,6 +97,29 @@ ggplot(data = make_data_tbl(2000), aes(x, y)) +
   stat_dens2d_filter(color = "red", keep.fraction = 0.01)
 ```
 
+```{r}
+ggplot(data = make_data_tbl(2000), aes(x, y)) +
+  geom_point() +
+  stat_dens2d_filter(color = "red", 
+                     keep.sparse = FALSE)
+```
+
+```{r}
+ggplot(data = make_data_tbl(2000), aes(x, y)) +
+  geom_point() +
+  stat_dens2d_filter(color = "red", 
+                     keep.sparse = FALSE)+
+  stat_dens2d_filter(color = "blue")
+```
+
+```{r}
+ggplot(data = make_data_tbl(2000), aes(x, y)) +
+  geom_point() +
+  stat_dens2d_filter(color = "red", 
+                     keep.fraction = 0.01,
+                     keep.sparse = FALSE)
+```
+
 ```{r, eval=FALSE}
 ggplot(data = make_data_tbl(10000), aes(x, y)) +
   geom_point() +

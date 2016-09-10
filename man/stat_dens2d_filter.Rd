@@ -7,13 +7,13 @@
 \usage{
 stat_dens2d_filter(mapping = NULL, data = NULL, geom = "point",
   position = "identity", keep.fraction = 0.1, keep.number = Inf,
-  na.rm = TRUE, show.legend = FALSE, inherit.aes = TRUE, h = NULL,
-  n = NULL, ...)
+  keep.sparse = TRUE, na.rm = TRUE, show.legend = FALSE,
+  inherit.aes = TRUE, h = NULL, n = NULL, ...)
 
 stat_dens2d_filter_g(mapping = NULL, data = NULL, geom = "point",
   position = "identity", keep.fraction = 0.1, keep.number = Inf,
-  na.rm = TRUE, show.legend = FALSE, inherit.aes = TRUE, h = NULL,
-  n = NULL, ...)
+  keep.sparse = TRUE, na.rm = TRUE, show.legend = FALSE,
+  inherit.aes = TRUE, h = NULL, n = NULL, ...)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
@@ -31,6 +31,9 @@ layer}
 \item{keep.fraction}{numeric [0..1].}
 
 \item{keep.number}{integer number of labels to keep.}
+
+\item{keep.sparse}{logical If false the observations from the densest regions
+are kept.}
 
 \item{na.rm}{a logical value indicating whether NA values should be stripped
 before the computation proceeds.}

@@ -15,6 +15,8 @@
 #' @param geom The geometric object to use display the data.
 #' @param keep.fraction numeric [0..1].
 #' @param keep.number integer number of labels to keep.
+#' @param keep.sparse logical If false the observations from the densest regions
+#'   are kept.
 #' @param h vector of bandwidths for x and y directions. Defaults to normal
 #'   reference bandwidth (see bandwidth.nrd). A scalar value will be taken to
 #'   apply to both directions.
@@ -93,6 +95,7 @@ stat_dens2d_filter <-
            geom = "point", position = "identity",
            keep.fraction = 0.10,
            keep.number = Inf,
+           keep.sparse = TRUE,
            na.rm = TRUE, show.legend = FALSE,
            inherit.aes = TRUE,
            h = NULL,
@@ -104,6 +107,7 @@ stat_dens2d_filter <-
       params = list(na.rm = na.rm,
                     keep.fraction = keep.fraction,
                     keep.number = keep.number,
+                    keep.sparse = keep.sparse,
                     h = h,
                     n = n,
                     ...)
@@ -119,6 +123,7 @@ stat_dens2d_filter_g <-
            geom = "point", position = "identity",
            keep.fraction = 0.10,
            keep.number = Inf,
+           keep.sparse = TRUE,
            na.rm = TRUE, show.legend = FALSE,
            inherit.aes = TRUE,
            h = NULL,
@@ -130,6 +135,7 @@ stat_dens2d_filter_g <-
       params = list(na.rm = na.rm,
                     keep.fraction = keep.fraction,
                     keep.number = keep.number,
+                    keep.sparse = keep.sparse,
                     h = h,
                     n = n,
                     ...)
@@ -141,6 +147,7 @@ dens2d_flt_compute_fun <-
            scales,
            keep.fraction,
            keep.number,
+           keep.sparse,
            h,
            n) {
     if (nrow(data) * keep.fraction > keep.number) {
@@ -166,7 +173,11 @@ dens2d_flt_compute_fun <-
     ky <- cut(data$y, kk$y, labels = FALSE, include.lowest = TRUE)
     kz <- sapply(seq_along(kx), function(i) kk$z[kx[i], ky[i]])
 
-    keep <- kz < stats::quantile(kz, keep.fraction, names = FALSE)
+    if (keep.sparse) {
+      keep <- kz < stats::quantile(kz, keep.fraction, names = FALSE)
+    } else {
+      keep <- kz >= stats::quantile(kz, 1 - keep.fraction, names = FALSE)
+    }
     data[keep, ]
   }
 
