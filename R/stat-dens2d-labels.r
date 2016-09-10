@@ -123,7 +123,7 @@ dens2d_labs_compute_fun <-
     kz <- sapply(seq_along(kx), function(i) kk$z[kx[i], ky[i]])
 
     # d$low <- kz < res$threshold
-    keep <- kz < stats::quantile(kz, keep.fraction)
+    keep <- kz < stats::quantile(kz, keep.fraction, names = FALSE)
     #  kz
     df <- data
     df[["label"]] <- ifelse(keep, data[["label"]], label.fill)

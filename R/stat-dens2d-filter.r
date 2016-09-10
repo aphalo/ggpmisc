@@ -166,7 +166,7 @@ dens2d_flt_compute_fun <-
     ky <- cut(data$y, kk$y, labels = FALSE, include.lowest = TRUE)
     kz <- sapply(seq_along(kx), function(i) kk$z[kx[i], ky[i]])
 
-    keep <- kz < stats::quantile(kz, keep.fraction)
+    keep <- kz < stats::quantile(kz, keep.fraction, names = FALSE)
     data[keep, ]
   }
 

@@ -56,13 +56,13 @@ make_data_tbl <- function(nrow = 100, rfun = rnorm, ...) {
 By default the fraction of observations kept is 1/10.
 
 ```{r}
-ggplot(data = make_data_tbl(5), aes(x, y)) +
+ggplot(data = make_data_tbl(6), aes(x, y)) +
   geom_point() +
   stat_dens2d_filter(color = "red")
 ```
 
 ```{r}
-ggplot(data = make_data_tbl(5), aes(x, y)) +
+ggplot(data = make_data_tbl(6), aes(x, y)) +
   geom_point() +
   stat_dens2d_filter(color = "red", keep.fraction = 1/2)
 ```
