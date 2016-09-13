@@ -1,7 +1,7 @@
 #' @title Reset labels of observations in high density regions.
 #'
-#' @description \code{stat_low_dens} Sets \code{labels} to NA in regions with
-#'   high density of observations.
+#' @description \code{stat_low_dens} Sets \code{labels} to NA in regions of a
+#'   plot panel with high density of observations.
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_string}}. Only needs
@@ -65,6 +65,10 @@
 #'   geom_point() +
 #'   stat_dens2d_labels(geom = "text_repel")
 #'
+#' ggplot(data = d, aes(x, y, label = lab, color = group)) +
+#'   geom_point() +
+#'   stat_dens2d_labels(geom = "text_repel", label.fill = NA)
+#'
 #' @export
 #'
 stat_dens2d_labels <-
@@ -74,7 +78,7 @@ stat_dens2d_labels <-
            keep.number = Inf,
            h = NULL,
            n = NULL,
-           label.fill = NA,
+           label.fill = "",
            na.rm = TRUE, show.legend = FALSE,
            inherit.aes = TRUE,
            ...) {

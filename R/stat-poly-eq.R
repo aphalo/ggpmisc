@@ -32,11 +32,11 @@
 #' @param coef.digits,rr.digits integer Number of significant digits to use in
 #'   for the vector of fitted coefficients and for $R^2$ labels.
 #' @param label.x.npc,label.y.npc \code{numeric} with range 0..1 or character.
-#'   Coordinates to be used for positioning the output, expresed in "normalized
+#'   Coordinates to be used for positioning the output, expressed in "normalized
 #'   parent coordinates" or character string. If too short they will be recycled.
 #' @param label.x,label.y \code{numeric} Coordinates (in data units) to be used
 #'   for absolute positioning of the output. If too short they will be recycled.
-#' @param output.type character One of "expression", "LaTex" or "text".
+#' @param output.type character One of "expression", "LaTeX" or "text".
 #'
 #' @note For backward compatibility a logical is accepted as argument for
 #'   \code{eq.with.lhs}, giving the same output than the current default
@@ -47,7 +47,7 @@
 #' @details This stat can be used to automatically annotate a plot with R^2,
 #' adjusted R^2 or the fitted model equation. It supports only linear models
 #' fitted with function \code{lm()}. The R^2 and adjusted R^2 annotations can be
-#' used with any linear model formula. The fitted equation label is correclty
+#' used with any linear model formula. The fitted equation label is correctly
 #' generated for polynomials or quasi-polynomials through the origin. Model
 #' formulas can use \code{poly()} or be defined algebraically with terms of
 #' powers of increasing magnitude with no missing intermediate terms, except
@@ -55,7 +55,7 @@
 #' validity of the \code{formula} is not checked in the current implementation,
 #' and for this reason the default aesthetics sets R^2 as label for the
 #' annotation. This stat only generates the label, the predicted values need
-#' to be sepearately added to the plot, so to make sure that the same model
+#' to be separately added to the plot, so to make sure that the same model
 #' formula is used in all steps it is best to save the formula as an object
 #' and supply this object as argument to the different statistics.
 #'
@@ -310,4 +310,3 @@ StatPolyEq <-
                                   hjust = ..hjust.., vjust = ..vjust..),
                    required_aes = c("x", "y")
   )
-

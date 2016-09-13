@@ -45,7 +45,7 @@ many cases not possible to set breakpoints inside the code of stats and geoms.
 This can make it tedious to see how these functions work, as one may need to add
 `print` statements to their source code to achieve this. I wrote these functions
 as tools to help in the development of this package itself, and as a way of
-learniung myself how data are passed around within the different components of a
+learning myself how data are passed around within the different components of a
 `ggplot` object when it is printed.
 
 The stats described in this vignette are very simple and print a summary of 
@@ -209,10 +209,7 @@ ggplot(my.data, aes(x, y)) +
                    summary.fun.args = list()) +
   stat_fit_augment(method = "lm", 
                    method.args = list(formula = formula),
-                   geom = "smooth",
-                   aes(y = ...fitted..,
-                       ymax = ...fitted.. + ...se.fit.. * 2,
-                       ymin = ...fitted.. - ...se.fit.. * 2))
+                   geom = "smooth")
 ```
 
 ```{r}
@@ -226,10 +223,7 @@ ggplot(my.data, aes(x, y2, colour = group)) +
                    summary.fun.args = list()) +
   stat_fit_augment(method = "lm", 
                    method.args = list(formula = formula),
-                   geom = "smooth",
-                   aes(y = ...fitted..,
-                       ymax = ...fitted.. + ...se.fit.. * 2,
-                       ymin = ...fitted.. - ...se.fit.. * 2))
+                   geom = "smooth")
 ```
 
 The package also defines a `"null"` geom, which is used as default by the _debug_

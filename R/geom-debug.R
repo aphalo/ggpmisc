@@ -99,7 +99,7 @@ GeomDebug <-
 #' received by geoms as input \code{data} data frame.
 #'
 #' It can be useful when debugging the code of statistics or to learn how the
-#' stata and geoms work in 'ggplot2' (>= 2.0.0).
+#' stats and geoms work in 'ggplot2' (>= 2.0.0).
 #'
 #' @param mapping Set of aesthetic mappings created by \code{\link{aes}} or
 #'   \code{\link{aes_}}. If specified and \code{inherit.aes = TRUE} (the
@@ -151,4 +151,3 @@ geom_debug <- function(mapping = NULL, data = NULL, stat = "identity",
                   ...)
   )
 }
-

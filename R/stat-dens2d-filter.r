@@ -1,11 +1,11 @@
-#' @title Filter out observations in high density regions.
+#' @title Filter observations in high density regions.
 #'
-#' @description \code{stat_dens2d_filter} Filters out observations in regions
-#'   of a plot panel with high density of observations.
+#' @description \code{stat_dens2d_filter} Filters out/filters in observations in
+#'   regions of a plot panel with high density of observations.
 #'   \code{stat_dens2d_filter_g} does the filtering by group instead of by
 #'   panel. This second stat is useful for highlighting observations, while
 #'   the first one tends to be most useful when the aim is to prevent clashes
-#'   among text lables.
+#'   among text labels.
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_string}}. Only needs

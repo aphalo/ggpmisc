@@ -3,7 +3,7 @@
 \name{stat_dens2d_filter}
 \alias{stat_dens2d_filter}
 \alias{stat_dens2d_filter_g}
-\title{Filter out observations in high density regions.}
+\title{Filter observations in high density regions.}
 \usage{
 stat_dens2d_filter(mapping = NULL, data = NULL, geom = "point",
   position = "identity", keep.fraction = 0.1, keep.number = Inf,
@@ -59,12 +59,12 @@ can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 }
 \description{
-\code{stat_dens2d_filter} Filters out observations in regions
-  of a plot panel with high density of observations.
+\code{stat_dens2d_filter} Filters out/filters in observations in
+  regions of a plot panel with high density of observations.
   \code{stat_dens2d_filter_g} does the filtering by group instead of by
   panel. This second stat is useful for highlighting observations, while
   the first one tends to be most useful when the aim is to prevent clashes
-  among text lables.
+  among text labels.
 }
 \section{Computed variables}{
  \describe{ \item{labels}{x at centre of range} }

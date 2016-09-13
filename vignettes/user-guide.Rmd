@@ -255,7 +255,7 @@ ggplot(my.data, aes(x, y)) +
                parse = TRUE)
 ```
 
-Two examples of removing and changing the _lhs_ and/or _rhs_ of the equation.
+Two examples of removing and changing the _ohs_ and/or _rhus_ of the equation.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -333,7 +333,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = ..eq.label..), size = rel(3),
+  stat_poly_eq(aes(label = ..eq.label..), size = 3,
                formula = formula, parse = TRUE) +
   facet_wrap(~group)
 ```
@@ -343,7 +343,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = ..eq.label..), size = rel(3),
+  stat_poly_eq(aes(label = ..eq.label..), size = 3,
                formula = formula, parse = TRUE) +
   facet_wrap(~group, scales = "free_y")
 ```
@@ -391,9 +391,9 @@ panel to panel.
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2, fill = block)) +
-  geom_point(shape = 21, size = rel(3)) +
+  geom_point(shape = 21, size = 3) +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = ..rr.label..), size = rel(3),
+  stat_poly_eq(aes(label = ..rr.label..), size = 3,
                geom = "label", alpha = 0.33,
                formula = formula, parse = TRUE) +
   facet_wrap(~group, scales = "free_y") +
@@ -403,9 +403,9 @@ ggplot(my.data, aes(x, y2, fill = block)) +
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2, colour = group, fill = block)) +
-  geom_point(shape = 21, size = rel(3)) +
+  geom_point(shape = 21, size = 3) +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = ..rr.label..), size = rel(3),
+  stat_poly_eq(aes(label = ..rr.label..), size = 3,
                geom = "label", alpha = 0.2,
                formula = formula, parse = TRUE,
                label.y.npc = 0.66) +
@@ -627,9 +627,9 @@ but simplified and taking a few further ideas from `ggplot::stat_dens2d`.
 **Warning!** Which observations are selected by the algorithm used, based on 
 `MASS:kde2d`, depends strongly on the values of parameters `h` and `n`. As these
 stats have been tested only with a few data sets, you may need to alter the
-defauls. Beware, though, that what are good values, may depend on individual 
+defaults. Beware, though, that what are good values, may depend on individual 
 data sets even if they include the same number of observations. For the
-selection of oservations to work cleanly, the argument for `n` must create a
+selection of observations to work cleanly, the argument for `n` must create a
 dense grid. Much larger values of `n` than in the examples in the documentation
 of `MASS::kde2d` and `ggplot2::stat_dens2d` will be needed in most cases.
 
@@ -653,10 +653,11 @@ d <- tibble::tibble(
 ### `stat_dens2d_filter`
 
 The stat `stat_dens2d_filter` _filters_ observations, in other words passes to 
-the geom a subset of the data received as input.
+the geom a subset of the data received as input. The default value for `geom` is
+`"point"`.
 
 Using defaults except for the color aesthetic. Highlight 1/10 of observations 
-in from lowest density areas of the plot panels.
+from lowest density areas of the plot panel.
 
 ```{r}
 ggplot(data = d, aes(x, y)) +
@@ -664,17 +665,18 @@ ggplot(data = d, aes(x, y)) +
   stat_dens2d_filter(color = "red")
 ```
 
-Highlighting  1/3 of the observations.
+Highlighting  1/4 of the observations by underplotting with larger black points.
 
 ```{r}
 ggplot(data = d, aes(x, y, color = group)) +
-   geom_point() +
-   stat_dens2d_filter(keep.fraction = 1/3,
-                      color = "red")
+   stat_dens2d_filter(keep.fraction = 0.25,
+                      size = 3,
+                      color = "black") +
+   geom_point()
 ```
 
-A different way of highlighting the same observations. We also shift one group
-with respect to the other.
+A different way of highlighting 1/4 of the observations, using overplotting with
+a 'hollow' shape. We also shift one group with respect to the other.
 
 ```{r}
 ggplot(data = d, aes(x + rep(c(-2,2), rep(50,2)), 
@@ -684,8 +686,9 @@ ggplot(data = d, aes(x + rep(c(-2,2), rep(50,2)),
                       keep.fraction = 0.25)
 ```
 
-Highlight 1/10 of observations in from lowest density areas of the plot for each
-individual group.
+Highlight 1/4 of observations from lowest density areas of the plot, with
+density considered separately for each individual group, in this case based on
+the color aesthetic.
 
 ```{r}
 ggplot(data = d, aes(x + rep(c(-2,2), rep(50,2)), 
@@ -715,47 +718,45 @@ ggplot(data = d, aes(x, y, label = lab, color = group)) +
 ### `stat_dens2d_labels`
 
 The stat `stat_dens2d_labels` _replaces_ with `label.fill` the values of the 
-label (aesthetic) variable in data in the hight density regions of the panel
-before passing them to the geom. The default value of `label.fill` is NA which
-results in labels being omitted.
+label (aesthetic) variable in data in the high density regions of the panel 
+before passing them to the geom. The default value for `geom` is `"text"`. The
+default value of `label.fill` is `""` which results in empty labels, while using
+`NA` as fill label results in observations being omitted. Using `NA` as
+`label.fill` is not too different from using `stat_dens2d_filter` as long as the
+geom used requires a `label` aesthetic.
 
 Label 1/10 of observations from lowest density areas of the plot panels.
 
 ```{r}
 ggplot(data = d, aes(x, y, label = lab, color = group)) +
   geom_point() +
-  stat_dens2d_labels(geom = "text_repel")
+  stat_dens2d_labels()
 ```
 
-Add text labels to 1/2 of the observations. 
+Add text labels to 1/4 of the observations. 
 
 ```{r}
 ggplot(data = d, aes(x, y, label = lab, color = group)) +
   geom_point() +
-  stat_dens2d_labels(geom = "text_repel", keep.fraction = 0.5)
+  stat_dens2d_labels(keep.fraction = 0.5)
 ```
 
-Use `""` as label replacements.
+Use with geom `"text"` we can statically adjust the positioning of labels.
 
 ```{r}
 ggplot(data = d, aes(x, y, label = lab, color = group)) +
   geom_point() +
-  stat_dens2d_labels(geom = "text", 
-                     keep.fraction = 0.25,
-                     label.fill = "", vjust = -0.3)
+  stat_dens2d_labels(keep.fraction = 0.25,
+                     vjust = -0.3)
 ```
 
-Using the geoms from package 'ggrepel' avoids clashes among labels or on top
-of data points. However the current version of these geoms draws segments for 
-these empty text labels making this stat of limited use. One example with 
-`text_repel` follows. 
+Using the geoms from package 'ggrepel' avoids clashes among labels or on top of data points. However the current version of these geoms draws segments for the empty text labels making this stat of limited use until 'ggrepel' is updated. One example with `text_repel` follows. 
 
 ```{r}
 ggplot(data = d, aes(x, y, label = lab, color = group)) +
   geom_point() +
   stat_dens2d_labels(geom = "text_repel", 
-                     keep.fraction = 0.25,
-                     label.fill = "")
+                     keep.fraction = 0.25)
 ```
 
 With `label_repel` empty boxes are also output.
@@ -764,6 +765,15 @@ With `label_repel` empty boxes are also output.
 ggplot(data = d, aes(x, y, label = lab, color = group)) +
   geom_point() +
   stat_dens2d_labels(geom = "label_repel", 
+                     keep.fraction = 0.25)
+```
+
+Using `NA` as fill makes the observations with labels set to `NA` to be skipped completely, possibly leading to labels overlapping unlabelled observations.
+
+```{r}
+ggplot(data = d, aes(x, y, label = lab, color = group)) +
+  geom_point() +
+  stat_dens2d_labels(geom = "text_repel", 
                      keep.fraction = 0.25,
-                     label.fill = "")
+                     label.fill = NA)
 ```

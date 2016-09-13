@@ -34,13 +34,13 @@ parsing it.}
 for the vector of fitted coefficients and for $R^2$ labels.}
 
 \item{label.x.npc, label.y.npc}{\code{numeric} with range 0..1 or character.
-Coordinates to be used for positioning the output, expresed in "normalized
+Coordinates to be used for positioning the output, expressed in "normalized
 parent coordinates" or character string. If too short they will be recycled.}
 
 \item{label.x, label.y}{\code{numeric} Coordinates (in data units) to be used
 for absolute positioning of the output. If too short they will be recycled.}
 
-\item{output.type}{character One of "expression", "LaTex" or "text".}
+\item{output.type}{character One of "expression", "LaTeX" or "text".}
 
 \item{position}{The position adjustment to use for overlapping points on this
 layer}
@@ -69,7 +69,7 @@ can include aesthetics whose values you want to set, not map. See
 This stat can be used to automatically annotate a plot with R^2,
 adjusted R^2 or the fitted model equation. It supports only linear models
 fitted with function \code{lm()}. The R^2 and adjusted R^2 annotations can be
-used with any linear model formula. The fitted equation label is correclty
+used with any linear model formula. The fitted equation label is correctly
 generated for polynomials or quasi-polynomials through the origin. Model
 formulas can use \code{poly()} or be defined algebraically with terms of
 powers of increasing magnitude with no missing intermediate terms, except
@@ -77,7 +77,7 @@ possibly for the intercept indicated by "- 1" or "-1" in the formula. The
 validity of the \code{formula} is not checked in the current implementation,
 and for this reason the default aesthetics sets R^2 as label for the
 annotation. This stat only generates the label, the predicted values need
-to be sepearately added to the plot, so to make sure that the same model
+to be separately added to the plot, so to make sure that the same model
 formula is used in all steps it is best to save the formula as an object
 and supply this object as argument to the different statistics.
 }

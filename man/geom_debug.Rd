@@ -57,7 +57,7 @@ received by geoms as input \code{data} data frame.
 }
 \details{
 It can be useful when debugging the code of statistics or to learn how the
-stata and geoms work in 'ggplot2' (>= 2.0.0).
+stats and geoms work in 'ggplot2' (>= 2.0.0).
 }
 \note{
 This _geom_ is very unusual in that it does not produce visible graphic

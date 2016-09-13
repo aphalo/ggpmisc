@@ -11,7 +11,7 @@
 #'   than all other elements within a window of width span centered at that
 #'   element. The default value is 3, meaning that a peak is bigger than both of
 #'   its neighbors. Default: 3.
-#' @param strict ogical flag: if TRUE, an element must be strictly greater than
+#' @param strict logical flag: if TRUE, an element must be strictly greater than
 #'   all other values in its window to be considered a peak. Default: TRUE.
 #'
 #' @return A vector of logical values. Values that are TRUE
@@ -37,7 +37,7 @@ find_peaks <-
     min_x <- range_x[1]
     max_x <- range_x[2]
     x <- ifelse(!is.finite(x), min_x, x)
-    # the next two lines catter for the case when max_x < 0, which is quite
+    # the next two lines cater for the case when max_x < 0, which is quite
     # common with logs
     delta <- max_x - min_x
     top_flag <- ignore_threshold > 0.0
@@ -86,7 +86,7 @@ find_peaks <-
 #' @param span a peak is defined as an element in a sequence which is greater
 #'   than all other elements within a window of width span centered at that
 #'   element. The default value is 5, meaning that a peak is bigger than two
-#'   consequtive neighbors on each side. A \code{NULL} value for \code{span}
+#'   consecutive neighbors on each side. A \code{NULL} value for \code{span}
 #'   is taken as a span covering the whole of the data range.
 #' @param strict logical flag: if TRUE, an element must be strictly greater than
 #'   all other values in its window to be considered a peak. Default: FALSE.
@@ -125,7 +125,7 @@ find_peaks <-
 #'   TRUE} as argument to \code{geom_text}.
 #'  By default the labels are character values suitable to be plotted as is, but
 #'  with a suitable \code{label.fmt} labels suitable for parsing by the geoms
-#'  (e.g. into expressions containing greek letters or super or subscripts) can
+#'  (e.g. into expressions containing Greek letters or super or subscripts) can
 #'  be also easily obtained.
 #'
 #' @examples
@@ -318,4 +318,3 @@ StatValleys <-
                                               yintercept = ..y..),
                    required_aes = c("x", "y")
   )
-

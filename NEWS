@@ -1,15 +1,24 @@
+ggpmisc 0.2.12
+==============
+
+Change default value for parameter label.fill in stat_dens2d_labels()
+from NA to "".
+
 ggpmisc 0.2.11
 ==============
 
 Add stat_dens2d_labels(), a statistic that resets label values to NA by default,
 or any character string supplied as argument, in regions of a panel with high
 density of observations.
-Add stat_den2d_filter(), a statistic that filters-out observations in regions
-of a panel with high density of observations.
+Add stat_den2d_filter(), a statistic that filters-out/filters-in observations
+in regions of a panel with high density of observations.
 These two statistics are useful for labelling or highlighting observations in
-regions of a panel with low density. Both stats use a compute_panel function,
-rather than a compute_group function. They use internally `MASS:kde2d` to
-estimate densities and default values for parameters are calculated dynamically.
+regions of a panel with low density. Both stats use a compute_panel function.
+Add stat_den2d_filter_g(), a statistic that filters-out/filters-in observations
+in regions of a group with high density of observations. This statistics is
+useful for highlighting observations. It uses a compute_group function.
+They use internally `MASS:kde2d` to estimate densities and default values for
+parameters are adjusted dynamically based on the number of observations.
 
 ggpmisc 0.2.10
 ==============

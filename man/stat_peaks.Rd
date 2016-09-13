@@ -29,7 +29,7 @@ the plot defaults.}
 \item{span}{a peak is defined as an element in a sequence which is greater
 than all other elements within a window of width span centered at that
 element. The default value is 5, meaning that a peak is bigger than two
-consequtive neighbors on each side. A \code{NULL} value for \code{span}
+consecutive neighbors on each side. A \code{NULL} value for \code{span}
 is taken as a span covering the whole of the data range.}
 
 \item{ignore_threshold}{numeric value between 0.0 and 1.0 indicating the size
@@ -95,7 +95,7 @@ These stats work nicely together with geoms
   TRUE} as argument to \code{geom_text}.
  By default the labels are character values suitable to be plotted as is, but
  with a suitable \code{label.fmt} labels suitable for parsing by the geoms
- (e.g. into expressions containing greek letters or super or subscripts) can
+ (e.g. into expressions containing Greek letters or super or subscripts) can
  be also easily obtained.
 }
 \section{Computed variables}{

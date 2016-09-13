@@ -17,7 +17,7 @@ than all other elements within a window of width span centered at that
 element. The default value is 3, meaning that a peak is bigger than both of
 its neighbors. Default: 3.}
 
-\item{strict}{ogical flag: if TRUE, an element must be strictly greater than
+\item{strict}{logical flag: if TRUE, an element must be strictly greater than
 all other values in its window to be considered a peak. Default: TRUE.}
 }
 \value{

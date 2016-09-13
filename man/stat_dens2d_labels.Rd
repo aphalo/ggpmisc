@@ -6,7 +6,7 @@
 \usage{
 stat_dens2d_labels(mapping = NULL, data = NULL, geom = "text",
   position = "identity", keep.fraction = 0.1, keep.number = Inf,
-  h = NULL, n = NULL, label.fill = NA, na.rm = TRUE,
+  h = NULL, n = NULL, label.fill = "", na.rm = TRUE,
   show.legend = FALSE, inherit.aes = TRUE, ...)
 }
 \arguments{
@@ -52,8 +52,8 @@ can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 }
 \description{
-\code{stat_low_dens} Sets \code{labels} to NA in regions with
-  high density of observations.
+\code{stat_low_dens} Sets \code{labels} to NA in regions of a
+  plot panel with high density of observations.
 }
 \section{Computed variables}{
  \describe{ \item{labels}{x at centre of range} }
@@ -86,6 +86,10 @@ ggplot(data = d, aes(x, y, label = lab, color = group)) +
 ggplot(data = d, aes(x, y, label = lab, color = group)) +
   geom_point() +
   stat_dens2d_labels(geom = "text_repel")
+
+ggplot(data = d, aes(x, y, label = lab, color = group)) +
+  geom_point() +
+  stat_dens2d_labels(geom = "text_repel", label.fill = NA)
 
 }
 \seealso{

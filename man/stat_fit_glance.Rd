@@ -25,7 +25,7 @@ the plot defaults.}
 \item{method.args}{list of arguments to pass to \code{method}.}
 
 \item{label.x.npc, label.y.npc}{\code{numeric} with range 0..1 or character.
-Coordinates to be used for positioning the output, expresed in "normalized
+Coordinates to be used for positioning the output, expressed in "normalized
 parent coordinates" or character string. If too short they will be recycled.}
 
 \item{label.x, label.y}{\code{numeric} Coordinates (in data units) to be used

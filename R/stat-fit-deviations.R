@@ -29,7 +29,7 @@
 #' @details This stat can be used to automatically show residuals as segments
 #' in a plot of a fitted model equation. At the moment it supports only linear
 #' models fitted with function \code{lm()}. This stat only generates the
-#' residuals, the predicted values need to be sepearately added to the plot,
+#' residuals, the predicted values need to be separately added to the plot,
 #' so to make sure that the same model formula is used in all steps it is best
 #' to save the formula as an object and supply this object as argument to the
 #' different statistics.
@@ -102,4 +102,3 @@ StatFitDeviations <-
                                   yend = ..y.fitted..),
                    required_aes = c("x", "y")
   )
-
