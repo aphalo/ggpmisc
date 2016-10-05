@@ -76,6 +76,7 @@ fit_glance_compute_group_fun <- function(data,
                                          label.y.npc,
                                          label.x,
                                          label.y) {
+  force(data)
   if (length(unique(data$x)) < 2) {
     # Not enough data to perform fit
     return(data.frame())
@@ -295,7 +296,7 @@ fit_augment_compute_group_fun <- function(data,
                                     level,
                                     y.out,
                                     ...) {
-
+  force(data)
   unAsIs <- function(X) {
     if ("AsIs" %in% class(X)) {
       class(X) <- class(X)[-match("AsIs", class(X))]

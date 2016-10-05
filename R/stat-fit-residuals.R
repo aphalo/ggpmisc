@@ -82,6 +82,7 @@ residuals_compute_group_fun <- function(data,
                                         method,
                                         formula,
                                         resid.type) {
+  force(data)
   if (method == "lm") {
     if (is.null(resid.type)) {
       fit.residuals <- stats::residuals(stats::lm(formula, data = data))

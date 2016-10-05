@@ -154,6 +154,7 @@ poly_eq_compute_group_fun <- function(data,
                                      label.x,
                                      label.y,
                                      output.type) {
+  force(data)
   output.type = tolower(output.type)
   if (is.null(eq.x.rhs) && output.type == "expression") {
     eq.x.rhs = "~italic(x)"
