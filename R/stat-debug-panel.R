@@ -78,6 +78,7 @@ StatDebugPanel <-
     ggplot2::Stat,
     compute_panel =
       function(data, scales, summary.fun, summary.fun.args) {
+        force(data)
         if (!is.null(summary.fun)) {
           data.summary <-  do.call(summary.fun, c(quote(data), summary.fun.args))
           print("Input 'data' to 'compute_panel()':")

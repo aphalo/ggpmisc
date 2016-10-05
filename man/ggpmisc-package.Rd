@@ -52,6 +52,12 @@ The signatures of \code{stat_peaks()} and \code{stat_valleys()} are
   datetime scale, while those from package \code{photobiology} do not
   generate correct labels in this case.
 }
+\section{Acknowledgements}{
+
+We thank Kamil Slowikowski not only for contributing ideas and code examples
+to this package but also for adding new features to his package 'ggrepel'
+that allow new use cases for \code{stat_dens2d_labels} from this package.
+}
 \author{
 Pedro J. Aphalo
 }

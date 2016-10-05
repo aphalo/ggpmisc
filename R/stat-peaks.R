@@ -176,6 +176,7 @@ peaks_compute_group_fun <- function(data,
                                     label.fmt,
                                     x.label.fmt,
                                     y.label.fmt) {
+  force(data)
   if (inherits(scales$x, c("ScaleContinuousDatetime",
                            "ScaleContinuousDate"))) {
     as_label <- function(fmt, x) {
@@ -222,6 +223,7 @@ valleys_compute_group_fun <- function(data,
                                       label.fmt,
                                       x.label.fmt,
                                       y.label.fmt) {
+  force(data)
   if (inherits(scales$x, c("ScaleContinuousDatetime",
                            "ScaleContinuousDate"))) {
     as_label <- function(fmt, x) {

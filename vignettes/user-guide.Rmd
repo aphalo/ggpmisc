@@ -703,7 +703,7 @@ these observations.
 
 ```{r}
 ggplot(data = d, aes(x, y, label = lab, color = group)) +
-  geom_point() +
+  geom_point() + 
   stat_dens2d_filter(geom = "text_repel")
 ```
 
@@ -733,15 +733,16 @@ ggplot(data = d, aes(x, y, label = lab, color = group)) +
   stat_dens2d_labels()
 ```
 
-Add text labels to 1/4 of the observations. 
+Add text labels to 45% of the observations. 
 
 ```{r}
 ggplot(data = d, aes(x, y, label = lab, color = group)) +
   geom_point() +
-  stat_dens2d_labels(keep.fraction = 0.5)
+  stat_dens2d_labels(keep.fraction = 0.45)
 ```
 
-Use with geom `"text"` we can statically adjust the positioning of labels.
+When using geom `"text"` we can statically adjust the positioning of labels, but
+this is rarely enough even when keeping 1/4 of the labels.
 
 ```{r}
 ggplot(data = d, aes(x, y, label = lab, color = group)) +
@@ -750,16 +751,16 @@ ggplot(data = d, aes(x, y, label = lab, color = group)) +
                      vjust = -0.3)
 ```
 
-Using the geoms from package 'ggrepel' avoids clashes among labels or on top of data points. However the current version of these geoms draws segments for the empty text labels making this stat of limited use until 'ggrepel' is updated. One example with `text_repel` follows. 
+Using the geoms from package 'ggrepel' avoids clashes among labels or on top of data points. This works with versions 0.6.0 and newer of 'ggrepel'. One example with `geom_text_repel` follows. 
 
 ```{r}
 ggplot(data = d, aes(x, y, label = lab, color = group)) +
   geom_point() +
   stat_dens2d_labels(geom = "text_repel", 
-                     keep.fraction = 0.25)
+                     keep.fraction = 0.45)
 ```
 
-With `label_repel` empty boxes are also output.
+With `geom_label_repel` one needs to use a smaller value for `keep.fracton`, or a smaller `size`, as labels use more space on the plot than the test alone.
 
 ```{r}
 ggplot(data = d, aes(x, y, label = lab, color = group)) +
@@ -768,12 +769,22 @@ ggplot(data = d, aes(x, y, label = lab, color = group)) +
                      keep.fraction = 0.25)
 ```
 
-Using `NA` as fill makes the observations with labels set to `NA` to be skipped completely, possibly leading to labels overlapping unlabelled observations.
+Additional arguments can be used to change the angle and position of the text.
+
+```{r}
+ggplot(data = d, aes(x, y, label = lab, color = group)) +
+geom_point() +
+stat_dens2d_labels(geom = "text_repel",
+keep.fraction = 0.45, angle = 30)
+```
+
+Using `NA` as fill makes the observations with labels set to `NA` to be skipped completely, possibly leading to text overlapping the points corresponding to unlabelled observations around the boundary of the regions where labels are kept or discarded.
+
 
 ```{r}
 ggplot(data = d, aes(x, y, label = lab, color = group)) +
   geom_point() +
   stat_dens2d_labels(geom = "text_repel", 
-                     keep.fraction = 0.25,
+                     keep.fraction = 0.45,
                      label.fill = NA)
 ```

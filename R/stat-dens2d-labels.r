@@ -102,6 +102,7 @@ dens2d_labs_compute_fun <-
            h,
            n,
            label.fill) {
+    force(data)
     if (nrow(data) * keep.fraction > keep.number) {
       keep.fraction <- keep.number / nrow(data)
     }

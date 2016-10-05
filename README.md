@@ -1,4 +1,4 @@
-# ggpmisc
+# ggpmisc #
 
 Package '**ggpmisc**' (Miscellaneous Extensions to 'ggplot2') is a set of
 extensions to R package 'ggplot2' (>= 2.1.0) useful when plotting diverse types

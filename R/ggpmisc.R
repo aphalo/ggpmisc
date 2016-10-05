@@ -25,6 +25,11 @@
 #'
 #' @author Pedro J. Aphalo
 #'
+#' @section Acknowledgements:
+#' We thank Kamil Slowikowski not only for contributing ideas and code examples
+#' to this package but also for adding new features to his package 'ggrepel'
+#' that allow new use cases for \code{stat_dens2d_labels} from this package.
+#'
 #' @references
 #' Package suite 'r4photobiology' web site at
 #' \url{http://www.r4photobiology.info/}\cr

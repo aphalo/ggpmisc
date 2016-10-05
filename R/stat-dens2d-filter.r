@@ -150,6 +150,7 @@ dens2d_flt_compute_fun <-
            keep.sparse,
            h,
            n) {
+    force(data)
     if (nrow(data) * keep.fraction > keep.number) {
       keep.fraction <- keep.number / nrow(data)
     }
