@@ -6,7 +6,7 @@ of data.  Currently available statistics, geoms and functions add facilities for
 labeling peaks and valleys, generating labels for fitted models including
 polynomial equations, highlighting deviations from a model fit, and for
 filtering-out regions of plot panels with high densities of observations. 
-Another group of ggplot statistics and geoms aim at easying the debugging new
+Another group of ggplot statistics and geoms aim at easying the debugging of new
 geoms and statistics (or learning how they work). Plottng of time series data is
 facilitated by a 'fortify-like' function.
 

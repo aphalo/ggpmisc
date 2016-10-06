@@ -4,3 +4,4 @@
 vignettes/figure/
 vignettes/*.html
 vignettes/*.R
+inst/web

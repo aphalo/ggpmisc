@@ -11,8 +11,8 @@ vignette: >
 
 ```{r, include=FALSE, echo=FALSE}
 library(knitr)
-opts_chunk$set(fig.path = 'figure/pos-', fig.align = 'center', fig.show = 'hold',
-               fig.width = 7, fig.height = 4)
+opts_chunk$set(fig.path = 'figure/guide-pos-', fig.align = 'center', 
+               fig.show = 'hold', fig.width = 7, fig.height = 4)
 options(warnPartialMatchArgs = FALSE)
 ```
 
@@ -559,14 +559,6 @@ ggplot(my.data, aes(x, y, color = group)) +
                    y.out = ".std.resid")
 ```
 
-```{r, eval=FALSE, echo=FALSE}
-# triggers error
-formula <- y ~ x + I(x^2) + I(x^3)
-ggplot(my.data, aes(x, y, color = group)) +
-  stat_panel_fit_augment(method = "lm",
-                   method.args = list(formula = formula))
-```
-
 We can use any model fitting method for which `augment` is implemented.
 
 ```{r}
@@ -598,23 +590,6 @@ ggplot(Orange, aes(age, circumference, color = Tree)) +
   stat_fit_augment(method = "nlme",
                    method.args = args,
                    augment.args = list(data = quote(data)))
-```
-
-```{r, eval=FALSE, echo=FALSE}
-# triggers error!
-args <- list(model = y ~ SSlogis(x, Asym, xmid, scal),
-             fixed = Asym + xmid + scal ~1,
-             random = Asym~1 | group,
-             start = c(Asym = 200, xmid = 725, scal = 350))
-ggplot(Orange, aes(age, circumference, colour = Tree)) +
-  geom_point() +
-  stat_panel_fit_augment(method = "nlme",
-                         method.args = args,
-                         augment.args = list(data = quote(data)),
-                         y.out = ".fixed",
-                         geom = "debug",
-                         summary.fun = as_data_frame,
-                         summary.fun.args = list(n = 20))
 ```
 
 ## `stat_dens2d_labels` and `stat_dens2d_filter`
