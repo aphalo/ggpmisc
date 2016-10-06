@@ -37,6 +37,9 @@
 #' Package 'ggplot2' documentation at \url{http://docs.ggplot2.org/}\cr
 #' Package 'ggplot2' source code at \url{https://github.com/hadley/ggplot2}
 #'
+#' @import ggplot2
+#' @importFrom ggplot2 ggplot
+#'
 #' @note The signatures of \code{stat_peaks()} and \code{stat_valleys()} are
 #'   identical to those of \code{stat_peaks} and \code{stat_valleys} from
 #'   package \code{photobiology} but the variables returned are a subset as
