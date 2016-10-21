@@ -640,7 +640,7 @@ ggplot(data = d, aes(x, y)) +
   stat_dens2d_filter(color = "red")
 ```
 
-Highlighting  1/4 of the observations by underplotting with larger black points.
+Highlighting  1/4 of the observations by under-plotting with larger black points.
 
 ```{r}
 ggplot(data = d, aes(x, y, color = group)) +
@@ -650,7 +650,7 @@ ggplot(data = d, aes(x, y, color = group)) +
    geom_point()
 ```
 
-A different way of highlighting 1/4 of the observations, using overplotting with
+A different way of highlighting 1/4 of the observations, using over-plotting with
 a 'hollow' shape. We also shift one group with respect to the other.
 
 ```{r}
@@ -744,22 +744,22 @@ ggplot(data = d, aes(x, y, label = lab, color = group)) +
                      keep.fraction = 0.25)
 ```
 
-Additional arguments can be used to change the angle and position of the text.
+Additional arguments can be used to change the angle and position of the text, but may give unexpected output when labels are long as the repulsion algorithm "sees" always a rectangular bounding box that is not rotated. With short labels or angles that are multiples of 90 degrees, there is no such problem.
 
 ```{r}
 ggplot(data = d, aes(x, y, label = lab, color = group)) +
 geom_point() +
 stat_dens2d_labels(geom = "text_repel",
-keep.fraction = 0.45, angle = 30)
+keep.fraction = 0.25, angle = 90)
 ```
 
-Using `NA` as fill makes the observations with labels set to `NA` to be skipped completely, possibly leading to text overlapping the points corresponding to unlabelled observations around the boundary of the regions where labels are kept or discarded.
-
+Using `NA` as fill makes the observations with labels set to `NA` to be skipped completely, possibly leading to text overlapping the points corresponding to unlabelled observations around the boundary of the regions where labels are kept or discarded. We use here `alpha` so that the overlaps can be seen.
 
 ```{r}
 ggplot(data = d, aes(x, y, label = lab, color = group)) +
   geom_point() +
-  stat_dens2d_labels(geom = "text_repel", 
-                     keep.fraction = 0.45,
+  stat_dens2d_labels(geom = "label_repel", 
+                     keep.fraction = 0.35, 
+                     alpha = 0.5,
                      label.fill = NA)
 ```

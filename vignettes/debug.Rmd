@@ -228,7 +228,7 @@ ggplot(my.data, aes(x, y2, colour = group)) +
 
 The package also defines a `"null"` geom, which is used as default by the _debug_
 _stats_ described above. Currently this geom is similar to the recently added 
-`ggplot2::geom_blank()`, which should be preferred.
+`ggplot2::geom_blank()`.
 
 ```{r}
 ggplot(my.data, aes(x, y, colour = group)) + geom_null()

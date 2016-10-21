@@ -2,7 +2,8 @@ ggpmisc 0.2.12
 ==============
 
 Change default value for parameter label.fill in stat_dens2d_labels()
-from NA to "".
+from NA to "". Improve documentation using current 'ggrepel' version, which
+implements changes that make stat_dens2d_labels() useful.
 
 ggpmisc 0.2.11
 ==============
