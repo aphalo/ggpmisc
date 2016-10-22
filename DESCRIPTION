@@ -38,7 +38,7 @@ Imports:
     broom (>= 0.4.1),
     lubridate (>= 1.6.0)
 Suggests:
-    knitr (>= 1.14.4),
+    knitr (>= 1.14),
     rmarkdown (>= 1.1),
     nlme (>= 3.1-128),
     ggrepel (>= 0.6.3)

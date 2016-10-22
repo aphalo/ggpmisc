@@ -6,5 +6,5 @@ citEntry(entry = "book",
   publisher = "Leanpub",
   year = "2016",
   url = "http://leanpub.com/learnr",
-  textVersion = "Pedro J. Aphalo. Learn R ...as you learnt your mother tongue. Helsinki 2016."
+  textVersion = "Pedro J. Aphalo. (2016) Learn R ...as you learnt your mother tongue. Leanpub, Helsinki."
 )
