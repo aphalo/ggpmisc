@@ -1,3 +1,7 @@
+sd_section("Package overview", "",
+           c("ggpmisc-package")
+)
+
 sd_section("Geoms",
   "Geoms, short for geometric objects, describe the type of plot you will produce.",
   c(

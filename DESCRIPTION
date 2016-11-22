@@ -19,7 +19,7 @@ Description: Extensions to 'ggplot2' respecting the grammar of graphics
     provides two statistics and two geometries useful for diagnosing what data
     are passed to compute_group() and compute_panel() functions and to
     geometries.
-License: GPL (>=3)
+License: GPL (>= 2)
 LazyData: TRUE
 LazyLoad: TRUE
 ByteCompile: TRUE
