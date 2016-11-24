@@ -5,9 +5,11 @@
 \alias{try_tibble}
 \title{Convert an R object containing observations into a tibble.}
 \usage{
-try_data_frame(x, time.resolution = "second", as.numeric = FALSE)
+try_data_frame(x, time.resolution = "month", as.numeric = FALSE,
+  col.names = NULL)
 
-try_tibble(x, time.resolution = "second", as.numeric = FALSE)
+try_tibble(x, time.resolution = "month", as.numeric = FALSE,
+  col.names = NULL)
 }
 \arguments{
 \item{x}{An R object}
@@ -17,6 +19,8 @@ values will be rounded.}
 
 \item{as.numeric}{logical If TRUE convert time to numeric, expressed as
 fractional calendar years.}
+
+\item{col.names}{character vector}
 }
 \value{
 A \code{tibble::tibble} object, derived from \code{data.frame}.

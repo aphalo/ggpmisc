@@ -36,10 +36,10 @@ Some of them are more generally useful, such as `stat_poly_eq()`, but others
 like `stat_fit_deviations()` are squarely aimed and producing learning material.
 Finally, several statistics for debugging and learning how ggplot statistics
 and geoms interact with each other will be of use only to developers of new
-statistics and geoms. Function `try_data_frame()` opens the door to easily
+statistics and geoms. Function `try_tibble()` opens the door to easily
 converting time series objects into data frames for plotting with `ggplot()`.
 
-## `try_data_frame()`
+## `try_tibble()`
 
 ### Time series
 
@@ -47,7 +47,7 @@ Several different formats for storing time series data are used in R. Here we us
 
 ```{r}
 class(austres)
-austres.df <- try_data_frame(austres)
+austres.df <- try_tibble(austres)
 class(austres.df)
 lapply(austres.df, "class")
 head(austres.df, 4)
@@ -56,7 +56,7 @@ head(austres.df, 4)
 The next chunk demonstrates that numeric times are expressed as decimal years in the returned data frame.
 
 ```{r}
-austres.df <- try_data_frame(austres, as.numeric = TRUE)
+austres.df <- try_tibble(austres, as.numeric = TRUE)
 lapply(austres.df, "class")
 head(austres.df, 4)
 ```
@@ -65,7 +65,7 @@ This second example is for a series of yearly values.
 
 ```{r}
 class(lynx)
-lynx.df <- try_data_frame(lynx)
+lynx.df <- try_tibble(lynx)
 class(lynx.df)
 lapply(lynx.df, "class")
 head(lynx.df, 3)
@@ -74,44 +74,64 @@ head(lynx.df, 3)
 Above there is a small rounding error of 1 s for these old dates. We can correct this by rounding to year.
 
 ```{r}
-lynx.df <- try_data_frame(lynx, "year")
+lynx.df <- try_tibble(lynx, "year")
 head(lynx.df, 3)
 ```
 
 In addition we can convert the POSIXct values into numeric values in calendar years plus a decimal fraction.
 
 ```{r}
-lynx_n.df <- try_data_frame(lynx, "year", as.numeric = TRUE)
+lynx_n.df <- try_tibble(lynx, "year", as.numeric = TRUE)
 lapply(lynx_n.df, "class")
 head(lynx_n.df, 3)
 ```
 
 ### Other classes
 
-`try_data_frame()` attempts to handle gracefully objects that are not time series.
+`try_tibble()` attempts to handle gracefully objects that are not time series.
 
 ```{r}
-try_data_frame(1:5)
+try_tibble(1:5)
 ```
 
 ```{r}
-try_data_frame(letters[1:5])
+try_tibble(letters[1:5])
 ```
 
 ```{r}
-try_data_frame(factor(letters[1:5]))
+try_tibble(factor(letters[1:5]))
 ```
 
 ```{r}
-try_data_frame(list(x = rep(1,5), y = 1:5))
+try_tibble(list(x = rep(1,5), y = 1:5))
 ```
 
 ```{r}
-try_data_frame(data.frame(x = rep(1,5), y = 1:5))
+try_tibble(data.frame(x = rep(1,5), y = 1:5))
 ```
 
 ```{r}
-try_data_frame(matrix(1:10, ncol = 2))
+try_tibble(matrix(1:10, ncol = 2))
+```
+
+## `ggplot` methods
+
+A ggplot method for class `"ts"` automates ploting of time series data.
+
+```{r}
+ggplot(lynx) + geom_line()
+```
+
+```{r}
+ggplot(lynx, as.numeric = FALSE) + geom_line()
+```
+
+```{r}
+ggplot(AirPassengers) + geom_line()
+```
+
+```{r}
+ggplot(AirPassengers, as.numeric = FALSE) + geom_line()
 ```
 
 ## `stat_peaks()` and `stat_valleys()`
@@ -119,7 +139,7 @@ try_data_frame(matrix(1:10, ncol = 2))
 Using POSIXct for `time` and the default formatting of labels.
 
 ```{r}
-ggplot(lynx.df, aes(time, V.lynx)) + geom_line() + 
+ggplot(lynx, as.numeric = FALSE) + geom_line() + 
   stat_peaks(colour = "red") +
   stat_peaks(geom = "text", colour = "red", vjust = -0.5) +
   ylim(-100, 7300)
@@ -128,7 +148,7 @@ ggplot(lynx.df, aes(time, V.lynx)) + geom_line() +
 Using numeric values for `time` and the default formatting of labels.
 
 ```{r}
-ggplot(lynx_n.df, aes(time, V.lynx)) + geom_line() + 
+ggplot(lynx) + geom_line() + 
   stat_peaks(colour = "red") +
   stat_peaks(geom = "text", colour = "red", vjust = -0.5) +
   ylim(-100, 7300)
@@ -137,7 +157,7 @@ ggplot(lynx_n.df, aes(time, V.lynx)) + geom_line() +
 Using POSIXct for `time` but supplying a format string. In addition marking both peaks and valleys.
 
 ```{r}
-ggplot(lynx.df, aes(time, V.lynx)) + geom_line() + 
+ggplot(lynx, as.numeric = FALSE) + geom_line() + 
   stat_peaks(colour = "red") +
   stat_peaks(geom = "text", colour = "red", vjust = -0.5, x.label.fmt = "%Y") +
   stat_valleys(colour = "blue") +
@@ -148,7 +168,7 @@ ggplot(lynx.df, aes(time, V.lynx)) + geom_line() +
 Using numeric for `time` but supplying a format string. In addition marking both peaks and valleys.
 
 ```{r}
-ggplot(lynx_n.df, aes(time, V.lynx)) + geom_line() + 
+ggplot(lynx) + geom_line() + 
   stat_peaks(colour = "red") +
   stat_peaks(geom = "text", colour = "red", vjust = -0.5, x.label.fmt = "%4.0f") +
   stat_valleys(colour = "blue") +
@@ -159,7 +179,7 @@ ggplot(lynx_n.df, aes(time, V.lynx)) + geom_line() +
 Rotating the labels.
 
 ```{r}
-ggplot(lynx.df, aes(time, V.lynx)) + geom_line() + 
+ggplot(lynx, as.numeric = FALSE) + geom_line() + 
   stat_peaks(colour = "red") +
   stat_peaks(geom = "text", colour = "red", angle = 66,
              hjust = -0.1, x.label.fmt = "%Y") +
@@ -169,7 +189,7 @@ ggplot(lynx.df, aes(time, V.lynx)) + geom_line() +
 Using `geom_rug` for the peaks and valleys.
 
 ```{r}
-ggplot(lynx.df, aes(time, V.lynx)) + geom_line() + 
+ggplot(lynx, as.numeric = FALSE) + geom_line() + 
   stat_peaks(colour = "red") +
   stat_peaks(geom = "rug", colour = "red") +
   stat_valleys(colour = "blue") +

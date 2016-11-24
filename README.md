@@ -2,13 +2,21 @@
 
 Package '**ggpmisc**' (Miscellaneous Extensions to 'ggplot2') is a set of
 extensions to R package 'ggplot2' (>= 2.1.0) useful when plotting diverse types
-of data.  Currently available statistics, geoms and functions add facilities for
-labeling peaks and valleys, generating labels for fitted models including
+of data.  
+
+Functions try_data_frame() and try_tibble() can be used to convert time series
+objects into data frames or tibbles suitable for plotting. To complement these
+functions ggplot methods for "ts" and "xts" classes are defined.
+
+Different statistics, geometries and functions add facilities for
+labelling peaks and valleys, generating labels for fitted models including
 polynomial equations, highlighting deviations from a model fit, and for
-filtering-out regions of plot panels with high densities of observations. 
-Another group of ggplot statistics and geoms aim at easying the debugging of new
-geoms and statistics (or learning how they work). Plottng of time series data is
-facilitated by a 'fortify-like' function.
+filtering-out regions of plot panels with high densities of observations 
+(with stats designed to work nicely together with package 'ggrepel'). 
+
+Another group of ggplot statistics and geometries which echo their input aim 
+at easing debugging during development of new geoms and statistics (or learning 
+how they work).
 
 Please, see the web site [r4photobiology](http://www.r4photobiology.info) for
 details and update notices. Other packages, aimed at easing photobiology-related
