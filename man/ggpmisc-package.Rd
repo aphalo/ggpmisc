@@ -13,7 +13,7 @@ with lm(), or R^2 or adjusted R^2 or information criteria for any model
 fitted with function lm(). Additional statistics give access to functions
 in package 'broom'. Provides a function for flexibly converting time
 series to data frames suitable for plotting with ggplot(). In addition
-provides two statistics and two geometries useful for diagnosing what data
+provides statistics and ggplot geometries useful for diagnosing what data
 are passed to compute_group() and compute_panel() functions and to
 geometries.
 }
