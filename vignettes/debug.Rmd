@@ -2,7 +2,9 @@
 title: "`ggpmisc` `r packageVersion('ggpmisc')`<br>Debugging ggplots"
 author: "Pedro J. Aphalo"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output: 
+  rmarkdown::html_vignette:
+    toc: yes
 vignette: >
   %\VignetteIndexEntry{Debugging ggplots}
   %\VignetteEngine{knitr::rmarkdown}
