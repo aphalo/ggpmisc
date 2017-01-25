@@ -2,4 +2,5 @@
 ^\.Rproj\.user$
 vignettes/figure
 inst/web
+inst-not
 test

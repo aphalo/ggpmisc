@@ -156,10 +156,12 @@ poly_eq_compute_group_fun <- function(data,
                                      output.type) {
   force(data)
   output.type = tolower(output.type)
-  if (is.null(eq.x.rhs) && output.type == "expression") {
-    eq.x.rhs = "~italic(x)"
-  } else {
-    eq.x.rhs = " x"
+  if (is.null(eq.x.rhs)) {
+    if (output.type == "expression") {
+      eq.x.rhs = "~italic(x)"
+    } else {
+      eq.x.rhs = " x"
+    }
   }
   if (length(unique(data$x)) < 2) {
     # Not enough data to perform fit
