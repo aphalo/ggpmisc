@@ -39,86 +39,11 @@ like `stat_fit_deviations()` are squarely aimed and producing learning material.
 Finally, several statistics for debugging and learning how ggplot statistics
 and geoms interact with each other will be of use only to developers of new
 statistics and geoms. Function `try_tibble()` opens the door to easily
-converting time series objects into data frames for plotting with `ggplot()`.
+converting time series stored in objects of several different classes into data frames. This, for example, useful for plotting time series data with `ggplot()`. New `ggplot()` methods for classes `ts` and `xts` make the call to `try_tibble()` and conversion automatic.
 
-## `try_tibble()`
+## `ggplot` methods for time series
 
-### Time series
-
-Several different formats for storing time series data are used in R. Here we use in the examples objects of class `ts` but several other classes are supported as `try.xts()` is used internally. The first example is a quarterly series.
-
-```{r}
-class(austres)
-austres.df <- try_tibble(austres)
-class(austres.df)
-lapply(austres.df, "class")
-head(austres.df, 4)
-```
-
-The next chunk demonstrates that numeric times are expressed as decimal years in the returned data frame.
-
-```{r}
-austres.df <- try_tibble(austres, as.numeric = TRUE)
-lapply(austres.df, "class")
-head(austres.df, 4)
-```
-
-This second example is for a series of yearly values.
-
-```{r}
-class(lynx)
-lynx.df <- try_tibble(lynx)
-class(lynx.df)
-lapply(lynx.df, "class")
-head(lynx.df, 3)
-```
-
-Above there is a small rounding error of 1 s for these old dates. We can correct this by rounding to year.
-
-```{r}
-lynx.df <- try_tibble(lynx, "year")
-head(lynx.df, 3)
-```
-
-In addition we can convert the POSIXct values into numeric values in calendar years plus a decimal fraction.
-
-```{r}
-lynx_n.df <- try_tibble(lynx, "year", as.numeric = TRUE)
-lapply(lynx_n.df, "class")
-head(lynx_n.df, 3)
-```
-
-### Other classes
-
-`try_tibble()` attempts to handle gracefully objects that are not time series.
-
-```{r}
-try_tibble(1:5)
-```
-
-```{r}
-try_tibble(letters[1:5])
-```
-
-```{r}
-try_tibble(factor(letters[1:5]))
-```
-
-```{r}
-try_tibble(list(x = rep(1,5), y = 1:5))
-```
-
-```{r}
-try_tibble(data.frame(x = rep(1,5), y = 1:5))
-```
-
-```{r}
-try_tibble(matrix(1:10, ncol = 2))
-```
-
-## `ggplot` methods
-
-A ggplot method for class `"ts"` automates ploting of time series data.
+`ggplot()` methods for classes `"ts"` and `"xts"` automate ploting of time series data. For plotting time series data stored in objects of other classes, see the conversion functions `try_tibble()` and `try_data_frame()` in the last section of this vignette.
 
 ```{r}
 ggplot(lynx) + geom_line()
@@ -784,4 +709,79 @@ ggplot(data = d, aes(x, y, label = lab, color = group)) +
                      keep.fraction = 0.35, 
                      alpha = 0.5,
                      label.fill = NA)
+```
+
+## `try_tibble()`
+
+### Time series
+
+Several different formats for storing time series data are used in R. Here we use in the examples objects of class `ts` but several other classes are supported as `try.xts()` is used internally. The first example is a quarterly series.
+
+```{r}
+class(austres)
+austres.df <- try_tibble(austres)
+class(austres.df)
+lapply(austres.df, "class")
+head(austres.df, 4)
+```
+
+The next chunk demonstrates that numeric times are expressed as decimal years in the returned data frame.
+
+```{r}
+austres.df <- try_tibble(austres, as.numeric = TRUE)
+lapply(austres.df, "class")
+head(austres.df, 4)
+```
+
+This second example is for a series of yearly values.
+
+```{r}
+class(lynx)
+lynx.df <- try_tibble(lynx)
+class(lynx.df)
+lapply(lynx.df, "class")
+head(lynx.df, 3)
+```
+
+Above there is a small rounding error of 1 s for these old dates. We can correct this by rounding to year.
+
+```{r}
+lynx.df <- try_tibble(lynx, "year")
+head(lynx.df, 3)
+```
+
+In addition we can convert the POSIXct values into numeric values in calendar years plus a decimal fraction.
+
+```{r}
+lynx_n.df <- try_tibble(lynx, "year", as.numeric = TRUE)
+lapply(lynx_n.df, "class")
+head(lynx_n.df, 3)
+```
+
+### Other classes
+
+`try_tibble()` attempts to handle gracefully objects that are not time series.
+
+```{r}
+try_tibble(1:5)
+```
+
+```{r}
+try_tibble(letters[1:5])
+```
+
+```{r}
+try_tibble(factor(letters[1:5]))
+```
+
+```{r}
+try_tibble(list(x = rep(1,5), y = 1:5))
+```
+
+```{r}
+try_tibble(data.frame(x = rep(1,5), y = 1:5))
+```
+
+```{r}
+try_tibble(matrix(1:10, ncol = 2))
 ```

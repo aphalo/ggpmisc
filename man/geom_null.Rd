@@ -57,4 +57,3 @@ This _geom_ is very unusual in that it does not produce visible graphic
 Although this geom accepts for consistency all the same parameters as
   normal geoms, these have no effect on the output, except for show.legend.
 }
-

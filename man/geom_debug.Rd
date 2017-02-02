@@ -63,4 +63,3 @@ stats and geoms work in 'ggplot2' (>= 2.0.0).
 This _geom_ is very unusual in that it does not produce visible graphic
   output. It only returns a \code{grid::grid_null()} grob (graphical object).
 }
-

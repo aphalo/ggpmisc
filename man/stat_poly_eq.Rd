@@ -101,6 +101,7 @@ For backward compatibility a logical is accepted as argument for
   \item{BIC.label}{BIC for the fitted model.}
   \item{hjust}{Set to zero to override the default of the "text" geom.}}
 }
+
 \examples{
 library(ggplot2)
 # generate artificial data
@@ -134,4 +135,3 @@ ggplot(my.data, aes(x, y)) +
                formula = formula, rr.digits = 3, coef.digits = 2, parse = TRUE)
 
 }
-

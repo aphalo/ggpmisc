@@ -1,8 +1,8 @@
 Package: ggpmisc
 Type: Package
 Title: Miscellaneous Extensions to 'ggplot2'
-Version: 0.2.13.9001
-Date: 2017-01-25
+Version: 0.2.14
+Date: 2017-02-01
 Authors@R:
     c(
     person("Pedro J.", "Aphalo", email = "pedro.aphalo@helsinki.fi", role = c("aut", "cre")),
@@ -25,7 +25,7 @@ LazyLoad: TRUE
 ByteCompile: TRUE
 Depends:
     R (>= 3.2.0),
-    ggplot2 (>= 2.2.0)
+    ggplot2 (>= 2.2.1)
 Imports:
     tibble (>= 1.2),
     MASS (>= 7.3-45),
@@ -42,8 +42,7 @@ Suggests:
     rmarkdown (>= 1.1),
     nlme (>= 3.1-128),
     ggrepel (>= 0.6.3)
-URL: http://www.r4photobiology.info
-    https://bitbucket.org/aphalo/ggpmisc
+URL: http://www.r4photobiology.info, https://bitbucket.org/aphalo/ggpmisc
 BugReports: https://bitbucket.org/aphalo/ggpmisc/issues
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.0
 VignetteBuilder: knitr

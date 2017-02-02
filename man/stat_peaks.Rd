@@ -107,6 +107,7 @@ These stats work nicely together with geoms
   \item{y.label}{y-value at the peak (or valley) as character}
 }
 }
+
 \examples{
 library(ggplot2)
 lynx.df <- data.frame(year = as.numeric(time(lynx)), lynx = as.matrix(lynx))
@@ -119,6 +120,5 @@ ggplot(lynx.df, aes(year, lynx)) + geom_line() +
 
 }
 \seealso{
-Other peaks.and.valleys.functions: \code{\link{find_peaks}}
+Other peaks and valleys functions: \code{\link{find_peaks}}
 }
-

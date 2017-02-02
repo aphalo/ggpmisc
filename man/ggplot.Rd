@@ -78,4 +78,3 @@ library(ggplot2)
 ggplot(lynx) + geom_line()
 
 }
-

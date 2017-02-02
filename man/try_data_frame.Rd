@@ -56,6 +56,7 @@ This function can be used to easily convert time series data into a
   working with time series with yearly observations it is best to work with
   numeric values for years.
 }
+
 \examples{
 library(xts)
 class(lynx)
@@ -68,4 +69,3 @@ class(cars)
 try_data_frame(cars)
 
 }
-

@@ -64,6 +64,7 @@ For linear models \code{x1} is equal to \code{x2}.
   values} \item{y1}{y coordinates of observations} \item{y2}{y coordinates of
   fitted values}}
 }
+
 \examples{
 library(ggplot2)
 # generate artificial data
@@ -80,4 +81,3 @@ ggplot(my.data, aes(x, y)) +
   geom_point()
 
 }
-

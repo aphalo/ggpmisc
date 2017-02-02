@@ -58,6 +58,7 @@ can include aesthetics whose values you want to set, not map. See
 \section{Computed variables}{
  \describe{ \item{labels}{x at centre of range} }
 }
+
 \examples{
 
 library(ggrepel)
@@ -95,4 +96,3 @@ ggplot(data = d, aes(x, y, label = lab, color = group)) +
 \seealso{
 \code{\link[MASS]{kde2d}} used internally.
 }
-

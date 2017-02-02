@@ -59,6 +59,7 @@ can include aesthetics whose values you want to set, not map. See
   \code{data} object} \item{PANEL}{all distinct values in PANEL as passed in
   \code{data} object} }
 }
+
 \examples{
 library(ggplot2)
 my.df <- data.frame(x = rep(1:10, 2),
@@ -70,6 +71,5 @@ ggplot(my.df, aes(x,y)) + geom_point() + facet_wrap(~group) + stat_debug_group()
 
 }
 \seealso{
-Other diagnosis.functions: \code{\link{stat_debug_panel}}
+Other diagnosis functions: \code{\link{stat_debug_panel}}
 }
-

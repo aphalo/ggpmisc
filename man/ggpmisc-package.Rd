@@ -4,7 +4,7 @@
 \name{ggpmisc-package}
 \alias{ggpmisc}
 \alias{ggpmisc-package}
-\title{Miscellaneous Extensions to 'ggplot2'}
+\title{ggpmisc: Miscellaneous Extensions to 'ggplot2'}
 \description{
 Extensions to 'ggplot2' respecting the grammar of graphics
 paradigm. Provides new statistics to locate and tag peaks and valleys in 2D
@@ -58,9 +58,7 @@ We thank Kamil Slowikowski not only for contributing ideas and code examples
 to this package but also for adding new features to his package 'ggrepel'
 that allow new use cases for \code{stat_dens2d_labels} from this package.
 }
-\author{
-Pedro J. Aphalo
-}
+
 \references{
 Package suite 'r4photobiology' web site at
 \url{http://www.r4photobiology.info/}\cr
@@ -68,4 +66,15 @@ Package 'ggplot2' web site at \url{http://ggplot2.org/}\cr
 Package 'ggplot2' documentation at \url{http://docs.ggplot2.org/}\cr
 Package 'ggplot2' source code at \url{https://github.com/hadley/ggplot2}
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{http://www.r4photobiology.info}
+  \item \url{https://bitbucket.org/aphalo/ggpmisc}
+  \item Report bugs at \url{https://bitbucket.org/aphalo/ggpmisc/issues}
+}
 
+}
+\author{
+Pedro J. Aphalo
+}

@@ -62,6 +62,7 @@ residuals.
   values} \item{y1}{y coordinates of observations} \item{y2}{y coordinates of
   fitted values} \item{residuals}{residuals from the fit}}
 }
+
 \examples{
 library(ggplot2)
 # generate artificial data
@@ -76,4 +77,3 @@ ggplot(my.data, aes(x, y)) +
   stat_fit_residuals(formula = my.formula, resid.type = "working")
 
 }
-
