@@ -192,7 +192,7 @@ ggplot(my.data, aes(x, y)) +
                formula = formula, parse = TRUE)
 ```
 
-Above we inserted spaces between the labels, but it is possible to add also other characters, even character strings. In this example we use several labels instead of just two.
+Above we inserted spaces between the labels, but it is possible to add also other characters, even character strings. In this example we use several labels instead of just two, and separate them with comma followed by a space. Do note the need to _escape_ the embedded quotation marks.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -201,9 +201,11 @@ ggplot(my.data, aes(x, y)) +
   geom_smooth(method = "lm", formula = formula) +
   stat_poly_eq(aes(label =  paste(..eq.label.., ..rr.label.., 
                                   ..AIC.label.., ..BIC.label..,
-                                  sep = "*plain(\",\")~~")),
+                                  sep = "*\",\"~~")),
                formula = formula, parse = TRUE)
 ```
+
+It is also possible to insert arbitrary text, and format it, using `plain()`, `italic()`, `bold()` or `bolditalic()`.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
