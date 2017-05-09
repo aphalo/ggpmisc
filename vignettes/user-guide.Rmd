@@ -486,6 +486,27 @@ ggplot(my.data, aes(x, y, color = group)) +
                   aes(label = paste("P-value = ", signif(..p.value.., digits = 4), sep = "")))
 ```
 
+It is also possible to fit a non-linear model with `method = "nls", and any
+other model for which a `glance()` method exists. Do consult the documentation 
+for package 'fortify'. Here we fit the Michaelis-Menten equation to reaction
+rate versus concentration data.
+
+```{r}
+micmen.formula <- y ~ SSmicmen(x, Vm, K) 
+ggplot(Puromycin, aes(conc, rate, colour = state)) +
+  geom_point() +
+  geom_smooth(method = "nls", 
+              formula = micmen.formula,
+              se = FALSE) +
+  stat_fit_glance(method = "nls", 
+                  method.args = list(formula = micmen.formula),
+                  geom = "text",
+                  aes(label = paste("AIC = ", signif(..AIC.., digits = 3), 
+                                    ", BIC = ", signif(..BIC.., digits = 3),
+                                    sep = "")))
+```
+
+
 ## `stat_fit_augment`
 
 **Experimental!** 
