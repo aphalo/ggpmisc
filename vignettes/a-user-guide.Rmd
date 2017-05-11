@@ -1,5 +1,6 @@
 ---
-title: "`ggpmisc` `r packageVersion('ggpmisc')`<br>User Guide"
+title: "User Guide"
+subtitle: "`ggpmisc` `r packageVersion('ggpmisc')`"
 author: "Pedro J. Aphalo"
 date: "`r Sys.Date()`"
 output: 
@@ -486,7 +487,7 @@ ggplot(my.data, aes(x, y, color = group)) +
                   aes(label = paste("P-value = ", signif(..p.value.., digits = 4), sep = "")))
 ```
 
-It is also possible to fit a non-linear model with `method = "nls", and any
+It is also possible to fit a non-linear model with `method = "nls"`, and any
 other model for which a `glance()` method exists. Do consult the documentation 
 for package 'fortify'. Here we fit the Michaelis-Menten equation to reaction
 rate versus concentration data.
@@ -506,6 +507,49 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
                                     sep = "")))
 ```
 
+## `stat_fit_tidy`
+
+This stat makes it possible to add the equation for any fitted model for which `broom::tidy()` is implemented, or add the estimates for the fitted parameters. However, the user need to
+explicitly contsruct the label within `aes()`.
+
+```{r}
+micmen.formula <- y ~ SSmicmen(x, Vm, K) 
+ggplot(Puromycin, aes(conc, rate, colour = state)) +
+  geom_point() +
+  geom_smooth(method = "nls", 
+              formula = micmen.formula,
+              se = FALSE) +
+  stat_fit_tidy(method = "nls", 
+                method.args = list(formula = micmen.formula),
+                geom = "text",
+                label.x.npc = "right",
+                label.y.npc = "bottom",
+                aes(label = paste("V[m]~`=`~", signif(..Vm.., digits = 3),
+                                  "%+-%", signif(..Vm_se.., digits = 2),
+                                  "~~~~K~`=`~", signif(..K.., digits = 3),
+                                  "%+-%", signif(..K_se.., digits = 2),
+                                  sep = "")),
+                parse = TRUE)
+```
+
+```{r}
+micmen.formula <- y ~ SSmicmen(x, Vm, K) 
+ggplot(Puromycin, aes(conc, rate, colour = state)) +
+  geom_point() +
+  geom_smooth(method = "nls", 
+              formula = micmen.formula,
+              se = FALSE) +
+  stat_fit_tidy(method = "nls", 
+                method.args = list(formula = micmen.formula),
+                geom = "text",
+                label.x.npc = 0.9,
+                label.y.npc = 0.3,
+                aes(label = paste("V~`=`~frac(", signif(..Vm.., digits = 2), "~C,",
+                                  signif(..K.., digits = 2), "+C)",
+                                  sep = "")),
+                parse = TRUE) +
+  labs(x = "C", y = "V")
+```
 
 ## `stat_fit_augment`
 

@@ -1,8 +1,8 @@
 Package: ggpmisc
 Type: Package
 Title: Miscellaneous Extensions to 'ggplot2'
-Version: 0.2.14.9000
-Date: 2017-04-08
+Version: 0.2.14.9001
+Date: 2017-05-11
 Authors@R:
     c(
     person("Pedro J.", "Aphalo", email = "pedro.aphalo@helsinki.fi", role = c("aut", "cre")),

@@ -1,5 +1,6 @@
 ---
-title: "`ggpmisc` `r packageVersion('ggpmisc')`<br>Debugging ggplots"
+title: "Debugging ggplots"
+subtitle: "`ggpmisc` `r packageVersion('ggpmisc')`"
 author: "Pedro J. Aphalo"
 date: "`r Sys.Date()`"
 output: 

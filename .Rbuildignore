@@ -4,3 +4,4 @@ vignettes/figure
 inst/web
 inst-not
 test
+^docs$

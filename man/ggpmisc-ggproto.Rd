@@ -16,6 +16,8 @@
 \alias{StatFitGlance}
 \alias{fit_augment_compute_group_fun}
 \alias{StatFitAugment}
+\alias{fit_tidy_compute_group_fun}
+\alias{StatFitTidy}
 \alias{StatFitDeviations}
 \alias{residuals_compute_group_fun}
 \alias{StatFitResiduals}
