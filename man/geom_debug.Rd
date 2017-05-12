@@ -5,7 +5,7 @@
 \title{Geom which prints input data to console}
 \usage{
 geom_debug(mapping = NULL, data = NULL, stat = "identity",
-  summary.fun = tibble::as_data_frame, summary.fun.args = list(),
+  summary.fun = tibble::as_tibble, summary.fun.args = list(),
   position = "identity", na.rm = FALSE, show.legend = FALSE,
   inherit.aes = TRUE, ...)
 }

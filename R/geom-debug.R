@@ -137,7 +137,7 @@ GeomDebug <-
 #' @export
 #'
 geom_debug <- function(mapping = NULL, data = NULL, stat = "identity",
-                       summary.fun = tibble::as_data_frame,
+                       summary.fun = tibble::as_tibble,
                        summary.fun.args = list(),
                        position = "identity", na.rm = FALSE,
                        show.legend = FALSE,
