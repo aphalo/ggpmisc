@@ -1,6 +1,6 @@
 ---
 title: "Debugging ggplots"
-subtitle: "`ggpmisc` `r packageVersion('ggpmisc')`"
+subtitle: "'ggpmisc' `r packageVersion('ggpmisc')`"
 author: "Pedro J. Aphalo"
 date: "`r Sys.Date()`"
 output: 
