@@ -52,6 +52,13 @@ make_data_tbl <- function(nrow = 100, rfun = rnorm, ...) {
 }
 ```
 
+As we will draw many points on the plotting area we change the default theme
+to an uncluttered one.
+
+```{r}
+old_theme <- theme_set(theme_minimal())
+```
+
 ## Tests with different data sets
 
 ### Number of observations

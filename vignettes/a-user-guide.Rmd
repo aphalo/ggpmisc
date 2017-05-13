@@ -21,6 +21,8 @@ options(warnPartialMatchArgs = FALSE)
 
 ## Preliminaries
 
+We load all the packages used in the examples.
+
 ```{r}
 library(ggpmisc)
 library(ggplot2)
@@ -29,6 +31,12 @@ library(xts)
 library(lubridate)
 library(tibble)
 library(nlme)
+```
+As we will use text and labels on the plotting area we change the default theme
+to an uncluttered one.
+
+```{r}
+old_theme <- theme_set(theme_minimal())
 ```
 
 ## Introduction
@@ -329,8 +337,7 @@ ggplot(my.data, aes(x, y2, colour = group)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
   stat_poly_eq(aes(label = ..eq.label..),
-               formula = formula, parse = TRUE) +
-  theme_bw()
+               formula = formula, parse = TRUE)
 ```
 
 Label positions relative to the ranges of the _x_ and _y_ scales are also
@@ -343,8 +350,7 @@ ggplot(my.data, aes(x, y2, colour = group)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
   stat_poly_eq(aes(label = ..eq.label..),
-               formula = formula, parse = TRUE, label.y.npc = "center") +
-  theme_bw()
+               formula = formula, parse = TRUE, label.y.npc = "center")
 ```
 
 ```{r}
@@ -353,8 +359,7 @@ ggplot(my.data, aes(x, y2, colour = group)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
   stat_poly_eq(aes(label = ..eq.label..),
-               formula = formula, parse = TRUE, label.y.npc = 0.75) +
-  theme_bw()
+               formula = formula, parse = TRUE, label.y.npc = 0.75)
 ```
 
 The default locations are now based on normalized coordinates, and consequently
@@ -369,8 +374,7 @@ ggplot(my.data, aes(x, y2, fill = block)) +
   stat_poly_eq(aes(label = ..rr.label..), size = 3,
                geom = "label", alpha = 0.33,
                formula = formula, parse = TRUE) +
-  facet_wrap(~group, scales = "free_y") +
-  theme_bw()
+  facet_wrap(~group, scales = "free_y")
 ```
 
 ```{r}
@@ -382,8 +386,7 @@ ggplot(my.data, aes(x, y2, colour = group, fill = block)) +
                geom = "label", alpha = 0.2,
                formula = formula, parse = TRUE,
                label.y.npc = 0.66) +
-  facet_wrap(~group, scales = "free_y") +
-  theme_bw()
+  facet_wrap(~group, scales = "free_y")
 ```
 
 
