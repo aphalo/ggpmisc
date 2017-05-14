@@ -3,7 +3,7 @@ ggpmisc 0.2.15
 
 Add stat_fit_tidy() implemented using broom::tidy(). Makes it possible to
 add the fitted equation for any fitted model supported by package 'broom',
-as long as the user supplies the code to build a label string within aes().
+as long as the user supplies within aes() the code to build a label string.
 Update user guide.
 
 ggpmisc 0.2.14
