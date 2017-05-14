@@ -113,20 +113,20 @@ find_peaks <-
 #'   \code{geom_hline} and \code{geom_vline}. The formatting of the labels
 #'   returned can be controlled by the user.
 #'
-#' @note This stats check the scale of the \code{x} aesthetic and if is Datetime it
-#'   correctly generates the labels by transforming the numeric x values to
+#' @note These stats check the scale of the \code{x} aesthetic and if is Datetime they
+#'   correctly generate the labels by transforming the numeric x values to
 #'   POSIXct objects, in which case the \code{x.label.fmt} must be suitable for
 #'   \code{strftime()} rather than for \code{sprintf()}.
 #' These stats work nicely together with geoms
 #'   \code{\link[ggrepel]{geom_text_repel}} and
 #'   \code{\link[ggrepel]{geom_label_repel}} from package
 #'   \code{\link[ggrepel]{ggrepel}} to solve the problem of overlapping labels
-#'   by displacing them. To discard overlapping labels use \code{check_overlap =
-#'   TRUE} as argument to \code{geom_text}.
+#'   by displacing them. Alternatively, to discard overlapping labels use
+#'   \code{check_overlap = TRUE} as argument to \code{geom_text}.
 #'  By default the labels are character values suitable to be plotted as is, but
 #'  with a suitable \code{label.fmt} labels suitable for parsing by the geoms
-#'  (e.g. into expressions containing Greek letters or super or subscripts) can
-#'  be also easily obtained.
+#'  (e.g. into expressions containing Greek letters, super- or subscripts,
+#'  maths symbols or maths constructs) can be also easily obtained.
 #'
 #' @examples
 #' library(ggplot2)
