@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="ISO8859-1"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="691px" height="484px" viewBox="0 0 691 484" version="1.1">
+  <metadata xmlns:gridsvg="http://www.stat.auckland.ac.nz/~paul/R/gridSVG/">
+    <gridsvg:generator name="gridSVG" version="1.5-1" time="2017-05-21 11:15:34"/>
+    <gridsvg:argument name="name" value="Rplots.svg"/>
+    <gridsvg:argument name="exportCoords" value="none"/>
+    <gridsvg:argument name="exportMappings" value="none"/>
+    <gridsvg:argument name="exportJS" value="none"/>
+    <gridsvg:argument name="res" value="96"/>
+    <gridsvg:argument name="prefix" value=""/>
+    <gridsvg:argument name="addClasses" value="FALSE"/>
+    <gridsvg:argument name="indent" value="TRUE"/>
+    <gridsvg:argument name="htmlWrapper" value="FALSE"/>
+    <gridsvg:argument name="usePaths" value="vpPaths"/>
+    <gridsvg:argument name="uniqueNames" value="TRUE"/>
+    <gridsvg:separator name="id.sep" value="."/>
+    <gridsvg:separator name="gPath.sep" value="::"/>
+    <gridsvg:separator name="vpPath.sep" value="::"/>
+  </metadata>
+  <g transform="translate(0, 484) scale(1, -1)">
+    <g id="gridSVG" fill="rgb(255,255,255)" stroke="rgb(0,0,0)" stroke-dasharray="none" stroke-width="1" font-size="16" font-family="Helvetica, Arial, FreeSans, Liberation Sans, Nimbus Sans L, sans-serif" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-opacity="1" fill-opacity="1" font-weight="normal" font-style="normal">
+      <g id="graphSizeVP.1">
+        <g id="graphSizeVP::graphScaleVP.1">
+          <g id="edge-vp:ROOT~vp:layout.1" pointer-events="all" onmouseover="showTooltip(evt, '')" onmouseout="hideTooltip()">
+            <g id="curve-vp:ROOT~vp:layout-1.1">
+              <polyline id="curve-vp:ROOT~vp:layout-1.1.1" points="345.5,334.98 345.5,332.06 345.5,328.98 345.5,325.71 345.5,322.26 345.5,318.71 345.5,315.16 345.5,311.68 345.5,308.38 345.5,305.26 345.5,302.31 345.5,301.78" stroke="rgb(0,0,0)" stroke-width="1" stroke-dasharray="none" stroke-opacity="1" fill="none"/>
+            </g>
+            <g id="arrowhead-vp:ROOT~vp:layout.1">
+              <defs>
+                <marker id="arrowhead-vp:ROOT~vp:layout.1.1.markerStart" refX="-12.48" refY="-4.54" overflow="visible" markerUnits="userSpaceOnUse" markerWidth="12.48" markerHeight="9.09" orient="auto">
+                  <path d="M 0 0 L 12.48 4.54 L 0 9.09" stroke="rgb(0,0,0)" fill="none" stroke-width="1" stroke-dasharray="none" stroke-opacity="1" fill-opacity="1" transform="rotate(180)"/>
+                </marker>
+                <marker id="arrowhead-vp:ROOT~vp:layout.1.1.markerEnd" refX="12.48" refY="4.54" overflow="visible" markerUnits="userSpaceOnUse" markerWidth="12.48" markerHeight="9.09" orient="auto">
+                  <path d="M 0 0 L 12.48 4.54 L 0 9.09" stroke="rgb(0,0,0)" fill="none" stroke-width="1" stroke-dasharray="none" stroke-opacity="1" fill-opacity="1"/>
+                </marker>
+              </defs>
+              <polyline id="arrowhead-vp:ROOT~vp:layout.1.1" points="345.5,301.78 345.5,288.49" marker-end="url(#arrowhead-vp:ROOT~vp:layout.1.1.markerEnd)" stroke="rgb(0,0,0)" fill="none" stroke-width="1" stroke-dasharray="none" stroke-opacity="1" fill-opacity="1"/>
+            </g>
+          </g>
+          <g id="edge-vp:layout~g:layout.1" pointer-events="all" onmouseover="showTooltip(evt, '')" onmouseout="hideTooltip()">
+            <g id="curve-vp:layout~g:layout-1.1">
+              <polyline id="curve-vp:layout~g:layout-1.1.1" points="345.5,239.34 345.5,236.75 345.5,233.93 345.5,230.85 345.5,227.53 345.5,224.03 345.5,220.44 345.5,216.86 345.5,213.37 345.5,210 345.5,206.74 345.5,206.13" stroke="rgb(190,190,190)" stroke-width="2" stroke-dasharray="none" stroke-opacity="1" fill="none"/>
+            </g>
+            <g id="arrowhead-vp:layout~g:layout.1">
+              <defs>
+                <marker id="arrowhead-vp:layout~g:layout.1.1.markerStart" refX="-12.48" refY="-4.54" overflow="visible" markerUnits="userSpaceOnUse" markerWidth="12.48" markerHeight="9.09" orient="auto">
+                  <path d="M 0 0 L 12.48 4.54 L 0 9.09" stroke="rgb(190,190,190)" fill="none" stroke-width="2" stroke-dasharray="none" stroke-opacity="1" fill-opacity="1" transform="rotate(180)"/>
+                </marker>
+                <marker id="arrowhead-vp:layout~g:layout.1.1.markerEnd" refX="12.48" refY="4.54" overflow="visible" markerUnits="userSpaceOnUse" markerWidth="12.48" markerHeight="9.09" orient="auto">
+                  <path d="M 0 0 L 12.48 4.54 L 0 9.09" stroke="rgb(190,190,190)" fill="none" stroke-width="2" stroke-dasharray="none" stroke-opacity="1" fill-opacity="1"/>
+                </marker>
+              </defs>
+              <polyline id="arrowhead-vp:layout~g:layout.1.1" points="345.5,206.13 345.5,192.85" marker-end="url(#arrowhead-vp:layout~g:layout.1.1.markerEnd)" stroke="rgb(190,190,190)" fill="none" stroke-width="2" stroke-dasharray="none" stroke-opacity="1" fill-opacity="1"/>
+            </g>
+          </g>
+          <g id="vp:ROOT.1" pointer-events="all" onmouseover="showTooltip(evt, 'ROOT')" onmouseout="hideTooltip()">
+            <g id="box-vp:ROOT.1">
+              <rect id="box-vp:ROOT.1.1" x="309.63" y="336.31" width="71.73" height="47.82" stroke="rgb(0,0,0)" fill="rgb(229,229,229)" stroke-opacity="1" fill-opacity="1"/>
+            </g>
+            <g id="label-vp:ROOT.1">
+              <g id="label-vp:ROOT.1.1" transform="translate(345.5, 360.22)" stroke-width="0.1">
+                <g id="label-vp:ROOT.1.1.scale" transform="scale(1, -1)">
+                  <text x="0" y="0" id="label-vp:ROOT.1.1.text" text-anchor="middle" stroke="rgb(0,0,0)" font-size="17.08" fill="rgb(0,0,0)" stroke-opacity="1" fill-opacity="1">
+                    <tspan id="label-vp:ROOT.1.1.tspan.1" dy="6.5" x="0">ROOT</tspan>
+                  </text>
+                </g>
+              </g>
+            </g>
+          </g>
+          <g id="vp:layout.1" pointer-events="all" onmouseover="showTooltip(evt, 'layout')" onmouseout="hideTooltip()">
+            <g id="box-vp:layout.1">
+              <rect id="box-vp:layout.1.1" x="309.63" y="240.67" width="71.73" height="47.82" stroke="rgb(0,0,0)" fill="rgb(229,229,229)" stroke-opacity="1" fill-opacity="1"/>
+            </g>
+            <g id="label-vp:layout.1">
+              <g id="label-vp:layout.1.1" transform="translate(345.5, 264.58)" stroke-width="0.1">
+                <g id="label-vp:layout.1.1.scale" transform="scale(1, -1)">
+                  <text x="0" y="0" id="label-vp:layout.1.1.text" text-anchor="middle" stroke="rgb(0,0,0)" font-size="18.67" fill="rgb(0,0,0)" stroke-opacity="1" fill-opacity="1">
+                    <tspan id="label-vp:layout.1.1.tspan.1" dy="7.5" x="0">layout</tspan>
+                  </text>
+                </g>
+              </g>
+            </g>
+          </g>
+          <g id="g:layout.1" pointer-events="all" onmouseover="showTooltip(evt, 'layout')" onmouseout="hideTooltip()">
+            <g id="box-g:layout.1">
+              <circle id="box-g:layout.1.1" cx="345.5" cy="146.36" r="46.49" stroke="rgb(0,0,0)" fill="rgb(0,0,0)" stroke-opacity="1" fill-opacity="1"/>
+            </g>
+            <g id="label-g:layout.1">
+              <g id="label-g:layout.1.1" transform="translate(345.5, 146.36)" stroke-width="0.1">
+                <g id="label-g:layout.1.1.scale" transform="scale(1, -1)">
+                  <text x="0" y="0" id="label-g:layout.1.1.text" text-anchor="middle" stroke="rgb(255,255,255)" font-size="18.67" fill="rgb(255,255,255)" stroke-opacity="1" fill-opacity="1">
+                    <tspan id="label-g:layout.1.1.tspan.1" dy="7.5" x="0">layout</tspan>
+                  </text>
+                </g>
+              </g>
+            </g>
+          </g>
+        </g>
+      </g>
+      <script type="application/ecmascript" id="GRID.script.grob.266" xlink:href="C:/Users/aphalo/Documents/R/win-library/3.4/gridDebug/js/graphtips.js"/>
+    </g>
+  </g>
+</svg>

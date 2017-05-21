@@ -554,6 +554,58 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
   labs(x = "C", y = "V")
 ```
 
+## `stat_fit_tb`
+
+```{r}
+formula <- y ~ x + I(x^2) + I(x^3)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_fit_tb(method = "lm", 
+              method.args = list(formula = formula),
+              label.y.npc = 0.85, label.x.npc = 0.3)
+```
+
+```{r}
+formula <- y ~ x + I(x^2) + I(x^3)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_fit_tb(method = "lm", 
+              method.args = list(formula = formula),
+              tb.type = "fit.anova",
+              label.y.npc = 0.85, label.x.npc = 0.3)
+```
+
+```{r}
+formula <- y ~ x + I(x^2) + I(x^3)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_fit_tb(method = "lm", 
+              method.args = list(formula = formula),
+              tb.type = "fit.coefs",
+              label.y.npc = 0.85, label.x.npc = 0.15)
+```
+
+```{r}
+micmen.formula <- y ~ SSmicmen(x, Vm, K) 
+ggplot(Puromycin, aes(conc, rate, colour = state)) +
+  facet_wrap(~state) +
+  geom_point() +
+  geom_smooth(method = "nls", 
+              formula = micmen.formula,
+              se = FALSE) +
+  stat_fit_tb(method = "nls", 
+              method.args = list(formula = micmen.formula),
+              tb.type = "fit.coefs",
+              label.x.npc = 0.5,
+              label.y.npc = 0.2) +
+  theme(legend.position = "none") +
+  labs(x = "C", y = "V")
+```
+
+
 ## `stat_fit_augment`
 
 **Experimental!** 
@@ -802,6 +854,21 @@ ggplot(data = d, aes(x, y, label = lab, color = group)) +
                      keep.fraction = 0.35, 
                      alpha = 0.5,
                      label.fill = NA)
+```
+
+## `geom_table`
+
+This _geometry_ plots a data frame or tibble, nested in a tibble pased as data
+argument, using _easthetics_ x and y for positioning. The table is created as a 
+grob and added as usual to the ggplot object.
+
+```{r}
+tb <- tibble(date = ymd(c("2017-05-21", "2007-05-21"), tz = "UCT"),
+             value = 1:2 * 10)
+data.tb <- tibble(x = 25, y = 8e5, tb = list(tb))
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_table(data = data.tb, aes(label = tb))
 ```
 
 ## `try_tibble()`

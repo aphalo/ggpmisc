@@ -101,6 +101,12 @@ GeomTable <-
 
           draw_panel = function(data, panel_params, coord, parse = FALSE,
                                 na.rm = FALSE, check_overlap = FALSE) {
+
+            if (nrow(data) > 1) {
+              warning("Grouping not supported in current version")
+              return(grid::nullGrob())
+            }
+
             lab <- data$label[[1]]
 
             if (parse) {
@@ -118,7 +124,8 @@ GeomTable <-
             gridExtra::tableGrob(
               lab,
               theme = gridExtra::ttheme_default(base_size = 2.5 * .pt),
-              vp = grid::viewport(x = data$x, y = data$y,
+              vp = grid::viewport(x = data$x[1], y = data$y[1],
+                                  width = 0.9, height = 0.9,
                                   default.units = "native")
             )
           },

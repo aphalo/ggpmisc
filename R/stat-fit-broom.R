@@ -110,7 +110,6 @@ fit_glance_compute_group_fun <- function(data,
   if (is.character(method)) method <- match.fun(method)
   mf <- do.call(method, method.args)
   z <- broom::glance(mf)
-#  print(z)
 
   if (length(label.x) > 0) {
     z$x <- label.x
@@ -310,15 +309,11 @@ fit_augment_compute_group_fun <- function(data,
     return(data.frame())
   }
   data <- data[order(data[["x"]]), ]
-#  print(tibble::as_data_frame(data))
   method.args <- c(method.args, list(data = quote(data)))
   if (is.character(method)) method <- match.fun(method)
   mf <- do.call(method, method.args)
-#  print(mf)
   augment.args <- c(list(x = mf), augment.args)
-#  print(augment.args)
   z <- do.call(broom::augment, augment.args)
-#  print(tibble::as_data_frame(z))
   z <- plyr::colwise(unAsIs)(z)
   tibble::as_data_frame(z)
   z[["y.observed"]] <- z[["y"]]
@@ -331,7 +326,6 @@ fit_augment_compute_group_fun <- function(data,
   if (!exists(".se.fit", z)) {
     z[[".se.fit"]] <- NA_real_
   }
-#  print(tibble::as_data_frame(z))
   z
 }
 
@@ -488,7 +482,6 @@ fit_tidy_compute_group_fun <- function(data,
   names(z.estimate) <- clean.term.names
   names(z.std.error) <- paste(clean.term.names, "se", sep = "_")
   z <- cbind(z.estimate, z.std.error)
- # print(z) # DEBUG
 
   if (length(label.x) > 0) {
     z$x <- label.x
