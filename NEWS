@@ -3,6 +3,8 @@ ggpmisc 0.2.16
 
 Add geom_table() and stat_fit_tb(). Used together they make possible to add
 ANOVA and summary tables to ggplots.
+Add to the output of stat_fit_tidy() p-values for parameters, although in most
+cases stat_tif_tb() will be easier to use.
 
 ggpmisc 0.2.15
 ==============

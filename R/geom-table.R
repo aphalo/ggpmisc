@@ -48,6 +48,13 @@
 #' @note This geom works only with tibbles as \code{data}, as it expects a
 #'   whole data frame or tibble to be mapped to the \code{label} aesthetic.
 #'
+#' @references This geometry is inspired on the answer to a question in
+#' Stackoverflow and a plot in the R graph gallery. In contrast to these
+#' earlier examples, the current geom obeys the grammar of graphics, simplifying
+#' the building of plots.
+#' \url{https://stackoverflow.com/questions/12318120/adding-table-within-the-plotting-region-of-a-ggplot-in-r}
+#' \url{http://www.r-graph-gallery.com/115-study-correlations-with-a-correlogram/}
+#'
 #' @export
 geom_table <- function(mapping = NULL, data = NULL,
                       stat = "identity", position = "identity",
@@ -126,7 +133,8 @@ GeomTable <-
               theme = gridExtra::ttheme_default(base_size = 2.5 * .pt),
               vp = grid::viewport(x = data$x[1], y = data$y[1],
                                   width = 0.9, height = 0.9,
-                                  default.units = "native")
+                                  default.units = "native"),
+              rows = NULL
             )
           },
           draw_key = draw_key_text

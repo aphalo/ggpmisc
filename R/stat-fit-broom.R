@@ -482,6 +482,16 @@ fit_tidy_compute_group_fun <- function(data,
   names(z.estimate) <- clean.term.names
   names(z.std.error) <- paste(clean.term.names, "se", sep = "_")
   z <- cbind(z.estimate, z.std.error)
+  if (exists("statistic", mf.td, inherits = FALSE)) {
+    z.statistic <- as.data.frame(t(mf.td[["statistic"]]))
+    names(z.statistic) <- paste(clean.term.names, "stat", sep = "_")
+    z <- cbind(z, z.statistic)
+  }
+  if (exists("p.value", mf.td, inherits = FALSE)) {
+    z.p.value <- as.data.frame(t(mf.td[["p.value"]]))
+    names(z.p.value) <- paste(clean.term.names, "p.value", sep = "_")
+    z <- cbind(z, z.p.value)
+  }
 
   if (length(label.x) > 0) {
     z$x <- label.x
@@ -586,7 +596,7 @@ StatFitTidy <-
 #' @param method character.
 #' @param method.args list of arguments to pass to \code{method}.
 #' @param tb.type character One of "fit.summary", "fit.anova" or "fit.coefs".
-#' @param integer indicating the number of significant digits to be used.
+#' @param digits integer indicating the number of significant digits to be used.
 #' @param label.x.npc,label.y.npc \code{numeric} with range 0..1 or character.
 #'   Coordinates to be used for positioning the output, expressed in "normalized
 #'   parent coordinates" or character string. If too short they will be recycled.
@@ -736,7 +746,7 @@ fit_tb_compute_group_fun <- function(data,
   }
 
   if (tolower(tb.type) %in% c("fit.anova", "anova")) {
-    mf_tb <- broom::tidy(anova(mf))
+    mf_tb <- broom::tidy(stats::anova(mf))
   } else if (tolower(tb.type) %in% c("fit.summary", "summary")) {
     mf_tb <- broom::tidy(mf)
   } else if (tolower(tb.type) %in% c("fit.coefs", "coefs")) {

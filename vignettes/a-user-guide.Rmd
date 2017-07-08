@@ -605,6 +605,13 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
   labs(x = "C", y = "V")
 ```
 
+```{r}
+ggplot(chickwts, aes(factor(feed), weight)) +
+  stat_summary() +
+  stat_fit_tb(tb.type = "fit.anova") +
+  expand_limits(y = 0)
+```
+
 
 ## `stat_fit_augment`
 

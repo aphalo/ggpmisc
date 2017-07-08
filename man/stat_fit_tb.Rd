@@ -5,10 +5,10 @@
 \title{Return a tibble within a tibble with fitted parameter estimates.}
 \usage{
 stat_fit_tb(mapping = NULL, data = NULL, geom = "table", method = "lm",
-  method.args = list(formula = y ~ x), label.x.npc = "left",
-  label.y.npc = "top", label.x = NULL, label.y = NULL,
-  position = "identity", na.rm = FALSE, show.legend = FALSE,
-  inherit.aes = TRUE, ...)
+  method.args = list(formula = y ~ x), tb.type = "fit.summary",
+  digits = 3, label.x.npc = "center", label.y.npc = "top",
+  label.x = NULL, label.y = NULL, position = "identity", na.rm = FALSE,
+  show.legend = FALSE, inherit.aes = TRUE, ...)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
@@ -23,6 +23,10 @@ the plot defaults.}
 \item{method}{character.}
 
 \item{method.args}{list of arguments to pass to \code{method}.}
+
+\item{tb.type}{character One of "fit.summary", "fit.anova" or "fit.coefs".}
+
+\item{digits}{integer indicating the number of significant digits to be used.}
 
 \item{label.x.npc, label.y.npc}{\code{numeric} with range 0..1 or character.
 Coordinates to be used for positioning the output, expressed in "normalized

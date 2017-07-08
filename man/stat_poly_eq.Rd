@@ -135,3 +135,7 @@ ggplot(my.data, aes(x, y)) +
                formula = formula, rr.digits = 3, coef.digits = 2, parse = TRUE)
 
 }
+\references{
+Written as an answer to a question at Stackoverflow.
+\url{https://stackoverflow.com/questions/7549694/adding-regression-line-equation-and-r2-on-graph}
+}

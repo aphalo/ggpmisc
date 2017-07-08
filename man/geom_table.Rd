@@ -73,3 +73,11 @@ Inward always aligns text towards the center, and outward aligns
 it away from the center
 }
 
+\references{
+This geometry is inspired on the answer to a question in
+Stackoverflow and a plot in the R graph gallery. In contrast to these
+earlier examples, the current geom obeys the grammar of graphics, simplifying
+the building of plots.
+\url{https://stackoverflow.com/questions/12318120/adding-table-within-the-plotting-region-of-a-ggplot-in-r}
+\url{http://www.r-graph-gallery.com/115-study-correlations-with-a-correlogram/}
+}
