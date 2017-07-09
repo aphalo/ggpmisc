@@ -6,6 +6,11 @@ ANOVA and summary tables to ggplots.
 Add to the output of stat_fit_tidy() p-values for parameters, although in most
 cases stat_tif_tb() will be easier to use.
 
+Note: 'ggplot2' >= 2.2.1.9000, scales >= 0.4.1.9002, and 'broom' >= 0.4.2
+(github with commits >= Apr 11) are needed to avoid warnings. In spite of
+numerous warnings, current CRAN versions of these packages still produce
+valid output.
+
 ggpmisc 0.2.15
 ==============
 
