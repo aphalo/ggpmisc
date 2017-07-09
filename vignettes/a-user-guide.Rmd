@@ -866,8 +866,8 @@ ggplot(data = d, aes(x, y, label = lab, color = group)) +
 ## `geom_table`
 
 This _geometry_ plots a data frame or tibble, nested in a tibble pased as data
-argument, using _easthetics_ x and y for positioning. The table is created as a 
-grob and added as usual to the ggplot object.
+argument, using _easthetics_ `x` and `y` for positioning, and `label` for the 
+data frame containing the data for the table. The table is created as a 'grid' grob and added as usual to the ggplot object.
 
 ```{r}
 tb <- tibble(date = ymd(c("2017-05-21", "2007-05-21"), tz = "UCT"),
@@ -875,8 +875,34 @@ tb <- tibble(date = ymd(c("2017-05-21", "2007-05-21"), tz = "UCT"),
 data.tb <- tibble(x = 25, y = 8e5, tb = list(tb))
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  geom_table(data = data.tb, aes(label = tb))
+  geom_table(data = data.tb, aes(label = tb)) +
+  theme_bw()
 ```
+
+
+```{r}
+tb <- tibble(date = ymd(c("2017-05-21", "2007-05-21"), tz = "UCT"),
+             value = 1:2 * 10)
+data.tb <- tibble(x = 25, y = 8e5, tb = list(tb))
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_table(data = data.tb, aes(label = tb), colour = "blue", size = 4) +
+  theme_bw()
+```
+
+Parsed text, using plot math syntax is supported in the table, with fallback to
+plain text in case of parsing errors, on a cell by cell basis.
+
+```{r}
+tb.pm <- tibble(parameter = c("frac(beta[1], a^2)", "frac(beta[2], a^3)"),
+             value = c("10^2.4", "10^3.532"))
+data.tb <- tibble(x = 12.5, y = 8.5e5, tb = list(tb.pm))
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_table(data = data.tb, aes(label = tb), parse = TRUE) +
+  theme_bw()
+```
+
 
 ## `try_tibble()`
 

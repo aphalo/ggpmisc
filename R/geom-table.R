@@ -39,7 +39,7 @@
 #'   can include aesthetics whose values you want to set, not map. See
 #'   \code{\link[ggplot2]{layer}} for more details.
 #' @param parse If TRUE, the labels will be parsed into expressions and
-#'   displayed as described in ?plotmath
+#'   displayed as described in ?plotmath.
 #' @param nudge_x,nudge_y Horizontal and vertical adjustment to nudge labels by.
 #'   Useful for offsetting text from points, particularly on discrete scales.
 #' @param check_overlap If \code{TRUE}, text that overlaps previous text in the
@@ -47,6 +47,10 @@
 #'
 #' @note This geom works only with tibbles as \code{data}, as it expects a
 #'   whole data frame or tibble to be mapped to the \code{label} aesthetic.
+#'   In the current version the following aesthetics affect the text within
+#'   the table `size`, `colour`, `alpha`. The argument to parameter `parse` is
+#'   simply passed forward to `gridExtra::ttheme_default()`. Other aesthetics
+#'   are not yet implemented, neither are themes for table formatting.
 #'
 #' @references This geometry is inspired on the answer to a question in
 #' Stackoverflow and a plot in the R graph gallery. In contrast to these
@@ -99,10 +103,10 @@ geom_table <- function(mapping = NULL, data = NULL,
 #' @export
 GeomTable <-
   ggproto("GeomTable", Geom,
-          required_aes = c("x", "y"),
+          required_aes = c("x", "y", "label"),
 
           default_aes = aes(
-            colour = "black", size = 3.88, angle = 0, hjust = 0.5,
+            colour = "black", size = 3.2, angle = 0, hjust = 0.5,
             vjust = 0.5, alpha = NA, family = "", fontface = 1, lineheight = 1.2
           ),
 
@@ -116,10 +120,6 @@ GeomTable <-
 
             lab <- data$label[[1]]
 
-            if (parse) {
-              stop("'parse = TRUE' not implemented in geom 'table'.")
-            }
-
             data <- coord$transform(data, panel_params)
             if (is.character(data$vjust)) {
               data$vjust <- compute_just(data$vjust, data$y)
@@ -128,9 +128,12 @@ GeomTable <-
               data$hjust <- compute_just(data$hjust, data$x)
             }
 
+            # add support for size aesthetic!
             gridExtra::tableGrob(
               lab,
-              theme = gridExtra::ttheme_default(base_size = 2.5 * .pt),
+              theme = gridExtra::ttheme_default(base_size = data$size * .pt,
+                                                base_colour = ggplot2::alpha(data$colour, data$alpha),
+                                                parse = parse),
               vp = grid::viewport(x = data$x[1], y = data$y[1],
                                   width = 0.9, height = 0.9,
                                   default.units = "native"),

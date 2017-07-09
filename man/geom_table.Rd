@@ -28,7 +28,7 @@ can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 
 \item{parse}{If TRUE, the labels will be parsed into expressions and
-displayed as described in ?plotmath}
+displayed as described in ?plotmath.}
 
 \item{nudge_x, nudge_y}{Horizontal and vertical adjustment to nudge labels by.
 Useful for offsetting text from points, particularly on discrete scales.}
@@ -62,6 +62,10 @@ resize a plot, labels stay the same size, but the size of the axes changes.
 \note{
 This geom works only with tibbles as \code{data}, as it expects a
   whole data frame or tibble to be mapped to the \code{label} aesthetic.
+  In the current version the following aesthetics affect the text within
+  the table `size`, `colour`, `alpha`. The argument to parameter `parse` is
+  simply passed forward to `gridExtra::ttheme_default()`. Other aesthetics
+  are not yet implemented, neither are themes for table formatting.
 }
 \section{Alignment}{
 
