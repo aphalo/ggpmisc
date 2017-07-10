@@ -90,6 +90,10 @@ GeomNull <-
 #'   as input.
 #' @param summary.fun.args A list of additional arguments to be passed to
 #'   \code{summary.fun}.
+#' @param print.fun A function used to print the value returned by
+#'   \code{summary.fun}.
+#' @param print.fun.args A list of additional arguments to be passed to
+#'   \code{print.fun}.
 #' @param position Position adjustment, either as a string, or the result of a
 #'   call to a position adjustment function.
 #' @param stat The statistical transformation to use on the data for this layer,
@@ -117,6 +121,8 @@ GeomNull <-
 geom_debug <- function(mapping = NULL, data = NULL, stat = "identity",
                        summary.fun = tibble::as_tibble,
                        summary.fun.args = list(),
+                       print.fun = print,
+                       print.fun.args = list(),
                        position = "identity", na.rm = FALSE,
                        show.legend = FALSE,
                        inherit.aes = TRUE, ...) {
@@ -127,6 +133,8 @@ geom_debug <- function(mapping = NULL, data = NULL, stat = "identity",
     params = list(na.rm = na.rm,
                   summary.fun = summary.fun,
                   summary.fun.args = summary.fun.args,
+                  print.fun = print.fun,
+                  print.fun.args = print.fun.args,
                   ...)
   )
 }
@@ -141,15 +149,22 @@ GeomDebug <-
                    default_aes = ggplot2::aes(),
                    draw_key = function(...) {grid::nullGrob()},
                    draw_panel = function(data, panel_scales, coord,
-                                         summary.fun,
-                                         summary.fun.args) {
+                                         summary.fun = tibble::as_tibble,
+                                         summary.fun.args = list(),
+                                         print.fun = print,
+                                         print.fun.args = list()
+                                         ) {
                      if (!is.null(summary.fun)) {
-                       message("Input 'data' to 'geom_debug()':")
-                       print(
-                         do.call(summary.fun, c(quote(data), summary.fun.args))
-                       )
+                       z <- do.call(summary.fun, c(quote(data), summary.fun.args))
+                     } else {
+                       z <- data
                      }
-                     grid::nullGrob()
+                     if (!is.null(print.fun)) {
+                       do.call(print.fun, c(quote(z), print.fun.args))
+                     }
+
+                   grid::nullGrob()
+
                    }
   )
 

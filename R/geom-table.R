@@ -152,5 +152,5 @@ GeomTable <-
           ),
 
           draw_panel = gtb_draw_panel_fun,
-          draw_key = draw_key_text
+          draw_key = function(...) {grid::nullGrob()}
   )

@@ -7,6 +7,7 @@ ANOVA table for a model fit to PANEL data. Used together with geom_table() it
 makes easy to add ANOVA and summary tables to ggplots.
 Revise stat_fit_tidy() to make it return p-values for parameters in additon to
 estimates and standard errors.
+Revise geom_debug() adding missing argument defaults.
 
 Note: 'ggplot2' >= 2.2.1.9000, scales >= 0.4.1.9002, and 'broom' >= 0.4.2
 (github with commits >= Apr 11) are needed to avoid warnings.
