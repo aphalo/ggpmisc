@@ -567,7 +567,7 @@ ggplot(my.data, aes(x, y)) +
   geom_smooth(method = "lm", formula = formula) +
   stat_fit_tb(method = "lm", 
               method.args = list(formula = formula),
-              label.y.npc = 0.80, label.x.npc = 0.3)
+              label.y.npc = "top", label.x.npc = "left")
 ```
 
 When `tb.type = "fit.anova"` the output returned is that from `tidy(anova(mf))` where `mf` is the fitted model.
@@ -580,7 +580,7 @@ ggplot(my.data, aes(x, y)) +
   stat_fit_tb(method = "lm", 
               method.args = list(formula = formula),
               tb.type = "fit.anova",
-              label.y.npc = 0.85, label.x.npc = 0.3)
+              label.y.npc = "top", label.x.npc = "left")
 ```
 
 When `tb.type = "fit.coefs"` the output returned is that of `tidy(mf)` after selecting the `term` and `estimate` columns.
@@ -593,7 +593,7 @@ ggplot(my.data, aes(x, y)) +
   stat_fit_tb(method = "lm", 
               method.args = list(formula = formula),
               tb.type = "fit.coefs",
-              label.y.npc = 0.85, label.x.npc = 0.15)
+              label.y.npc = "center", label.x.npc = "left")
 ```
 
 Faceting works as expected, but grouping is ignored as mentioned above. In this case, the colour aesthetic is not applied to the text of the tables. Furthermore,
@@ -623,19 +623,33 @@ The data in the example below are split by `ggplot` into six groups based on the
 ggplot(chickwts, aes(factor(feed), weight)) +
   stat_summary(fun.data = "mean_se") +
   stat_fit_tb(tb.type = "fit.anova",
-              label.x.npc = 0.3,
-              label.y.npc = 0.1) +
+              label.x.npc = 1.07, hjust = 1,
+              label.y.npc = "bottom") +
   expand_limits(y = 0)
 ```
 
-We can flip the system of coordinates, if desired.
+We can flip the system of coordinates, if desired. Be aware that in this case
+the specification of the position and justification of the table is no longer intuitive.
 
 ```{r}
 ggplot(chickwts, aes(factor(feed), weight)) +
   stat_summary(fun.data = "mean_se") +
   stat_fit_tb(tb.type = "fit.anova",
-              label.x.npc = 1.0,
-              label.y.npc = 0.25) +
+              label.x.npc = 1.1, hjust = 0,
+              label.y.npc = 0, vjust = 1) +
+  expand_limits(y = 0) +
+  coord_flip()
+```
+
+It is also possible to rotate the table using \code{angle}.
+
+```{r}
+ggplot(chickwts, aes(factor(feed), weight)) +
+  stat_summary(fun.data = "mean_se") +
+  stat_fit_tb(tb.type = "fit.anova",
+              angle = 90,
+              label.x.npc = 1.1, hjust = 1,
+              label.y.npc = 0, vjust = 1) +
   expand_limits(y = 0) +
   coord_flip()
 ```
@@ -899,10 +913,10 @@ data frame containing the data for the table. The table is created as a 'grid' g
 ```{r}
 tb <- tibble(date = ymd(c("2017-05-21", "2007-05-21"), tz = "UCT"),
              value = 1:2 * 10)
-data.tb <- tibble(x = 25, y = 8e5, tb = list(tb))
+data.tb <- tibble(x = 0, y = 8e5, tb = list(tb))
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  geom_table(data = data.tb, aes(label = tb)) +
+  geom_table(data = data.tb, aes(label = tb), hjust = 0, vjust = 0) +
   theme_bw()
 ```
 
@@ -929,7 +943,6 @@ ggplot(my.data, aes(x, y)) +
   geom_table(data = data.tb, aes(label = tb), parse = TRUE) +
   theme_bw()
 ```
-
 
 ## `try_tibble()`
 

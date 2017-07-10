@@ -55,12 +55,15 @@ can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 }
 \description{
-\code{stat_fit_tidy} fits a model and returns a "tidy" version of the
-model's summary, using package 'broom'.
+\code{stat_fit_tb} fits a model and returns a "tidy" version
+  of the model's summary, using package 'broom'.
 }
 \section{Computed variables}{
-
-  The output of \code{\link[broom]{tidy}} is returned after reshaping it
-  into a single row.
+ The output of \code{\link[broom]{tidy}} is
+  returned as a single "cell" in a tibble (i.e. a tibble nested within a
+  tibble). The returned \code{data} object contains a single row, containing
+  the
+  result from a single model fit to all data in a panel. If grouping is
+  present, it is ignored.
 }
 

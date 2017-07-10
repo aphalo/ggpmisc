@@ -13,9 +13,7 @@
 #' You can modify table alignment with the \code{vjust} and \code{hjust}
 #' aesthetics. These can either be a number between 0 (right/bottom) and
 #' 1 (top/left) or a character ("left", "middle", "right", "bottom", "center",
-#' "top"). There are two special alignments: "inward" and "outward".
-#' Inward always aligns text towards the center, and outward aligns
-#' it away from the center
+#' "top").
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_string}}. Only needs
@@ -40,45 +38,43 @@
 #'   \code{\link[ggplot2]{layer}} for more details.
 #' @param parse If TRUE, the labels will be parsed into expressions and
 #'   displayed as described in ?plotmath.
-#' @param nudge_x,nudge_y Horizontal and vertical adjustment to nudge labels by.
-#'   Useful for offsetting text from points, particularly on discrete scales.
 #' @param check_overlap If \code{TRUE}, text that overlaps previous text in the
 #'   same layer will not be plotted.
 #'
-#' @note This geom works only with tibbles as \code{data}, as it expects a
-#'   whole data frame or tibble to be mapped to the \code{label} aesthetic.
-#'   In the current version the following aesthetics affect the text within
-#'   the table `size`, `colour`, `alpha`. The argument to parameter `parse` is
-#'   simply passed forward to `gridExtra::ttheme_default()`. Other aesthetics
-#'   are not yet implemented, neither are themes for table formatting.
+#' @note This geom works only with tibbles as \code{data}, as it expects a whole
+#'   data frame or tibble to be mapped to the \code{label} aesthetic. In the
+#'   current version the following aesthetics affect the text within the table
+#'   \code{size}, \code{colour}, and \code{alpha}. The argument to parameter
+#'   \code{parse} is simply passed forward to
+#'   \code{gridExtra::ttheme_default()}. As \code{x} and \code{y} determine the
+#'   position of the whole table, similarly to that of a text label,
+#'   justification is interpreted as indicating the position of the table with
+#'   respect to the $x$ and $y$ coordinates in the data, and \code{angle} is
+#'   used to rotate the table as a whole. Other aesthetics, including \code{fill} are
+#'   not yet implemented, neither are themes for table formatting.
+#'   \strong{\code{annotate()} cannot be used with \code{geom = "table"}}. Use
+#'   \code{geom_table} directly also for adding annotations.
 #'
-#' @references This geometry is inspired on the answer to a question in
-#' Stackoverflow and a plot in the R graph gallery. In contrast to these
-#' earlier examples, the current geom obeys the grammar of graphics, simplifying
-#' the building of plots.
-#' \url{https://stackoverflow.com/questions/12318120/adding-table-within-the-plotting-region-of-a-ggplot-in-r}
-#' \url{http://www.r-graph-gallery.com/115-study-correlations-with-a-correlogram/}
+#' @references This geometry is inspired on answers to two questions in
+#'   Stackoverflow. In contrast to these earlier examples, the current geom
+#'   obeys the grammar of graphics, and attempts to be consistent with the
+#'   behaviour of 'ggplot2' geometries.
+#'   \url{https://stackoverflow.com/questions/12318120/adding-table-within-the-plotting-region-of-a-ggplot-in-r}
+#'   \url{https://stackoverflow.com/questions/25554548/adding-sub-tables-on-each-panel-of-a-facet-ggplot-in-r?}
+#'
+#' @seealso \code{\link[gridExtra]{tableGrob}} as this fucntion is used to build
+#'   the table.
 #'
 #' @export
 geom_table <- function(mapping = NULL, data = NULL,
-                      stat = "identity", position = "identity",
-                      ...,
-                      parse = FALSE,
-                      nudge_x = 0,
-                      nudge_y = 0,
-                      check_overlap = FALSE,
-                      na.rm = FALSE,
-                      show.legend = NA,
-                      inherit.aes = TRUE)
+                       stat = "identity", position = "identity",
+                       ...,
+                       parse = FALSE,
+                       check_overlap = FALSE,
+                       na.rm = FALSE,
+                       show.legend = NA,
+                       inherit.aes = TRUE)
 {
-  if (!missing(nudge_x) || !missing(nudge_y)) {
-    if (!missing(position)) {
-      stop("Specify either `position` or `nudge_x`/`nudge_y`", call. = FALSE)
-    }
-
-    position <- position_nudge(nudge_x, nudge_y)
-  }
-
   layer(
     data = data,
     mapping = mapping,
@@ -96,6 +92,51 @@ geom_table <- function(mapping = NULL, data = NULL,
   )
 }
 
+# Defined here to avoid a note in check --as-cran as the imports from 'broom'
+# are not seen when the function is defined in-line in the ggproto object.
+#' @rdname ggpmisc-ggproto
+#'
+#' @format NULL
+#' @usage NULL
+#'
+gtb_draw_panel_fun <-
+  function(data, panel_params, coord, parse = FALSE,
+           na.rm = FALSE, check_overlap = FALSE) {
+
+    if (nrow(data) > 1) {
+      warning("Grouping not supported in current version")
+      return(grid::nullGrob())
+    }
+
+    lab <- data$label[[1]]
+
+    data <- coord$transform(data, panel_params)
+    # if (is.character(data$vjust)) {
+    #   data$vjust <- compute_just(data$vjust, data$y)
+    # }
+    # if (is.character(data$hjust)) {
+    #   data$hjust <- compute_just(data$hjust, data$x)
+    # }
+
+    gtb <-
+      gridExtra::tableGrob(
+        lab,
+        theme = gridExtra::ttheme_default(base_size = data$size * .pt,
+                                          base_colour = ggplot2::alpha(data$colour, data$alpha),
+                                          parse = parse),
+        rows = NULL
+      )
+
+    gtb$vp <- grid::viewport(x = unit(data$x[1], "native"),
+                             y = unit(data$y[1], "native"),
+                             width = sum(gtb$widths),
+                             height = sum(gtb$heights),
+                             just = c(data$hjust, data$vjust),
+                             angle = data$angle,
+                             name = paste("geom_table.panel", data$PANEL[1], sep = "."))
+    gtb
+
+  }
 
 #' @rdname ggpmisc-ggproto
 #' @format NULL
@@ -110,34 +151,6 @@ GeomTable <-
             vjust = 0.5, alpha = NA, family = "", fontface = 1, lineheight = 1.2
           ),
 
-          draw_panel = function(data, panel_params, coord, parse = FALSE,
-                                na.rm = FALSE, check_overlap = FALSE) {
-
-            if (nrow(data) > 1) {
-              warning("Grouping not supported in current version")
-              return(grid::nullGrob())
-            }
-
-            lab <- data$label[[1]]
-
-            data <- coord$transform(data, panel_params)
-            if (is.character(data$vjust)) {
-              data$vjust <- compute_just(data$vjust, data$y)
-            }
-            if (is.character(data$hjust)) {
-              data$hjust <- compute_just(data$hjust, data$x)
-            }
-
-            gridExtra::tableGrob(
-              lab,
-              theme = gridExtra::ttheme_default(base_size = data$size * .pt,
-                                                base_colour = ggplot2::alpha(data$colour, data$alpha),
-                                                parse = parse),
-              vp = grid::viewport(x = unit(data$x[1], "native"),
-                                  y = unit(data$y[1], "native"),
-                                  name = paste("geom_table.panel", data$PANEL[1], sep = ".")),
-              rows = NULL
-            )
-          },
+          draw_panel = gtb_draw_panel_fun,
           draw_key = draw_key_text
   )

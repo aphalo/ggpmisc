@@ -33,8 +33,8 @@ the plot defaults.}
 \item{position}{The position adjustment to use for overlapping points on this
 layer}
 
-\item{na.rm}{logical indicating whether NA values should be stripped
-before the computation proceeds.}
+\item{na.rm}{logical indicating whether NA values should be stripped before
+the computation proceeds.}
 
 \item{show.legend}{logical. Should this layer be included in the legends?
 \code{NA}, the default, includes if any aesthetics are mapped. \code{FALSE}
@@ -50,22 +50,21 @@ can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 }
 \description{
-\code{stat_fit_augment} fits a model and returns the data augmented with
-information from the fitted model, using package 'broom'.
+\code{stat_fit_augment} fits a model and returns the data
+  augmented with information from the fitted model, using package 'broom'.
 }
 \note{
-The statistics \code{stat_fit_augment} and
-  \code{stat_fit_augment_panel} at the moment accepts only \code{methods}
-  that accept formulas under any formal parameter name and a \code{data}
-  argument. Use \code{ggplot2::stat_smooth()} instead of
-  \code{stat_fit_augment} in production code if the additional features are
-  not needed. At the moment \code{stat_fit_augment} is under development and
-  may change.
+The statistics \code{stat_fit_augment} accepts only \code{methods} that
+  accept formulas under any formal parameter name and a \code{data} argument.
+  Use \code{ggplot2::stat_smooth()} instead of \code{stat_fit_augment} in
+  production code if the additional features are not needed. At the moment
+  \code{stat_fit_augment} is under development and may change.
 }
 \section{Computed variables}{
-
-  The output of \code{\link[broom]{augment}} is returned as is, except for
-  \code{y} which is set based on \code{y.out} and \code{y.observed} which
-  preserves the \code{y} returned by the \code{broom::augment} methods.
+ The output of \code{\link[broom]{augment}} is
+  returned as is, except for \code{y} which is set based on \code{y.out} and
+  \code{y.observed} which preserves the \code{y} returned by the
+  \code{broom::augment} methods. This renaming is needed so that the geom
+  works as expected.
 }
 

@@ -1,9 +1,9 @@
 # broom::glance -----------------------------------------------------------
 
-#' Return one row summary data frame for a fitted model.
+#' @title Return one row summary data frame for a fitted model.
 #'
-#' \code{stat_fit_glance} fits a model and returns a summary "glance" of the
-#' model's statistics, using package 'broom'.
+#' @description \code{stat_fit_glance} fits a model and returns a summary
+#'   "glance" of the model's statistics, using package 'broom'.
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_string}}. Only needs
@@ -23,18 +23,19 @@
 #' @param ... other arguments passed on to \code{\link[ggplot2]{layer}}. This
 #'   can include aesthetics whose values you want to set, not map. See
 #'   \code{\link[ggplot2]{layer}} for more details.
-#' @param na.rm	a logical indicating whether NA values should be stripped
-#'   before the computation proceeds.
+#' @param na.rm	a logical indicating whether NA values should be stripped before
+#'   the computation proceeds.
 #' @param method character.
 #' @param method.args list of arguments to pass to \code{method}.
 #' @param label.x.npc,label.y.npc \code{numeric} with range 0..1 or character.
 #'   Coordinates to be used for positioning the output, expressed in "normalized
-#'   parent coordinates" or character string. If too short they will be recycled.
+#'   parent coordinates" or character string. If too short they will be
+#'   recycled.
 #' @param label.x,label.y \code{numeric} Coordinates (in data units) to be used
 #'   for absolute positioning of the output. If too short they will be recycled.
 #'
-#' @section Computed variables:
-#'   The output of \code{\link[broom]{glance}} is returned as is.
+#' @section Computed variables: The output of \code{\link[broom]{glance}} is
+#'   returned as is in the \code{data} object.
 #'
 #' @export
 #'
@@ -187,10 +188,10 @@ StatFitGlance <-
 
 # broom::augment ----------------------------------------------------------
 
-#' Return the data augmented with fitted values and statistics.
+#' @title Return the data augmented with fitted values and statistics.
 #'
-#' \code{stat_fit_augment} fits a model and returns the data augmented with
-#' information from the fitted model, using package 'broom'.
+#' @description \code{stat_fit_augment} fits a model and returns the data
+#'   augmented with information from the fitted model, using package 'broom'.
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_string}}. Only needs
@@ -210,26 +211,25 @@ StatFitGlance <-
 #' @param ... other arguments passed on to \code{\link[ggplot2]{layer}}. This
 #'   can include aesthetics whose values you want to set, not map. See
 #'   \code{\link[ggplot2]{layer}} for more details.
-#' @param na.rm	logical indicating whether NA values should be stripped
-#'   before the computation proceeds.
+#' @param na.rm	logical indicating whether NA values should be stripped before
+#'   the computation proceeds.
 #' @param method character.
 #' @param method.args list of arguments to pass to \code{method}.
 #' @param augment.args list of arguments to pass to \code{broom:augment}.
 #' @param level numeric Level of confidence interval to use (0.95 by default)
 #' @param y.out character (or numeric) index to column to return as \code{y}.
 #'
-#' @section Computed variables:
-#'   The output of \code{\link[broom]{augment}} is returned as is, except for
-#'   \code{y} which is set based on \code{y.out} and \code{y.observed} which
-#'   preserves the \code{y} returned by the \code{broom::augment} methods.
+#' @section Computed variables: The output of \code{\link[broom]{augment}} is
+#'   returned as is, except for \code{y} which is set based on \code{y.out} and
+#'   \code{y.observed} which preserves the \code{y} returned by the
+#'   \code{broom::augment} methods. This renaming is needed so that the geom
+#'   works as expected.
 #'
-#' @note The statistics \code{stat_fit_augment} and
-#'   \code{stat_fit_augment_panel} at the moment accepts only \code{methods}
-#'   that accept formulas under any formal parameter name and a \code{data}
-#'   argument. Use \code{ggplot2::stat_smooth()} instead of
-#'   \code{stat_fit_augment} in production code if the additional features are
-#'   not needed. At the moment \code{stat_fit_augment} is under development and
-#'   may change.
+#' @note The statistics \code{stat_fit_augment} accepts only \code{methods} that
+#'   accept formulas under any formal parameter name and a \code{data} argument.
+#'   Use \code{ggplot2::stat_smooth()} instead of \code{stat_fit_augment} in
+#'   production code if the additional features are not needed. At the moment
+#'   \code{stat_fit_augment} is under development and may change.
 #'
 #' @export
 #'
@@ -254,32 +254,6 @@ stat_fit_augment <- function(mapping = NULL, data = NULL, geom = "smooth",
                   ...)
   )
 }
-
-# #' @rdname stat_fit_augment
-# #'
-# #' @export
-# #'
-# stat_panel_fit_augment <- function(mapping = NULL, data = NULL, geom = "smooth",
-#                                    method = "lm",
-#                                    method.args = list(formula = y ~ x),
-#                                    augment.args = list(),
-#                                    level = 0.95,
-#                                    y.out = ".fitted",
-#                                    position = "identity",
-#                                    na.rm = FALSE, show.legend = FALSE,
-#                                    inherit.aes = TRUE, ...) {
-#   ggplot2::layer(
-#     stat = StatPanelFitAugment, data = data, mapping = mapping, geom = geom,
-#     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
-#     params = list(method = method,
-#                   method.args = method.args,
-#                   augment.args = augment.args,
-#                   level = level,
-#                   y.out = y.out,
-#                   na.rm = na.rm,
-#                   ...)
-#   )
-# }
 
 # Defined here to avoid a note in check --as-cran as the imports from 'broom'
 # are not seen when the function is defined in-line in the ggproto object.
@@ -329,13 +303,6 @@ fit_augment_compute_group_fun <- function(data,
   z
 }
 
-# #' @rdname ggpmisc-ggproto
-# #'
-# #' @format NULL
-# #' @usage NULL
-# #'
-# fit_augment_compute_panel_fun <- fit_augment_compute_group_fun
-
 #' @rdname ggpmisc-ggproto
 #' @format NULL
 #' @usage NULL
@@ -350,27 +317,12 @@ StatFitAugment <-
                    required_aes = c("x", "y")
 )
 
-# #' @rdname ggpmisc-ggproto
-# #' @format NULL
-# #' @usage NULL
-# #' @export
-# StatPanelFitAugment <-
-#   ggplot2::ggproto("StatPanelFitAugment",
-#                    ggplot2::Stat,
-#                    compute_panel = fit_augment_compute_panel_fun,
-#                    default_aes =
-#                      ggplot2::aes(ymax = ..y.. + ...se.fit.. * ..t.value..,
-#                                   ymin = ..y.. - ...se.fit.. * ..t.value..),
-#                    required_aes = c("x", "y")
-#   )
-
-
 # broom::tidy -------------------------------------------------------------
 
-#' Return one row data frame with fitted parameter estimates.
+#' @title Return one row data frame with fitted parameter estimates.
 #'
-#' \code{stat_fit_tidy} fits a model and returns a "tidy" version of the
-#' model's summary, using package 'broom'.
+#' @description \code{stat_fit_tidy} fits a model and returns a "tidy" version
+#'   of the model's summary, using package 'broom'.
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_string}}. Only needs
@@ -400,9 +352,10 @@ StatFitAugment <-
 #' @param label.x,label.y \code{numeric} Coordinates (in data units) to be used
 #'   for absolute positioning of the output. If too short they will be recycled.
 #'
-#' @section Computed variables:
-#'   The output of \code{\link[broom]{tidy}} is returned after reshaping it
-#'   into a single row.
+#' @section Computed variables: The output of \code{\link[broom]{tidy}} is
+#'   returned after reshaping it into a single row. Grouping is respected, and
+#'   the model fit separatately to each group of data. The returned \code{data}
+#'   object has one row for each group within a panel.
 #'
 #' @export
 #'
@@ -568,10 +521,10 @@ StatFitTidy <-
 
 # broom::tidy as tibble -----------------------------------------------------
 
-#' Return a tibble within a tibble with fitted parameter estimates.
+#' @title Return a tibble within a tibble with fitted parameter estimates.
 #'
-#' \code{stat_fit_tidy} fits a model and returns a "tidy" version of the
-#' model's summary, using package 'broom'.
+#' @description \code{stat_fit_tb} fits a model and returns a "tidy" version
+#'   of the model's summary, using package 'broom'.
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_string}}. Only needs
@@ -603,9 +556,12 @@ StatFitTidy <-
 #' @param label.x,label.y \code{numeric} Coordinates (in data units) to be used
 #'   for absolute positioning of the output. If too short they will be recycled.
 #'
-#' @section Computed variables:
-#'   The output of \code{\link[broom]{tidy}} is returned after reshaping it
-#'   into a single row.
+#' @section Computed variables: The output of \code{\link[broom]{tidy}} is
+#'   returned as a single "cell" in a tibble (i.e. a tibble nested within a
+#'   tibble). The returned \code{data} object contains a single row, containing
+#'   the
+#'   result from a single model fit to all data in a panel. If grouping is
+#'   present, it is ignored.
 #'
 #' @export
 #'
@@ -635,133 +591,6 @@ stat_fit_tb <- function(mapping = NULL, data = NULL, geom = "table",
                   ...)
   )
 }
-
-#' # Defined here to avoid a note in check --as-cran as the imports from 'broom'
-#' # are not seen when the function is defined in-line in the ggproto object.
-#' #' @rdname ggpmisc-ggproto
-#' #'
-#' #' @format NULL
-#' #' @usage NULL
-#' #'
-#' fit_tb_compute_group_fun <- function(data,
-#'                                      scales,
-#'                                      method,
-#'                                      method.args,
-#'                                      tb.type,
-#'                                      digits,
-#'                                      label.x.npc,
-#'                                      label.y.npc,
-#'                                      label.x,
-#'                                      label.y) {
-#'   force(data)
-#'
-#'   if (length(unique(data$x)) < 2) {
-#'     # Not enough data to perform fit
-#'     return(data.frame())
-#'   }
-#'
-#'   group.idx <- abs(data$group[1])
-#'   if (length(label.x.npc) >= group.idx) {
-#'     label.x.npc <- label.x.npc[group.idx]
-#'   } else if (length(label.x.npc) > 0) {
-#'     label.x.npc <- label.x.npc[1]
-#'   }
-#'   if (length(label.y.npc) >= group.idx) {
-#'     label.y.npc <- label.y.npc[group.idx]
-#'   } else if (length(label.y.npc) > 0) {
-#'     label.y.npc <- label.y.npc[1]
-#'   }
-#'
-#'   if (length(label.x) >= group.idx) {
-#'     label.x <- label.x[group.idx]
-#'   } else if (length(label.x) > 0) {
-#'     label.x <- label.x[1]
-#'   }
-#'   if (length(label.y) >= group.idx) {
-#'     label.y <- label.y[group.idx]
-#'   } else if (length(label.y) > 0) {
-#'     label.y <- label.y[1]
-#'   }
-#'
-#'   method.args <- c(method.args, list(data = quote(data)))
-#'   if (is.character(method)) method <- match.fun(method)
-#'   mf <- do.call(method, method.args)
-#'
-#'   if (length(label.x) > 0) {
-#'     x.out <- label.x
-#'     hjust.out <- 0.5
-#'   } else if (length(label.x.npc) > 0) {
-#'     if (is.numeric(label.x.npc)) {
-#'       if (any(label.x.npc < 0 | label.x.npc > 1)) {
-#'         warning("'label.x.npc' argument is numeric but outside range 0..1.")
-#'       }
-#'       x.out <- scales$x$dimension()[1] + label.x.npc *
-#'         diff(scales$x$dimension())
-#'       hjust.out <- 0.5
-#'     } else if (is.character(label.x.npc)) {
-#'       if (label.x.npc == "right") {
-#'         x.out <- scales$x$dimension()[2]
-#'         hjust.out <- 1
-#'       } else if (label.x.npc %in% c("center", "centre", "middle")) {
-#'         x.out <- mean(scales$x$dimension())
-#'         hjust.out <- 0.5
-#'       } else if (label.x.npc == "left") {
-#'         x.out <- scales$x$dimension()[1]
-#'         hjust.out <- 0
-#'       } else {
-#'         stop("'label.x.npc' argument '", label.x.npc, " unsupported")
-#'       }
-#'     } else {
-#'       stop("'label.x.npc' argument is neither numeric nor character")
-#'     }
-#'   }
-#'
-#'   if (length(label.y) > 0) {
-#'     y.out <- label.y
-#'     vjust.out <- 0.5
-#'   } else if (length(label.y.npc) > 0) {
-#'     if (is.numeric(label.y.npc)) {
-#'       if (any(label.y.npc < 0 | label.y.npc > 1)) {
-#'         warning("'label.y.npc' argument is numeric but outside range 0..1.")
-#'       }
-#'       y.out <- scales$y$dimension()[1] + label.y.npc *
-#'         diff(scales$y$dimension())
-#'       vjust.out <- 1.4 * group.idx - (0.7 * length(group.idx))
-#'     } else if (is.character(label.y.npc)) {
-#'       if (label.y.npc == "bottom") {
-#'         y.out <- scales$y$dimension()[1]
-#'         vjust.out <- -1.4 * group.idx
-#'       } else if (label.y.npc %in% c("center", "centre", "middle")) {
-#'         y.out <- mean(scales$y$dimension())
-#'         vjust.out <- 1.4 * group.idx - (0.7 * length(group.idx))
-#'       } else if (label.y.npc == "top") {
-#'         y.out <- scales$y$dimension()[2]
-#'         vjust.out <- 1.4 * group.idx
-#'       } else {
-#'         stop("'label.y.npc' argument '", label.y.npc, " unsupported")
-#'       }
-#'     } else {
-#'       stop("'label.y.npc' argument is neither numeric nor character")
-#'     }
-#'   }
-#'
-#'   if (tolower(tb.type) %in% c("fit.anova", "anova")) {
-#'     mf_tb <- broom::tidy(stats::anova(mf))
-#'   } else if (tolower(tb.type) %in% c("fit.summary", "summary")) {
-#'     mf_tb <- broom::tidy(mf)
-#'   } else if (tolower(tb.type) %in% c("fit.coefs", "coefs")) {
-#'     mf_tb <- broom::tidy(mf)[c("term", "estimate")]
-#'   }
-#'
-#'   num.cols <- sapply(mf_tb, is.numeric)
-#'   mf_tb[num.cols] <- signif(mf_tb[num.cols], digits = digits)
-#'
-#'   # we need to enclose the tibble in a list to mannualy nest the table in
-#'   # data.
-#'   tibble::tibble(x = x.out, y = y.out,
-#'                  hjust = hjust.out, vjust = vjust.out,
-#'                  mf_tb = list(mf_tb))
-#' }
 
 # Defined here to avoid a note in check --as-cran as the imports from 'broom'
 # are not seen when the function is defined in-line in the ggproto object.
@@ -820,9 +649,9 @@ fit_tb_compute_panel_fun <- function(data,
     hjust.out <- 0.5
   } else if (length(label.x.npc) > 0) {
     if (is.numeric(label.x.npc)) {
-      if (any(label.x.npc < 0 | label.x.npc > 1)) {
-        warning("'label.x.npc' argument is numeric but outside range 0..1.")
-      }
+      # if (any(label.x.npc < 0 | label.x.npc > 1)) {
+      #   warning("'label.x.npc' argument is numeric but outside range 0..1.")
+      # }
       x.out <- scales$x$dimension()[1] + label.x.npc *
         diff(scales$x$dimension())
       hjust.out <- 0.5
@@ -846,12 +675,12 @@ fit_tb_compute_panel_fun <- function(data,
 
   if (length(label.y) > 0) {
     y.out <- label.y
-#    vjust.out <- 0.5
+    vjust.out <- 0.5
   } else if (length(label.y.npc) > 0) {
     if (is.numeric(label.y.npc)) {
-      if (any(label.y.npc < 0 | label.y.npc > 1)) {
-        warning("'label.y.npc' argument is numeric but outside range 0..1.")
-      }
+      # if (any(label.y.npc < 0 | label.y.npc > 1)) {
+      #   warning("'label.y.npc' argument is numeric but outside range 0..1.")
+      # }
       y.out <- scales$y$dimension()[1] + label.y.npc *
         diff(scales$y$dimension())
         vjust.out <- 0.5

@@ -1,15 +1,15 @@
 ggpmisc 0.2.16
 ==============
 
-Add geom_table() and stat_fit_tb(). Used together they make possible to add
-ANOVA and summary tables to ggplots.
-Add to the output of stat_fit_tidy() p-values for parameters, although in most
-cases stat_tif_tb() will be easier to use.
+Add geom_table() a geom for adding a layer containing a table.
+Add stat_fit_tb() a stat that computes a tidy tabular version of the summary or
+ANOVA table for a model fit to PANEL data. Used together with geom_table() it
+makes easy to add ANOVA and summary tables to ggplots.
+Revise stat_fit_tidy() to make it return p-values for parameters in additon to
+estimates and standard errors.
 
 Note: 'ggplot2' >= 2.2.1.9000, scales >= 0.4.1.9002, and 'broom' >= 0.4.2
-(github with commits >= Apr 11) are needed to avoid warnings. In spite of
-numerous warnings, current CRAN versions of these packages still produce
-valid output.
+(github with commits >= Apr 11) are needed to avoid warnings.
 
 ggpmisc 0.2.15
 ==============

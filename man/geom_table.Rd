@@ -5,9 +5,8 @@
 \title{Table}
 \usage{
 geom_table(mapping = NULL, data = NULL, stat = "identity",
-  position = "identity", ..., parse = FALSE, nudge_x = 0, nudge_y = 0,
-  check_overlap = FALSE, na.rm = FALSE, show.legend = NA,
-  inherit.aes = TRUE)
+  position = "identity", ..., parse = FALSE, check_overlap = FALSE,
+  na.rm = FALSE, show.legend = NA, inherit.aes = TRUE)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
@@ -29,9 +28,6 @@ can include aesthetics whose values you want to set, not map. See
 
 \item{parse}{If TRUE, the labels will be parsed into expressions and
 displayed as described in ?plotmath.}
-
-\item{nudge_x, nudge_y}{Horizontal and vertical adjustment to nudge labels by.
-Useful for offsetting text from points, particularly on discrete scales.}
 
 \item{check_overlap}{If \code{TRUE}, text that overlaps previous text in the
 same layer will not be plotted.}
@@ -60,28 +56,37 @@ space they occupy on that plot is not constant in data units: when you
 resize a plot, labels stay the same size, but the size of the axes changes.
 }
 \note{
-This geom works only with tibbles as \code{data}, as it expects a
-  whole data frame or tibble to be mapped to the \code{label} aesthetic.
-  In the current version the following aesthetics affect the text within
-  the table `size`, `colour`, `alpha`. The argument to parameter `parse` is
-  simply passed forward to `gridExtra::ttheme_default()`. Other aesthetics
-  are not yet implemented, neither are themes for table formatting.
+This geom works only with tibbles as \code{data}, as it expects a whole
+  data frame or tibble to be mapped to the \code{label} aesthetic. In the
+  current version the following aesthetics affect the text within the table
+  \code{size}, \code{colour}, and \code{alpha}. The argument to parameter
+  \code{parse} is simply passed forward to
+  \code{gridExtra::ttheme_default()}. As \code{x} and \code{y} determine the
+  position of the whole table, similarly to that of a text label,
+  justification is interpreted as indicating the position of the table with
+  respect to the $x$ and $y$ coordinates in the data, and \code{angle} is
+  used to rotate the table as a whole. Other aesthetics, including \code{fill} are
+  not yet implemented, neither are themes for table formatting.
+  \strong{\code{annotate()} cannot be used with \code{geom = "table"}}. Use
+  \code{geom_table} directly also for adding annotations.
 }
 \section{Alignment}{
 
 You can modify table alignment with the \code{vjust} and \code{hjust}
 aesthetics. These can either be a number between 0 (right/bottom) and
 1 (top/left) or a character ("left", "middle", "right", "bottom", "center",
-"top"). There are two special alignments: "inward" and "outward".
-Inward always aligns text towards the center, and outward aligns
-it away from the center
+"top").
 }
 
 \references{
-This geometry is inspired on the answer to a question in
-Stackoverflow and a plot in the R graph gallery. In contrast to these
-earlier examples, the current geom obeys the grammar of graphics, simplifying
-the building of plots.
-\url{https://stackoverflow.com/questions/12318120/adding-table-within-the-plotting-region-of-a-ggplot-in-r}
-\url{http://www.r-graph-gallery.com/115-study-correlations-with-a-correlogram/}
+This geometry is inspired on answers to two questions in
+  Stackoverflow. In contrast to these earlier examples, the current geom
+  obeys the grammar of graphics, and attempts to be consistent with the
+  behaviour of 'ggplot2' geometries.
+  \url{https://stackoverflow.com/questions/12318120/adding-table-within-the-plotting-region-of-a-ggplot-in-r}
+  \url{https://stackoverflow.com/questions/25554548/adding-sub-tables-on-each-panel-of-a-facet-ggplot-in-r?}
+}
+\seealso{
+\code{\link[gridExtra]{tableGrob}} as this fucntion is used to build
+  the table.
 }

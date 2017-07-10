@@ -26,7 +26,8 @@ the plot defaults.}
 
 \item{label.x.npc, label.y.npc}{\code{numeric} with range 0..1 or character.
 Coordinates to be used for positioning the output, expressed in "normalized
-parent coordinates" or character string. If too short they will be recycled.}
+parent coordinates" or character string. If too short they will be
+recycled.}
 
 \item{label.x, label.y}{\code{numeric} Coordinates (in data units) to be used
 for absolute positioning of the output. If too short they will be recycled.}
@@ -34,8 +35,8 @@ for absolute positioning of the output. If too short they will be recycled.}
 \item{position}{The position adjustment to use for overlapping points on this
 layer}
 
-\item{na.rm}{a logical indicating whether NA values should be stripped
-before the computation proceeds.}
+\item{na.rm}{a logical indicating whether NA values should be stripped before
+the computation proceeds.}
 
 \item{show.legend}{logical. Should this layer be included in the legends?
 \code{NA}, the default, includes if any aesthetics are mapped. \code{FALSE}
@@ -51,11 +52,11 @@ can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 }
 \description{
-\code{stat_fit_glance} fits a model and returns a summary "glance" of the
-model's statistics, using package 'broom'.
+\code{stat_fit_glance} fits a model and returns a summary
+  "glance" of the model's statistics, using package 'broom'.
 }
 \section{Computed variables}{
-
-  The output of \code{\link[broom]{glance}} is returned as is.
+ The output of \code{\link[broom]{glance}} is
+  returned as is in the \code{data} object.
 }
 

@@ -51,12 +51,13 @@ can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 }
 \description{
-\code{stat_fit_tidy} fits a model and returns a "tidy" version of the
-model's summary, using package 'broom'.
+\code{stat_fit_tidy} fits a model and returns a "tidy" version
+  of the model's summary, using package 'broom'.
 }
 \section{Computed variables}{
-
-  The output of \code{\link[broom]{tidy}} is returned after reshaping it
-  into a single row.
+ The output of \code{\link[broom]{tidy}} is
+  returned after reshaping it into a single row. Grouping is respected, and
+  the model fit separatately to each group of data. The returned \code{data}
+  object has one row for each group within a panel.
 }
 

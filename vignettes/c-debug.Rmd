@@ -1,5 +1,5 @@
 ---
-title: "Debugging ggplots"
+title: "User Guide 3: Debugging ggplots"
 subtitle: "'ggpmisc' `r packageVersion('ggpmisc')`"
 author: "Pedro J. Aphalo"
 date: "`r Sys.Date()`"
