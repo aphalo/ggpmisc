@@ -128,34 +128,16 @@ GeomTable <-
               data$hjust <- compute_just(data$hjust, data$x)
             }
 
-            # add support for size aesthetic!
             gridExtra::tableGrob(
               lab,
               theme = gridExtra::ttheme_default(base_size = data$size * .pt,
                                                 base_colour = ggplot2::alpha(data$colour, data$alpha),
                                                 parse = parse),
-              vp = grid::viewport(x = data$x[1], y = data$y[1],
-                                  width = 0.9, height = 0.9,
-                                  default.units = "native"),
+              vp = grid::viewport(x = unit(data$x[1], "native"),
+                                  y = unit(data$y[1], "native"),
+                                  name = paste("geom_table.panel", data$PANEL[1], sep = ".")),
               rows = NULL
             )
           },
           draw_key = draw_key_text
   )
-
-compute_just <- function(just, x) {
-  inward <- just == "inward"
-  just[inward] <- c("left", "middle", "right")[just_dir(x[inward])]
-  outward <- just == "outward"
-  just[outward] <- c("right", "middle", "left")[just_dir(x[outward])]
-
-  unname(c(left = 0, center = 0.5, right = 1,
-           bottom = 0, middle = 0.5, top = 1)[just])
-}
-
-just_dir <- function(x, tol = 0.001) {
-  out <- rep(2L, length(x))
-  out[x < 0.5 - tol] <- 1L
-  out[x > 0.5 + tol] <- 3L
-  out
-}

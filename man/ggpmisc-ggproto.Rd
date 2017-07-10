@@ -19,7 +19,7 @@
 \alias{StatFitAugment}
 \alias{fit_tidy_compute_group_fun}
 \alias{StatFitTidy}
-\alias{fit_tb_compute_group_fun}
+\alias{fit_tb_compute_panel_fun}
 \alias{StatFitTb}
 \alias{StatFitDeviations}
 \alias{residuals_compute_group_fun}
@@ -33,6 +33,11 @@
 \alias{StatPolyEq}
 \title{\code{Stat*} Objects}
 \description{
+if (length(unique(data$x)) < 2) {
+    # Not enough data to perform fit
+    return(data.frame())
+  }
+
 All \code{stat_*} functions (like \code{stat_bin}) return a layer that
 contains a \code{Stat*} object (like \code{StatBin}). The \code{Stat*}
 object is responsible for rendering the data in the plot.

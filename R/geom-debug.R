@@ -1,21 +1,5 @@
 # Null geom ---------------------------------------------------------------
 
-#' @rdname ggpmisc-ggproto
-#' @format NULL
-#' @usage NULL
-#' @export
-GeomNull <-
-  ggplot2::ggproto("GeomNull", ggplot2::Geom,
-                   required_aes = c("x", "y"),
-                   default_aes = ggplot2::aes(),
-                   draw_key = function(...) {grid::nullGrob()},
-                   draw_panel = function(data, panel_scales, coord,
-                                         summary.fun,
-                                         summary.fun.args) {
-                     grid::nullGrob()
-                   }
-  )
-
 #' A null geom or 'non-op' geom.
 #'
 #' The null geom can be used to silence graphic output from a stat, such as
@@ -69,29 +53,23 @@ geom_null <- function(mapping = NULL, data = NULL, stat = "identity",
   )
 }
 
-# Debug geom --------------------------------------------------------------
-
 #' @rdname ggpmisc-ggproto
 #' @format NULL
 #' @usage NULL
 #' @export
-GeomDebug <-
-  ggplot2::ggproto("GeomDebug", ggplot2::Geom,
+GeomNull <-
+  ggplot2::ggproto("GeomNull", ggplot2::Geom,
                    required_aes = c("x", "y"),
                    default_aes = ggplot2::aes(),
                    draw_key = function(...) {grid::nullGrob()},
                    draw_panel = function(data, panel_scales, coord,
                                          summary.fun,
                                          summary.fun.args) {
-                     if (!is.null(summary.fun)) {
-                       message("Input 'data' to 'geom_debug()':")
-                       print(
-                       do.call(summary.fun, c(quote(data), summary.fun.args))
-                       )
-                     }
                      grid::nullGrob()
                    }
   )
+
+# Debug geom --------------------------------------------------------------
 
 #' Geom which prints input data to console
 #'
@@ -142,6 +120,7 @@ geom_debug <- function(mapping = NULL, data = NULL, stat = "identity",
                        position = "identity", na.rm = FALSE,
                        show.legend = FALSE,
                        inherit.aes = TRUE, ...) {
+  force(summary.fun)
   ggplot2::layer(
     geom = GeomDebug, mapping = mapping,  data = data, stat = stat,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
@@ -151,3 +130,26 @@ geom_debug <- function(mapping = NULL, data = NULL, stat = "identity",
                   ...)
   )
 }
+
+#' @rdname ggpmisc-ggproto
+#' @format NULL
+#' @usage NULL
+#' @export
+GeomDebug <-
+  ggplot2::ggproto("GeomDebug", ggplot2::Geom,
+                   required_aes = c("x", "y"),
+                   default_aes = ggplot2::aes(),
+                   draw_key = function(...) {grid::nullGrob()},
+                   draw_panel = function(data, panel_scales, coord,
+                                         summary.fun,
+                                         summary.fun.args) {
+                     if (!is.null(summary.fun)) {
+                       message("Input 'data' to 'geom_debug()':")
+                       print(
+                         do.call(summary.fun, c(quote(data), summary.fun.args))
+                       )
+                     }
+                     grid::nullGrob()
+                   }
+  )
+

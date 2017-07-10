@@ -242,3 +242,53 @@ _stats_ described above. Currently this geom is similar to the recently added
 ```{r}
 ggplot(my.data, aes(x, y, colour = group)) + geom_null()
 ```
+
+## Debugging ggplots
+
+```{r}
+fig <- ggplot(my.data, aes(x, y)) + geom_point()
+fig
+grid::grid.force()
+grid::grid.ls(fullNames=TRUE)
+```
+
+```{r}
+fig
+grid::grid.force()
+grid::showGrob()
+```
+
+```{r}
+fig
+grid::grid.force()
+grid::showViewport()
+```
+
+```{r}
+fig
+grid::grid.force()
+grid::grid.ls(viewports = TRUE)
+```
+
+
+```{r}
+tb <- tibble(date = ymd(c("2017-05-21", "2007-05-21"), tz = "UCT"),
+             value = 1:2 * 10)
+data.tb <- tibble(x = 25, y = 8e5, tb = list(tb))
+fig.tb <-
+  ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_table(data = data.tb, aes(label = tb)) +
+  theme_bw()
+```
+
+```{r}
+fig.tb
+grid::grid.force()
+grid::grid.ls(viewports = TRUE)
+```
+
+```{r}
+qplot(faithful$eruptions, binwidth=.5)
+
+```

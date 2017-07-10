@@ -636,6 +636,133 @@ stat_fit_tb <- function(mapping = NULL, data = NULL, geom = "table",
   )
 }
 
+#' # Defined here to avoid a note in check --as-cran as the imports from 'broom'
+#' # are not seen when the function is defined in-line in the ggproto object.
+#' #' @rdname ggpmisc-ggproto
+#' #'
+#' #' @format NULL
+#' #' @usage NULL
+#' #'
+#' fit_tb_compute_group_fun <- function(data,
+#'                                      scales,
+#'                                      method,
+#'                                      method.args,
+#'                                      tb.type,
+#'                                      digits,
+#'                                      label.x.npc,
+#'                                      label.y.npc,
+#'                                      label.x,
+#'                                      label.y) {
+#'   force(data)
+#'
+#'   if (length(unique(data$x)) < 2) {
+#'     # Not enough data to perform fit
+#'     return(data.frame())
+#'   }
+#'
+#'   group.idx <- abs(data$group[1])
+#'   if (length(label.x.npc) >= group.idx) {
+#'     label.x.npc <- label.x.npc[group.idx]
+#'   } else if (length(label.x.npc) > 0) {
+#'     label.x.npc <- label.x.npc[1]
+#'   }
+#'   if (length(label.y.npc) >= group.idx) {
+#'     label.y.npc <- label.y.npc[group.idx]
+#'   } else if (length(label.y.npc) > 0) {
+#'     label.y.npc <- label.y.npc[1]
+#'   }
+#'
+#'   if (length(label.x) >= group.idx) {
+#'     label.x <- label.x[group.idx]
+#'   } else if (length(label.x) > 0) {
+#'     label.x <- label.x[1]
+#'   }
+#'   if (length(label.y) >= group.idx) {
+#'     label.y <- label.y[group.idx]
+#'   } else if (length(label.y) > 0) {
+#'     label.y <- label.y[1]
+#'   }
+#'
+#'   method.args <- c(method.args, list(data = quote(data)))
+#'   if (is.character(method)) method <- match.fun(method)
+#'   mf <- do.call(method, method.args)
+#'
+#'   if (length(label.x) > 0) {
+#'     x.out <- label.x
+#'     hjust.out <- 0.5
+#'   } else if (length(label.x.npc) > 0) {
+#'     if (is.numeric(label.x.npc)) {
+#'       if (any(label.x.npc < 0 | label.x.npc > 1)) {
+#'         warning("'label.x.npc' argument is numeric but outside range 0..1.")
+#'       }
+#'       x.out <- scales$x$dimension()[1] + label.x.npc *
+#'         diff(scales$x$dimension())
+#'       hjust.out <- 0.5
+#'     } else if (is.character(label.x.npc)) {
+#'       if (label.x.npc == "right") {
+#'         x.out <- scales$x$dimension()[2]
+#'         hjust.out <- 1
+#'       } else if (label.x.npc %in% c("center", "centre", "middle")) {
+#'         x.out <- mean(scales$x$dimension())
+#'         hjust.out <- 0.5
+#'       } else if (label.x.npc == "left") {
+#'         x.out <- scales$x$dimension()[1]
+#'         hjust.out <- 0
+#'       } else {
+#'         stop("'label.x.npc' argument '", label.x.npc, " unsupported")
+#'       }
+#'     } else {
+#'       stop("'label.x.npc' argument is neither numeric nor character")
+#'     }
+#'   }
+#'
+#'   if (length(label.y) > 0) {
+#'     y.out <- label.y
+#'     vjust.out <- 0.5
+#'   } else if (length(label.y.npc) > 0) {
+#'     if (is.numeric(label.y.npc)) {
+#'       if (any(label.y.npc < 0 | label.y.npc > 1)) {
+#'         warning("'label.y.npc' argument is numeric but outside range 0..1.")
+#'       }
+#'       y.out <- scales$y$dimension()[1] + label.y.npc *
+#'         diff(scales$y$dimension())
+#'       vjust.out <- 1.4 * group.idx - (0.7 * length(group.idx))
+#'     } else if (is.character(label.y.npc)) {
+#'       if (label.y.npc == "bottom") {
+#'         y.out <- scales$y$dimension()[1]
+#'         vjust.out <- -1.4 * group.idx
+#'       } else if (label.y.npc %in% c("center", "centre", "middle")) {
+#'         y.out <- mean(scales$y$dimension())
+#'         vjust.out <- 1.4 * group.idx - (0.7 * length(group.idx))
+#'       } else if (label.y.npc == "top") {
+#'         y.out <- scales$y$dimension()[2]
+#'         vjust.out <- 1.4 * group.idx
+#'       } else {
+#'         stop("'label.y.npc' argument '", label.y.npc, " unsupported")
+#'       }
+#'     } else {
+#'       stop("'label.y.npc' argument is neither numeric nor character")
+#'     }
+#'   }
+#'
+#'   if (tolower(tb.type) %in% c("fit.anova", "anova")) {
+#'     mf_tb <- broom::tidy(stats::anova(mf))
+#'   } else if (tolower(tb.type) %in% c("fit.summary", "summary")) {
+#'     mf_tb <- broom::tidy(mf)
+#'   } else if (tolower(tb.type) %in% c("fit.coefs", "coefs")) {
+#'     mf_tb <- broom::tidy(mf)[c("term", "estimate")]
+#'   }
+#'
+#'   num.cols <- sapply(mf_tb, is.numeric)
+#'   mf_tb[num.cols] <- signif(mf_tb[num.cols], digits = digits)
+#'
+#'   # we need to enclose the tibble in a list to mannualy nest the table in
+#'   # data.
+#'   tibble::tibble(x = x.out, y = y.out,
+#'                  hjust = hjust.out, vjust = vjust.out,
+#'                  mf_tb = list(mf_tb))
+#' }
+
 # Defined here to avoid a note in check --as-cran as the imports from 'broom'
 # are not seen when the function is defined in-line in the ggproto object.
 #' @rdname ggpmisc-ggproto
@@ -643,7 +770,7 @@ stat_fit_tb <- function(mapping = NULL, data = NULL, geom = "table",
 #' @format NULL
 #' @usage NULL
 #'
-fit_tb_compute_group_fun <- function(data,
+fit_tb_compute_panel_fun <- function(data,
                                      scales,
                                      method,
                                      method.args,
@@ -660,25 +787,26 @@ fit_tb_compute_group_fun <- function(data,
     return(data.frame())
   }
 
-  group.idx <- abs(data$group[1])
-  if (length(label.x.npc) >= group.idx) {
-    label.x.npc <- label.x.npc[group.idx]
+  # support setting of table position per panel
+  panel.idx <- as.integer(as.character(data$PANEL[1]))
+  if (length(label.x.npc) >= panel.idx) {
+    label.x.npc <- label.x.npc[panel.idx]
   } else if (length(label.x.npc) > 0) {
     label.x.npc <- label.x.npc[1]
   }
-  if (length(label.y.npc) >= group.idx) {
-    label.y.npc <- label.y.npc[group.idx]
+  if (length(label.y.npc) >= panel.idx) {
+    label.y.npc <- label.y.npc[panel.idx]
   } else if (length(label.y.npc) > 0) {
     label.y.npc <- label.y.npc[1]
   }
 
-  if (length(label.x) >= group.idx) {
-    label.x <- label.x[group.idx]
+  if (length(label.x) >= panel.idx) {
+    label.x <- label.x[panel.idx]
   } else if (length(label.x) > 0) {
     label.x <- label.x[1]
   }
-  if (length(label.y) >= group.idx) {
-    label.y <- label.y[group.idx]
+  if (length(label.y) >= panel.idx) {
+    label.y <- label.y[panel.idx]
   } else if (length(label.y) > 0) {
     label.y <- label.y[1]
   }
@@ -718,7 +846,7 @@ fit_tb_compute_group_fun <- function(data,
 
   if (length(label.y) > 0) {
     y.out <- label.y
-    vjust.out <- 0.5
+#    vjust.out <- 0.5
   } else if (length(label.y.npc) > 0) {
     if (is.numeric(label.y.npc)) {
       if (any(label.y.npc < 0 | label.y.npc > 1)) {
@@ -726,17 +854,17 @@ fit_tb_compute_group_fun <- function(data,
       }
       y.out <- scales$y$dimension()[1] + label.y.npc *
         diff(scales$y$dimension())
-      vjust.out <- 1.4 * group.idx - (0.7 * length(group.idx))
+        vjust.out <- 0.5
     } else if (is.character(label.y.npc)) {
       if (label.y.npc == "bottom") {
         y.out <- scales$y$dimension()[1]
-        vjust.out <- -1.4 * group.idx
+        vjust.out <- 0
       } else if (label.y.npc %in% c("center", "centre", "middle")) {
         y.out <- mean(scales$y$dimension())
-        vjust.out <- 1.4 * group.idx - (0.7 * length(group.idx))
+        vjust.out <- 0.5
       } else if (label.y.npc == "top") {
         y.out <- scales$y$dimension()[2]
-        vjust.out <- 1.4 * group.idx
+        vjust.out <- 1
       } else {
         stop("'label.y.npc' argument '", label.y.npc, " unsupported")
       }
@@ -769,7 +897,7 @@ fit_tb_compute_group_fun <- function(data,
 #' @export
 StatFitTb <-
   ggplot2::ggproto("StatFitTb", ggplot2::Stat,
-                   compute_group = fit_tb_compute_group_fun,
+                   compute_panel = fit_tb_compute_panel_fun,
                    default_aes =
                      ggplot2::aes(hjust = ..hjust.., vjust = ..vjust..,
                                   label = ..mf_tb..),

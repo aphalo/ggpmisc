@@ -512,8 +512,8 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
 
 ## `stat_fit_tidy`
 
-This stat makes it possible to add the equation for any fitted model for which `broom::tidy()` is implemented, or add the estimates for the fitted parameters. However, the user need to
-explicitly contsruct the label within `aes()`.
+This stat makes it possible to add the equation for any fitted model for which `broom::tidy()` is implemented. Alternatively, individual values such as estimates for the fitted parameters, standard errors, or _P_-values can be added to a plot. However, the user has to explicitly contsruct the labels within `aes()`. This 
+statistic respects grouping based on aesthetics, and reshapes the output of `tidy()` so that the values for a given group are in a single row in the returned `data`.
 
 ```{r}
 micmen.formula <- y ~ SSmicmen(x, Vm, K) 
@@ -556,6 +556,10 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
 
 ## `stat_fit_tb`
 
+This stat makes it possible to add summary or ANOVA tables for any fitted model for which `broom::tidy()` is implemented. The output from `tidy()` is embedded as a single list value within the returned `data`, an object of class `tibble`. This statistic **ignores grouping** based on aesthetics. This allows fitting models when `x` or `y` is a factor (as in such cases `ggplot` splits the data into groups, one for each level of the factor, which is needed for example for `stat_summary()` to work as expected). By default, the `"table"` geometry is used. The use of `geom_table()` is described in a separate section of this User Guide. 
+
+The default output of `stat_fit_tb` is the default output from `tidy(mf)` where `mf` is the fitted model.
+
 ```{r}
 formula <- y ~ x + I(x^2) + I(x^3)
 ggplot(my.data, aes(x, y)) +
@@ -563,8 +567,10 @@ ggplot(my.data, aes(x, y)) +
   geom_smooth(method = "lm", formula = formula) +
   stat_fit_tb(method = "lm", 
               method.args = list(formula = formula),
-              label.y.npc = 0.85, label.x.npc = 0.3)
+              label.y.npc = 0.80, label.x.npc = 0.3)
 ```
+
+When `tb.type = "fit.anova"` the output returned is that from `tidy(anova(mf))` where `mf` is the fitted model.
 
 ```{r}
 formula <- y ~ x + I(x^2) + I(x^3)
@@ -577,6 +583,8 @@ ggplot(my.data, aes(x, y)) +
               label.y.npc = 0.85, label.x.npc = 0.3)
 ```
 
+When `tb.type = "fit.coefs"` the output returned is that of `tidy(mf)` after selecting the `term` and `estimate` columns.
+
 ```{r}
 formula <- y ~ x + I(x^2) + I(x^3)
 ggplot(my.data, aes(x, y)) +
@@ -587,6 +595,10 @@ ggplot(my.data, aes(x, y)) +
               tb.type = "fit.coefs",
               label.y.npc = 0.85, label.x.npc = 0.15)
 ```
+
+Faceting works as expected, but grouping is ignored as mentioned above. In this case, the colour aesthetic is not applied to the text of the tables. Furthermore,
+if `label.x.npc` or `label.y.npc` are passed numeric vectors of length > 1, the
+values are obeyed by the different panels.
 
 ```{r}
 micmen.formula <- y ~ SSmicmen(x, Vm, K) 
@@ -599,19 +611,34 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
   stat_fit_tb(method = "nls", 
               method.args = list(formula = micmen.formula),
               tb.type = "fit.coefs",
-              label.x.npc = 0.5,
-              label.y.npc = 0.2) +
+              label.x.npc = 0.67,
+              label.y.npc = c(0.6, 0.3)) +
   theme(legend.position = "none") +
   labs(x = "C", y = "V")
 ```
 
+The data in the example below are split by `ggplot` into six groups based on the levels of the `feed` factor. However, as `stat_fit_tb()` ignores groupings, we can still fit a linear model to all the data in the panel.
+
 ```{r}
 ggplot(chickwts, aes(factor(feed), weight)) +
-  stat_summary() +
-  stat_fit_tb(tb.type = "fit.anova") +
+  stat_summary(fun.data = "mean_se") +
+  stat_fit_tb(tb.type = "fit.anova",
+              label.x.npc = 0.3,
+              label.y.npc = 0.1) +
   expand_limits(y = 0)
 ```
 
+We can flip the system of coordinates, if desired.
+
+```{r}
+ggplot(chickwts, aes(factor(feed), weight)) +
+  stat_summary(fun.data = "mean_se") +
+  stat_fit_tb(tb.type = "fit.anova",
+              label.x.npc = 1.0,
+              label.y.npc = 0.25) +
+  expand_limits(y = 0) +
+  coord_flip()
+```
 
 ## `stat_fit_augment`
 
