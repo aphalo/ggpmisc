@@ -111,12 +111,6 @@ gtb_draw_panel_fun <-
     lab <- data$label[[1]]
 
     data <- coord$transform(data, panel_params)
-    # if (is.character(data$vjust)) {
-    #   data$vjust <- compute_just(data$vjust, data$y)
-    # }
-    # if (is.character(data$hjust)) {
-    #   data$hjust <- compute_just(data$hjust, data$x)
-    # }
 
     gtb <-
       gridExtra::tableGrob(
