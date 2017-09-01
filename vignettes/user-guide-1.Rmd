@@ -1,5 +1,5 @@
 ---
-title: "User Guide"
+title: "User Guide: 1 Plotting"
 subtitle: "'ggpmisc' `r packageVersion('ggpmisc')`"
 author: "Pedro J. Aphalo"
 date: "`r Sys.Date()`"
@@ -7,7 +7,7 @@ output:
   rmarkdown::html_vignette:
     toc: yes
 vignette: >
-  %\VignetteIndexEntry{User Guide}
+  %\VignetteIndexEntry{User Guide: 1 Plotting}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -908,7 +908,8 @@ ggplot(data = d, aes(x, y, label = lab, color = group)) +
 
 This _geometry_ plots a data frame or tibble, nested in a tibble pased as data
 argument, using _easthetics_ `x` and `y` for positioning, and `label` for the 
-data frame containing the data for the table. The table is created as a 'grid' grob and added as usual to the ggplot object.
+data frame containing the data for the table. The table is created as a 'grid' 
+grob and added as usual to the ggplot object.
 
 ```{r}
 tb <- tibble(date = ymd(c("2017-05-21", "2007-05-21"), tz = "UCT"),

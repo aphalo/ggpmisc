@@ -2,18 +2,17 @@
 #'
 #' \code{geom_table} adds a textual table directly to the plot.
 #'
-#' Note the the "width" and "height" of a text element are 0, so stacking
-#' and dodging text will not work by default, and axis limits are not
-#' automatically expanded to include all text. Obviously, labels do have
-#' height and width, but they are physical units, not data units. The amount of
-#' space they occupy on that plot is not constant in data units: when you
-#' resize a plot, labels stay the same size, but the size of the axes changes.
+#' Note the the "width" and "height" of a text element are 0, so stacking and
+#' dodging text will not work by default, and axis limits are not automatically
+#' expanded to include all text. Obviously, labels do have height and width, but
+#' they are physical units, not data units. The amount of space they occupy on
+#' that plot is not constant in data units: when you resize a plot, labels stay
+#' the same size, but the size of the axes changes.
 #'
-#' @section Alignment:
-#' You can modify table alignment with the \code{vjust} and \code{hjust}
-#' aesthetics. These can either be a number between 0 (right/bottom) and
-#' 1 (top/left) or a character ("left", "middle", "right", "bottom", "center",
-#' "top").
+#' @section Alignment: You can modify table alignment with the \code{vjust} and
+#'   \code{hjust} aesthetics. These can either be a number between 0
+#'   (right/bottom) and 1 (top/left) or a character ("left", "middle", "right",
+#'   "bottom", "center", "top").
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_string}}. Only needs
@@ -50,20 +49,21 @@
 #'   position of the whole table, similarly to that of a text label,
 #'   justification is interpreted as indicating the position of the table with
 #'   respect to the $x$ and $y$ coordinates in the data, and \code{angle} is
-#'   used to rotate the table as a whole. Other aesthetics, including \code{fill} are
-#'   not yet implemented, neither are themes for table formatting.
-#'   \strong{\code{annotate()} cannot be used with \code{geom = "table"}}. Use
-#'   \code{geom_table} directly also for adding annotations.
+#'   used to rotate the table as a whole. Other aesthetics, including
+#'   \code{fill} are not yet implemented, neither are themes for table
+#'   formatting. \strong{\code{annotate()} cannot be used with \code{geom =
+#'   "table"}}. Use \code{geom_table} directly also for adding annotations.
 #'
 #' @references This geometry is inspired on answers to two questions in
 #'   Stackoverflow. In contrast to these earlier examples, the current geom
 #'   obeys the grammar of graphics, and attempts to be consistent with the
 #'   behaviour of 'ggplot2' geometries.
 #'   \url{https://stackoverflow.com/questions/12318120/adding-table-within-the-plotting-region-of-a-ggplot-in-r}
+#'
 #'   \url{https://stackoverflow.com/questions/25554548/adding-sub-tables-on-each-panel-of-a-facet-ggplot-in-r?}
 #'
-#' @seealso \code{\link[gridExtra]{tableGrob}} as this fucntion is used to build
-#'   the table.
+#' @seealso function \code{\link[gridExtra]{tableGrob}} as it is used to
+#'   construct the table.
 #'
 #' @export
 geom_table <- function(mapping = NULL, data = NULL,
