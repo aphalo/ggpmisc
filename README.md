@@ -8,11 +8,11 @@ Package '**ggpmisc**' (Miscellaneous Extensions to 'ggplot2') is a set of
 extensions to R package 'ggplot2' (> 2.2.1) useful when plotting diverse types
 of data.  
 
-Functions try_data_frame() and try_tibble() can be used to convert time series
+Functions `try_data_frame()` and `try_tibble()` can be used to convert time series
 objects into data frames or tibbles suitable for plotting. To complement these
-functions ggplot methods for "ts" and "xts" classes are defined.
+functions ggplot methods for `"ts"` and `"xts"` classes are defined.
 
-A geometry, geom_table() allows adding tables from tibble objects mapped to
+A geometry, `geom_table()` allows adding tables from tibble objects mapped to
 the label aesthetic. 
 
 Two statistics automate finding the location and labeling peaks and/or valleys.
