@@ -44,8 +44,6 @@ Suggests:
     rmarkdown (>= 1.6),
     nlme (>= 3.1-131),
     ggrepel (>= 0.6.5)
-Remotes:
-    tidyverse/ggplot2
 URL: http://www.r4photobiology.info, https://bitbucket.org/aphalo/ggpmisc
 BugReports: https://bitbucket.org/aphalo/ggpmisc/issues
 RoxygenNote: 6.0.1
