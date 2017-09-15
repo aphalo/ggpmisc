@@ -59,6 +59,9 @@
 #' formula is used in all steps it is best to save the formula as an object
 #' and supply this object as argument to the different statistics.
 #'
+#' @references Written as an answer to a question at Stackoverflow.
+#' \url{https://stackoverflow.com/questions/7549694/adding-regression-line-equation-and-r2-on-graph}
+#'
 #' @section Computed variables:
 #'   \describe{ \item{x}{x position for left edge}
 #'   \item{y}{y position near upper edge}

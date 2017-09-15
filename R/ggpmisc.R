@@ -4,8 +4,9 @@
 #'
 #' Extensions provided:
 #' \itemize{
-#' \item Function for conversion of time series data into data frames that can be
+#' \item Function for conversion of time series data into tibbles that can be
 #' plotted with ggplot.
+#' \item \code{ggplot()} method for time series data.
 #' \item Stats for locating and tagging "peaks" and "valleys" (local or global
 #'  maxima and minima).
 #' \item Stat for generating labels from a \code{lm()} model fit, including
@@ -15,6 +16,7 @@
 #' package 'broom'.
 #' \item Stats for filtering-out/filtering-in observations in regions of a
 #' panel or group where the density of observations is high.
+#' \item Geom for annotating plots with tables.
 #' \item "Debug" stats and a "debug" geom that print to the console a summary
 #' of their \code{data} input.
 #' }
@@ -47,5 +49,29 @@
 #'   package \code{ggpmisc} work correctly when the x aesthetic uses a date or
 #'   datetime scale, while those from package \code{photobiology} do not
 #'   generate correct labels in this case.
+#'
+#' @examples
+#' library(ggplot2)
+#'
+#' ggplot(lynx, as.numeric = FALSE) + geom_line() +
+#' stat_peaks(colour = "red") +
+#'   stat_peaks(geom = "text", colour = "red", angle = 66,
+#'              hjust = -0.1, x.label.fmt = "%Y") +
+#'   ylim(NA, 8000)
+#'
+#' formula <- y ~ poly(x, 2, raw = TRUE)
+#' ggplot(cars, aes(speed, dist)) +
+#'   geom_point() +
+#'   geom_smooth(method = "lm", formula = formula) +
+#'   stat_poly_eq(aes(label = ..eq.label..), formula = formula,
+#'                parse = TRUE)
+#'
+#' formula <- y ~ x
+#' ggplot(PlantGrowth, aes(group, weight)) +
+#'   stat_summary(fun.data = "mean_se") +
+#'   stat_fit_tb(method = "lm",
+#'               method.args = list(formula = formula),
+#'               tb.type = "fit.anova") +
+#'   theme_classic()
 #'
 "_PACKAGE"

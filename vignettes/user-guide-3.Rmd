@@ -1,5 +1,5 @@
 ---
-title: "Debugging ggplots"
+title: "User Guide: 3 Debugging ggplots"
 subtitle: "'ggpmisc' `r packageVersion('ggpmisc')`"
 author: "Pedro J. Aphalo"
 date: "`r Sys.Date()`"
@@ -7,7 +7,7 @@ output:
   rmarkdown::html_vignette:
     toc: yes
 vignette: >
-  %\VignetteIndexEntry{Debugging ggplots}
+  %\VignetteIndexEntry{User Guide: 3 Debugging ggplots}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -22,8 +22,8 @@ options(warnPartialMatchArgs = FALSE)
 ## Preliminaries
 
 ```{r}
+library(ggplot2)
 library(ggpmisc)
-# library(ggplot2)
 library(tibble)
 ```
 
@@ -37,7 +37,7 @@ y <- (x + x^2 + x^3) + rnorm(length(x), mean = 0, sd = mean(x^3) / 4)
 my.data <- data.frame(x, 
                       y, 
                       group = c("A", "B"), 
-                      y2 = y * c(0.5,2),
+                      y2 = y * c(0.5, 2),
                       block = c("a", "a", "b", "b"))
 ```
 
@@ -135,7 +135,7 @@ The default.
 
 ```{r}
 ggplot(my.data, aes(x, y)) + geom_point() + 
-  stat_debug_group(summary.fun = as_data_frame)
+  stat_debug_group(summary.fun = as_tibble)
 ```
 
 ```{r}
@@ -180,31 +180,42 @@ ggplot(my.data, aes(x, y, colour = group)) + geom_point() +
   geom_debug(summary.fun = head)
 ```
 
-And also to print to the console the data returned by a stat. 
+We may even save the data input of the geom to a variable in the global environment, but this takes place at the time the ggplot object is printed.
 
 ```{r}
-ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
-  stat_smooth(method = "lm",
-             geom = "debug", 
-             summary.fun = as_data_frame, 
-             summary.fun.args = list())
+tidy.assign <- function(value, name, pos = .GlobalEnv, ...) {
+  assign(x = name, value = value, inherits = FALSE, pos = pos, ...)
+}
+ggplot(my.data, aes(x, y, colour = group)) + 
+  geom_point() + 
+  geom_debug(summary.fun = tidy.assign, 
+             summary.fun.args = list(name = "debug_data"),
+             print.fun = NULL)
+debug_data
 ```
 
 ```{r}
 ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
-  stat_peaks(span = NULL,
-             geom = "debug", 
-             summary.fun = as_data_frame, 
-             summary.fun.args = list())
+  geom_debug(summary.fun = NULL)
+```
+
+And also to print to the console the data returned by a stat. 
+
+```{r}
+ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
+  stat_smooth(method = "lm", geom = "debug")
+```
+
+```{r}
+ggplot(my.data, aes(x, y, colour = group)) + geom_point() + 
+  stat_peaks(span = NULL, geom = "debug")
 ```
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
-  stat_fit_residuals(formula = formula, 
-                     geom = "debug",
-                     summary.fun = as_data_frame, 
-                     summary.fun.args = list())
+  stat_fit_residuals(formula = formula, geom = "debug", 
+                     summary.fun = head, summary.fun.args = list(n = 12))
 ```
 
 ```{r}
@@ -213,9 +224,7 @@ ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_fit_augment(method = "lm", 
                    method.args = list(formula = formula),
-                   geom = "debug",
-                   summary.fun = tibble::as_data_frame, 
-                   summary.fun.args = list()) +
+                   geom = "debug") +
   stat_fit_augment(method = "lm", 
                    method.args = list(formula = formula),
                    geom = "smooth")
@@ -227,18 +236,15 @@ ggplot(my.data, aes(x, y2, colour = group)) +
   geom_point() +
   stat_fit_augment(method = "lm", 
                    method.args = list(formula = formula),
-                   geom = "debug",
-                   summary.fun = tibble::as_data_frame, 
-                   summary.fun.args = list()) +
+                   geom = "debug") +
   stat_fit_augment(method = "lm", 
                    method.args = list(formula = formula),
                    geom = "smooth")
 ```
 
-The package also defines a `"null"` geom, which is used as default by the _debug_
-_stats_ described above. Currently this geom is similar to the recently added 
-`ggplot2::geom_blank()`.
+The 'ggpmisc' package also defines a `"null"` geom, which is used as default by the _debug_ _stats_ described above. Currently this geom is similar to the recently added `ggplot2::geom_blank()`.
 
 ```{r}
 ggplot(my.data, aes(x, y, colour = group)) + geom_null()
 ```
+

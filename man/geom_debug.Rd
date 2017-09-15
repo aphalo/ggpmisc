@@ -6,8 +6,8 @@
 \usage{
 geom_debug(mapping = NULL, data = NULL, stat = "identity",
   summary.fun = tibble::as_tibble, summary.fun.args = list(),
-  position = "identity", na.rm = FALSE, show.legend = FALSE,
-  inherit.aes = TRUE, ...)
+  print.fun = print, print.fun.args = list(), position = "identity",
+  na.rm = FALSE, show.legend = FALSE, inherit.aes = TRUE, ...)
 }
 \arguments{
 \item{mapping}{Set of aesthetic mappings created by \code{\link{aes}} or
@@ -27,6 +27,12 @@ as input.}
 
 \item{summary.fun.args}{A list of additional arguments to be passed to
 \code{summary.fun}.}
+
+\item{print.fun}{A function used to print the value returned by
+\code{summary.fun}.}
+
+\item{print.fun.args}{A list of additional arguments to be passed to
+\code{print.fun}.}
 
 \item{position}{Position adjustment, either as a string, or the result of a
 call to a position adjustment function.}
