@@ -77,14 +77,6 @@ ggplot(cars, aes(speed, dist)) +
   stat_poly_eq(aes(label = ..eq.label..), formula = formula,
                parse = TRUE)
 
-formula <- y ~ x
-ggplot(PlantGrowth, aes(group, weight)) +
-  stat_summary(fun.data = "mean_se") +
-  stat_fit_tb(method = "lm",
-              method.args = list(formula = formula),
-              tb.type = "fit.anova") +
-  theme_classic()
-
 }
 \references{
 Package suite 'r4photobiology' web site at
