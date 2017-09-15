@@ -27,8 +27,6 @@ Depends:
     R (>= 3.3.3),
     ggplot2 (>= 2.2.1)
 Imports:
-    grid,
-    gridExtra (>= 2.2.1),
     tibble (>= 1.3.4),
     MASS (>= 7.3-45),
     polynom (>= 1.3-8),
