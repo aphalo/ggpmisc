@@ -4,8 +4,9 @@
 #'
 #' Extensions provided:
 #' \itemize{
-#' \item Function for conversion of time series data into data frames that can be
+#' \item Function for conversion of time series data into tibbles that can be
 #' plotted with ggplot.
+#' \item \code{ggplot()} method for time series data.
 #' \item Stats for locating and tagging "peaks" and "valleys" (local or global
 #'  maxima and minima).
 #' \item Stat for generating labels from a \code{lm()} model fit, including
@@ -15,6 +16,7 @@
 #' package 'broom'.
 #' \item Stats for filtering-out/filtering-in observations in regions of a
 #' panel or group where the density of observations is high.
+#' \item Geom for annotating plots with tables.
 #' \item "Debug" stats and a "debug" geom that print to the console a summary
 #' of their \code{data} input.
 #' }

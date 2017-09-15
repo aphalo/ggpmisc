@@ -1,5 +1,5 @@
 ---
-title: "User Guide 3: Debugging ggplots"
+title: "User Guide: 3 Debugging ggplots"
 subtitle: "'ggpmisc' `r packageVersion('ggpmisc')`"
 author: "Pedro J. Aphalo"
 date: "`r Sys.Date()`"
@@ -7,7 +7,7 @@ output:
   rmarkdown::html_vignette:
     toc: yes
 vignette: >
-  %\VignetteIndexEntry{User Guide 3: Debugging ggplots}
+  %\VignetteIndexEntry{User Guide: 3 Debugging ggplots}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
