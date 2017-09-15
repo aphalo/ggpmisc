@@ -4,3 +4,4 @@ vignettes/figure
 inst-not
 test
 ^docs$
+_pkgdwon.yml
