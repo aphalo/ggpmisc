@@ -33,7 +33,9 @@
 #'   for \code{position}, the topmost position will be used if all indexes are
 #'   positive, while if all indexes are negative, the deepest one will be used.
 #'   If mixed positive and negative values are passed, the behaviour is
-#'   undefined.
+#'   undefined. As indexing in R starts at 1, passing 0 or \code{bottom} as
+#'   argument for \code{position} puts the moved or appended layer(s) behind
+#'   all other layers.
 #'
 #' @note The functions described here are not expected to be useful in everyday
 #'   plotting as one can more easily change the order in which layers are added
@@ -74,6 +76,9 @@ delete_layers <- function(x, match_type = NULL, idx = NULL) {
 }
 
 #' @rdname delete_layers
+#'
+#' @param position character or interger, the position of the layer immediately
+#'    above of which to move or append the moved or appended layers.
 #'
 #' @export
 #'

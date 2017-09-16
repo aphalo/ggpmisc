@@ -36,7 +36,7 @@ As we will use text and labels on the plotting area we change the default theme
 to an uncluttered one.
 
 ```{r}
-old_theme <- theme_set(theme_minimal())
+old_theme <- theme_set(theme_bw())
 ```
 
 ## Introduction
@@ -52,7 +52,7 @@ converting time series stored in objects of several different classes into data 
 
 ## `ggplot` methods for time series
 
-`ggplot()` methods for classes `"ts"` and `"xts"` automate ploting of time series data. For plotting time series data stored in objects of other classes, see the conversion functions `try_tibble()` and `try_data_frame()` in the last section of this vignette.
+`ggplot()` methods for classes `"ts"` and `"xts"` automate plotting of time series data. For plotting time series data stored in objects of other classes, see the conversion functions `try_tibble()` and `try_data_frame()` in the last section of this vignette.
 
 ```{r}
 ggplot(lynx) + geom_line()
@@ -512,7 +512,7 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
 
 ## `stat_fit_tidy`
 
-This stat makes it possible to add the equation for any fitted model for which `broom::tidy()` is implemented. Alternatively, individual values such as estimates for the fitted parameters, standard errors, or _P_-values can be added to a plot. However, the user has to explicitly contsruct the labels within `aes()`. This 
+This stat makes it possible to add the equation for any fitted model for which `broom::tidy()` is implemented. Alternatively, individual values such as estimates for the fitted parameters, standard errors, or _P_-values can be added to a plot. However, the user has to explicitly construct the labels within `aes()`. This 
 statistic respects grouping based on aesthetics, and reshapes the output of `tidy()` so that the values for a given group are in a single row in the returned `data`.
 
 ```{r}

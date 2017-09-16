@@ -27,6 +27,9 @@ position(s) or stat(s) matching that of the layers to be operated upon.}
 \item{idx}{integer vector Index into the list of layers used to select the
 layers to be operated upon.}
 
+\item{position}{character or interger, the position of the layer immediately
+above of which to move or append the moved or appended layers.}
+
 \item{object}{a ggplot layer}
 }
 \value{
@@ -56,7 +59,9 @@ These functions must be used with care as they
   for \code{position}, the topmost position will be used if all indexes are
   positive, while if all indexes are negative, the deepest one will be used.
   If mixed positive and negative values are passed, the behaviour is
-  undefined.
+  undefined. As indexing in R starts at 1, passing 0 or \code{bottom} as
+  argument for \code{position} puts the moved or appended layer(s) behind
+  all other layers.
 }
 \note{
 The functions described here are not expected to be useful in everyday

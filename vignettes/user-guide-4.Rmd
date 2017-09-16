@@ -42,7 +42,7 @@ my.data <- data.frame(
 We change the default theme to an uncluttered one.
 
 ```{r}
-old_theme <- theme_set(theme_minimal())
+old_theme <- theme_set(theme_bw())
 ```
 
 ## Introduction
@@ -57,7 +57,7 @@ In a `ggplot` object layers reside in a list, and their positions in the list
 object determine the plotting order when generating the graphical output. The
 Grammar of Graphics treats the list of layers as a stack using only _push_
 operations. In other words, always the most recently added layer resides at the
-end of the list, and overplots all layers previously added. The functions
+end of the list, and over-plots all layers previously added. The functions
 described in this vignette allow overriding the **normal** syntax at the cost 
 of breaking the expectations of the grammar. They are, as told above, to be used 
 only in exceptional cases. This notwithstanding, they are rather easy to use.
@@ -71,7 +71,7 @@ Function | Use
 `move_layers()`   | move layers to a different position
 `append_layers()` | append layers at a specific position 
 `which_layers()`  | obtain the index positions of layers
-`show_layers()`   | extract matched or indexed laters
+`show_layers()`   | extract matched or indexed layers
 
 Although their definition does not rely on 'ggplot2' non-exported code, they 
 rely on the internal structure of objects belonging to class `gg` and `ggplot`.
@@ -105,7 +105,7 @@ of layers displays only a small part of the information in a layer.
 p$layers
 ```
 
-To see all the fields, one needs to use `str()`, wich we use here for a single layer.
+To see all the fields, one needs to use `str()`, which we use here for a single layer.
 
 ```{r}
 str(p$layers[[1]])
@@ -113,9 +113,9 @@ str(p$layers[[1]])
 
 ### Manipulation of plot layers
 
-We start by using `which_layers()` as it produces simply a vector of idexes into
+We start by using `which_layers()` as it produces simply a vector of indexes into
 the list of layers. The third statement is useless here, but demonstrates how
-layers are selected in all the functions desribed in this documment.
+layers are selected in all the functions described in this document.
 
 ```{r}
 which_layers(p, "GeomPoint")
@@ -169,7 +169,7 @@ It is also possible to append the new layer immediately above an arbitrary
 existing layer using a numeric index, which as shown here can be also obtained
 by matching to a class name. In this example we insert a new layer in-between
 two layers already present in the plot. As with the `+` operator of the Grammar
-of Graphics, `object` also accpects a list of layers as argument (no example
+of Graphics, `object` also accepts a list of layers as argument (no example
 shown).
 
 ```{r}

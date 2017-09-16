@@ -56,7 +56,7 @@ As we will draw many points on the plotting area we change the default theme
 to an uncluttered one.
 
 ```{r}
-old_theme <- theme_set(theme_minimal())
+old_theme <- theme_set(theme_bw())
 ```
 
 ## Tests with different data sets
