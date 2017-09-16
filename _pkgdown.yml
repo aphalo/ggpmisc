@@ -29,3 +29,9 @@ reference:
     desc: Convert R objects containing observations in other formats into 'tibble' objects suitable for plotting.
     contents:
     - try_data_frame
+  - title: Manipulate plot layers
+    desc: Delete, append, or move plots layers, retaining full compatibility
+    with 'ggplot2'.
+    contents:
+    - delete_layers
+

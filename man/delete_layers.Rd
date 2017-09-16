@@ -4,41 +4,67 @@
 \alias{delete_layers}
 \alias{move_layers}
 \alias{show_layers}
-\alias{edit_layers}
+\alias{which_layers}
+\alias{append_layers}
 \title{Layer manipulation}
 \usage{
-delete_layers(x, match_type, idx = NULL)
+delete_layers(x, match_type = NULL, idx = NULL)
 
-move_layers(x, match_type, position = "top", idx = NULL)
+move_layers(x, match_type = NULL, position = "top", idx = NULL)
 
-show_layers(x, match_type, idx = NULL)
+show_layers(x, match_type = NULL, idx = NULL)
 
-edit_layers(x, match_type, idx = NULL, position = 0L, action)
+which_layers(x, match_type = NULL, idx = NULL)
+
+append_layers(x, object, position = "top")
 }
 \arguments{
 \item{x}{an object of class \code{gg} to be operated upon.}
 
 \item{match_type}{The name of the ggproto object class for the geom(s),
-position(s) or stat(s) to be removed.}
+position(s) or stat(s) matching that of the layers to be operated upon.}
 
-\item{idx}{integer vector If not \code{NULL}, the default, it overrides
-matching by class and applies the operation to the layers selected by the
-indexing into the list of layers.}
+\item{idx}{integer vector Index into the list of layers used to select the
+layers to be operated upon.}
 
-\item{action}{character One of "delete", "move", or "show".}
+\item{object}{a ggplot layer}
 }
 \value{
-An edited copy of x.
-
-An integer vector with indexes to matched layers.
+An edited copy of \code{x} for \code{delete_layers},
+  \code{append_layers} and \code{move_layers}. An integer vector of indexes
+  giving the positions of the matching layers in the list of layers contained
+  in \code{x} in the case of \code{which_layers}.
 }
 \description{
-Delete or move one or more layers in a ggplot object.
+Delete, move or append one or more layers in a ggplot.
+}
+\details{
+These functions must be used with care as they
+  select all layers matching the provided geom, position or stat ggproto
+  object class. Layers added with a stat do use a geom, and vice versa.
+
+  One and only one of \code{match_type} and \code{idx} must be passed
+  a non-null argument.
+
+  In plots with several layers, it is possible that more than one layer
+  matches the class name passed to \code{match_type}. It is also possible to
+  pass a numeric vector with multiple indexes through parameter \code{idx}.
+  In both cases multiple layers will be operated upon, but their relative
+  positions will remain unchanged.
+
+  If a numeric vector with multiple position indexes is supplied as argument
+  for \code{position}, the topmost position will be used if all indexes are
+  positive, while if all indexes are negative, the deepest one will be used.
+  If mixed positive and negative values are passed, the behaviour is
+  undefined.
 }
 \note{
-These functions must be used with care as they select all layers matching
-  the provided geom, position or stat ggproto object class. Layers added with
-  a stat do use a geom, and vice versa.
+The functions described here are not expected to be useful in everyday
+  plotting as one can more easily change the order in which layers are added
+  to a ggplot. However, if one uses high level methods or functions that
+  automatically produce a full plot using 'ggplot2' internally, one may need
+  to add, move or delete layers so as to profit from such canned methods and
+  retain enough flexibility.
 }
 \examples{
 library(ggplot2)
@@ -53,14 +79,16 @@ p <- ggplot(df, aes(gp, y)) +
 p
 delete_layers(p, "GeomPoint")
 delete_layers(p, "StatSummary")
-move_layers(p, "GeomPoint", "top")
-move_layers(p, "GeomPointrange", "bottom")
-move_layers(p, "StatSummary", "bottom")
-move_layers(p, "GeomPointrange", 1L)
+move_layers(p, "GeomPoint", position = "top")
+move_layers(p, "GeomPointrange", position = "bottom")
+move_layers(p, "StatSummary", position = "bottom")
+move_layers(p, "GeomPointrange", position = 1L)
+append_layers(p, geom_line(colour = "orange"), position = "bottom")
+append_layers(p, geom_line(colour = "orange"), position = 1L)
 show_layers(p, "GeomPoint")
+which_layers(p, "GeomPoint")
 
 }
 \references{
 \url{https://stackoverflow.com/questions/13407236/remove-a-layer-from-a-ggplot2-chart}
 }
-\keyword{internal}
