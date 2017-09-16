@@ -121,8 +121,8 @@ which_layers <- function(x, match_type = NULL, idx = NULL) {
 #'
 append_layers <- function(x, object, position = "top") {
   stopifnot(is.ggplot(x))
-  stopifnot(is(object, "Layer") ||
-              is.list(object) && all(sapply(object, is, class2 = "Layer")) ||
+  stopifnot(methods::is(object, "Layer") ||
+              is.list(object) && all(sapply(object, methods::is, class2 = "Layer")) ||
               is.list(object) && length(object) == 0L)
   z <- x + object
   if (length(z$layers) > length(x$layers) && position != "top") {
