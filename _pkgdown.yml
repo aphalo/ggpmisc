@@ -30,8 +30,7 @@ reference:
     contents:
     - try_data_frame
   - title: Manipulate plot layers
-    desc: Delete, append, or move plots layers, retaining full compatibility
-    with 'ggplot2'.
+    desc: Delete, append, or move plots layers, retaining full compatibility with 'ggplot2'.
     contents:
     - delete_layers
 
