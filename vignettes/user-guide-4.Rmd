@@ -1,0 +1,203 @@
+---
+title: "User Guide: 4 Manipulation of plot layers"
+subtitle: "'ggpmisc' `r packageVersion('ggpmisc')`"
+author: "Pedro J. Aphalo"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+    toc: yes
+vignette: >
+  %\VignetteIndexEntry{User Guide: 4 Manipulation of plot layers}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include=FALSE, echo=FALSE}
+library(knitr)
+opts_chunk$set(fig.path = 'figure/debug-pos-', fig.align = 'center', 
+               fig.show = 'hold', fig.width = 7, fig.height = 4)
+options(warnPartialMatchArgs = FALSE)
+```
+
+## Preliminaries
+
+```{r}
+library(ggplot2)
+library(ggpmisc)
+library(tibble)
+```
+
+We generate some artificial data.
+
+```{r}
+set.seed(4321)
+# generate artificial data
+my.data <- data.frame(
+  group = factor(rep(letters[1:4], each = 30)),
+  panel = factor(rep(LETTERS[1:2], each = 60)),
+  y = rnorm(40)
+)
+```
+
+We change the default theme to an uncluttered one.
+
+```{r}
+old_theme <- theme_set(theme_bw())
+```
+
+## Introduction
+
+The functions described here are not expected to be useful in everyday plotting
+as one can simply change the order in which layers are added to a ggplot.
+However, if one uses high level methods or functions that automatically produce
+a full plot using 'ggplot2' internally, one may need to add, move or delete
+layers so as to profit from such canned methods and retain enough flexibility.
+
+In a `ggplot` object, layers reside in a list, and their positions in the list
+determine the plotting order when generating the graphical output. The Grammar
+of Graphics treats the list of layers as a _stack_ using only _push_ operations.
+In other words, always the most recently added layer resides at the end of the
+list, and over-plots all layers previously added. The functions described in
+this vignette allow overriding the **normal** syntax at the cost of breaking the
+expectations of the grammar. These functions are, as told above, to be used only
+in exceptional cases. This notwithstanding, they are rather easy to use. The
+user interface is consistent across all of them. Moreover, they are designed to
+return objects that are identical to objects created using the normal syntax
+rules of the Grammar of Graphics**.
+
+Function | Use                     
+-------- | -------------------------------------
+`delete_layers()` | delete one or more layers 
+`append_layers()` | append layers at a specific position 
+`move_layers()`   | move layers to an absolute position
+`shift_layers()`  | move layers to a relative position
+`which_layers()`  | obtain the index positions of layers
+`extract_layers()`   | extract matched or indexed layers
+`num_layers()`    | obtain number of layers
+`top_layer()`    | obtain position of top layer
+`bottom_layer()`    | obtain position of bottom layer
+
+Although their definitions does not rely on code internal to 'ggplot2', they 
+rely on the internal structure of objects belonging to class `gg` and `ggplot`.
+Consequently, long-term backwards compatibility cannot be guaranteed.
+
+## Examples
+
+### Preliminaries
+
+We generate a plot to be used later to demonstrate the use of the functions.
+
+```{r}
+p <- ggplot(my.data, aes(group, y)) + 
+  geom_point() +
+  stat_summary(fun.data = mean_se, colour = "red", size = 1.3) +
+  facet_wrap(~panel, scales = "free_x", labeller = label_both)
+p
+```
+
+To display textual information about a `gg` object we use method `summary()`,
+while methods `print()` and `plot()` will display the actual plot.
+
+```{r}
+summary(p)
+```
+
+Layers in a plot are stored in a list. The default `print()` method for a list
+of layers displays only a small part of the information in a layer.
+
+```{r}
+p$layers
+```
+
+To see all the fields, one needs to use `str()`, which we use here for a single layer.
+
+```{r}
+str(p$layers[[1]])
+```
+
+### Manipulation of plot layers
+
+We start by using `which_layers()` as it produces simply a vector of indexes into
+the list of layers. The third statement is useless here, but demonstrates how
+layers are selected in all the functions described in this document.
+
+```{r}
+which_layers(p, "GeomPoint")
+which_layers(p, "StatSummary")
+which_layers(p, idx = 1L)
+```
+
+We can also easily extract matching layers with `extract_layers()`. Here one layer
+is returned, and displayed using the default `print()` method. Method `str()`
+can be used as shown above.
+
+```{r}
+extract_layers(p, "GeomPoint")
+```
+
+With `delete_layers()` we can remove layers from a plot, selecting them using 
+the match to a class, as shown here, or by a positional index. This was shown
+above for `which_layers()`.
+
+```{r}
+delete_layers(p, "GeomPoint")
+```
+
+```{r}
+delete_layers(p, idx = 1L)
+```
+
+```{r}
+delete_layers(p, "StatSummary")
+```
+
+With `move_layers()` we can alter the stacking order of layers. The layers to
+move are selected in the same way as in the examples above, while `position`
+gives where to move the layers to. Two character strings, `"top"` and `"bottom"`
+are accept as `position` argument, as well as `integer`s. In the later case, 
+the layer(s) is/are appended after the supplied position with reference to the 
+list of layers not being moved. 
+
+```{r}
+move_layers(p, "GeomPoint", position = "top")
+```
+
+Same operation but using a relative position. A positive value for `shift` is 
+intertreted as an upward displacement and a negative one as downwards 
+displacement. 
+
+```{r}
+shift_layers(p, "GeomPoint", shift = +1)
+```
+
+Here we show how to add a layer behind all other layers.
+
+```{r}
+append_layers(p, geom_line(colour = "orange", size = 1), position = "bottom")
+
+```
+
+It is also possible to append the new layer immediately above an arbitrary
+existing layer using a numeric index, which as shown here can be also obtained
+by matching to a class name. In this example we insert a new layer in-between
+two layers already present in the plot. As with the `+` operator of the Grammar
+of Graphics, `object` also accepts a list of layers as argument (no example
+shown).
+
+```{r}
+append_layers(p, object = geom_line(colour = "orange", size = 1), 
+              position = which_layers(p, "GeomPoint"))
+```
+
+Annotations add layers, so they can be manipulated in the same way as other layers.
+
+```{r}
+p1 <- p + 
+  annotate("text", label = "text label", x = 1.1, y = 0, hjust = 0)
+p1
+```
+
+```{r}
+delete_layers(p1, "GeomText")
+```
+

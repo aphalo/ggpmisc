@@ -1,16 +1,12 @@
-ggpmisc 0.2.15.9004 (not in CRAN)
-===================
+ggpmisc 0.2.16
+==============
 
-Note: 'ggplot2' >= 2.2.1.9000 (>= commit of 2017-02-09) is required for geom_table() to work.
-
-* Add geom_table(), a geom for adding a layer containing a table.
-* Add stat_fit_tb() a stat that computes a tidy tabular version of the summary or
-ANOVA table for a model fit to PANEL data. Used together with geom_table() it
-makes easy to add ANOVA and summary tables to ggplots.
-* Revise stat_fit_tidy() so that it returns p-values for parameters, in additon to
-estimates and their standard errors.
-* BUG FIX: Revise geom_debug() adding missing argument defaults.
-* Add functions for manipulation of layers in ggplot objects.
+* Revise stat_fit_tidy() so that it returns p-values for parameters, in additon
+to estimates and their standard errors.
+* BUG FIX: Revise geom_debug() adding missing default arguments.
+* Add functions for manipulation of layers in ggplot objects: delete_layers(),
+append_layers(), move_layers(), shift_layers(), which_layers(),
+extract_layers(), num_layers(), top_layer() and bottom_layer().
 
 ggpmisc 0.2.15
 ==============

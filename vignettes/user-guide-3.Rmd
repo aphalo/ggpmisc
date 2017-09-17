@@ -44,7 +44,7 @@ my.data <- data.frame(x,
 We change the default theme to an uncluttered one.
 
 ```{r}
-old_theme <- theme_set(theme_minimal())
+old_theme <- theme_set(theme_bw())
 ```
 
 ## Introduction

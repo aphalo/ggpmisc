@@ -1,9 +1,5 @@
 # ggpmisc #
 
-[![](http://www.r-pkg.org/badges/version/ggpmisc)](https://cran.r-project.org/package=ggpmisc) 
-[![](http://cranlogs.r-pkg.org/badges/ggpmisc)](https://cran.r-project.org/package=ggpmisc) 
-[![](http://cranlogs.r-pkg.org/badges/grand-total/ggpmisc)](https://cran.r-project.org/package=ggpmisc)
-
 Package '**ggpmisc**' (Miscellaneous Extensions to 'ggplot2') is a set of
 extensions to R package 'ggplot2' (> 2.2.1) useful when plotting diverse types
 of data.  

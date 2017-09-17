@@ -36,7 +36,7 @@ As we will use text and labels on the plotting area we change the default theme
 to an uncluttered one.
 
 ```{r}
-old_theme <- theme_set(theme_minimal())
+old_theme <- theme_set(theme_bw())
 ```
 
 ## Introduction
@@ -52,7 +52,7 @@ converting time series stored in objects of several different classes into data 
 
 ## `ggplot` methods for time series
 
-`ggplot()` methods for classes `"ts"` and `"xts"` automate ploting of time series data. For plotting time series data stored in objects of other classes, see the conversion functions `try_tibble()` and `try_data_frame()` in the last section of this vignette.
+`ggplot()` methods for classes `"ts"` and `"xts"` automate plotting of time series data. For plotting time series data stored in objects of other classes, see the conversion functions `try_tibble()` and `try_data_frame()` in the last section of this vignette.
 
 ```{r}
 ggplot(lynx) + geom_line()
@@ -512,7 +512,7 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
 
 ## `stat_fit_tidy`
 
-This stat makes it possible to add the equation for any fitted model for which `broom::tidy()` is implemented. Alternatively, individual values such as estimates for the fitted parameters, standard errors, or _P_-values can be added to a plot. However, the user has to explicitly contsruct the labels within `aes()`. This 
+This stat makes it possible to add the equation for any fitted model for which `broom::tidy()` is implemented. Alternatively, individual values such as estimates for the fitted parameters, standard errors, or _P_-values can be added to a plot. However, the user has to explicitly construct the labels within `aes()`. This 
 statistic respects grouping based on aesthetics, and reshapes the output of `tidy()` so that the values for a given group are in a single row in the returned `data`.
 
 ```{r}
@@ -554,105 +554,105 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
   labs(x = "C", y = "V")
 ```
 
-## `stat_fit_tb`
+<!-- ## `stat_fit_tb` -->
 
-This stat makes it possible to add summary or ANOVA tables for any fitted model for which `broom::tidy()` is implemented. The output from `tidy()` is embedded as a single list value within the returned `data`, an object of class `tibble`. This statistic **ignores grouping** based on aesthetics. This allows fitting models when `x` or `y` is a factor (as in such cases `ggplot` splits the data into groups, one for each level of the factor, which is needed for example for `stat_summary()` to work as expected). By default, the `"table"` geometry is used. The use of `geom_table()` is described in a separate section of this User Guide. 
+<!-- This stat makes it possible to add summary or ANOVA tables for any fitted model for which `broom::tidy()` is implemented. The output from `tidy()` is embedded as a single list value within the returned `data`, an object of class `tibble`. This statistic **ignores grouping** based on aesthetics. This allows fitting models when `x` or `y` is a factor (as in such cases `ggplot` splits the data into groups, one for each level of the factor, which is needed for example for `stat_summary()` to work as expected). By default, the `"table"` geometry is used. The use of `geom_table()` is described in a separate section of this User Guide.  -->
 
-The default output of `stat_fit_tb` is the default output from `tidy(mf)` where `mf` is the fitted model.
+<!-- The default output of `stat_fit_tb` is the default output from `tidy(mf)` where `mf` is the fitted model. -->
 
-```{r}
-formula <- y ~ x + I(x^2) + I(x^3)
-ggplot(my.data, aes(x, y)) +
-  geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
-  stat_fit_tb(method = "lm", 
-              method.args = list(formula = formula),
-              label.y.npc = "top", label.x.npc = "left")
-```
+<!-- ```{r} -->
+<!-- formula <- y ~ x + I(x^2) + I(x^3) -->
+<!-- ggplot(my.data, aes(x, y)) + -->
+<!--   geom_point() + -->
+<!--   geom_smooth(method = "lm", formula = formula) + -->
+<!--   stat_fit_tb(method = "lm",  -->
+<!--               method.args = list(formula = formula), -->
+<!--               label.y.npc = "top", label.x.npc = "left") -->
+<!-- ``` -->
 
-When `tb.type = "fit.anova"` the output returned is that from `tidy(anova(mf))` where `mf` is the fitted model.
+<!-- When `tb.type = "fit.anova"` the output returned is that from `tidy(anova(mf))` where `mf` is the fitted model. -->
 
-```{r}
-formula <- y ~ x + I(x^2) + I(x^3)
-ggplot(my.data, aes(x, y)) +
-  geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
-  stat_fit_tb(method = "lm", 
-              method.args = list(formula = formula),
-              tb.type = "fit.anova",
-              label.y.npc = "top", label.x.npc = "left")
-```
+<!-- ```{r} -->
+<!-- formula <- y ~ x + I(x^2) + I(x^3) -->
+<!-- ggplot(my.data, aes(x, y)) + -->
+<!--   geom_point() + -->
+<!--   geom_smooth(method = "lm", formula = formula) + -->
+<!--   stat_fit_tb(method = "lm",  -->
+<!--               method.args = list(formula = formula), -->
+<!--               tb.type = "fit.anova", -->
+<!--               label.y.npc = "top", label.x.npc = "left") -->
+<!-- ``` -->
 
-When `tb.type = "fit.coefs"` the output returned is that of `tidy(mf)` after selecting the `term` and `estimate` columns.
+<!-- When `tb.type = "fit.coefs"` the output returned is that of `tidy(mf)` after selecting the `term` and `estimate` columns. -->
 
-```{r}
-formula <- y ~ x + I(x^2) + I(x^3)
-ggplot(my.data, aes(x, y)) +
-  geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
-  stat_fit_tb(method = "lm", 
-              method.args = list(formula = formula),
-              tb.type = "fit.coefs",
-              label.y.npc = "center", label.x.npc = "left")
-```
+<!-- ```{r} -->
+<!-- formula <- y ~ x + I(x^2) + I(x^3) -->
+<!-- ggplot(my.data, aes(x, y)) + -->
+<!--   geom_point() + -->
+<!--   geom_smooth(method = "lm", formula = formula) + -->
+<!--   stat_fit_tb(method = "lm",  -->
+<!--               method.args = list(formula = formula), -->
+<!--               tb.type = "fit.coefs", -->
+<!--               label.y.npc = "center", label.x.npc = "left") -->
+<!-- ``` -->
 
-Faceting works as expected, but grouping is ignored as mentioned above. In this case, the colour aesthetic is not applied to the text of the tables. Furthermore,
-if `label.x.npc` or `label.y.npc` are passed numeric vectors of length > 1, the
-values are obeyed by the different panels.
+<!-- Faceting works as expected, but grouping is ignored as mentioned above. In this case, the colour aesthetic is not applied to the text of the tables. Furthermore, -->
+<!-- if `label.x.npc` or `label.y.npc` are passed numeric vectors of length > 1, the -->
+<!-- values are obeyed by the different panels. -->
 
-```{r}
-micmen.formula <- y ~ SSmicmen(x, Vm, K) 
-ggplot(Puromycin, aes(conc, rate, colour = state)) +
-  facet_wrap(~state) +
-  geom_point() +
-  geom_smooth(method = "nls", 
-              formula = micmen.formula,
-              se = FALSE) +
-  stat_fit_tb(method = "nls", 
-              method.args = list(formula = micmen.formula),
-              tb.type = "fit.coefs",
-              label.x.npc = 0.67,
-              label.y.npc = c(0.6, 0.3)) +
-  theme(legend.position = "none") +
-  labs(x = "C", y = "V")
-```
+<!-- ```{r} -->
+<!-- micmen.formula <- y ~ SSmicmen(x, Vm, K)  -->
+<!-- ggplot(Puromycin, aes(conc, rate, colour = state)) + -->
+<!--   facet_wrap(~state) + -->
+<!--   geom_point() + -->
+<!--   geom_smooth(method = "nls",  -->
+<!--               formula = micmen.formula, -->
+<!--               se = FALSE) + -->
+<!--   stat_fit_tb(method = "nls",  -->
+<!--               method.args = list(formula = micmen.formula), -->
+<!--               tb.type = "fit.coefs", -->
+<!--               label.x.npc = 0.67, -->
+<!--               label.y.npc = c(0.6, 0.3)) + -->
+<!--   theme(legend.position = "none") + -->
+<!--   labs(x = "C", y = "V") -->
+<!-- ``` -->
 
-The data in the example below are split by `ggplot` into six groups based on the levels of the `feed` factor. However, as `stat_fit_tb()` ignores groupings, we can still fit a linear model to all the data in the panel.
+<!-- The data in the example below are split by `ggplot` into six groups based on the levels of the `feed` factor. However, as `stat_fit_tb()` ignores groupings, we can still fit a linear model to all the data in the panel. -->
 
-```{r}
-ggplot(chickwts, aes(factor(feed), weight)) +
-  stat_summary(fun.data = "mean_se") +
-  stat_fit_tb(tb.type = "fit.anova",
-              label.x.npc = 1.07, hjust = 1,
-              label.y.npc = "bottom") +
-  expand_limits(y = 0)
-```
+<!-- ```{r} -->
+<!-- ggplot(chickwts, aes(factor(feed), weight)) + -->
+<!--   stat_summary(fun.data = "mean_se") + -->
+<!--   stat_fit_tb(tb.type = "fit.anova", -->
+<!--               label.x.npc = 1.07, hjust = 1, -->
+<!--               label.y.npc = "bottom") + -->
+<!--   expand_limits(y = 0) -->
+<!-- ``` -->
 
-We can flip the system of coordinates, if desired. Be aware that in this case
-the specification of the position and justification of the table is no longer intuitive.
+<!-- We can flip the system of coordinates, if desired. Be aware that in this case -->
+<!-- the specification of the position and justification of the table is no longer intuitive. -->
 
-```{r}
-ggplot(chickwts, aes(factor(feed), weight)) +
-  stat_summary(fun.data = "mean_se") +
-  stat_fit_tb(tb.type = "fit.anova",
-              label.x.npc = 1.1, hjust = 0,
-              label.y.npc = 0, vjust = 1) +
-  expand_limits(y = 0) +
-  coord_flip()
-```
+<!-- ```{r} -->
+<!-- ggplot(chickwts, aes(factor(feed), weight)) + -->
+<!--   stat_summary(fun.data = "mean_se") + -->
+<!--   stat_fit_tb(tb.type = "fit.anova", -->
+<!--               label.x.npc = 1.1, hjust = 0, -->
+<!--               label.y.npc = 0, vjust = 1) + -->
+<!--   expand_limits(y = 0) + -->
+<!--   coord_flip() -->
+<!-- ``` -->
 
-It is also possible to rotate the table using \code{angle}.
+<!-- It is also possible to rotate the table using \code{angle}. -->
 
-```{r}
-ggplot(chickwts, aes(factor(feed), weight)) +
-  stat_summary(fun.data = "mean_se") +
-  stat_fit_tb(tb.type = "fit.anova",
-              angle = 90,
-              label.x.npc = 1.1, hjust = 1,
-              label.y.npc = 0, vjust = 1) +
-  expand_limits(y = 0) +
-  coord_flip()
-```
+<!-- ```{r} -->
+<!-- ggplot(chickwts, aes(factor(feed), weight)) + -->
+<!--   stat_summary(fun.data = "mean_se") + -->
+<!--   stat_fit_tb(tb.type = "fit.anova", -->
+<!--               angle = 90, -->
+<!--               label.x.npc = 1.1, hjust = 1, -->
+<!--               label.y.npc = 0, vjust = 1) + -->
+<!--   expand_limits(y = 0) + -->
+<!--   coord_flip() -->
+<!-- ``` -->
 
 ## `stat_fit_augment`
 
@@ -904,46 +904,46 @@ ggplot(data = d, aes(x, y, label = lab, color = group)) +
                      label.fill = NA)
 ```
 
-## `geom_table`
+<!-- ## `geom_table` -->
 
-This _geometry_ plots a data frame or tibble, nested in a tibble pased as data
-argument, using _easthetics_ `x` and `y` for positioning, and `label` for the 
-data frame containing the data for the table. The table is created as a 'grid' 
-grob and added as usual to the ggplot object.
+<!-- This _geometry_ plots a data frame or tibble, nested in a tibble pased as data -->
+<!-- argument, using _easthetics_ `x` and `y` for positioning, and `label` for the  -->
+<!-- data frame containing the data for the table. The table is created as a 'grid'  -->
+<!-- grob and added as usual to the ggplot object. -->
 
-```{r}
-tb <- tibble(date = ymd(c("2017-05-21", "2007-05-21"), tz = "UCT"),
-             value = 1:2 * 10)
-data.tb <- tibble(x = 0, y = 8e5, tb = list(tb))
-ggplot(my.data, aes(x, y)) +
-  geom_point() +
-  geom_table(data = data.tb, aes(label = tb), hjust = 0, vjust = 0) +
-  theme_bw()
-```
+<!-- ```{r} -->
+<!-- tb <- tibble(date = ymd(c("2017-05-21", "2007-05-21"), tz = "UCT"), -->
+<!--              value = 1:2 * 10) -->
+<!-- data.tb <- tibble(x = 0, y = 8e5, tb = list(tb)) -->
+<!-- ggplot(my.data, aes(x, y)) + -->
+<!--   geom_point() + -->
+<!--   geom_table(data = data.tb, aes(label = tb), hjust = 0, vjust = 0) + -->
+<!--   theme_bw() -->
+<!-- ``` -->
 
 
-```{r}
-tb <- tibble(date = ymd(c("2017-05-21", "2007-05-21"), tz = "UCT"),
-             value = 1:2 * 10)
-data.tb <- tibble(x = 25, y = 8e5, tb = list(tb))
-ggplot(my.data, aes(x, y)) +
-  geom_point() +
-  geom_table(data = data.tb, aes(label = tb), colour = "blue", size = 4) +
-  theme_bw()
-```
+<!-- ```{r} -->
+<!-- tb <- tibble(date = ymd(c("2017-05-21", "2007-05-21"), tz = "UCT"), -->
+<!--              value = 1:2 * 10) -->
+<!-- data.tb <- tibble(x = 25, y = 8e5, tb = list(tb)) -->
+<!-- ggplot(my.data, aes(x, y)) + -->
+<!--   geom_point() + -->
+<!--   geom_table(data = data.tb, aes(label = tb), colour = "blue", size = 4) + -->
+<!--   theme_bw() -->
+<!-- ``` -->
 
-Parsed text, using plot math syntax is supported in the table, with fallback to
-plain text in case of parsing errors, on a cell by cell basis.
+<!-- Parsed text, using plot math syntax is supported in the table, with fallback to -->
+<!-- plain text in case of parsing errors, on a cell by cell basis. -->
 
-```{r}
-tb.pm <- tibble(parameter = c("frac(beta[1], a^2)", "frac(beta[2], a^3)"),
-             value = c("10^2.4", "10^3.532"))
-data.tb <- tibble(x = 12.5, y = 8.5e5, tb = list(tb.pm))
-ggplot(my.data, aes(x, y)) +
-  geom_point() +
-  geom_table(data = data.tb, aes(label = tb), parse = TRUE) +
-  theme_bw()
-```
+<!-- ```{r} -->
+<!-- tb.pm <- tibble(parameter = c("frac(beta[1], a^2)", "frac(beta[2], a^3)"), -->
+<!--              value = c("10^2.4", "10^3.532")) -->
+<!-- data.tb <- tibble(x = 12.5, y = 8.5e5, tb = list(tb.pm)) -->
+<!-- ggplot(my.data, aes(x, y)) + -->
+<!--   geom_point() + -->
+<!--   geom_table(data = data.tb, aes(label = tb), parse = TRUE) + -->
+<!--   theme_bw() -->
+<!-- ``` -->
 
 ## `try_tibble()`
 
