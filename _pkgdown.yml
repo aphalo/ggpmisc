@@ -35,5 +35,3 @@ reference:
     desc: Delete and modify stacking order of layers.
     contents:
     - delete_layers
-    - move_layers
-    - show_layers
