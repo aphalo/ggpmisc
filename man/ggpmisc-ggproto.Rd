@@ -18,6 +18,8 @@
 \alias{StatFitAugment}
 \alias{fit_tidy_compute_group_fun}
 \alias{StatFitTidy}
+\alias{fit_tb_compute_panel_fun}
+\alias{StatFitTb}
 \alias{StatFitDeviations}
 \alias{residuals_compute_group_fun}
 \alias{StatFitResiduals}

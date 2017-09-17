@@ -41,18 +41,24 @@ old_theme <- theme_set(theme_bw())
 
 ## Introduction
 
-Many of the functions, including ggplot statistics and geoms, included in package 
-'ggpmisc' had their origin in my need to produce plots for use in teaching.
-Some of them are more generally useful, such as `stat_poly_eq()`, but others
-like `stat_fit_deviations()` are squarely aimed and producing learning material.
-Finally, several statistics for debugging and learning how ggplot statistics
-and geoms interact with each other will be of use only to developers of new
-statistics and geoms. Function `try_tibble()` opens the door to easily
-converting time series stored in objects of several different classes into data frames. This, for example, useful for plotting time series data with `ggplot()`. New `ggplot()` methods for classes `ts` and `xts` make the call to `try_tibble()` and conversion automatic.
+Many of the functions, including ggplot statistics and geoms, included in
+package 'ggpmisc' had their origin in my need to produce plots for use in
+teaching. Some of them are more generally useful, such as `stat_poly_eq()`, but
+others like `stat_fit_deviations()` are squarely aimed and producing learning
+material. Finally, several statistics for debugging and learning how ggplot
+statistics and geoms interact with each other will be of use only to developers
+of new statistics and geoms. Function `try_tibble()` opens the door to easily
+converting time series stored in objects of several different classes into data
+frames. This, for example, useful for plotting time series data with `ggplot()`.
+New `ggplot()` methods for classes `ts` and `xts` make the call to
+`try_tibble()` and conversion automatic.
 
 ## `ggplot` methods for time series
 
-`ggplot()` methods for classes `"ts"` and `"xts"` automate plotting of time series data. For plotting time series data stored in objects of other classes, see the conversion functions `try_tibble()` and `try_data_frame()` in the last section of this vignette.
+`ggplot()` methods for classes `"ts"` and `"xts"` automate plotting of time
+series data. For plotting time series data stored in objects of other classes,
+see the conversion functions `try_tibble()` and `try_data_frame()` in the last
+section of this vignette.
 
 ```{r}
 ggplot(lynx) + geom_line()
@@ -90,7 +96,8 @@ ggplot(lynx) + geom_line() +
   ylim(-100, 7300)
 ```
 
-Using POSIXct for `time` but supplying a format string. In addition marking both peaks and valleys.
+Using POSIXct for `time` but supplying a format string. In addition marking both
+peaks and valleys.
 
 ```{r}
 ggplot(lynx, as.numeric = FALSE) + geom_line() + 
@@ -158,7 +165,9 @@ ggplot(my.data, aes(x, y)) +
   stat_poly_eq(formula = formula, parse = TRUE)
 ```
 
-`stat_poly_eq()` makes available three different labels in the returned data frame. One of these is used by default, but `aes()` can be used to select a different one. 
+`stat_poly_eq()` makes available three different labels in the returned data
+frame. One of these is used by default, but `aes()` can be used to select a
+different one.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -190,7 +199,9 @@ ggplot(my.data, aes(x, y)) +
                parse = TRUE)
 ```
 
-Within `aes()` it is possible to _compute_ new labels based on those returned plus "arbitrary" text. The supplied labels are meant to be _parsed_ into expressions, so any text added should be valid for a string that will be parsed.
+Within `aes()` it is possible to _compute_ new labels based on those returned
+plus "arbitrary" text. The supplied labels are meant to be _parsed_ into
+expressions, so any text added should be valid for a string that will be parsed.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -201,7 +212,10 @@ ggplot(my.data, aes(x, y)) +
                formula = formula, parse = TRUE)
 ```
 
-Above we inserted spaces between the labels, but it is possible to add also other characters, even character strings. In this example we use several labels instead of just two, and separate them with comma followed by a space. Do note the need to _escape_ the embedded quotation marks.
+Above we inserted spaces between the labels, but it is possible to add also
+other characters, even character strings. In this example we use several labels
+instead of just two, and separate them with comma followed by a space. Do note
+the need to _escape_ the embedded quotation marks.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -270,7 +284,9 @@ ggplot(my.data, aes(x, y)) +
                formula = formula, parse = TRUE)
 ```
 
-As any valid R expression can be used, Greek letters are also supported, as well as the inclusion in the label of variable transformations used in the model formula.
+As any valid R expression can be used, Greek letters are also supported, as well
+as the inclusion in the label of variable transformations used in the model
+formula.
 
 ```{r}
 formula <- y ~ poly(x, 2, raw = TRUE)
@@ -282,7 +298,8 @@ ggplot(my.data, aes(x, log10(y + 1e6))) +
                formula = formula, parse = TRUE)
 ```
 
-A couple of additional examples of polynomials of different orders, and specified in different ways.
+A couple of additional examples of polynomials of different orders, and
+specified in different ways.
 
 Higher order polynomial.
 
@@ -305,9 +322,12 @@ ggplot(my.data, aes(x, y)) +
                parse = TRUE)
 ```
 
-We give below several examples to demonstrate how other components of the `ggplot` object affect the behaviour of this statistic.
+We give below several examples to demonstrate how other components of the
+`ggplot` object affect the behaviour of this statistic.
 
-Facets work as expected either with fixed or free scales. Although bellow we had to adjust the size of the font used for the equation. In addition to we manually position the equation label by supplying coordinates.
+Facets work as expected either with fixed or free scales. Although bellow we had
+to adjust the size of the font used for the equation. In addition to we manually
+position the equation label by supplying coordinates.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -329,7 +349,8 @@ ggplot(my.data, aes(x, y2)) +
   facet_wrap(~group, scales = "free_y")
 ```
 
-Grouping, in this example using the colour aesthetic also works as expected. We can use justification and supply an absolute location for the equation.
+Grouping, in this example using the colour aesthetic also works as expected. We
+can use justification and supply an absolute location for the equation.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -418,8 +439,8 @@ ggplot(my.data, aes(x, y, color = group)) +
 
 ## `stat_fit_deviations`
 
-As I also had the need to highlight residuals in slides and notes to be used in teaching, 
-another statistic was born. 
+As I also had the need to highlight residuals in slides and notes to be used in
+teaching, another statistic was born.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -512,8 +533,13 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
 
 ## `stat_fit_tidy`
 
-This stat makes it possible to add the equation for any fitted model for which `broom::tidy()` is implemented. Alternatively, individual values such as estimates for the fitted parameters, standard errors, or _P_-values can be added to a plot. However, the user has to explicitly construct the labels within `aes()`. This 
-statistic respects grouping based on aesthetics, and reshapes the output of `tidy()` so that the values for a given group are in a single row in the returned `data`.
+This stat makes it possible to add the equation for any fitted model for which
+`broom::tidy()` is implemented. Alternatively, individual values such as
+estimates for the fitted parameters, standard errors, or _P_-values can be added
+to a plot. However, the user has to explicitly construct the labels within
+`aes()`. This statistic respects grouping based on aesthetics, and reshapes the
+output of `tidy()` so that the values for a given group are in a single row in
+the returned `data`.
 
 ```{r}
 micmen.formula <- y ~ SSmicmen(x, Vm, K) 
@@ -554,112 +580,130 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
   labs(x = "C", y = "V")
 ```
 
-<!-- ## `stat_fit_tb` -->
+## `stat_fit_tb`
 
-<!-- This stat makes it possible to add summary or ANOVA tables for any fitted model for which `broom::tidy()` is implemented. The output from `tidy()` is embedded as a single list value within the returned `data`, an object of class `tibble`. This statistic **ignores grouping** based on aesthetics. This allows fitting models when `x` or `y` is a factor (as in such cases `ggplot` splits the data into groups, one for each level of the factor, which is needed for example for `stat_summary()` to work as expected). By default, the `"table"` geometry is used. The use of `geom_table()` is described in a separate section of this User Guide.  -->
+This stat makes it possible to add summary or ANOVA tables for any fitted model
+for which `broom::tidy()` is implemented. The output from `tidy()` is embedded
+as a single list value within the returned `data`, an object of class `tibble`.
+This statistic **ignores grouping** based on aesthetics. This allows fitting
+models when `x` or `y` is a factor (as in such cases `ggplot` splits the data
+into groups, one for each level of the factor, which is needed for example for
+`stat_summary()` to work as expected). By default, the `"table"` geometry is
+used. The use of `geom_table()` is described in a separate section of this User
+Guide.
 
-<!-- The default output of `stat_fit_tb` is the default output from `tidy(mf)` where `mf` is the fitted model. -->
+The default output of `stat_fit_tb` is the default output from `tidy(mf)` where
+`mf` is the fitted model.
 
-<!-- ```{r} -->
-<!-- formula <- y ~ x + I(x^2) + I(x^3) -->
-<!-- ggplot(my.data, aes(x, y)) + -->
-<!--   geom_point() + -->
-<!--   geom_smooth(method = "lm", formula = formula) + -->
-<!--   stat_fit_tb(method = "lm",  -->
-<!--               method.args = list(formula = formula), -->
-<!--               label.y.npc = "top", label.x.npc = "left") -->
-<!-- ``` -->
+```{r}
+formula <- y ~ x + I(x^2) + I(x^3)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_fit_tb(method = "lm",
+              method.args = list(formula = formula),
+              label.y.npc = "top", label.x.npc = "left")
+```
 
-<!-- When `tb.type = "fit.anova"` the output returned is that from `tidy(anova(mf))` where `mf` is the fitted model. -->
+When `tb.type = "fit.anova"` the output returned is that from `tidy(anova(mf))`
+where `mf` is the fitted model.
 
-<!-- ```{r} -->
-<!-- formula <- y ~ x + I(x^2) + I(x^3) -->
-<!-- ggplot(my.data, aes(x, y)) + -->
-<!--   geom_point() + -->
-<!--   geom_smooth(method = "lm", formula = formula) + -->
-<!--   stat_fit_tb(method = "lm",  -->
-<!--               method.args = list(formula = formula), -->
-<!--               tb.type = "fit.anova", -->
-<!--               label.y.npc = "top", label.x.npc = "left") -->
-<!-- ``` -->
+```{r}
+formula <- y ~ x + I(x^2) + I(x^3)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_fit_tb(method = "lm",
+              method.args = list(formula = formula),
+              tb.type = "fit.anova",
+              label.y.npc = "top", label.x.npc = "left")
+```
 
-<!-- When `tb.type = "fit.coefs"` the output returned is that of `tidy(mf)` after selecting the `term` and `estimate` columns. -->
+When `tb.type = "fit.coefs"` the output returned is that of `tidy(mf)` after
+selecting the `term` and `estimate` columns.
 
-<!-- ```{r} -->
-<!-- formula <- y ~ x + I(x^2) + I(x^3) -->
-<!-- ggplot(my.data, aes(x, y)) + -->
-<!--   geom_point() + -->
-<!--   geom_smooth(method = "lm", formula = formula) + -->
-<!--   stat_fit_tb(method = "lm",  -->
-<!--               method.args = list(formula = formula), -->
-<!--               tb.type = "fit.coefs", -->
-<!--               label.y.npc = "center", label.x.npc = "left") -->
-<!-- ``` -->
+```{r}
+formula <- y ~ x + I(x^2) + I(x^3)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_fit_tb(method = "lm",
+              method.args = list(formula = formula),
+              tb.type = "fit.coefs",
+              label.y.npc = "center", label.x.npc = "left")
+```
 
-<!-- Faceting works as expected, but grouping is ignored as mentioned above. In this case, the colour aesthetic is not applied to the text of the tables. Furthermore, -->
-<!-- if `label.x.npc` or `label.y.npc` are passed numeric vectors of length > 1, the -->
-<!-- values are obeyed by the different panels. -->
+Faceting works as expected, but grouping is ignored as mentioned above. In this
+case, the colour aesthetic is not applied to the text of the tables.
+Furthermore, if `label.x.npc` or `label.y.npc` are passed numeric vectors of
+length > 1, the values are obeyed by the different panels.
 
-<!-- ```{r} -->
-<!-- micmen.formula <- y ~ SSmicmen(x, Vm, K)  -->
-<!-- ggplot(Puromycin, aes(conc, rate, colour = state)) + -->
-<!--   facet_wrap(~state) + -->
-<!--   geom_point() + -->
-<!--   geom_smooth(method = "nls",  -->
-<!--               formula = micmen.formula, -->
-<!--               se = FALSE) + -->
-<!--   stat_fit_tb(method = "nls",  -->
-<!--               method.args = list(formula = micmen.formula), -->
-<!--               tb.type = "fit.coefs", -->
-<!--               label.x.npc = 0.67, -->
-<!--               label.y.npc = c(0.6, 0.3)) + -->
-<!--   theme(legend.position = "none") + -->
-<!--   labs(x = "C", y = "V") -->
-<!-- ``` -->
+```{r}
+micmen.formula <- y ~ SSmicmen(x, Vm, K)
+ggplot(Puromycin, aes(conc, rate, colour = state)) +
+  facet_wrap(~state) +
+  geom_point() +
+  geom_smooth(method = "nls",
+              formula = micmen.formula,
+              se = FALSE) +
+  stat_fit_tb(method = "nls",
+              method.args = list(formula = micmen.formula),
+              tb.type = "fit.coefs",
+              label.x.npc = 0.67,
+              label.y.npc = c(0.6, 0.3)) +
+  theme(legend.position = "none") +
+  labs(x = "C", y = "V")
+```
 
-<!-- The data in the example below are split by `ggplot` into six groups based on the levels of the `feed` factor. However, as `stat_fit_tb()` ignores groupings, we can still fit a linear model to all the data in the panel. -->
+The data in the example below are split by `ggplot` into six groups based on the
+levels of the `feed` factor. However, as `stat_fit_tb()` ignores groupings, we
+can still fit a linear model to all the data in the panel.
 
-<!-- ```{r} -->
-<!-- ggplot(chickwts, aes(factor(feed), weight)) + -->
-<!--   stat_summary(fun.data = "mean_se") + -->
-<!--   stat_fit_tb(tb.type = "fit.anova", -->
-<!--               label.x.npc = 1.07, hjust = 1, -->
-<!--               label.y.npc = "bottom") + -->
-<!--   expand_limits(y = 0) -->
-<!-- ``` -->
+```{r}
+ggplot(chickwts, aes(factor(feed), weight)) +
+  stat_summary(fun.data = "mean_se") +
+  stat_fit_tb(tb.type = "fit.anova",
+              label.x.npc = 1.07, hjust = 1,
+              label.y.npc = "bottom") +
+  expand_limits(y = 0)
+```
 
-<!-- We can flip the system of coordinates, if desired. Be aware that in this case -->
-<!-- the specification of the position and justification of the table is no longer intuitive. -->
+We can flip the system of coordinates, if desired. Be aware that in this case
+the specification of the position and justification of the table is no longer
+intuitive.
 
-<!-- ```{r} -->
-<!-- ggplot(chickwts, aes(factor(feed), weight)) + -->
-<!--   stat_summary(fun.data = "mean_se") + -->
-<!--   stat_fit_tb(tb.type = "fit.anova", -->
-<!--               label.x.npc = 1.1, hjust = 0, -->
-<!--               label.y.npc = 0, vjust = 1) + -->
-<!--   expand_limits(y = 0) + -->
-<!--   coord_flip() -->
-<!-- ``` -->
+```{r}
+ggplot(chickwts, aes(factor(feed), weight)) +
+  stat_summary(fun.data = "mean_se") +
+  stat_fit_tb(tb.type = "fit.anova",
+              label.x.npc = 1.1, hjust = 0,
+              label.y.npc = 0, vjust = 1) +
+  expand_limits(y = 0) +
+  coord_flip()
+```
 
-<!-- It is also possible to rotate the table using \code{angle}. -->
+It is also possible to rotate the table using \code{angle}.
 
-<!-- ```{r} -->
-<!-- ggplot(chickwts, aes(factor(feed), weight)) + -->
-<!--   stat_summary(fun.data = "mean_se") + -->
-<!--   stat_fit_tb(tb.type = "fit.anova", -->
-<!--               angle = 90, -->
-<!--               label.x.npc = 1.1, hjust = 1, -->
-<!--               label.y.npc = 0, vjust = 1) + -->
-<!--   expand_limits(y = 0) + -->
-<!--   coord_flip() -->
-<!-- ``` -->
+```{r}
+ggplot(chickwts, aes(factor(feed), weight)) +
+  stat_summary(fun.data = "mean_se") +
+  stat_fit_tb(tb.type = "fit.anova",
+              angle = 90,
+              label.x.npc = 1.1, hjust = 1,
+              label.y.npc = 0, vjust = 1) +
+  expand_limits(y = 0) +
+  coord_flip()
+```
 
 ## `stat_fit_augment`
 
 **Experimental!** 
 Use `ggplot2::stat_smooth` instead of `stat_fit_augment` if possible.
 
-For a single panel and no grouping, there is little advantage in using this statistic compared to the examples in the documentation of package 'broom'. With grouping and faceting `stat_fit_augment` may occasionally be more convenient than `ggplot2::stat_smooth` because of its flexibility.
+For a single panel and no grouping, there is little advantage in using this
+statistic compared to the examples in the documentation of package 'broom'. With
+grouping and faceting `stat_fit_augment` may occasionally be more convenient
+than `ggplot2::stat_smooth` because of its flexibility.
 
 ```{r}
 # formula <- y ~ poly(x, 3, raw = TRUE)
@@ -679,7 +723,9 @@ ggplot(my.data, aes(x, y, color = group)) +
                    method.args = list(formula = formula))
 ```
 
-We can override the variable returned as \code{y} to be any of the variables in the data frame returned by `broom::augment` while still preserving the original _y_ values. 
+We can override the variable returned as \code{y} to be any of the variables in
+the data frame returned by `broom::augment` while still preserving the original
+_y_ values.
 
 ```{r}
 formula <- y ~ x + I(x^2) + I(x^3)
@@ -866,7 +912,9 @@ ggplot(data = d, aes(x, y, label = lab, color = group)) +
                      vjust = -0.3)
 ```
 
-Using the geoms from package 'ggrepel' avoids clashes among labels or on top of data points. This works with versions 0.6.0 and newer of 'ggrepel'. One example with `geom_text_repel` follows. 
+Using the geoms from package 'ggrepel' avoids clashes among labels or on top of
+data points. This works with versions 0.6.0 and newer of 'ggrepel'. One example
+with `geom_text_repel` follows.
 
 ```{r}
 ggplot(data = d, aes(x, y, label = lab, color = group)) +
@@ -875,7 +923,8 @@ ggplot(data = d, aes(x, y, label = lab, color = group)) +
                      keep.fraction = 0.45)
 ```
 
-With `geom_label_repel` one needs to use a smaller value for `keep.fracton`, or a smaller `size`, as labels use more space on the plot than the test alone.
+With `geom_label_repel` one needs to use a smaller value for `keep.fracton`, or
+a smaller `size`, as labels use more space on the plot than the test alone.
 
 ```{r}
 ggplot(data = d, aes(x, y, label = lab, color = group)) +
@@ -884,7 +933,10 @@ ggplot(data = d, aes(x, y, label = lab, color = group)) +
                      keep.fraction = 0.25)
 ```
 
-Additional arguments can be used to change the angle and position of the text, but may give unexpected output when labels are long as the repulsion algorithm "sees" always a rectangular bounding box that is not rotated. With short labels or angles that are multiples of 90 degrees, there is no such problem.
+Additional arguments can be used to change the angle and position of the text,
+but may give unexpected output when labels are long as the repulsion algorithm
+"sees" always a rectangular bounding box that is not rotated. With short labels
+or angles that are multiples of 90 degrees, there is no such problem.
 
 ```{r}
 ggplot(data = d, aes(x, y, label = lab, color = group)) +
@@ -893,7 +945,10 @@ stat_dens2d_labels(geom = "text_repel",
 keep.fraction = 0.25, angle = 90)
 ```
 
-Using `NA` as fill makes the observations with labels set to `NA` to be skipped completely, possibly leading to text overlapping the points corresponding to unlabelled observations around the boundary of the regions where labels are kept or discarded. We use here `alpha` so that the overlaps can be seen.
+Using `NA` as fill makes the observations with labels set to `NA` to be skipped
+completely, possibly leading to text overlapping the points corresponding to
+unlabelled observations around the boundary of the regions where labels are kept
+or discarded. We use here `alpha` so that the overlaps can be seen.
 
 ```{r}
 ggplot(data = d, aes(x, y, label = lab, color = group)) +
@@ -904,52 +959,55 @@ ggplot(data = d, aes(x, y, label = lab, color = group)) +
                      label.fill = NA)
 ```
 
-<!-- ## `geom_table` -->
+## `geom_table`
 
-<!-- This _geometry_ plots a data frame or tibble, nested in a tibble pased as data -->
-<!-- argument, using _easthetics_ `x` and `y` for positioning, and `label` for the  -->
-<!-- data frame containing the data for the table. The table is created as a 'grid'  -->
-<!-- grob and added as usual to the ggplot object. -->
+This _geometry_ plots a data frame or tibble, nested in a tibble pased as data
+argument, using _easthetics_ `x` and `y` for positioning, and `label` for the
+data frame containing the data for the table. The table is created as a 'grid'
+grob and added as usual to the ggplot object.
 
-<!-- ```{r} -->
-<!-- tb <- tibble(date = ymd(c("2017-05-21", "2007-05-21"), tz = "UCT"), -->
-<!--              value = 1:2 * 10) -->
-<!-- data.tb <- tibble(x = 0, y = 8e5, tb = list(tb)) -->
-<!-- ggplot(my.data, aes(x, y)) + -->
-<!--   geom_point() + -->
-<!--   geom_table(data = data.tb, aes(label = tb), hjust = 0, vjust = 0) + -->
-<!--   theme_bw() -->
-<!-- ``` -->
+```{r}
+tb <- tibble(date = ymd(c("2017-05-21", "2007-05-21"), tz = "UCT"),
+             value = 1:2 * 10)
+data.tb <- tibble(x = 0, y = 8e5, tb = list(tb))
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_table(data = data.tb, aes(label = tb), hjust = 0, vjust = 0) +
+  theme_bw()
+```
 
 
-<!-- ```{r} -->
-<!-- tb <- tibble(date = ymd(c("2017-05-21", "2007-05-21"), tz = "UCT"), -->
-<!--              value = 1:2 * 10) -->
-<!-- data.tb <- tibble(x = 25, y = 8e5, tb = list(tb)) -->
-<!-- ggplot(my.data, aes(x, y)) + -->
-<!--   geom_point() + -->
-<!--   geom_table(data = data.tb, aes(label = tb), colour = "blue", size = 4) + -->
-<!--   theme_bw() -->
-<!-- ``` -->
+```{r}
+tb <- tibble(date = ymd(c("2017-05-21", "2007-05-21"), tz = "UCT"),
+             value = 1:2 * 10)
+data.tb <- tibble(x = 25, y = 8e5, tb = list(tb))
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_table(data = data.tb, aes(label = tb), colour = "blue", size = 4) +
+  theme_bw()
+```
 
-<!-- Parsed text, using plot math syntax is supported in the table, with fallback to -->
-<!-- plain text in case of parsing errors, on a cell by cell basis. -->
+Parsed text, using plot math syntax is supported in the table, with fallback to
+plain text in case of parsing errors, on a cell by cell basis.
 
-<!-- ```{r} -->
-<!-- tb.pm <- tibble(parameter = c("frac(beta[1], a^2)", "frac(beta[2], a^3)"), -->
-<!--              value = c("10^2.4", "10^3.532")) -->
-<!-- data.tb <- tibble(x = 12.5, y = 8.5e5, tb = list(tb.pm)) -->
-<!-- ggplot(my.data, aes(x, y)) + -->
-<!--   geom_point() + -->
-<!--   geom_table(data = data.tb, aes(label = tb), parse = TRUE) + -->
-<!--   theme_bw() -->
-<!-- ``` -->
+```{r}
+tb.pm <- tibble(parameter = c("frac(beta[1], a^2)", "frac(beta[2], a^3)"),
+             value = c("10^2.4", "10^3.532"))
+data.tb <- tibble(x = 12.5, y = 8.5e5, tb = list(tb.pm))
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_table(data = data.tb, aes(label = tb), parse = TRUE) +
+  theme_bw()
+```
 
 ## `try_tibble()`
 
 ### Time series
 
-Several different formats for storing time series data are used in R. Here we use in the examples objects of class `ts` but several other classes are supported as `try.xts()` is used internally. The first example is a quarterly series.
+Several different formats for storing time series data are used in R. Here we
+use in the examples objects of class `ts` but several other classes are
+supported as `try.xts()` is used internally. The first example is a quarterly
+series.
 
 ```{r}
 class(austres)
@@ -959,7 +1017,8 @@ lapply(austres.df, "class")
 head(austres.df, 4)
 ```
 
-The next chunk demonstrates that numeric times are expressed as decimal years in the returned data frame.
+The next chunk demonstrates that numeric times are expressed as decimal years in
+the returned data frame.
 
 ```{r}
 austres.df <- try_tibble(austres, as.numeric = TRUE)
@@ -977,14 +1036,16 @@ lapply(lynx.df, "class")
 head(lynx.df, 3)
 ```
 
-Above there is a small rounding error of 1 s for these old dates. We can correct this by rounding to year.
+Above there is a small rounding error of 1 s for these old dates. We can correct
+this by rounding to year.
 
 ```{r}
 lynx.df <- try_tibble(lynx, "year")
 head(lynx.df, 3)
 ```
 
-In addition we can convert the POSIXct values into numeric values in calendar years plus a decimal fraction.
+In addition we can convert the POSIXct values into numeric values in calendar
+years plus a decimal fraction.
 
 ```{r}
 lynx_n.df <- try_tibble(lynx, "year", as.numeric = TRUE)
