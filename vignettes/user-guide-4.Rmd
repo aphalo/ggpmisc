@@ -53,27 +53,31 @@ However, if one uses high level methods or functions that automatically produce
 a full plot using 'ggplot2' internally, one may need to add, move or delete
 layers so as to profit from such canned methods and retain enough flexibility.
 
-In a `ggplot` object layers reside in a list, and their positions in the list
-object determine the plotting order when generating the graphical output. The
-Grammar of Graphics treats the list of layers as a stack using only _push_
-operations. In other words, always the most recently added layer resides at the
-end of the list, and over-plots all layers previously added. The functions
-described in this vignette allow overriding the **normal** syntax at the cost 
-of breaking the expectations of the grammar. They are, as told above, to be used 
-only in exceptional cases. This notwithstanding, they are rather easy to use.
-The user interface is consistent across all of them. Moreover, they are 
-designed to return objects that are identical to objects created using the
-**normal** Grammar of Graphics.
+In a `ggplot` object, layers reside in a list, and their positions in the list
+determine the plotting order when generating the graphical output. The Grammar
+of Graphics treats the list of layers as a _stack_ using only _push_ operations.
+In other words, always the most recently added layer resides at the end of the
+list, and over-plots all layers previously added. The functions described in
+this vignette allow overriding the **normal** syntax at the cost of breaking the
+expectations of the grammar. These functions are, as told above, to be used only
+in exceptional cases. This notwithstanding, they are rather easy to use. The
+user interface is consistent across all of them. Moreover, they are designed to
+return objects that are identical to objects created using the normal syntax
+rules of the Grammar of Graphics**.
 
 Function | Use                     
 -------- | -------------------------------------
 `delete_layers()` | delete one or more layers 
-`move_layers()`   | move layers to a different position
 `append_layers()` | append layers at a specific position 
+`move_layers()`   | move layers to an absolute position
+`shift_layers()`  | move layers to a relative position
 `which_layers()`  | obtain the index positions of layers
-`show_layers()`   | extract matched or indexed layers
+`extract_layers()`   | extract matched or indexed layers
+`num_layers()`    | obtain number of layers
+`top_layer()`    | obtain position of top layer
+`bottom_layer()`    | obtain position of bottom layer
 
-Although their definition does not rely on 'ggplot2' non-exported code, they 
+Although their definitions does not rely on code internal to 'ggplot2', they 
 rely on the internal structure of objects belonging to class `gg` and `ggplot`.
 Consequently, long-term backwards compatibility cannot be guaranteed.
 
@@ -123,12 +127,12 @@ which_layers(p, "StatSummary")
 which_layers(p, idx = 1L)
 ```
 
-We can also easily extract matching layers with `show_layers()`. Here one layer
+We can also easily extract matching layers with `extract_layers()`. Here one layer
 is returned, and displayed using the default `print()` method. Method `str()`
 can be used as shown above.
 
 ```{r}
-show_layers(p, "GeomPoint")
+extract_layers(p, "GeomPoint")
 ```
 
 With `delete_layers()` we can remove layers from a plot, selecting them using 
@@ -156,6 +160,14 @@ list of layers not being moved.
 
 ```{r}
 move_layers(p, "GeomPoint", position = "top")
+```
+
+Same operation but using a relative position. A positive value for `shift` is 
+intertreted as an upward displacement and a negative one as downwards 
+displacement. 
+
+```{r}
+shift_layers(p, "GeomPoint", shift = +1)
 ```
 
 Here we show how to add a layer behind all other layers.

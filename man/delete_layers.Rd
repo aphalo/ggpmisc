@@ -2,21 +2,33 @@
 % Please edit documentation in R/layer-manip.R
 \name{delete_layers}
 \alias{delete_layers}
-\alias{move_layers}
-\alias{show_layers}
-\alias{which_layers}
 \alias{append_layers}
+\alias{move_layers}
+\alias{shift_layers}
+\alias{which_layers}
+\alias{extract_layers}
+\alias{top_layer}
+\alias{bottom_layer}
+\alias{num_layers}
 \title{Layer manipulation}
 \usage{
 delete_layers(x, match_type = NULL, idx = NULL)
 
+append_layers(x, object, position = "top")
+
 move_layers(x, match_type = NULL, position = "top", idx = NULL)
 
-show_layers(x, match_type = NULL, idx = NULL)
+shift_layers(x, match_type = NULL, idx = NULL, shift = 1L)
 
 which_layers(x, match_type = NULL, idx = NULL)
 
-append_layers(x, object, position = "top")
+extract_layers(x, match_type = NULL, idx = NULL)
+
+top_layer(x)
+
+bottom_layer(x)
+
+num_layers(x)
 }
 \arguments{
 \item{x}{an object of class \code{gg} to be operated upon.}
@@ -27,10 +39,13 @@ position(s) or stat(s) matching that of the layers to be operated upon.}
 \item{idx}{integer vector Index into the list of layers used to select the
 layers to be operated upon.}
 
+\item{object}{a ggplot layer created by a \code{geom_} or \code{stat_}
+function or a list of such layers or an empty list.}
+
 \item{position}{character or interger, the position of the layer immediately
 above of which to move or append the moved or appended layers.}
 
-\item{object}{a ggplot layer}
+\item{shift}{integer.}
 }
 \value{
 An edited copy of \code{x} for \code{delete_layers},
@@ -42,12 +57,12 @@ An edited copy of \code{x} for \code{delete_layers},
 Delete, move or append one or more layers in a ggplot.
 }
 \details{
-These functions must be used with care as they
-  select all layers matching the provided geom, position or stat ggproto
-  object class. Layers added with a stat do use a geom, and vice versa.
+These functions must be used with care as they select all layers
+  matching the provided geom, position or stat ggproto object class. Layers
+  added with a stat do use a geom, and vice versa.
 
-  One and only one of \code{match_type} and \code{idx} must be passed
-  a non-null argument.
+  One and only one of \code{match_type} and \code{idx} must be passed a
+  non-null argument.
 
   In plots with several layers, it is possible that more than one layer
   matches the class name passed to \code{match_type}. It is also possible to
@@ -56,12 +71,10 @@ These functions must be used with care as they
   positions will remain unchanged.
 
   If a numeric vector with multiple position indexes is supplied as argument
-  for \code{position}, the topmost position will be used if all indexes are
-  positive, while if all indexes are negative, the deepest one will be used.
-  If mixed positive and negative values are passed, the behaviour is
-  undefined. As indexing in R starts at 1, passing 0 or \code{bottom} as
-  argument for \code{position} puts the moved or appended layer(s) behind
-  all other layers.
+  for \code{position}, the topmost position will be used. As indexing in R
+  starts at 1, passing 0 or \code{"bottom"} as argument for \code{position}
+  puts the moved or appended layer(s) behind all other layers (prepends the
+  layer).
 }
 \note{
 The functions described here are not expected to be useful in everyday
@@ -90,8 +103,14 @@ move_layers(p, "StatSummary", position = "bottom")
 move_layers(p, "GeomPointrange", position = 1L)
 append_layers(p, geom_line(colour = "orange"), position = "bottom")
 append_layers(p, geom_line(colour = "orange"), position = 1L)
-show_layers(p, "GeomPoint")
+extract_layers(p, "GeomPoint")
 which_layers(p, "GeomPoint")
+num_layers(p)
+top_layer(p)
+bottom_layer(p)
+num_layers(ggplot())
+top_layer(ggplot())
+bottom_layer(ggplot())
 
 }
 \references{

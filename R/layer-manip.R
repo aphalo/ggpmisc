@@ -16,12 +16,12 @@
 #' @references
 #' \url{https://stackoverflow.com/questions/13407236/remove-a-layer-from-a-ggplot2-chart}
 #'
-#' @details These functions must be used with care as they
-#'   select all layers matching the provided geom, position or stat ggproto
-#'   object class. Layers added with a stat do use a geom, and vice versa.
+#' @details These functions must be used with care as they select all layers
+#'   matching the provided geom, position or stat ggproto object class. Layers
+#'   added with a stat do use a geom, and vice versa.
 #'
-#'   One and only one of \code{match_type} and \code{idx} must be passed
-#'   a non-null argument.
+#'   One and only one of \code{match_type} and \code{idx} must be passed a
+#'   non-null argument.
 #'
 #'   In plots with several layers, it is possible that more than one layer
 #'   matches the class name passed to \code{match_type}. It is also possible to
@@ -30,12 +30,10 @@
 #'   positions will remain unchanged.
 #'
 #'   If a numeric vector with multiple position indexes is supplied as argument
-#'   for \code{position}, the topmost position will be used if all indexes are
-#'   positive, while if all indexes are negative, the deepest one will be used.
-#'   If mixed positive and negative values are passed, the behaviour is
-#'   undefined. As indexing in R starts at 1, passing 0 or \code{bottom} as
-#'   argument for \code{position} puts the moved or appended layer(s) behind
-#'   all other layers.
+#'   for \code{position}, the topmost position will be used. As indexing in R
+#'   starts at 1, passing 0 or \code{"bottom"} as argument for \code{position}
+#'   puts the moved or appended layer(s) behind all other layers (prepends the
+#'   layer).
 #'
 #' @note The functions described here are not expected to be useful in everyday
 #'   plotting as one can more easily change the order in which layers are added
@@ -63,8 +61,14 @@
 #' move_layers(p, "GeomPointrange", position = 1L)
 #' append_layers(p, geom_line(colour = "orange"), position = "bottom")
 #' append_layers(p, geom_line(colour = "orange"), position = 1L)
-#' show_layers(p, "GeomPoint")
+#' extract_layers(p, "GeomPoint")
 #' which_layers(p, "GeomPoint")
+#' num_layers(p)
+#' top_layer(p)
+#' bottom_layer(p)
+#' num_layers(ggplot())
+#' top_layer(ggplot())
+#' bottom_layer(ggplot())
 #'
 #' @export
 #'
@@ -77,45 +81,8 @@ delete_layers <- function(x, match_type = NULL, idx = NULL) {
 
 #' @rdname delete_layers
 #'
-#' @param position character or interger, the position of the layer immediately
-#'    above of which to move or append the moved or appended layers.
-#'
-#' @export
-#'
-move_layers <- function(x, match_type = NULL, position = "top", idx = NULL) {
-  edit_layers(x = x,
-              match_type = match_type,
-              position = position,
-              idx = idx,
-              action = "move")
-}
-
-#' @rdname delete_layers
-#'
-#' @export
-#'
-show_layers <- function(x, match_type = NULL, idx = NULL) {
-  which.idxs <-   edit_layers(x = x,
-                              match_type = match_type,
-                              idx = idx,
-                              action = "which")
-  x$layers[which.idxs]
-}
-
-#' @rdname delete_layers
-#'
-#' @export
-#'
-which_layers <- function(x, match_type = NULL, idx = NULL) {
-  edit_layers(x = x,
-              match_type = match_type,
-              idx = idx,
-              action = "which")
-}
-
-#' @rdname delete_layers
-#'
-#' @param object a ggplot layer
+#' @param object a ggplot layer created by a \code{geom_} or \code{stat_}
+#'   function or a list of such layers or an empty list.
 #'
 #' @export
 #'
@@ -135,6 +102,98 @@ append_layers <- function(x, object, position = "top") {
   z
 }
 
+#' @rdname delete_layers
+#'
+#' @param position character or interger, the position of the layer immediately
+#'    above of which to move or append the moved or appended layers.
+#'
+#' @export
+#'
+move_layers <- function(x, match_type = NULL, position = "top", idx = NULL) {
+  edit_layers(x = x,
+              match_type = match_type,
+              position = position,
+              idx = idx,
+              action = "move")
+}
+
+#' @rdname delete_layers
+#'
+#' @param shift integer.
+#'
+#' @export
+#'
+shift_layers <- function(x, match_type = NULL, idx = NULL, shift = 1L) {
+  if (is.double(idx)) {
+    idx <- as.integer(idx)
+  }
+  if (is.double(shift)) {
+    shift <- as.integer(shift)
+  }
+  if (shift == 0L) {
+    # nothing to do
+    return(x)
+  }
+  from <- which_layers(x = x,
+                       match_type = match_type,
+                       idx = idx)
+  # We substract 1L as move_layers inserts layer above position
+  move_layers(x = x,
+              match_type = match_type,
+              position = from + shift - 1L,
+              idx = idx)
+}
+
+#' @rdname delete_layers
+#'
+#' @export
+#'
+which_layers <- function(x, match_type = NULL, idx = NULL) {
+  edit_layers(x = x,
+              match_type = match_type,
+              idx = idx,
+              action = "which")
+}
+
+#' @rdname delete_layers
+#'
+#' @export
+#'
+extract_layers <- function(x, match_type = NULL, idx = NULL) {
+  which.idxs <-   edit_layers(x = x,
+                              match_type = match_type,
+                              idx = idx,
+                              action = "which")
+  x$layers[which.idxs]
+}
+
+#' @rdname delete_layers
+#'
+#' @export
+#'
+top_layer <- function(x) {
+  stopifnot(is.ggplot(x))
+  ifelse(length(x$layers) > 0L, length(x$layers), NA_integer_)
+}
+
+#' @rdname delete_layers
+#'
+#' @export
+#'
+bottom_layer <- function(x) {
+  stopifnot(is.ggplot(x))
+  ifelse(length(x$layers) > 0L, 1L, NA_integer_)
+}
+
+#' @rdname delete_layers
+#'
+#' @export
+#'
+num_layers <- function(x) {
+  stopifnot(is.ggplot(x))
+  length(x$layers)
+}
+
 #' Edit plot layer
 #'
 #' Delete or move one or more layers in a ggplot object.
@@ -151,6 +210,10 @@ append_layers <- function(x, object, position = "top") {
 edit_layers <- function(x, match_type = NULL, position = 0L, idx = NULL, action) {
   stopifnot(is.ggplot(x))
   stopifnot(xor(is.null(match_type), is.null(idx) ))
+  if (length(position) > 1) {
+    warning("'position' is not vectorized, using 'position[1]'")
+    position <- position[1]
+  }
   if (is.numeric(idx)) {
     # Convert into logical vector---equivalent to the inverse of which()
     idx <- seq_len(length(x$layers)) %in% as.integer(idx)
@@ -169,6 +232,9 @@ edit_layers <- function(x, match_type = NULL, position = 0L, idx = NULL, action)
                     class(y[[matched_field]])[1] == match_type
                   })
   }
+  if (is.na(idx)) {
+    idx <- logical()
+  }
   if (action == "delete") {
     if (sum(idx) > 0L) {
       # Delete the layers.
@@ -179,13 +245,13 @@ edit_layers <- function(x, match_type = NULL, position = 0L, idx = NULL, action)
       # Move the layers.
       if (position == "top") {
         x$layers <- c(x$layers[!idx], x$layers[idx])
-      } else if (position == "bottom" | position == 0L) {
+      } else if (position == "bottom") {
         x$layers <- c(x$layers[idx], x$layers[!idx])
-      } else if (is.integer(position)) {
-        # We use the topmost layer given by position if positive
-        # and the lowermost if negative, this should be useful with multiple
-        # matching layers.
-        position <- abs(max(position))
+      } else if (is.integer(position) && !is.na(position)) {
+        # We avoid position overflow and underflow
+        # We use only the topmost position
+        position <- max(0L, position)
+        position <- min(position, length(x$layers))
         x$layers <- append(x$layers[!idx], x$layers[idx],
                            ifelse(position > length(x$layers[!idx]),
                                   length(x$layers[!idx]),
