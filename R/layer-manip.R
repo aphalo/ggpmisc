@@ -232,7 +232,7 @@ edit_layers <- function(x, match_type = NULL, position = 0L, idx = NULL, action)
                     class(y[[matched_field]])[1] == match_type
                   })
   }
-  if (is.na(idx)) {
+  if (any(is.na(idx))) {
     idx <- logical()
   }
   if (action == "delete") {
