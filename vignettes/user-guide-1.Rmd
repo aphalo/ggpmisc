@@ -76,7 +76,7 @@ ggplot(AirPassengers) + geom_line()
 ggplot(AirPassengers, as.numeric = FALSE) + geom_line()
 ```
 
-## `stat_peaks()` and `stat_valleys()`
+## `stat_peaks` and `stat_valleys`
 
 Using POSIXct for `time` and the default formatting of labels.
 
@@ -139,7 +139,7 @@ ggplot(lynx, as.numeric = FALSE) + geom_line() +
   stat_valleys(geom = "rug", colour = "blue")
 ```
 
-## `stat_poly_eq()`
+## `stat_poly_eq`
 
 We generate some artificial data.
 
@@ -1000,7 +1000,7 @@ ggplot(my.data, aes(x, y)) +
   theme_bw()
 ```
 
-## `try_tibble()`
+## `try_tibble`
 
 ### Time series
 
