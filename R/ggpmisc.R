@@ -41,6 +41,7 @@
 #'
 #' @import ggplot2
 #' @importFrom ggplot2 ggplot
+#' @importFrom magrittr %>%
 #'
 #' @note The signatures of \code{stat_peaks()} and \code{stat_valleys()} are
 #'   identical to those of \code{stat_peaks} and \code{stat_valleys} from
