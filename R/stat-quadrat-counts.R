@@ -123,14 +123,14 @@ compute_counts_fun <- function(data,
   } else {
   # counts for the selected quadrats
     data %>%
-      dplyr::mutate(quadrat = which_quadrat(x, y)) %>%
-      dplyr::filter(quadrat %in% quadrats) %>%
-      dplyr::group_by(quadrat) %>%
-      dplyr::summarise(count = length(x), # dplyr::n() triggers error
-                x = ifelse(quadrat[1] %in% c(1L, 2L), range.x[2], range.x[1]),
-                y = ifelse(quadrat[1] %in% c(1L, 4L), range.y[2], range.y[1]),
-                hjust = ifelse(quadrat[1] %in% c(1L, 2L), 1, 0),
-                vjust = ifelse(quadrat[1] %in% c(1L, 4L), 0, 1)) %>%
+      dplyr::mutate(quadrat = which_quadrat(.data$x, .data$y)) %>%
+      dplyr::filter(.data$quadrat %in% quadrats) %>%
+      dplyr::group_by(.data$quadrat) %>%
+      dplyr::summarise(count = length(.data$x), # dplyr::n() triggers error
+                x = ifelse(.data$quadrat[1] %in% c(1L, 2L), range.x[2], range.x[1]),
+                y = ifelse(.data$quadrat[1] %in% c(1L, 4L), range.y[2], range.y[1]),
+                hjust = ifelse(.data$quadrat[1] %in% c(1L, 2L), 1, 0),
+                vjust = ifelse(.data$quadrat[1] %in% c(1L, 4L), 0, 1)) %>%
       dplyr::ungroup()
   }
 }
