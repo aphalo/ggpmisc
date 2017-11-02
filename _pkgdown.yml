@@ -25,6 +25,7 @@ reference:
     - stat_fit_residuals
     - stat_dens2d_filter
     - stat_dens2d_labels
+    - stat_quadrat_counts
     - stat_debug_group
     - stat_debug_panel
   - title: Fortify or Try
