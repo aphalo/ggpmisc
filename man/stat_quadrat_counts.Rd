@@ -5,7 +5,8 @@
 \title{Count the number of observations in each quadrat of a plot.}
 \usage{
 stat_quadrat_counts(mapping = NULL, data = NULL, geom = "text",
-  position = "identity", quadrats = NULL, na.rm = FALSE,
+  position = "identity", quadrats = NULL, origin.x = 0, origin.y = 0,
+  labels.range.x = NULL, labels.range.y = NULL, na.rm = FALSE,
   show.legend = FALSE, inherit.aes = TRUE, ...)
 }
 \arguments{
@@ -23,6 +24,11 @@ layer}
 
 \item{quadrats}{integer vector indicating which quadrats are of interest, with
 a \code{OL} indicating the whole plot.}
+
+\item{origin.x, origin.y}{numeric the coordinates of the origin of the quadrats.}
+
+\item{labels.range.x, labels.range.y}{\code{numeric} Coordinates (in data units) to be used
+for absolute positioning of the labels.}
 
 \item{na.rm}{a logical indicating whether NA values should be stripped
 before the computation proceeds.}

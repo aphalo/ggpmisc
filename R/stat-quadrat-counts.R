@@ -25,6 +25,9 @@
 #'   before the computation proceeds.
 #' @param quadrats integer vector indicating which quadrats are of interest, with
 #'   a \code{OL} indicating the whole plot.
+#' @param origin.x,origin.y numeric the coordinates of the origin of the quadrats.
+#' @param labels.range.x,labels.range.y \code{numeric} Coordinates (in data units) to be used
+#'   for absolute positioning of the labels.
 #'
 #' @details This stat can be used to automatically observations in each of the
 #' four quadrats of a plot, and by default add these counts as text labels.
@@ -64,6 +67,8 @@
 stat_quadrat_counts <- function(mapping = NULL, data = NULL, geom = "text",
                                 position = "identity",
                                 quadrats = NULL,
+                                origin.x = 0, origin.y = 0,
+                                labels.range.x = NULL, labels.range.y = NULL,
                                 na.rm = FALSE, show.legend = FALSE,
                                 inherit.aes = TRUE, ...) {
   ggplot2::layer(
@@ -71,6 +76,10 @@ stat_quadrat_counts <- function(mapping = NULL, data = NULL, geom = "text",
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
     params = list(na.rm = na.rm,
                   quadrats = quadrats,
+                  origin.x = origin.x,
+                  origin.y = origin.y,
+                  labels.range.x = labels.range.x,
+                  labels.range.y = labels.range.y,
                   ...)
   )
 }
@@ -82,31 +91,51 @@ stat_quadrat_counts <- function(mapping = NULL, data = NULL, geom = "text",
 #'
 compute_counts_fun <- function(data,
                                scales,
-                               quadrats) {
+                               quadrats,
+                               origin.x,
+                               origin.y,
+                               labels.range.x,
+                               labels.range.y) {
 
   which_quadrat <- function(x, y) {
-    ifelse(x >= 0 & y >= 0,
+    ifelse(x >= origin.x & y >= origin.y,
            1L,
-           ifelse(x >= 0 & y < 0,
+           ifelse(x >= origin.x & y < origin.y,
                   2L,
-                  ifelse(x < 0 & y < 0,
+                  ifelse(x < origin.x & y < origin.y,
                          3L,
                          4L)))
   }
+
+  stopifnot(length(origin.x) == 1 && length(origin.y) == 1)
+  stopifnot(length(quadrats) <= 4)
+  stopifnot(is.numeric(labels.range.x) && is.numeric(labels.range.y))
 
   force(data)
   # compute range of whole data
   range.x <- range(data$x)
   range.y <- range(data$y)
+  # compute postion for labels
+  if (is.null(labels.range.x)) {
+    labels.range.x <- range.x
+  } else {
+    labels.range.x <- range(labels.range.x)
+  }
+  if (is.null(labels.range.y)) {
+    labels.range.y <- range.y
+  } else {
+    labels.range.y <- range(labels.range.y)
+  }
+
   # dynamic default based on data range
   if (is.null(quadrats)) {
-    if (all(range.x >= 0) && all(range.y >= 0)) {
+    if (all(range.x >= origin.x) && all(range.y >= origin.y)) {
       quadrats = 1L
-    } else if (all(range.x < 0) && all(range.y < 0)) {
+    } else if (all(range.x < origin.x) && all(range.y < origin.y)) {
       quadrats = 3L
-    } else if (all(range.x >= 0)) {
+    } else if (all(range.x >= origin.x)) {
       quadrats = c(1L, 2L)
-    } else if (all(range.y >= 0)) {
+    } else if (all(range.y >= origin.y)) {
       quadrats = c(1L, 4L)
     } else {
       quadrats = c(1L, 2L, 3L, 4L)
@@ -127,8 +156,8 @@ compute_counts_fun <- function(data,
       dplyr::filter(.data$quadrat %in% quadrats) %>%
       dplyr::group_by(.data$quadrat) %>%
       dplyr::summarise(count = length(.data$x), # dplyr::n() triggers error
-                x = ifelse(.data$quadrat[1] %in% c(1L, 2L), range.x[2], range.x[1]),
-                y = ifelse(.data$quadrat[1] %in% c(1L, 4L), range.y[2], range.y[1]),
+                x = ifelse(.data$quadrat[1] %in% c(1L, 2L), labels.range.x[2], labels.range.x[1]),
+                y = ifelse(.data$quadrat[1] %in% c(1L, 4L), labels.range.y[2], labels.range.y[1]),
                 hjust = ifelse(.data$quadrat[1] %in% c(1L, 2L), 1, 0),
                 vjust = ifelse(.data$quadrat[1] %in% c(1L, 4L), 0, 1)) %>%
       dplyr::ungroup()
