@@ -29,12 +29,13 @@
 #' @param labels.range.x,labels.range.y \code{numeric} Coordinates (in data units) to be used
 #'   for absolute positioning of the labels.
 #'
-#' @details This stat can be used to automatically observations in each of the
+#' @details This stat can be used to automatically count observations in each of the
 #' four quadrats of a plot, and by default add these counts as text labels.
 #'
 #' @section Computed variables: Data frame with one to four rows, one for each
 #'   quadrat for which observations are present in \code{data}.
 #'   \describe{
+#'   \item{quadrat}{integer, one of 0:4}
 #'   \item{x}{extreme x value in the quadrat}
 #'   \item{y}{extreme y value in the quadrat}
 #'   \item{count}{number of ovserbations}
@@ -109,7 +110,8 @@ compute_counts_fun <- function(data,
 
   stopifnot(length(origin.x) == 1 && length(origin.y) == 1)
   stopifnot(length(quadrats) <= 4)
-  stopifnot(is.numeric(labels.range.x) && is.numeric(labels.range.y))
+  stopifnot(is.null(labels.range.x) || is.numeric(labels.range.x))
+  stopifnot(is.null(labels.range.y) || is.numeric(labels.range.y))
 
   force(data)
   # compute range of whole data
@@ -144,23 +146,36 @@ compute_counts_fun <- function(data,
 
   if (all(is.na(quadrats)) || 0L %in% quadrats) {
   # total count
-    data.frame(count = nrow(data),
-               x = range.x[2],
-               y = range.y[2],
-               hjust = 1,
-               vjust = 1)
+    tibble::tibble(quadrat = 0,
+                   count = nrow(data),
+                   x = range.x[2],
+                   y = range.y[2],
+                   hjust = 1,
+                   vjust = 1)
   } else {
   # counts for the selected quadrats
     data %>%
       dplyr::mutate(quadrat = which_quadrat(.data$x, .data$y)) %>%
       dplyr::filter(.data$quadrat %in% quadrats) %>%
       dplyr::group_by(.data$quadrat) %>%
-      dplyr::summarise(count = length(.data$x), # dplyr::n() triggers error
-                x = ifelse(.data$quadrat[1] %in% c(1L, 2L), labels.range.x[2], labels.range.x[1]),
-                y = ifelse(.data$quadrat[1] %in% c(1L, 4L), labels.range.y[2], labels.range.y[1]),
-                hjust = ifelse(.data$quadrat[1] %in% c(1L, 2L), 1, 0),
-                vjust = ifelse(.data$quadrat[1] %in% c(1L, 4L), 0, 1)) %>%
-      dplyr::ungroup()
+      dplyr::summarise(count = length(.data$x)) %>% # dplyr::n() triggers error
+      dplyr::ungroup() -> data
+
+    zero.count.quadrats <- setdiff(quadrats, data$quadrat)
+    if (length(zero.count.quadrats) > 0) {
+      data <-
+        rbind(data, tibble::tibble(quadrat = zero.count.quadrats, count = 0L))
+    }
+
+    data %>%
+      dplyr::mutate(x = ifelse(.data$quadrat %in% c(1L, 2L),
+                               labels.range.x[2],
+                               labels.range.x[1]),
+                    y = ifelse(.data$quadrat %in% c(1L, 4L),
+                               labels.range.y[2],
+                               labels.range.y[1]),
+                    hjust = ifelse(.data$quadrat %in% c(1L, 2L), 1, 0),
+                    vjust = ifelse(.data$quadrat %in% c(1L, 4L), -0.1, 1.1))
   }
 }
 
@@ -172,7 +187,7 @@ StatQuadratCounts <-
   ggplot2::ggproto("StatQuadratCounts", ggplot2::Stat,
                    compute_panel = compute_counts_fun,
                    default_aes =
-                     ggplot2::aes(label = paste("n=", ..count..),
+                     ggplot2::aes(label = paste("n=", ..count.., sep = ""),
                                   hjust = ..hjust..,
                                   vjust = ..vjust..),
                    required_aes = c("x", "y")

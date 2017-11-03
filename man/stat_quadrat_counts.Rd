@@ -51,13 +51,14 @@ can include aesthetics whose values you want to set, not map. See
 of a plot.
 }
 \details{
-This stat can be used to automatically observations in each of the
+This stat can be used to automatically count observations in each of the
 four quadrats of a plot, and by default add these counts as text labels.
 }
 \section{Computed variables}{
  Data frame with one to four rows, one for each
   quadrat for which observations are present in \code{data}.
   \describe{
+  \item{quadrat}{integer, one of 0:4}
   \item{x}{extreme x value in the quadrat}
   \item{y}{extreme y value in the quadrat}
   \item{count}{number of ovserbations}
