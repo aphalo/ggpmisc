@@ -17,10 +17,10 @@ library(tibble)
 
 test_that("multiple_rows_tb", {
   tb <- tibble(a = LETTERS[2:4], b = letters[4:2])
-  my.tb <- tibble(x = 0:3, y = 0:3, tb = list(t1 = tb, t2 = tb, t3 = tb, t4 = tb))
+  my.tb <- tibble(x = 1:4, y = 1:4, tb = list(t1 = tb, t2 = tb, t3 = tb, t4 = tb))
   vdiffr::expect_doppelganger("geom_table_multi_row",
                               ggplot(my.tb, aes(x, y, label = tb)) +
-                                geom_table(vjust = 0, hjust = 0))
+                                geom_table() + lims(x = c(0, 5), y = c(0, 5)))
 })
 
 test_that("numbers_tb", {

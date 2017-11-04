@@ -112,9 +112,7 @@ gtb_draw_panel_fun <-
       return(grid::nullGrob())
     }
 
-    if (nrow(data) > 1) {
-      warning("Only one table per call is rendered. Discarding all rows of 'data' except first.")
-    }
+    tb.grobs <- grid::gList()
 
     for (row.idx in 1:nrow(data)) {
       lab <- data$label[[row.idx]]
@@ -138,14 +136,20 @@ gtb_draw_panel_fun <-
                                angle = data$angle[row.idx],
                                name = paste("geom_table.panel", data$PANEL[row.idx], "row", row.idx, sep = "."))
       gtb
+      gtb$name <- paste("table", row.idx, sep = ".") # give unique name to each table
 
-      if (row.idx == 1) {
-        gtbs <- grid::grobTree(gtb, name = paste("geom_table.panel", data$PANEL[row.idx], sep = "."))
-      } else {
-        grid::grid.add("gtbs", gtb)
-      }
+      tb.grobs[[row.idx]] <- gtb
     }
-    gtbs
+
+    grid.name <- paste("geom_table.panel", data$PANEL[row.idx], sep = ".")
+    # fix viewport handling for multiple tables
+    childrenvp <- grid::viewport(x = unit(0.5, "npc"),
+                                 y = unit(0.5, "npc"),
+                                 width = unit(1, "npc"),
+                                 height = unit(1, "npc"))
+    z <- grid::gTree(children = tb.grobs, name = grid.name)
+#    print(grid::childNames(z))
+    z
   }
 
 #' @rdname ggpmisc-ggproto
