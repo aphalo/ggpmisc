@@ -103,38 +103,49 @@ gtb_draw_panel_fun <-
   function(data, panel_params, coord, parse = FALSE,
            na.rm = FALSE, check_overlap = FALSE) {
 
+    if (nrow(data) == 0) {
+      return(grid::nullGrob())
+    }
+
     if (!is.data.frame(data$label[[1]])) {
-      warning("Skipping as object mapped to 'label' is not a list of \"tibble\" or \"data.frame\".")
+      warning("Skipping as object mapped to 'label' is not a list of \"tibble\" or \"data.frame\" objects.")
       return(grid::nullGrob())
     }
 
     if (nrow(data) > 1) {
-      warning("Grouping not supported in current version.")
-      return(grid::nullGrob())
+      warning("Only one table per call is rendered. Discarding all rows of 'data' except first.")
     }
 
-    lab <- data$label[[1]]
+    for (row.idx in 1:nrow(data)) {
+      lab <- data$label[[row.idx]]
 
-    data <- coord$transform(data, panel_params)
+      data <- coord$transform(data, panel_params)
 
-    gtb <-
-      gridExtra::tableGrob(
-        lab,
-        theme = gridExtra::ttheme_default(base_size = data$size * .pt,
-                                          base_colour = ggplot2::alpha(data$colour, data$alpha),
-                                          parse = parse),
-        rows = NULL
-      )
+      gtb <-
+        gridExtra::tableGrob(
+          lab,
+          theme = gridExtra::ttheme_default(base_size = data$size * .pt,
+                                            base_colour = ggplot2::alpha(data$colour, data$alpha),
+                                            parse = parse),
+          rows = NULL
+        )
 
-    gtb$vp <- grid::viewport(x = unit(data$x[1], "native"),
-                             y = unit(data$y[1], "native"),
-                             width = sum(gtb$widths),
-                             height = sum(gtb$heights),
-                             just = c(data$hjust, data$vjust),
-                             angle = data$angle,
-                             name = paste("geom_table.panel", data$PANEL[1], sep = "."))
-    gtb
+      gtb$vp <- grid::viewport(x = unit(data$x[row.idx], "native"),
+                               y = unit(data$y[row.idx], "native"),
+                               width = sum(gtb$widths),
+                               height = sum(gtb$heights),
+                               just = c(data$hjust[row.idx], data$vjust[row.idx]),
+                               angle = data$angle[row.idx],
+                               name = paste("geom_table.panel", data$PANEL[row.idx], "row", row.idx, sep = "."))
+      gtb
 
+      if (row.idx == 1) {
+        gtbs <- grid::grobTree(gtb, name = paste("geom_table.panel", data$PANEL[row.idx], sep = "."))
+      } else {
+        grid::grid.add("gtbs", gtb)
+      }
+    }
+    gtbs
   }
 
 #' @rdname ggpmisc-ggproto
