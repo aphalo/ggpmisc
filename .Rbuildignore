@@ -4,4 +4,5 @@ vignettes/figure
 inst-not
 test
 ^docs$
+^tests$
 ^_pkgdown.yml$

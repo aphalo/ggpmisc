@@ -103,8 +103,13 @@ gtb_draw_panel_fun <-
   function(data, panel_params, coord, parse = FALSE,
            na.rm = FALSE, check_overlap = FALSE) {
 
+    if (!is.data.frame(data$label[[1]])) {
+      warning("Skipping as object mapped to 'label' is not a list of \"tibble\" or \"data.frame\".")
+      return(grid::nullGrob())
+    }
+
     if (nrow(data) > 1) {
-      warning("Grouping not supported in current version")
+      warning("Grouping not supported in current version.")
       return(grid::nullGrob())
     }
 
