@@ -48,11 +48,26 @@ can include aesthetics whose values you want to set, not map. See
 }
 \description{
 \code{stat_quadrat_counts} counts the number of observations in each quadrat
-of a plot.
+of a plot panel. By default it adds a text label to the far corner of each
+quadrat. It can also be used to obtain the total number of observations in
+the whole panel. Grouping is ignored, so en every case a single count is
+computed for each quadrat in a plot panel.
 }
 \details{
 This stat can be used to automatically count observations in each of the
 four quadrats of a plot, and by default add these counts as text labels.
+}
+\note{
+Values exactly equal to zero are counted as belonging to the positve
+  quadrat. An argument value of zero, passed to formal parameter
+  \code{quadrats} is interpreted as a request for the count of all
+  observations in each plot panel. By default, which quadrats to compute
+  counts for is decided based on which quadrats are expected to be visible in
+  the plot. In the current implementation, the default positions of the
+  labels is based on the range of the data ploted in a given panel.
+  Consequently, when using facets unless using free limits for x and y axes,
+  the location of the labels will need supplied by the user when consistent
+  placement accross panels is desired.
 }
 \section{Computed variables}{
  Data frame with one to four rows, one for each

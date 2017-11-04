@@ -1,7 +1,10 @@
 #' Count the number of observations in each quadrat of a plot.
 #'
 #' \code{stat_quadrat_counts} counts the number of observations in each quadrat
-#' of a plot.
+#' of a plot panel. By default it adds a text label to the far corner of each
+#' quadrat. It can also be used to obtain the total number of observations in
+#' the whole panel. Grouping is ignored, so en every case a single count is
+#' computed for each quadrat in a plot panel.
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_string}}. Only needs
@@ -40,6 +43,17 @@
 #'   \item{y}{extreme y value in the quadrat}
 #'   \item{count}{number of ovserbations}
 #'   }
+#'
+#' @note Values exactly equal to zero are counted as belonging to the positve
+#'   quadrat. An argument value of zero, passed to formal parameter
+#'   \code{quadrats} is interpreted as a request for the count of all
+#'   observations in each plot panel. By default, which quadrats to compute
+#'   counts for is decided based on which quadrats are expected to be visible in
+#'   the plot. In the current implementation, the default positions of the
+#'   labels is based on the range of the data ploted in a given panel.
+#'   Consequently, when using facets unless using free limits for x and y axes,
+#'   the location of the labels will need supplied by the user when consistent
+#'   placement accross panels is desired.
 #'
 #' @examples
 #' library(ggplot2)
@@ -187,9 +201,9 @@ StatQuadratCounts <-
   ggplot2::ggproto("StatQuadratCounts", ggplot2::Stat,
                    compute_panel = compute_counts_fun,
                    default_aes =
-                     ggplot2::aes(label = paste("n=", ..count.., sep = ""),
-                                  hjust = ..hjust..,
-                                  vjust = ..vjust..),
+                     ggplot2::aes(label = paste("n=", calc(count), sep = ""),
+                                  hjust = calc(hjust),
+                                  vjust = calc(vjust)),
                    required_aes = c("x", "y")
   )
 
