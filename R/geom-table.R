@@ -2,12 +2,12 @@
 #'
 #' \code{geom_table} adds a textual table directly to the plot.
 #'
-#' Note the the "width" and "height" of a text element are 0, so stacking and
-#' dodging text will not work by default, and axis limits are not automatically
-#' expanded to include all text. Obviously, labels do have height and width, but
-#' they are physical units, not data units. The amount of space they occupy on
-#' that plot is not constant in data units: when you resize a plot, labels stay
-#' the same size, but the size of the axes changes.
+#' Note the the "width" and "height" like of a text element are 0, so stacking
+#' and dodging tables will not work by default, and axis limits are not
+#' automatically expanded to include all tables. Obviously, tables do have
+#' height and width, but they are physical units, not data units. The amount of
+#' space they occupy on that plot is not constant in data units: when you resize
+#' a plot, tables stay the same size, but the size of the axes changes.
 #'
 #' @section Alignment: You can modify table alignment with the \code{vjust} and
 #'   \code{hjust} aesthetics. These can either be a number between 0
@@ -23,8 +23,13 @@
 #'   as a string.
 #' @param na.rm If \code{FALSE} (the default), removes missing values with a
 #'   warning.  If \code{TRUE} silently removes missing values.
-#' @param position The position adjustment to use for overlapping points on this
-#'   layer
+#' @param position Position adjustment, either as a string, or the result of a
+#'   call to a position adjustment function.
+#' @param ... other arguments passed on to \code{\link[ggplot2]{layer}}. This
+#'   can include aesthetics whose values you want to set, not map. See
+#'   \code{\link[ggplot2]{layer}} for more details.
+#' @param parse If TRUE, the labels will be parsed into expressions and
+#'   displayed as described in ?plotmath.
 #' @param show.legend logical. Should this layer be included in the legends?
 #'   \code{NA}, the default, includes if any aesthetics are mapped. \code{FALSE}
 #'   never includes, and \code{TRUE} always includes.
@@ -32,19 +37,14 @@
 #'   than combining with them. This is most useful for helper functions that
 #'   define both data and aesthetics and shouldn't inherit behaviour from the
 #'   default plot specification, e.g. \code{\link[ggplot2]{borders}}.
-#' @param ... other arguments passed on to \code{\link[ggplot2]{layer}}. This
-#'   can include aesthetics whose values you want to set, not map. See
-#'   \code{\link[ggplot2]{layer}} for more details.
-#' @param parse If TRUE, the labels will be parsed into expressions and
-#'   displayed as described in ?plotmath.
 #' @param check_overlap If \code{TRUE}, text that overlaps previous text in the
 #'   same layer will not be plotted.
 #'
-#' @note This geom works only with tibbles as \code{data}, as it expects a whole
-#'   data frame or tibble to be mapped to the \code{label} aesthetic. In the
-#'   current version the following aesthetics affect the text within the table
-#'   \code{size}, \code{colour}, and \code{alpha}. The argument to parameter
-#'   \code{parse} is simply passed forward to
+#' @note This geom works only with tibbles as \code{data}, as it expects a list
+#'   of data frames or a list of tibbles to be mapped to the \code{label}
+#'   aesthetic. In the current version the following aesthetics affect the text
+#'   within the table \code{size}, \code{colour}, and \code{alpha}. The argument
+#'   to parameter \code{parse} is simply passed forward to
 #'   \code{gridExtra::ttheme_default()}. As \code{x} and \code{y} determine the
 #'   position of the whole table, similarly to that of a text label,
 #'   justification is interpreted as indicating the position of the table with
@@ -60,12 +60,15 @@
 #'   behaviour of 'ggplot2' geometries.
 #'   \url{https://stackoverflow.com/questions/12318120/adding-table-within-the-plotting-region-of-a-ggplot-in-r}
 #'
+#'
 #'   \url{https://stackoverflow.com/questions/25554548/adding-sub-tables-on-each-panel-of-a-facet-ggplot-in-r?}
+#'
 #'
 #' @seealso function \code{\link[gridExtra]{tableGrob}} as it is used to
 #'   construct the table.
 #'
 #' @export
+#'
 geom_table <- function(mapping = NULL, data = NULL,
                        stat = "identity", position = "identity",
                        ...,
@@ -112,16 +115,15 @@ gtb_draw_panel_fun <-
       return(grid::nullGrob())
     }
 
+    # should be called only once!
+    data <- coord$transform(data, panel_params)
+
     tb.grobs <- grid::gList()
 
     for (row.idx in 1:nrow(data)) {
-      lab <- data$label[[row.idx]]
-
-      data <- coord$transform(data, panel_params)
-
       gtb <-
         gridExtra::tableGrob(
-          lab,
+          d = data$label[[row.idx]],
           theme = gridExtra::ttheme_default(base_size = data$size * .pt,
                                             base_colour = ggplot2::alpha(data$colour, data$alpha),
                                             parse = parse),
@@ -135,21 +137,17 @@ gtb_draw_panel_fun <-
                                just = c(data$hjust[row.idx], data$vjust[row.idx]),
                                angle = data$angle[row.idx],
                                name = paste("geom_table.panel", data$PANEL[row.idx], "row", row.idx, sep = "."))
-      gtb
-      gtb$name <- paste("table", row.idx, sep = ".") # give unique name to each table
+
+      # give unique name to each table
+      gtb$name <- paste("table", row.idx, sep = ".")
 
       tb.grobs[[row.idx]] <- gtb
     }
 
-    grid.name <- paste("geom_table.panel", data$PANEL[row.idx], sep = ".")
-    # fix viewport handling for multiple tables
-    childrenvp <- grid::viewport(x = unit(0.5, "npc"),
-                                 y = unit(0.5, "npc"),
-                                 width = unit(1, "npc"),
-                                 height = unit(1, "npc"))
-    z <- grid::gTree(children = tb.grobs, name = grid.name)
-#    print(grid::childNames(z))
-    z
+    grid.name <- paste("geom_table.panel",
+                       data$PANEL[row.idx], sep = ".")
+
+    grid::gTree(children = tb.grobs, name = grid.name)
   }
 
 #' @rdname ggpmisc-ggproto

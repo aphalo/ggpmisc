@@ -16,11 +16,14 @@ library(tibble)
 # })
 
 test_that("multiple_rows_tb", {
-  tb <- tibble(a = LETTERS[2:4], b = letters[4:2])
-  my.tb <- tibble(x = 1:4, y = 1:4, tb = list(t1 = tb, t2 = tb, t3 = tb, t4 = tb))
+  tb <- tibble(Z1 = LETTERS[2:4], z1 = letters[4:2])
+  tbb <- tibble(Z2 = LETTERS[2:4], z2 = letters[4:2])
+  tbbb <- tibble(Z3 = LETTERS[2:4], z3 = letters[4:2])
+  my.tb <- tibble(x = 2:4, y = 3:5, tb = list(t1 = tb, t2 = tbb, t3 = tbbb))
   vdiffr::expect_doppelganger("geom_table_multi_row",
                               ggplot(my.tb, aes(x, y, label = tb)) +
-                                geom_table() + lims(x = c(0, 5), y = c(0, 5)))
+                                geom_table() +
+                                lims(x = c(0, 6), y = c(0, 6)))
 })
 
 test_that("numbers_tb", {

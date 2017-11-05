@@ -19,8 +19,8 @@ the plot defaults.}
 \item{stat}{The statistical transformation to use on the data for this layer,
 as a string.}
 
-\item{position}{The position adjustment to use for overlapping points on this
-layer}
+\item{position}{Position adjustment, either as a string, or the result of a
+call to a position adjustment function.}
 
 \item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This
 can include aesthetics whose values you want to set, not map. See
@@ -48,19 +48,19 @@ default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
 \code{geom_table} adds a textual table directly to the plot.
 }
 \details{
-Note the the "width" and "height" of a text element are 0, so stacking and
-dodging text will not work by default, and axis limits are not automatically
-expanded to include all text. Obviously, labels do have height and width, but
-they are physical units, not data units. The amount of space they occupy on
-that plot is not constant in data units: when you resize a plot, labels stay
-the same size, but the size of the axes changes.
+Note the the "width" and "height" like of a text element are 0, so stacking
+and dodging tables will not work by default, and axis limits are not
+automatically expanded to include all tables. Obviously, tables do have
+height and width, but they are physical units, not data units. The amount of
+space they occupy on that plot is not constant in data units: when you resize
+a plot, tables stay the same size, but the size of the axes changes.
 }
 \note{
-This geom works only with tibbles as \code{data}, as it expects a whole
-  data frame or tibble to be mapped to the \code{label} aesthetic. In the
-  current version the following aesthetics affect the text within the table
-  \code{size}, \code{colour}, and \code{alpha}. The argument to parameter
-  \code{parse} is simply passed forward to
+This geom works only with tibbles as \code{data}, as it expects a list
+  of data frames or a list of tibbles to be mapped to the \code{label}
+  aesthetic. In the current version the following aesthetics affect the text
+  within the table \code{size}, \code{colour}, and \code{alpha}. The argument
+  to parameter \code{parse} is simply passed forward to
   \code{gridExtra::ttheme_default()}. As \code{x} and \code{y} determine the
   position of the whole table, similarly to that of a text label,
   justification is interpreted as indicating the position of the table with
@@ -83,6 +83,7 @@ This geometry is inspired on answers to two questions in
   obeys the grammar of graphics, and attempts to be consistent with the
   behaviour of 'ggplot2' geometries.
   \url{https://stackoverflow.com/questions/12318120/adding-table-within-the-plotting-region-of-a-ggplot-in-r}
+
 
   \url{https://stackoverflow.com/questions/25554548/adding-sub-tables-on-each-panel-of-a-facet-ggplot-in-r?}
 }
