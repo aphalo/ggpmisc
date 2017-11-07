@@ -162,6 +162,7 @@ compute_counts_fun <- function(data,
   } else {
     labels.range.x <- range(labels.range.x)
   }
+
   if (is.null(labels.range.y)) {
     if (pool.along == "y") {
       labels.range.y <- rep(origin.y, 2)
@@ -197,8 +198,8 @@ compute_counts_fun <- function(data,
   # total count
     tibble::tibble(quadrat = 0,
                    count = nrow(data),
-                   x = range.x[2],
-                   y = range.y[2],
+                   x = labels.range.x[2],
+                   y = labels.range.y[2],
                    hjust = 1,
                    vjust = 1)
   } else {
