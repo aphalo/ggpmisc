@@ -5,9 +5,10 @@
 \title{Count the number of observations in each quadrat of a plot.}
 \usage{
 stat_quadrat_counts(mapping = NULL, data = NULL, geom = "text",
-  position = "identity", quadrats = NULL, origin.x = 0, origin.y = 0,
-  labels.range.x = NULL, labels.range.y = NULL, na.rm = FALSE,
-  show.legend = FALSE, inherit.aes = TRUE, ...)
+  position = "identity", quadrats = NULL, pool.along = "none",
+  origin.x = 0, origin.y = 0, labels.range.x = NULL,
+  labels.range.y = NULL, na.rm = FALSE, show.legend = FALSE,
+  inherit.aes = TRUE, ...)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
@@ -22,16 +23,20 @@ the plot defaults.}
 \item{position}{The position adjustment to use for overlapping points on this
 layer}
 
-\item{quadrats}{integer vector indicating which quadrats are of interest, with
-a \code{OL} indicating the whole plot.}
+\item{quadrats}{integer vector indicating which quadrats are of interest,
+with a \code{OL} indicating the whole plot.}
 
-\item{origin.x, origin.y}{numeric the coordinates of the origin of the quadrats.}
+\item{pool.along}{character, one of "none", "x" or "y", indicating which
+quadrats to pool to calculate counts by pair of quadrats.}
 
-\item{labels.range.x, labels.range.y}{\code{numeric} Coordinates (in data units) to be used
-for absolute positioning of the labels.}
+\item{origin.x, origin.y}{numeric the coordinates of the origin of the
+quadrats.}
 
-\item{na.rm}{a logical indicating whether NA values should be stripped
-before the computation proceeds.}
+\item{labels.range.x, labels.range.y}{\code{numeric} Coordinates (in data
+units) to be used for absolute positioning of the labels.}
+
+\item{na.rm}{a logical indicating whether NA values should be stripped before
+the computation proceeds.}
 
 \item{show.legend}{logical. Should this layer be included in the legends?
 \code{NA}, the default, includes if any aesthetics are mapped. \code{FALSE}
@@ -50,12 +55,13 @@ can include aesthetics whose values you want to set, not map. See
 \code{stat_quadrat_counts} counts the number of observations in each quadrat
 of a plot panel. By default it adds a text label to the far corner of each
 quadrat. It can also be used to obtain the total number of observations in
-the whole panel. Grouping is ignored, so en every case a single count is
-computed for each quadrat in a plot panel.
+each of two pairs of quadrats or in the whole panel. Grouping is ignored, so
+en every case a single count is computed for each quadrat in a plot panel.
 }
 \details{
-This stat can be used to automatically count observations in each of the
-four quadrats of a plot, and by default add these counts as text labels.
+This stat can be used to automatically count observations in each of
+  the four quadrats of a plot, and by default add these counts as text
+  labels.
 }
 \note{
 Values exactly equal to zero are counted as belonging to the positve
@@ -71,13 +77,10 @@ Values exactly equal to zero are counted as belonging to the positve
 }
 \section{Computed variables}{
  Data frame with one to four rows, one for each
-  quadrat for which observations are present in \code{data}.
-  \describe{
-  \item{quadrat}{integer, one of 0:4}
-  \item{x}{extreme x value in the quadrat}
-  \item{y}{extreme y value in the quadrat}
-  \item{count}{number of ovserbations}
-  }
+  quadrat for which observations are present in \code{data}. \describe{
+  \item{quadrat}{integer, one of 0:4} \item{x}{extreme x value in the
+  quadrat} \item{y}{extreme y value in the quadrat} \item{count}{number of
+  ovserbations} }
 }
 
 \examples{
@@ -97,6 +100,16 @@ ggplot(my.data, aes(x - 50, y - 10)) +
   geom_vline(xintercept = 0, colour = "blue") +
   geom_point() +
   stat_quadrat_counts(colour = "blue")
+
+ggplot(my.data, aes(x - 50, y - 10)) +
+  geom_hline(yintercept = 0, colour = "blue") +
+  geom_point() +
+  stat_quadrat_counts(colour = "blue", pool.along = "x")
+
+ggplot(my.data, aes(x - 50, y - 10)) +
+  geom_vline(xintercept = 0, colour = "blue") +
+  geom_point() +
+  stat_quadrat_counts(colour = "blue", pool.along = "y")
 
 ggplot(my.data, aes(x - 50, y - 10)) +
   geom_point() +
