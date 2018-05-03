@@ -1,7 +1,7 @@
 Package: ggpmisc
 Type: Package
 Title: Miscellaneous Extensions to 'ggplot2'
-Version: 0.2.16.9005
+Version: 0.2.17
 Date: 2018-05-03
 Authors@R:
     c(
@@ -27,7 +27,7 @@ Remotes:
     tidyverse/ggplot2
 Depends:
     R (>= 3.3.0),
-    ggplot2 (> 2.2.1)
+    ggplot2 (>= 2.2.1)
 Imports:
     methods,
     grid,
