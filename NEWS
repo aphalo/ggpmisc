@@ -17,7 +17,9 @@ CRAN version
 * Add stat_quadrat_count() a stat that computes the number of observations in
 each quadrat of a plot panel ignoring grouping.
 
-* Fix minor bugs.
+* Fix minor bugs, one of which is code breaking: the names of returned parameter
+estimates have changed in stat_fit_tidy() adding "_estimate" to avoid conflicts
+with mapped variables.
 
 ggpmisc 0.2.16
 ==============

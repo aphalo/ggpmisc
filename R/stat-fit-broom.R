@@ -432,7 +432,8 @@ fit_tidy_compute_group_fun <- function(data,
   z.estimate <- as.data.frame(t(mf.td[["estimate"]]))
   z.std.error <- as.data.frame(t(mf.td[["std.error"]]))
   clean.term.names <- gsub("(Intercept)", "Intercept", mf.td[["term"]], fixed = TRUE)
-  names(z.estimate) <- clean.term.names
+  names(z.estimate) <- paste(clean.term.names, "estimate", sep = "_")
+  #    names(z.estimate) <- clean.term.names
   names(z.std.error) <- paste(clean.term.names, "se", sep = "_")
   z <- cbind(z.estimate, z.std.error)
   if (exists("statistic", mf.td, inherits = FALSE)) {
