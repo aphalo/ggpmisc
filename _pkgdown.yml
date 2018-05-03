@@ -9,7 +9,6 @@ reference:
   - title: Geoms
     desc: Geoms, short for geometric objects, describe the type of plot you will produce.
     contents:
-    - geom_table
     - geom_debug
     - geom_null
   - title: Statistics
@@ -17,7 +16,6 @@ reference:
     contents:
     - stat_peaks
     - stat_poly_eq
-    - stat_fit_tb
     - stat_fit_tidy
     - stat_fit_glance
     - stat_fit_augment
