@@ -12,7 +12,7 @@
 
 <meta name="author" content="Pedro J. Aphalo" />
 
-<meta name="date" content="2017-11-06" />
+<meta name="date" content="2018-04-29" />
 
 <title>User Guide: 4 Manipulation of plot layers</title>
 
@@ -69,9 +69,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">User Guide: 4 Manipulation of plot layers</h1>
-<h3 class="subtitle"><em>‘ggpmisc’ 0.2.16.9002</em></h3>
+<h3 class="subtitle"><em>‘ggpmisc’ 0.2.16.9004</em></h3>
 <h4 class="author"><em>Pedro J. Aphalo</em></h4>
-<h4 class="date"><em>2017-11-06</em></h4>
+<h4 class="date"><em>2018-04-29</em></h4>
 
 
 <div id="TOC">
@@ -167,7 +167,7 @@ p</code></pre></div>
 <p>To display textual information about a <code>gg</code> object we use method <code>summary()</code>, while methods <code>print()</code> and <code>plot()</code> will display the actual plot.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(p)</code></pre></div>
 <pre><code>## data: group, panel, y [120x3]
-## mapping:  x = group, y = y
+## mapping:  x = ~group, y = ~y
 ## faceting: &lt;ggproto object: Class FacetWrap, Facet, gg&gt;
 ##     compute_layout: function
 ##     draw_back: function
@@ -273,7 +273,7 @@ p</code></pre></div>
 ##         setup_params: function
 ##         super:  &lt;ggproto object: Class Stat, gg&gt;
 ##     stat_params: list
-##     subset: NULL
+##     subset: quosure, formula
 ##     super:  &lt;ggproto object: Class Layer, gg&gt;</code></pre>
 </div>
 <div id="manipulation-of-plot-layers" class="section level3">
