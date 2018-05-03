@@ -4,10 +4,16 @@
 [![](http://cranlogs.r-pkg.org/badges/ggpmisc)](https://cran.r-project.org/package=ggpmisc) 
 [![](http://cranlogs.r-pkg.org/badges/grand-total/ggpmisc)](https://cran.r-project.org/package=ggpmisc)
 
-
 Package '**ggpmisc**' (Miscellaneous Extensions to 'ggplot2') is a set of
 extensions to R package 'ggplot2' (> 2.2.1) useful when plotting diverse types
 of data.  
+
+**Currently there are two development branches of 'ggpmisc' being maintained: 
+one at CRAN with normal version
+numbering and compatible with 'ggplot2' (>=2.2.1) and this one with version
+numbers such as 0.9.17.9900 with additional functionality but requiring the
+development version of 'ggplot2' (>=2.2.1.9000) currently available only from 
+Github.**
 
 Functions `try_data_frame()` and `try_tibble()` can be used to convert time
 series objects into data frames or tibbles suitable for plotting. To complement

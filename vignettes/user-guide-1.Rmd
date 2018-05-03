@@ -553,9 +553,9 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
                 geom = "text",
                 label.x.npc = "right",
                 label.y.npc = "bottom",
-                aes(label = paste("V[m]~`=`~", signif(..Vm.., digits = 3),
+                aes(label = paste("V[m]~`=`~", signif(..Vm_estimate.., digits = 3),
                                   "%+-%", signif(..Vm_se.., digits = 2),
-                                  "~~~~K~`=`~", signif(..K.., digits = 3),
+                                  "~~~~K~`=`~", signif(..K_estimate.., digits = 3),
                                   "%+-%", signif(..K_se.., digits = 2),
                                   sep = "")),
                 parse = TRUE)
@@ -573,8 +573,8 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
                 geom = "text",
                 label.x.npc = 0.9,
                 label.y.npc = 0.3,
-                aes(label = paste("V~`=`~frac(", signif(..Vm.., digits = 2), "~C,",
-                                  signif(..K.., digits = 2), "+C)",
+                aes(label = paste("V~`=`~frac(", signif(..Vm_estimate.., digits = 2), "~C,",
+                                  signif(..K_estimate.., digits = 2), "+C)",
                                   sep = "")),
                 parse = TRUE) +
   labs(x = "C", y = "V")

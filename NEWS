@@ -2,12 +2,13 @@ ggpmisc 0.2.17.9900
 ===================
 
 Non-CRAN version with additional functionality, but requiring the
-development version of 'ggplot2' >= 2.2.1.9000 (>= commit of 2017-02-09) from Github.
+development version of 'ggplot2' >= 2.2.1.9000 (>= commit of 2017-02-09)
+from Github. Visit
 
 * geom_table(), a geom for adding a layer containing one or more tables to
 a plot panel.
 * stat_fit_tb() a stat that computes a tidy tabular version of the summary
-or ANOVA table.
+or ANOVA table from a model fit.
 
 ggpmisc 0.2.17
 ==============
@@ -17,7 +18,9 @@ CRAN version
 * Add stat_quadrat_count() a stat that computes the number of observations in
 each quadrat of a plot panel ignoring grouping.
 
-* Fix minor bugs.
+* Fix bugs, one of which is code breaking: the names of returned parameter
+estimates have changed in stat_fit_tidy() now pasting "_estimate" to avoid
+name clashes with mapped variables.
 
 ggpmisc 0.2.16
 ==============
