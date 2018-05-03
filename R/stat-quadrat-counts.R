@@ -238,9 +238,9 @@ StatQuadratCounts <-
   ggplot2::ggproto("StatQuadratCounts", ggplot2::Stat,
                    compute_panel = compute_counts_fun,
                    default_aes =
-                     ggplot2::aes(label = paste("n=", calc(count), sep = ""),
-                                  hjust = calc(hjust),
-                                  vjust = calc(vjust)),
+                     ggplot2::aes(label = paste("n=", ..count.., sep = ""),
+                                  hjust = ..hjust..,
+                                  vjust = ..vjust..),
                    required_aes = c("x", "y")
   )
 

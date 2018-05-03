@@ -23,8 +23,6 @@ License: GPL (>= 2)
 LazyData: TRUE
 LazyLoad: TRUE
 ByteCompile: TRUE
-Remotes:
-    tidyverse/ggplot2
 Depends:
     R (>= 3.3.0),
     ggplot2 (>= 2.2.1)

@@ -312,7 +312,7 @@ StatPolyEq <-
   ggplot2::ggproto("StatPolyEq", ggplot2::Stat,
                    compute_group = poly_eq_compute_group_fun,
                    default_aes =
-                     ggplot2::aes(label = calc(rr.label),
-                                  hjust = calc(hjust), vjust = calc(vjust)),
+                     ggplot2::aes(label = ..rr.label..,
+                                  hjust = ..hjust.., vjust = ..vjust..),
                    required_aes = c("x", "y")
   )
