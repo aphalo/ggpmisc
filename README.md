@@ -51,3 +51,4 @@ the same website.
 The current release of '__ggpmisc__' is available through
 [CRAN](https://cran.r-project.org/package=ggpmisc) for R (>= 3.3.3).
 
+Please note that this project is released with a [Contributor Code of Conduct](CONDUCT.md). By participating in this project you agree to abide by its terms.

@@ -4,6 +4,6 @@
 vignettes/figure/
 vignettes/*.html
 vignettes/*.R
-inst/web
+inst/doc
 tests/figs
 docs
