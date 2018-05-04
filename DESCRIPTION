@@ -1,24 +1,27 @@
 Package: ggpmisc
 Type: Package
 Title: Miscellaneous Extensions to 'ggplot2'
-Version: 0.2.17.9900
-Date: 2018-05-03
+Version: 0.2.17.9901
+Date: 2018-05-04
 Authors@R:
     c(
-    person("Pedro J.", "Aphalo", email = "pedro.aphalo@helsinki.fi", role = c("aut", "cre"), comment = c(ORCID = "https://orcid.org/0000-0003-3385-972X")),
+    person("Pedro J.", "Aphalo", email = "pedro.aphalo@helsinki.fi", role = c("aut", "cre"), comment = c(ORCID = "0000-0003-3385-972X")),
     person("Kamil", "Slowikowski", role = "ctb")
     )
 Maintainer: Pedro J. Aphalo <pedro.aphalo@helsinki.fi>
 Description: Extensions to 'ggplot2' respecting the grammar of graphics
-    paradigm. Provides new statistics to locate and tag peaks and valleys in 2D
-    plots, a statistics to add a label with the equation of a polynomial fitted
-    with lm(), or R^2 or adjusted R^2 or information criteria for any model
-    fitted with function lm(). Additional statistics give access to functions
-    in package 'broom'. Provides a function for flexibly converting time
-    series to data frames suitable for plotting with ggplot(). In addition
-    provides statistics and ggplot geometries useful for diagnosing what data
-    are passed to compute_group() and compute_panel() functions and to
-    geometries.
+    paradigm. Especialization of method ggplot(): accept and convert on the fly 
+    time series data. Geom: "table", adds tables to plots. Statistics: locate 
+    and tag peaks and valleys in 2D plots; count observations in different 
+    quadrats of a plot; select observations based on 2D density; label with the 
+    equation of a polynomial fitted with lm() or other types of models; labels 
+    with P-value, R^2 or adjusted R^2 or information criteria for fitted models; 
+    label with ANOVA table for fitted models; label with summary for fitted 
+    models. Model fit classes for which suitable methods are provided by package
+    'broom' are supported. Low-level debug tools: statistics and geometries 
+    reporting data passed to compute_group() and compute_panel() functions and 
+    to geometries. Layer manipulation: funtions for deletion, insertion, 
+    extraction and reordering of layers of ggplot objects.
 License: GPL (>= 2)
 LazyData: TRUE
 LazyLoad: TRUE

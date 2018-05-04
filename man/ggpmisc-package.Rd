@@ -7,15 +7,18 @@
 \title{ggpmisc: Miscellaneous Extensions to 'ggplot2'}
 \description{
 Extensions to 'ggplot2' respecting the grammar of graphics
-paradigm. Provides new statistics to locate and tag peaks and valleys in 2D
-plots, a statistics to add a label with the equation of a polynomial fitted
-with lm(), or R^2 or adjusted R^2 or information criteria for any model
-fitted with function lm(). Additional statistics give access to functions
-in package 'broom'. Provides a function for flexibly converting time
-series to data frames suitable for plotting with ggplot(). In addition
-provides statistics and ggplot geometries useful for diagnosing what data
-are passed to compute_group() and compute_panel() functions and to
-geometries.
+paradigm. Especialization of method ggplot(): accept and convert on the fly
+time series data. Geom: "table", adds tables to plots. Statistics: locate
+and tag peaks and valleys in 2D plots; count observations in different
+quadrats of a plot; select observations based on 2D density; label with the
+equation of a polynomial fitted with lm() or other types of models; labels
+with P-value, R^2 or adjusted R^2 or information criteria for fitted models;
+label with ANOVA table for fitted models; label with summary for fitted
+models. Model fit classes for which suitable methods are provided by package
+'broom' are supported. Low-level debug tools: statistics and geometries
+reporting data passed to compute_group() and compute_panel() functions and
+to geometries. Layer manipulation: funtions for deletion, insertion,
+extraction and reordering of layers of ggplot objects.
 }
 \details{
 The new facilities for cleanly defining new stats and geoms added to
