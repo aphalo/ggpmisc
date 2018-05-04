@@ -80,7 +80,7 @@ ggplot(cars, aes(speed, dist)) +
 }
 \references{
 Package suite 'r4photobiology' web site at
-\url{http://www.r4photobiology.info/}\cr
+\url{https://www.r4photobiology.info/}\cr
 Package 'ggplot2' web site at \url{http://ggplot2.org/}\cr
 Package 'ggplot2' documentation at \url{http://docs.ggplot2.org/}\cr
 Package 'ggplot2' source code at \url{https://github.com/hadley/ggplot2}

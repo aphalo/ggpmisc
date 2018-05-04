@@ -25,8 +25,6 @@
 #' numeric and POSIXct variables mapped to the x aesthetic. Special handling was
 #' needed as text labels are generated from the data.
 #'
-#' @author Pedro J. Aphalo
-#'
 #' @section Acknowledgements:
 #' We thank Kamil Slowikowski not only for contributing ideas and code examples
 #' to this package but also for adding new features to his package 'ggrepel'
@@ -34,7 +32,7 @@
 #'
 #' @references
 #' Package suite 'r4photobiology' web site at
-#' \url{http://www.r4photobiology.info/}\cr
+#' \url{https://www.r4photobiology.info/}\cr
 #' Package 'ggplot2' web site at \url{http://ggplot2.org/}\cr
 #' Package 'ggplot2' documentation at \url{http://docs.ggplot2.org/}\cr
 #' Package 'ggplot2' source code at \url{https://github.com/hadley/ggplot2}
