@@ -98,12 +98,12 @@ StatDebugPanel <-
         # print(my.diagnostic)
         my.diagnostic
       },
-    default_aes = ggplot2::aes(label = paste("groups: ", calc(group), "; ",
-                                             "PANEL: ", calc(PANEL), "\n",
-                                             "nrow: ", calc(nrow), "; ",
-                                             "ncol: ", calc(ncol), "\n",
-                                             "cols: ", calc(colnames), "\n",
-                                             "classes: ", calc(colclasses),
+    default_aes = ggplot2::aes(label = paste("groups: ", stat(group), "; ",
+                                             "PANEL: ", stat(PANEL), "\n",
+                                             "nrow: ", stat(nrow), "; ",
+                                             "ncol: ", stat(ncol), "\n",
+                                             "cols: ", stat(colnames), "\n",
+                                             "classes: ", stat(colclasses),
                                              sep = "")
     ),
     required_aes = c("x", "y")

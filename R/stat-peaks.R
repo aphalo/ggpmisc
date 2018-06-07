@@ -276,9 +276,9 @@ valleys_compute_group_fun <- function(data,
 StatPeaks <-
   ggplot2::ggproto("StatPeaks", ggplot2::Stat,
                    compute_group = peaks_compute_group_fun,
-                   default_aes = ggplot2::aes(label = calc(x.label),
-                                              xintercept = calc(x),
-                                              yintercept = calc(y)),
+                   default_aes = ggplot2::aes(label = stat(x.label),
+                                              xintercept = stat(x),
+                                              yintercept = stat(y)),
                    required_aes = c("x", "y")
   )
 
@@ -315,8 +315,8 @@ stat_valleys <- function(mapping = NULL, data = NULL, geom = "point",
 StatValleys <-
   ggplot2::ggproto("StatValleys", ggplot2::Stat,
                    compute_group = valleys_compute_group_fun,
-                   default_aes = ggplot2::aes(label = calc(x.label),
-                                              xintercept = calc(x),
-                                              yintercept = calc(y)),
+                   default_aes = ggplot2::aes(label = stat(x.label),
+                                              xintercept = stat(x),
+                                              yintercept = stat(y)),
                    required_aes = c("x", "y")
   )

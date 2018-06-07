@@ -98,7 +98,7 @@ StatFitDeviations <-
                                 hjust = 0)
                    },
                    default_aes =
-                     ggplot2::aes(xend = calc(x.fitted),
-                                  yend = calc(y.fitted)),
+                     ggplot2::aes(xend = stat(x.fitted),
+                                  yend = stat(y.fitted)),
                    required_aes = c("x", "y")
   )

@@ -91,7 +91,7 @@ ggplot(PlantGrowth, aes(group, weight)) +
 }
 \references{
 Package suite 'r4photobiology' web site at
-\url{http://www.r4photobiology.info/}\cr
+\url{https://www.r4photobiology.info/}\cr
 Package 'ggplot2' web site at \url{http://ggplot2.org/}\cr
 Package 'ggplot2' documentation at \url{http://docs.ggplot2.org/}\cr
 Package 'ggplot2' source code at \url{https://github.com/hadley/ggplot2}
@@ -99,12 +99,18 @@ Package 'ggplot2' source code at \url{https://github.com/hadley/ggplot2}
 \seealso{
 Useful links:
 \itemize{
-  \item \url{http://www.r4photobiology.info}
+  \item \url{https://www.r4photobiology.info}
   \item \url{https://bitbucket.org/aphalo/ggpmisc}
   \item Report bugs at \url{https://bitbucket.org/aphalo/ggpmisc/issues}
 }
 
 }
 \author{
-Pedro J. Aphalo
+\strong{Maintainer}: Pedro J. Aphalo \email{pedro.aphalo@helsinki.fi} (0000-0003-3385-972X)
+
+Other contributors:
+\itemize{
+  \item Kamil Slowikowski [contributor]
+}
+
 }
