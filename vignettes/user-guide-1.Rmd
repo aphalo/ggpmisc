@@ -682,7 +682,7 @@ ggplot(chickwts, aes(factor(feed), weight)) +
   coord_flip()
 ```
 
-It is also possible to rotate the table using \code{angle}.
+It is also possible to rotate the table using `angle`.
 
 ```{r}
 ggplot(chickwts, aes(factor(feed), weight)) +
@@ -723,9 +723,9 @@ ggplot(my.data, aes(x, y, color = group)) +
                    method.args = list(formula = formula))
 ```
 
-We can override the variable returned as \code{y} to be any of the variables in
+We can override the variable returned as `y` to be any of the variables in
 the data frame returned by `broom::augment` while still preserving the original
-_y_ values.
+`y` values.
 
 ```{r}
 formula <- y ~ x + I(x^2) + I(x^3)
