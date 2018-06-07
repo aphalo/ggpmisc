@@ -17,8 +17,6 @@
 #' \item Stats for filtering-out/filtering-in observations in regions of a
 #' panel or group where the density of observations is high.
 #' \item Geom for annotating plots with tables.
-#' \item "Debug" stats and a "debug" geom that print to the console a summary
-#' of their \code{data} input.
 #' }
 #'
 #' The stats for peaks and valleys are coded so as to work correctly both with

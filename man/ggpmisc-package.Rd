@@ -15,10 +15,7 @@ equation of a polynomial fitted with lm() or other types of models; labels
 with P-value, R^2 or adjusted R^2 or information criteria for fitted models;
 label with ANOVA table for fitted models; label with summary for fitted
 models. Model fit classes for which suitable methods are provided by package
-'broom' are supported. Low-level debug tools: statistics and geometries
-reporting data passed to compute_group() and compute_panel() functions and
-to geometries. Layer manipulation: funtions for deletion, insertion,
-extraction and reordering of layers of ggplot objects.
+'broom' are supported.
 }
 \details{
 The new facilities for cleanly defining new stats and geoms added to
@@ -40,8 +37,6 @@ package 'broom'.
 \item Stats for filtering-out/filtering-in observations in regions of a
 panel or group where the density of observations is high.
 \item Geom for annotating plots with tables.
-\item "Debug" stats and a "debug" geom that print to the console a summary
-of their \code{data} input.
 }
 
 The stats for peaks and valleys are coded so as to work correctly both with

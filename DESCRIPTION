@@ -1,8 +1,8 @@
 Package: ggpmisc
 Type: Package
 Title: Miscellaneous Extensions to 'ggplot2'
-Version: 0.2.17.9903
-Date: 2018-06-03
+Version: 0.2.17.9910
+Date: 2018-06-07
 Authors@R:
     c(
     person("Pedro J.", "Aphalo", email = "pedro.aphalo@helsinki.fi", role = c("aut", "cre"), comment = c(ORCID = "0000-0003-3385-972X")),
@@ -18,10 +18,7 @@ Description: Extensions to 'ggplot2' respecting the grammar of graphics
     with P-value, R^2 or adjusted R^2 or information criteria for fitted models; 
     label with ANOVA table for fitted models; label with summary for fitted 
     models. Model fit classes for which suitable methods are provided by package
-    'broom' are supported. Low-level debug tools: statistics and geometries 
-    reporting data passed to compute_group() and compute_panel() functions and 
-    to geometries. Layer manipulation: funtions for deletion, insertion, 
-    extraction and reordering of layers of ggplot objects.
+    'broom' are supported.
 License: GPL (>= 2)
 LazyData: TRUE
 LazyLoad: TRUE

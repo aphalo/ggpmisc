@@ -5,15 +5,15 @@
 [![](http://cranlogs.r-pkg.org/badges/grand-total/ggpmisc)](https://cran.r-project.org/package=ggpmisc)
 
 Package '**ggpmisc**' (Miscellaneous Extensions to 'ggplot2') is a set of
-extensions to R package 'ggplot2' (> 2.2.1) useful when plotting diverse types
+extensions to R package 'ggplot2' (>= 2.3.0) useful when plotting diverse types
 of data.  
 
 **Currently there are two development branches of 'ggpmisc' being maintained: 
 one at CRAN with normal version
 numbering and compatible with 'ggplot2' (>=2.2.1) and this one with version
 numbers such as 0.9.17.9900 with additional functionality but requiring the
-development version of 'ggplot2' (>=2.2.1.9000) currently available only from 
-Github.**
+development version of 'ggplot2' (>=2.2.1.9000 future >=2.3.0) currently 
+available only from Github.**
 
 Functions `try_data_frame()` and `try_tibble()` can be used to convert time
 series objects into data frames or tibbles suitable for plotting. To complement
@@ -33,13 +33,9 @@ Statistics are provided for filtering and/or tagging data from regions of plot
 panels with high/low densities of observations (the stats are designed to work
 nicely together with package 'ggrepel').
 
-A set of functions facilitates the manipulation of layers in ggplot objects,
-allowing deletion of any existing layer, insertion of new layers at any
-position, and reordering of the existing layers.
-
-Statistics and geometries that echo their data input to the R console and/or 
-plot aim at easing debugging during development of new geoms and statistics 
-(or learning how ggplot layers work).
+A set of functions facilitates the manipulation of layers in ggplot objects and 
+statistics and geometries that echo their data input are now in package 
+'gginnards'.
 
 Please, see the web site [r4photobiology](http://www.r4photobiology.info) for
 details and update notices, and [the docs
