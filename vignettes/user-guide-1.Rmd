@@ -2,7 +2,7 @@
 title: "User Guide: 1 Plotting"
 subtitle: "'ggpmisc' `r packageVersion('ggpmisc')`"
 author: "Pedro J. Aphalo"
-date: "`r Sys.Date()`"
+date: "`r packageDate('ggpmisc')`"
 output: 
   rmarkdown::html_vignette:
     toc: yes
