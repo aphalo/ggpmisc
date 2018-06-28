@@ -7,6 +7,14 @@ Low level manipulation and debug methods and functions moved to new package
 * Remove debug stats and geoms.
 * Remove layer manipulation functions.
 
+ggpmisc 0.2.17.9902
+===================
+
+Non-CRAN version with additional functionality, but requiring the
+development version of 'ggplot2'.
+
+* Track code breaking change in 'ggplot2' commit #2620 (2018-05-17).
+
 ggpmisc 0.2.17.9900
 ===================
 
