@@ -1,11 +1,11 @@
 #' Add a label for a fitted linear model to a plot.
 #'
-#' \code{stat_poly_eq} fits a polynomial and generates several labels with
-#'   an equation and/or coefficient of determination (R^2), 'AIC' or 'BIC'.
+#' \code{stat_poly_eq} fits a polynomial and generates several labels with an
+#' equation and/or coefficient of determination (R^2), 'AIC' or 'BIC'.
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
-#'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs
-#'   to be set at the layer level if you are overriding the plot defaults.
+#'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs to be
+#'   set at the layer level if you are overriding the plot defaults.
 #' @param data A layer specific dataset - only needed if you want to override
 #'   the plot defaults.
 #' @param geom The geometric object to use display the data
@@ -21,58 +21,63 @@
 #' @param ... other arguments passed on to \code{\link[ggplot2]{layer}}. This
 #'   can include aesthetics whose values you want to set, not map. See
 #'   \code{\link[ggplot2]{layer}} for more details.
-#' @param na.rm	a logical indicating whether NA values should be stripped
-#'   before the computation proceeds.
-#' @param formula a formula object
-#' @param eq.with.lhs If \code{character} the string is pasted to the front
-#'   of the equation label before parsing or a \code{logical} (see note).
-#' @param eq.x.rhs \code{character} this string will be used as replacement
-#'   for \code{"x"} in the model equation when generating the label before
-#'   parsing it.
+#' @param na.rm	a logical indicating whether NA values should be stripped before
+#'   the computation proceeds.
+#' @param formula a formula object.
+#' @param eq.with.lhs If \code{character} the string is pasted to the front of
+#'   the equation label before parsing or a \code{logical} (see note).
+#' @param eq.x.rhs \code{character} this string will be used as replacement for
+#'   \code{"x"} in the model equation when generating the label before parsing
+#'   it.
 #' @param coef.digits,rr.digits integer Number of significant digits to use in
 #'   for the vector of fitted coefficients and for $R^2$ labels.
 #' @param label.x.npc,label.y.npc \code{numeric} with range 0..1 or character.
 #'   Coordinates to be used for positioning the output, expressed in "normalized
-#'   parent coordinates" or character string. If too short they will be recycled.
+#'   parent coordinates" or character string. If too short they will be
+#'   recycled.
 #' @param label.x,label.y \code{numeric} Coordinates (in data units) to be used
 #'   for absolute positioning of the output. If too short they will be recycled.
 #' @param output.type character One of "expression", "LaTeX" or "text".
 #'
 #' @note For backward compatibility a logical is accepted as argument for
 #'   \code{eq.with.lhs}, giving the same output than the current default
-#'   character value. By default "x" is retained as independent variable as
-#'   this is the name of the aesthetic. However, it can be substituted by
-#'   providing a suitable replacement character string through \code{eq.x.rhs}.
+#'   character value. By default "x" is retained as independent variable as this
+#'   is the name of the aesthetic. However, it can be substituted by providing a
+#'   suitable replacement character string through \code{eq.x.rhs}.
 #'
 #' @details This stat can be used to automatically annotate a plot with R^2,
-#' adjusted R^2 or the fitted model equation. It supports only linear models
-#' fitted with function \code{lm()}. The R^2 and adjusted R^2 annotations can be
-#' used with any linear model formula. The fitted equation label is correctly
-#' generated for polynomials or quasi-polynomials through the origin. Model
-#' formulas can use \code{poly()} or be defined algebraically with terms of
-#' powers of increasing magnitude with no missing intermediate terms, except
-#' possibly for the intercept indicated by "- 1" or "-1" in the formula. The
-#' validity of the \code{formula} is not checked in the current implementation,
-#' and for this reason the default aesthetics sets R^2 as label for the
-#' annotation. This stat only generates the label, the predicted values need
-#' to be separately added to the plot, so to make sure that the same model
-#' formula is used in all steps it is best to save the formula as an object
-#' and supply this object as argument to the different statistics.
+#'   adjusted R^2 or the fitted model equation. It supports only linear models
+#'   fitted with function \code{lm()}. The R^2 and adjusted R^2 annotations can
+#'   be used with any linear model formula. The fitted equation label is
+#'   correctly generated for polynomials or quasi-polynomials through the
+#'   origin. Model formulas can use \code{poly()} or be defined algebraically
+#'   with terms of powers of increasing magnitude with no missing intermediate
+#'   terms, except possibly for the intercept indicated by "- 1" or "-1" in the
+#'   formula. The validity of the \code{formula} is not checked in the current
+#'   implementation, and for this reason the default aesthetics sets R^2 as
+#'   label for the annotation. This stat only generates the label, the predicted
+#'   values need to be separately added to the plot, so to make sure that the
+#'   same model formula is used in all steps it is best to save the formula as
+#'   an object and supply this object as argument to the different statistics.
 #'
 #' @references Written as an answer to a question at Stackoverflow.
-#' \url{https://stackoverflow.com/questions/7549694/adding-regression-line-equation-and-r2-on-graph}
+#'   \url{https://stackoverflow.com/questions/7549694/adding-regression-line-equation-and-r2-on-graph}
 #'
-#' @section Computed variables:
-#'   \describe{ \item{x}{x position for left edge}
-#'   \item{y}{y position near upper edge}
-#'   \item{eq.label}{equation for the
+#' @section Aesthetics: \code{stat_poly_eq} understands \code{x} and \code{y},
+#'   to be referenced in the \code{formula} and \code{weight} passed as
+#'   argument to parameter \code{weights} of \code{lm()}. All three must be
+#'   mappeed to \code{numeric} variables. In addition the aesthetics undertood
+#'   by the geom used (\code{"text"} by default) are understood and grouping
+#'   respected.
+#'
+#' @section Computed variables: \describe{ \item{x}{x position for left edge}
+#'   \item{y}{y position near upper edge} \item{eq.label}{equation for the
 #'   fitted polynomial as a character string to be parsed}
-#'   \item{rr.label}{\eqn{R^2} of the fitted model as a character string to be parsed}
-#'   \item{adj.rr.label}{Adjusted \eqn{R^2} of the fitted model as a character string
-#'   to be parsed}
-#'   \item{AIC.label}{AIC for the fitted model.}
-#'   \item{BIC.label}{BIC for the fitted model.}
-#'   \item{hjust}{Set to zero to override the default of the "text" geom.}}
+#'   \item{rr.label}{\eqn{R^2} of the fitted model as a character string to be
+#'   parsed} \item{adj.rr.label}{Adjusted \eqn{R^2} of the fitted model as a
+#'   character string to be parsed} \item{AIC.label}{AIC for the fitted model.}
+#'   \item{BIC.label}{BIC for the fitted model.} \item{hjust}{Set to zero to
+#'   override the default of the "text" geom.}}
 #'
 #' @examples
 #' library(ggplot2)
@@ -80,11 +85,19 @@
 #' set.seed(4321)
 #' x <- 1:100
 #' y <- (x + x^2 + x^3) + rnorm(length(x), mean = 0, sd = mean(x^3) / 4)
-#' my.data <- data.frame(x, y, group = c("A", "B"), y2 = y * c(0.5,2))
+#' my.data <- data.frame(x = x, y = y,
+#'                       group = c("A", "B"),
+#'                       y2 = y * c(0.5,2),
+#'                       w = sqrt(x))
 #' # give a name to a formula
 #' formula <- y ~ poly(x, 3, raw = TRUE)
 #' # plot
 #' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   geom_smooth(method = "lm", formula = formula) +
+#'   stat_poly_eq(formula = formula, parse = TRUE)
+#' # plot
+#' ggplot(my.data, aes(x, y, weight = w)) +
 #'   geom_point() +
 #'   geom_smooth(method = "lm", formula = formula) +
 #'   stat_poly_eq(formula = formula, parse = TRUE)
@@ -95,6 +108,12 @@
 #'   stat_poly_eq(formula = formula, rr.digits = 4, parse = TRUE)
 #' # plot
 #' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   geom_smooth(method = "lm", formula = formula) +
+#'   stat_poly_eq(aes(label =  paste(..eq.label.., ..adj.rr.label.., sep = "~~~~")),
+#'                formula = formula, parse = TRUE)
+#' # plot
+#' ggplot(my.data, aes(x, y, weight = w)) +
 #'   geom_point() +
 #'   geom_smooth(method = "lm", formula = formula) +
 #'   stat_poly_eq(aes(label =  paste(..eq.label.., ..adj.rr.label.., sep = "~~~~")),
@@ -158,6 +177,9 @@ poly_eq_compute_group_fun <- function(data,
                                      label.y,
                                      output.type) {
   force(data)
+
+  if (is.null(data$weight)) data$weight <- 1
+
   output.type = tolower(output.type)
   if (is.null(eq.x.rhs)) {
     if (output.type == "expression") {
@@ -195,7 +217,7 @@ poly_eq_compute_group_fun <- function(data,
     label.y <- label.y[1]
   }
 
-  mf <- stats::lm(formula, data)
+  mf <- stats::lm(formula = formula, data = data, weights = weight)
   coefs <- stats::coef(mf)
   formula.rhs.chr <- as.character(formula)[3]
   if (grepl("-1", formula.rhs.chr) || grepl("- 1", formula.rhs.chr)) {

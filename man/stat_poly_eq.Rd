@@ -13,29 +13,30 @@ stat_poly_eq(mapping = NULL, data = NULL, geom = "text", formula = NULL,
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
-\code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs
-to be set at the layer level if you are overriding the plot defaults.}
+\code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs to be
+set at the layer level if you are overriding the plot defaults.}
 
 \item{data}{A layer specific dataset - only needed if you want to override
 the plot defaults.}
 
 \item{geom}{The geometric object to use display the data}
 
-\item{formula}{a formula object}
+\item{formula}{a formula object.}
 
-\item{eq.with.lhs}{If \code{character} the string is pasted to the front
-of the equation label before parsing or a \code{logical} (see note).}
+\item{eq.with.lhs}{If \code{character} the string is pasted to the front of
+the equation label before parsing or a \code{logical} (see note).}
 
-\item{eq.x.rhs}{\code{character} this string will be used as replacement
-for \code{"x"} in the model equation when generating the label before
-parsing it.}
+\item{eq.x.rhs}{\code{character} this string will be used as replacement for
+\code{"x"} in the model equation when generating the label before parsing
+it.}
 
 \item{coef.digits, rr.digits}{integer Number of significant digits to use in
 for the vector of fitted coefficients and for $R^2$ labels.}
 
 \item{label.x.npc, label.y.npc}{\code{numeric} with range 0..1 or character.
 Coordinates to be used for positioning the output, expressed in "normalized
-parent coordinates" or character string. If too short they will be recycled.}
+parent coordinates" or character string. If too short they will be
+recycled.}
 
 \item{label.x, label.y}{\code{numeric} Coordinates (in data units) to be used
 for absolute positioning of the output. If too short they will be recycled.}
@@ -45,8 +46,8 @@ for absolute positioning of the output. If too short they will be recycled.}
 \item{position}{The position adjustment to use for overlapping points on this
 layer}
 
-\item{na.rm}{a logical indicating whether NA values should be stripped
-before the computation proceeds.}
+\item{na.rm}{a logical indicating whether NA values should be stripped before
+the computation proceeds.}
 
 \item{show.legend}{logical. Should this layer be included in the legends?
 \code{NA}, the default, includes if any aesthetics are mapped. \code{FALSE}
@@ -62,44 +63,50 @@ can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 }
 \description{
-\code{stat_poly_eq} fits a polynomial and generates several labels with
-  an equation and/or coefficient of determination (R^2), 'AIC' or 'BIC'.
+\code{stat_poly_eq} fits a polynomial and generates several labels with an
+equation and/or coefficient of determination (R^2), 'AIC' or 'BIC'.
 }
 \details{
 This stat can be used to automatically annotate a plot with R^2,
-adjusted R^2 or the fitted model equation. It supports only linear models
-fitted with function \code{lm()}. The R^2 and adjusted R^2 annotations can be
-used with any linear model formula. The fitted equation label is correctly
-generated for polynomials or quasi-polynomials through the origin. Model
-formulas can use \code{poly()} or be defined algebraically with terms of
-powers of increasing magnitude with no missing intermediate terms, except
-possibly for the intercept indicated by "- 1" or "-1" in the formula. The
-validity of the \code{formula} is not checked in the current implementation,
-and for this reason the default aesthetics sets R^2 as label for the
-annotation. This stat only generates the label, the predicted values need
-to be separately added to the plot, so to make sure that the same model
-formula is used in all steps it is best to save the formula as an object
-and supply this object as argument to the different statistics.
+  adjusted R^2 or the fitted model equation. It supports only linear models
+  fitted with function \code{lm()}. The R^2 and adjusted R^2 annotations can
+  be used with any linear model formula. The fitted equation label is
+  correctly generated for polynomials or quasi-polynomials through the
+  origin. Model formulas can use \code{poly()} or be defined algebraically
+  with terms of powers of increasing magnitude with no missing intermediate
+  terms, except possibly for the intercept indicated by "- 1" or "-1" in the
+  formula. The validity of the \code{formula} is not checked in the current
+  implementation, and for this reason the default aesthetics sets R^2 as
+  label for the annotation. This stat only generates the label, the predicted
+  values need to be separately added to the plot, so to make sure that the
+  same model formula is used in all steps it is best to save the formula as
+  an object and supply this object as argument to the different statistics.
 }
 \note{
 For backward compatibility a logical is accepted as argument for
   \code{eq.with.lhs}, giving the same output than the current default
-  character value. By default "x" is retained as independent variable as
-  this is the name of the aesthetic. However, it can be substituted by
-  providing a suitable replacement character string through \code{eq.x.rhs}.
+  character value. By default "x" is retained as independent variable as this
+  is the name of the aesthetic. However, it can be substituted by providing a
+  suitable replacement character string through \code{eq.x.rhs}.
 }
-\section{Computed variables}{
+\section{Aesthetics}{
+ \code{stat_poly_eq} understands \code{x} and \code{y},
+  to be referenced in the \code{formula} and \code{weight} passed as
+  argument to parameter \code{weights} of \code{lm()}. All three must be
+  mappeed to \code{numeric} variables. In addition the aesthetics undertood
+  by the geom used (\code{"text"} by default) are understood and grouping
+  respected.
+}
 
-  \describe{ \item{x}{x position for left edge}
-  \item{y}{y position near upper edge}
-  \item{eq.label}{equation for the
+\section{Computed variables}{
+ \describe{ \item{x}{x position for left edge}
+  \item{y}{y position near upper edge} \item{eq.label}{equation for the
   fitted polynomial as a character string to be parsed}
-  \item{rr.label}{\eqn{R^2} of the fitted model as a character string to be parsed}
-  \item{adj.rr.label}{Adjusted \eqn{R^2} of the fitted model as a character string
-  to be parsed}
-  \item{AIC.label}{AIC for the fitted model.}
-  \item{BIC.label}{BIC for the fitted model.}
-  \item{hjust}{Set to zero to override the default of the "text" geom.}}
+  \item{rr.label}{\eqn{R^2} of the fitted model as a character string to be
+  parsed} \item{adj.rr.label}{Adjusted \eqn{R^2} of the fitted model as a
+  character string to be parsed} \item{AIC.label}{AIC for the fitted model.}
+  \item{BIC.label}{BIC for the fitted model.} \item{hjust}{Set to zero to
+  override the default of the "text" geom.}}
 }
 
 \examples{
@@ -108,11 +115,19 @@ library(ggplot2)
 set.seed(4321)
 x <- 1:100
 y <- (x + x^2 + x^3) + rnorm(length(x), mean = 0, sd = mean(x^3) / 4)
-my.data <- data.frame(x, y, group = c("A", "B"), y2 = y * c(0.5,2))
+my.data <- data.frame(x = x, y = y,
+                      group = c("A", "B"),
+                      y2 = y * c(0.5,2),
+                      w = sqrt(x))
 # give a name to a formula
 formula <- y ~ poly(x, 3, raw = TRUE)
 # plot
 ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_eq(formula = formula, parse = TRUE)
+# plot
+ggplot(my.data, aes(x, y, weight = w)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
   stat_poly_eq(formula = formula, parse = TRUE)
@@ -128,6 +143,12 @@ ggplot(my.data, aes(x, y)) +
   stat_poly_eq(aes(label =  paste(..eq.label.., ..adj.rr.label.., sep = "~~~~")),
                formula = formula, parse = TRUE)
 # plot
+ggplot(my.data, aes(x, y, weight = w)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_eq(aes(label =  paste(..eq.label.., ..adj.rr.label.., sep = "~~~~")),
+               formula = formula, parse = TRUE)
+# plot
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
@@ -137,5 +158,5 @@ ggplot(my.data, aes(x, y)) +
 }
 \references{
 Written as an answer to a question at Stackoverflow.
-\url{https://stackoverflow.com/questions/7549694/adding-regression-line-equation-and-r2-on-graph}
+  \url{https://stackoverflow.com/questions/7549694/adding-regression-line-equation-and-r2-on-graph}
 }
