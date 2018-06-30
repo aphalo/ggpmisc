@@ -1,8 +1,8 @@
 ---
-title: "User Guide: 1 Plotting"
+title: "User Guide"
 subtitle: "'ggpmisc' `r packageVersion('ggpmisc')`"
 author: "Pedro J. Aphalo"
-date: "`r packageDate('ggpmisc')`"
+date: "`r Sys.Date()`"
 output: 
   rmarkdown::html_vignette:
     toc: yes
@@ -786,13 +786,7 @@ others. In fact the code is based on code Kamil gave during the discussion,
 but simplified and taking a few further ideas from `ggplot::stat_dens2d`.
 
 **Warning!** Which observations are selected by the algorithm used, based on 
-`MASS:kde2d`, depends strongly on the values of parameters `h` and `n`. As these
-stats have been tested only with a few data sets, you may need to alter the
-defaults. Beware, though, that what are good values, may depend on individual 
-data sets even if they include the same number of observations. For the
-selection of observations to work cleanly, the argument for `n` must create a
-dense grid. Much larger values of `n` than in the examples in the documentation
-of `MASS::kde2d` and `ggplot2::stat_dens2d` will be needed in most cases.
+`MASS:kde2d`, depends strongly on the values of parameters `h` and `n`. You may need to alter the defaults by passing explicit arguments to these stats. Beware, though, that what are good values, may depend on individual data sets even if they include the same number of observations. For the selection of observations to work cleanly, the argument for `n` must create a dense grid. Much larger values of `n` than in the examples in the documentation of `MASS::kde2d` and `ggplot2::stat_dens2d` will be needed in most cases.
 
 Some random data with random labels.
 
@@ -848,8 +842,8 @@ ggplot(data = d, aes(x + rep(c(-2,2), rep(50,2)),
 ```
 
 Highlight 1/4 of observations from lowest density areas of the plot, with
-density considered separately for each individual group, in this case based on
-the color aesthetic.
+density considered separately for each individual group. In this case grouping
+is based on the color aesthetic.
 
 ```{r}
 ggplot(data = d, aes(x + rep(c(-2,2), rep(50,2)), 
@@ -878,13 +872,8 @@ ggplot(data = d, aes(x, y, label = lab, color = group)) +
 
 ### `stat_dens2d_labels`
 
-The stat `stat_dens2d_labels` _replaces_ with `label.fill` the values of the 
-label (aesthetic) variable in data in the high density regions of the panel 
-before passing them to the geom. The default value for `geom` is `"text"`. The
-default value of `label.fill` is `""` which results in empty labels, while using
-`NA` as fill label results in observations being omitted. Using `NA` as
-`label.fill` is not too different from using `stat_dens2d_filter` as long as the
-geom used requires a `label` aesthetic.
+The stat `stat_dens2d_labels` _replaces_ the values of the 
+label (aesthetic) variable in data in the high density regions of the panel with the argument passed to `label.fill` before passing them to the geom. The default value for `geom` is `"text"`. The default value of `label.fill` is `""` which results in empty labels, while using `NA` as fill label results in observations being omitted. Using `NA` as `label.fill` is not too different from using `stat_dens2d_filter` as long as the geom used requires a `label` aesthetic.
 
 Label 1/10 of observations from lowest density areas of the plot panels.
 
@@ -1079,4 +1068,71 @@ try_tibble(data.frame(x = rep(1,5), y = 1:5))
 
 ```{r}
 try_tibble(matrix(1:10, ncol = 2))
+```
+
+## Appendix: Additional examples of the use density filtering
+
+We define a function to simplify the generation of random data sets.
+
+```{r}
+make_data_tbl <- function(nrow = 100, rfun = rnorm, ...) {
+  if (nrow %% 2) {
+    nrow <- nrow + 1
+  }
+  
+  set.seed(1001)
+  
+  tibble::tibble(
+    x = rfun(nrow, ...),
+    y = rfun(nrow, ...),
+    group = rep(c("A", "B"), c(nrow / 2, nrow / 2))
+  )
+}
+```
+
+As we will draw many points on the plotting area we change the default theme
+to an uncluttered one.
+
+```{r}
+old_theme <- theme_set(theme_bw())
+```
+
+In all the examples in this vignette we use colours to demonstrate which data points are selected, but any other suitable aesthtic and discrete scale can be used instead. With `keep.sparse = FALSE` we keep 1/3 of the observations in the denser region of the plot. Although here we first plot all data points and later overplot the selected ones this is not necessary.
+
+```{r}
+ggplot(data = make_data_tbl(300), aes(x, y)) +
+  geom_point() +
+  stat_dens2d_filter(color = "red", 
+                     keep.sparse = FALSE, 
+                     keep.fraction = 1/3)
+```
+
+Here we higlight the observations split in three group equal groups, each of a
+different density of observations.
+
+```{r}
+ggplot(data = make_data_tbl(300), aes(x, y)) +
+  geom_point() +
+  stat_dens2d_filter(color = "red", 
+                     keep.sparse = FALSE, 
+                     keep.fraction = 1/3)+
+  stat_dens2d_filter(color = "blue", 
+                     keep.fraction = 1/3)
+```
+
+The algorithm seems to work well also with other distributions, in this example the uniform distribution.
+
+```{r}
+ggplot(data = make_data_tbl(300, rfun = runif), aes(x, y)) +
+  geom_point() +
+  stat_dens2d_filter(color = "red", keep.fraction = 1/2)
+```
+
+One example with the gamma distribution, which is asymetric.
+
+```{r}
+ggplot(data = make_data_tbl(300, rfun = rgamma, shape = 2), 
+       aes(x, y)) +
+  geom_point() +
+  stat_dens2d_filter(color = "red", keep.fraction = 1/3)
 ```
