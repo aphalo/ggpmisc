@@ -1,10 +1,10 @@
-#' Count the number of observations in each quadrat of a plot.
+#' Count the number of observations in each quadrant of a plot.
 #'
-#' \code{stat_quadrat_counts} counts the number of observations in each quadrat
+#' \code{stat_quadrant_counts} counts the number of observations in each quadrant
 #' of a plot panel. By default it adds a text label to the far corner of each
-#' quadrat. It can also be used to obtain the total number of observations in
-#' each of two pairs of quadrats or in the whole panel. Grouping is ignored, so
-#' en every case a single count is computed for each quadrat in a plot panel.
+#' quadrant. It can also be used to obtain the total number of observations in
+#' each of two pairs of quadrants or in the whole panel. Grouping is ignored, so
+#' en every case a single count is computed for each quadrant in a plot panel.
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs
@@ -26,30 +26,30 @@
 #'   \code{\link[ggplot2]{layer}} for more details.
 #' @param na.rm	a logical indicating whether NA values should be stripped before
 #'   the computation proceeds.
-#' @param quadrats integer vector indicating which quadrats are of interest,
+#' @param quadrants integer vector indicating which quadrants are of interest,
 #'   with a \code{OL} indicating the whole plot.
 #' @param pool.along character, one of "none", "x" or "y", indicating which
-#'   quadrats to pool to calculate counts by pair of quadrats.
+#'   quadrants to pool to calculate counts by pair of quadrants.
 #' @param origin.x,origin.y numeric the coordinates of the origin of the
-#'   quadrats.
+#'   quadrants.
 #' @param labels.range.x,labels.range.y \code{numeric} Coordinates (in data
 #'   units) to be used for absolute positioning of the labels.
 #'
 #' @details This stat can be used to automatically count observations in each of
-#'   the four quadrats of a plot, and by default add these counts as text
+#'   the four quadrants of a plot, and by default add these counts as text
 #'   labels.
 #'
 #' @section Computed variables: Data frame with one to four rows, one for each
-#'   quadrat for which observations are present in \code{data}. \describe{
-#'   \item{quadrat}{integer, one of 0:4} \item{x}{extreme x value in the
-#'   quadrat} \item{y}{extreme y value in the quadrat} \item{count}{number of
+#'   quadrant for which observations are present in \code{data}. \describe{
+#'   \item{quadrant}{integer, one of 0:4} \item{x}{extreme x value in the
+#'   quadrant} \item{y}{extreme y value in the quadrant} \item{count}{number of
 #'   ovserbations} }
 #'
 #' @note Values exactly equal to zero are counted as belonging to the positve
-#'   quadrat. An argument value of zero, passed to formal parameter
-#'   \code{quadrats} is interpreted as a request for the count of all
-#'   observations in each plot panel. By default, which quadrats to compute
-#'   counts for is decided based on which quadrats are expected to be visible in
+#'   quadrant. An argument value of zero, passed to formal parameter
+#'   \code{quadrants} is interpreted as a request for the count of all
+#'   observations in each plot panel. By default, which quadrants to compute
+#'   counts for is decided based on which quadrants are expected to be visible in
 #'   the plot. In the current implementation, the default positions of the
 #'   labels is based on the range of the data ploted in a given panel.
 #'   Consequently, when using facets unless using free limits for x and y axes,
@@ -66,43 +66,43 @@
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   stat_quadrat_counts()
+#'   stat_quadrant_counts()
 #'
 #' ggplot(my.data, aes(x - 50, y - 10)) +
 #'   geom_hline(yintercept = 0, colour = "blue") +
 #'   geom_vline(xintercept = 0, colour = "blue") +
 #'   geom_point() +
-#'   stat_quadrat_counts(colour = "blue")
+#'   stat_quadrant_counts(colour = "blue")
 #'
 #' ggplot(my.data, aes(x - 50, y - 10)) +
 #'   geom_hline(yintercept = 0, colour = "blue") +
 #'   geom_point() +
-#'   stat_quadrat_counts(colour = "blue", pool.along = "x")
+#'   stat_quadrant_counts(colour = "blue", pool.along = "x")
 #'
 #' ggplot(my.data, aes(x - 50, y - 10)) +
 #'   geom_vline(xintercept = 0, colour = "blue") +
 #'   geom_point() +
-#'   stat_quadrat_counts(colour = "blue", pool.along = "y")
+#'   stat_quadrant_counts(colour = "blue", pool.along = "y")
 #'
 #' ggplot(my.data, aes(x - 50, y - 10)) +
 #'   geom_point() +
-#'   stat_quadrat_counts(quadrats = 0)
+#'   stat_quadrant_counts(quadrants = 0)
 #'
 #' @export
 #'
-stat_quadrat_counts <- function(mapping = NULL, data = NULL, geom = "text",
+stat_quadrant_counts <- function(mapping = NULL, data = NULL, geom = "text",
                                 position = "identity",
-                                quadrats = NULL,
+                                quadrants = NULL,
                                 pool.along = "none",
                                 origin.x = 0, origin.y = 0,
                                 labels.range.x = NULL, labels.range.y = NULL,
                                 na.rm = FALSE, show.legend = FALSE,
                                 inherit.aes = TRUE, ...) {
   ggplot2::layer(
-    stat = StatQuadratCounts, data = data, mapping = mapping, geom = geom,
+    stat = StatQuadrantCounts, data = data, mapping = mapping, geom = geom,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
     params = list(na.rm = na.rm,
-                  quadrats = quadrats,
+                  quadrants = quadrants,
                   pool.along = pool.along,
                   origin.x = origin.x,
                   origin.y = origin.y,
@@ -119,14 +119,14 @@ stat_quadrat_counts <- function(mapping = NULL, data = NULL, geom = "text",
 #'
 compute_counts_fun <- function(data,
                                scales,
-                               quadrats,
+                               quadrants,
                                pool.along,
                                origin.x,
                                origin.y,
                                labels.range.x,
                                labels.range.y) {
 
-  which_quadrat <- function(x, y) {
+  which_quadrant <- function(x, y) {
     z <- ifelse(x >= origin.x & y >= origin.y,
                 1L,
                 ifelse(x >= origin.x & y < origin.y,
@@ -144,7 +144,7 @@ compute_counts_fun <- function(data,
 
   stopifnot(pool.along %in% c("none", "x", "y"))
   stopifnot(length(origin.x) == 1 && length(origin.y) == 1)
-  stopifnot(length(quadrats) <= 4)
+  stopifnot(length(quadrants) <= 4)
   stopifnot(is.null(labels.range.x) || is.numeric(labels.range.x))
   stopifnot(is.null(labels.range.y) || is.numeric(labels.range.y))
 
@@ -174,59 +174,59 @@ compute_counts_fun <- function(data,
   }
 
   # dynamic default based on data range
-  if (is.null(quadrats)) {
+  if (is.null(quadrants)) {
     if (all(range.x >= origin.x) && all(range.y >= origin.y)) {
-      quadrats = 1L
+      quadrants = 1L
     } else if (all(range.x < origin.x) && all(range.y < origin.y)) {
-      quadrats = 3L
+      quadrants = 3L
     } else if (all(range.x >= origin.x)) {
-      quadrats = c(1L, 2L)
+      quadrants = c(1L, 2L)
     } else if (all(range.y >= origin.y)) {
-      quadrats = c(1L, 4L)
+      quadrants = c(1L, 4L)
     } else {
-      quadrats = c(1L, 2L, 3L, 4L)
+      quadrants = c(1L, 2L, 3L, 4L)
     }
   }
   if (pool.along == "x") {
-    quadrats <- intersect(quadrats, c(1L, 2L))
+    quadrants <- intersect(quadrants, c(1L, 2L))
   }
   if (pool.along == "y") {
-    quadrats <- intersect(quadrats, c(1L, 4L))
+    quadrants <- intersect(quadrants, c(1L, 4L))
   }
 
-  if (all(is.na(quadrats)) || 0L %in% quadrats) {
+  if (all(is.na(quadrants)) || 0L %in% quadrants) {
   # total count
-    tibble::tibble(quadrat = 0,
+    tibble::tibble(quadrant = 0,
                    count = nrow(data),
                    x = labels.range.x[2],
                    y = labels.range.y[2],
                    hjust = 1,
                    vjust = 1)
   } else {
-  # counts for the selected quadrats
+  # counts for the selected quadrants
     data %>%
-      dplyr::mutate(quadrat = which_quadrat(.data$x, .data$y)) %>%
-      dplyr::filter(.data$quadrat %in% quadrats) %>%
-      dplyr::group_by(.data$quadrat) %>%
+      dplyr::mutate(quadrant = which_quadrant(.data$x, .data$y)) %>%
+      dplyr::filter(.data$quadrant %in% quadrants) %>%
+      dplyr::group_by(.data$quadrant) %>%
       dplyr::summarise(count = length(.data$x)) %>% # dplyr::n() triggers error
       dplyr::ungroup() -> data
 
-    zero.count.quadrats <- setdiff(quadrats, data$quadrat)
+    zero.count.quadrants <- setdiff(quadrants, data$quadrant)
 
-    if (length(zero.count.quadrats) > 0) {
+    if (length(zero.count.quadrants) > 0) {
       data <-
-        rbind(data, tibble::tibble(quadrat = zero.count.quadrats, count = 0L))
+        rbind(data, tibble::tibble(quadrant = zero.count.quadrants, count = 0L))
     }
 
     data %>%
-      dplyr::mutate(x = ifelse(.data$quadrat %in% c(1L, 2L),
+      dplyr::mutate(x = ifelse(.data$quadrant %in% c(1L, 2L),
                                labels.range.x[2],
                                labels.range.x[1]),
-                    y = ifelse(.data$quadrat %in% c(1L, 4L),
+                    y = ifelse(.data$quadrant %in% c(1L, 4L),
                                labels.range.y[2],
                                labels.range.y[1]),
-                    hjust = ifelse(.data$quadrat %in% c(1L, 2L), 1, 0),
-                    vjust = ifelse(.data$quadrat %in% c(1L, 4L), -0.1, 1.1))
+                    hjust = ifelse(.data$quadrant %in% c(1L, 2L), 1, 0),
+                    vjust = ifelse(.data$quadrant %in% c(1L, 4L), -0.1, 1.1))
    }
 }
 
@@ -234,8 +234,8 @@ compute_counts_fun <- function(data,
 #' @format NULL
 #' @usage NULL
 #' @export
-StatQuadratCounts <-
-  ggplot2::ggproto("StatQuadratCounts", ggplot2::Stat,
+StatQuadrantCounts <-
+  ggplot2::ggproto("StatQuadrantCounts", ggplot2::Stat,
                    compute_panel = compute_counts_fun,
                    default_aes =
                      ggplot2::aes(label = paste("n=", stat(count), sep = ""),

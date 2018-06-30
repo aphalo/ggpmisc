@@ -1,11 +1,14 @@
-ggpmisc 0.3.0
-=============
+ggpmisc 0.3.0 (2018-07-01)
+==========================
 
 Version requiring 'ggplot2' (>= 2.3.0)
 Low level manipulation and debug methods and functions moved to new package
 'gginnards'.
 * Remove debug stats and geoms.
 * Remove layer manipulation functions.
+* Add support for "weight" easthetic to stat_poly_eq().
+* Revise vignette.
+* Rename stat_quadrat_count() into stat_quadrant_count().
 
 ggpmisc 0.2.17.9902
 ===================
@@ -32,7 +35,7 @@ ggpmisc 0.2.17
 
 CRAN version
 
-* Add stat_quadrat_count() a stat that computes the number of observations in
+* Add stat_quadrant_count() a stat that computes the number of observations in
 each quadrat of a plot panel ignoring grouping.
 
 * Fix bugs, one of which is code breaking: the names of returned parameter
