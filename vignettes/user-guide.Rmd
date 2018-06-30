@@ -16,7 +16,9 @@ vignette: >
 library(knitr)
 opts_chunk$set(fig.path = 'figure/guide-pos-', fig.align = 'center', 
                fig.show = 'hold', fig.width = 7, fig.height = 4)
-options(warnPartialMatchArgs = FALSE)
+options(warnPartialMatchArgs = FALSE,
+        tibble.print.max = 4,
+        tibble.print.min = 4)
 ```
 
 ## Preliminaries
@@ -138,7 +140,67 @@ ggplot(lynx, as.numeric = FALSE) + geom_line() +
   stat_valleys(colour = "blue") +
   stat_valleys(geom = "rug", colour = "blue")
 ```
+## `stat_quadrant_counts`
 
+This statisitc automates the annotation of plots with number of observations,
+either by quadrant, by pairs of quadrants or the four quadrants taken together.
+
+We generate some artificial data.
+
+```{r}
+set.seed(4321)
+# generate artificial data
+x <- -99:100
+y <- x + rnorm(length(x), mean = 0, sd = abs(x))
+my.data <- data.frame(x, 
+                      y, 
+                      group = c("A", "B"))
+```
+
+Using defaults except for colour.
+
+```{r}
+ggplot(my.data, aes(x, y)) +
+  geom_hline(yintercept = 0, colour = "red") +
+  geom_vline(xintercept = 0, colour = "red") +
+  geom_point() +
+  stat_quadrant_counts(colour = "red")
+```
+
+Pooling qudrants along the _x_-axis.
+
+```{r}
+ggplot(my.data, aes(x, y)) +
+  geom_hline(yintercept = 0, colour = "red") +
+  geom_point() +
+  stat_quadrant_counts(colour = "red", pool.along = "x")
+```
+
+Manual positioning of the text annotations and pooling of all four quadrats.
+
+```{r}
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_quadrant_counts(quadrants = 0L, labels.range.x = c(-90, -90), hjust = 0)
+```
+
+Annotation of only specific quadrants.
+
+```{r}
+ggplot(my.data, aes(x, y)) +
+  geom_hline(yintercept = 0, colour = "red") +
+  geom_vline(xintercept = 0, colour = "red") +
+  geom_point() +
+  stat_quadrant_counts(colour = "red", quadrants = c(2, 4))
+```
+```{r}
+ggplot(my.data, aes(x, y)) +
+  geom_hline(yintercept = 0, colour = "red") +
+  geom_vline(xintercept = 0, colour = "red") +
+  geom_point() +
+  stat_quadrant_counts(colour = "red") +
+  facet_wrap(~group)
+```
 ## `stat_poly_eq`
 
 We generate some artificial data.
@@ -152,7 +214,8 @@ my.data <- data.frame(x,
                       y, 
                       group = c("A", "B"), 
                       y2 = y * c(0.5,2),
-                      block = c("a", "a", "b", "b"))
+                      block = c("a", "a", "b", "b"),
+                      wt = sqrt(x))
 ```
 
 First one example using defaults.

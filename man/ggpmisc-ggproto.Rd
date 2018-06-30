@@ -2,7 +2,7 @@
 % Please edit documentation in R/geom-debug.R, R/geom-table.R,
 %   R/stat-dens2d-filter.r, R/stat-dens2d-labels.r, R/stat-fit-broom-tb.R,
 %   R/stat-fit-broom.R, R/stat-fit-deviations.R, R/stat-fit-residuals.R,
-%   R/stat-peaks.R, R/stat-poly-eq.R, R/stat-quadrat-counts.R
+%   R/stat-peaks.R, R/stat-poly-eq.R, R/stat-quadrant-counts.R
 \docType{data}
 \name{GeomNull}
 \alias{GeomNull}
@@ -31,7 +31,7 @@
 \alias{poly_eq_compute_group_fun}
 \alias{StatPolyEq}
 \alias{compute_counts_fun}
-\alias{StatQuadratCounts}
+\alias{StatQuadrantCounts}
 \title{\code{Stat*} Objects}
 \description{
 All \code{stat_*} functions (like \code{stat_bin}) return a layer that
