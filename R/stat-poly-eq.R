@@ -217,7 +217,7 @@ poly_eq_compute_group_fun <- function(data,
     label.y <- label.y[1]
   }
 
-  mf <- stats::lm(formula = formula, data = data, weights = weight)
+  mf <- stats::lm(formula = quote(formula), data = quote(data), weights = quote(weight))
   coefs <- stats::coef(mf)
   formula.rhs.chr <- as.character(formula)[3]
   if (grepl("-1", formula.rhs.chr) || grepl("- 1", formula.rhs.chr)) {
