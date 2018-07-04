@@ -109,6 +109,13 @@ For backward compatibility a logical is accepted as argument for
   override the default of the "text" geom.}}
 }
 
+\section{Warning!}{
+ if using \code{output.type = "expression"}, then
+  \code{parse = TRUE} is needed, while if using \code{output.type = "LaTeX"}
+  \code{parse = FALSE}, the default of \code{geom_text} and \code{geom_label},
+  should be used.
+}
+
 \examples{
 library(ggplot2)
 # generate artificial data
@@ -121,34 +128,28 @@ my.data <- data.frame(x = x, y = y,
                       w = sqrt(x))
 # give a name to a formula
 formula <- y ~ poly(x, 3, raw = TRUE)
-# plot
+# no weights
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
   stat_poly_eq(formula = formula, parse = TRUE)
-# plot
+# using weights
 ggplot(my.data, aes(x, y, weight = w)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
   stat_poly_eq(formula = formula, parse = TRUE)
-# plot
+# no weights, digits for R square
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
   stat_poly_eq(formula = formula, rr.digits = 4, parse = TRUE)
-# plot
+# user specified label
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
   stat_poly_eq(aes(label =  paste(stat(eq.label), stat(adj.rr.label), sep = "~~~~")),
                formula = formula, parse = TRUE)
-# plot
-ggplot(my.data, aes(x, y, weight = w)) +
-  geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label =  paste(stat(eq.label), stat(adj.rr.label), sep = "~~~~")),
-               formula = formula, parse = TRUE)
-# plot
+# user specified label and digits
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +

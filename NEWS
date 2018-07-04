@@ -6,7 +6,9 @@ Low level manipulation and debug methods and functions moved to new package
 'gginnards'.
 * Remove debug stats and geoms.
 * Remove layer manipulation functions.
-* Add support for "weight" easthetic to stat_poly_eq().
+* Add support for "weight" aesthetic to stat_poly_eq().
+* Add support for column selection and renaming to stat_fit_tb().
+* Add new statistic stat_fmt_tb() for formating of tibbles for additon to plots.
 * Revise vignette.
 * Rename stat_quadrat_count() into stat_quadrant_count().
 

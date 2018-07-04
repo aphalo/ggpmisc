@@ -79,6 +79,11 @@
 #'   \item{BIC.label}{BIC for the fitted model.} \item{hjust}{Set to zero to
 #'   override the default of the "text" geom.}}
 #'
+#' @section Warning!: if using \code{output.type = "expression"}, then
+#'   \code{parse = TRUE} is needed, while if using \code{output.type = "LaTeX"}
+#'   \code{parse = FALSE}, the default of \code{geom_text} and \code{geom_label},
+#'   should be used.
+#'
 #' @examples
 #' library(ggplot2)
 #' # generate artificial data

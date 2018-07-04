@@ -44,6 +44,13 @@
 #'   frequently differ from the name of values returned by the fit or test
 #'   function used.
 #'
+#' @section Warning!: \code{stat_fit_glance} applies the function given by
+#'   \code{method} separately to each group of observations, and factors mapped
+#'   to aesthetics generate a separate group for each factor level. Because of
+#'   this, it is not useful for annotating plots with results from
+#'   \code{t.test()} or ANOVA or ANCOVA. In such cases use the
+#'   \code{stat_fit_tb} statistic which does the model fitting per panel.
+#'
 #' @export
 #'
 #' @examples
@@ -51,21 +58,17 @@
 #' # Correlation example
 #' x <- c(44.4, 45.9, 41.9, 53.3, 44.7, 44.1, 50.7, 45.2, 60.1)
 #' y <- c( 2.6,  3.1,  2.5,  5.0,  3.6,  4.0,  5.2,  2.8,  3.8)
-#' # correlation is in column "estimate"!
+#' my.df <- data.frame(x, y)
+#' # estimated correlation is in column "estimate"!
 #' broom::glance(cor.test(x, y))
-#' ggplot(data.frame(x, y), aes(x, y)) +
+#' ggplot(my.df, aes(x, y)) +
 #'   geom_point() +
 #'   stat_fit_glance(geom = "text",
 #'                   method = "cor.test",
 #'                   method.args = list(x = x, y = y, method = "spearman"),
-#'                   aes(label = sprintf('r[s]~"="~%.2f', stat(estimate))),
-#'                   parse = TRUE) +
-#'   stat_fit_glance(geom = "text",
-#'                   method = "cor.test",
-#'                   method.args = list(x = x, y = y, method = "kendall"),
-#'                   aes(label = sprintf('r[k]~"="~%.2f', stat(estimate))),
-#'                   parse = TRUE,
-#'                   vjust = 3)
+#'                   aes(label = sprintf('r[s]~"="~%.2f~~italic(P)~"="~%.2f',
+#'                       stat(estimate), stat(p.value))),
+#'                   parse = TRUE)
 #'
 stat_fit_glance <- function(mapping = NULL, data = NULL, geom = "null",
                             method = "lm",

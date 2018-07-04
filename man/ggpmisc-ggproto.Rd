@@ -2,7 +2,7 @@
 % Please edit documentation in R/geom-debug.R, R/geom-table.R,
 %   R/stat-dens2d-filter.r, R/stat-dens2d-labels.r, R/stat-fit-broom-tb.R,
 %   R/stat-fit-broom.R, R/stat-fit-deviations.R, R/stat-fit-residuals.R,
-%   R/stat-peaks.R, R/stat-poly-eq.R, R/stat-quadrant-counts.R
+%   R/stat-fmt-tb.R, R/stat-peaks.R, R/stat-poly-eq.R, R/stat-quadrant-counts.R
 \docType{data}
 \name{GeomNull}
 \alias{GeomNull}
@@ -23,6 +23,8 @@
 \alias{StatFitDeviations}
 \alias{residuals_compute_group_fun}
 \alias{StatFitResiduals}
+\alias{fmt_tb_compute_group_fun}
+\alias{StatFmtTb}
 \alias{peaks_compute_group_fun}
 \alias{valleys_compute_group_fun}
 \alias{Stats}

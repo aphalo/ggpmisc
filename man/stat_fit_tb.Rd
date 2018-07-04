@@ -6,9 +6,10 @@
 \usage{
 stat_fit_tb(mapping = NULL, data = NULL, geom = "table", method = "lm",
   method.args = list(formula = y ~ x), tb.type = "fit.summary",
-  digits = 3, label.x.npc = "center", label.y.npc = "top",
-  label.x = NULL, label.y = NULL, position = "identity", na.rm = FALSE,
-  show.legend = FALSE, inherit.aes = TRUE, ...)
+  tb.vars = NULL, digits = 3, label.x.npc = "center",
+  label.y.npc = "top", label.x = NULL, label.y = NULL,
+  position = "identity", na.rm = FALSE, show.legend = FALSE,
+  inherit.aes = TRUE, ...)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
@@ -25,6 +26,9 @@ the plot defaults.}
 \item{method.args}{list of arguments to pass to \code{method}.}
 
 \item{tb.type}{character One of "fit.summary", "fit.anova" or "fit.coefs".}
+
+\item{tb.vars}{character vector, optionally named, used to select and or
+rename the columns of the table returned.}
 
 \item{digits}{integer indicating the number of significant digits to be used.}
 
@@ -67,3 +71,17 @@ can include aesthetics whose values you want to set, not map. See
   present, it is ignored.
 }
 
+\examples{
+library(ggplot2)
+# t-test example
+x <- c(44.4, 45.9, 41.9, 53.3, 44.7, 44.1, 50.7, 45.2, 60.1)
+group <- factor(c(rep("A", 4), rep("B", 5)))
+my.df <- data.frame(x, group)
+
+ggplot(my.df, aes(group, x)) +
+  geom_point() +
+  stat_fit_tb(method = "t.test",
+              tb.vars = c("italic(t)" = "estimate", "italic(P)" = "p.value"),
+              parse = TRUE)
+
+}

@@ -29,6 +29,8 @@
 #' @param method.args list of arguments to pass to \code{method}.
 #' @param tb.type character One of "fit.summary", "fit.anova" or "fit.coefs".
 #' @param digits integer indicating the number of significant digits to be used.
+#' @param tb.vars character vector, optionally named, used to select and or
+#'   rename the columns of the table returned.
 #' @param label.x.npc,label.y.npc \code{numeric} with range 0..1 or character.
 #'   Coordinates to be used for positioning the output, expressed in "normalized
 #'   parent coordinates" or character string. If too short they will be recycled.
@@ -44,10 +46,24 @@
 #'
 #' @export
 #'
+#' @examples
+#' library(ggplot2)
+#' # t-test example
+#' x <- c(44.4, 45.9, 41.9, 53.3, 44.7, 44.1, 50.7, 45.2, 60.1)
+#' group <- factor(c(rep("A", 4), rep("B", 5)))
+#' my.df <- data.frame(x, group)
+#'
+#' ggplot(my.df, aes(group, x)) +
+#'   geom_point() +
+#'   stat_fit_tb(method = "t.test",
+#'               tb.vars = c("italic(t)" = "estimate", "italic(P)" = "p.value"),
+#'               parse = TRUE)
+#'
 stat_fit_tb <- function(mapping = NULL, data = NULL, geom = "table",
                         method = "lm",
                         method.args = list(formula = y ~ x),
                         tb.type = "fit.summary",
+                        tb.vars = NULL,
                         digits = 3,
                         label.x.npc = "center", label.y.npc = "top",
                         label.x = NULL, label.y = NULL,
@@ -61,6 +77,7 @@ stat_fit_tb <- function(mapping = NULL, data = NULL, geom = "table",
     params = list(method = method,
                   method.args = method.args,
                   tb.type = tb.type,
+                  tb.vars = tb.vars,
                   digits = digits,
                   label.x.npc = label.x.npc,
                   label.y.npc = label.y.npc,
@@ -83,6 +100,7 @@ fit_tb_compute_panel_fun <- function(data,
                                      method,
                                      method.args,
                                      tb.type,
+                                     tb.vars,
                                      digits,
                                      label.x.npc,
                                      label.y.npc,
@@ -191,6 +209,10 @@ fit_tb_compute_panel_fun <- function(data,
 
   num.cols <- sapply(mf_tb, is.numeric)
   mf_tb[num.cols] <- signif(mf_tb[num.cols], digits = digits)
+
+  if(!is.null(tb.vars)) {
+    mf_tb <- dplyr::select(mf_tb, !!tb.vars)
+  }
 
   # we need to enclose the tibble in a list to mannualy nest the table in
   # data.

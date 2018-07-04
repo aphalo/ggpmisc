@@ -4,7 +4,6 @@ vignettes/figure
 inst-not
 test
 ^docs$
-^tests$
 ^_pkgdown.yml$
 ^CONDUCT\.md$
 ^_pkgdown\.yml$
