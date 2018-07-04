@@ -35,9 +35,37 @@
 #'   for absolute positioning of the output. If too short they will be recycled.
 #'
 #' @section Computed variables: The output of \code{\link[broom]{glance}} is
-#'   returned as is in the \code{data} object.
+#'   returned as is in the \code{data} object. If you do not know what names
+#'   to expect for the variables returned, use \code{broom::glance()} and
+#'   \code{names()} or \code{print()} to find out.
+#'
+#' @note The names of the columns in the returned data are consitent with those
+#'   returned by method \code{glance()} from package 'broom', that will
+#'   frequently differ from the name of values returned by the fit or test
+#'   function used.
 #'
 #' @export
+#'
+#' @examples
+#' library(ggplot2)
+#' # Correlation example
+#' x <- c(44.4, 45.9, 41.9, 53.3, 44.7, 44.1, 50.7, 45.2, 60.1)
+#' y <- c( 2.6,  3.1,  2.5,  5.0,  3.6,  4.0,  5.2,  2.8,  3.8)
+#' # correlation is in column "estimate"!
+#' broom::glance(cor.test(x, y))
+#' ggplot(data.frame(x, y), aes(x, y)) +
+#'   geom_point() +
+#'   stat_fit_glance(geom = "text",
+#'                   method = "cor.test",
+#'                   method.args = list(x = x, y = y, method = "spearman"),
+#'                   aes(label = sprintf('r[s]~"="~%.2f', stat(estimate))),
+#'                   parse = TRUE) +
+#'   stat_fit_glance(geom = "text",
+#'                   method = "cor.test",
+#'                   method.args = list(x = x, y = y, method = "kendall"),
+#'                   aes(label = sprintf('r[k]~"="~%.2f', stat(estimate))),
+#'                   parse = TRUE,
+#'                   vjust = 3)
 #'
 stat_fit_glance <- function(mapping = NULL, data = NULL, geom = "null",
                             method = "lm",
@@ -60,7 +88,6 @@ stat_fit_glance <- function(mapping = NULL, data = NULL, geom = "null",
                   ...)
   )
 }
-
 
 # Defined here to avoid a note in check --as-cran as the imports from 'broom'
 # are not seen when the function is defined in-line in the ggproto object.

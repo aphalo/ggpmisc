@@ -55,8 +55,35 @@ can include aesthetics whose values you want to set, not map. See
 \code{stat_fit_glance} fits a model and returns a summary
   "glance" of the model's statistics, using package 'broom'.
 }
+\note{
+The names of the columns in the returned data are consitent with those
+returned by method \code{glance()} from package 'broom', that will frequently
+differ from the name of values returned by the fit or test function used.
+}
 \section{Computed variables}{
  The output of \code{\link[broom]{glance}} is
   returned as is in the \code{data} object.
 }
 
+\examples{
+library(ggplot2)
+# Correlation example
+x <- c(44.4, 45.9, 41.9, 53.3, 44.7, 44.1, 50.7, 45.2, 60.1)
+y <- c( 2.6,  3.1,  2.5,  5.0,  3.6,  4.0,  5.2,  2.8,  3.8)
+# correlation is in column "estimate"!
+broom::glance(cor.test(x, y))
+ggplot(data.frame(x, y), aes(x, y)) +
+  geom_point() +
+  stat_fit_glance(geom = "text",
+                  method = "cor.test",
+                  method.args = list(x = x, y = y, method = "spearman"),
+                  aes(label = sprintf('r[s]~"="~\%.2f', stat(estimate))),
+                  parse = TRUE) +
+  stat_fit_glance(geom = "text",
+                  method = "cor.test",
+                  method.args = list(x = x, y = y, method = "kendall"),
+                  aes(label = sprintf('r[k]~"="~\%.2f', stat(estimate))),
+                  parse = TRUE,
+                  vjust = 3)
+
+}

@@ -140,19 +140,19 @@ ggplot(my.data, aes(x, y)) +
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label =  paste(..eq.label.., ..adj.rr.label.., sep = "~~~~")),
+  stat_poly_eq(aes(label =  paste(stat(eq.label), stat(adj.rr.label), sep = "~~~~")),
                formula = formula, parse = TRUE)
 # plot
 ggplot(my.data, aes(x, y, weight = w)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label =  paste(..eq.label.., ..adj.rr.label.., sep = "~~~~")),
+  stat_poly_eq(aes(label =  paste(stat(eq.label), stat(adj.rr.label), sep = "~~~~")),
                formula = formula, parse = TRUE)
 # plot
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label =  paste(..eq.label.., ..adj.rr.label.., sep = "~~~~")),
+  stat_poly_eq(aes(label =  paste(stat(eq.label), stat(adj.rr.label), sep = "~~~~")),
                formula = formula, rr.digits = 3, coef.digits = 2, parse = TRUE)
 
 }

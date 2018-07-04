@@ -91,38 +91,32 @@
 #'                       w = sqrt(x))
 #' # give a name to a formula
 #' formula <- y ~ poly(x, 3, raw = TRUE)
-#' # plot
+#' # no weights
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   geom_smooth(method = "lm", formula = formula) +
 #'   stat_poly_eq(formula = formula, parse = TRUE)
-#' # plot
+#' # using weights
 #' ggplot(my.data, aes(x, y, weight = w)) +
 #'   geom_point() +
 #'   geom_smooth(method = "lm", formula = formula) +
 #'   stat_poly_eq(formula = formula, parse = TRUE)
-#' # plot
+#' # no weights, digits for R square
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   geom_smooth(method = "lm", formula = formula) +
 #'   stat_poly_eq(formula = formula, rr.digits = 4, parse = TRUE)
-#' # plot
+#' # user specified label
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(aes(label =  paste(..eq.label.., ..adj.rr.label.., sep = "~~~~")),
+#'   stat_poly_eq(aes(label =  paste(stat(eq.label), stat(adj.rr.label), sep = "~~~~")),
 #'                formula = formula, parse = TRUE)
-#' # plot
-#' ggplot(my.data, aes(x, y, weight = w)) +
-#'   geom_point() +
-#'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(aes(label =  paste(..eq.label.., ..adj.rr.label.., sep = "~~~~")),
-#'                formula = formula, parse = TRUE)
-#' # plot
+#' # user specified label and digits
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(aes(label =  paste(..eq.label.., ..adj.rr.label.., sep = "~~~~")),
+#'   stat_poly_eq(aes(label =  paste(stat(eq.label), stat(adj.rr.label), sep = "~~~~")),
 #'                formula = formula, rr.digits = 3, coef.digits = 2, parse = TRUE)
 #'
 #' @export
@@ -217,7 +211,9 @@ poly_eq_compute_group_fun <- function(data,
     label.y <- label.y[1]
   }
 
-  mf <- stats::lm(formula = quote(formula), data = quote(data), weights = quote(weight))
+  lm.args <- list(quote(formula), data = quote(data), weights = quote(weight))
+  mf <- do.call(stats::lm, lm.args)
+
   coefs <- stats::coef(mf)
   formula.rhs.chr <- as.character(formula)[3]
   if (grepl("-1", formula.rhs.chr) || grepl("- 1", formula.rhs.chr)) {
