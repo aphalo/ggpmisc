@@ -8,7 +8,7 @@ We are committed to making participation in this project a harassment-free exper
 everyone, regardless of level of experience, gender, gender identity and expression,
 sexual orientation, disability, personal appearance, body size, race, ethnicity, age, or religion.
 
-Examples of unacceptable behavior by participants include the use of sexual language or
+Examples of unacceptable behaviour by participants include the use of sexual language or
 imagery, derogatory comments or personal attacks, trolling, public or private harassment,
 insults, or other unprofessional conduct.
 
@@ -17,7 +17,7 @@ commits, code, wiki edits, issues, and other contributions that are not aligned 
 Code of Conduct. Project maintainers who do not follow the Code of Conduct may be removed 
 from the project team.
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by 
+Instances of abusive, harassing, or otherwise unacceptable behaviour may be reported by 
 opening an issue or contacting one or more of the project maintainers.
 
 This Code of Conduct is adapted from the Contributor Covenant 

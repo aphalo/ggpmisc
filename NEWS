@@ -8,7 +8,7 @@ Low level manipulation and debug methods and functions moved to new package
 * Remove layer manipulation functions.
 * Add support for "weight" aesthetic to stat_poly_eq().
 * Add support for column selection and renaming to stat_fit_tb().
-* Add new statistic stat_fmt_tb() for formating of tibbles for additon to plots.
+* Add new statistic stat_fmt_tb() for formatting of tibbles for addition to plots.
 * Revise vignette.
 * Rename stat_quadrat_count() into stat_quadrant_count().
 
@@ -47,7 +47,7 @@ name clashes with mapped variables.
 ggpmisc 0.2.16
 ==============
 
-* Revise stat_fit_tidy() so that it returns p-values for parameters, in additon
+* Revise stat_fit_tidy() so that it returns p-values for parameters, in addition
 to estimates and their standard errors.
 * BUG FIX: Revise geom_debug() adding missing default arguments.
 * Add functions for manipulation of layers in ggplot objects: delete_layers(),

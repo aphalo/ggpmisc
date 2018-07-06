@@ -22,7 +22,7 @@ these functions ggplot() methods for `"ts"` and `"xts"` classes are defined.
 A geometry, `geom_table()` allows addition of tables from tibble objects mapped 
 to the `label` aesthetic. 
 
-Two statistics automate finding the location and labeling peaks and/or valleys.
+Two statistics automate finding the location and labelling peaks and/or valleys.
 
 Several statistics are provided for annotations related to model fits: 
 fitted polynomial equations as labels, fitted equations for other model fits
