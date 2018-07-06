@@ -23,17 +23,24 @@
 #' numeric and POSIXct variables mapped to the x aesthetic. Special handling was
 #' needed as text labels are generated from the data.
 #'
-#' @section Acknowledgements:
-#' We thank Kamil Slowikowski not only for contributing ideas and code examples
-#' to this package but also for adding new features to his package 'ggrepel'
-#' that allow new use cases for \code{stat_dens2d_labels} from this package.
+#' @section Warning!: \code{geom_null()}, \code{stat_debug_group()},
+#'   \code{stat_debug_panel()}, \code{geom_debug()}, \code{append_layers()},
+#'   \code{bottom_layer()}, \code{delete_layers()}, \code{extract_layers()},
+#'   \code{move_layers()}, \code{num_layesr()}, \code{shift_layers()},
+#'   \code{top_layer()} and \code{which_layers()} have been moved from package
+#'   'ggpmisc' into their own seperate package
+#'   '\code{\link[gginnards]{gginnards-package}}.
 #'
-#' @references
-#' Package suite 'r4photobiology' web site at
-#' \url{https://www.r4photobiology.info/}\cr
-#' Package 'ggplot2' web site at \url{http://ggplot2.org/}\cr
-#' Package 'ggplot2' documentation at \url{http://docs.ggplot2.org/}\cr
-#' Package 'ggplot2' source code at \url{https://github.com/hadley/ggplot2}
+#' @section Acknowledgements: We thank Kamil Slowikowski not only for
+#'   contributing ideas and code examples to this package but also for adding
+#'   new features to his package 'ggrepel' that allow new use cases for
+#'   \code{stat_dens2d_labels} from this package.
+#'
+#' @references Package suite 'r4photobiology' web site at
+#' \url{https://www.r4photobiology.info/}\cr Package 'ggplot2' web site at
+#' \url{http://ggplot2.org/}\cr Package 'ggplot2' documentation at
+#' \url{http://docs.ggplot2.org/}\cr Package 'ggplot2' source code at
+#' \url{https://github.com/hadley/ggplot2}
 #'
 #' @import ggplot2
 #' @importFrom ggplot2 ggplot

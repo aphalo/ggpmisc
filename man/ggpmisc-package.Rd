@@ -52,11 +52,21 @@ The signatures of \code{stat_peaks()} and \code{stat_valleys()} are
   datetime scale, while those from package \code{photobiology} do not
   generate correct labels in this case.
 }
-\section{Acknowledgements}{
+\section{Warning!}{
+ \code{geom_null()}, \code{stat_debug_group()},
+  \code{stat_debug_panel()}, \code{geom_debug()}, \code{append_layers()},
+  \code{bottom_layer()}, \code{delete_layers()}, \code{extract_layers()},
+  \code{move_layers()}, \code{num_layesr()}, \code{shift_layers()},
+  \code{top_layer()} and \code{which_layers()} have been moved from package
+  'ggpmisc' into their own seperate package
+  '\code{\link[gginnards]{gginnards-package}}.
+}
 
-We thank Kamil Slowikowski not only for contributing ideas and code examples
-to this package but also for adding new features to his package 'ggrepel'
-that allow new use cases for \code{stat_dens2d_labels} from this package.
+\section{Acknowledgements}{
+ We thank Kamil Slowikowski not only for
+  contributing ideas and code examples to this package but also for adding
+  new features to his package 'ggrepel' that allow new use cases for
+  \code{stat_dens2d_labels} from this package.
 }
 
 \examples{
@@ -86,10 +96,10 @@ ggplot(PlantGrowth, aes(group, weight)) +
 }
 \references{
 Package suite 'r4photobiology' web site at
-\url{https://www.r4photobiology.info/}\cr
-Package 'ggplot2' web site at \url{http://ggplot2.org/}\cr
-Package 'ggplot2' documentation at \url{http://docs.ggplot2.org/}\cr
-Package 'ggplot2' source code at \url{https://github.com/hadley/ggplot2}
+\url{https://www.r4photobiology.info/}\cr Package 'ggplot2' web site at
+\url{http://ggplot2.org/}\cr Package 'ggplot2' documentation at
+\url{http://docs.ggplot2.org/}\cr Package 'ggplot2' source code at
+\url{https://github.com/hadley/ggplot2}
 }
 \seealso{
 Useful links:
