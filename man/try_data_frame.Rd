@@ -3,7 +3,7 @@
 \name{try_data_frame}
 \alias{try_data_frame}
 \alias{try_tibble}
-\title{Convert an R object containing observations into a tibble.}
+\title{Convert an R object into a tibble}
 \usage{
 try_data_frame(x, time.resolution = "month", as.numeric = FALSE,
   col.names = NULL)

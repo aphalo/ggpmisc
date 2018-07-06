@@ -2,7 +2,7 @@
 % Please edit documentation in R/stat-dens2d-labels.r
 \name{stat_dens2d_labels}
 \alias{stat_dens2d_labels}
-\title{Reset labels of observations in high density regions.}
+\title{Reset labels of observations in high density regions}
 \usage{
 stat_dens2d_labels(mapping = NULL, data = NULL, geom = "text",
   position = "identity", keep.fraction = 0.1, keep.number = Inf,

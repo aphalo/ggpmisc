@@ -23,17 +23,13 @@ License: GPL (>= 2)
 LazyData: TRUE
 LazyLoad: TRUE
 ByteCompile: TRUE
-Remotes:
-    tidyverse/ggplot2
 Depends:
     R (>= 3.3.0),
     ggplot2 (>= 3.0.0)
 Imports:
-    methods,
     grid,
     rlang (>= 0.2.1),
     magrittr (>= 1.5),
-    devtools (>= 1.13.6),
     gridExtra (>= 2.3),
     tibble (>= 1.4.2),
     MASS (>= 7.3-50),

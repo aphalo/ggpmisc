@@ -2,7 +2,7 @@
 % Please edit documentation in R/stat-poly-eq.R
 \name{stat_poly_eq}
 \alias{stat_poly_eq}
-\title{Add a label for a fitted linear model to a plot.}
+\title{Equation, p-value, R^2, AIC or BIC of fitted polynomial}
 \usage{
 stat_poly_eq(mapping = NULL, data = NULL, geom = "text", formula = NULL,
   eq.with.lhs = "italic(y)~`=`~", eq.x.rhs = NULL, coef.digits = 3,
@@ -63,8 +63,9 @@ can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 }
 \description{
-\code{stat_poly_eq} fits a polynomial and generates several labels with an
-equation and/or coefficient of determination (R^2), 'AIC' or 'BIC'.
+\code{stat_poly_eq} fits a polynomial and generates several labels including
+the equation and/or p-value, coefficient of determination (R^2), 'AIC' or
+'BIC'.
 }
 \details{
 This stat can be used to automatically annotate a plot with R^2,

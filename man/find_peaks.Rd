@@ -2,7 +2,7 @@
 % Please edit documentation in R/stat-peaks.R
 \name{find_peaks}
 \alias{find_peaks}
-\title{Find local maxima or global maximum (peaks).}
+\title{Find local maxima or global maximum (peaks)}
 \usage{
 find_peaks(x, ignore_threshold = 0, span = 3, strict = TRUE)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/stat-quadrant-counts.R
 \name{stat_quadrant_counts}
 \alias{stat_quadrant_counts}
-\title{Count the number of observations in each quadrant of a plot.}
+\title{Number of observations in quadrants}
 \usage{
 stat_quadrant_counts(mapping = NULL, data = NULL, geom = "text",
   position = "identity", quadrants = NULL, pool.along = "none",

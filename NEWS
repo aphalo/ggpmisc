@@ -1,7 +1,7 @@
-ggpmisc 0.3.0 (2018-07-01)
+ggpmisc 0.3.0 (2018-07-06)
 ==========================
 
-Version requiring 'ggplot2' (>= 2.3.0)
+Version requiring 'ggplot2' (>= 3.0.0), now in CRAN.
 Low level manipulation and debug methods and functions moved to new package
 'gginnards'.
 * Remove debug stats and geoms.
@@ -9,8 +9,8 @@ Low level manipulation and debug methods and functions moved to new package
 * Add support for "weight" aesthetic to stat_poly_eq().
 * Add support for column selection and renaming to stat_fit_tb().
 * Add new statistic stat_fmt_tb() for formatting of tibbles for addition to plots.
-* Revise vignette.
 * Rename stat_quadrat_count() into stat_quadrant_count().
+* Revise vignette.
 
 ggpmisc 0.2.17.9902
 ===================

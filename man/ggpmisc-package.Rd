@@ -19,8 +19,11 @@ models. Model fit classes for which suitable methods are provided by package
 }
 \details{
 The new facilities for cleanly defining new stats and geoms added to
-'ggplot2' in version 2.0.0 have made this package easy to code. However, this
-means that this package requires version 2.0.0 or later of ggplot2.
+'ggplot2' in version 2.0.0 and the support for nested tibbles and new syntax
+for mapping computed values to aesthetics added to
+'ggplot2' in version 3.0.0 are used in this package's code. This
+means that 'ggpmisc' (>= 0.3.0) requires version 3.0.0 or later of ggplot2
+while 'ggpmisc' (< 0.3.0) requires version 2.0.0 or later of ggplot2.
 
 Extensions provided:
 \itemize{

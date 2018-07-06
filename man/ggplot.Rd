@@ -4,7 +4,7 @@
 \alias{ggplot}
 \alias{ggplot.ts}
 \alias{ggplot.xts}
-\title{Create a new ggplot plot from time series data.}
+\title{Create a new ggplot plot from time series data}
 \usage{
 \method{ggplot}{ts}(data, mapping = NULL, ..., time.resolution = "day",
   as.numeric = TRUE, environment = parent.frame())

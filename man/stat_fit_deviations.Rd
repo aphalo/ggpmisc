@@ -2,7 +2,7 @@
 % Please edit documentation in R/stat-fit-deviations.R
 \name{stat_fit_deviations}
 \alias{stat_fit_deviations}
-\title{Plot residuals from fit as segments.}
+\title{Residuals from model fit as segments}
 \usage{
 stat_fit_deviations(mapping = NULL, data = NULL, geom = "segment",
   method = "lm", formula = NULL, position = "identity", na.rm = FALSE,

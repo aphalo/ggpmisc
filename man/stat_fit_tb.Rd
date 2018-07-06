@@ -2,7 +2,7 @@
 % Please edit documentation in R/stat-fit-broom-tb.R
 \name{stat_fit_tb}
 \alias{stat_fit_tb}
-\title{Return a tibble within a tibble with fitted parameter estimates.}
+\title{Model-fit summary or ANOVA}
 \usage{
 stat_fit_tb(mapping = NULL, data = NULL, geom = "table", method = "lm",
   method.args = list(formula = y ~ x), tb.type = "fit.summary",
@@ -60,12 +60,12 @@ can include aesthetics whose values you want to set, not map. See
 }
 \description{
 \code{stat_fit_tb} fits a model and returns a "tidy" version
-  of the model's summary, using package 'broom'.
+  of the model's summary or ANOVA table, using package 'broom'.
 }
 \section{Computed variables}{
  The output of \code{\link[broom]{tidy}} is
   returned as a single "cell" in a tibble (i.e. a tibble nested within a
-  tibble). The returned \code{data} object contains a single row, containing
+  tibble). The returned \code{data} object contains a single, containing
   the
   result from a single model fit to all data in a panel. If grouping is
   present, it is ignored.

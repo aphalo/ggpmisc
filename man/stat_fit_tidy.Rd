@@ -2,7 +2,7 @@
 % Please edit documentation in R/stat-fit-broom.R
 \name{stat_fit_tidy}
 \alias{stat_fit_tidy}
-\title{Return one row data frame with fitted parameter estimates.}
+\title{One row data frame with fitted parameter estimates}
 \usage{
 stat_fit_tidy(mapping = NULL, data = NULL, geom = "null", method = "lm",
   method.args = list(formula = y ~ x), label.x.npc = "left",

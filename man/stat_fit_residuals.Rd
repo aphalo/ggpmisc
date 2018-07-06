@@ -2,7 +2,7 @@
 % Please edit documentation in R/stat-fit-residuals.R
 \name{stat_fit_residuals}
 \alias{stat_fit_residuals}
-\title{Plot residuals from a model fit.}
+\title{Residuals from a model fit}
 \usage{
 stat_fit_residuals(mapping = NULL, data = NULL, geom = "point",
   method = "lm", formula = NULL, resid.type = NULL,

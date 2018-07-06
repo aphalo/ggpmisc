@@ -2,7 +2,7 @@
 % Please edit documentation in R/stat-fit-broom.R
 \name{stat_fit_augment}
 \alias{stat_fit_augment}
-\title{Return the data augmented with fitted values and statistics.}
+\title{Augment data with fitted values and statistics}
 \usage{
 stat_fit_augment(mapping = NULL, data = NULL, geom = "smooth",
   method = "lm", method.args = list(formula = y ~ x),

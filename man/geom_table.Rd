@@ -2,7 +2,7 @@
 % Please edit documentation in R/geom-table.R
 \name{geom_table}
 \alias{geom_table}
-\title{Table}
+\title{Tables}
 \usage{
 geom_table(mapping = NULL, data = NULL, stat = "identity",
   position = "identity", ..., parse = FALSE, check_overlap = FALSE,
@@ -45,10 +45,11 @@ define both data and aesthetics and shouldn't inherit behaviour from the
 default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
 }
 \description{
-\code{geom_table} adds a textual table directly to the plot.
+\code{geom_table} adds a textual table directly to the ggplot using syntax
+similar to that of \code{\link[ggplot2]{geom_label}}.
 }
 \details{
-Note the the "width" and "height" like of a text element are 0, so stacking
+Note the "width" and "height" like of a text element are 0, so stacking
 and dodging tables will not work by default, and axis limits are not
 automatically expanded to include all tables. Obviously, tables do have
 height and width, but they are physical units, not data units. The amount of

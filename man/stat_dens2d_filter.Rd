@@ -3,7 +3,7 @@
 \name{stat_dens2d_filter}
 \alias{stat_dens2d_filter}
 \alias{stat_dens2d_filter_g}
-\title{Filter observations in high density regions.}
+\title{Filter observations by local density}
 \usage{
 stat_dens2d_filter(mapping = NULL, data = NULL, geom = "point",
   position = "identity", keep.fraction = 0.1, keep.number = Inf,

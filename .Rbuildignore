@@ -7,3 +7,4 @@ test
 ^_pkgdown.yml$
 ^CONDUCT\.md$
 ^_pkgdown\.yml$
+^README\.Rmd$
