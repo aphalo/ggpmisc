@@ -1,4 +1,4 @@
-#' @title Filter observations in high density regions.
+#' @title Filter observations by local density
 #'
 #' @description \code{stat_dens2d_filter} Filters out/filters in observations in
 #'   regions of a plot panel with high density of observations.

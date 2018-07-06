@@ -7,10 +7,10 @@
 \title{ggpmisc: Miscellaneous Extensions to 'ggplot2'}
 \description{
 Extensions to 'ggplot2' respecting the grammar of graphics
-paradigm. Especialization of method ggplot(): accept and convert on the fly
+paradigm. Specialization of method ggplot(): accept and convert on the fly
 time series data. Geom: "table", adds tables to plots. Statistics: locate
 and tag peaks and valleys in 2D plots; count observations in different
-quadrats of a plot; select observations based on 2D density; label with the
+quadrants of a plot; select observations based on 2D density; label with the
 equation of a polynomial fitted with lm() or other types of models; labels
 with P-value, R^2 or adjusted R^2 or information criteria for fitted models;
 label with ANOVA table for fitted models; label with summary for fitted

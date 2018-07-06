@@ -1,4 +1,4 @@
-#' @title Reset labels of observations in high density regions.
+#' @title Reset labels of observations in high density regions
 #'
 #' @description \code{stat_low_dens} Sets \code{labels} to NA in regions of a
 #'   plot panel with high density of observations.

@@ -1,7 +1,8 @@
-#' Add a label for a fitted linear model to a plot.
+#' Equation, p-value, R^2, AIC or BIC of fitted polynomial
 #'
-#' \code{stat_poly_eq} fits a polynomial and generates several labels with an
-#' equation and/or coefficient of determination (R^2), 'AIC' or 'BIC'.
+#' \code{stat_poly_eq} fits a polynomial and generates several labels including
+#' the equation and/or p-value, coefficient of determination (R^2), 'AIC' or
+#' 'BIC'.
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs to be

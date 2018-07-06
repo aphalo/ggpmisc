@@ -1,9 +1,9 @@
 # broom::tidy as tibble -----------------------------------------------------
 
-#' @title Return a tibble within a tibble with fitted parameter estimates.
+#' @title Model-fit summary or ANOVA
 #'
 #' @description \code{stat_fit_tb} fits a model and returns a "tidy" version
-#'   of the model's summary, using package 'broom'.
+#'   of the model's summary or ANOVA table, using package 'broom'.
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs
@@ -39,7 +39,7 @@
 #'
 #' @section Computed variables: The output of \code{\link[broom]{tidy}} is
 #'   returned as a single "cell" in a tibble (i.e. a tibble nested within a
-#'   tibble). The returned \code{data} object contains a single row, containing
+#'   tibble). The returned \code{data} object contains a single, containing
 #'   the
 #'   result from a single model fit to all data in a panel. If grouping is
 #'   present, it is ignored.

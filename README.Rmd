@@ -1,0 +1,120 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  fig.asp = 2/3,
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-"
+)
+```
+
+# ggpmisc #
+
+[![](http://www.r-pkg.org/badges/version/ggpmisc)](https://cran.r-project.org/package=ggpmisc) 
+[![](http://cranlogs.r-pkg.org/badges/ggpmisc)](https://cran.r-project.org/package=ggpmisc) 
+[![](http://cranlogs.r-pkg.org/badges/grand-total/ggpmisc)](https://cran.r-project.org/package=ggpmisc)
+
+Package '**ggpmisc**' (Miscellaneous Extensions to 'ggplot2') is a set of
+extensions to R package 'ggplot2' (>= 3.0.0) with emphasis on annotations and
+highlighting related to fitted models and data summaries. To complement these,
+the widely useful `geom_table()` and `stat_fmt_tb()` are defined as well as
+`ggplot` constructors for time series objects. The provided `ggplot.ts()` and
+`ggplot.xts()` use `try_tibble()` which is also exported and accepts objects of
+additional classes as input.
+
+Statistics useful for highlighting and/or annotating individual data points 
+in regions of plot panels with high/low densities of observations. These stats are designed to work
+well together with `geom_text_repel()` and `geom_label_repel()` from package 
+'ggrepel'.
+
+Functions for the manipulation of layers in ggplot objects and statistics and
+geometries that echo their data input to the R console, earlier included in this
+package are now in package 'gginnards'.
+
+## Examples
+
+This is a basic example which shows plotting using the most automatic approach.
+
+```{r example, message=FALSE}
+library(photobiology)
+library(ggpmisc)
+```
+
+```{r}
+ggplot(lynx, as.numeric = FALSE) + geom_line() + 
+  stat_peaks(colour = "red") +
+  stat_peaks(geom = "text", colour = "red", angle = 66,
+             hjust = -0.1, x.label.fmt = "%Y") +
+  ylim(NA, 8000)
+```
+
+
+```{r}
+formula <- y ~ poly(x, 2, raw = TRUE)
+ggplot(cars, aes(speed, dist)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_eq(aes(label =  paste(..eq.label.., ..adj.rr.label.., sep = "~~~~")),
+               formula = formula, parse = TRUE)
+```
+
+```{r}
+formula <- y ~ x + I(x^2)
+ggplot(cars, aes(speed, dist)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_fit_tb(method = "lm",
+              method.args = list(formula = formula),
+              tb.type = "fit.anova",
+              tb.vars = c(Effect = "term", 
+                          "df",
+                          "M.S." = "meansq", 
+                          "italic(F)" = "statistic", 
+                          "italic(P)" = "p.value"),
+               label.y.npc = "top", label.x.npc = "left",
+              parse = TRUE)
+```
+
+## Installation
+
+Installation of the most recent stable version from CRAN:
+
+```{r cran-instalaltion, eval=FALSE}
+install.packages("ggspectra")
+```
+
+Installation of the current unstable version from Bitbucket:
+
+```{r bb-instalaltion, eval=FALSE}
+# install.packages("devtools")
+devtools::install_bitbucket("aphalo/ggspectra")
+```
+
+## Documentation 
+
+HTML documentation is available at (http://docs.r4photobiology.info/ggpmisc/), including a _User Guide_.
+
+News on updates to the different packages of the 'r4photobiology' suite are regularly posted at (https://www.r4photobiology.info/).
+
+## Contributing
+
+Please report bugs and request new features at (https://bitbucket.org/aphalo/ggpmisc/issues). Pull requests are welcome at (https://bitbucket.org/aphalo/ggpmisc).
+
+Please note that this project is released with a [Contributor Code of Conduct](CONDUCT.md). By participating in this project you agree to abide by its terms.
+
+## Citation
+
+If you use this package to produce scientific or commercial publications, please cite according to:
+
+```{r}
+citation("ggpmisc")
+```
+
+## License
+
+© 2016-2018 Pedro J. Aphalo (pedro.aphalo@helsinki.fi). Released under the GPL, version 2 or greater. This software carries no warranty of any kind.

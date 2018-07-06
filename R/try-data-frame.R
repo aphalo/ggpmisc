@@ -1,4 +1,4 @@
-#' Convert an R object containing observations into a tibble.
+#' Convert an R object into a tibble
 #'
 #' This functions tries to convert any R object into a data.frame object.
 #' If \code{x} is already a data.frame, it is returned as is. If it is
@@ -129,7 +129,7 @@ try_tibble <- function(x,
   tibble::as_tibble(z)
 }
 
-#' Create a new ggplot plot from time series data.
+#' Create a new ggplot plot from time series data
 #'
 #' \code{ggplot()} initializes a ggplot object. It can be used to
 #' declare the input spectral object for a graphic and to optionally specify the

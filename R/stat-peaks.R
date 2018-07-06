@@ -1,4 +1,4 @@
-#' Find local maxima or global maximum (peaks).
+#' Find local maxima or global maximum (peaks)
 #'
 #' This method finds peaks (local maxima) in a spectrum, using a user selectable
 #' span and size threshold relative to the tallest peak (global maximum). This
@@ -52,7 +52,7 @@ find_peaks <-
     }
   }
 
-#' Find and label local maxima (peaks) or minima (valleys).
+#' Local maxima (peaks) or minima (valleys)
 #'
 #' \code{stat_peaks} finds at which x positions local y maxima are located and
 #' \code{stat_valleys} finds at which x positions local y minima are located.

@@ -1,6 +1,6 @@
 # dplyr::select and dplyr::filter -----------------------------------------------------
 
-#' @title Select and slice a tibble within a tibble before plotting it.
+#' @title Select and slice a tibble nested in \code{data}
 #'
 #' @description \code{stat_partial_tb} selects columns and/or remanes them
 #'   and/or slices rows from a tible nested in \code{data}. This stat is

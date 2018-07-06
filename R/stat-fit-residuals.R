@@ -1,4 +1,4 @@
-#' Plot residuals from a model fit.
+#' Residuals from a model fit
 #'
 #' \code{stat_fit_residuals} fits a linear model and returns
 #'    residuals ready to be plotted as points.

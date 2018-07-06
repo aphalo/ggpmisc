@@ -1,4 +1,4 @@
-#' Plot residuals from fit as segments.
+#' Residuals from model fit as segments
 #'
 #' \code{stat_fit_deviations} fits a linear model and returns fitted values and
 #' residuals ready to be plotted as segments.

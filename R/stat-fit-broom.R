@@ -1,6 +1,6 @@
 # broom::glance -----------------------------------------------------------
 
-#' @title Return one row summary data frame for a fitted model.
+#' @title One row summary data frame for a fitted model
 #'
 #' @description \code{stat_fit_glance} fits a model and returns a summary
 #'   "glance" of the model's statistics, using package 'broom'.
@@ -218,7 +218,7 @@ StatFitGlance <-
 
 # broom::augment ----------------------------------------------------------
 
-#' @title Return the data augmented with fitted values and statistics.
+#' @title Augment data with fitted values and statistics
 #'
 #' @description \code{stat_fit_augment} fits a model and returns the data
 #'   augmented with information from the fitted model, using package 'broom'.
@@ -349,7 +349,7 @@ StatFitAugment <-
 
 # broom::tidy -------------------------------------------------------------
 
-#' @title Return one row data frame with fitted parameter estimates.
+#' @title One row data frame with fitted parameter estimates
 #'
 #' @description \code{stat_fit_tidy} fits a model and returns a "tidy" version
 #'   of the model's summary, using package 'broom'.

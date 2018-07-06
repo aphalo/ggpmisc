@@ -52,7 +52,7 @@ can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 }
 \description{
-\code{stat_quadrant_counts} counts the number of observations in each quadrant
+\code{stat_quadrant_counts()} counts the number of observations in each quadrant
 of a plot panel. By default it adds a text label to the far corner of each
 quadrant. It can also be used to obtain the total number of observations in
 each of two pairs of quadrants or in the whole panel. Grouping is ignored, so
@@ -80,7 +80,7 @@ Values exactly equal to zero are counted as belonging to the positve
   quadrant for which observations are present in \code{data}. \describe{
   \item{quadrant}{integer, one of 0:4} \item{x}{extreme x value in the
   quadrant} \item{y}{extreme y value in the quadrant} \item{count}{number of
-  ovserbations} }
+  observations} }
 }
 
 \examples{
