@@ -11,6 +11,13 @@
 #'   bottom_layer delete_layers extract_layers move_layers num_layers
 #'   shift_layers top_layer which_layers
 #'
+#' @seealso \code{\link[gginnards]{gginnards-package}},
+#'   \code{\link[gginnards]{geom_null}},
+#'   \code{\link[gginnards]{stat_debug_group}},
+#'   \code{\link[gginnards]{stat_debug_panel}},
+#'   \code{\link[gginnards]{geom_debug}} and
+#'   \code{\link[gginnards]{delete_layers}}.
+#'
 #' @rdname moved-to-gginnards
 #' @name Moved
 #'

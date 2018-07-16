@@ -25,3 +25,11 @@ To continue using any of these functions and methods, simply run at
   the R prompt or add to your script \code{library(gginnards)}, after
   installing package 'gginnards'.
 }
+\seealso{
+\code{\link[gginnards]{gginnards-package}},
+  \code{\link[gginnards]{geom_null}},
+  \code{\link[gginnards]{stat_debug_group}},
+  \code{\link[gginnards]{stat_debug_panel}},
+  \code{\link[gginnards]{geom_debug}} and
+  \code{\link[gginnards]{delete_layers}}.
+}

@@ -15,7 +15,8 @@ knitr::opts_chunk$set(
 
 # ggpmisc #
 
-[![](http://www.r-pkg.org/badges/version/ggpmisc)](https://cran.r-project.org/package=ggpmisc) 
+[![cran version](http://www.r-pkg.org/badges/version/ggpmisc)](https://cran.r-project.org/package=ggpmisc) 
+[![cran checks](https://cranchecks.info/badges/worst/ggpmisc)](https://cran.r-project.org/web/checks/check_results_ggpmisc.html)
 
 Package '**ggpmisc**' (Miscellaneous Extensions to 'ggplot2') is a set of
 extensions to R package 'ggplot2' (>= 3.0.0) with emphasis on annotations and

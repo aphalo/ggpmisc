@@ -1,15 +1,17 @@
-ggpmisc 0.3.0 (2018-07-06)
+ggpmisc 0.3.0 (2018-07-16)
 ==========================
 
 Version requiring 'ggplot2' (>= 3.0.0), now in CRAN.
 Low level manipulation and debug methods and functions moved to new package
-'gginnards'.
-* Remove debug stats and geoms.
-* Remove layer manipulation functions.
-* Add support for "weight" aesthetic to stat_poly_eq().
+'gginnards' available through CRAN.
+* Remove debug stats and geoms -> 'gginnards'.
+* Remove layer manipulation functions -> 'gginnards'.
+* Add support for "weight" aesthetic in stat_poly_eq() (fixing bug reported by
+  S.Al-Khalidi).
 * Add support for column selection and renaming to stat_fit_tb().
-* Add new statistic stat_fmt_tb() for formatting of tibbles for addition to plots.
-* Rename stat_quadrat_count() into stat_quadrant_count().
+* Add new statistic stat_fmt_tb() for formatting of tibbles for addition to
+  plots as tables.
+* Rename stat_quadrat_count() into stat_quadrant_count() (miss-spelling).
 * Revise vignette.
 
 ggpmisc 0.2.17.9902
@@ -37,7 +39,7 @@ ggpmisc 0.2.17
 
 CRAN version
 
-* Add stat_quadrant_count() a stat that computes the number of observations in
+* Add stat_quadrat_count() a stat that computes the number of observations in
 each quadrat of a plot panel ignoring grouping.
 
 * Fix bugs, one of which is code breaking: the names of returned parameter

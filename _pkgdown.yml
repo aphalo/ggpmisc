@@ -42,7 +42,7 @@ reference:
     contents:
     - try_data_frame
   - title: Changes
-    desc: Objects no longer exported from 'ggpmisc'.
+    desc: Objects moved to package 'gginnards' and no longer exported from 'ggpmisc'.
     contents:
     - stat_quadrat_counts
     - Moved
