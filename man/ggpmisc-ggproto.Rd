@@ -7,9 +7,11 @@
 \name{gtb_draw_panel_fun}
 \alias{gtb_draw_panel_fun}
 \alias{GeomTable}
-\alias{stat_apply_group_fun}
+\alias{stat_apply_fun}
 \alias{Stats}
 \alias{StatApplyGroup}
+\alias{Stats}
+\alias{StatApplyPanel}
 \alias{StatDens2dFilter}
 \alias{StatDens2dFilterG}
 \alias{StatDens2dLabels}
@@ -44,6 +46,10 @@ object is responsible for rendering the data in the plot.
 All \code{stat_*} functions (like \code{stat_bin}) return a layer that
 contains a \code{Stat*} object (like \code{StatBin}). The \code{Stat*}
 object is responsible for rendering the data in the plot.
+
+All \code{stat_*} functions (like \code{stat_bin}) return a layer that
+contains a \code{Stat*} object (like \code{StatBin}). The \code{Stat*}
+object is responsible for rendering the data in the plot.
 }
 \details{
 Each of the \code{Stat*} objects is a \code{\link[ggplot2]{ggproto}} object, descended
@@ -55,8 +61,15 @@ Each of the \code{Stat*} objects is a \code{\link[ggplot2]{ggproto}} object, des
 from the top-level \code{Stat}, and each implements various methods and
 fields. To create a new type of Stat object, you typically will want to
 implement one or more of the following:
+
+Each of the \code{Stat*} objects is a \code{\link[ggplot2]{ggproto}} object, descended
+from the top-level \code{Stat}, and each implements various methods and
+fields. To create a new type of Stat object, you typically will want to
+implement one or more of the following:
 }
 \seealso{
+\code{\link[ggplot2]{ggplot2-ggproto}}
+
 \code{\link[ggplot2]{ggplot2-ggproto}}
 
 \code{\link[ggplot2]{ggplot2-ggproto}}

@@ -62,9 +62,13 @@
 #' ggplot(df, aes(x = X, y = Y, colour = category)) +
 #'   geom_point() +
 #'   stat_apply_group(.fun.y = runmed, .fun.y.args = list(k = 5))
+#' ggplot(df, aes(x = X, y = Y, colour = category)) +
+#'   stat_apply_panel(.fun.y = function(x) {(x - min(x)) / (max(x) - min(x))})
+#'
+#' @rdname stat_apply
 #'
 #' @export
-#' @family sumamry stats
+#' @family summary stats
 #'
 stat_apply_group <- function(mapping = NULL, data = NULL, geom = "line",
                        .fun.x = NULL, .fun.x.args = list(),
@@ -83,6 +87,27 @@ stat_apply_group <- function(mapping = NULL, data = NULL, geom = "line",
   )
 }
 
+#' @rdname stat_apply
+#'
+#' @export
+#'
+stat_apply_panel <- function(mapping = NULL, data = NULL, geom = "line",
+                             .fun.x = NULL, .fun.x.args = list(),
+                             .fun.y = NULL, .fun.y.args = list(),
+                             position = "identity", na.rm = FALSE, show.legend = FALSE,
+                             inherit.aes = TRUE, ...) {
+  ggplot2::layer(
+    stat = StatApplyPanel, data = data, mapping = mapping, geom = geom,
+    position = position, show.legend = show.legend, inherit.aes = inherit.aes,
+    params = list(.fun.x = .fun.x,
+                  .fun.x.args = .fun.x.args,
+                  .fun.y = .fun.y,
+                  .fun.y.args = .fun.y.args,
+                  na.rm = na.rm,
+                  ...)
+  )
+}
+
 # Define here to avoid a note in check as the import from 'dplyr' is not seen
 # when the function is defined in-line in the ggproto object.
 #' @rdname ggpmisc-ggproto
@@ -90,7 +115,7 @@ stat_apply_group <- function(mapping = NULL, data = NULL, geom = "line",
 #' @format NULL
 #' @usage NULL
 #'
-stat_apply_group_fun <- function(data,
+stat_apply_fun <- function(data,
                                  scales,
                                  .fun.x, .fun.x.args,
                                  .fun.y, .fun.y.args) {
@@ -129,7 +154,32 @@ stat_apply_group_fun <- function(data,
 #' @keywords internal
 StatApplyGroup <-
   ggplot2::ggproto("StatApplyGroup", ggplot2::Stat,
-                   compute_group = stat_apply_group_fun,
+                   compute_group = stat_apply_fun,
                    required_aes = c("x", "y")
   )
+
+#' \code{Stat*} Objects
+#'
+#' All \code{stat_*} functions (like \code{stat_bin}) return a layer that
+#' contains a \code{Stat*} object (like \code{StatBin}). The \code{Stat*}
+#' object is responsible for rendering the data in the plot.
+#'
+#' Each of the \code{Stat*} objects is a \code{\link[ggplot2]{ggproto}} object, descended
+#' from the top-level \code{Stat}, and each implements various methods and
+#' fields. To create a new type of Stat object, you typically will want to
+#' implement one or more of the following:
+#'
+#' @name Stats
+#' @rdname ggpmisc-ggproto
+#' @format NULL
+#' @usage NULL
+#' @export
+#' @seealso \code{\link[ggplot2]{ggplot2-ggproto}}
+#' @keywords internal
+StatApplyPanel <-
+  ggplot2::ggproto("StatApplyPanel", ggplot2::Stat,
+                   compute_panel = stat_apply_fun,
+                   required_aes = c("x", "y")
+  )
+
 

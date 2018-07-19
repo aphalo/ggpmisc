@@ -2,9 +2,15 @@
 % Please edit documentation in R/stat-apply.R
 \name{stat_apply_group}
 \alias{stat_apply_group}
+\alias{stat_apply_panel}
 \title{Apply a function to x or y values}
 \usage{
 stat_apply_group(mapping = NULL, data = NULL, geom = "line",
+  .fun.x = NULL, .fun.x.args = list(), .fun.y = NULL,
+  .fun.y.args = list(), position = "identity", na.rm = FALSE,
+  show.legend = FALSE, inherit.aes = TRUE, ...)
+
+stat_apply_panel(mapping = NULL, data = NULL, geom = "line",
   .fun.x = NULL, .fun.x.args = list(), .fun.y = NULL,
   .fun.y.args = list(), position = "identity", na.rm = FALSE,
   show.legend = FALSE, inherit.aes = TRUE, ...)
@@ -81,6 +87,8 @@ ggplot(df, aes(x = X, y = Y, colour = category)) +
 ggplot(df, aes(x = X, y = Y, colour = category)) +
   geom_point() +
   stat_apply_group(.fun.y = runmed, .fun.y.args = list(k = 5))
+ggplot(df, aes(x = X, y = Y, colour = category)) +
+  stat_apply_panel(.fun.y = function(x) {(x - min(x)) / (max(x) - min(x))})
 
 }
 \references{
