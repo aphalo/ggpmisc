@@ -39,8 +39,8 @@
 #'   change at any time, or it may be even removed from the package without
 #'   previous notice.
 #'
-#' @section Computed variables, one of which is replaced by the vector returned
-#' by the function:
+#' @section Computed variables:
+#' One x or y of is replaced by the vector returned by the applied function.
 #' \describe{
 #'   \item{x}{x-value as returned by \code{.fun.x}}
 #'   \item{y}{y-value as returned by \code{.fun.y}}
@@ -48,8 +48,8 @@
 #'
 #' @references
 #'
-#' Answers question at
-#' \url{https://stackoverflow.com/questions/51412522/r-ggplot-on-the-fly-calculation-by-grouping-variable}.
+#' Answers question "R ggplot on-the-fly calculation by grouping variable" at
+#' \url{https://stackoverflow.com/questions/51412522}.
 #'
 #' @examples
 #'

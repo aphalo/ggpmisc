@@ -61,6 +61,15 @@ This stat is at early stages of development and its interface may
   change at any time, or it may be even removed from the package without
   previous notice.
 }
+\section{Computed variables}{
+
+One x or y of is replaced by the vector returned by the applied function.
+\describe{
+  \item{x}{x-value as returned by \code{.fun.x}}
+  \item{y}{y-value as returned by \code{.fun.y}}
+}
+}
+
 \examples{
 
 library(ggplot2)
@@ -75,6 +84,6 @@ ggplot(df, aes(x = X, y = Y, colour = category)) +
 
 }
 \references{
-Answers question at
-\url{https://stackoverflow.com/questions/51412522/r-ggplot-on-the-fly-calculation-by-grouping-variable}.
+Answers question "R ggplot on-the-fly calculation by grouping variable" at
+\url{https://stackoverflow.com/questions/51412522}.
 }
