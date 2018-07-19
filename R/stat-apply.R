@@ -54,6 +54,7 @@
 #' @examples
 #'
 #' library(ggplot2)
+#' set.seed(123456)
 #' df <- data.frame(X = rep(1:20,2),
 #'                  Y = runif(40),
 #'                  category = rep(c("A","B"), each = 20))
@@ -71,10 +72,10 @@
 #' @family summary stats
 #'
 stat_apply_group <- function(mapping = NULL, data = NULL, geom = "line",
-                       .fun.x = NULL, .fun.x.args = list(),
-                       .fun.y = NULL, .fun.y.args = list(),
-                       position = "identity", na.rm = FALSE, show.legend = FALSE,
-                       inherit.aes = TRUE, ...) {
+                             .fun.x = NULL, .fun.x.args = list(),
+                             .fun.y = NULL, .fun.y.args = list(),
+                             position = "identity", na.rm = FALSE, show.legend = FALSE,
+                             inherit.aes = TRUE, ...) {
   ggplot2::layer(
     stat = StatApplyGroup, data = data, mapping = mapping, geom = geom,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
@@ -116,9 +117,9 @@ stat_apply_panel <- function(mapping = NULL, data = NULL, geom = "line",
 #' @usage NULL
 #'
 stat_apply_fun <- function(data,
-                                 scales,
-                                 .fun.x, .fun.x.args,
-                                 .fun.y, .fun.y.args) {
+                           scales,
+                           .fun.x, .fun.x.args,
+                           .fun.y, .fun.y.args) {
   force(data)
   stopifnot(xor(is.null(.fun.x), is.null(.fun.y)))
   if (!is.null(.fun.x)) {
@@ -130,8 +131,8 @@ stat_apply_fun <- function(data,
     new.data <- tibble::tibble(x = data[["x"]],
                                y = do.call(.fun.y, args = args))
   }
-    data %>%
-      dplyr::mutate(x = new.data[["x"]], y = new.data[["y"]])
+  data %>%
+    dplyr::mutate(x = new.data[["x"]], y = new.data[["y"]])
 }
 
 #' \code{Stat*} Objects
