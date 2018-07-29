@@ -48,5 +48,5 @@ Suggests:
     ggrepel (>= 0.8.0)
 URL: https://www.r4photobiology.info, https://bitbucket.org/aphalo/ggpmisc
 BugReports: https://bitbucket.org/aphalo/ggpmisc/issues
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0
 VignetteBuilder: knitr
