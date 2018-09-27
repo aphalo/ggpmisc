@@ -122,3 +122,4 @@ ggplot(lynx.df, aes(year, lynx)) + geom_line() +
 \seealso{
 Other peaks and valleys functions: \code{\link{find_peaks}}
 }
+\concept{peaks and valleys functions}

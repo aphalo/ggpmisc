@@ -1,3 +1,9 @@
+ggpmisc 0.3.1 (2018-10-xx)
+==========================
+
+* Add workaround to stat_fit_glance() and improve diagnosis of unsupported
+input. Replace bad example in the corresponding documentation.
+
 ggpmisc 0.3.0 (2018-07-16)
 ==========================
 

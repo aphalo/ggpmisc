@@ -40,4 +40,5 @@ This function is a wrapper built on function
 
 Other peaks and valleys functions: \code{\link{stat_peaks}}
 }
+\concept{peaks and valleys functions}
 \keyword{internal}

@@ -79,6 +79,7 @@ One x or y of is replaced by the vector returned by the applied function.
 \examples{
 
 library(ggplot2)
+set.seed(123456)
 df <- data.frame(X = rep(1:20,2),
                  Y = runif(40),
                  category = rep(c("A","B"), each = 20))
@@ -95,3 +96,4 @@ ggplot(df, aes(x = X, y = Y, colour = category)) +
 Answers question "R ggplot on-the-fly calculation by grouping variable" at
 \url{https://stackoverflow.com/questions/51412522}.
 }
+\concept{summary stats}

@@ -4,12 +4,12 @@
 \alias{stat_poly_eq}
 \title{Equation, p-value, R^2, AIC or BIC of fitted polynomial}
 \usage{
-stat_poly_eq(mapping = NULL, data = NULL, geom = "text", formula = NULL,
-  eq.with.lhs = "italic(y)~`=`~", eq.x.rhs = NULL, coef.digits = 3,
-  rr.digits = 2, label.x.npc = "left", label.y.npc = "top",
-  label.x = NULL, label.y = NULL, output.type = "expression",
-  position = "identity", na.rm = FALSE, show.legend = FALSE,
-  inherit.aes = TRUE, ...)
+stat_poly_eq(mapping = NULL, data = NULL, geom = "text",
+  formula = NULL, eq.with.lhs = "italic(y)~`=`~", eq.x.rhs = NULL,
+  coef.digits = 3, rr.digits = 2, label.x.npc = "left",
+  label.y.npc = "top", label.x = NULL, label.y = NULL,
+  output.type = "expression", position = "identity", na.rm = FALSE,
+  show.legend = FALSE, inherit.aes = TRUE, ...)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with

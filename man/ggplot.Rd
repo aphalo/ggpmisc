@@ -9,8 +9,9 @@
 \method{ggplot}{ts}(data, mapping = NULL, ..., time.resolution = "day",
   as.numeric = TRUE, environment = parent.frame())
 
-\method{ggplot}{xts}(data, mapping = NULL, ..., time.resolution = "day",
-  as.numeric = TRUE, environment = parent.frame())
+\method{ggplot}{xts}(data, mapping = NULL, ...,
+  time.resolution = "day", as.numeric = TRUE,
+  environment = parent.frame())
 }
 \arguments{
 \item{data}{Default spectrum dataset to use for plot. If not a spectrum, the

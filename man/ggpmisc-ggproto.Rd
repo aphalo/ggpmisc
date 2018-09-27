@@ -10,7 +10,6 @@
 \alias{stat_apply_fun}
 \alias{Stats}
 \alias{StatApplyGroup}
-\alias{Stats}
 \alias{StatApplyPanel}
 \alias{StatDens2dFilter}
 \alias{StatDens2dFilterG}
@@ -30,7 +29,6 @@
 \alias{StatFmtTb}
 \alias{peaks_compute_group_fun}
 \alias{valleys_compute_group_fun}
-\alias{Stats}
 \alias{StatPeaks}
 \alias{StatValleys}
 \alias{poly_eq_compute_group_fun}

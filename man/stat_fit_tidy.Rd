@@ -4,11 +4,11 @@
 \alias{stat_fit_tidy}
 \title{One row data frame with fitted parameter estimates}
 \usage{
-stat_fit_tidy(mapping = NULL, data = NULL, geom = "null", method = "lm",
-  method.args = list(formula = y ~ x), label.x.npc = "left",
-  label.y.npc = "top", label.x = NULL, label.y = NULL,
-  position = "identity", na.rm = FALSE, show.legend = FALSE,
-  inherit.aes = TRUE, ...)
+stat_fit_tidy(mapping = NULL, data = NULL, geom = "null",
+  method = "lm", method.args = list(formula = y ~ x),
+  label.x.npc = "left", label.y.npc = "top", label.x = NULL,
+  label.y = NULL, position = "identity", na.rm = FALSE,
+  show.legend = FALSE, inherit.aes = TRUE, ...)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with

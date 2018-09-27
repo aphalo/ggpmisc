@@ -39,34 +39,58 @@
 #'   to expect for the variables returned, use \code{broom::glance()} and
 #'   \code{names()} or \code{print()} to find out.
 #'
+#' @section Warning!: The current implementation works only with methods that
+#'   accept a formula as argument and which have a \code{data} paremeter through
+#'   which a data frame can be passed. For example, \code{lm()} should be
+#'   used with the formula interface, as the evaluation of \code{x} and \code{y}
+#'   needs to be delayed until the internal \code{object} of the ggplot is
+#'   available.
+#'
 #' @note The names of the columns in the returned data are consitent with those
 #'   returned by method \code{glance()} from package 'broom', that will
 #'   frequently differ from the name of values returned by the fit or test
-#'   function used.
+#'   function used. With some methods like \code{cor.test()} ggplot's
+#'   \code{data} object is not accepted as input, in such cases it possible
+#'   to pass the data directly to the method as shown in the second example
+#'   below.
 #'
 #' @section Warning!: \code{stat_fit_glance} applies the function given by
 #'   \code{method} separately to each group of observations, and factors mapped
 #'   to aesthetics generate a separate group for each factor level. Because of
 #'   this, it is not useful for annotating plots with results from
 #'   \code{t.test()} or ANOVA or ANCOVA. In such cases use the
-#'   \code{stat_fit_tb} statistic which does the model fitting per panel.
+#'   \code{stat_fit_tb()} statistic which does the model fitting per panel.
 #'
 #' @export
 #'
 #' @examples
 #' library(ggplot2)
-#' # Correlation example
-#' x <- c(44.4, 45.9, 41.9, 53.3, 44.7, 44.1, 50.7, 45.2, 60.1)
-#' y <- c( 2.6,  3.1,  2.5,  5.0,  3.6,  4.0,  5.2,  2.8,  3.8)
-#' my.df <- data.frame(x, y)
-#' # estimated correlation is in column "estimate"!
-#' broom::glance(cor.test(x, y))
+#' # Regression example
+#' my.df <-
+#'   data.frame(X = c(44.4, 45.9, 41.9, 53.3, 44.7, 44.1, 50.7, 45.2, 60.1),
+#'              Y = c( 2.6,  3.1,  2.5,  5.0,  3.6,  4.0,  5.2,  2.8,  3.8))
+#' # We need to check the names of the returned values!
+#' broom::glance(lm(formula = Y ~ X, data = my.df ))
+#' ggplot(my.df, aes(X, Y)) +
+#'   geom_point() +
+#'   stat_fit_glance(geom = "text",
+#'                   method = "lm",
+#'                   method.args = list(formula = y ~ x), # here x and y are aesthetics
+#'                   aes(label = sprintf('r^2~"="~%.3f~~italic(P)~"="~%.2f',
+#'                       stat(r.squared), stat(p.value))),
+#'                   parse = TRUE)
+#'
+#' # We need to check the names of the returned values!
+#' broom::glance(cor.test(formula = ~ Y + X, data = my.df, method = "spearman"))
+#' # Bellow we pass external data directly to the method (as a last resort!)
 #' ggplot(my.df, aes(x, y)) +
 #'   geom_point() +
 #'   stat_fit_glance(geom = "text",
 #'                   method = "cor.test",
-#'                   method.args = list(x = x, y = y, method = "spearman"),
-#'                   aes(label = sprintf('r[s]~"="~%.2f~~italic(P)~"="~%.2f',
+#'                   method.args = list(formula = ~ Y + X, # here X and Y are variables
+#'                                 method = "spearman",
+#'                                 data = quote(my.df)),
+#'                   aes(label = sprintf('r[s]~"="~%.3f~~italic(P)~"="~%.2f',
 #'                       stat(estimate), stat(p.value))),
 #'                   parse = TRUE)
 #'
@@ -107,7 +131,8 @@ fit_glance_compute_group_fun <- function(data,
                                          label.y.npc,
                                          label.x,
                                          label.y) {
-  force(data)
+
+  force(data) # needed because it appears only wihtin quote()
 
   if (length(unique(data$x)) < 2) {
     # Not enough data to perform fit
@@ -137,8 +162,16 @@ fit_glance_compute_group_fun <- function(data,
     label.y <- label.y[1]
   }
 
-  method.args <- c(method.args, list(data = quote(data)))
   if (is.character(method)) method <- match.fun(method)
+  if (!any(grepl("formula", names(method.args)))) {
+    warning("Only the 'formula' interface of methods is supported.")
+    return(data.frame())
+  }
+  if ("data" %in% names(method.args)) {
+    message("External 'data' has been forced, possible inconsistency with plot!")
+  } else {
+    method.args <- c(method.args, list(data = quote(data)))
+  }
   mf <- do.call(method, method.args)
   z <- broom::glance(mf)
 
@@ -214,7 +247,6 @@ StatFitGlance <-
                      ggplot2::aes(hjust = ..hjust.., vjust = ..vjust..),
                    required_aes = c("x", "y")
   )
-
 
 # broom::augment ----------------------------------------------------------
 

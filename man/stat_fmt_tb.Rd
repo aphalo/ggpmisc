@@ -4,9 +4,10 @@
 \alias{stat_fmt_tb}
 \title{Select and slice a tibble nested in \code{data}}
 \usage{
-stat_fmt_tb(mapping = NULL, data = NULL, geom = "table", tb.vars = NULL,
-  tb.rows = NULL, digits = 3, position = "identity", na.rm = FALSE,
-  show.legend = FALSE, inherit.aes = TRUE, ...)
+stat_fmt_tb(mapping = NULL, data = NULL, geom = "table",
+  tb.vars = NULL, tb.rows = NULL, digits = 3,
+  position = "identity", na.rm = FALSE, show.legend = FALSE,
+  inherit.aes = TRUE, ...)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with

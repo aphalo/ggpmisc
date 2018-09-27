@@ -4,12 +4,12 @@
 \alias{stat_fit_tb}
 \title{Model-fit summary or ANOVA}
 \usage{
-stat_fit_tb(mapping = NULL, data = NULL, geom = "table", method = "lm",
-  method.args = list(formula = y ~ x), tb.type = "fit.summary",
-  tb.vars = NULL, digits = 3, label.x.npc = "center",
-  label.y.npc = "top", label.x = NULL, label.y = NULL,
-  position = "identity", na.rm = FALSE, show.legend = FALSE,
-  inherit.aes = TRUE, ...)
+stat_fit_tb(mapping = NULL, data = NULL, geom = "table",
+  method = "lm", method.args = list(formula = y ~ x),
+  tb.type = "fit.summary", tb.vars = NULL, digits = 3,
+  label.x.npc = "center", label.y.npc = "top", label.x = NULL,
+  label.y = NULL, position = "identity", na.rm = FALSE,
+  show.legend = FALSE, inherit.aes = TRUE, ...)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with

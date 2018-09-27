@@ -5,8 +5,8 @@
 \title{Residuals from model fit as segments}
 \usage{
 stat_fit_deviations(mapping = NULL, data = NULL, geom = "segment",
-  method = "lm", formula = NULL, position = "identity", na.rm = FALSE,
-  show.legend = FALSE, inherit.aes = TRUE, ...)
+  method = "lm", formula = NULL, position = "identity",
+  na.rm = FALSE, show.legend = FALSE, inherit.aes = TRUE, ...)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
