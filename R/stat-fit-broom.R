@@ -163,12 +163,13 @@ fit_glance_compute_group_fun <- function(data,
   }
 
   if (is.character(method)) method <- match.fun(method)
-  if (!any(grepl("formula", names(method.args)))) {
+  if (!any(grepl("formula|fixed|random", names(method.args)))) {
     warning("Only the 'formula' interface of methods is supported.")
     return(data.frame())
   }
   if ("data" %in% names(method.args)) {
-    message("External 'data' has been forced, possible inconsistency with plot!")
+    message("External 'data' passed to method, possibly inconsistent with plot!\n",
+            "These data must be available at the time of printing!!!")
   } else {
     method.args <- c(method.args, list(data = quote(data)))
   }
