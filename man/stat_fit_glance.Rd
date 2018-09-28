@@ -107,7 +107,7 @@ ggplot(my.df, aes(X, Y)) +
 # We need to check the names of the returned values!
 broom::glance(cor.test(formula = ~ Y + X, data = my.df, method = "spearman"))
 # Bellow we pass external data directly to the method (as a last resort!)
-ggplot(my.df, aes(x, y)) +
+ggplot(my.df, aes(X, Y)) +
   geom_point() +
   stat_fit_glance(geom = "text",
                   method = "cor.test",
