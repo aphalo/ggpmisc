@@ -127,7 +127,9 @@
 #'
 #' @export
 #'
-stat_poly_eq <- function(mapping = NULL, data = NULL, geom = "text",
+stat_poly_eq <- function(mapping = NULL, data = NULL,
+                         geom = "text", position = "identity",
+                         ...,
                          formula = NULL,
                          eq.with.lhs = "italic(y)~`=`~",
                          eq.x.rhs = NULL,
@@ -136,12 +138,17 @@ stat_poly_eq <- function(mapping = NULL, data = NULL, geom = "text",
                          label.x.npc = "left", label.y.npc = "top",
                          label.x = NULL, label.y = NULL,
                          output.type = "expression",
-                         position = "identity",
-                         na.rm = FALSE, show.legend = FALSE,
-                         inherit.aes = TRUE, ...) {
+                         na.rm = FALSE,
+                         show.legend = FALSE,
+                         inherit.aes = TRUE) {
   ggplot2::layer(
-    stat = StatPolyEq, data = data, mapping = mapping, geom = geom,
-    position = position, show.legend = show.legend, inherit.aes = inherit.aes,
+    data = data,
+    mapping = mapping,
+    stat = StatPolyEq,
+    geom = geom,
+    position = position,
+    show.legend = show.legend,
+    inherit.aes = inherit.aes,
     params = list(formula = formula,
                   eq.with.lhs = eq.with.lhs,
                   eq.x.rhs = eq.x.rhs,
@@ -165,18 +172,24 @@ stat_poly_eq <- function(mapping = NULL, data = NULL, geom = "text",
 #' @usage NULL
 #'
 poly_eq_compute_group_fun <- function(data,
-                                     scales,
-                                     formula,
-                                     eq.with.lhs,
-                                     eq.x.rhs,
-                                     coef.digits,
-                                     rr.digits,
-                                     label.x.npc,
-                                     label.y.npc,
-                                     label.x,
-                                     label.y,
-                                     output.type) {
+                                      scales,
+                                      formula = NULL,
+                                      weight = 1,
+                                      eq.with.lhs = "italic(y)~`=`~",
+                                      eq.x.rhs = NULL,
+                                      coef.digits = 3,
+                                      rr.digits = 2,
+                                      label.x.npc = "left",
+                                      label.y.npc = "top",
+                                      label.x = NULL,
+                                      label.y = NULL,
+                                      output.type = "expression",
+                                      na.rm = FALSE) {
   force(data)
+  if (length(unique(data$x)) < 2) {
+    # Not enough data to perform fit
+    return(tibble::new_tibble())
+  }
 
   if (is.null(data$weight)) data$weight <- 1
 
@@ -188,11 +201,6 @@ poly_eq_compute_group_fun <- function(data,
       eq.x.rhs = " x"
     }
   }
-  if (length(unique(data$x)) < 2) {
-    # Not enough data to perform fit
-    return(data.frame())
-  }
-  group.idx <- abs(data$group[1])
 
   group.idx <- abs(data$group[1])
   if (length(label.x.npc) >= group.idx) {
