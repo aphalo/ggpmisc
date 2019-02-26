@@ -3,9 +3,11 @@ ggpmisc 0.3.1 (2019-03-26)
 
 * Add geom_plot() which can be used to add inset plots to a ggplot.
 * Add geom_grob() which can be used to add inset Grobs to a ggplot.
+* Add stat_apply_panel() and stat_apply_group().
 * Add workaround to stat_fit_glance() and improve diagnosis of unsupported
 input. Replace bad example in the corresponding documentation (workaround
 for bug reported by Robert White).
+* Revise vignette.
 
 ggpmisc 0.3.0 (2018-07-16)
 ==========================
