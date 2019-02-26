@@ -238,7 +238,9 @@ poly_eq_compute_group_fun <- function(data,
   AIC <- AIC(mf)
   BIC <- BIC(mf)
   eq.char <- as.character(signif(polynom::as.polynomial(coefs), coef.digits))
-  eq.char <- gsub("e([+-]?[0-9]*)", "%*%10^\\1", eq.char)
+  # as character drops 1
+  eq.char <- gsub("+ x", paste("+ 1.", stringr::str_dup("0", coef.digits - 1L), "*x", sep = ""), eq.char, fixed = TRUE)
+  eq.char <- gsub("e([+-]?[0-9]*)", "%*%10^{\\1}", eq.char)
   if (output.type %in% c("latex", "tex", "tikz")) {
     eq.char <- gsub("*", " ", eq.char, fixed = TRUE)
   }
@@ -248,9 +250,9 @@ poly_eq_compute_group_fun <- function(data,
   } else if (eq.with.lhs) {
     if (output.type == "expression") {
       lhs <- "italic(y)~`=`~"
-     } else if (output.type %in% c("latex", "tex", "tikz", "text")) {
-       lhs <- "y = "
-     }
+    } else if (output.type %in% c("latex", "tex", "tikz", "text")) {
+      lhs <- "y = "
+    }
   }
   if (eq.with.lhs) {
     eq.char <- paste(lhs, eq.char, sep = "")
@@ -332,7 +334,6 @@ poly_eq_compute_group_fun <- function(data,
       stop("'label.y.npc' argument is neither numeric nor character")
     }
   }
-
   z
 }
 

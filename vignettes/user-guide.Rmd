@@ -14,7 +14,7 @@ vignette: >
 
 ```{r, include=FALSE, echo=FALSE}
 library(knitr)
-opts_chunk$set(fig.path = 'figure/guide-pos-', fig.align = 'center', 
+opts_chunk$set(fig.align = 'center', 
                fig.show = 'hold', fig.width = 7, fig.height = 4)
 options(warnPartialMatchArgs = FALSE,
         tibble.print.max = 4,
@@ -27,7 +27,6 @@ We load all the packages used in the examples.
 
 ```{r}
 library(ggpmisc)
-library(ggplot2)
 library(ggrepel)
 library(xts)
 library(lubridate)
@@ -1082,6 +1081,54 @@ ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_table(data = data.tb, aes(label = tb), parse = TRUE) +
   theme_bw()
+```
+
+## geom_plot
+
+The `geom_plot()` _geometry_ plots ggplot objects, nested in a tibble passed as data
+argument, using _easthetics_ `x` and `y` for positioning, and `label` for the
+ggplot object containing the definition of the plot to be nested. A Grob is 
+created with 'ggplotGrob' and added as usual to the ggplot object.
+
+```{r}
+p <- ggplot(my.data, aes(x, y)) +
+  geom_point()
+
+plot.tb <- tibble(x = 25, y = 8e5, plot = list(p %+% theme_bw(8)))
+
+p +
+  geom_plot(data = plot.tb, aes(label = plot)) +
+  theme_bw(12)
+```
+
+As implemented, there is no limitation to the number of insets, and faceting is
+respected. If the base plot shows a map, multiple small plots could be
+superimposed on different countries or regions. The size of the insets is set
+relative to the main plot, so the combined plot can be scaled. A possible
+unintuitive but useful feature, is that the theme is linked to each plot.
+
+## geom_grob
+
+The `geom_grob()` _geometry_ plots Grobs (graphical objects as created with
+'grid'), nested in a tibble passed as data argument, using _easthetics_ `x` and
+`y` for positioning, and `label` for the Grob object. While `geom_table()` and
+`geom_plot()` take as values to plot tibbles or data frames, and ggplots,
+respectively, and convert them into Grobs before adding them to the plot,
+`geom_grob()` expects Grobs ready to be rendered.
+
+```{r}
+tiger <- magick::image_read('http://jeroen.github.io/images/tiger.svg')
+grobs.tb <- tibble(x = c(0, 10, 20, 40), y = c(4e5, 6e5, 8e5, 9e5),
+                   width = c(0.05, 0.05, 0.01, 0.25),
+                   height =  c(0.05, 0.05, 0.01, 0.25),
+                   grob = list(grid::circleGrob(), 
+                               grid::rectGrob(), 
+                               grid::textGrob("I am a Grob"),
+                               grid::rasterGrob(image = tiger)))
+
+p +
+  geom_grob(data = grobs.tb, aes(label = grob, vp.width = width, vp.height = height)) +
+  theme_bw(12)
 ```
 
 ## try_tibble

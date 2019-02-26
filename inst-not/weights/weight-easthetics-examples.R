@@ -19,6 +19,11 @@ ggplot(data=stuff, aes(x=var, y=mean))+
   geom_smooth(method='lm', formula = y~x, alpha = 0.3)+
   geom_smooth(aes(weight=n), method='lm', formula = y~x, colour = "red", alpha = 0.3)
 
+ggplot(data=stuff, aes(x=var, y=mean))+
+  geom_point()+
+  stat_smooth(method='lm', formula = y~x, alpha = 0.3)+
+  stat_smooth(aes(weight=n), method='lm', formula = y~x, colour = "red", alpha = 0.3)
+
 ggplot(data=stuff, aes(x=var, y=mean, weight=n))+
   geom_point()+
   stat_smooth(method='lm', formula = y~x, alpha = 0.3)+

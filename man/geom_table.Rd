@@ -2,7 +2,7 @@
 % Please edit documentation in R/geom-table.R
 \name{geom_table}
 \alias{geom_table}
-\title{Tables}
+\title{Inset tables}
 \usage{
 geom_table(mapping = NULL, data = NULL, stat = "identity",
   position = "identity", ..., parse = FALSE, check_overlap = FALSE,
@@ -84,8 +84,6 @@ This geometry is inspired on answers to two questions in
   obeys the grammar of graphics, and attempts to be consistent with the
   behaviour of 'ggplot2' geometries.
   \url{https://stackoverflow.com/questions/12318120/adding-table-within-the-plotting-region-of-a-ggplot-in-r}
-
-
   \url{https://stackoverflow.com/questions/25554548/adding-sub-tables-on-each-panel-of-a-facet-ggplot-in-r?}
 }
 \seealso{

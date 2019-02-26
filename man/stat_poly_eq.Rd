@@ -5,11 +5,11 @@
 \title{Equation, p-value, R^2, AIC or BIC of fitted polynomial}
 \usage{
 stat_poly_eq(mapping = NULL, data = NULL, geom = "text",
-  formula = NULL, eq.with.lhs = "italic(y)~`=`~", eq.x.rhs = NULL,
-  coef.digits = 3, rr.digits = 2, label.x.npc = "left",
-  label.y.npc = "top", label.x = NULL, label.y = NULL,
-  output.type = "expression", position = "identity", na.rm = FALSE,
-  show.legend = FALSE, inherit.aes = TRUE, ...)
+  position = "identity", ..., formula = NULL,
+  eq.with.lhs = "italic(y)~`=`~", eq.x.rhs = NULL, coef.digits = 3,
+  rr.digits = 2, label.x.npc = "left", label.y.npc = "top",
+  label.x = NULL, label.y = NULL, output.type = "expression",
+  na.rm = FALSE, show.legend = FALSE, inherit.aes = TRUE)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
@@ -20,6 +20,13 @@ set at the layer level if you are overriding the plot defaults.}
 the plot defaults.}
 
 \item{geom}{The geometric object to use display the data}
+
+\item{position}{The position adjustment to use for overlapping points on this
+layer}
+
+\item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This
+can include aesthetics whose values you want to set, not map. See
+\code{\link[ggplot2]{layer}} for more details.}
 
 \item{formula}{a formula object.}
 
@@ -43,9 +50,6 @@ for absolute positioning of the output. If too short they will be recycled.}
 
 \item{output.type}{character One of "expression", "LaTeX" or "text".}
 
-\item{position}{The position adjustment to use for overlapping points on this
-layer}
-
 \item{na.rm}{a logical indicating whether NA values should be stripped before
 the computation proceeds.}
 
@@ -57,10 +61,6 @@ never includes, and \code{TRUE} always includes.}
 than combining with them. This is most useful for helper functions that
 define both data and aesthetics and shouldn't inherit behaviour from the
 default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
-
-\item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This
-can include aesthetics whose values you want to set, not map. See
-\code{\link[ggplot2]{layer}} for more details.}
 }
 \description{
 \code{stat_poly_eq} fits a polynomial and generates several labels including

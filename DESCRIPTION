@@ -1,8 +1,8 @@
 Package: ggpmisc
 Type: Package
 Title: Miscellaneous Extensions to 'ggplot2'
-Version: 0.3.0.9000
-Date: 2018-12-22
+Version: 0.3.0.9001
+Date: 2019-02-26
 Authors@R:
     c(
     person("Pedro J.", "Aphalo", email = "pedro.aphalo@helsinki.fi", role = c("aut", "cre"), comment = c(ORCID = "0000-0003-3385-972X")),
@@ -24,8 +24,8 @@ LazyData: TRUE
 LazyLoad: TRUE
 ByteCompile: TRUE
 Depends:
-    R (>= 3.3.0),
-    ggplot2 (>= 3.0.0)
+    R (>= 3.4.0),
+    ggplot2 (>= 3.1.0)
 Imports:
     grid,
     rlang (>= 0.2.1),
@@ -40,12 +40,14 @@ Imports:
     xts (>= 0.10-2),
     zoo (>= 1.8-1),
     broom (>= 0.4.4),
-    lubridate (>= 1.7.4)
+    lubridate (>= 1.7.4),
+    stringr (>= 1.4.0)
 Suggests:
     knitr (>= 1.20),
     rmarkdown (>= 1.10),
     nlme (>= 3.1-137),
-    ggrepel (>= 0.8.0)
+    ggrepel (>= 0.8.0),
+    magick (>= 2.0)
 URL: https://www.r4photobiology.info, https://bitbucket.org/aphalo/ggpmisc
 BugReports: https://bitbucket.org/aphalo/ggpmisc/issues
 Encoding: UTF-8

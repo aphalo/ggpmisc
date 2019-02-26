@@ -1,4 +1,4 @@
-#' Tables
+#' Inset tables
 #'
 #' \code{geom_table} adds a textual table directly to the ggplot using syntax
 #' similar to that of \code{\link[ggplot2]{geom_label}}.
@@ -60,10 +60,7 @@
 #'   obeys the grammar of graphics, and attempts to be consistent with the
 #'   behaviour of 'ggplot2' geometries.
 #'   \url{https://stackoverflow.com/questions/12318120/adding-table-within-the-plotting-region-of-a-ggplot-in-r}
-#'
-#'
 #'   \url{https://stackoverflow.com/questions/25554548/adding-sub-tables-on-each-panel-of-a-facet-ggplot-in-r?}
-#'
 #'
 #' @seealso function \code{\link[gridExtra]{tableGrob}} as it is used to
 #'   construct the table.
@@ -131,8 +128,8 @@ gtb_draw_panel_fun <-
           rows = NULL
         )
 
-      gtb$vp <- grid::viewport(x = unit(data$x[row.idx], "native"),
-                               y = unit(data$y[row.idx], "native"),
+      gtb$vp <- grid::viewport(x = grid::unit(data$x[row.idx], "native"),
+                               y = grid::unit(data$y[row.idx], "native"),
                                width = sum(gtb$widths),
                                height = sum(gtb$heights),
                                just = c(data$hjust[row.idx], data$vjust[row.idx]),

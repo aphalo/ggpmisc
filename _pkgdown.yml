@@ -22,8 +22,10 @@ reference:
     desc: Geoms, short for geometric objects, describe the type of plot you will produce.
     contents:
     - geom_table
+    - geom_plot
+    - geom_grob
   - title: Statistics
-    desc: It is often useful to summarize spectral data before plotting, and that is what these transformations do.
+    desc: It is often useful to summarize data before plotting, and that is what these transformations do.
     contents:
     - stat_peaks
     - stat_poly_eq
@@ -44,5 +46,4 @@ reference:
   - title: Changes
     desc: Objects moved to package 'gginnards' and no longer exported from 'ggpmisc'.
     contents:
-    - stat_quadrat_counts
-    - Moved
+     - Moved
