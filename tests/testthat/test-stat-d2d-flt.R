@@ -26,7 +26,8 @@ test_that("numbers_tb", {
   vdiffr::expect_doppelganger("stat_d2d_flt_02",
                               ggplot(data = make_data_tbl(6), aes(x, y)) +
                                 geom_point() +
-                                stat_dens2d_filter(color = "red", keep.fraction = 1/2)
+                                stat_dens2d_filter(color = "red",
+                                                   keep.fraction = 1/2)
   )
   vdiffr::expect_doppelganger("stat_d2d_flt_03",
                               ggplot(data = make_data_tbl(20), aes(x, y)) +
@@ -51,7 +52,8 @@ test_that("numbers_tb", {
   vdiffr::expect_doppelganger("stat_d2d_flt_07",
                               ggplot(data = make_data_tbl(2000), aes(x, y)) +
                                 geom_point() +
-                                stat_dens2d_filter(color = "red", keep.fraction = 0.01)
+                                stat_dens2d_filter(color = "red",
+                                                   keep.fraction = 0.01)
   )
   vdiffr::expect_doppelganger("stat_d2d_flt_08",
                               ggplot(data = make_data_tbl(2000), aes(x, y)) +

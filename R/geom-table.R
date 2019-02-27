@@ -74,8 +74,7 @@ geom_table <- function(mapping = NULL, data = NULL,
                        check_overlap = FALSE,
                        na.rm = FALSE,
                        show.legend = NA,
-                       inherit.aes = TRUE)
-{
+                       inherit.aes = TRUE) {
   layer(
     data = data,
     mapping = mapping,
@@ -128,13 +127,15 @@ gtb_draw_panel_fun <-
           rows = NULL
         )
 
-      gtb$vp <- grid::viewport(x = grid::unit(data$x[row.idx], "native"),
-                               y = grid::unit(data$y[row.idx], "native"),
-                               width = sum(gtb$widths),
-                               height = sum(gtb$heights),
-                               just = c(data$hjust[row.idx], data$vjust[row.idx]),
-                               angle = data$angle[row.idx],
-                               name = paste("geom_table.panel", data$PANEL[row.idx], "row", row.idx, sep = "."))
+      gtb$vp <-
+        grid::viewport(x = grid::unit(data$x[row.idx], "native"),
+                       y = grid::unit(data$y[row.idx], "native"),
+                       width = sum(gtb$widths),
+                       height = sum(gtb$heights),
+                       just = c(data$hjust[row.idx], data$vjust[row.idx]),
+                       angle = data$angle[row.idx],
+                       name = paste("geom_table.panel", data$PANEL[row.idx],
+                                    "row", row.idx, sep = "."))
 
       # give unique name to each table
       gtb$name <- paste("table", row.idx, sep = ".")
@@ -158,9 +159,12 @@ GeomTable <-
 
           default_aes = aes(
             colour = "black", size = 3.2, angle = 0, hjust = 0.5,
-            vjust = 0.5, alpha = NA, family = "", fontface = 1, lineheight = 1.2
+            vjust = 0.5, alpha = NA, family = "", fontface = 1,
+            lineheight = 1.2
           ),
 
           draw_panel = gtb_draw_panel_fun,
-          draw_key = function(...) {grid::nullGrob()}
+          draw_key = function(...) {
+            grid::nullGrob()
+          }
   )

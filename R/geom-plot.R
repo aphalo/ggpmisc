@@ -60,8 +60,7 @@ geom_plot <- function(mapping = NULL, data = NULL,
                        ...,
                        na.rm = FALSE,
                        show.legend = NA,
-                       inherit.aes = TRUE)
-{
+                      inherit.aes = TRUE) {
   layer(
     data = data,
     mapping = mapping,
@@ -108,9 +107,12 @@ gplot_draw_panel_fun <-
                                y = unit(data$y[row.idx], "native"),
                                width = unit(data$vp.width[row.idx], "npc"),
                                height = unit(data$vp.height[row.idx], "npc"),
-                               just = c(data$hjust[row.idx], data$vjust[row.idx]),
+                               just = c(data$hjust[row.idx],
+                                        data$vjust[row.idx]),
                                angle = data$angle[row.idx],
-                               name = paste("geom_plot.panel", data$PANEL[row.idx], "row", row.idx, sep = "."))
+                               name = paste("geom_plot.panel",
+                                            data$PANEL[row.idx], "row",
+                                            row.idx, sep = "."))
 
       # give unique name to each plot
       plotGrob$name <- paste("inset.plot", row.idx, sep = ".")
@@ -139,5 +141,7 @@ GeomPlot <-
           ),
 
           draw_panel = gplot_draw_panel_fun,
-          draw_key = function(...) {grid::nullGrob()}
+          draw_key = function(...) {
+            grid::nullGrob()
+          }
   )

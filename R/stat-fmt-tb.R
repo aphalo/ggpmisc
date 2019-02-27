@@ -98,14 +98,17 @@ fmt_tb_compute_group_fun <- function(data,
     }
 
     num.cols <- sapply(data$label[tb.idx][[1]], is.numeric)
-    data$label[tb.idx][[1]][num.cols] <- signif(data$label[tb.idx][[1]][num.cols], digits = digits)
+    data$label[tb.idx][[1]][num.cols] <-
+      signif(data$label[tb.idx][[1]][num.cols], digits = digits)
 
-    if(!is.null(tb.vars)) {
-      data$label[tb.idx][[1]] <- dplyr::select(data$label[tb.idx][[1]], !!tb.vars)
+    if (!is.null(tb.vars)) {
+      data$label[tb.idx][[1]] <-
+        dplyr::select(data$label[tb.idx][[1]], !!tb.vars)
     }
 
-    if(!is.null(tb.rows)) {
-      data$label[tb.idx][[1]] <- dplyr::slice(data$label[tb.idx][[1]], !!tb.rows)
+    if (!is.null(tb.rows)) {
+      data$label[tb.idx][[1]] <-
+        dplyr::slice(data$label[tb.idx][[1]], !!tb.rows)
     }
 
   }

@@ -112,15 +112,14 @@ dens2d_labs_compute_fun <-
     }
 
     if (is.null(n)) {
-      n = trunc(sqrt(nrow(data))) * 8L
+      n <- trunc(sqrt(nrow(data))) * 8L
     }
 
-    #    kk <- MASS::kde2d(x,y)
-    kk <-  MASS::kde2d(
+     kk <-  MASS::kde2d(
       data$x, data$y, h = h, n = n,
       lims = c(scales$x$dimension(), scales$y$dimension()))
 
-    dimnames(kk$z) <- list(kk$x,kk$y)
+    dimnames(kk$z) <- list(kk$x, kk$y)
 
     # Identify points that are in the low density regions of the plot.
     kx <- cut(data$x, kk$x, labels = FALSE, include.lowest = TRUE)

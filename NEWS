@@ -1,4 +1,4 @@
-ggpmisc 0.3.1 (2019-03-26)
+ggpmisc 0.3.1 (2019-02-26)
 ==========================
 
 * Add geom_plot() which can be used to add inset plots to a ggplot.

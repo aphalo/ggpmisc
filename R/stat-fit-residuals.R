@@ -87,7 +87,8 @@ residuals_compute_group_fun <- function(data,
     if (is.null(resid.type)) {
       fit.residuals <- stats::residuals(stats::lm(formula, data = data))
     } else {
-      fit.residuals <- stats::residuals(stats::lm(formula, data = data), type = resid.type)
+      fit.residuals <- stats::residuals(stats::lm(formula, data = data),
+                                        type = resid.type)
     }
   } else {
     stop("Method '", method, "' not yet implemented.")
@@ -107,5 +108,3 @@ StatFitResiduals <-
                    compute_group = residuals_compute_group_fun,
                    required_aes = c("x", "y")
   )
-
-

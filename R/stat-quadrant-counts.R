@@ -176,15 +176,15 @@ compute_counts_fun <- function(data,
   # dynamic default based on data range
   if (is.null(quadrants)) {
     if (all(range.x >= origin.x) && all(range.y >= origin.y)) {
-      quadrants = 1L
+      quadrants <- 1L
     } else if (all(range.x < origin.x) && all(range.y < origin.y)) {
-      quadrants = 3L
+      quadrants <- 3L
     } else if (all(range.x >= origin.x)) {
-      quadrants = c(1L, 2L)
+      quadrants <- c(1L, 2L)
     } else if (all(range.y >= origin.y)) {
-      quadrants = c(1L, 4L)
+      quadrants <- c(1L, 4L)
     } else {
-      quadrants = c(1L, 2L, 3L, 4L)
+      quadrants <- c(1L, 2L, 3L, 4L)
     }
   }
   if (pool.along == "x") {

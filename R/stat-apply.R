@@ -182,5 +182,3 @@ StatApplyPanel <-
                    compute_panel = stat_apply_fun,
                    required_aes = c("x", "y")
   )
-
-

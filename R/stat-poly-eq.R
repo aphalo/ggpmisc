@@ -196,9 +196,9 @@ poly_eq_compute_group_fun <- function(data,
   output.type = tolower(output.type)
   if (is.null(eq.x.rhs)) {
     if (output.type == "expression") {
-      eq.x.rhs = "~italic(x)"
+      eq.x.rhs <- "~italic(x)"
     } else {
-      eq.x.rhs = " x"
+      eq.x.rhs <- " x"
     }
   }
 
@@ -239,7 +239,9 @@ poly_eq_compute_group_fun <- function(data,
   BIC <- BIC(mf)
   eq.char <- as.character(signif(polynom::as.polynomial(coefs), coef.digits))
   # as character drops 1
-  eq.char <- gsub("+ x", paste("+ 1.", stringr::str_dup("0", coef.digits - 1L), "*x", sep = ""), eq.char, fixed = TRUE)
+  eq.char <- gsub("+ x", paste("+ 1.", stringr::str_dup("0", coef.digits - 1L),
+                               "*x", sep = ""),
+                  eq.char, fixed = TRUE)
   eq.char <- gsub("e([+-]?[0-9]*)", "%*%10^{\\1}", eq.char)
   if (output.type %in% c("latex", "tex", "tikz")) {
     eq.char <- gsub("*", " ", eq.char, fixed = TRUE)

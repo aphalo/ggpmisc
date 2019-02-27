@@ -58,8 +58,7 @@ geom_grob <- function(mapping = NULL, data = NULL,
                        ...,
                        na.rm = FALSE,
                        show.legend = NA,
-                       inherit.aes = TRUE)
-{
+                      inherit.aes = TRUE) {
   layer(
     data = data,
     mapping = mapping,
@@ -101,13 +100,15 @@ gplot_draw_panel_fun <-
     for (row.idx in 1:nrow(data)) {
       userGrob <- data$label[[row.idx]]
 
-      userGrob$vp <- grid::viewport(x = unit(data$x[row.idx], "native"),
-                               y = unit(data$y[row.idx], "native"),
-                               width = unit(data$vp.width[row.idx], "npc"),
-                               height = unit(data$vp.height[row.idx], "npc"),
-                               just = c(data$hjust[row.idx], data$vjust[row.idx]),
-                               angle = data$angle[row.idx],
-                               name = paste("geom_grob.panel", data$PANEL[row.idx], "row", row.idx, sep = "."))
+      userGrob$vp <-
+        grid::viewport(x = unit(data$x[row.idx], "native"),
+                       y = unit(data$y[row.idx], "native"),
+                       width = unit(data$vp.width[row.idx], "npc"),
+                       height = unit(data$vp.height[row.idx], "npc"),
+                       just = c(data$hjust[row.idx], data$vjust[row.idx]),
+                       angle = data$angle[row.idx],
+                       name = paste("geom_grob.panel", data$PANEL[row.idx],
+                                    "row", row.idx, sep = "."))
 
       # give unique name to each plot
       userGrob$name <- paste("inset.grob", row.idx, sep = ".")
@@ -136,5 +137,7 @@ GeomGrob <-
           ),
 
           draw_panel = gplot_draw_panel_fun,
-          draw_key = function(...) {grid::nullGrob()}
+          draw_key = function(...) {
+            grid::nullGrob()
+          }
   )

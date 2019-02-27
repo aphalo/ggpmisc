@@ -46,9 +46,9 @@ find_peaks <-
     if (abs(ignore_threshold) < 1e-5)
       return(pks)
     if (top_flag) {
-      return(ifelse(x - min_x > scaled_threshold, pks , FALSE))
+      return(ifelse(x - min_x > scaled_threshold, pks, FALSE))
     } else {
-      return(ifelse(max_x - x > scaled_threshold, pks , FALSE))
+      return(ifelse(max_x - x > scaled_threshold, pks, FALSE))
     }
   }
 
@@ -145,7 +145,8 @@ stat_peaks <- function(mapping = NULL, data = NULL, geom = "point",
                        span = 5, ignore_threshold = 0, strict = FALSE,
                        label.fmt = "%.4g",
                        x.label.fmt = NULL, y.label.fmt = label.fmt,
-                       position = "identity", na.rm = FALSE, show.legend = FALSE,
+                       position = "identity", na.rm = FALSE,
+                       show.legend = FALSE,
                        inherit.aes = TRUE, ...) {
   ggplot2::layer(
     stat = StatPeaks, data = data, mapping = mapping, geom = geom,
