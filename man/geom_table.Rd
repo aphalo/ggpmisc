@@ -2,11 +2,16 @@
 % Please edit documentation in R/geom-table.R
 \name{geom_table}
 \alias{geom_table}
+\alias{geom_table_npc}
 \title{Inset tables}
 \usage{
 geom_table(mapping = NULL, data = NULL, stat = "identity",
-  position = "identity", ..., parse = FALSE, check_overlap = FALSE,
-  na.rm = FALSE, show.legend = NA, inherit.aes = TRUE)
+  position = "identity", ..., parse = FALSE, na.rm = FALSE,
+  show.legend = NA, inherit.aes = TRUE)
+
+geom_table_npc(mapping = NULL, data = NULL, stat = "identity",
+  position = "identity", ..., parse = FALSE, na.rm = FALSE,
+  show.legend = NA, inherit.aes = TRUE)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
@@ -29,9 +34,6 @@ can include aesthetics whose values you want to set, not map. See
 \item{parse}{If TRUE, the labels will be parsed into expressions and
 displayed as described in ?plotmath.}
 
-\item{check_overlap}{If \code{TRUE}, text that overlaps previous text in the
-same layer will not be plotted.}
-
 \item{na.rm}{If \code{FALSE} (the default), removes missing values with a
 warning.  If \code{TRUE} silently removes missing values.}
 
@@ -46,7 +48,9 @@ default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
 }
 \description{
 \code{geom_table} adds a textual table directly to the ggplot using syntax
-similar to that of \code{\link[ggplot2]{geom_label}}.
+similar to that of \code{\link[ggplot2]{geom_label}} while
+\code{geom_table_npc} is similar to \code{geom_label_npc} in that \code{x}
+and \code{y} coordinates are given in npc units.
 }
 \details{
 Note the "width" and "height" like of a text element are 0, so stacking
@@ -78,6 +82,22 @@ This geom works only with tibbles as \code{data}, as it expects a list
   "bottom", "center", "top").
 }
 
+\examples{
+library(dplyr)
+library(tibble)
+mtcars \%>\%
+  group_by(cyl) \%>\%
+  summarize(wt = mean(wt), mpg = mean(mpg)) \%>\%
+  ungroup() \%>\%
+  mutate(wt = sprintf("\%.2f", wt),
+         mpg = sprintf("\%.1f", mpg)) -> tb
+df <- tibble(x = 0.95, y = 0.95, tb = list(tb))
+ggplot(data = mtcars, aes(wt, mpg)) +
+  geom_point(aes(colour = factor(cyl))) +
+  geom_table_npc(data = df, aes(x, y, label = tb),
+                 hjust = 1, vjust = 1)
+
+}
 \references{
 This geometry is inspired on answers to two questions in
   Stackoverflow. In contrast to these earlier examples, the current geom

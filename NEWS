@@ -1,12 +1,24 @@
-ggpmisc 0.3.1 (2019-02-26)
+ggpmisc 0.3.1 (2019-03-01)
 ==========================
 
-* Add geom_plot() which can be used to add inset plots to a ggplot.
-* Add geom_grob() which can be used to add inset Grobs to a ggplot.
+Version requiring 'ggplot2' (>= 3.1.0).
+- Add new geometries, several of them accepting x and y in npc units, allowing
+positioning relative to plotting area irrespective of native data units and
+scale limits.
+* Add geom_text_npc() and geom_label_npc() which accept x and y in npc units.
+* Add geom_table_npc() which accepts x and y in npc units.
+* Add geom_plot() and geom_plot_npc() which can be used to add inset plots
+to a ggplot.
+* Add geom_grob() and geom_grob_npc() which can be used to add inset Grobs
+to a ggplot.
+- Revise textual-summary statistics to use the new npc version of geometries.
+- Add "summarize" statistics for groups and panels.
 * Add stat_apply_panel() and stat_apply_group().
+- Fix bug.
 * Add workaround to stat_fit_glance() and improve diagnosis of unsupported
 input. Replace bad example in the corresponding documentation (workaround
 for bug reported by Robert White).
+- Update documentation.
 * Revise vignette.
 
 ggpmisc 0.3.0 (2018-07-16)

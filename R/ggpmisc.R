@@ -60,6 +60,7 @@
 #'
 #' @examples
 #' library(ggplot2)
+#' library(tibble)
 #'
 #' ggplot(lynx, as.numeric = FALSE) + geom_line() +
 #' stat_peaks(colour = "red") +

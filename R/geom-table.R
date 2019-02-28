@@ -1,7 +1,9 @@
 #' Inset tables
 #'
 #' \code{geom_table} adds a textual table directly to the ggplot using syntax
-#' similar to that of \code{\link[ggplot2]{geom_label}}.
+#' similar to that of \code{\link[ggplot2]{geom_label}} while
+#' \code{geom_table_npc} is similar to \code{geom_label_npc} in that \code{x}
+#' and \code{y} coordinates are given in npc units.
 #'
 #' Note the "width" and "height" like of a text element are 0, so stacking
 #' and dodging tables will not work by default, and axis limits are not
@@ -38,8 +40,6 @@
 #'   than combining with them. This is most useful for helper functions that
 #'   define both data and aesthetics and shouldn't inherit behaviour from the
 #'   default plot specification, e.g. \code{\link[ggplot2]{borders}}.
-#' @param check_overlap If \code{TRUE}, text that overlaps previous text in the
-#'   same layer will not be plotted.
 #'
 #' @note This geom works only with tibbles as \code{data}, as it expects a list
 #'   of data frames or a list of tibbles to be mapped to the \code{label}
@@ -67,11 +67,25 @@
 #'
 #' @export
 #'
+#' @examples
+#' library(dplyr)
+#' library(tibble)
+#' mtcars %>%
+#'   group_by(cyl) %>%
+#'   summarize(wt = mean(wt), mpg = mean(mpg)) %>%
+#'   ungroup() %>%
+#'   mutate(wt = sprintf("%.2f", wt),
+#'          mpg = sprintf("%.1f", mpg)) -> tb
+#' df <- tibble(x = 0.95, y = 0.95, tb = list(tb))
+#' ggplot(data = mtcars, aes(wt, mpg)) +
+#'   geom_point(aes(colour = factor(cyl))) +
+#'   geom_table_npc(data = df, aes(x, y, label = tb),
+#'                  hjust = 1, vjust = 1)
+#'
 geom_table <- function(mapping = NULL, data = NULL,
                        stat = "identity", position = "identity",
                        ...,
                        parse = FALSE,
-                       check_overlap = FALSE,
                        na.rm = FALSE,
                        show.legend = NA,
                        inherit.aes = TRUE) {
@@ -85,7 +99,6 @@ geom_table <- function(mapping = NULL, data = NULL,
     inherit.aes = inherit.aes,
     params = list(
       parse = parse,
-      check_overlap = check_overlap,
       na.rm = na.rm,
       ...
     )
@@ -101,7 +114,7 @@ geom_table <- function(mapping = NULL, data = NULL,
 #'
 gtb_draw_panel_fun <-
   function(data, panel_params, coord, parse = FALSE,
-           na.rm = FALSE, check_overlap = FALSE) {
+           na.rm = FALSE) {
 
     if (nrow(data) == 0) {
       return(grid::nullGrob())
@@ -164,6 +177,90 @@ GeomTable <-
           ),
 
           draw_panel = gtb_draw_panel_fun,
+          draw_key = function(...) {
+            grid::nullGrob()
+          }
+  )
+
+#' @rdname geom_table
+#' @export
+#'
+geom_table_npc <- function(mapping = NULL, data = NULL,
+                           stat = "identity", position = "identity",
+                           ...,
+                           parse = FALSE,
+                           na.rm = FALSE,
+                           show.legend = NA,
+                           inherit.aes = TRUE) {
+  layer(
+    data = data,
+    mapping = mapping,
+    stat = stat,
+    geom = GeomTableNpc,
+    position = position,
+    show.legend = show.legend,
+    inherit.aes = inherit.aes,
+    params = list(
+      parse = parse,
+      na.rm = na.rm,
+      ...
+    )
+  )
+}
+
+# Defined here to avoid a note in check --as-cran as the imports from 'broom'
+# are not seen when the function is defined in-line in the ggproto object.
+#' @rdname ggpmisc-ggproto
+#'
+#' @format NULL
+#' @usage NULL
+#'
+gtbnpc_draw_panel_fun <-
+  function(data, panel_params, coord, parse = FALSE,
+           na.rm = FALSE) {
+
+    if (nrow(data) == 0) {
+      return(grid::nullGrob())
+    }
+
+    if (max(data$x) > 1 || min(data$x) < 0) {
+      warning("'x' outside valid range of [0..1] for npc units.")
+      data <- data[data$x >= 0 & data$x <= 1, ]
+    }
+
+    if (max(data$y) > 1 || min(data$y) < 0) {
+      warning("'y' outside valid range of [0..1] for npc units.")
+      data <- data[data$y >= 0 & data$y <= 1, ]
+    }
+
+    ranges <- coord$backtransform_range(panel_params)
+
+    data$x <- ranges$x[1] + data$x * (ranges$x[2] - ranges$x[1])
+    data$y <- ranges$y[1] + data$y * (ranges$y[2] - ranges$y[1])
+
+    gtb_draw_panel_fun(data = data,
+                       panel_params = panel_params,
+                       coord = coord,
+                       parse = parse,
+                       na.rm = na.rm)
+}
+
+#' @rdname ggpmisc-ggproto
+#' @format NULL
+#' @usage NULL
+#' @export
+GeomTableNpc <-
+  ggproto("GeomTableNpc", Geom,
+          required_aes = c("x", "y", "label"),
+
+          default_aes = aes(
+            colour = "black", size = 3.2, angle = 0, hjust = 0.5,
+            vjust = 0.5, alpha = NA, family = "", fontface = 1,
+            lineheight = 1.2
+          ),
+
+          draw_panel = gtbnpc_draw_panel_fun,
+
           draw_key = function(...) {
             grid::nullGrob()
           }

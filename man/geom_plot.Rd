@@ -2,9 +2,14 @@
 % Please edit documentation in R/geom-plot.R
 \name{geom_plot}
 \alias{geom_plot}
+\alias{geom_plot_npc}
 \title{Inset plots}
 \usage{
 geom_plot(mapping = NULL, data = NULL, stat = "identity",
+  position = "identity", ..., na.rm = FALSE, show.legend = NA,
+  inherit.aes = TRUE)
+
+geom_plot_npc(mapping = NULL, data = NULL, stat = "identity",
   position = "identity", ..., na.rm = FALSE, show.legend = NA,
   inherit.aes = TRUE)
 }
@@ -71,6 +76,24 @@ This geom works only with tibbles as \code{data}, as it expects a list
   rotate the inset plots.
 }
 
+\examples{
+# inset plot with enlarged detail from a region of the main plot
+library(tibble)
+p <-
+  ggplot(data = mtcars, aes(wt, mpg)) +
+  geom_point()
+
+df <- tibble(x = 0.01, y = 0.01,
+             plot = list(p +
+                         coord_cartesian(xlim = c(3, 4),
+                                         ylim = c(13, 16)) +
+                         labs(x = NULL, y = NULL) +
+                         theme_bw(10)))
+p +
+  geom_plot_npc(data = df, aes(x, y, label = plot),
+                 hjust = 0, vjust = 0)
+
+}
 \references{
 The idea of implementing a \code{geom_custom()} for grobs has been discussed as an
   issue at \url{https://github.com/tidyverse/ggplot2/issues/1399}.

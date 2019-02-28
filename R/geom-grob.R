@@ -53,11 +53,18 @@
 #'
 #' @export
 #'
+#' @examples
+#' library(tibble)
+#' df <- tibble(x = 2, y = 15, grob = list(grid::circleGrob(r = 0.2)))
+#' ggplot(data = mtcars, aes(wt, mpg)) +
+#'   geom_point(aes(colour = factor(cyl))) +
+#'   geom_grob(data = df, aes(x, y, label = grob))
+#'
 geom_grob <- function(mapping = NULL, data = NULL,
-                       stat = "identity", position = "identity",
-                       ...,
-                       na.rm = FALSE,
-                       show.legend = NA,
+                      stat = "identity", position = "identity",
+                      ...,
+                      na.rm = FALSE,
+                      show.legend = NA,
                       inherit.aes = TRUE) {
   layer(
     data = data,
@@ -79,7 +86,7 @@ geom_grob <- function(mapping = NULL, data = NULL,
 #' @format NULL
 #' @usage NULL
 #'
-gplot_draw_panel_fun <-
+grob_draw_panel_fun <-
   function(data, panel_params, coord,
            na.rm = FALSE) {
 
@@ -136,7 +143,85 @@ GeomGrob <-
             vp.width = 1/5, vp.height = 1/5
           ),
 
-          draw_panel = gplot_draw_panel_fun,
+          draw_panel = grob_draw_panel_fun,
+          draw_key = function(...) {
+            grid::nullGrob()
+          }
+  )
+
+#' @rdname geom_grob
+#' @export
+#'
+geom_grob_npc <- function(mapping = NULL, data = NULL,
+                          stat = "identity", position = "identity",
+                          ...,
+                          na.rm = FALSE,
+                          show.legend = NA,
+                          inherit.aes = TRUE) {
+  layer(
+    data = data,
+    mapping = mapping,
+    stat = stat,
+    geom = GeomGrobNpc,
+    position = position,
+    show.legend = show.legend,
+    inherit.aes = inherit.aes,
+    params = list(
+      na.rm = na.rm,
+      ...
+    )
+  )
+}
+
+#' @rdname ggpmisc-ggproto
+#'
+#' @format NULL
+#' @usage NULL
+#'
+grobnpc_draw_panel_fun <-
+  function(data, panel_params, coord,
+           na.rm = FALSE) {
+
+    if (nrow(data) == 0) {
+      return(grid::nullGrob())
+    }
+
+    if (max(data$x) > 1 || min(data$x) < 0) {
+      warning("'x' outside valid range of [0..1] for npc units.")
+      data <- data[data$x >= 0 & data$x <= 1, ]
+    }
+
+    if (max(data$y) > 1 || min(data$y) < 0) {
+      warning("'y' outside valid range of [0..1] for npc units.")
+      data <- data[data$y >= 0 & data$y <= 1, ]
+    }
+
+    ranges <- coord$backtransform_range(panel_params)
+
+    data$x <- ranges$x[1] + data$x * (ranges$x[2] - ranges$x[1])
+    data$y <- ranges$y[1] + data$y * (ranges$y[2] - ranges$y[1])
+
+    grob_draw_panel_fun(data = data,
+                        panel_params = panel_params,
+                        coord = coord,
+                        na.rm = na.rm)
+  }
+
+#' @rdname ggpmisc-ggproto
+#' @format NULL
+#' @usage NULL
+#' @export
+GeomGrobNpc <-
+  ggproto("GeomGrobNpc", Geom,
+          required_aes = c("x", "y", "label"),
+
+          default_aes = aes(
+            colour = "black", angle = 0, hjust = 0.5,
+            vjust = 0.5, alpha = NA, family = "", fontface = 1,
+            vp.width = 1/5, vp.height = 1/5
+          ),
+
+          draw_panel = grobnpc_draw_panel_fun,
           draw_key = function(...) {
             grid::nullGrob()
           }

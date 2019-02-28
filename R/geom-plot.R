@@ -55,6 +55,23 @@
 #'
 #' @export
 #'
+#' @examples
+#' # inset plot with enlarged detail from a region of the main plot
+#' library(tibble)
+#' p <-
+#'   ggplot(data = mtcars, aes(wt, mpg)) +
+#'   geom_point()
+#'
+#' df <- tibble(x = 0.01, y = 0.01,
+#'              plot = list(p +
+#'                          coord_cartesian(xlim = c(3, 4),
+#'                                          ylim = c(13, 16)) +
+#'                          labs(x = NULL, y = NULL) +
+#'                          theme_bw(10)))
+#' p +
+#'   geom_plot_npc(data = df, aes(x, y, label = plot),
+#'                  hjust = 0, vjust = 0)
+#'
 geom_plot <- function(mapping = NULL, data = NULL,
                        stat = "identity", position = "identity",
                        ...,
@@ -141,6 +158,84 @@ GeomPlot <-
           ),
 
           draw_panel = gplot_draw_panel_fun,
+          draw_key = function(...) {
+            grid::nullGrob()
+          }
+  )
+
+#' @rdname geom_plot
+#' @export
+#'
+geom_plot_npc <- function(mapping = NULL, data = NULL,
+                          stat = "identity", position = "identity",
+                          ...,
+                          na.rm = FALSE,
+                          show.legend = NA,
+                          inherit.aes = TRUE) {
+  layer(
+    data = data,
+    mapping = mapping,
+    stat = stat,
+    geom = GeomPlotNpc,
+    position = position,
+    show.legend = show.legend,
+    inherit.aes = inherit.aes,
+    params = list(
+      na.rm = na.rm,
+      ...
+    )
+  )
+}
+
+#' @rdname ggpmisc-ggproto
+#'
+#' @format NULL
+#' @usage NULL
+#'
+gplotnpc_draw_panel_fun <-
+  function(data, panel_params, coord,
+           na.rm = FALSE) {
+
+    if (nrow(data) == 0) {
+      return(grid::nullGrob())
+    }
+
+    if (max(data$x) > 1 || min(data$x) < 0) {
+      warning("'x' outside valid range of [0..1] for npc units.")
+      data <- data[data$x >= 0 & data$x <= 1, ]
+    }
+
+    if (max(data$y) > 1 || min(data$y) < 0) {
+      warning("'y' outside valid range of [0..1] for npc units.")
+      data <- data[data$y >= 0 & data$y <= 1, ]
+    }
+
+    ranges <- coord$backtransform_range(panel_params)
+
+    data$x <- ranges$x[1] + data$x * (ranges$x[2] - ranges$x[1])
+    data$y <- ranges$y[1] + data$y * (ranges$y[2] - ranges$y[1])
+
+    gplot_draw_panel_fun(data = data,
+                         panel_params = panel_params,
+                         coord = coord,
+                         na.rm = na.rm)
+  }
+
+#' @rdname ggpmisc-ggproto
+#' @format NULL
+#' @usage NULL
+#' @export
+GeomPlotNpc <-
+  ggproto("GeomPlotNpc", Geom,
+          required_aes = c("x", "y", "label"),
+
+          default_aes = aes(
+            colour = "black", angle = 0, hjust = 0.5,
+            vjust = 0.5, alpha = NA, family = "", fontface = 1,
+            vp.width = 1/2, vp.height = 1/2
+          ),
+
+          draw_panel = gplotnpc_draw_panel_fun,
           draw_key = function(...) {
             grid::nullGrob()
           }

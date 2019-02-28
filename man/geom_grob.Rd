@@ -2,9 +2,14 @@
 % Please edit documentation in R/geom-grob.R
 \name{geom_grob}
 \alias{geom_grob}
+\alias{geom_grob_npc}
 \title{Inset graphical objects}
 \usage{
 geom_grob(mapping = NULL, data = NULL, stat = "identity",
+  position = "identity", ..., na.rm = FALSE, show.legend = NA,
+  inherit.aes = TRUE)
+
+geom_grob_npc(mapping = NULL, data = NULL, stat = "identity",
   position = "identity", ..., na.rm = FALSE, show.legend = NA,
   inherit.aes = TRUE)
 }
@@ -68,6 +73,14 @@ This geom works only with tibbles as \code{data}, as it expects a list
   "bottom", "center", "top").
 }
 
+\examples{
+library(tibble)
+df <- tibble(x = 2, y = 15, grob = list(grid::circleGrob(r = 0.2)))
+ggplot(data = mtcars, aes(wt, mpg)) +
+  geom_point(aes(colour = factor(cyl))) +
+  geom_grob(data = df, aes(x, y, label = grob))
+
+}
 \references{
 The idea of implementing a \code{geom_custom()} for grobs has
   been discussed as an issue at

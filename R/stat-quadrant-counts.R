@@ -153,6 +153,7 @@ compute_counts_fun <- function(data,
   range.x <- range(data$x)
   range.y <- range(data$y)
   # compute postion for labels
+  # REVISE USING COORDINATE LIMITS
   if (is.null(labels.range.x)) {
     if (pool.along == "x") {
       labels.range.x <- rep(origin.x, 2)
