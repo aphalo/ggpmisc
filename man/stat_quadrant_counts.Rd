@@ -4,7 +4,7 @@
 \alias{stat_quadrant_counts}
 \title{Number of observations in quadrants}
 \usage{
-stat_quadrant_counts(mapping = NULL, data = NULL, geom = "text",
+stat_quadrant_counts(mapping = NULL, data = NULL, geom = "text_npc",
   position = "identity", quadrants = NULL, pool.along = "none",
   origin.x = 0, origin.y = 0, labels.range.x = NULL,
   labels.range.y = NULL, na.rm = FALSE, show.legend = FALSE,
@@ -32,7 +32,7 @@ quadrants to pool to calculate counts by pair of quadrants.}
 \item{origin.x, origin.y}{numeric the coordinates of the origin of the
 quadrants.}
 
-\item{labels.range.x, labels.range.y}{\code{numeric} Coordinates (in data
+\item{labels.range.x, labels.range.y}{\code{numeric} Coordinates (in npc
 units) to be used for absolute positioning of the labels.}
 
 \item{na.rm}{a logical indicating whether NA values should be stripped before
@@ -70,10 +70,12 @@ Values exactly equal to zero are counted as belonging to the positve
   observations in each plot panel. By default, which quadrants to compute
   counts for is decided based on which quadrants are expected to be visible in
   the plot. In the current implementation, the default positions of the
-  labels is based on the range of the data ploted in a given panel.
-  Consequently, when using facets unless using free limits for x and y axes,
-  the location of the labels will need supplied by the user when consistent
-  placement accross panels is desired.
+  labels is based on the range of the coordinates in a given panel.
+  Consequently, when using facets even with free limits for x and y axes,
+  the location of the labels will be consistent accross panels. This is
+  achieved by use of \code{geom = "text_npc"}. To explicitly pass the
+  positions in native data units, pass \code{geom = "text"} explicitly as
+  argument.
 }
 \section{Computed variables}{
  Data frame with one to four rows, one for each
@@ -84,7 +86,6 @@ Values exactly equal to zero are counted as belonging to the positve
 }
 
 \examples{
-library(ggplot2)
 # generate artificial data
 set.seed(4321)
 x <- 1:100

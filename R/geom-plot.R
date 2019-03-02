@@ -59,8 +59,8 @@
 #' # inset plot with enlarged detail from a region of the main plot
 #' library(tibble)
 #' p <-
-#'   ggplot(data = mtcars, aes(wt, mpg)) +
-#'   geom_point()
+#'   ggplot(data = mtcars) +
+#'   geom_point(mapping = aes(wt, mpg))
 #'
 #' df <- tibble(x = 0.01, y = 0.01,
 #'              plot = list(p +
@@ -69,15 +69,15 @@
 #'                          labs(x = NULL, y = NULL) +
 #'                          theme_bw(10)))
 #' p +
-#'   geom_plot_npc(data = df, aes(x, y, label = plot),
-#'                  hjust = 0, vjust = 0)
+#'   expand_limits(x = 0, y = 0) +
+#'   geom_plot_npc(data = df, aes(npcx = x, npcy = y, label = plot))
 #'
 geom_plot <- function(mapping = NULL, data = NULL,
                        stat = "identity", position = "identity",
                        ...,
                        na.rm = FALSE,
                        show.legend = NA,
-                      inherit.aes = TRUE) {
+                       inherit.aes = TRUE) {
   layer(
     data = data,
     mapping = mapping,
@@ -113,6 +113,12 @@ gplot_draw_panel_fun <-
 
     # should be called only once!
     data <- coord$transform(data, panel_params)
+    if (is.character(data$vjust)) {
+      data$vjust <- compute_just(data$vjust, data$y)
+    }
+    if (is.character(data$hjust)) {
+      data$hjust <- compute_just(data$hjust, data$x)
+    }
 
     plot.grobs <- grid::gList()
 
@@ -200,25 +206,46 @@ gplotnpc_draw_panel_fun <-
       return(grid::nullGrob())
     }
 
-    if (max(data$x) > 1 || min(data$x) < 0) {
-      warning("'x' outside valid range of [0..1] for npc units.")
-      data <- data[data$x >= 0 & data$x <= 1, ]
+    if (!is.ggplot(data$label[[1]])) {
+      warning("Skipping as object mapped to 'label' is not a list of \"gg\" or \"ggplot\" objects.")
+      return(grid::nullGrob())
     }
 
-    if (max(data$y) > 1 || min(data$y) < 0) {
-      warning("'y' outside valid range of [0..1] for npc units.")
-      data <- data[data$y >= 0 & data$y <= 1, ]
+    # No coord$transform() call as data are in npc units
+     if (is.character(data$vjust)) {
+      data$vjust <- compute_just(data$vjust, data$npcy)
+    }
+    if (is.character(data$hjust)) {
+      data$hjust <- compute_just(data$hjust, data$npcx)
     }
 
-    ranges <- coord$backtransform_range(panel_params)
+    plot.grobs <- grid::gList()
 
-    data$x <- ranges$x[1] + data$x * (ranges$x[2] - ranges$x[1])
-    data$y <- ranges$y[1] + data$y * (ranges$y[2] - ranges$y[1])
+    for (row.idx in 1:nrow(data)) {
+      plotGrob <-
+        ggplotGrob(x = data$label[[row.idx]])
 
-    gplot_draw_panel_fun(data = data,
-                         panel_params = panel_params,
-                         coord = coord,
-                         na.rm = na.rm)
+      plotGrob$vp <- grid::viewport(x = unit(data$npcx[row.idx], "native"),
+                                    y = unit(data$npcy[row.idx], "native"),
+                                    width = unit(data$vp.width[row.idx], "npc"),
+                                    height = unit(data$vp.height[row.idx], "npc"),
+                                    just = c(data$hjust[row.idx],
+                                             data$vjust[row.idx]),
+                                    angle = data$angle[row.idx],
+                                    name = paste("geom_plot.panel",
+                                                 data$PANEL[row.idx], "row",
+                                                 row.idx, sep = "."))
+
+      # give unique name to each plot
+      plotGrob$name <- paste("inset.plot", row.idx, sep = ".")
+
+      plot.grobs[[row.idx]] <- plotGrob
+    }
+
+    grid.name <- paste("geom_plot.panel",
+                       data$PANEL[row.idx], sep = ".")
+
+    grid::gTree(children = plot.grobs, name = grid.name)
   }
 
 #' @rdname ggpmisc-ggproto
@@ -227,11 +254,11 @@ gplotnpc_draw_panel_fun <-
 #' @export
 GeomPlotNpc <-
   ggproto("GeomPlotNpc", Geom,
-          required_aes = c("x", "y", "label"),
+          required_aes = c("npcx", "npcy", "label"),
 
           default_aes = aes(
-            colour = "black", angle = 0, hjust = 0.5,
-            vjust = 0.5, alpha = NA, family = "", fontface = 1,
+            colour = "black", angle = 0, hjust = "inward",
+            vjust = "inward", alpha = NA, family = "", fontface = 1,
             vp.width = 1/2, vp.height = 1/2
           ),
 

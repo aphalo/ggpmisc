@@ -68,27 +68,26 @@
 #' @export
 #' @examples
 #'
-#' # Justification -------------------------------------------------------------
 #' df <- data.frame(
 #'   x = c(0, 0, 1, 1, 0.5),
 #'   y = c(0, 1, 0, 1, 0.5),
 #'   text = c("bottom-left", "bottom-right", "top-left", "top-right", "center")
 #' )
-#' ggplot(df, aes(x, y)) +
+#' ggplot(df, aes(npcx = x, npcy = y)) +
 #'   geom_text_npc(aes(label = text))
 #'
 #' ggplot(data = mtcars, aes(wt, mpg)) +
 #'   geom_point() +
-#'   geom_text_npc(data = df, aes(x, y, label = text))
+#'   geom_text_npc(data = df, aes(npcx = x, npcy = y, label = text))
 #'
-#' ggplot(data = mtcars, aes(wt, mpg)) +
-#'   geom_point() +
-#'   geom_text_npc(data = df, aes(x, y, label = text)) +
+#' ggplot(data = mtcars) +
+#'   geom_point(mapping = aes(wt, mpg)) +
+#'   geom_text_npc(data = df, aes(npcx = x, npcy = y, label = text)) +
 #'   expand_limits(y = 40, x = 6)
 #'
-#' ggplot(data = mtcars, aes(wt, mpg)) +
-#'   geom_point() +
-#'   geom_label_npc(data = df, aes(x, y, label = text))
+#' ggplot(data = mtcars) +
+#'   geom_point(mapping = aes(wt, mpg)) +
+#'   geom_label_npc(data = df, aes(npcx = x, npcy = y, label = text))
 #'
 geom_text_npc <- function(mapping = NULL, data = NULL,
                       stat = "identity", position = "identity",
@@ -131,7 +130,7 @@ geom_text_npc <- function(mapping = NULL, data = NULL,
 #' @usage NULL
 #' @export
 GeomTextNpc <- ggproto("GeomTextNpc", Geom,
-  required_aes = c("x", "y", "label"),
+  required_aes = c("npcx", "npcy", "label"),
 
   default_aes = aes(
     colour = "black", size = 3.88, angle = 0, hjust = "inward",
@@ -140,20 +139,11 @@ GeomTextNpc <- ggproto("GeomTextNpc", Geom,
 
   draw_panel = function(data, panel_params, coord, parse = FALSE,
                         na.rm = FALSE, check_overlap = FALSE) {
-    if (max(data$x) > 1 || min(data$x) < 0) {
-      warning("'x' outside valid range of [0..1] for npc units.")
-      data <- data[data$x >= 0 & data$x <= 1, ]
-    }
-
-    if (max(data$y) > 1 || min(data$y) < 0) {
-      warning("'y' outside valid range of [0..1] for npc units.")
-      data <- data[data$y >= 0 & data$y <= 1, ]
-    }
 
     ranges <- coord$backtransform_range(panel_params)
 
-    data$x <- ranges$x[1] + data$x * (ranges$x[2] - ranges$x[1])
-    data$y <- ranges$y[1] + data$y * (ranges$y[2] - ranges$y[1])
+    data$x <- ranges$x[1] + data$npcx * (ranges$x[2] - ranges$x[1])
+    data$y <- ranges$y[1] + data$npcy * (ranges$y[2] - ranges$y[1])
 
     ggplot2::GeomText$draw_panel(data = data,
                                  panel_params = panel_params,
@@ -163,7 +153,7 @@ GeomTextNpc <- ggproto("GeomTextNpc", Geom,
                                  check_overlap = check_overlap)
   },
 
-  draw_key =  function(...) {
+  draw_key = function(...) {
     grid::nullGrob()
   }
 )

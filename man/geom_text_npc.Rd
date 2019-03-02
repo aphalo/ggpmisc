@@ -106,28 +106,26 @@ This geom is identical to 'ggplot2' \code{geom_text()} except that it
 
 \examples{
 
-# Justification -------------------------------------------------------------
 df <- data.frame(
   x = c(0, 0, 1, 1, 0.5),
   y = c(0, 1, 0, 1, 0.5),
   text = c("bottom-left", "bottom-right", "top-left", "top-right", "center")
 )
-ggplot(df, aes(x, y)) +
-  geom_text_npc(aes(label = text), vjust = "inward", hjust = "inward")
-ggplot(data = mtcars, aes(wt, mpg)) +
-  geom_point() +
-  geom_text_npc(data = df, aes(x, y, label = text),
-  vjust = "inward", hjust = "inward")
-ggplot(data = mtcars, aes(wt, mpg)) +
-  geom_point() +
-  geom_text_npc(data = df, aes(x, y, label = text),
-  vjust = "inward", hjust = "inward") +
-  expand_limits(y = 40, x = 6)
+ggplot(df, aes(npcx = x, npcy = y)) +
+  geom_text_npc(aes(label = text))
 
 ggplot(data = mtcars, aes(wt, mpg)) +
   geom_point() +
-  geom_label_npc(data = df, aes(x, y, label = text),
-  vjust = "inward", hjust = "inward")
+  geom_text_npc(data = df, aes(npcx = x, npcy = y, label = text))
+
+ggplot(data = mtcars) +
+  geom_point(mapping = aes(wt, mpg)) +
+  geom_text_npc(data = df, aes(npcx = x, npcy = y, label = text)) +
+  expand_limits(y = 40, x = 6)
+
+ggplot(data = mtcars) +
+  geom_point(mapping = aes(wt, mpg)) +
+  geom_label_npc(data = df, aes(npcx = x, npcy = y, label = text))
 
 }
 \seealso{

@@ -80,8 +80,8 @@ This geom works only with tibbles as \code{data}, as it expects a list
 # inset plot with enlarged detail from a region of the main plot
 library(tibble)
 p <-
-  ggplot(data = mtcars, aes(wt, mpg)) +
-  geom_point()
+  ggplot(data = mtcars) +
+  geom_point(mapping = aes(wt, mpg))
 
 df <- tibble(x = 0.01, y = 0.01,
              plot = list(p +
@@ -90,8 +90,8 @@ df <- tibble(x = 0.01, y = 0.01,
                          labs(x = NULL, y = NULL) +
                          theme_bw(10)))
 p +
-  geom_plot_npc(data = df, aes(x, y, label = plot),
-                 hjust = 0, vjust = 0)
+  expand_limits(x = 0, y = 0) +
+  geom_plot_npc(data = df, aes(npcx = x, npcy = y, label = plot))
 
 }
 \references{

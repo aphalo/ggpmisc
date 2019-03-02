@@ -92,9 +92,9 @@ mtcars \%>\%
   mutate(wt = sprintf("\%.2f", wt),
          mpg = sprintf("\%.1f", mpg)) -> tb
 df <- tibble(x = 0.95, y = 0.95, tb = list(tb))
-ggplot(data = mtcars, aes(wt, mpg)) +
-  geom_point(aes(colour = factor(cyl))) +
-  geom_table_npc(data = df, aes(x, y, label = tb),
+ggplot(data = mtcars) +
+  geom_point(mapping = aes(wt, mpg, colour = factor(cyl))) +
+  geom_table_npc(data = df, aes(npcx = x, npcy = y, label = tb),
                  hjust = 1, vjust = 1)
 
 }

@@ -48,11 +48,11 @@ geom_label_npc <- function(mapping = NULL, data = NULL,
 #' @usage NULL
 #' @export
 GeomLabelNpc <- ggproto("GeomLabelNpc", Geom,
-  required_aes = c("x", "y", "label"),
+  required_aes = c("npcx", "npcy", "label"),
 
   default_aes = aes(
-    colour = "black", fill = "white", size = 3.88, angle = 0, hjust = 0.5,
-    vjust = 0.5, alpha = NA, family = "", fontface = 1, lineheight = 1.2
+    colour = "black", fill = "white", size = 3.88, angle = 0, hjust = "inward",
+    vjust = "inward", alpha = NA, family = "", fontface = 1, lineheight = 1.2
   ),
 
   draw_panel = function(data, panel_params, coord, parse = FALSE,
@@ -60,20 +60,11 @@ GeomLabelNpc <- ggproto("GeomLabelNpc", Geom,
                         label.padding = unit(0.25, "lines"),
                         label.r = unit(0.15, "lines"),
                         label.size = 0.25) {
-    if (max(data$x) > 1 || min(data$x) < 0) {
-      warning("'x' outside valid range of [0..1] for npc units.")
-      data <- data[data$x >= 0 & data$x <= 1, ]
-    }
-
-    if (max(data$y) > 1 || min(data$y) < 0) {
-      warning("'y' outside valid range of [0..1] for npc units.")
-      data <- data[data$y >= 0 & data$y <= 1, ]
-    }
 
     ranges <- coord$backtransform_range(panel_params)
 
-    data$x <- ranges$x[1] + data$x * (ranges$x[2] - ranges$x[1])
-    data$y <- ranges$y[1] + data$y * (ranges$y[2] - ranges$y[1])
+    data$x <- ranges$x[1] + data$npcx * (ranges$x[2] - ranges$x[1])
+    data$y <- ranges$y[1] + data$npcy * (ranges$y[2] - ranges$y[1])
 
     ggplot2::GeomLabel$draw_panel(data = data,
                                   panel_params = panel_params,

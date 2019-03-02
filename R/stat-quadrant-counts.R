@@ -32,7 +32,7 @@
 #'   quadrants to pool to calculate counts by pair of quadrants.
 #' @param origin.x,origin.y numeric the coordinates of the origin of the
 #'   quadrants.
-#' @param labels.range.x,labels.range.y \code{numeric} Coordinates (in data
+#' @param labels.range.x,labels.range.y \code{numeric} Coordinates (in npc
 #'   units) to be used for absolute positioning of the labels.
 #'
 #' @details This stat can be used to automatically count observations in each of
@@ -51,13 +51,14 @@
 #'   observations in each plot panel. By default, which quadrants to compute
 #'   counts for is decided based on which quadrants are expected to be visible in
 #'   the plot. In the current implementation, the default positions of the
-#'   labels is based on the range of the data ploted in a given panel.
-#'   Consequently, when using facets unless using free limits for x and y axes,
-#'   the location of the labels will need supplied by the user when consistent
-#'   placement accross panels is desired.
+#'   labels is based on the range of the coordinates in a given panel.
+#'   Consequently, when using facets even with free limits for x and y axes,
+#'   the location of the labels will be consistent accross panels. This is
+#'   achieved by use of \code{geom = "text_npc"}. To explicitly pass the
+#'   positions in native data units, pass \code{geom = "text"} explicitly as
+#'   argument.
 #'
 #' @examples
-#' library(ggplot2)
 #' # generate artificial data
 #' set.seed(4321)
 #' x <- 1:100
@@ -90,7 +91,7 @@
 #'
 #' @export
 #'
-stat_quadrant_counts <- function(mapping = NULL, data = NULL, geom = "text",
+stat_quadrant_counts <- function(mapping = NULL, data = NULL, geom = "text_npc",
                                 position = "identity",
                                 quadrants = NULL,
                                 pool.along = "none",
@@ -152,13 +153,12 @@ compute_counts_fun <- function(data,
   # compute range of whole data
   range.x <- range(data$x)
   range.y <- range(data$y)
-  # compute postion for labels
-  # REVISE USING COORDINATE LIMITS
+  # set position for labels in npc units
   if (is.null(labels.range.x)) {
     if (pool.along == "x") {
-      labels.range.x <- rep(origin.x, 2)
+      labels.range.x <- rep(0.5, 2)
     } else {
-    labels.range.x <- range.x
+      labels.range.x <- c(0.05, 0.95)
     }
   } else {
     labels.range.x <- range(labels.range.x)
@@ -166,9 +166,9 @@ compute_counts_fun <- function(data,
 
   if (is.null(labels.range.y)) {
     if (pool.along == "y") {
-      labels.range.y <- rep(origin.y, 2)
+      labels.range.y <- rep(0.5, 2)
     } else {
-      labels.range.y <- range.y
+      labels.range.y <- c(0.05, 0.95)
     }
   } else {
     labels.range.y <- range(labels.range.y)
@@ -199,10 +199,12 @@ compute_counts_fun <- function(data,
   # total count
     tibble::tibble(quadrant = 0,
                    count = nrow(data),
-                   x = labels.range.x[2],
-                   y = labels.range.y[2],
-                   hjust = 1,
-                   vjust = 1)
+                   npcx = labels.range.x[2],
+                   npcy = labels.range.y[2],
+                   x = range.x[2],
+                   y = range.y[2],
+                   hjust = "inwards",
+                   vjust = "inwards")
   } else {
   # counts for the selected quadrants
     data %>%
@@ -220,14 +222,20 @@ compute_counts_fun <- function(data,
     }
 
     data %>%
-      dplyr::mutate(x = ifelse(.data$quadrant %in% c(1L, 2L),
+      dplyr::mutate(npcx = ifelse(.data$quadrant %in% c(1L, 2L),
                                labels.range.x[2],
                                labels.range.x[1]),
-                    y = ifelse(.data$quadrant %in% c(1L, 4L),
+                    npcy = ifelse(.data$quadrant %in% c(1L, 4L),
                                labels.range.y[2],
                                labels.range.y[1]),
-                    hjust = ifelse(.data$quadrant %in% c(1L, 2L), 1, 0),
-                    vjust = ifelse(.data$quadrant %in% c(1L, 4L), -0.1, 1.1))
+                    x = ifelse(.data$quadrant %in% c(1L, 2L),
+                               range.x[2],
+                               range.x[1]),
+                    y = ifelse(.data$quadrant %in% c(1L, 4L),
+                               range.y[2],
+                               range.y[1]),
+                    hjust = "inwards",
+                    vjust = "inwards")
    }
 }
 
@@ -239,7 +247,9 @@ StatQuadrantCounts <-
   ggplot2::ggproto("StatQuadrantCounts", ggplot2::Stat,
                    compute_panel = compute_counts_fun,
                    default_aes =
-                     ggplot2::aes(label = paste("n=", stat(count), sep = ""),
+                     ggplot2::aes(npcx = stat(npcx),
+                                  npcy = stat(npcy),
+                                  label = paste("n=", stat(count), sep = ""),
                                   hjust = stat(hjust),
                                   vjust = stat(vjust)),
                    required_aes = c("x", "y")

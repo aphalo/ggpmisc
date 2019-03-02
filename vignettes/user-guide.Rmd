@@ -181,7 +181,7 @@ Manual positioning of the text annotations and pooling of all four quadrants.
 ```{r}
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  stat_quadrant_counts(quadrants = 0L, labels.range.x = c(-90, -90), hjust = 0)
+  stat_quadrant_counts(quadrants = 0L, labels.range.x = 0.04, hjust = 0)
 ```
 
 Annotation of only specific quadrants.

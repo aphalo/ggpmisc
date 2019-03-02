@@ -31,6 +31,7 @@ Imports:
     rlang (>= 0.2.1),
     magrittr (>= 1.5),
     gridExtra (>= 2.3),
+    scales (>= 1.0.0),
     MASS (>= 7.3-50),
     polynom (>= 1.3-9),
     splus2R (>= 1.2-2),

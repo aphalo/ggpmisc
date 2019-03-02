@@ -101,6 +101,12 @@ grob_draw_panel_fun <-
 
     # should be called only once!
     data <- coord$transform(data, panel_params)
+    if (is.character(data$vjust)) {
+      data$vjust <- compute_just(data$vjust, data$y)
+    }
+    if (is.character(data$hjust)) {
+      data$hjust <- compute_just(data$hjust, data$x)
+    }
 
     user.grobs <- grid::gList()
 

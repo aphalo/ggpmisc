@@ -77,9 +77,9 @@
 #'   mutate(wt = sprintf("%.2f", wt),
 #'          mpg = sprintf("%.1f", mpg)) -> tb
 #' df <- tibble(x = 0.95, y = 0.95, tb = list(tb))
-#' ggplot(data = mtcars, aes(wt, mpg)) +
-#'   geom_point(aes(colour = factor(cyl))) +
-#'   geom_table_npc(data = df, aes(x, y, label = tb),
+#' ggplot(data = mtcars) +
+#'   geom_point(mapping = aes(wt, mpg, colour = factor(cyl))) +
+#'   geom_table_npc(data = df, aes(npcx = x, npcy = y, label = tb),
 #'                  hjust = 1, vjust = 1)
 #'
 geom_table <- function(mapping = NULL, data = NULL,
@@ -127,6 +127,12 @@ gtb_draw_panel_fun <-
 
     # should be called only once!
     data <- coord$transform(data, panel_params)
+    if (is.character(data$vjust)) {
+      data$vjust <- compute_just(data$vjust, data$y)
+    }
+    if (is.character(data$hjust)) {
+      data$hjust <- compute_just(data$hjust, data$x)
+    }
 
     tb.grobs <- grid::gList()
 
@@ -223,27 +229,52 @@ gtbnpc_draw_panel_fun <-
       return(grid::nullGrob())
     }
 
-    if (max(data$x) > 1 || min(data$x) < 0) {
-      warning("'x' outside valid range of [0..1] for npc units.")
-      data <- data[data$x >= 0 & data$x <= 1, ]
+    if (!is.data.frame(data$label[[1]])) {
+      warning("Skipping as object mapped to 'label' is not a list of \"tibble\" or \"data.frame\" objects.")
+      return(grid::nullGrob())
     }
 
-    if (max(data$y) > 1 || min(data$y) < 0) {
-      warning("'y' outside valid range of [0..1] for npc units.")
-      data <- data[data$y >= 0 & data$y <= 1, ]
+    # No coord$transform() call as data are in npc units
+    if (is.character(data$vjust)) {
+      data$vjust <- compute_just(data$vjust, data$npcy)
+    }
+    if (is.character(data$hjust)) {
+      data$hjust <- compute_just(data$hjust, data$npcx)
     }
 
-    ranges <- coord$backtransform_range(panel_params)
+    tb.grobs <- grid::gList()
 
-    data$x <- ranges$x[1] + data$x * (ranges$x[2] - ranges$x[1])
-    data$y <- ranges$y[1] + data$y * (ranges$y[2] - ranges$y[1])
+    for (row.idx in 1:nrow(data)) {
+      gtb <-
+        gridExtra::tableGrob(
+          d = data$label[[row.idx]],
+          theme = gridExtra::ttheme_default(base_size = data$size * .pt,
+                                            base_colour = ggplot2::alpha(data$colour, data$alpha),
+                                            parse = parse),
+          rows = NULL
+        )
 
-    gtb_draw_panel_fun(data = data,
-                       panel_params = panel_params,
-                       coord = coord,
-                       parse = parse,
-                       na.rm = na.rm)
-}
+      gtb$vp <-
+        grid::viewport(x = grid::unit(data$npcx[row.idx], "native"),
+                       y = grid::unit(data$npcy[row.idx], "native"),
+                       width = sum(gtb$widths),
+                       height = sum(gtb$heights),
+                       just = c(data$hjust[row.idx], data$vjust[row.idx]),
+                       angle = data$angle[row.idx],
+                       name = paste("geom_table.panel", data$PANEL[row.idx],
+                                    "row", row.idx, sep = "."))
+
+      # give unique name to each table
+      gtb$name <- paste("table", row.idx, sep = ".")
+
+      tb.grobs[[row.idx]] <- gtb
+    }
+
+    grid.name <- paste("geom_table.panel",
+                       data$PANEL[row.idx], sep = ".")
+
+    grid::gTree(children = tb.grobs, name = grid.name)
+  }
 
 #' @rdname ggpmisc-ggproto
 #' @format NULL
@@ -251,11 +282,11 @@ gtbnpc_draw_panel_fun <-
 #' @export
 GeomTableNpc <-
   ggproto("GeomTableNpc", Geom,
-          required_aes = c("x", "y", "label"),
+          required_aes = c("npcx", "npcy", "label"),
 
           default_aes = aes(
-            colour = "black", size = 3.2, angle = 0, hjust = 0.5,
-            vjust = 0.5, alpha = NA, family = "", fontface = 1,
+            colour = "black", size = 3.2, angle = 0, hjust = "inward",
+            vjust = "inward", alpha = NA, family = "", fontface = 1,
             lineheight = 1.2
           ),
 
@@ -265,3 +296,22 @@ GeomTableNpc <-
             grid::nullGrob()
           }
   )
+
+# copied from geom-text.r from 'ggplot2' 3.1.0
+compute_just <- function(just, x) {
+  inward <- just == "inward"
+  just[inward] <- c("left", "middle", "right")[just_dir(x[inward])]
+  outward <- just == "outward"
+  just[outward] <- c("right", "middle", "left")[just_dir(x[outward])]
+
+  unname(c(left = 0, center = 0.5, right = 1,
+           bottom = 0, middle = 0.5, top = 1)[just])
+}
+
+# copied from geom-text.r from 'ggplot2' 3.1.0
+just_dir <- function(x, tol = 0.001) {
+  out <- rep(2L, length(x))
+  out[x < 0.5 - tol] <- 1L
+  out[x > 0.5 + tol] <- 3L
+  out
+}
