@@ -75,21 +75,20 @@
 #'   text = c("bottom-left", "bottom-right", "top-left", "top-right", "center")
 #' )
 #' ggplot(df, aes(x, y)) +
-#'   geom_text_npc(aes(label = text), vjust = "inward", hjust = "inward")
+#'   geom_text_npc(aes(label = text))
+#'
 #' ggplot(data = mtcars, aes(wt, mpg)) +
 #'   geom_point() +
-#'   geom_text_npc(data = df, aes(x, y, label = text),
-#'   vjust = "inward", hjust = "inward")
+#'   geom_text_npc(data = df, aes(x, y, label = text))
+#'
 #' ggplot(data = mtcars, aes(wt, mpg)) +
 #'   geom_point() +
-#'   geom_text_npc(data = df, aes(x, y, label = text),
-#'   vjust = "inward", hjust = "inward") +
+#'   geom_text_npc(data = df, aes(x, y, label = text)) +
 #'   expand_limits(y = 40, x = 6)
 #'
 #' ggplot(data = mtcars, aes(wt, mpg)) +
 #'   geom_point() +
-#'   geom_label_npc(data = df, aes(x, y, label = text),
-#'   vjust = "inward", hjust = "inward")
+#'   geom_label_npc(data = df, aes(x, y, label = text))
 #'
 geom_text_npc <- function(mapping = NULL, data = NULL,
                       stat = "identity", position = "identity",
@@ -135,8 +134,8 @@ GeomTextNpc <- ggproto("GeomTextNpc", Geom,
   required_aes = c("x", "y", "label"),
 
   default_aes = aes(
-    colour = "black", size = 3.88, angle = 0, hjust = 0.5,
-    vjust = 0.5, alpha = NA, family = "", fontface = 1, lineheight = 1.2
+    colour = "black", size = 3.88, angle = 0, hjust = "inward",
+    vjust = "inward", alpha = NA, family = "", fontface = 1, lineheight = 1.2
   ),
 
   draw_panel = function(data, panel_params, coord, parse = FALSE,
