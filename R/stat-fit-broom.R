@@ -27,12 +27,12 @@
 #'   the computation proceeds.
 #' @param method character.
 #' @param method.args list of arguments to pass to \code{method}.
-#' @param label.x.npc,label.y.npc \code{numeric} with range 0..1 or character.
-#'   Coordinates to be used for positioning the output, expressed in "normalized
-#'   parent coordinates" or character string. If too short they will be
-#'   recycled.
-#' @param label.x,label.y \code{numeric} Coordinates (in data units) to be used
-#'   for absolute positioning of the output. If too short they will be recycled.
+#' @param label.x,label.y \code{numeric} with range 0..1 "normalized parent
+#'   coordinates" (npc units) or character if using \code{geom_text_npc()} or
+#'   \code{geom_label_npc()}. If using \code{geom_text()} or \code{geom_label()}
+#'   numeric in native data units. If too short they will be recycled.
+#' @param hstep,vstep numeric in npc units, the horizontal and vertical step
+#'   used between labels for different groups.
 #'
 #' @section Computed variables: The output of \code{\link[broom]{glance}} is
 #'   returned as is in the \code{data} object. If you do not know what names
@@ -73,8 +73,7 @@
 #' broom::glance(lm(formula = Y ~ X, data = my.df ))
 #' ggplot(my.df, aes(X, Y)) +
 #'   geom_point() +
-#'   stat_fit_glance(geom = "text",
-#'                   method = "lm",
+#'   stat_fit_glance(method = "lm",
 #'                   method.args = list(formula = y ~ x), # here x and y are aesthetics
 #'                   aes(label = sprintf('r^2~"="~%.3f~~italic(P)~"="~%.2f',
 #'                       stat(r.squared), stat(p.value))),
@@ -85,8 +84,7 @@
 #' # Bellow we pass external data directly to the method (as a last resort!)
 #' ggplot(my.df, aes(X, Y)) +
 #'   geom_point() +
-#'   stat_fit_glance(geom = "text",
-#'                   method = "cor.test",
+#'   stat_fit_glance(method = "cor.test",
 #'                   method.args = list(formula = ~ Y + X, # here X and Y are variables
 #'                                 method = "spearman",
 #'                                 data = quote(my.df)),
@@ -94,11 +92,12 @@
 #'                       stat(estimate), stat(p.value))),
 #'                   parse = TRUE)
 #'
-stat_fit_glance <- function(mapping = NULL, data = NULL, geom = "null",
+stat_fit_glance <- function(mapping = NULL, data = NULL, geom = "text_npc",
                             method = "lm",
                             method.args = list(formula = y ~ x),
-                            label.x.npc = "left", label.y.npc = "top",
-                            label.x = NULL, label.y = NULL,
+                            label.x = "left", label.y = "top",
+                            hstep = 0,
+                            vstep = NULL,
                             position = "identity",
                             na.rm = FALSE, show.legend = FALSE,
                             inherit.aes = TRUE, ...) {
@@ -107,10 +106,9 @@ stat_fit_glance <- function(mapping = NULL, data = NULL, geom = "null",
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
     params = list(method = method,
                   method.args = method.args,
-                  label.x.npc = label.x.npc,
-                  label.y.npc = label.y.npc,
                   label.x = label.x,
                   label.y = label.y,
+                  npc.used = grepl("_npc", geom),
                   na.rm = na.rm,
                   ...)
   )
@@ -127,10 +125,9 @@ fit_glance_compute_group_fun <- function(data,
                                          scales,
                                          method,
                                          method.args,
-                                         label.x.npc,
-                                         label.y.npc,
                                          label.x,
-                                         label.y) {
+                                         label.y,
+                                         npc.used) {
 
   force(data) # needed because it appears only wihtin quote()
 
@@ -140,15 +137,15 @@ fit_glance_compute_group_fun <- function(data,
   }
 
   group.idx <- abs(data$group[1])
-  if (length(label.x.npc) >= group.idx) {
-    label.x.npc <- label.x.npc[group.idx]
-  } else if (length(label.x.npc) > 0) {
-    label.x.npc <- label.x.npc[1]
+  if (length(label.x) >= group.idx) {
+    label.x <- label.x[group.idx]
+  } else if (length(label.x) > 0) {
+    label.x <- label.x[1]
   }
-  if (length(label.y.npc) >= group.idx) {
-    label.y.npc <- label.y.npc[group.idx]
-  } else if (length(label.y.npc) > 0) {
-    label.y.npc <- label.y.npc[1]
+  if (length(label.y) >= group.idx) {
+    label.y <- label.y[group.idx]
+  } else if (length(label.y) > 0) {
+    label.y <- label.y[1]
   }
 
   if (length(label.x) >= group.idx) {
@@ -176,62 +173,61 @@ fit_glance_compute_group_fun <- function(data,
   mf <- do.call(method, method.args)
   z <- broom::glance(mf)
 
-  if (length(label.x) > 0) {
-    z$x <- label.x
-    z$hjust <- 0.5
-  } else if (length(label.x.npc) > 0) {
-    if (is.numeric(label.x.npc)) {
-      if (any(label.x.npc < 0 | label.x.npc > 1)) {
-        warning("'label.x.npc' argument is numeric but outside range 0..1.")
-      }
-      z$x <- scales$x$dimension()[1] + label.x.npc *
-        diff(scales$x$dimension())
-      z$hjust <- 0.5
-    } else if (is.character(label.x.npc)) {
-      if (label.x.npc == "right") {
-        z$x <- scales$x$dimension()[2]
-        z$hjust <- 1
-      } else if (label.x.npc %in% c("center", "centre", "middle")) {
-        z$x <- mean(scales$x$dimension())
-        z$hjust <- 0.5
-      } else if (label.x.npc == "left") {
-        z$x <- scales$x$dimension()[1]
-        z$hjust <- 0
-      } else {
-        stop("'label.x.npc' argument '", label.x.npc, " unsupported")
-      }
+  n.labels <- nrow(z)
+  if (length(label.x) != n.labels) {
+    if (length(label.x) != 1L) {
+      warning("Length of 'label.x' is different from number of labels")
+    }
+    if (length(label.x) < n.labels) {
+      label.x <- rep(label.x[1], n.labels)
     } else {
-      stop("'label.x.npc' argument is neither numeric nor character")
+      label.x <- label.x[1:n.labels]
+    }
+  }
+  if (length(label.y) != n.labels) {
+    if (length(label.y) != 1L) {
+      warning("Length of 'label.y' is different from number of labels")
+    }
+    if (length(label.y) < n.labels) {
+      label.y <- rep(label.y[1], n.labels)
+    } else {
+      label.y <- label.y[1:n.labels]
     }
   }
 
-  if (length(label.y) > 0) {
-    z$y <- label.y
-    z$vjust <- 0.5
-  } else if (length(label.y.npc) > 0) {
-    if (is.numeric(label.y.npc)) {
-      if (any(label.y.npc < 0 | label.y.npc > 1)) {
-        warning("'label.y.npc' argument is numeric but outside range 0..1.")
-      }
-      z$y <- scales$y$dimension()[1] + label.y.npc *
-        diff(scales$y$dimension())
-      z$vjust <- 1.4 * group.idx - (0.7 * length(group.idx))
-    } else if (is.character(label.y.npc)) {
-      if (label.y.npc == "bottom") {
-        z$y <- scales$y$dimension()[1]
-        z$vjust <- -1.4 * group.idx
-      } else if (label.y.npc %in% c("center", "centre", "middle")) {
-        z$y <- mean(scales$y$dimension())
-        z$vjust <- 1.4 * group.idx - (0.7 * length(group.idx))
-      } else if (label.y.npc == "top") {
-        z$y <- scales$y$dimension()[2]
-        z$vjust <- 1.4 * group.idx
-      } else {
-        stop("'label.y.npc' argument '", label.y.npc, " unsupported")
-      }
-    } else {
-      stop("'label.y.npc' argument is neither numeric nor character")
+  if (npc.used) {
+    margin.npc = 0.05
+    hstep <- 0
+    hsteps <- hstep * (group.idx - 1L)
+    margin.npc = 0.05
+    if (is.character(label.x)) {
+      label.x <- switch(label.x,
+                        right = (1 - margin.npc) - hsteps,
+                        center = 0.5 - hsteps,
+                        centre = 0.5 - hsteps,
+                        middle = 0.5 - hsteps,
+                        left = (0 + margin.npc) +  hsteps)
     }
+    vstep <- 0.075
+    vsteps <- vstep * (group.idx - 1L)
+    if (is.character(label.y)) {
+      label.y <- switch(label.y,
+                        top = (1 - margin.npc) - vsteps,
+                        center = 0.5 - vsteps,
+                        centre = 0.5 - vsteps,
+                        middle = 0.5 - vsteps,
+                        bottom = (0 + margin.npc) + vsteps
+      )
+    }
+    z$npcx <- label.x
+    z$x <- NA_real_
+    z$npcy <- label.y
+    z$y <- NA_real_
+  } else {
+    z$x <- label.x
+    z$npcx <- NA_real_
+    z$y <- label.y
+    z$npcy <- NA_real_
   }
 
   z
@@ -245,7 +241,10 @@ StatFitGlance <-
   ggplot2::ggproto("StatFitGlance", ggplot2::Stat,
                    compute_group = fit_glance_compute_group_fun,
                    default_aes =
-                     ggplot2::aes(hjust = ..hjust.., vjust = ..vjust..),
+                     ggplot2::aes(npcx = stat(npcx),
+                                  npcy = stat(npcy),
+                                  hjust = "inward",
+                                  vjust = "inward"),
                    required_aes = c("x", "y")
   )
 
@@ -409,11 +408,11 @@ StatFitAugment <-
 #'   before the computation proceeds.
 #' @param method character.
 #' @param method.args list of arguments to pass to \code{method}.
-#' @param label.x.npc,label.y.npc \code{numeric} with range 0..1 or character.
+#' @param label.x,label.y \code{numeric} with range 0..1 or character.
 #'   Coordinates to be used for positioning the output, expressed in "normalized
 #'   parent coordinates" or character string. If too short they will be recycled.
-#' @param label.x,label.y \code{numeric} Coordinates (in data units) to be used
-#'   for absolute positioning of the output. If too short they will be recycled.
+#' @param hstep,vstep numeric in npc units, the horizontal and vertical step
+#'   used between labels for different groups.
 #'
 #' @section Computed variables: The output of \code{\link[broom]{tidy}} is
 #'   returned after reshaping it into a single row. Grouping is respected, and
@@ -422,23 +421,29 @@ StatFitAugment <-
 #'
 #' @export
 #'
-stat_fit_tidy <- function(mapping = NULL, data = NULL, geom = "null",
-                            method = "lm",
-                            method.args = list(formula = y ~ x),
-                            label.x.npc = "left", label.y.npc = "top",
-                            label.x = NULL, label.y = NULL,
-                            position = "identity",
-                            na.rm = FALSE, show.legend = FALSE,
-                            inherit.aes = TRUE, ...) {
+stat_fit_tidy <- function(mapping = NULL, data = NULL, geom = "text_npc",
+                          method = "lm",
+                          method.args = list(formula = y ~ x),
+                          label.x = "left", label.y = "top",
+                          hstep = 0,
+                          vstep = NULL,
+                          position = "identity",
+                          na.rm = FALSE, show.legend = FALSE,
+                          inherit.aes = TRUE, ...) {
   ggplot2::layer(
     stat = StatFitTidy, data = data, mapping = mapping, geom = geom,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
     params = list(method = method,
                   method.args = method.args,
-                  label.x.npc = label.x.npc,
-                  label.y.npc = label.y.npc,
                   label.x = label.x,
                   label.y = label.y,
+                  hstep = hstep,
+                  vstep = ifelse(is.null(vstep),
+                                 ifelse(grepl("label", geom),
+                                        0.125,
+                                        0.075),
+                                 vstep),
+                  npc.used = grepl("_npc", geom),
                   na.rm = na.rm,
                   ...)
   )
@@ -452,13 +457,14 @@ stat_fit_tidy <- function(mapping = NULL, data = NULL, geom = "null",
 #' @usage NULL
 #'
 fit_tidy_compute_group_fun <- function(data,
-                                         scales,
-                                         method,
-                                         method.args,
-                                         label.x.npc,
-                                         label.y.npc,
-                                         label.x,
-                                         label.y) {
+                                       scales,
+                                       method,
+                                       method.args,
+                                       label.x,
+                                       label.y,
+                                       hstep,
+                                       vstep,
+                                       npc.used) {
   force(data)
   if (length(unique(data$x)) < 2) {
     # Not enough data to perform fit
@@ -466,15 +472,15 @@ fit_tidy_compute_group_fun <- function(data,
   }
 
   group.idx <- abs(data$group[1])
-  if (length(label.x.npc) >= group.idx) {
-    label.x.npc <- label.x.npc[group.idx]
-  } else if (length(label.x.npc) > 0) {
-    label.x.npc <- label.x.npc[1]
+  if (length(label.x) >= group.idx) {
+    label.x <- label.x[group.idx]
+  } else if (length(label.x) > 0) {
+    label.x <- label.x[1]
   }
-  if (length(label.y.npc) >= group.idx) {
-    label.y.npc <- label.y.npc[group.idx]
-  } else if (length(label.y.npc) > 0) {
-    label.y.npc <- label.y.npc[1]
+  if (length(label.y) >= group.idx) {
+    label.y <- label.y[group.idx]
+  } else if (length(label.y) > 0) {
+    label.y <- label.y[1]
   }
 
   if (length(label.x) >= group.idx) {
@@ -509,62 +515,36 @@ fit_tidy_compute_group_fun <- function(data,
     z <- cbind(z, z.p.value)
   }
 
-  if (length(label.x) > 0) {
+  if (npc.used) {
+    margin.npc = 0.05
+    hsteps <- hstep * (group.idx - 1L)
+    if (is.character(label.x)) {
+      label.x <- switch(label.x,
+                        right = (1 - margin.npc) - hsteps,
+                        center = 0.5 - hsteps,
+                        centre = 0.5 - hsteps,
+                        middle = 0.5 - hsteps,
+                        left = (0 + margin.npc) +  hsteps)
+    }
+    vsteps <- vstep * (group.idx - 1L)
+    if (is.character(label.y)) {
+      label.y <- switch(label.y,
+                        top = (1 - margin.npc) - vsteps,
+                        center = 0.5 - vsteps,
+                        centre = 0.5 - vsteps,
+                        middle = 0.5 - vsteps,
+                        bottom = (0 + margin.npc) + vsteps
+      )
+    }
+    z$npcx <- label.x
+    z$x <- NA_real_
+    z$npcy <- label.y
+    z$y <- NA_real_
+  } else {
     z$x <- label.x
-    z$hjust <- 0.5
-  } else if (length(label.x.npc) > 0) {
-    if (is.numeric(label.x.npc)) {
-      if (any(label.x.npc < 0 | label.x.npc > 1)) {
-        warning("'label.x.npc' argument is numeric but outside range 0..1.")
-      }
-      z$x <- scales$x$dimension()[1] + label.x.npc *
-        diff(scales$x$dimension())
-      z$hjust <- 0.5
-    } else if (is.character(label.x.npc)) {
-      if (label.x.npc == "right") {
-        z$x <- scales$x$dimension()[2]
-        z$hjust <- 1
-      } else if (label.x.npc %in% c("center", "centre", "middle")) {
-        z$x <- mean(scales$x$dimension())
-        z$hjust <- 0.5
-      } else if (label.x.npc == "left") {
-        z$x <- scales$x$dimension()[1]
-        z$hjust <- 0
-      } else {
-        stop("'label.x.npc' argument '", label.x.npc, " unsupported")
-      }
-    } else {
-      stop("'label.x.npc' argument is neither numeric nor character")
-    }
-  }
-
-  if (length(label.y) > 0) {
+    z$npcx <- NA_real_
     z$y <- label.y
-    z$vjust <- 0.5
-  } else if (length(label.y.npc) > 0) {
-    if (is.numeric(label.y.npc)) {
-      if (any(label.y.npc < 0 | label.y.npc > 1)) {
-        warning("'label.y.npc' argument is numeric but outside range 0..1.")
-      }
-      z$y <- scales$y$dimension()[1] + label.y.npc *
-        diff(scales$y$dimension())
-      z$vjust <- 1.4 * group.idx - (0.7 * length(group.idx))
-    } else if (is.character(label.y.npc)) {
-      if (label.y.npc == "bottom") {
-        z$y <- scales$y$dimension()[1]
-        z$vjust <- -1.4 * group.idx
-      } else if (label.y.npc %in% c("center", "centre", "middle")) {
-        z$y <- mean(scales$y$dimension())
-        z$vjust <- 1.4 * group.idx - (0.7 * length(group.idx))
-      } else if (label.y.npc == "top") {
-        z$y <- scales$y$dimension()[2]
-        z$vjust <- 1.4 * group.idx
-      } else {
-        stop("'label.y.npc' argument '", label.y.npc, " unsupported")
-      }
-    } else {
-      stop("'label.y.npc' argument is neither numeric nor character")
-    }
+    z$npcy <- NA_real_
   }
 
   z
@@ -578,6 +558,9 @@ StatFitTidy <-
   ggplot2::ggproto("StatFitTidy", ggplot2::Stat,
                    compute_group = fit_tidy_compute_group_fun,
                    default_aes =
-                     ggplot2::aes(hjust = ..hjust.., vjust = ..vjust..),
+                     ggplot2::aes(npcx = stat(npcx),
+                                  npcy = stat(npcy),
+                                  hjust = "inward",
+                                  vjust = "inward"),
                    required_aes = c("x", "y")
   )

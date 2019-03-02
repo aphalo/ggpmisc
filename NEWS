@@ -1,10 +1,11 @@
-ggpmisc 0.3.1 (2019-03-01)
+ggpmisc 0.3.1 (2019-03-03)
 ==========================
 
 Version requiring 'ggplot2' (>= 3.1.0).
 - Add new geometries, several of them accepting x and y in npc units, allowing
 positioning relative to plotting area irrespective of native data units and
-scale limits.
+scale limits. These geometries are not very useful on their own, but in
+contrast allow consistent positioning of textual summaries.
 * Add geom_text_npc() and geom_label_npc() which accept x and y in npc units.
 * Add geom_table_npc() which accepts x and y in npc units.
 * Add geom_plot() and geom_plot_npc() which can be used to add inset plots

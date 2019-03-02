@@ -4,11 +4,11 @@
 \alias{stat_fit_tidy}
 \title{One row data frame with fitted parameter estimates}
 \usage{
-stat_fit_tidy(mapping = NULL, data = NULL, geom = "null",
+stat_fit_tidy(mapping = NULL, data = NULL, geom = "text_npc",
   method = "lm", method.args = list(formula = y ~ x),
-  label.x.npc = "left", label.y.npc = "top", label.x = NULL,
-  label.y = NULL, position = "identity", na.rm = FALSE,
-  show.legend = FALSE, inherit.aes = TRUE, ...)
+  label.x = "left", label.y = "top", hstep = 0, vstep = NULL,
+  position = "identity", na.rm = FALSE, show.legend = FALSE,
+  inherit.aes = TRUE, ...)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
@@ -24,12 +24,12 @@ the plot defaults.}
 
 \item{method.args}{list of arguments to pass to \code{method}.}
 
-\item{label.x.npc, label.y.npc}{\code{numeric} with range 0..1 or character.
+\item{label.x, label.y}{\code{numeric} with range 0..1 or character.
 Coordinates to be used for positioning the output, expressed in "normalized
 parent coordinates" or character string. If too short they will be recycled.}
 
-\item{label.x, label.y}{\code{numeric} Coordinates (in data units) to be used
-for absolute positioning of the output. If too short they will be recycled.}
+\item{hstep, vstep}{numeric in npc units, the horizontal and vertical step
+used between labels for different groups.}
 
 \item{position}{The position adjustment to use for overlapping points on this
 layer}

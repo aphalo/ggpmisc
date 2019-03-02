@@ -4,11 +4,11 @@
 \alias{stat_fit_glance}
 \title{One row summary data frame for a fitted model}
 \usage{
-stat_fit_glance(mapping = NULL, data = NULL, geom = "null",
+stat_fit_glance(mapping = NULL, data = NULL, geom = "text_npc",
   method = "lm", method.args = list(formula = y ~ x),
-  label.x.npc = "left", label.y.npc = "top", label.x = NULL,
-  label.y = NULL, position = "identity", na.rm = FALSE,
-  show.legend = FALSE, inherit.aes = TRUE, ...)
+  label.x = "left", label.y = "top", hstep = 0, vstep = NULL,
+  position = "identity", na.rm = FALSE, show.legend = FALSE,
+  inherit.aes = TRUE, ...)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
@@ -24,13 +24,13 @@ the plot defaults.}
 
 \item{method.args}{list of arguments to pass to \code{method}.}
 
-\item{label.x.npc, label.y.npc}{\code{numeric} with range 0..1 or character.
-Coordinates to be used for positioning the output, expressed in "normalized
-parent coordinates" or character string. If too short they will be
-recycled.}
+\item{label.x, label.y}{\code{numeric} with range 0..1 "normalized parent
+coordinates" (npc units) or character if using \code{geom_text_npc()} or
+\code{geom_label_npc()}. If using \code{geom_text()} or \code{geom_label()}
+numeric in native data units. If too short they will be recycled.}
 
-\item{label.x, label.y}{\code{numeric} Coordinates (in data units) to be used
-for absolute positioning of the output. If too short they will be recycled.}
+\item{hstep, vstep}{numeric in npc units, the horizontal and vertical step
+used between labels for different groups.}
 
 \item{position}{The position adjustment to use for overlapping points on this
 layer}
@@ -97,8 +97,7 @@ my.df <-
 broom::glance(lm(formula = Y ~ X, data = my.df ))
 ggplot(my.df, aes(X, Y)) +
   geom_point() +
-  stat_fit_glance(geom = "text",
-                  method = "lm",
+  stat_fit_glance(method = "lm",
                   method.args = list(formula = y ~ x), # here x and y are aesthetics
                   aes(label = sprintf('r^2~"="~\%.3f~~italic(P)~"="~\%.2f',
                       stat(r.squared), stat(p.value))),
@@ -109,8 +108,7 @@ broom::glance(cor.test(formula = ~ Y + X, data = my.df, method = "spearman"))
 # Bellow we pass external data directly to the method (as a last resort!)
 ggplot(my.df, aes(X, Y)) +
   geom_point() +
-  stat_fit_glance(geom = "text",
-                  method = "cor.test",
+  stat_fit_glance(method = "cor.test",
                   method.args = list(formula = ~ Y + X, # here X and Y are variables
                                 method = "spearman",
                                 data = quote(my.df)),

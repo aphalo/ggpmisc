@@ -114,8 +114,8 @@ df <- data.frame(
 ggplot(df, aes(npcx = x, npcy = y)) +
   geom_text_npc(aes(label = text))
 
-ggplot(data = mtcars, aes(wt, mpg)) +
-  geom_point() +
+ggplot(data = mtcars) +
+  geom_point(mapping = aes(wt, mpg)) +
   geom_text_npc(data = df, aes(npcx = x, npcy = y, label = text))
 
 ggplot(data = mtcars) +
