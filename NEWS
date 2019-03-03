@@ -4,14 +4,18 @@ ggpmisc 0.3.1 (2019-03-03)
 Version requiring 'ggplot2' (>= 3.1.0).
 - Add new geometries, several of them accepting x and y in npc units, allowing
 positioning relative to plotting area irrespective of native data units and
-scale limits. These geometries are not very useful on their own, but in
-contrast allow consistent positioning of textual summaries.
+scale limits. These geometries are useful on their own for annotations in
+particular they allow consistent positioning of textual summaries. By default
+they do not inherit the plot's aes making their behaviour reamin by default
+in-between that of true geometries and that of annotate().
 * Add geom_text_npc() and geom_label_npc() which accept x and y in npc units.
 * Add geom_table_npc() which accepts x and y in npc units.
 * Add geom_plot() and geom_plot_npc() which can be used to add inset plots
 to a ggplot.
 * Add geom_grob() and geom_grob_npc() which can be used to add inset Grobs
 to a ggplot.
+* Add geom_x_margin_point() and geom_y_margin_point() which are similar to
+geom_hline() and geom_vline() but plot points instead of lines.
 - Revise textual-summary statistics to use the new npc version of geometries.
 - Add "summarize" statistics for groups and panels.
 * Add stat_apply_panel() and stat_apply_group().

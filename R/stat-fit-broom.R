@@ -79,19 +79,6 @@
 #'                       stat(r.squared), stat(p.value))),
 #'                   parse = TRUE)
 #'
-#' # We need to check the names of the returned values!
-#' broom::glance(cor.test(formula = ~ Y + X, data = my.df, method = "spearman"))
-#' # Bellow we pass external data directly to the method (as a last resort!)
-#' ggplot(my.df, aes(X, Y)) +
-#'   geom_point() +
-#'   stat_fit_glance(method = "cor.test",
-#'                   method.args = list(formula = ~ Y + X, # here X and Y are variables
-#'                                 method = "spearman",
-#'                                 data = quote(my.df)),
-#'                   aes(label = sprintf('r[s]~"="~%.3f~~italic(P)~"="~%.2f',
-#'                       stat(estimate), stat(p.value))),
-#'                   parse = TRUE)
-#'
 stat_fit_glance <- function(mapping = NULL, data = NULL, geom = "text_npc",
                             method = "lm",
                             method.args = list(formula = y ~ x),

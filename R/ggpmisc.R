@@ -45,7 +45,7 @@
 #' \url{http://docs.ggplot2.org/}\cr Package 'ggplot2' source code at
 #' \url{https://github.com/hadley/ggplot2}
 #'
-#' @import scales grid gtable ggplot2
+#' @import scales grid ggplot2
 #' @importFrom ggplot2 ggplot
 #' @importFrom magrittr %>%
 #' @importFrom rlang .data

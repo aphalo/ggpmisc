@@ -24,6 +24,7 @@ reference:
     - geom_table
     - geom_plot
     - geom_grob
+    - geom_x_margin_point
   - title: Statistics
     desc: It is often useful to summarize data before plotting, and that is what these transformations do.
     contents:

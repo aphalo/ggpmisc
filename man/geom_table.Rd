@@ -7,11 +7,11 @@
 \usage{
 geom_table(mapping = NULL, data = NULL, stat = "identity",
   position = "identity", ..., parse = FALSE, na.rm = FALSE,
-  show.legend = NA, inherit.aes = TRUE)
+  show.legend = FALSE, inherit.aes = TRUE)
 
 geom_table_npc(mapping = NULL, data = NULL, stat = "identity",
   position = "identity", ..., parse = FALSE, na.rm = FALSE,
-  show.legend = NA, inherit.aes = TRUE)
+  show.legend = FALSE, inherit.aes = FALSE)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
@@ -92,8 +92,8 @@ mtcars \%>\%
   mutate(wt = sprintf("\%.2f", wt),
          mpg = sprintf("\%.1f", mpg)) -> tb
 df <- tibble(x = 0.95, y = 0.95, tb = list(tb))
-ggplot(data = mtcars) +
-  geom_point(mapping = aes(wt, mpg, colour = factor(cyl))) +
+ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
+  geom_point() +
   geom_table_npc(data = df, aes(npcx = x, npcy = y, label = tb),
                  hjust = 1, vjust = 1)
 

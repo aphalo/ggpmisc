@@ -59,8 +59,8 @@
 #' # inset plot with enlarged detail from a region of the main plot
 #' library(tibble)
 #' p <-
-#'   ggplot(data = mtcars) +
-#'   geom_point(mapping = aes(wt, mpg))
+#'   ggplot(data = mtcars, mapping = aes(wt, mpg)) +
+#'   geom_point()
 #'
 #' df <- tibble(x = 0.01, y = 0.01,
 #'              plot = list(p +
@@ -177,7 +177,7 @@ geom_plot_npc <- function(mapping = NULL, data = NULL,
                           ...,
                           na.rm = FALSE,
                           show.legend = NA,
-                          inherit.aes = TRUE) {
+                          inherit.aes = FALSE) {
   layer(
     data = data,
     mapping = mapping,

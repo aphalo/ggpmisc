@@ -163,7 +163,7 @@ geom_grob_npc <- function(mapping = NULL, data = NULL,
                           ...,
                           na.rm = FALSE,
                           show.legend = NA,
-                          inherit.aes = TRUE) {
+                          inherit.aes = FALSE) {
   layer(
     data = data,
     mapping = mapping,

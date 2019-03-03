@@ -1,13 +1,10 @@
-#' Points on the margins
+#' Reference points on the margins
 #'
-#' A marging point plot is a visualisation designed to supplement a 2d display
-#' with marginal annotations. Marging points can highligth individual
-#' cases or values along a margin. Such
-#' annotations can be easily done with \code{annotate()} except when they
-#' are the same accross facets. The geometries \code{geom_x_margin_point()}
-#' and \code{geom_x_margin_point()} behave similarly \code{geom_vline()} and
-#' \code{geom_hline()} and have a "double personality" as both annotations and
-#' geometries.
+#' Marging points can supplement a 2d display with annotations. Marging points
+#' can highligth individual cases or values along a margin. The geometries
+#' \code{geom_x_margin_point()} and \code{geom_y_margin_point()} behave
+#' similarly \code{geom_vline()} and \code{geom_hline()} and share their "double
+#' personality" as both annotations and geometries.
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs
@@ -33,8 +30,12 @@
 #' @param sides A string that controls which sides of the plot the rugs appear on.
 #'   It can be set to a string containing any of `"trbl"`, for top, right,
 #'   bottom, and left.
-#' @param dot.shift numeric value expressed in npc units for the shift of the
+#' @param point.shift numeric value expressed in npc units for the shift of the
 #'   rug points inwards from the edge of the plotting area.
+#' @param xintercept,yintercept numeric Parameters that control the position of
+#'   the marginal points. If these are set, data, mapping and show.legend are
+#'   overridden.
+#'
 #' @export
 #' @examples
 #' p <- ggplot(mtcars, aes(wt, mpg)) +
@@ -53,7 +54,7 @@ geom_x_margin_point <- function(mapping = NULL, data = NULL,
                      ...,
                      xintercept,
                      sides = "b",
-                     dot.shift = 0.015,
+                     point.shift = 0.015,
                      na.rm = FALSE,
                      show.legend = FALSE,
                      inherit.aes = FALSE) {
@@ -75,7 +76,7 @@ geom_x_margin_point <- function(mapping = NULL, data = NULL,
     inherit.aes = inherit.aes,
     params = list(
       sides = sides,
-      dot.shift = dot.shift,
+      point.shift = point.shift,
       na.rm = na.rm,
       ...
     )
@@ -94,7 +95,7 @@ GeomXMarginPoints <-
                             fill = NA, alpha = NA, stroke = 0.5),
 
   draw_panel = function(data, panel_params, coord, sides = "b",
-                        dot.shift = 0.01, na.rm = FALSE) {
+                        point.shift = 0.01, na.rm = FALSE) {
     if (is.character(data$shape)) {
       data$shape <- translate_shape_string(data$shape)
     }
@@ -120,7 +121,7 @@ GeomXMarginPoints <-
       if (grepl("b", sides)) {
         rugpoints$x_b <- pointsGrob(
           x = unit(data$xintercept, "native"),
-          y = unit(rep(dot.shift, nrow(data)), "npc"),
+          y = unit(rep(point.shift, nrow(data)), "npc"),
           pch = ifelse(data$shape == 99, 6, data$shape),
           gp = gp
         )
@@ -129,7 +130,7 @@ GeomXMarginPoints <-
       if (grepl("t", sides)) {
         rugpoints$x_t <- pointsGrob(
           x = unit(data$xintercept, "native"),
-          y = unit(rep(1 - dot.shift, nrow(data)), "npc"),
+          y = unit(rep(1 - point.shift, nrow(data)), "npc"),
           pch = ifelse(data$shape == 99, 2, data$shape),
           gp = gp
         )
@@ -140,7 +141,7 @@ GeomXMarginPoints <-
     if (flipped && !is.null(data$yintercept)) {
       if (grepl("l", sides)) {
         rugpoints$y_l <- pointsGrob(
-          x = unit(rep(dot.shift, nrow(data)), "npc"),
+          x = unit(rep(point.shift, nrow(data)), "npc"),
           y = unit(data$yintercept, "native"),
           pch = ifelse(data$shape == 99, 5, data$shape),
           gp = gp
@@ -148,7 +149,7 @@ GeomXMarginPoints <-
       }
       if (grepl("r", sides)) {
         rugpoints$y_r <- pointsGrob(
-          x = unit(rep(1 - dot.shift, nrow(data)), "npc"),
+          x = unit(rep(1 - point.shift, nrow(data)), "npc"),
           y = unit(data$yintercept, "native"),
           pch = ifelse(data$shape == 99, 5, data$shape),
           gp = gp
@@ -172,7 +173,7 @@ geom_y_margin_point <- function(mapping = NULL, data = NULL,
                                  ...,
                                  yintercept,
                                  sides = "l",
-                                 dot.shift = 0.015,
+                                 point.shift = 0.015,
                                  na.rm = FALSE,
                                  show.legend = FALSE,
                                  inherit.aes = FALSE) {
@@ -194,7 +195,7 @@ geom_y_margin_point <- function(mapping = NULL, data = NULL,
     inherit.aes = inherit.aes,
     params = list(
       sides = sides,
-      dot.shift = dot.shift,
+      point.shift = point.shift,
       na.rm = na.rm,
       ...
     )
@@ -213,7 +214,7 @@ GeomYMarginPoints <-
                             fill = NA, alpha = NA, stroke = 0.5),
 
           draw_panel = function(data, panel_params, coord, sides = "l",
-                                dot.shift = 0.01, na.rm = FALSE) {
+                                point.shift = 0.01, na.rm = FALSE) {
             if (is.character(data$shape)) {
               data$shape <- translate_shape_string(data$shape)
             }
@@ -238,7 +239,7 @@ GeomYMarginPoints <-
             if (!flipped && !is.null(data$yintercept)) {
               if (grepl("l", sides)) {
                 rugpoints$y_l <- pointsGrob(
-                  x = unit(rep(dot.shift, nrow(data)), "npc"),
+                  x = unit(rep(point.shift, nrow(data)), "npc"),
                   y = unit(data$yintercept, "native"),
                   pch = ifelse(data$shape == 99, 5, data$shape),
                   gp = gp
@@ -246,7 +247,7 @@ GeomYMarginPoints <-
               }
               if (grepl("r", sides)) {
                 rugpoints$y_r <- pointsGrob(
-                  x = unit(rep(1 - dot.shift, nrow(data)), "npc"),
+                  x = unit(rep(1 - point.shift, nrow(data)), "npc"),
                   y = unit(data$yintercept, "native"),
                   pch = ifelse(data$shape == 99, 5, data$shape),
                   gp = gp
@@ -259,7 +260,7 @@ GeomYMarginPoints <-
               if (grepl("b", sides)) {
                 rugpoints$x_b <- pointsGrob(
                   x = unit(data$xintercept, "native"),
-                  y = unit(rep(dot.shift, nrow(data)), "npc"),
+                  y = unit(rep(point.shift, nrow(data)), "npc"),
                   pch = ifelse(data$shape == 99, 6, data$shape),
                   gp = gp
                 )
@@ -268,7 +269,7 @@ GeomYMarginPoints <-
               if (grepl("t", sides)) {
                 rugpoints$x_t <- pointsGrob(
                   x = unit(data$xintercept, "native"),
-                  y = unit(rep(1 - dot.shift, nrow(data)), "npc"),
+                  y = unit(rep(1 - point.shift, nrow(data)), "npc"),
                   pch = ifelse(data$shape == 99, 2, data$shape),
                   gp = gp
                 )

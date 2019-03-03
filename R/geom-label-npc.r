@@ -14,7 +14,7 @@ geom_label_npc <- function(mapping = NULL, data = NULL,
                       label.size = 0.25,
                       na.rm = FALSE,
                       show.legend = FALSE,
-                      inherit.aes = TRUE)
+                      inherit.aes = FALSE)
 {
   if (!missing(nudge_x) || !missing(nudge_y)) {
     if (!missing(position)) {

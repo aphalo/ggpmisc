@@ -73,15 +73,15 @@
 #'   y = c(0, 1, 0, 1, 0.5),
 #'   text = c("bottom-left", "bottom-right", "top-left", "top-right", "center")
 #' )
-#' ggplot(df, aes(npcx = x, npcy = y)) +
-#'   geom_text_npc(aes(label = text))
+#' ggplot(df) +
+#'   geom_text_npc(aes(npcx = x, npcy = y, label = text))
 #'
-#' ggplot(data = mtcars) +
-#'   geom_point(mapping = aes(wt, mpg)) +
+#' ggplot(data = mtcars, mapping = aes(wt, mpg)) +
+#'   geom_point() +
 #'   geom_text_npc(data = df, aes(npcx = x, npcy = y, label = text))
 #'
-#' ggplot(data = mtcars) +
-#'   geom_point(mapping = aes(wt, mpg)) +
+#' ggplot(data = mtcars, mapping = aes(wt, mpg)) +
+#'   geom_point() +
 #'   geom_text_npc(data = df, aes(npcx = x, npcy = y, label = text)) +
 #'   expand_limits(y = 40, x = 6)
 #'
@@ -98,7 +98,7 @@ geom_text_npc <- function(mapping = NULL, data = NULL,
                       check_overlap = FALSE,
                       na.rm = FALSE,
                       show.legend = FALSE,
-                      inherit.aes = TRUE)
+                      inherit.aes = FALSE)
 {
   if (!missing(nudge_x) || !missing(nudge_y)) {
     if (!missing(position)) {

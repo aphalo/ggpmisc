@@ -77,8 +77,8 @@
 #'   mutate(wt = sprintf("%.2f", wt),
 #'          mpg = sprintf("%.1f", mpg)) -> tb
 #' df <- tibble(x = 0.95, y = 0.95, tb = list(tb))
-#' ggplot(data = mtcars) +
-#'   geom_point(mapping = aes(wt, mpg, colour = factor(cyl))) +
+#' ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
+#'   geom_point() +
 #'   geom_table_npc(data = df, aes(npcx = x, npcy = y, label = tb),
 #'                  hjust = 1, vjust = 1)
 #'
@@ -87,7 +87,7 @@ geom_table <- function(mapping = NULL, data = NULL,
                        ...,
                        parse = FALSE,
                        na.rm = FALSE,
-                       show.legend = NA,
+                       show.legend = FALSE,
                        inherit.aes = TRUE) {
   layer(
     data = data,
@@ -196,8 +196,8 @@ geom_table_npc <- function(mapping = NULL, data = NULL,
                            ...,
                            parse = FALSE,
                            na.rm = FALSE,
-                           show.legend = NA,
-                           inherit.aes = TRUE) {
+                           show.legend = FALSE,
+                           inherit.aes = FALSE) {
   layer(
     data = data,
     mapping = mapping,

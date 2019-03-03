@@ -11,7 +11,7 @@ geom_plot(mapping = NULL, data = NULL, stat = "identity",
 
 geom_plot_npc(mapping = NULL, data = NULL, stat = "identity",
   position = "identity", ..., na.rm = FALSE, show.legend = NA,
-  inherit.aes = TRUE)
+  inherit.aes = FALSE)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
@@ -80,8 +80,8 @@ This geom works only with tibbles as \code{data}, as it expects a list
 # inset plot with enlarged detail from a region of the main plot
 library(tibble)
 p <-
-  ggplot(data = mtcars) +
-  geom_point(mapping = aes(wt, mpg))
+  ggplot(data = mtcars, mapping = aes(wt, mpg)) +
+  geom_point()
 
 df <- tibble(x = 0.01, y = 0.01,
              plot = list(p +

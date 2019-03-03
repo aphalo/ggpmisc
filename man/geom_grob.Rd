@@ -11,7 +11,7 @@ geom_grob(mapping = NULL, data = NULL, stat = "identity",
 
 geom_grob_npc(mapping = NULL, data = NULL, stat = "identity",
   position = "identity", ..., na.rm = FALSE, show.legend = NA,
-  inherit.aes = TRUE)
+  inherit.aes = FALSE)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
