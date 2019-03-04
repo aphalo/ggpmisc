@@ -70,7 +70,7 @@ geom_x_margin_point <- function(mapping = NULL, data = NULL,
     data = data,
     mapping = mapping,
     stat = stat,
-    geom = GeomXMarginPoints,
+    geom = GeomXMarginPoint,
     position = position,
     show.legend = show.legend,
     inherit.aes = inherit.aes,
@@ -87,8 +87,8 @@ geom_x_margin_point <- function(mapping = NULL, data = NULL,
 #' @format NULL
 #' @usage NULL
 #' @export
-GeomXMarginPoints <-
-  ggproto("GeomXMarginPoints", Geom,
+GeomXMarginPoint <-
+  ggproto("GeomXMarginPoint", Geom,
           required_aes = c("xintercept"),
           non_missing_aes = c("size", "shape", "colour"),
           default_aes = aes(shape = 99, colour = "red", size = 1.5,
@@ -189,7 +189,7 @@ geom_y_margin_point <- function(mapping = NULL, data = NULL,
     data = data,
     mapping = mapping,
     stat = stat,
-    geom = GeomYMarginPoints,
+    geom = GeomYMarginPoint,
     position = position,
     show.legend = show.legend,
     inherit.aes = inherit.aes,
@@ -206,8 +206,8 @@ geom_y_margin_point <- function(mapping = NULL, data = NULL,
 #' @format NULL
 #' @usage NULL
 #' @export
-GeomYMarginPoints <-
-  ggproto("GeomYMarginPoints", Geom,
+GeomYMarginPoint <-
+  ggproto("GeomYMarginPoint", Geom,
           required_aes = c("yintercept"),
           non_missing_aes = c("size", "shape", "colour"),
           default_aes = aes(shape = 99, colour = "red", size = 1.5,

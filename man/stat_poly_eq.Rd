@@ -7,9 +7,10 @@
 stat_poly_eq(mapping = NULL, data = NULL, geom = "text_npc",
   position = "identity", ..., formula = NULL,
   eq.with.lhs = "italic(y)~`=`~", eq.x.rhs = NULL, coef.digits = 3,
-  rr.digits = 2, label.x = "left", label.y = "top", hstep = 0,
-  vstep = NULL, output.type = "expression", na.rm = FALSE,
-  show.legend = FALSE, inherit.aes = TRUE)
+  rr.digits = 2, label.x = "left", label.y = "top",
+  label.x.npc = NULL, label.y.npc = NULL, hstep = 0, vstep = NULL,
+  output.type = "expression", na.rm = FALSE, show.legend = FALSE,
+  inherit.aes = TRUE)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
@@ -44,6 +45,10 @@ for the vector of fitted coefficients and for $R^2$ labels.}
 coordinates" (npc units) or character if using \code{geom_text_npc()} or
 \code{geom_label_npc()}. If using \code{geom_text()} or \code{geom_label()}
 numeric in native data units. If too short they will be recycled.}
+
+\item{label.x.npc, label.y.npc}{\code{numeric} with range 0..1 (npc units)
+DEPRECATED, use label.x and label.y instead; together with a geom
+using npcx and npcy aesthetics.}
 
 \item{hstep, vstep}{numeric in npc units, the horizontal and vertical step
 used between labels for different groups.}
