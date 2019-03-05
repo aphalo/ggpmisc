@@ -48,11 +48,11 @@
 #'
 #' @note The names of the columns in the returned data are consitent with those
 #'   returned by method \code{glance()} from package 'broom', that will
-#'   frequently differ from the name of values returned by the fit or test
-#'   function used. With some methods like \code{cor.test()} ggplot's
-#'   \code{data} object is not accepted as input, in such cases it possible
-#'   to pass the data directly to the method as shown in the second example
-#'   below.
+#'   frequently differ from the name of values returned by the print methods
+#'   corresponding to fit or test function used. With some methods like
+#'   \code{cor.test()} the data embedded in the \code{"ggplot"} object cannot be
+#'   automatically passed as argument for the \code{data} parameter of the test
+#'   or model fit function.
 #'
 #' @section Warning!: \code{stat_fit_glance} applies the function given by
 #'   \code{method} separately to each group of observations, and factors mapped

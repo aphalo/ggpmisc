@@ -1,11 +1,21 @@
 #' Apply a function to x or y values
 #'
 #' \code{stat_apply_group} and \code{stat_apply_panel} apply functions to data.
+#' In most cases one should simply use transformations through scales or
+#' summary functions through \code{stat_summary()}. There are some computations
+#' that are not scale transformations but are not usual summaries either, the
+#' number of data values does not decrease. It is always possible to precompute
+#' quantities like cummulative sums or running medians, and normalizations
+#' it can be convenient to apply such functions on-the-fly to ensure that
+#' grouping is consistent between computations and aesthetics. One particularity
+#' of these statistics is that they can apply simulateneously different
+#' functions to \code{x} values and to \code{y} values when needed. In contrast
+#' \code{\link[ggplot2]{geom_smooth}}} applies a function that takes both
+#' \code{x} and \code{y} values as arguments.
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs
-#'   to be set
-#'    at the layer level if you are overriding the plot defaults.
+#'   to be set at the layer level if you are overriding the plot defaults.
 #' @param data A layer specific dataset - only needed if you want to override
 #'    the plot defaults.
 #' @param geom The geometric object to use display the data

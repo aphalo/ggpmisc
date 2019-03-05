@@ -1,4 +1,4 @@
-ggpmisc 0.3.1 (2019-03-03)
+ggpmisc 0.3.1 (2019-03-04)
 ==========================
 
 Version requiring 'ggplot2' (>= 3.1.0).
@@ -14,8 +14,9 @@ in-between that of true geometries and that of annotate().
 to a ggplot.
 * Add geom_grob() and geom_grob_npc() which can be used to add inset Grobs
 to a ggplot.
-* Add geom_x_margin_point() and geom_y_margin_point() which are similar to
-geom_hline() and geom_vline() but plot points instead of lines.
+* Add geom_x_margin_point(), geom_y_margin_point(), geom_x_margin_arrow() and
+geom_y_margin_arrow() which behave similarly to geom_hline() and geom_vline()
+but plot points or arrows instead of lines.
 - Revise textual-summary statistics to use the new npc version of geometries.
 - Add "summarize" statistics for groups and panels.
 * Add stat_apply_panel() and stat_apply_group().
