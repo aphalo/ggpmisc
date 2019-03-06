@@ -7,12 +7,12 @@
 \usage{
 geom_x_margin_arrow(mapping = NULL, data = NULL, stat = "identity",
   position = "identity", ..., xintercept, sides = "b",
-  arrow.length = 0.05, na.rm = FALSE, show.legend = FALSE,
+  arrow.length = 0.03, na.rm = FALSE, show.legend = FALSE,
   inherit.aes = FALSE)
 
 geom_y_margin_arrow(mapping = NULL, data = NULL, stat = "identity",
   position = "identity", ..., yintercept, sides = "l",
-  arrow.length = 0.05, na.rm = FALSE, show.legend = FALSE,
+  arrow.length = 0.03, na.rm = FALSE, show.legend = FALSE,
   inherit.aes = FALSE)
 }
 \arguments{

@@ -18,8 +18,7 @@ stat_apply_panel(mapping = NULL, data = NULL, geom = "line",
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
 \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs
-to be set
- at the layer level if you are overriding the plot defaults.}
+to be set at the layer level if you are overriding the plot defaults.}
 
 \item{data}{A layer specific dataset - only needed if you want to override
 the plot defaults.}
@@ -53,7 +52,7 @@ include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 }
 \description{
-\code{stat_apply_group} and \code{stat_apply_panel} apply functions to data.
+Apply a function to x or y values
 }
 \details{
 The function to be applied is expected to be vectorized and to

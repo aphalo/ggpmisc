@@ -13,8 +13,8 @@ stat_fit_tb(mapping = NULL, data = NULL, geom = "table",
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
-\code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs
-to be set at the layer level if you are overriding the plot defaults.}
+\code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs to be
+set at the layer level if you are overriding the plot defaults.}
 
 \item{data}{A layer specific dataset - only needed if you want to override
 the plot defaults.}
@@ -34,7 +34,8 @@ rename the columns of the table returned.}
 
 \item{label.x.npc, label.y.npc}{\code{numeric} with range 0..1 or character.
 Coordinates to be used for positioning the output, expressed in "normalized
-parent coordinates" or character string. If too short they will be recycled.}
+parent coordinates" or character string. If too short they will be
+recycled.}
 
 \item{label.x, label.y}{\code{numeric} Coordinates (in data units) to be used
 for absolute positioning of the output. If too short they will be recycled.}
@@ -42,8 +43,8 @@ for absolute positioning of the output. If too short they will be recycled.}
 \item{position}{The position adjustment to use for overlapping points on this
 layer}
 
-\item{na.rm}{a logical indicating whether NA values should be stripped
-before the computation proceeds.}
+\item{na.rm}{a logical indicating whether NA values should be stripped before
+the computation proceeds.}
 
 \item{show.legend}{logical. Should this layer be included in the legends?
 \code{NA}, the default, includes if any aesthetics are mapped. \code{FALSE}
@@ -59,14 +60,14 @@ can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 }
 \description{
-\code{stat_fit_tb} fits a model and returns a "tidy" version
-  of the model's summary or ANOVA table, using package 'broom'.
+\code{stat_fit_tb} fits a model and returns a "tidy" version of
+  the model's summary or ANOVA table, using package 'broom'. The annotation
+  is added to the plots in tabular form.
 }
 \section{Computed variables}{
  The output of \code{\link[broom]{tidy}} is
   returned as a single "cell" in a tibble (i.e. a tibble nested within a
-  tibble). The returned \code{data} object contains a single, containing
-  the
+  tibble). The returned \code{data} object contains a single, containing the
   result from a single model fit to all data in a panel. If grouping is
   present, it is ignored.
 }
@@ -84,4 +85,9 @@ ggplot(my.df, aes(group, x)) +
               tb.vars = c("italic(t)" = "estimate", "italic(P)" = "p.value"),
               parse = TRUE)
 
+}
+\seealso{
+\code{\link[broom]{tidy}} for details on how the tidying of the
+  resulst of model fits is done. See \code{\link{geom_table}} for details
+  on how the formating and location of the table can be adjusted.
 }

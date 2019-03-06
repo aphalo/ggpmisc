@@ -59,7 +59,7 @@ can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 }
 \description{
-\code{stat_dens2d_filter} Filters out/filters in observations in
+\code{stat_dens2d_filter} Filters-out/filters-in observations in
   regions of a plot panel with high density of observations.
   \code{stat_dens2d_filter_g} does the filtering by group instead of by
   panel. This second stat is useful for highlighting observations, while

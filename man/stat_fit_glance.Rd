@@ -58,11 +58,11 @@ can include aesthetics whose values you want to set, not map. See
 \note{
 The names of the columns in the returned data are consitent with those
   returned by method \code{glance()} from package 'broom', that will
-  frequently differ from the name of values returned by the fit or test
-  function used. With some methods like \code{cor.test()} ggplot's
-  \code{data} object is not accepted as input, in such cases it possible
-  to pass the data directly to the method as shown in the second example
-  below.
+  frequently differ from the name of values returned by the print methods
+  corresponding to fit or test function used. With some methods like
+  \code{cor.test()} the data embedded in the \code{"ggplot"} object cannot be
+  automatically passed as argument for the \code{data} parameter of the test
+  or model fit function.
 }
 \section{Computed variables}{
  The output of \code{\link[broom]{glance}} is
@@ -88,7 +88,6 @@ The names of the columns in the returned data are consitent with those
 }
 
 \examples{
-library(ggplot2)
 # Regression example
 my.df <-
   data.frame(X = c(44.4, 45.9, 41.9, 53.3, 44.7, 44.1, 50.7, 45.2, 60.1),
@@ -98,7 +97,7 @@ broom::glance(lm(formula = Y ~ X, data = my.df ))
 ggplot(my.df, aes(X, Y)) +
   geom_point() +
   stat_fit_glance(method = "lm",
-                  method.args = list(formula = y ~ x), # here x and y are aesthetics
+                  method.args = list(formula = y ~ x),
                   aes(label = sprintf('r^2~"="~\%.3f~~italic(P)~"="~\%.2f',
                       stat(r.squared), stat(p.value))),
                   parse = TRUE)

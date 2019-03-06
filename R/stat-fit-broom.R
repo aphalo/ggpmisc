@@ -64,7 +64,6 @@
 #' @export
 #'
 #' @examples
-#' library(ggplot2)
 #' # Regression example
 #' my.df <-
 #'   data.frame(X = c(44.4, 45.9, 41.9, 53.3, 44.7, 44.1, 50.7, 45.2, 60.1),
@@ -74,7 +73,7 @@
 #' ggplot(my.df, aes(X, Y)) +
 #'   geom_point() +
 #'   stat_fit_glance(method = "lm",
-#'                   method.args = list(formula = y ~ x), # here x and y are aesthetics
+#'                   method.args = list(formula = y ~ x),
 #'                   aes(label = sprintf('r^2~"="~%.3f~~italic(P)~"="~%.2f',
 #'                       stat(r.squared), stat(p.value))),
 #'                   parse = TRUE)
@@ -371,7 +370,10 @@ StatFitAugment <-
 #' @title One row data frame with fitted parameter estimates
 #'
 #' @description \code{stat_fit_tidy} fits a model and returns a "tidy" version
-#'   of the model's summary, using package 'broom'.
+#'   of the model's summary, using package 'broom'. To add the summary in
+#'   tabular form use \code{\link{stat_fit_tb()}}. When using
+#'   \code{stat_fit_tidy()} you will most likely want to change the default
+#'   mapping for label.
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs
@@ -407,6 +409,20 @@ StatFitAugment <-
 #'   object has one row for each group within a panel.
 #'
 #' @export
+#'
+#' @examples
+#' library(gginnards)
+#' # Regression example
+#' my.df <-
+#'   data.frame(X = c(44.4, 45.9, 41.9, 53.3, 44.7, 44.1, 50.7, 45.2, 60.1),
+#'              Y = c( 2.6,  3.1,  2.5,  5.0,  3.6,  4.0,  5.2,  2.8,  3.8))
+#'
+#' ggplot(my.df, aes(X, Y)) +
+#'   geom_point() +
+#'   stat_fit_tidy(method = "lm",
+#'                 method.args = list(formula = y ~ x),
+#'                 mapping = aes(stat(npcx), stat(npcy)),
+#'                 geom = "debug")
 #'
 stat_fit_tidy <- function(mapping = NULL, data = NULL, geom = "text_npc",
                           method = "lm",

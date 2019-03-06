@@ -16,5 +16,7 @@ scale_npcy_continuous(...)
 \description{
 `scale_npcx_continuous()` and `scale_ynpc_continuous()` are
 scales for continuous xnpc and ynpc aesthetics expressed in "npc" units.
-There are no variants.
+There are no variants. Obviously limits are always the full range of "npc"
+units and transformations meaningless. These scales are used by the newly
+defined aesthetics \code{npcx} and \code{npcy}.
 }

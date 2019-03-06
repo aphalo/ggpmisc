@@ -52,7 +52,10 @@ can include aesthetics whose values you want to set, not map. See
 }
 \description{
 \code{stat_fit_tidy} fits a model and returns a "tidy" version
-  of the model's summary, using package 'broom'.
+  of the model's summary, using package 'broom'. To add the summary in
+  tabular form use \code{\link{stat_fit_tb()}}. When using
+  \code{stat_fit_tidy()} you will most likely want to change the default
+  mapping for label.
 }
 \section{Computed variables}{
  The output of \code{\link[broom]{tidy}} is
@@ -61,3 +64,16 @@ can include aesthetics whose values you want to set, not map. See
   object has one row for each group within a panel.
 }
 
+\examples{
+library(gginnards)
+# Regression example
+my.df <-
+  data.frame(X = c(44.4, 45.9, 41.9, 53.3, 44.7, 44.1, 50.7, 45.2, 60.1),
+             Y = c( 2.6,  3.1,  2.5,  5.0,  3.6,  4.0,  5.2,  2.8,  3.8))
+
+ggplot(my.df, aes(X, Y)) +
+  geom_point() +
+  stat_fit_tidy(method = "lm",
+                method.args = list(formula = y ~ x))
+
+}

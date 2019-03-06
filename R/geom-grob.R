@@ -123,7 +123,7 @@ grob_draw_panel_fun <-
                        name = paste("geom_grob.panel", data$PANEL[row.idx],
                                     "row", row.idx, sep = "."))
 
-      # give unique name to each plot
+      # give unique name to each grob
       userGrob$name <- paste("inset.grob", row.idx, sep = ".")
 
       user.grobs[[row.idx]] <- userGrob
