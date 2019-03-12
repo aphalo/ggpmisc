@@ -371,7 +371,7 @@ StatFitAugment <-
 #'
 #' @description \code{stat_fit_tidy} fits a model and returns a "tidy" version
 #'   of the model's summary, using package 'broom'. To add the summary in
-#'   tabular form use \code{\link{stat_fit_tb()}}. When using
+#'   tabular form use \code{\link{stat_fit_tb}}. When using
 #'   \code{stat_fit_tidy()} you will most likely want to change the default
 #'   mapping for label.
 #'
@@ -411,7 +411,7 @@ StatFitAugment <-
 #' @export
 #'
 #' @examples
-#' library(gginnards)
+#'
 #' # Regression example
 #' my.df <-
 #'   data.frame(X = c(44.4, 45.9, 41.9, 53.3, 44.7, 44.1, 50.7, 45.2, 60.1),
@@ -421,8 +421,8 @@ StatFitAugment <-
 #'   geom_point() +
 #'   stat_fit_tidy(method = "lm",
 #'                 method.args = list(formula = y ~ x),
-#'                 mapping = aes(stat(npcx), stat(npcy)),
-#'                 geom = "debug")
+#'                 mapping = aes(label = sprintf("Slope = %.3g\np-value = %.3g",
+#'                                               stat(x_estimate), stat(x_p.value))))
 #'
 stat_fit_tidy <- function(mapping = NULL, data = NULL, geom = "text_npc",
                           method = "lm",
@@ -549,7 +549,7 @@ fit_tidy_compute_group_fun <- function(data,
     z$y <- label.y
     z$npcy <- NA_real_
   }
-
+  print(z)
   z
 }
 

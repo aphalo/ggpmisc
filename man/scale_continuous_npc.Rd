@@ -4,7 +4,7 @@
 \alias{scale_continuous_npc}
 \alias{scale_npcx_continuous}
 \alias{scale_npcy_continuous}
-\title{Position scales for continuous data (xnpc & ynpc)}
+\title{Position scales for continuous data (npcx & npcy)}
 \usage{
 scale_npcx_continuous(...)
 
@@ -14,8 +14,8 @@ scale_npcy_continuous(...)
 \item{...}{Other arguments passed on to `continuous_scale()`}
 }
 \description{
-`scale_npcx_continuous()` and `scale_ynpc_continuous()` are
-scales for continuous xnpc and ynpc aesthetics expressed in "npc" units.
+`scale_npcx_continuous()` and `scale_npcy_continuous()` are
+scales for continuous npcx and npcy aesthetics expressed in "npc" units.
 There are no variants. Obviously limits are always the full range of "npc"
 units and transformations meaningless. These scales are used by the newly
 defined aesthetics \code{npcx} and \code{npcy}.

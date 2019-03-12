@@ -192,7 +192,7 @@ GeomXMarginGrob <-
 geom_y_margin_grob <- function(mapping = NULL, data = NULL,
                                stat = "identity", position = "identity",
                                ...,
-                               xintercept,
+                               yintercept,
                                sides = "l",
                                grob.shift = 0,
                                na.rm = FALSE,
