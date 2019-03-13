@@ -91,8 +91,8 @@ GeomXMarginPoint <-
   ggproto("GeomXMarginPoint", Geom,
           required_aes = c("xintercept"),
           non_missing_aes = c("size", "shape", "colour"),
-          default_aes = aes(shape = 99, colour = "red", size = 1.5,
-                            fill = NA, alpha = NA, stroke = 0.5),
+          default_aes = aes(shape = 99, colour = "black", size = 1.5,
+                            fill = "red", alpha = NA, stroke = 0.5),
 
   draw_panel = function(data, panel_params, coord, sides = "b",
                         point.shift = 0.01, na.rm = FALSE) {
@@ -122,7 +122,7 @@ GeomXMarginPoint <-
         rugpoints$x_b <- pointsGrob(
           x = unit(data$xintercept, "native"),
           y = unit(rep(point.shift, nrow(data)), "npc"),
-          pch = ifelse(data$shape == 99, 6, data$shape),
+          pch = ifelse(data$shape == 99, 25, data$shape),
           gp = gp
         )
       }
@@ -131,7 +131,7 @@ GeomXMarginPoint <-
         rugpoints$x_t <- pointsGrob(
           x = unit(data$xintercept, "native"),
           y = unit(rep(1 - point.shift, nrow(data)), "npc"),
-          pch = ifelse(data$shape == 99, 2, data$shape),
+          pch = ifelse(data$shape == 99, 24, data$shape),
           gp = gp
         )
       }
@@ -143,7 +143,7 @@ GeomXMarginPoint <-
         rugpoints$y_l <- pointsGrob(
           x = unit(rep(point.shift, nrow(data)), "npc"),
           y = unit(data$yintercept, "native"),
-          pch = ifelse(data$shape == 99, 5, data$shape),
+          pch = ifelse(data$shape == 99, 23, data$shape),
           gp = gp
         )
       }
@@ -151,7 +151,7 @@ GeomXMarginPoint <-
         rugpoints$y_r <- pointsGrob(
           x = unit(rep(1 - point.shift, nrow(data)), "npc"),
           y = unit(data$yintercept, "native"),
-          pch = ifelse(data$shape == 99, 5, data$shape),
+          pch = ifelse(data$shape == 99, 23, data$shape),
           gp = gp
         )
       }
@@ -210,8 +210,8 @@ GeomYMarginPoint <-
   ggproto("GeomYMarginPoint", Geom,
           required_aes = c("yintercept"),
           non_missing_aes = c("size", "shape", "colour"),
-          default_aes = aes(shape = 99, colour = "red", size = 1.5,
-                            fill = NA, alpha = NA, stroke = 0.5),
+          default_aes = aes(shape = 99, colour = "black", size = 1.5,
+                            fill = "red", alpha = NA, stroke = 0.5),
 
           draw_panel = function(data, panel_params, coord, sides = "l",
                                 point.shift = 0.01, na.rm = FALSE) {
@@ -241,7 +241,7 @@ GeomYMarginPoint <-
                 rugpoints$y_l <- pointsGrob(
                   x = unit(rep(point.shift, nrow(data)), "npc"),
                   y = unit(data$yintercept, "native"),
-                  pch = ifelse(data$shape == 99, 5, data$shape),
+                  pch = ifelse(data$shape == 99, 23, data$shape),
                   gp = gp
                 )
               }
@@ -249,7 +249,7 @@ GeomYMarginPoint <-
                 rugpoints$y_r <- pointsGrob(
                   x = unit(rep(1 - point.shift, nrow(data)), "npc"),
                   y = unit(data$yintercept, "native"),
-                  pch = ifelse(data$shape == 99, 5, data$shape),
+                  pch = ifelse(data$shape == 99, 23, data$shape),
                   gp = gp
                 )
               }
@@ -261,7 +261,7 @@ GeomYMarginPoint <-
                 rugpoints$x_b <- pointsGrob(
                   x = unit(data$xintercept, "native"),
                   y = unit(rep(point.shift, nrow(data)), "npc"),
-                  pch = ifelse(data$shape == 99, 6, data$shape),
+                  pch = ifelse(data$shape == 99, 25, data$shape),
                   gp = gp
                 )
               }
@@ -270,7 +270,7 @@ GeomYMarginPoint <-
                 rugpoints$x_t <- pointsGrob(
                   x = unit(data$xintercept, "native"),
                   y = unit(rep(1 - point.shift, nrow(data)), "npc"),
-                  pch = ifelse(data$shape == 99, 2, data$shape),
+                  pch = ifelse(data$shape == 99, 24, data$shape),
                   gp = gp
                 )
               }
