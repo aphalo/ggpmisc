@@ -364,6 +364,7 @@ StatPolyEq <-
                      ggplot2::aes(npcx = stat(npcx),
                                   npcy = stat(npcy),
                                   label = stat(rr.label),
-                                  hjust = "inward", vjust = "inward"),
+                                  hjust = "inward", vjust = "inward",
+                                  weight = 1),
                    required_aes = c("x", "y")
   )
