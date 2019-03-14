@@ -1,4 +1,4 @@
-context("geoms")
+context("geom_tb")
 
 library(ggplot2)
 library(tibble)
