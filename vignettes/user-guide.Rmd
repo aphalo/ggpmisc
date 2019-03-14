@@ -42,34 +42,41 @@ old_theme <- theme_set(theme_bw())
 
 ## Introduction
 
-Many of the functions, including ggplot statistics and geoms, included in
+Many of the functions, including ggplot _statistics_ and _geoms_, included in
 package 'ggpmisc' had their origin in my need to produce plots for use in
-teaching. Some of them are more generally useful, such as `stat_poly_eq()`, but
+teaching or research reports. Some of them are enerally useful, such as 
+`stat_poly_eq()` and `stat_quadrant_counts()`but
 others like `stat_fit_deviations()` are squarely aimed and producing learning
-material. Finally, several statistics for debugging and learning how ggplot
-statistics and geoms interact with each other will be of use only to developers
-of new statistics and geoms. Function `try_tibble()` opens the door to easily
+material. Function `try_tibble()` opens the door to easily
 converting time series stored in objects of several different classes into data
-frames. This, for example, useful for plotting time series data with `ggplot()`.
-New `ggplot()` methods for classes `ts` and `xts` make the call to
+frames. This is, for example, useful for plotting time series data with `ggplot()`.
+New `ggplot()` method specializations for classes `ts` and `xts` make the call to
 `try_tibble()` and conversion automatic.
 
 ## ggplot methods for time series
 
 `ggplot()` methods for classes `"ts"` and `"xts"` automate plotting of time
-series data. For plotting time series data stored in objects of other classes,
+series data, as _x_ and _y_ aesthetics are mapped to time and the variable of
+the time series, respectively. For plotting time series data stored in objects of other classes,
 see the conversion functions `try_tibble()` and `try_data_frame()` in the last
 section of this vignette.
 
 ```{r}
+class(lynx)
 ggplot(lynx) + geom_line()
 ```
+
+It is possible to control the conversion of the time variable to numeric or datetime. As we will see
+below this affects the scale used by default as well as the formatting of values when converted
+to character strings or printed.
 
 ```{r}
 ggplot(lynx, as.numeric = FALSE) + geom_line()
 ```
 
+
 ```{r}
+class(AirPassengers)
 ggplot(AirPassengers) + geom_line()
 ```
 
@@ -79,22 +86,32 @@ ggplot(AirPassengers, as.numeric = FALSE) + geom_line()
 
 ## stat_peaks and stat_valleys
 
-Using POSIXct for `time` and the default formatting of labels.
+Two statistics make it possible to highlight and/or label peaks and valleys (local maxima
+and local minima) in a curve. Here we use a time series, using POSIXct for `time` 
+and the default formatting of labels. We also instruct `geom_text()` not to
+render overlapping labels.
 
 ```{r}
 ggplot(lynx, as.numeric = FALSE) + geom_line() + 
   stat_peaks(colour = "red") +
-  stat_peaks(geom = "text", colour = "red", vjust = -0.5) +
+  stat_peaks(geom = "text", colour = "red", vjust = -0.5, 
+             check_overlap = TRUE) +
   ylim(-100, 7300)
 ```
 
-Using numeric values for `time` and the default formatting of labels.
+Using numeric values for `time` and the default formatting of labels. We can
+also pass other aesthetics recognised the `geom_text()` such as `angle`. Here
+we also highlight and label the valleys.
 
 ```{r}
 ggplot(lynx) + geom_line() + 
   stat_peaks(colour = "red") +
-  stat_peaks(geom = "text", colour = "red", vjust = -0.5) +
-  ylim(-100, 7300)
+  stat_peaks(geom = "text", colour = "red", hjust = -0.2, vjust = 0.5, 
+             angle = 90, check_overlap = TRUE) +
+  stat_valleys(colour = "blue") +
+  stat_valleys(geom = "text", colour = "blue", hjust = 1.2, vjust = 0.5, 
+             angle = 90, check_overlap = TRUE) +
+  expand_limits(y = c(-900, 8000))
 ```
 
 Using POSIXct for `time` but supplying a format string. In addition marking both
@@ -103,31 +120,12 @@ peaks and valleys.
 ```{r}
 ggplot(lynx, as.numeric = FALSE) + geom_line() + 
   stat_peaks(colour = "red") +
-  stat_peaks(geom = "text", colour = "red", vjust = -0.5, x.label.fmt = "%Y") +
+  stat_peaks(geom = "text", colour = "red", hjust = -0.2, vjust = 0.5, 
+             angle = 90, check_overlap = TRUE, x.label.fmt = "%Y") +
   stat_valleys(colour = "blue") +
-  stat_valleys(geom = "text", colour = "blue", vjust = 1.5, x.label.fmt = "%Y") +
-  ylim(-100, 7300)
-```
-
-Using numeric for `time` but supplying a format string. In addition marking both peaks and valleys.
-
-```{r}
-ggplot(lynx) + geom_line() + 
-  stat_peaks(colour = "red") +
-  stat_peaks(geom = "text", colour = "red", vjust = -0.5, x.label.fmt = "%4.0f") +
-  stat_valleys(colour = "blue") +
-  stat_valleys(geom = "text", colour = "blue", vjust = 1.5, x.label.fmt = "%4.0f") +
-  ylim(-100, 7300)
-```
-
-Rotating the labels.
-
-```{r}
-ggplot(lynx, as.numeric = FALSE) + geom_line() + 
-  stat_peaks(colour = "red") +
-  stat_peaks(geom = "text", colour = "red", angle = 66,
-             hjust = -0.1, x.label.fmt = "%Y") +
-  ylim(NA, 8000)
+  stat_valleys(geom = "text", colour = "blue", hjust = 1.2, vjust = 0.5, 
+             angle = 90, check_overlap = TRUE, x.label.fmt = "%Y") +
+  expand_limits(y = c(-900, 8000))
 ```
 
 Using `geom_rug` for the peaks and valleys.
@@ -143,7 +141,8 @@ ggplot(lynx, as.numeric = FALSE) + geom_line() +
 ## stat_quadrant_counts
 
 This statistic automates the annotation of plots with number of observations,
-either by quadrant, by pairs of quadrants or the four quadrants taken together.
+either by quadrant, by pairs of quadrants or the four quadrants taken together
+(whole plotting area).
 
 We generate some artificial data.
 
@@ -168,7 +167,7 @@ ggplot(my.data, aes(x, y)) +
   stat_quadrant_counts(colour = "red")
 ```
 
-Pooling quadrants along the _x_-axis.
+Pooling quadrants along the _x_-axis. (`pool.along = "y"` pools along _y_.)
 
 ```{r}
 ggplot(my.data, aes(x, y)) +
@@ -177,12 +176,14 @@ ggplot(my.data, aes(x, y)) +
   stat_quadrant_counts(colour = "red", pool.along = "x")
 ```
 
-Manual positioning of the text annotations and pooling of all four quadrants.
+Manual positioning of the text annotations and pooling of all four quadrants,
+and overriding the default formatting for the label.
 
 ```{r}
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  stat_quadrant_counts(quadrants = 0L, labels.range.x = 0.04, hjust = 0)
+  stat_quadrant_counts(quadrants = 0L, label.x = "left", 
+                       aes(label = sprintf("%i observations", stat(count))))
 ```
 
 Annotation of only specific quadrants.
@@ -194,19 +195,23 @@ ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_quadrant_counts(colour = "red", quadrants = c(2, 4))
 ```
+Using facets, even with free scale limits, the labels are placed consistently. This achieved
+by the default use of `geom_text_npc()` or as shown below by use of `geom_label_npc(). We
+expand the _y_ limits to ensure that no observations are ocluded by the labels.
+
 ```{r}
-ggplot(my.data, aes(x, y)) +
-  geom_hline(yintercept = 0, colour = "red") +
-  geom_vline(xintercept = 0, colour = "red") +
+ggplot(my.data, aes(x, y, colour = group)) +
+  geom_hline(yintercept = 0) +
+  geom_vline(xintercept = 0) +
   geom_point() +
-  stat_quadrant_counts(colour = "red", hjust = "inward") +
-  expand_limits(y = c(-225, 225)) +
+  stat_quadrant_counts(hjust = "inward", geom = "label_npc") +
+  expand_limits(y = c(-260, 260)) +
   facet_wrap(~group)
 ```
 
 ## stat_poly_eq
 
-We generate some artificial data.
+We generate another set of artificial data.
 
 ```{r}
 set.seed(4321)
@@ -221,19 +226,21 @@ my.data <- data.frame(x,
                       wt = sqrt(x))
 ```
 
-First one example using defaults.
+First one example using defaults. To ensure that the formula used in both
+stats is the same, we first save it to a variable.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
+  stat_smooth(method = "lm", formula = formula) +
   stat_poly_eq(formula = formula, parse = TRUE)
 ```
 
 `stat_poly_eq()` makes available three different labels in the returned data
-frame. One of these is used by default, but `aes()` can be used to select a
-different one.
+frame. One of these is used by default, but `aes()` can be used to map a
+different one to the `label` aesthetic. Here we show the adjusted coefficient
+of determination and the two information criteria.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -241,20 +248,15 @@ ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
   stat_poly_eq(aes(label = ..adj.rr.label..), formula = formula, 
-               parse = TRUE)
-```
-
-BIC and AIC labels are also returned.
-
-```{r}
-formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y)) +
-  geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = ..AIC.label..), 
+               parse = TRUE) +
+  stat_poly_eq(aes(label = ..AIC.label..),
+               label.x = "right", label.y = "bottom", size = 3,     
                formula = formula, 
                parse = TRUE)
+
 ```
+
+A ready formatted equation is also returned as a string that needs to be parsed into an _experession_ for display.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -274,14 +276,16 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label =  paste(..eq.label.., ..adj.rr.label.., sep = "~~~~")),
+  stat_poly_eq(aes(label =  paste(..eq.label.., ..adj.rr.label.., sep = "~~~~~~")),
                formula = formula, parse = TRUE)
 ```
 
 Above we inserted spaces between the labels, but it is possible to add also
 other characters, even character strings. In this example we use several labels
 instead of just two, and separate them with comma followed by a space. Do note
-the need to _escape_ the embedded quotation marks.
+the need to _escape_ the embedded quotation marks and to use `plotmath` trickery
+to add the comma at the end of the equation. We also change the size of the 
+text in the label.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -291,10 +295,10 @@ ggplot(my.data, aes(x, y)) +
   stat_poly_eq(aes(label =  paste(..eq.label.., ..rr.label.., 
                                   ..AIC.label.., ..BIC.label..,
                                   sep = "*\",\"~~")),
-               formula = formula, parse = TRUE)
+               formula = formula, parse = TRUE, size = 3.5)
 ```
 
-It is also possible to insert arbitrary text, and format it, using `plain()`, `italic()`, `bold()` or `bolditalic()`.
+It is also possible to insert arbitrary text, and format it, using `plain()`, `italic()`, `bold()` or `bolditalic()` as described in `plotmath`.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -306,6 +310,11 @@ ggplot(my.data, aes(x, y)) +
                formula = formula, parse = TRUE)
 ```
 
+As these are expressions, to include two lines of text, we need eithe to add
+`stat_poly_eq()` twice, passing an argument to `label.y` to reposition one of
+the labels (not shown) or use (as shown) `atop()` within the experssion to
+create a single label with two lines of text.
+
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
@@ -316,7 +325,7 @@ ggplot(my.data, aes(x, y)) +
                parse = TRUE)
 ```
 
-Two examples of removing and modifying the default _lhs_ and/or _rhs_ of the equation.
+One example removing the left hand side (_lhs_).
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -328,6 +337,8 @@ ggplot(my.data, aes(x, y)) +
                formula = formula, parse = TRUE)
 ```
 
+Replacing the _lhs_.
+
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
@@ -337,6 +348,7 @@ ggplot(my.data, aes(x, y)) +
                eq.with.lhs = "italic(hat(y))~`=`~",
                formula = formula, parse = TRUE)
 ```
+And a final explample to replaced _lhs_ and the variable symbol on the _rhs_.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -391,9 +403,8 @@ ggplot(my.data, aes(x, y)) +
 We give below several examples to demonstrate how other components of the
 `ggplot` object affect the behaviour of this statistic.
 
-Facets work as expected either with fixed or free scales. Although bellow we had
-to adjust the size of the font used for the equation. In addition to we manually
-position the equation label by supplying coordinates.
+Facets work as expected either with fixed or free scales. Although below we had
+to adjust the size of the font used for the equation.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -416,7 +427,8 @@ ggplot(my.data, aes(x, y2)) +
 ```
 
 Grouping, in this example using the colour aesthetic also works as expected. We
-can use justification and supply an absolute location for the equation.
+can use justification and supply an absolute location for the equation, but the
+default frequently works well as in the example below.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -429,7 +441,7 @@ ggplot(my.data, aes(x, y2, colour = group)) +
 
 Label positions relative to the ranges of the _x_ and _y_ scales are also
 supported, both through string constants and numeric values in the range
-0 to 1.
+0 to 1, when using the default `geom_text_npc()`.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -437,16 +449,8 @@ ggplot(my.data, aes(x, y2, colour = group)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
   stat_poly_eq(aes(label = ..eq.label..),
-               formula = formula, parse = TRUE)
-```
-
-```{r}
-formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y2, colour = group)) +
-  geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = ..eq.label..),
-               formula = formula, parse = TRUE)
+               formula = formula, parse = TRUE,
+               label.x = "centre")
 ```
 
 The default locations are now based on normalized coordinates, and consequently
@@ -463,6 +467,9 @@ ggplot(my.data, aes(x, y2, fill = block)) +
                formula = formula, parse = TRUE) +
   facet_wrap(~group, scales = "free_y")
 ```
+At the moment if the same variable used for faceting is also mapped to an
+aesthetic the automatic location of labels results in "odd" alignment. **This is
+bug that needs fixing.**
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -475,24 +482,25 @@ ggplot(my.data, aes(x, y2, colour = group, fill = block)) +
   facet_wrap(~group, scales = "free_y")
 ```
 
+It is possible to use `geom_text()` and `geom_label()` but in this case label
+coordinates need to be given explicitly in native data coordinates. When
+multiple labels need to be positioned a vector of coordinates can be used as
+shown here for `label.y`.
+
+```{r}
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y2, colour = group)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_eq(geom = "text", aes(label = ..eq.label..),
+               label.x = 0, label.y = c(1e6, 1.2e6), hjust = 0,
+               formula = formula, parse = TRUE)
+```
+
 ## stat_fit_residuals
 
 I had the need to quickly plot residuals matching fits plotted with `geom_smooth()`
 using grouping and facets, so a new (simple) statistic was born.
-
-```{r}
-formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y)) +
-  geom_hline(yintercept = 0, linetype = "dashed") +
-  stat_fit_residuals(formula = formula)
-```
-
-```{r}
-formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y)) +
-  geom_hline(yintercept = 0, linetype = "dashed") +
-  stat_fit_residuals(formula = formula, resid.type = "working")
-```
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -513,38 +521,29 @@ ggplot(my.data, aes(x, y)) +
   stat_fit_deviations(formula = formula, color = "red") +
   geom_point()
 ```
-
-```{r}
-formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y, color = group)) +
-  geom_smooth(method = "lm", formula = formula) +
-  stat_fit_deviations(formula = formula) +
-  geom_point()
-```
+The geometry used by default is `geom_segment()` to which additional aesthetics
+can be mapped. Here we add arrowheads.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_smooth(method = "lm", formula = formula) +
+  geom_point() +
   stat_fit_deviations(formula = formula, color = "red",
                       arrow = arrow(length = unit(0.015, "npc"), 
-                                   ends = "both")) +
-  geom_point()
+                                   ends = "both"))
 ```
 
 ## stat_fit_glance
 
-```{r}
-# formula <- y ~ poly(x, 3, raw = TRUE)
-# broom::augment does not handle poly correctly!
-formula <- y ~ x + I(x^2) + I(x^3)
-ggplot(my.data, aes(x, y)) +
-  geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
-  stat_fit_glance(method = "lm", 
-                  method.args = list(formula = formula),
-                  aes(label = signif(..p.value.., digits = 4)))
-```
+Package 'broom' provides consistently formated output from different model fitting
+functions. These makes possible to write model-annotation statistic that are 
+very flexible put that require more effort with the definition of the character
+strings to map to the `label` aesthetic.
+
+As we have above given some simple examples, we here exemplify this statistic
+in a plot with grouping, and assemble a label for the _P_-value using a string
+parsed into a expression. We also change the default position of the labels. 
 
 ```{r}
 # formula <- y ~ poly(x, 3, raw = TRUE)
@@ -555,22 +554,11 @@ ggplot(my.data, aes(x, y, color = group)) +
   geom_smooth(method = "lm", formula = formula) +
   stat_fit_glance(method = "lm", 
                   method.args = list(formula = formula),
-                  geom = "text_npc", 
-                  aes(label = paste("P-value = ", signif(..p.value.., digits = 4), sep = "")))
-```
-
-```{r}
-# formula <- y ~ poly(x, 3, raw = TRUE)
-# broom::augment does not handle poly correctly!
-formula <- y ~ x + I(x^2) + I(x^3)
-ggplot(my.data, aes(x, y, color = group)) +
-  geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
-  stat_fit_glance(method = "lm", 
-                  method.args = list(formula = formula),
                   label.x = "right",
                   label.y = "bottom",
-                  aes(label = paste("P-value = ", signif(..p.value.., digits = 4), sep = "")))
+                  aes(label = paste("italic(P)*\"-value = \"*", 
+                                    signif(..p.value.., digits = 4), sep = "")),
+                  parse = TRUE)
 ```
 
 It is also possible to fit a non-linear model with `method = "nls"`, and any
@@ -669,7 +657,7 @@ ggplot(my.data, aes(x, y)) +
                           "s.e." = "std.error", 
                           "italic(t)" = "statistic", 
                           "italic(P)" = "p.value"),
-              label.y.npc = "top", label.x.npc = "left",
+              label.y = "top", label.x = "left",
               parse = TRUE)
 ```
 
@@ -689,7 +677,7 @@ ggplot(my.data, aes(x, y)) +
                           "M.S." = "meansq", 
                           "italic(F)" = "statistic", 
                           "italic(P)" = "p.value"),
-               label.y.npc = "top", label.x.npc = "left",
+               label.y = "top", label.x = "left",
               parse = TRUE)
 ```
 
@@ -704,7 +692,7 @@ ggplot(my.data, aes(x, y)) +
   stat_fit_tb(method = "lm",
               method.args = list(formula = formula),
               tb.type = "fit.coefs",
-              label.y.npc = "center", label.x.npc = "left")
+              label.y = "center", label.x = "left")
 ```
 
 Faceting works as expected, but grouping is ignored as mentioned above. In this
@@ -723,8 +711,8 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
   stat_fit_tb(method = "nls",
               method.args = list(formula = micmen.formula),
               tb.type = "fit.coefs",
-              label.x.npc = 0.67,
-              label.y.npc = c(0.6, 0.3)) +
+              label.x = 0.9,
+              label.y = c(0.75, 0.2)) +
   theme(legend.position = "none") +
   labs(x = "C", y = "V")
 ```
@@ -737,22 +725,18 @@ can still fit a linear model to all the data in the panel.
 ggplot(chickwts, aes(factor(feed), weight)) +
   stat_summary(fun.data = "mean_se") +
   stat_fit_tb(tb.type = "fit.anova",
-              label.x.npc = 1.07, hjust = 1,
-              label.y.npc = "bottom") +
+              label.x = "center",
+              label.y = "bottom") +
   expand_limits(y = 0)
 ```
 
-We can flip the system of coordinates, if desired. Be aware that in this case
-the specification of the position and justification of the table is no longer
-intuitive.
+We can flip the system of coordinates, if desired.
 
 ```{r}
 ggplot(chickwts, aes(factor(feed), weight)) +
   stat_summary(fun.data = "mean_se") +
-  stat_fit_tb(tb.type = "fit.anova",
-              label.x.npc = 1.1, hjust = 0,
-              label.y.npc = 0, vjust = 1) +
-  expand_limits(y = 0) +
+  stat_fit_tb(tb.type = "fit.anova", label.x = "left", size = 3) +
+  scale_x_discrete(expand = expand_scale(mult = c(0.2, 0.5))) +
   coord_flip()
 ```
 
@@ -762,17 +746,17 @@ It is also possible to rotate the table using `angle`.
 ggplot(chickwts, aes(factor(feed), weight)) +
   stat_summary(fun.data = "mean_se") +
   stat_fit_tb(tb.type = "fit.anova",
-              angle = 90,
+              angle = 90, size = 3,
+              label.x = "right", label.y = "center",
+              hjust = 0.5, vjust = 0,
               tb.vars = c(Effect = "term", 
                           "df",
                           "M.S." = "meansq", 
                           "italic(F)" = "statistic", 
                           "italic(P)" = "p.value"),
-              label.x.npc = 0.5, hjust = 0.5,
-              label.y.npc = 0, vjust = 1,
               parse = TRUE) +
-  expand_limits(y = 0) +
-  coord_flip()
+  scale_x_discrete(expand = expand_scale(mult = c(0.1, 0.35))) +
+  expand_limits(y = 0)
 ```
 
 ## stat_fit_augment
