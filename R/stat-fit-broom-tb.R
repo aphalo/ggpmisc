@@ -64,18 +64,27 @@
 #'               tb.vars = c("italic(t)" = "estimate", "italic(P)" = "p.value"),
 #'               parse = TRUE)
 #'
-stat_fit_tb <- function(mapping = NULL, data = NULL, geom = "table",
+stat_fit_tb <- function(mapping = NULL, data = NULL, geom = "table_npc",
                         method = "lm",
                         method.args = list(formula = y ~ x),
                         tb.type = "fit.summary",
                         tb.vars = NULL,
                         digits = 3,
-                        label.x.npc = "center", label.y.npc = "top",
-                        label.x = NULL, label.y = NULL,
+                        label.x = "center", label.y = "top",
+                        label.x.npc = NULL, label.y.npc = NULL,
                         position = "identity",
                         na.rm = FALSE, show.legend = FALSE,
                         inherit.aes = TRUE,
                         ...) {
+  # backwards compatibility
+  if (!is.null(label.x.npc)) {
+    stopifnot(grepl("_npc", geom))
+    label.x <- label.x.npc
+  }
+  if (!is.null(label.y.npc)) {
+    stopifnot(grepl("_npc", geom))
+    label.y <- label.y.npc
+  }
   ggplot2::layer(
     stat = StatFitTb, data = data, mapping = mapping, geom = geom,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
@@ -84,10 +93,9 @@ stat_fit_tb <- function(mapping = NULL, data = NULL, geom = "table",
                   tb.type = tb.type,
                   tb.vars = tb.vars,
                   digits = digits,
-                  label.x.npc = label.x.npc,
-                  label.y.npc = label.y.npc,
                   label.x = label.x,
                   label.y = label.y,
+                  npc.used = grepl("_npc", geom),
                   na.rm = na.rm,
                   ...)
   )
@@ -107,8 +115,7 @@ fit_tb_compute_panel_fun <- function(data,
                                      tb.type,
                                      tb.vars,
                                      digits,
-                                     label.x.npc,
-                                     label.y.npc,
+                                     npc.used = TRUE,
                                      label.x,
                                      label.y) {
   force(data)
@@ -120,17 +127,6 @@ fit_tb_compute_panel_fun <- function(data,
 
   # support setting of table position per panel
   panel.idx <- as.integer(as.character(data$PANEL[1]))
-  if (length(label.x.npc) >= panel.idx) {
-    label.x.npc <- label.x.npc[panel.idx]
-  } else if (length(label.x.npc) > 0) {
-    label.x.npc <- label.x.npc[1]
-  }
-  if (length(label.y.npc) >= panel.idx) {
-    label.y.npc <- label.y.npc[panel.idx]
-  } else if (length(label.y.npc) > 0) {
-    label.y.npc <- label.y.npc[1]
-  }
-
   if (length(label.x) >= panel.idx) {
     label.x <- label.x[panel.idx]
   } else if (length(label.x) > 0) {
@@ -145,64 +141,6 @@ fit_tb_compute_panel_fun <- function(data,
   method.args <- c(method.args, list(data = quote(data)))
   if (is.character(method)) method <- match.fun(method)
   mf <- do.call(method, method.args)
-
-  if (length(label.x) > 0) {
-    x.out <- label.x
-    hjust.out <- 0.5
-  } else if (length(label.x.npc) > 0) {
-    if (is.numeric(label.x.npc)) {
-      # if (any(label.x.npc < 0 | label.x.npc > 1)) {
-      #   warning("'label.x.npc' argument is numeric but outside range 0..1.")
-      # }
-      x.out <- scales$x$dimension()[1] + label.x.npc *
-        diff(scales$x$dimension())
-      hjust.out <- 0.5
-    } else if (is.character(label.x.npc)) {
-      if (label.x.npc == "right") {
-        x.out <- scales$x$dimension()[2]
-        hjust.out <- 1
-      } else if (label.x.npc %in% c("center", "centre", "middle")) {
-        x.out <- mean(scales$x$dimension())
-        hjust.out <- 0.5
-      } else if (label.x.npc == "left") {
-        x.out <- scales$x$dimension()[1]
-        hjust.out <- 0
-      } else {
-        stop("'label.x.npc' argument '", label.x.npc, " unsupported")
-      }
-    } else {
-      stop("'label.x.npc' argument is neither numeric nor character")
-    }
-  }
-
-  if (length(label.y) > 0) {
-    y.out <- label.y
-    vjust.out <- 0.5
-  } else if (length(label.y.npc) > 0) {
-    if (is.numeric(label.y.npc)) {
-      # if (any(label.y.npc < 0 | label.y.npc > 1)) {
-      #   warning("'label.y.npc' argument is numeric but outside range 0..1.")
-      # }
-      y.out <- scales$y$dimension()[1] + label.y.npc *
-        diff(scales$y$dimension())
-      vjust.out <- 0.5
-    } else if (is.character(label.y.npc)) {
-      if (label.y.npc == "bottom") {
-        y.out <- scales$y$dimension()[1]
-        vjust.out <- 0
-      } else if (label.y.npc %in% c("center", "centre", "middle")) {
-        y.out <- mean(scales$y$dimension())
-        vjust.out <- 0.5
-      } else if (label.y.npc == "top") {
-        y.out <- scales$y$dimension()[2]
-        vjust.out <- 1
-      } else {
-        stop("'label.y.npc' argument '", label.y.npc, " unsupported")
-      }
-    } else {
-      stop("'label.y.npc' argument is neither numeric nor character")
-    }
-  }
 
   if (tolower(tb.type) %in% c("fit.anova", "anova")) {
     mf_tb <- broom::tidy(stats::anova(mf))
@@ -221,9 +159,34 @@ fit_tb_compute_panel_fun <- function(data,
 
   # we need to enclose the tibble in a list to mannualy nest the table in
   # data.
-  tibble::tibble(x = x.out, y = y.out,
-                 hjust = hjust.out, vjust = vjust.out,
-                 mf_tb = list(mf_tb))
+  z <- tibble::tibble(mf_tb = list(mf_tb))
+
+  if (npc.used) {
+    margin.npc = 0.05
+    npc.positions <- c(right = 1 - margin.npc,
+                       left = 0 + margin.npc,
+                       centre = 0.5,
+                       center = 0.5,
+                       middle = 0.5,
+                       top = 1 - margin.npc,
+                       bottom = 0 + margin.npc)
+    if (is.character(label.x)) {
+      label.x <- npc.positions[label.x]
+    }
+    if (is.character(label.y)) {
+      label.y <- npc.positions[label.y]
+    }
+    z$npcx <- label.x
+    z$x <- NA_real_
+    z$npcy <- label.y
+    z$y <- NA_real_
+  } else {
+    z$x <- label.x
+    z$npcx <- NA_real_
+    z$y <- label.y
+    z$npcy <- NA_real_
+  }
+  z
 }
 
 #' @rdname ggpmisc-ggproto
@@ -234,8 +197,8 @@ StatFitTb <-
   ggplot2::ggproto("StatFitTb", ggplot2::Stat,
                    compute_panel = fit_tb_compute_panel_fun,
                    default_aes =
-                     ggplot2::aes(hjust = stat(hjust),
-                                  vjust = stat(vjust),
+                     ggplot2::aes(hjust = "inward",
+                                  vjust = "inward",
                                   label = stat(mf_tb)),
                    required_aes = c("x", "y")
   )

@@ -156,8 +156,7 @@ stat_poly_eq <- function(mapping = NULL, data = NULL,
                          coef.digits = 3,
                          rr.digits = 2,
                          label.x = "left", label.y = "top",
-                         label.x.npc = NULL,
-                         label.y.npc = NULL,
+                         label.x.npc = NULL, label.y.npc = NULL,
                          hstep = 0,
                          vstep = NULL,
                          output.type = "expression",
@@ -252,17 +251,6 @@ poly_eq_compute_group_fun <- function(data,
     label.y <- label.y[1]
   }
 
-  if (length(label.x) >= group.idx) {
-    label.x <- label.x[group.idx]
-  } else if (length(label.x) > 0) {
-    label.x <- label.x[1]
-  }
-  if (length(label.y) >= group.idx) {
-    label.y <- label.y[group.idx]
-  } else if (length(label.y) > 0) {
-    label.y <- label.y[1]
-  }
-
   lm.args <- list(quote(formula), data = quote(data), weights = quote(weight))
   mf <- do.call(stats::lm, lm.args)
 
@@ -319,24 +307,18 @@ poly_eq_compute_group_fun <- function(data,
 
   if (npc.used) {
     margin.npc = 0.05
-    hsteps <- hstep * (group.idx - 1L)
+    npc.positions <- c(right = 1 - margin.npc,
+                       left = 0 + margin.npc,
+                       centre = 0.5,
+                       center = 0.5,
+                       middle = 0.5,
+                       top = 1 - margin.npc,
+                       bottom = 0 + margin.npc)
     if (is.character(label.x)) {
-      label.x <- switch(label.x,
-                        right = (1 - margin.npc) - hsteps,
-                        center = 0.5 - hsteps,
-                        centre = 0.5 - hsteps,
-                        middle = 0.5 - hsteps,
-                        left = (0 + margin.npc) +  hsteps)
+      label.x <- npc.positions[label.x]
     }
-    vsteps <- vstep * (group.idx - 1L)
     if (is.character(label.y)) {
-      label.y <- switch(label.y,
-                        top = (1 - margin.npc) - vsteps,
-                        center = 0.5 - vsteps,
-                        centre = 0.5 - vsteps,
-                        middle = 0.5 - vsteps,
-                        bottom = (0 + margin.npc) + vsteps
-      )
+      label.y <- npc.positions[label.y]
     }
     z$npcx <- label.x
     z$x <- NA_real_

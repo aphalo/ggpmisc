@@ -549,7 +549,6 @@ fit_tidy_compute_group_fun <- function(data,
     z$y <- label.y
     z$npcy <- NA_real_
   }
-  print(z)
   z
 }
 

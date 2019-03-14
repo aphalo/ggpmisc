@@ -4,11 +4,11 @@
 \alias{stat_fit_tb}
 \title{Model-fit summary or ANOVA}
 \usage{
-stat_fit_tb(mapping = NULL, data = NULL, geom = "table",
+stat_fit_tb(mapping = NULL, data = NULL, geom = "table_npc",
   method = "lm", method.args = list(formula = y ~ x),
   tb.type = "fit.summary", tb.vars = NULL, digits = 3,
-  label.x.npc = "center", label.y.npc = "top", label.x = NULL,
-  label.y = NULL, position = "identity", na.rm = FALSE,
+  label.x = "center", label.y = "top", label.x.npc = NULL,
+  label.y.npc = NULL, position = "identity", na.rm = FALSE,
   show.legend = FALSE, inherit.aes = TRUE, ...)
 }
 \arguments{
@@ -32,13 +32,13 @@ rename the columns of the table returned.}
 
 \item{digits}{integer indicating the number of significant digits to be used.}
 
+\item{label.x, label.y}{\code{numeric} Coordinates (in data units) to be used
+for absolute positioning of the output. If too short they will be recycled.}
+
 \item{label.x.npc, label.y.npc}{\code{numeric} with range 0..1 or character.
 Coordinates to be used for positioning the output, expressed in "normalized
 parent coordinates" or character string. If too short they will be
 recycled.}
-
-\item{label.x, label.y}{\code{numeric} Coordinates (in data units) to be used
-for absolute positioning of the output. If too short they will be recycled.}
 
 \item{position}{The position adjustment to use for overlapping points on this
 layer}
