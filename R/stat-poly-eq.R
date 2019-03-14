@@ -320,7 +320,6 @@ poly_eq_compute_group_fun <- function(data,
   if (npc.used) {
     margin.npc = 0.05
     hsteps <- hstep * (group.idx - 1L)
-    margin.npc = 0.05
     if (is.character(label.x)) {
       label.x <- switch(label.x,
                         right = (1 - margin.npc) - hsteps,

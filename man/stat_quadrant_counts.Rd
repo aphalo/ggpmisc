@@ -6,14 +6,13 @@
 \usage{
 stat_quadrant_counts(mapping = NULL, data = NULL, geom = "text_npc",
   position = "identity", quadrants = NULL, pool.along = "none",
-  origin.x = 0, origin.y = 0, labels.range.x = NULL,
-  labels.range.y = NULL, na.rm = FALSE, show.legend = FALSE,
-  inherit.aes = TRUE, ...)
+  xintercept = 0, yintercept = 0, label.x = NULL, label.y = NULL,
+  na.rm = FALSE, show.legend = FALSE, inherit.aes = TRUE, ...)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
-\code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs
-to be set at the layer level if you are overriding the plot defaults.}
+\code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs to be
+set at the layer level if you are overriding the plot defaults.}
 
 \item{data}{A layer specific dataset - only needed if you want to override
 the plot defaults.}
@@ -29,11 +28,11 @@ with a \code{OL} indicating the whole plot.}
 \item{pool.along}{character, one of "none", "x" or "y", indicating which
 quadrants to pool to calculate counts by pair of quadrants.}
 
-\item{origin.x, origin.y}{numeric the coordinates of the origin of the
+\item{xintercept, yintercept}{numeric the coordinates of the origin of the
 quadrants.}
 
-\item{labels.range.x, labels.range.y}{\code{numeric} Coordinates (in npc
-units) to be used for absolute positioning of the labels.}
+\item{label.x, label.y}{\code{numeric} Coordinates (in npc units) to be used
+for absolute positioning of the labels.}
 
 \item{na.rm}{a logical indicating whether NA values should be stripped before
 the computation proceeds.}
@@ -52,11 +51,12 @@ can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 }
 \description{
-\code{stat_quadrant_counts()} counts the number of observations in each quadrant
-of a plot panel. By default it adds a text label to the far corner of each
-quadrant. It can also be used to obtain the total number of observations in
-each of two pairs of quadrants or in the whole panel. Grouping is ignored, so
-en every case a single count is computed for each quadrant in a plot panel.
+\code{stat_quadrant_counts()} counts the number of observations in each
+quadrant of a plot panel. By default it adds a text label to the far corner
+of each quadrant. It can also be used to obtain the total number of
+observations in each of two pairs of quadrants or in the whole panel.
+Grouping is ignored, so en every case a single count is computed for each
+quadrant in a plot panel.
 }
 \details{
 This stat can be used to automatically count observations in each of
@@ -68,14 +68,15 @@ Values exactly equal to zero are counted as belonging to the positve
   quadrant. An argument value of zero, passed to formal parameter
   \code{quadrants} is interpreted as a request for the count of all
   observations in each plot panel. By default, which quadrants to compute
-  counts for is decided based on which quadrants are expected to be visible in
-  the plot. In the current implementation, the default positions of the
+  counts for is decided based on which quadrants are expected to be visible
+  in the plot. In the current implementation, the default positions of the
   labels is based on the range of the coordinates in a given panel.
-  Consequently, when using facets even with free limits for x and y axes,
-  the location of the labels will be consistent accross panels. This is
-  achieved by use of \code{geom = "text_npc"}. To explicitly pass the
-  positions in native data units, pass \code{geom = "text"} explicitly as
-  argument.
+  Consequently, when using facets even with free limits for x and y axes, the
+  location of the labels will be consistent accross panels. This is achieved
+  by use of \code{geom = "text_npc"} or \code{geom = "label_npc"}. To pass
+  the positions in native data units, pass \code{geom = "text"} explicitly as
+  argument, or labels will be positioned relative to the data range in each
+  panel.
 }
 \section{Computed variables}{
  Data frame with one to four rows, one for each
@@ -96,24 +97,36 @@ ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_quadrant_counts()
 
-ggplot(my.data, aes(x - 50, y - 10)) +
-  geom_hline(yintercept = 0, colour = "blue") +
-  geom_vline(xintercept = 0, colour = "blue") +
+ggplot(my.data, aes(x, y)) +
   geom_point() +
-  stat_quadrant_counts(colour = "blue")
+  stat_quadrant_counts(aes(label = sprintf("\%i observations", stat(count)))) +
+  expand_limits(y = 12.7)
 
-ggplot(my.data, aes(x - 50, y - 10)) +
-  geom_hline(yintercept = 0, colour = "blue") +
+ggplot(my.data, aes(x, y)) +
+  geom_hline(yintercept = 10, colour = "blue") +
+  geom_vline(xintercept = 50, colour = "blue") +
   geom_point() +
-  stat_quadrant_counts(colour = "blue", pool.along = "x")
+  stat_quadrant_counts(colour = "blue", xintercept = 50, yintercept = 10) +
+  scale_y_continuous(expand = expand_scale(mult = 0.15, add = 0))
 
-ggplot(my.data, aes(x - 50, y - 10)) +
-  geom_vline(xintercept = 0, colour = "blue") +
+ggplot(my.data, aes(x, y)) +
+  geom_hline(yintercept = 10, colour = "blue") +
   geom_point() +
-  stat_quadrant_counts(colour = "blue", pool.along = "y")
+  stat_quadrant_counts(colour = "blue", label.x = "right",
+                       pool.along = "x", yintercept = 10) +
+  expand_limits(y = c(7, 13))
 
-ggplot(my.data, aes(x - 50, y - 10)) +
+ggplot(my.data, aes(x, y)) +
   geom_point() +
-  stat_quadrant_counts(quadrants = 0)
+  stat_quadrant_counts(quadrants = 0, label.x = "left", label.y = "bottom")
+
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_quadrant_counts(geom = "label_npc", quadrants = 0,
+                       label.x = "left", label.y = "bottom")
+
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_quadrant_counts(geom = "text") # use "text_npc" instead
 
 }
