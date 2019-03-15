@@ -7,7 +7,7 @@
 \usage{
 geom_table(mapping = NULL, data = NULL, stat = "identity",
   position = "identity", ..., parse = FALSE, na.rm = FALSE,
-  show.legend = FALSE, inherit.aes = TRUE)
+  show.legend = FALSE, inherit.aes = FALSE)
 
 geom_table_npc(mapping = NULL, data = NULL, stat = "identity",
   position = "identity", ..., parse = FALSE, na.rm = FALSE,

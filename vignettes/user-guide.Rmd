@@ -31,6 +31,7 @@ library(ggrepel)
 library(xts)
 library(lubridate)
 library(tibble)
+library(dplyr)
 library(nlme)
 ```
 As we will use text and labels on the plotting area we change the default theme
@@ -74,14 +75,246 @@ to character strings or printed.
 ggplot(lynx, as.numeric = FALSE) + geom_line()
 ```
 
+## geom_table and stat_fmt_table
+
+The _geometry_ `geom_table()` plots a data frame or tibble, nested in a tibble passed as data
+argument, using _aesthetics_ `x` and `y` for positioning, and `label` for the
+data frame containing the data for the table. The table is created as a 'grid'
+grob and added as usual to the ggplot object. In contrast to "standard"
+geoms, this geom by default does not inherit the globally mapped aesthetics.
 
 ```{r}
-class(AirPassengers)
-ggplot(AirPassengers) + geom_line()
+tb <- mpg %>%
+  group_by(cyl) %>%
+  summarise(hwy = median(hwy), cty = median(cty))
+data.tb <- tibble(x = 7, y = 44, tb = list(tb))
+ggplot(mpg, aes(displ, hwy, colour = factor(cyl))) +
+  geom_table(data = data.tb, aes(x, y, label = tb)) +
+  geom_point() 
 ```
 
+Using `stat_fmt_tb()` we can rename columns of the tibble,
+and/or select a subset of columns or a slice of rows as shown below. To provide
+a complete example we also replace the names of the _x_, _y_ and _colour_
+aesthetics.
+
 ```{r}
-ggplot(AirPassengers, as.numeric = FALSE) + geom_line()
+ggplot(mpg, aes(displ, hwy, colour = factor(cyl))) +
+  geom_table(data = data.tb, aes(x, y, label = tb),
+             size = 3, colour = "dark blue",
+             stat = "fmt_tb", tb.vars = c(Cylinders = "cyl", "MPG" = "hwy")) +
+  labs(x = "Engine displacement (l)", y = "Fuel use efficiency (MPG)",
+       colour = "Engine cylinders\n(number)") +
+  geom_point() +
+  theme_bw()
+
+```
+
+
+
+Parsed text, using plot math syntax is supported in the table, with fall-back to
+plain text in case of parsing errors, on a cell by cell basis. Here we plot
+the MPG for city traffic and we can see that the plotting area expands to include
+the coordinates at which the table is anchored. Justification is by default set
+to `"inward"` which ensures that the table is fully within the plotting
+region.
+
+```{r}
+tb.pm <- tibble(Parameter = c("frac(beta[1], a^2)", "frac(beta[2], a^3)"),
+                Value = c("10^2.4", "10^3.532"))
+data.tb <- tibble(x = 7, y = 44, tb = list(tb.pm))
+ggplot(mpg, aes(displ, cty)) +
+  geom_point() +
+  geom_table(data = data.tb, aes(x, y, label = tb), parse = TRUE) +
+  theme_bw()
+```
+
+As implemented, there is no limitation to the number of insets, and faceting is
+respected. If the base plot shows a map, multiple small tables could be
+superimposed on different countries or regions. The size of the insets is set
+relative to the main plot, so the combined plot can be scaled.
+
+Please see section **Normalised Parent Coordinates** below for a description of
+`geom_table_npc()`.
+
+## geom_plot
+
+The `geom_plot()` _geometry_ plots ggplot objects, nested in a tibble passed as data
+argument, using _easthetics_ `x` and `y` for positioning, and `label` for the
+ggplot object containing the definition of the plot to be nested. A Grob is 
+created with 'ggplotGrob' and added as usual to the ggplot object.
+
+As an example we produce plot where the inset plot is a zommed-in detail from
+the main plot. In this case the main and inset plots start as the same plot.
+
+```{r}
+p <- ggplot(mpg, aes(displ, hwy, colour = factor(cyl))) +
+  geom_point() 
+
+data.tb <- tibble(x = 7, y = 44, 
+                  plot = list(p + 
+                                coord_cartesian(xlim = c(4.9, 6.2), ylim = c(13, 21)) +
+                                labs(x = NULL, y = NULL) +
+                                theme_bw(8) +
+                                scale_colour_discrete(guide = FALSE)))
+
+ggplot(mpg, aes(displ, hwy, colour = factor(cyl))) +
+  geom_plot(data = data.tb, aes(x, y, label = plot)) +
+  annotate(geom = "rect", 
+           xmin = 4.9, xmax = 6.2, ymin = 13, ymax = 21,
+           linetype = "dotted", fill = NA, colour = "black") +
+  geom_point() 
+```
+In general, the inset plot can be any ggplot object, allowing the creation of
+very different combinations of main plot and inset plot. Here we use the inset
+to summaries as in the previous example of an inset table.
+
+```{r}
+p <- ggplot(mpg, aes(factor(cyl), hwy, fill = factor(cyl))) +
+  stat_summary(geom = "col", fun.y = mean, width = 2/3) +
+  labs(x = "Number of cylinders", y = NULL, title = "Means") +
+  scale_fill_discrete(guide = FALSE)
+
+data.tb <- tibble(x = 7, y = 44, 
+                  plot = list(p +
+                                theme_bw(8)))
+
+ggplot(mpg, aes(displ, hwy, colour = factor(cyl))) +
+  geom_plot(data = data.tb, aes(x, y, label = plot)) +
+  geom_point() +
+  labs(x = "Engine displacement (l)", y = "Fuel use efficiency (MPG)",
+       colour = "Engine cylinders\n(number)") +
+  theme_bw()
+```
+
+As implemented, there is no limitation to the number of insets, and faceting is
+respected. If the base plot shows a map, multiple small plots could be
+superimposed on different countries or regions. The size of the insets is set
+relative to the main plot, so the combined plot can be scaled. A possible
+unintuitive but useful feature, is that the theme is linked to each plot.
+
+Please see section **Normalised Parent Coordinates** below for a description of
+`geom_plot_npc()`.
+
+## geom_grob
+
+The `geom_grob()` _geometry_ plots grobs (graphical objects as created with
+'grid'), nested in a tibble passed as data argument, using _easthetics_ `x` and
+`y` for positioning, and `label` for the Grob object. While `geom_table()` and
+`geom_plot()` take as values to plot tibbles or data frames, and ggplots,
+respectively, and convert them into Grobs before adding them to the plot,
+`geom_grob()` expects Grobs ready to be rendered.
+
+```{r}
+tiger <- magick::image_read('http://jeroen.github.io/images/tiger.svg')
+grobs.tb <- tibble(x = c(0, 10, 20, 40), y = c(4, 6, 8, 9),
+                   width = c(0.05, 0.05, 0.01, 0.25),
+                   height =  c(0.05, 0.05, 0.01, 0.25),
+                   grob = list(grid::circleGrob(), 
+                               grid::rectGrob(), 
+                               grid::textGrob("I am a Grob"),
+                               grid::rasterGrob(image = tiger)))
+
+ggplot() +
+  geom_grob(data = grobs.tb, aes(x, y, label = grob, 
+                                 vp.width = width, vp.height = height)) +
+  scale_y_continuous(expand = expand_scale(mult = 0.3, add = 0)) +
+  scale_x_continuous(expand = expand_scale(mult = 0.2, add = 0)) +
+ theme_bw(12)
+```
+`geom_grob()` is designed thinking that its main use will in graphical annotations,
+although one could use it for infographics with multiple copies of each grob, this
+would go against the grammar of graphics. In this implementation grobs cannot
+to mapped to an aesthetic through a scale.
+
+As implemented, there is no limitation to the number of insets, and faceting is
+respected. If the base plot shows a map, multiple simple grobs (e.g. national
+flags) could be
+superimposed on different countries. The size of the insets is set
+relative to the main plot, so the combined plot can be scaled.
+
+Please see next section for a description of
+`geom_grob_npc()`.
+
+## Normalised Parent Coordinates
+
+R's 'grid' pakage defines several units that can be used to describe the locations
+of plot elements. In 'ggplot2' the _x_ and _y_ aesthetics are directly mapped
+to `"native"` or data units. For consistent location of **annotations** with
+respect to the plotting area we need to rely on `"npc"` which are expressed
+relative to the size of the grid viewport, as the plotting area in a ggplot
+if implemented as viewport.
+
+To support this we have implemented _scales_ for two new _aesthetics_, `npcx`
+and `npcy`. These are very simple continuous scales which do not support any
+transformation or change to their limits, which are meaningless for `"npc"`
+units. Variables mapped to these aesthetics can be either numerical with
+values in the range zero to one or
+character. A limited set of strings are recognised and converted to "npc" units:
+`"top"`, `"bottom"`, `"left"`, `"right"` and `"centre"` (or its synonims 
+`"center"` and `"middle"`). Justification defaults to "inward".
+
+To make these scales useful we need also to define _geometries_ that use these
+new aesthetics. Package 'ggpmisc' currently provides `geom_text_npc()`,
+`geom_label_npc()`, `geom_table_npc()`, `geom_plot_npc()` and `geom_grob_npc()`.
+
+These are used internally by several of the statistics described below. They 
+can also be useful on their own right in those cases when we want to
+add annotations at specific positions within the plotting area, while the
+usual _x_ and _y_ aesthetics should be used whenever the positions of plot
+elements represent data values. When writing scripts or functions that may
+be applied to different data sets they help in keeping the code consise and
+reusable.
+
+As an example let's imagine that we want to add an intitutional logo to a plot. 
+Its position has nothing to
+do with the data mapped to _x_ and _y_, so it is conceptually better to use
+`"npc"` coordinates. The big practical advantage is that this also allows to
+keep this part of the plot definition independent of the data being plotted,
+giving a major advantage in the case of plots with facets with free scale
+limits.
+
+We assume here that the tiger is being used as a logo.
+
+```{r}
+tiger <- magick::image_read('http://jeroen.github.io/images/tiger.svg')
+data.tb <- tibble(x = 1:20, y = (1:20) + rnorm(20, 0, 10))
+
+# Mapping aesthetics to contant values (oddly very slow)
+ggplot(data.tb, aes(x, y)) +
+  geom_grob_npc(label = list(grid::rasterGrob(image = tiger)), npcx = 0, npcy = 0.95) +
+  geom_point() +
+  expand_limits(y = 45, x = 0)
+
+# Mapping aesthetics to data variables
+logo.tb <- tibble(x = 0,
+                  y = 0.95,
+                  grob = list(grid::rasterGrob(image = tiger)))
+
+ggplot(data.tb, aes(x, y)) +
+  geom_grob_npc(data = logo.tb, aes(label = grob, npcx = x, npcy = y)) +
+  geom_point() +
+  expand_limits(y = 45, x = 0)
+```
+
+Two geometries are based on existing 'ggplot2' geometries. They are almost like
+wrappers built on top of `geom_text()` and `geom_label(). We give an example
+using `geom_text_npc()` to produce a "classic"" labelling for facets matching 
+`theme_classic()`.
+
+```{r}
+corner_letters.tb <- tibble(label = LETTERS[1:4],
+                            x = "left", 
+                            y = "top",
+                            cyl = c(4,5,6,8))
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  facet_wrap(~cyl, scales = "free") +
+  geom_text_npc(data = corner_letters.tb,
+                aes(npcx = x, npcy = y, label = label)) +
+  theme_classic() +
+  theme(strip.background = element_blank(),
+        strip.text.x = element_blank())
 ```
 
 ## stat_peaks and stat_valleys
@@ -1010,108 +1243,6 @@ ggplot(data = d, aes(x, y, label = lab, color = group)) +
                      keep.fraction = 0.35, 
                      alpha = 0.5,
                      label.fill = NA)
-```
-
-## geom_table and stat_fmt_table
-
-The `geom_table()` _geometry_ plots a data frame or tibble, nested in a tibble passed as data
-argument, using _easthetics_ `x` and `y` for positioning, and `label` for the
-data frame containing the data for the table. The table is created as a 'grid'
-grob and added as usual to the ggplot object.
-
-```{r}
-tb <- tibble(date = ymd(c("2017-05-21", "2007-05-21"), tz = "UCT"),
-             value = 1:2 * 10)
-data.tb <- tibble(x = 0, y = 8e5, tb = list(tb))
-ggplot(my.data, aes(x, y)) +
-  geom_point() +
-  geom_table(data = data.tb, aes(label = tb), hjust = 0, vjust = 0) +
-  theme_bw()
-```
-
-Using `stat_fmt_tb()` we can rename the columns of the tibble as shown below,
-and/or select a subset of columns or a slice of rows. 
-
-```{r}
-tb <- tibble(date = ymd(c("2017-05-21", "2007-05-21"), tz = "UCT"),
-             value = 1:2 * 10)
-data.tb <- tibble(x = 0, y = 8e5, tb = list(tb))
-ggplot(my.data, aes(x, y)) +
-  geom_point() +
-  geom_table(data = data.tb, aes(label = tb), hjust = 0, vjust = 0,
-             stat = "fmt_tb", tb.vars = c(Date = "date", Amount = "value")) +
-  theme_bw()
-```
-
-```{r}
-tb <- tibble(date = ymd(c("2017-05-21", "2007-05-21"), tz = "UCT"),
-             value = 1:2 * 10)
-data.tb <- tibble(x = 25, y = 8e5, tb = list(tb))
-ggplot(my.data, aes(x, y)) +
-  geom_point() +
-  geom_table(data = data.tb, aes(label = tb), colour = "blue", size = 4) +
-  theme_bw()
-```
-
-Parsed text, using plot math syntax is supported in the table, with fall-back to
-plain text in case of parsing errors, on a cell by cell basis.
-
-```{r}
-tb.pm <- tibble(parameter = c("frac(beta[1], a^2)", "frac(beta[2], a^3)"),
-             value = c("10^2.4", "10^3.532"))
-data.tb <- tibble(x = 12.5, y = 8.5e5, tb = list(tb.pm))
-ggplot(my.data, aes(x, y)) +
-  geom_point() +
-  geom_table(data = data.tb, aes(label = tb), parse = TRUE) +
-  theme_bw()
-```
-
-## geom_plot
-
-The `geom_plot()` _geometry_ plots ggplot objects, nested in a tibble passed as data
-argument, using _easthetics_ `x` and `y` for positioning, and `label` for the
-ggplot object containing the definition of the plot to be nested. A Grob is 
-created with 'ggplotGrob' and added as usual to the ggplot object.
-
-```{r}
-p <- ggplot(my.data, aes(x, y)) +
-  geom_point()
-
-plot.tb <- tibble(x = 25, y = 8e5, plot = list(p %+% theme_bw(8)))
-
-p +
-  geom_plot(data = plot.tb, aes(label = plot)) +
-  theme_bw(12)
-```
-
-As implemented, there is no limitation to the number of insets, and faceting is
-respected. If the base plot shows a map, multiple small plots could be
-superimposed on different countries or regions. The size of the insets is set
-relative to the main plot, so the combined plot can be scaled. A possible
-unintuitive but useful feature, is that the theme is linked to each plot.
-
-## geom_grob
-
-The `geom_grob()` _geometry_ plots Grobs (graphical objects as created with
-'grid'), nested in a tibble passed as data argument, using _easthetics_ `x` and
-`y` for positioning, and `label` for the Grob object. While `geom_table()` and
-`geom_plot()` take as values to plot tibbles or data frames, and ggplots,
-respectively, and convert them into Grobs before adding them to the plot,
-`geom_grob()` expects Grobs ready to be rendered.
-
-```{r}
-tiger <- magick::image_read('http://jeroen.github.io/images/tiger.svg')
-grobs.tb <- tibble(x = c(0, 10, 20, 40), y = c(4e5, 6e5, 8e5, 9e5),
-                   width = c(0.05, 0.05, 0.01, 0.25),
-                   height =  c(0.05, 0.05, 0.01, 0.25),
-                   grob = list(grid::circleGrob(), 
-                               grid::rectGrob(), 
-                               grid::textGrob("I am a Grob"),
-                               grid::rasterGrob(image = tiger)))
-
-p +
-  geom_grob(data = grobs.tb, aes(label = grob, vp.width = width, vp.height = height)) +
-  theme_bw(12)
 ```
 
 ## try_tibble

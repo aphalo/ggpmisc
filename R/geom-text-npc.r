@@ -140,6 +140,13 @@ GeomTextNpc <- ggproto("GeomTextNpc", Geom,
   draw_panel = function(data, panel_params, coord, parse = FALSE,
                         na.rm = FALSE, check_overlap = FALSE) {
 
+    if (is.character(data$npcx)) {
+      data$npcx <- compute_npc(data$npcx)
+    }
+    if (is.character(data$npcy)) {
+      data$npcy <- compute_npc(data$npcy)
+    }
+
     ranges <- coord$backtransform_range(panel_params)
 
     data$x <- ranges$x[1] + data$npcx * (ranges$x[2] - ranges$x[1])

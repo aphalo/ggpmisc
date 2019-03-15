@@ -306,19 +306,11 @@ poly_eq_compute_group_fun <- function(data,
   }
 
   if (npc.used) {
-    margin.npc = 0.05
-    npc.positions <- c(right = 1 - margin.npc,
-                       left = 0 + margin.npc,
-                       centre = 0.5,
-                       center = 0.5,
-                       middle = 0.5,
-                       top = 1 - margin.npc,
-                       bottom = 0 + margin.npc)
     if (is.character(label.x)) {
-      label.x <- npc.positions[label.x]
+      label.x <- compute_npc(label.x)
     }
     if (is.character(label.y)) {
-      label.y <- npc.positions[label.y]
+      label.y <- compute_npc(label.y)
     }
     z$npcx <- label.x
     z$x <- NA_real_

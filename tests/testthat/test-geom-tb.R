@@ -71,13 +71,13 @@ test_that("parsed_tb", {
                "beta" = c("x[2]~\"=\"~b^2", "sqrt(1/y)"))
   my.tb <- tibble(x = 0, y = 0, tb = list(tb))
   vdiffr::expect_doppelganger("geom_table_parsed_all",
-                              ggplot(my.tb, aes(x, y, label = tb)) +
-                                geom_table(parse = TRUE))
+                              ggplot() +
+                                geom_table(my.tb, aes(x, y, label = tb), parse = TRUE))
 
   tb <- tibble("alpha" = c("x[2]~\"=\"~a^2", "text"),
                "beta" = c("x[2]~\"=\"~b^2", "1200"))
   my.tb <- tibble(x = 0, y = 0, tb = list(tb))
   vdiffr::expect_doppelganger("geom_table_parsed_partial",
-                              ggplot(my.tb, aes(x, y, label = tb)) +
-                                geom_table(parse = TRUE))
+                              ggplot() +
+                                geom_table(my.tb, aes(x, y, label = tb), parse = TRUE))
 })

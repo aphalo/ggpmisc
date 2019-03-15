@@ -7,10 +7,10 @@
 \usage{
 geom_grob(mapping = NULL, data = NULL, stat = "identity",
   position = "identity", ..., na.rm = FALSE, show.legend = NA,
-  inherit.aes = TRUE)
+  inherit.aes = FALSE)
 
 geom_grob_npc(mapping = NULL, data = NULL, stat = "identity",
-  position = "identity", ..., na.rm = FALSE, show.legend = NA,
+  position = "identity", ..., na.rm = FALSE, show.legend = FALSE,
   inherit.aes = FALSE)
 }
 \arguments{

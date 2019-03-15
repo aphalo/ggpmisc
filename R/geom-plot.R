@@ -77,7 +77,7 @@ geom_plot <- function(mapping = NULL, data = NULL,
                        ...,
                        na.rm = FALSE,
                        show.legend = NA,
-                       inherit.aes = TRUE) {
+                       inherit.aes = FALSE) {
   layer(
     data = data,
     mapping = mapping,
@@ -158,9 +158,9 @@ GeomPlot <-
           required_aes = c("x", "y", "label"),
 
           default_aes = aes(
-            colour = "black", angle = 0, hjust = 0.5,
-            vjust = 0.5, alpha = NA, family = "", fontface = 1,
-            vp.width = 1/2, vp.height = 1/2
+            colour = "black", angle = 0, hjust = "inward",
+            vjust = "inward", alpha = NA, family = "", fontface = 1,
+            vp.width = 0.4, vp.height = 0.4
           ),
 
           draw_panel = gplot_draw_panel_fun,
@@ -211,8 +211,14 @@ gplotnpc_draw_panel_fun <-
       return(grid::nullGrob())
     }
 
-    # No coord$transform() call as data are in npc units
-     if (is.character(data$vjust)) {
+    if (is.character(data$npcx)) {
+      data$npcx <- compute_npc(data$npcx)
+    }
+    if (is.character(data$npcy)) {
+      data$npcy <- compute_npc(data$npcy)
+    }
+
+    if (is.character(data$vjust)) {
       data$vjust <- compute_just(data$vjust, data$npcy)
     }
     if (is.character(data$hjust)) {
@@ -259,7 +265,7 @@ GeomPlotNpc <-
           default_aes = aes(
             colour = "black", angle = 0, hjust = "inward",
             vjust = "inward", alpha = NA, family = "", fontface = 1,
-            vp.width = 1/2, vp.height = 1/2
+            vp.width = 0.4, vp.height = 0.4
           ),
 
           draw_panel = gplotnpc_draw_panel_fun,

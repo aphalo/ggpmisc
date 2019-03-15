@@ -88,7 +88,7 @@ geom_table <- function(mapping = NULL, data = NULL,
                        parse = FALSE,
                        na.rm = FALSE,
                        show.legend = FALSE,
-                       inherit.aes = TRUE) {
+                       inherit.aes = FALSE) {
   layer(
     data = data,
     mapping = mapping,
@@ -177,8 +177,8 @@ GeomTable <-
           required_aes = c("x", "y", "label"),
 
           default_aes = aes(
-            colour = "black", size = 3.2, angle = 0, hjust = 0.5,
-            vjust = 0.5, alpha = NA, family = "", fontface = 1,
+            colour = "black", size = 3.2, angle = 0, hjust = "inward",
+            vjust = "inward", alpha = NA, family = "", fontface = 1,
             lineheight = 1.2
           ),
 
@@ -234,7 +234,13 @@ gtbnpc_draw_panel_fun <-
       return(grid::nullGrob())
     }
 
-    # No coord$transform() call as data are in npc units
+    if (is.character(data$npcx)) {
+      data$npcx <- compute_npc(data$npcx)
+    }
+    if (is.character(data$npcy)) {
+      data$npcy <- compute_npc(data$npcy)
+    }
+
     if (is.character(data$vjust)) {
       data$vjust <- compute_just(data$vjust, data$npcy)
     }

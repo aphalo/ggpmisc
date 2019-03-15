@@ -65,7 +65,7 @@ geom_grob <- function(mapping = NULL, data = NULL,
                       ...,
                       na.rm = FALSE,
                       show.legend = NA,
-                      inherit.aes = TRUE) {
+                      inherit.aes = FALSE) {
   layer(
     data = data,
     mapping = mapping,
@@ -162,7 +162,7 @@ geom_grob_npc <- function(mapping = NULL, data = NULL,
                           stat = "identity", position = "identity",
                           ...,
                           na.rm = FALSE,
-                          show.legend = NA,
+                          show.legend = FALSE,
                           inherit.aes = FALSE) {
   layer(
     data = data,
@@ -192,25 +192,50 @@ grobnpc_draw_panel_fun <-
       return(grid::nullGrob())
     }
 
-    if (max(data$x) > 1 || min(data$x) < 0) {
-      warning("'x' outside valid range of [0..1] for npc units.")
-      data <- data[data$x >= 0 & data$x <= 1, ]
+    if (!is.grob(data$label[[1]])) {
+      warning("Skipping as object mapped to 'label' is not a list of \"grob\".")
+      return(grid::nullGrob())
     }
 
-    if (max(data$y) > 1 || min(data$y) < 0) {
-      warning("'y' outside valid range of [0..1] for npc units.")
-      data <- data[data$y >= 0 & data$y <= 1, ]
+    if (is.character(data$npcx)) {
+      data$npcx <- compute_npc(data$npcx)
+    }
+    if (is.character(data$npcy)) {
+      data$npcy <- compute_npc(data$npcy)
     }
 
-    ranges <- coord$backtransform_range(panel_params)
+    if (is.character(data$vjust)) {
+      data$vjust <- compute_just(data$vjust, data$npcy)
+    }
+    if (is.character(data$hjust)) {
+      data$hjust <- compute_just(data$hjust, data$npcx)
+    }
 
-    data$x <- ranges$x[1] + data$x * (ranges$x[2] - ranges$x[1])
-    data$y <- ranges$y[1] + data$y * (ranges$y[2] - ranges$y[1])
+    user.grobs <- grid::gList()
 
-    grob_draw_panel_fun(data = data,
-                        panel_params = panel_params,
-                        coord = coord,
-                        na.rm = na.rm)
+    for (row.idx in 1:nrow(data)) {
+      userGrob <- data$label[[row.idx]]
+
+      userGrob$vp <-
+        grid::viewport(x = unit(data$npcx[row.idx], "npc"),
+                       y = unit(data$npcy[row.idx], "npc"),
+                       width = unit(data$vp.width[row.idx], "npc"),
+                       height = unit(data$vp.height[row.idx], "npc"),
+                       just = c(data$hjust[row.idx], data$vjust[row.idx]),
+                       angle = data$angle[row.idx],
+                       name = paste("geom_grob.panel", data$PANEL[row.idx],
+                                    "row", row.idx, sep = "."))
+
+      # give unique name to each grob
+      userGrob$name <- paste("inset.grob", row.idx, sep = ".")
+
+      user.grobs[[row.idx]] <- userGrob
+    }
+
+    grid.name <- paste("geom_grob.panel",
+                       data$PANEL[row.idx], sep = ".")
+
+    grid::gTree(children = user.grobs, name = grid.name)
   }
 
 #' @rdname ggpmisc-ggproto
@@ -219,11 +244,11 @@ grobnpc_draw_panel_fun <-
 #' @export
 GeomGrobNpc <-
   ggproto("GeomGrobNpc", Geom,
-          required_aes = c("x", "y", "label"),
+          required_aes = c("npcx", "npcy", "label"),
 
           default_aes = aes(
-            colour = "black", angle = 0, hjust = 0.5,
-            vjust = 0.5, alpha = NA, family = "", fontface = 1,
+            colour = "black", angle = 0, hjust = "inward",
+            vjust = "inward", alpha = NA, family = "", fontface = 1,
             vp.width = 1/5, vp.height = 1/5
           ),
 
