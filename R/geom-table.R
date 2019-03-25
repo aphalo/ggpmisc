@@ -17,6 +17,9 @@
 #'   (right/bottom) and 1 (top/left) or a character ("left", "middle", "right",
 #'   "bottom", "center", "top").
 #'
+#' @section Inset size: You can modify inset table size with the \code{size}
+#'   aesthetics, which determines the size of text within the table.
+#'
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs
 #'   to be set at the layer level if you are overriding the plot defaults.
@@ -41,19 +44,26 @@
 #'   define both data and aesthetics and shouldn't inherit behaviour from the
 #'   default plot specification, e.g. \code{\link[ggplot2]{borders}}.
 #'
-#' @note This geom works only with tibbles as \code{data}, as it expects a list
-#'   of data frames or a list of tibbles to be mapped to the \code{label}
-#'   aesthetic. In the current version the following aesthetics affect the text
-#'   within the table \code{size}, \code{colour}, and \code{alpha}. The argument
-#'   to parameter \code{parse} is simply passed forward to
-#'   \code{gridExtra::ttheme_default()}. As \code{x} and \code{y} determine the
-#'   position of the whole table, similarly to that of a text label,
-#'   justification is interpreted as indicating the position of the table with
-#'   respect to the $x$ and $y$ coordinates in the data, and \code{angle} is
-#'   used to rotate the table as a whole. Other aesthetics, including
-#'   \code{fill} are not yet implemented, neither are themes for table
-#'   formatting. \strong{\code{annotate()} cannot be used with \code{geom =
-#'   "table"}}. Use \code{geom_table} directly also for adding annotations.
+#' @note These geoms work only with tibbles as \code{data}, as they expects a
+#'   list of data frames or tibbles ("tb" objects) to be mapped to the
+#'   \code{label} aesthetic. Aesthetics mappings in the inset plot are
+#'   independent of those in the base plot.
+#'
+#'   In the case of \code{geom_table()}, \code{x} and \code{y} aesthetics
+#'   determine the position of the whole inset table, similarly to that of a text
+#'   label, justification is interpreted as indicating the position of the table
+#'   with respect to the $x$ and $y$ coordinates in the data, and \code{angle}
+#'   is used to rotate the plot as a whole.
+#'
+#'   In the case of \code{geom_table_npc()}, \code{npcx} and \code{npcy} aesthetics
+#'   determine the position of the whole inset table, similarly to that of a text
+#'   label, justification is interpreted as indicating the position of the table
+#'   with respect to the $x$ and $y$ coordinates in "npc" units, and \code{angle}
+#'   is used to rotate the plot as a whole.
+#'
+#'   \strong{\code{annotate()} cannot be used with \code{geom = "table"}}. Use
+#'   \code{\link[ggplot2]{annotation_custom}} directly when adding inset tables
+#'   as annotations.
 #'
 #' @references This geometry is inspired on answers to two questions in
 #'   Stackoverflow. In contrast to these earlier examples, the current geom

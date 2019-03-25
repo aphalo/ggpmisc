@@ -61,25 +61,37 @@ space they occupy on that plot is not constant in data units: when you resize
 a plot, tables stay the same size, but the size of the axes changes.
 }
 \note{
-This geom works only with tibbles as \code{data}, as it expects a list
-  of data frames or a list of tibbles to be mapped to the \code{label}
-  aesthetic. In the current version the following aesthetics affect the text
-  within the table \code{size}, \code{colour}, and \code{alpha}. The argument
-  to parameter \code{parse} is simply passed forward to
-  \code{gridExtra::ttheme_default()}. As \code{x} and \code{y} determine the
-  position of the whole table, similarly to that of a text label,
-  justification is interpreted as indicating the position of the table with
-  respect to the $x$ and $y$ coordinates in the data, and \code{angle} is
-  used to rotate the table as a whole. Other aesthetics, including
-  \code{fill} are not yet implemented, neither are themes for table
-  formatting. \strong{\code{annotate()} cannot be used with \code{geom =
-  "table"}}. Use \code{geom_table} directly also for adding annotations.
+These geoms work only with tibbles as \code{data}, as they expects a
+  list of data frames or tibbles ("tb" objects) to be mapped to the
+  \code{label} aesthetic. Aesthetics mappings in the inset plot are
+  independent of those in the base plot.
+
+  In the case of \code{geom_table()}, \code{x} and \code{y} aesthetics
+  determine the position of the whole inset table, similarly to that of a text
+  label, justification is interpreted as indicating the position of the table
+  with respect to the $x$ and $y$ coordinates in the data, and \code{angle}
+  is used to rotate the plot as a whole.
+
+  In the case of \code{geom_table_npc()}, \code{npcx} and \code{npcy} aesthetics
+  determine the position of the whole inset table, similarly to that of a text
+  label, justification is interpreted as indicating the position of the table
+  with respect to the $x$ and $y$ coordinates in "npc" units, and \code{angle}
+  is used to rotate the plot as a whole.
+
+  \strong{\code{annotate()} cannot be used with \code{geom = "table"}}. Use
+  \code{\link[ggplot2]{annotation_custom}} directly when adding inset tables
+  as annotations.
 }
 \section{Alignment}{
  You can modify table alignment with the \code{vjust} and
   \code{hjust} aesthetics. These can either be a number between 0
   (right/bottom) and 1 (top/left) or a character ("left", "middle", "right",
   "bottom", "center", "top").
+}
+
+\section{Inset size}{
+ You can modify inset table size with the \code{size}
+  aesthetics, which determines the size of text within the table.
 }
 
 \examples{

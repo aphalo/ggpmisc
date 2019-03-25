@@ -206,18 +206,22 @@ respectively, and convert them into Grobs before adding them to the plot,
 `geom_grob()` expects Grobs ready to be rendered.
 
 ```{r}
-tiger <- magick::image_read('http://jeroen.github.io/images/tiger.svg')
-grobs.tb <- tibble(x = c(0, 10, 20, 40), y = c(4, 6, 8, 9),
-                   width = c(0.05, 0.05, 0.01, 0.25),
-                   height =  c(0.05, 0.05, 0.01, 0.25),
+file.name <- 
+  system.file("extdata", "Isoquercitin.png", 
+              package = "ggpmisc", mustWork = TRUE)
+Robinin <- magick::image_read(file.name)
+grobs.tb <- tibble(x = c(0, 10, 20, 40), y = c(4, 5, 6, 9),
+                   width = c(0.05, 0.05, 0.01, 1),
+                   height =  c(0.05, 0.05, 0.01, 0.3),
                    grob = list(grid::circleGrob(), 
                                grid::rectGrob(), 
                                grid::textGrob("I am a Grob"),
-                               grid::rasterGrob(image = tiger)))
+                               grid::rasterGrob(image = Robinin)))
 
 ggplot() +
-  geom_grob(data = grobs.tb, aes(x, y, label = grob, 
-                                 vp.width = width, vp.height = height)) +
+  geom_grob(data = grobs.tb, 
+            aes(x, y, label = grob, vp.width = width, vp.height = height),
+            hjust = 0.7, vjust = 0.55) +
   scale_y_continuous(expand = expand_scale(mult = 0.3, add = 0)) +
   scale_x_continuous(expand = expand_scale(mult = 0.2, add = 0)) +
  theme_bw(12)
@@ -274,19 +278,24 @@ keep this part of the plot definition independent of the data being plotted,
 giving a major advantage in the case of plots with facets with free scale
 limits.
 
-We assume here that the tiger is being used as a logo.
+We assume here that the tiger is being used as a logo, and we simply map
+all aesthetics to constant values.
 
 ```{r}
 tiger <- magick::image_read('http://jeroen.github.io/images/tiger.svg')
 data.tb <- tibble(x = 1:20, y = (1:20) + rnorm(20, 0, 10))
 
-# Mapping aesthetics to contant values (oddly very slow)
 ggplot(data.tb, aes(x, y)) +
-  geom_grob_npc(label = list(grid::rasterGrob(image = tiger)), npcx = 0, npcy = 0.95) +
+  geom_grob_npc(label = list(grid::rasterGrob(image = tiger)), 
+                npcx = 0, npcy = 0.95) +
   geom_point() +
   expand_limits(y = 45, x = 0)
+```
 
-# Mapping aesthetics to data variables
+Alternatively we produce the same plot by creating a data frame to contain the
+grob and the coordinates, and then map these variable to the aesthetics using
+`aes()`.
+```{r}
 logo.tb <- tibble(x = 0,
                   y = 0.95,
                   grob = list(grid::rasterGrob(image = tiger)))
@@ -298,9 +307,9 @@ ggplot(data.tb, aes(x, y)) +
 ```
 
 Two geometries are based on existing 'ggplot2' geometries. They are almost like
-wrappers built on top of `geom_text()` and `geom_label(). We give an example
-using `geom_text_npc()` to produce a "classic"" labelling for facets matching 
-`theme_classic()`.
+wrappers built on top of `geom_text()` and `geom_label()`. We give an example
+using `geom_text_npc()` to produce a "classic" labelling for facets matching 
+the style of `theme_classic()` and traditional sicentific journals' design.
 
 ```{r}
 corner_letters.tb <- tibble(label = LETTERS[1:4],
@@ -315,6 +324,33 @@ ggplot(mpg, aes(displ, hwy)) +
   theme_classic() +
   theme(strip.background = element_blank(),
         strip.text.x = element_blank())
+```
+
+## Marginal markings
+
+'ggplot2' provides `geom_rug()`, `geom_vline()` and `geom_hline()`. Rug plots
+are intended to be used to represent distributions along the margins of plot.
+`geom_vline()` and `geom_hline()`are normally used to separate regions in a plot
+or to highlight important values along the _x_ or _y_ axis. When creating plots
+it is sometimes useful to put small marks along the axes, just inside the 
+plotting area, similar to those in a rug plot, but like `geom_vline()` and `geom_hline()` in their purpose.
+
+Three _geometries_ provide such markers: `geom_margin_point()`, 
+`geom_margin_arrow()`,  and `geom_margin_grob()`. They behave similarly
+to `geom_vline()` and `geom_hline()` and their positiions are determined also
+by the `xintercept` and `yintercept` aesthetics.
+
+In the example below we indicate the group medians along the _x_ axis with
+filled triangles.
+
+```{r}
+data.tb <- mpg %>%
+  group_by(cyl) %>%
+  summarise(hwy = median(hwy), displ = median(displ))
+ggplot(mpg, aes(displ, hwy, colour = factor(cyl))) +
+  geom_x_margin_point(data = data.tb, 
+                      aes(xintercept = displ, fill = factor(cyl))) +
+  geom_point() 
 ```
 
 ## stat_peaks and stat_valleys

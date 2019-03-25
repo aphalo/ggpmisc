@@ -1,23 +1,29 @@
-ggpmisc 0.3.1 (2019-03-13)
+ggpmisc 0.3.1 (2019-03-15)
 ==========================
 
+This is a major update, with a few cases in which old code may need to be
+revised to work, and many cases in which there will be subtle differences in
+the positions of labels used as annotations.
 Version requiring 'ggplot2' (>= 3.1.0).
-- Add new geometries, several of them accepting x and y in npc units, allowing
+- Add new geometries, several of them accepting x and y in npc units through
+the new aesthetics npcx and npcy, allowing
 positioning relative to plotting area irrespective of native data units and
 scale limits. These geometries are useful on their own for annotations in
 particular they allow consistent positioning of textual summaries. By default
 they do not inherit the plot's aes making their behaviour reamin by default
 in-between that of true geometries and that of annotate().
-* Add geom_text_npc() and geom_label_npc() which accept x and y in npc units.
-* Add geom_table_npc() which accepts x and y in npc units.
+* Add geom_text_npc() and geom_label_npc() using aesthetics npcx and npcy.
+* Add geom_table_npc() using aesthetics npcx and npcy.
 * Add geom_plot() and geom_plot_npc() which can be used to add inset plots
 to a ggplot.
-* Add geom_grob() and geom_grob_npc() which can be used to add inset Grobs
+* Add geom_grob() and geom_grob_npc() which can be used to add inset grobs
 to a ggplot.
 * Add geom_x_margin_point(), geom_y_margin_point(), geom_x_margin_arrow() and
 geom_y_margin_arrow() which behave similarly to geom_hline() and geom_vline()
 but plot points or arrows instead of lines.
 - Revise textual-summary statistics to use the new npc version of geometries.
++ This may break old code that used geom_table() and depended on the old
+default of inherit.aes=TRUE.
 - Add "summarize" statistics for groups and panels.
 * Add stat_apply_panel() and stat_apply_group().
 - Fix bug.
@@ -25,6 +31,7 @@ but plot points or arrows instead of lines.
 input. Replace bad example in the corresponding documentation (workaround
 for bug reported by Robert White).
 - Update documentation.
+* Add and revise examples.
 * Revise vignette.
 
 ggpmisc 0.3.0 (2018-07-16)

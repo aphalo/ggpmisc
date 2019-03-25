@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 
 # ggpmisc #
 
-[![cran version](http://www.r-pkg.org/badges/version/ggpmisc)](https://cran.r-project.org/package=ggpmisc) 
+[![cran version](https://www.r-pkg.org/badges/version/ggpmisc)](https://cran.r-project.org/package=ggpmisc) 
 [![cran checks](https://cranchecks.info/badges/worst/ggpmisc)](https://cran.r-project.org/web/checks/check_results_ggpmisc.html)
 
 ## Purpose
@@ -32,7 +32,7 @@ add inset tables, inset plots, and arbitrary 'grid' graphical objects as layers 
 
 ## Statistics
 
-Statistic `stat_fmt_tb()` helps with the formatting of tabbles to be plotted with `geom_table()`. Statistics`stat_peaks()` and `stat_valleys()` can be used to highlight and/or label maxima and minima in a plot. 
+Statistic `stat_fmt_tb()` helps with the formatting of tabbles to be plotted with `geom_table()`. Statistics `stat_peaks()` and `stat_valleys()` can be used to highlight and/or label maxima and minima in a plot. 
 `ggplot` constructors for time series objects. The provided `ggplot.ts()` and
 `ggplot.xts()` use `try_tibble()` which is also exported and accepts objects of
 additional classes as input. Statistics that help with reporting the resulst of
@@ -109,7 +109,7 @@ ggplot(cars, aes(speed, dist)) +
 
 A plot with an inset plot.
 
-```{r, reame-06}
+```{r, readme-06}
 library(tibble)
 p <- ggplot(mtcars, aes(factor(cyl), mpg, colour = factor(cyl))) +
   stat_boxplot() +
@@ -140,7 +140,7 @@ devtools::install_bitbucket("aphalo/ggspectra")
 
 ## Documentation 
 
-HTML documentation is available at (http://docs.r4photobiology.info/ggpmisc/), including a _User Guide_.
+HTML documentation is available at (https://docs.r4photobiology.info/ggpmisc/), including a _User Guide_.
 
 News on updates to the different packages of the 'r4photobiology' suite are regularly posted at (https://www.r4photobiology.info/).
 

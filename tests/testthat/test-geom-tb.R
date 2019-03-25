@@ -21,8 +21,9 @@ test_that("multiple_rows_tb", {
   tbbb <- tibble(Z3 = LETTERS[2:4], z3 = letters[4:2])
   my.tb <- tibble(x = 2:4, y = 3:5, tb = list(t1 = tb, t2 = tbb, t3 = tbbb))
   vdiffr::expect_doppelganger("geom_table_multi_row",
-                              ggplot(my.tb, aes(x, y, label = tb)) +
-                                geom_table() +
+                              ggplot() +
+                                geom_table(data = my.tb,
+                                           mapping = aes(x, y, label = tb)) +
                                 lims(x = c(0, 6), y = c(0, 6)))
 })
 
@@ -35,22 +36,21 @@ test_that("numbers_tb", {
                                 geom_table(data = my.tb,
                                            mapping = aes(x, y, label = tb)))
   vdiffr::expect_doppelganger("geom_table_num2",
-                              ggplot(data = my.tb,
-                                     mapping = aes(x, y, label = tb)) +
-                                geom_table())
+                              ggplot(data = my.tb) +
+                                geom_table(mapping = aes(x, y, label = tb)))
   vdiffr::expect_doppelganger("geom_table_num3",
                               ggplot() +
                                 geom_table(data = my.tb,
                                            mapping = aes(x, y, label = tb),
                                            vjust = 1))
   vdiffr::expect_doppelganger("geom_table_num4",
-                              ggplot(data = my.tb,
-                                     mapping = aes(x, y, label = tb)) +
-                                geom_table(vjust = 1, hjust = 0))
+                              ggplot(data = my.tb) +
+                                geom_table(vjust = 1, hjust = 0,
+                                     mapping = aes(x, y, label = tb)))
   vdiffr::expect_doppelganger("geom_table_num5",
-                              ggplot(data = my.tb,
-                                     mapping = aes(x, y, label = tb)) +
-                                geom_table(vjust = 0, hjust = 1))
+                              ggplot(data = my.tb) +
+                                geom_table(vjust = 0, hjust = 1,
+                                     mapping = aes(x, y, label = tb)))
   vdiffr::expect_doppelganger("geom_table_num6",
                               ggplot(my_data.tb, aes(x, y)) +
                                 geom_point() +
@@ -62,8 +62,9 @@ test_that("letters_tb", {
   tb <- tibble(a = LETTERS[2:4], b = letters[4:2])
   my.tb <- tibble(x = 0, y = 0, tb = list(tb))
   vdiffr::expect_doppelganger("geom_table_letters",
-                              ggplot(my.tb, aes(x, y, label = tb)) +
-                                geom_table())
+                              ggplot() +
+                                geom_table(data = my.tb,
+                                           mapping = aes(x, y, label = tb)))
 })
 
 test_that("parsed_tb", {
@@ -72,12 +73,12 @@ test_that("parsed_tb", {
   my.tb <- tibble(x = 0, y = 0, tb = list(tb))
   vdiffr::expect_doppelganger("geom_table_parsed_all",
                               ggplot() +
-                                geom_table(my.tb, aes(x, y, label = tb), parse = TRUE))
+                                geom_table(my.tb, mapping = aes(x, y, label = tb), parse = TRUE))
 
   tb <- tibble("alpha" = c("x[2]~\"=\"~a^2", "text"),
                "beta" = c("x[2]~\"=\"~b^2", "1200"))
   my.tb <- tibble(x = 0, y = 0, tb = list(tb))
   vdiffr::expect_doppelganger("geom_table_parsed_partial",
                               ggplot() +
-                                geom_table(my.tb, aes(x, y, label = tb), parse = TRUE))
+                                geom_table(my.tb, mapping = aes(x, y, label = tb), parse = TRUE))
 })

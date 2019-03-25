@@ -55,22 +55,39 @@ height and width, but they are in physical units, not data units. The amount of
 space they occupy on the main plot is constant in data units.
 }
 \note{
-This geom works only with tibbles as \code{data}, as it expects a list
-  of Grobs (graphical objects) to be mapped to the \code{label} aesthetic. In
-  the current version the following aesthetics are ignored within the inset
-  Grob \code{size}, \code{colour}, and \code{alpha}. As \code{x} and \code{y}
-  determine the position of the whole inset Grob, similarly to that of a text
-  label, justification is interpreted as indicating the position of the Grob
+These geoms work only with tibbles as \code{data}, as they expects a list
+  of graphics objects ("grob") to be mapped to the \code{label} aesthetic.
+  Aesthetics mappings in the inset plot are independent of those in the base
+  plot.
+
+  In the case of \code{geom_grob()}, \code{x} and \code{y} aesthetics
+  determine the position of the whole inset grob, similarly to that of a text
+  label, justification is interpreted as indicating the position of the grob
   with respect to the $x$ and $y$ coordinates in the data, and \code{angle}
-  is used to rotate the Grob as a whole. \strong{\code{annotate()} cannot be
-  used with \code{geom = "grob"}}. Use \code{annotation_custom()} directly
-  also for adding annotations.
+  is used to rotate the plot as a whole.
+
+  In the case of \code{geom_grob_npc()}, \code{npcx} and \code{npcy} aesthetics
+  determine the position of the whole inset plot, similarly to that of a text
+  label, justification is interpreted as indicating the position of the grob
+  with respect to the $x$ and $y$ coordinates in "npc" units, and \code{angle}
+  is used to rotate the plot as a whole.
+
+  \strong{\code{annotate()} cannot be used with \code{geom = "grob"}}. Use
+  \code{\link[ggplot2]{annotation_custom}} directly when adding inset plots
+  as annotations.
 }
 \section{Alignment}{
  You can modify table alignment with the \code{vjust} and
   \code{hjust} aesthetics. These can either be a number between 0
   (right/bottom) and 1 (top/left) or a character ("left", "middle", "right",
   "bottom", "center", "top").
+}
+
+\section{Inset size}{
+ You can modify inset plot size with the \code{vp.width}
+  and \code{vp.height} aesthetics. These can be a number between 0 (smallest
+  posisble inset) and 1 (whole plotting area width or height). The default
+  value for for both of these aesthetics is 1/3.
 }
 
 \examples{

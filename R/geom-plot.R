@@ -1,7 +1,7 @@
 #' Inset plots
 #'
-#' \code{geom_plot} adds ggplot objects as insets to the base ggplot, using syntax
-#' similar to that of \code{\link[ggplot2]{geom_label}}.
+#' \code{geom_plot} adds ggplot objects as insets to the base ggplot, using
+#' syntax similar to that of \code{\link[ggplot2]{geom_label}}.
 #'
 #' Note the "width" and "height" like of a text element are 0, so stacking and
 #' dodging inset plots will not work by default, and axis limits are not
@@ -11,15 +11,20 @@
 #' plot: when you modify scale limits, inset plots stay the same size relative
 #' to the physiscal size of the base plot.
 #'
-#' @section Alignment: You can modify inset plot alignment with the \code{vjust} and
-#'   \code{hjust} aesthetics. These can either be a number between 0
-#'   (right/bottom) and 1 (top/left) or a character ("left", "middle", "right",
-#'   "bottom", "center", "top"). The \code{angle} aesthetics can be used to
-#'   rotate the inset plots.
+#' @section Inset alignment: You can modify inset plot alignment with the
+#'   \code{vjust} and \code{hjust} aesthetics. These can either be a number
+#'   between 0 (right/bottom) and 1 (top/left) or a character ("left", "middle",
+#'   "right", "bottom", "center", "top"). The \code{angle} aesthetics can be
+#'   used to rotate the inset plots.
+#'
+#' @section Inset size: You can modify inset plot size with the \code{vp.width}
+#'   and \code{vp.height} aesthetics. These can be a number between 0 (smallest
+#'   posisble inset) and 1 (whole plotting area width or height). The default
+#'   value for for both of these aesthetics is 1/3.
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
-#'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs
-#'   to be set at the layer level if you are overriding the plot defaults.
+#'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs to be
+#'   set at the layer level if you are overriding the plot defaults.
 #' @param data A layer specific dataset - only needed if you want to override
 #'   the plot defaults.
 #' @param stat The statistical transformation to use on the data for this layer,
@@ -39,19 +44,34 @@
 #'   define both data and aesthetics and shouldn't inherit behaviour from the
 #'   default plot specification, e.g. \code{\link[ggplot2]{borders}}.
 #'
-#' @note This geom works only with tibbles as \code{data}, as it expects a list
-#'   of ggplots ("gg" objects) to be mapped to the \code{label} aesthetic.
-#'   Aesthetics mappings in the inset plot are independent of those in the base
-#'   plot. As \code{x} and \code{y}
-#'   determine the position of the whole inset plot, similarly to that of a text
-#'   label, justification is interpreted as indicating the position of the table
-#'   with respect to the $x$ and $y$ coordinates in the data, and \code{angle}
-#'   is used to rotate the plot as a whole. \strong{\code{annotate()} cannot be
-#'   used with \code{geom = "plot"}}. Use \code{\link[ggplot2]{annotation_custom}} directly
-#'   when adding inset plots as annotations.
+#' @section Known problem!: In some cases when explicit coordinates are added
+#'   to the inner plot, it may be also necessary to add explicitly coordinsates
+#'   to the outer plots.
 #'
-#' @references The idea of implementing a \code{geom_custom()} for grobs has been discussed as an
-#'   issue at \url{https://github.com/tidyverse/ggplot2/issues/1399}.
+#' @note These geoms work only with tibbles as \code{data}, as they expects a
+#'   list of ggplots ("gg" objects) to be mapped to the \code{label} aesthetic.
+#'   Aesthetics mappings in the inset plot are independent of those in the base
+#'   plot.
+#'
+#'   In the case of \code{geom_plot()}, \code{x} and \code{y} aesthetics
+#'   determine the position of the whole inset plot, similarly to that of a text
+#'   label, justification is interpreted as indicating the position of the plot
+#'   with respect to the $x$ and $y$ coordinates in the data, and \code{angle}
+#'   is used to rotate the plot as a whole.
+#'
+#'   In the case of \code{geom_plot_npc()}, \code{npcx} and \code{npcy}
+#'   aesthetics determine the position of the whole inset plot, similarly to
+#'   that of a text label, justification is interpreted as indicating the
+#'   position of the plot with respect to the $x$ and $y$ coordinates in "npc"
+#'   units, and \code{angle} is used to rotate the plot as a whole.
+#'
+#'   \strong{\code{annotate()} cannot be used with \code{geom = "plot"}}. Use
+#'   \code{\link[ggplot2]{annotation_custom}} directly when adding inset plots
+#'   as annotations.
+#'
+#' @references The idea of implementing a \code{geom_custom()} for grobs has
+#'   been discussed as an issue at
+#'   \url{https://github.com/tidyverse/ggplot2/issues/1399}.
 #'
 #' @export
 #'
