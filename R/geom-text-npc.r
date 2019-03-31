@@ -141,10 +141,10 @@ GeomTextNpc <- ggproto("GeomTextNpc", Geom,
                         na.rm = FALSE, check_overlap = FALSE) {
 
     if (is.character(data$npcx)) {
-      data$npcx <- compute_npc(data$npcx)
+      data$npcx <- compute_npcx(data$npcx)
     }
     if (is.character(data$npcy)) {
-      data$npcy <- compute_npc(data$npcy)
+      data$npcy <- compute_npcy(data$npcy)
     }
 
     ranges <- coord$backtransform_range(panel_params)

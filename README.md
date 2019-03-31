@@ -5,8 +5,6 @@
 
 [![cran
 version](https://www.r-pkg.org/badges/version/ggpmisc)](https://cran.r-project.org/package=ggpmisc)
-[![cran
-checks](https://cranchecks.info/badges/worst/ggpmisc)](https://cran.r-project.org/web/checks/check_results_ggpmisc.html)
 
 ## Purpose
 

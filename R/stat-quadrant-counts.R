@@ -183,15 +183,11 @@ compute_counts_fun <- function(data,
     }
   }
 
-  if (is.character(label.x)) {
-    label.x <- compute_npc(label.x)
-  }
-  if (is.character(label.y)) {
-    label.y <- compute_npc(label.y)
-  }
+  label.x <- compute_npcx(label.x)
+  label.y <- compute_npcy(label.y)
 
-  label.x <- range(label.x)
-  label.y <- range(label.y)
+  label.x <- range(label.x) # ensure length is always 2
+  label.y <- range(label.y) # ensure length is always 2
 
   # dynamic default based on data range
   if (is.null(quadrants)) {

@@ -245,10 +245,10 @@ gtbnpc_draw_panel_fun <-
     }
 
     if (is.character(data$npcx)) {
-      data$npcx <- compute_npc(data$npcx)
+      data$npcx <- compute_npcx(data$npcx)
     }
     if (is.character(data$npcy)) {
-      data$npcy <- compute_npc(data$npcy)
+      data$npcy <- compute_npcy(data$npcy)
     }
 
     if (is.character(data$vjust)) {

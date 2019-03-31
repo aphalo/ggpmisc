@@ -7,12 +7,12 @@
 \usage{
 geom_x_margin_point(mapping = NULL, data = NULL, stat = "identity",
   position = "identity", ..., xintercept, sides = "b",
-  point.shift = 0.015, na.rm = FALSE, show.legend = FALSE,
+  point.shift = 0.017, na.rm = FALSE, show.legend = FALSE,
   inherit.aes = FALSE)
 
 geom_y_margin_point(mapping = NULL, data = NULL, stat = "identity",
   position = "identity", ..., yintercept, sides = "l",
-  point.shift = 0.015, na.rm = FALSE, show.legend = FALSE,
+  point.shift = 0.017, na.rm = FALSE, show.legend = FALSE,
   inherit.aes = FALSE)
 }
 \arguments{

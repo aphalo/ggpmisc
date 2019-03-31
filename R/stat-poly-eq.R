@@ -306,12 +306,8 @@ poly_eq_compute_group_fun <- function(data,
   }
 
   if (npc.used) {
-    if (is.character(label.x)) {
-      label.x <- compute_npc(label.x)
-    }
-    if (is.character(label.y)) {
-      label.y <- compute_npc(label.y)
-    }
+    label.x <- compute_npcx(x = label.x, group = group.idx, h.step = 0)
+    label.y <- compute_npcy(y = label.y, group = group.idx, v.step = 0.07)
     z$npcx <- label.x
     z$x <- NA_real_
     z$npcy <- label.y

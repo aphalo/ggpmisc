@@ -9,7 +9,7 @@
 Extensions to 'ggplot2' respecting the grammar of graphics
     paradigm. Specialization of method ggplot(): accept and convert on the fly 
     time series data. Geom: "table", "plot" and "grob" add insets to plots
-    using native data coordinates, while "table_npc", "plot_npc" and "grob_pnc"
+    using native data coordinates, while "table_npc", "plot_npc" and "grob_npc"
     do the same using "npc" coordinates through new aesthetics "npcx" and "npcy". 
     Statistics: locate and tag peaks and valleys; count observations in different 
     quadrants of a plot; select observations based on 2D density; label with the 
@@ -75,7 +75,6 @@ The signatures of \code{stat_peaks()} and \code{stat_valleys()} are
 }
 
 \examples{
-library(ggplot2)
 library(tibble)
 
 ggplot(lynx, as.numeric = FALSE) + geom_line() +
@@ -102,9 +101,8 @@ ggplot(PlantGrowth, aes(group, weight)) +
 }
 \references{
 Package suite 'r4photobiology' web site at
-\url{https://www.r4photobiology.info/}\cr Package 'ggplot2' web site at
-\url{http://ggplot2.org/}\cr Package 'ggplot2' documentation at
-\url{http://docs.ggplot2.org/}\cr Package 'ggplot2' source code at
+\url{https://www.r4photobiology.info/}\cr Package 'ggplot2' documentation at
+\url{https://ggplot2.tidyverse.org/}\cr Package 'ggplot2' source code at
 \url{https://github.com/hadley/ggplot2}
 }
 \seealso{

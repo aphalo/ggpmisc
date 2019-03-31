@@ -209,14 +209,14 @@ respectively, and convert them into Grobs before adding them to the plot,
 file.name <- 
   system.file("extdata", "Isoquercitin.png", 
               package = "ggpmisc", mustWork = TRUE)
-Robinin <- magick::image_read(file.name)
+Isoquercitin <- magick::image_read(file.name)
 grobs.tb <- tibble(x = c(0, 10, 20, 40), y = c(4, 5, 6, 9),
                    width = c(0.05, 0.05, 0.01, 1),
                    height =  c(0.05, 0.05, 0.01, 0.3),
                    grob = list(grid::circleGrob(), 
                                grid::rectGrob(), 
                                grid::textGrob("I am a Grob"),
-                               grid::rasterGrob(image = Robinin)))
+                               grid::rasterGrob(image = Isoquercitin)))
 
 ggplot() +
   geom_grob(data = grobs.tb, 
@@ -282,12 +282,17 @@ We assume here that the tiger is being used as a logo, and we simply map
 all aesthetics to constant values.
 
 ```{r}
-tiger <- magick::image_read('http://jeroen.github.io/images/tiger.svg')
+file.name <- 
+  system.file("extdata", "Robinin.png", 
+              package = "ggpmisc", mustWork = TRUE)
+Robinin <- magick::image_read(file.name)
+
+set.seed(123456)
 data.tb <- tibble(x = 1:20, y = (1:20) + rnorm(20, 0, 10))
 
 ggplot(data.tb, aes(x, y)) +
-  geom_grob_npc(label = list(grid::rasterGrob(image = tiger)), 
-                npcx = 0, npcy = 0.95) +
+  geom_grob_npc(label = list(grid::rasterGrob(image = Robinin)), 
+                npcx = 0.01, npcy = 0.95, hjust = 0, vp.width = 0.5) +
   geom_point() +
   expand_limits(y = 45, x = 0)
 ```
@@ -296,14 +301,18 @@ Alternatively we produce the same plot by creating a data frame to contain the
 grob and the coordinates, and then map these variable to the aesthetics using
 `aes()`.
 ```{r}
-logo.tb <- tibble(x = 0,
+logo.tb <- tibble(x = 0.02,
                   y = 0.95,
-                  grob = list(grid::rasterGrob(image = tiger)))
+                  width = 2/3,
+                  height = 1/4,
+                  grob = list(grid::rasterGrob(image = Robinin)))
 
 ggplot(data.tb, aes(x, y)) +
-  geom_grob_npc(data = logo.tb, aes(label = grob, npcx = x, npcy = y)) +
+  geom_grob_npc(data = logo.tb, 
+                aes(label = grob, npcx = x, npcy = y, 
+                    vp.width = width, vp.height = height)) +
   geom_point() +
-  expand_limits(y = 45, x = 0)
+  expand_limits(y = 55, x = 0)
 ```
 
 Two geometries are based on existing 'ggplot2' geometries. They are almost like
@@ -348,8 +357,9 @@ data.tb <- mpg %>%
   group_by(cyl) %>%
   summarise(hwy = median(hwy), displ = median(displ))
 ggplot(mpg, aes(displ, hwy, colour = factor(cyl))) +
-  geom_x_margin_point(data = data.tb, 
+  geom_x_margin_point(data = data.tb,
                       aes(xintercept = displ, fill = factor(cyl))) +
+  expand_limits(y = 10) +
   geom_point() 
 ```
 
@@ -432,7 +442,7 @@ ggplot(my.data, aes(x, y)) +
   geom_hline(yintercept = 0, colour = "red") +
   geom_vline(xintercept = 0, colour = "red") +
   geom_point() +
-  expand_limits(y = c(-220, 220)) +
+  expand_limits(y = c(-250, 250)) +
   stat_quadrant_counts(colour = "red")
 ```
 

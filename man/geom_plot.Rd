@@ -6,11 +6,11 @@
 \title{Inset plots}
 \usage{
 geom_plot(mapping = NULL, data = NULL, stat = "identity",
-  position = "identity", ..., na.rm = FALSE, show.legend = NA,
+  position = "identity", ..., na.rm = FALSE, show.legend = FALSE,
   inherit.aes = FALSE)
 
 geom_plot_npc(mapping = NULL, data = NULL, stat = "identity",
-  position = "identity", ..., na.rm = FALSE, show.legend = NA,
+  position = "identity", ..., na.rm = FALSE, show.legend = FALSE,
   inherit.aes = FALSE)
 }
 \arguments{

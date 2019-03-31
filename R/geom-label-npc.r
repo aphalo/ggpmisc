@@ -61,12 +61,8 @@ GeomLabelNpc <- ggproto("GeomLabelNpc", Geom,
                         label.r = unit(0.15, "lines"),
                         label.size = 0.25) {
 
-    if (is.character(data$npcx)) {
-      data$npcx <- compute_npc(data$npcx)
-    }
-    if (is.character(data$npcy)) {
-      data$npcy <- compute_npc(data$npcy)
-    }
+    data$npcx <- compute_npcx(data$npcx)
+    data$npcy <- compute_npcy(data$npcy)
 
     ranges <- coord$backtransform_range(panel_params)
 
