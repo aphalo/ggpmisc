@@ -244,12 +244,8 @@ gtbnpc_draw_panel_fun <-
       return(grid::nullGrob())
     }
 
-    if (is.character(data$npcx)) {
-      data$npcx <- compute_npcx(data$npcx)
-    }
-    if (is.character(data$npcy)) {
-      data$npcy <- compute_npcy(data$npcy)
-    }
+    data$npcx <- compute_npcx(data$npcx)
+    data$npcy <- compute_npcy(data$npcy)
 
     if (is.character(data$vjust)) {
       data$vjust <- compute_just(data$vjust, data$npcy)

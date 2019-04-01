@@ -70,11 +70,16 @@
 #'
 #' df <- data.frame(
 #'   x = c(0, 0, 1, 1, 0.5),
+#'   x.chr = c("left", "left", "right", "right", "center"),
 #'   y = c(0, 1, 0, 1, 0.5),
-#'   text = c("bottom-left", "bottom-right", "top-left", "top-right", "center")
+#'   y.chr = c("bottom", "top", "bottom", "top", "middle"),
+#'   text = c("bottom-left", "top-left", "bottom-right", "top-right", "center-middle")
 #' )
 #' ggplot(df) +
 #'   geom_text_npc(aes(npcx = x, npcy = y, label = text))
+#'
+#' ggplot(df) +
+#'   geom_text_npc(aes(npcx = x.chr, npcy = y.chr, label = text))
 #'
 #' ggplot(data = mtcars, mapping = aes(wt, mpg)) +
 #'   geom_point() +
@@ -140,12 +145,8 @@ GeomTextNpc <- ggproto("GeomTextNpc", Geom,
   draw_panel = function(data, panel_params, coord, parse = FALSE,
                         na.rm = FALSE, check_overlap = FALSE) {
 
-    if (is.character(data$npcx)) {
-      data$npcx <- compute_npcx(data$npcx)
-    }
-    if (is.character(data$npcy)) {
-      data$npcy <- compute_npcy(data$npcy)
-    }
+    data$npcx <- compute_npcx(data$npcx)
+    data$npcy <- compute_npcy(data$npcy)
 
     ranges <- coord$backtransform_range(panel_params)
 

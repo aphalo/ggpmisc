@@ -108,11 +108,16 @@ This geom is identical to 'ggplot2' \code{geom_text()} except that it
 
 df <- data.frame(
   x = c(0, 0, 1, 1, 0.5),
+  x.chr = c("left", "left", "right", "right", "center"),
   y = c(0, 1, 0, 1, 0.5),
-  text = c("bottom-left", "bottom-right", "top-left", "top-right", "center")
+  y.chr = c("bottom", "top", "bottom", "top", "middle"),
+  text = c("bottom-left", "top-left", "bottom-right", "top-right", "center-middle")
 )
 ggplot(df) +
   geom_text_npc(aes(npcx = x, npcy = y, label = text))
+
+ggplot(df) +
+  geom_text_npc(aes(npcx = x.chr, npcy = y.chr, label = text))
 
 ggplot(data = mtcars, mapping = aes(wt, mpg)) +
   geom_point() +
