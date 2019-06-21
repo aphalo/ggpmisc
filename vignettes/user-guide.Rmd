@@ -240,6 +240,23 @@ relative to the main plot, so the combined plot can be scaled.
 Please see next section for a description of
 `geom_grob_npc()`.
 
+## geom_vhlines
+
+This is a convenience geometry that adds both vertical and horizontal
+guide lines on the same plot layer, using the same syntax as `geom_hline()` and
+`geom_vline()` from package 'ggplot2'.
+
+```{r}
+ggplot(mpg, aes(displ, hwy, colour = factor(cyl))) +
+  geom_vhlines(xintercept = c(2.75, 4), yintercept = 27, linetype = "dashed") +
+  geom_point() +
+  labs(x = "Engine displacement (l)", y = "Fuel use efficiency (MPG)",
+       colour = "Engine cylinders\n(number)") +
+  theme_bw()
+
+```
+
+
 ## Normalised Parent Coordinates
 
 R's 'grid' pakage defines several units that can be used to describe the locations
@@ -417,11 +434,12 @@ ggplot(lynx, as.numeric = FALSE) + geom_line() +
   stat_valleys(geom = "rug", colour = "blue")
 ```
 
-## stat_quadrant_counts
+## stat_quadrant_counts and geom_quadrant_lines
 
 This statistic automates the annotation of plots with number of observations,
 either by quadrant, by pairs of quadrants or the four quadrants taken together
-(whole plotting area).
+(whole plotting area). Its companion geometry, `geom_quadrant_lines()` is used
+in the examples to highlight the quadrants.
 
 We generate some artificial data.
 
@@ -439,20 +457,19 @@ Using defaults except for colour.
 
 ```{r}
 ggplot(my.data, aes(x, y)) +
-  geom_hline(yintercept = 0, colour = "red") +
-  geom_vline(xintercept = 0, colour = "red") +
+  geom_quadrant_lines(colour = "red") +
+  stat_quadrant_counts(colour = "red") +
   geom_point() +
-  expand_limits(y = c(-250, 250)) +
-  stat_quadrant_counts(colour = "red")
+  expand_limits(y = c(-250, 250))
 ```
 
 Pooling quadrants along the _x_-axis. (`pool.along = "y"` pools along _y_.)
 
 ```{r}
 ggplot(my.data, aes(x, y)) +
-  geom_hline(yintercept = 0, colour = "red") +
-  geom_point() +
-  stat_quadrant_counts(colour = "red", pool.along = "x")
+  geom_quadrant_lines(colour = "red", pool.along = "x") +
+  stat_quadrant_counts(colour = "red", pool.along = "x") +
+  geom_point()
 ```
 
 Manual positioning of the text annotations and pooling of all four quadrants,
@@ -469,10 +486,9 @@ Annotation of only specific quadrants.
 
 ```{r}
 ggplot(my.data, aes(x, y)) +
-  geom_hline(yintercept = 0, colour = "red") +
-  geom_vline(xintercept = 0, colour = "red") +
-  geom_point() +
-  stat_quadrant_counts(colour = "red", quadrants = c(2, 4))
+  geom_quadrant_lines(colour = "red") +
+  stat_quadrant_counts(colour = "red", quadrants = c(2, 4)) +
+  geom_point()
 ```
 Using facets, even with free scale limits, the labels are placed consistently. This achieved
 by the default use of `geom_text_npc()` or as shown below by use of `geom_label_npc(). We
@@ -480,10 +496,9 @@ expand the _y_ limits to ensure that no observations are ocluded by the labels.
 
 ```{r}
 ggplot(my.data, aes(x, y, colour = group)) +
-  geom_hline(yintercept = 0) +
-  geom_vline(xintercept = 0) +
+  geom_quadrant_lines() +
+  stat_quadrant_counts(geom = "label_npc") +
   geom_point() +
-  stat_quadrant_counts(hjust = "inward", geom = "label_npc") +
   expand_limits(y = c(-260, 260)) +
   facet_wrap(~group)
 ```

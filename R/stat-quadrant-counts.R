@@ -77,17 +77,17 @@
 #'   expand_limits(y = 12.7)
 #'
 #' ggplot(my.data, aes(x, y)) +
-#'   geom_hline(yintercept = 10, colour = "blue") +
-#'   geom_vline(xintercept = 50, colour = "blue") +
-#'   geom_point() +
+#'   geom_quadrant_lines(colour = "blue", xintercept = 50, yintercept = 10) +
 #'   stat_quadrant_counts(colour = "blue", xintercept = 50, yintercept = 10) +
+#'   geom_point() +
 #'   scale_y_continuous(expand = expand_scale(mult = 0.15, add = 0))
 #'
 #' ggplot(my.data, aes(x, y)) +
-#'   geom_hline(yintercept = 10, colour = "blue") +
-#'   geom_point() +
+#'   geom_quadrant_lines(colour = "blue",
+#'                        pool.along = "x", yintercept = 10) +
 #'   stat_quadrant_counts(colour = "blue", label.x = "right",
 #'                        pool.along = "x", yintercept = 10) +
+#'   geom_point() +
 #'   expand_limits(y = c(7, 13))
 #'
 #' ggplot(my.data, aes(x, y)) +
@@ -96,23 +96,18 @@
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   stat_quadrant_counts(geom = "label_npc", quadrants = 0,
-#'                        label.x = "left", label.y = "bottom")
-#'
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_point() +
-#'   stat_quadrant_counts(geom = "text") # use "text_npc" instead
+#'   stat_quadrant_counts(geom = "text") # use "tex" instead
 #'
 #' @export
 #'
 stat_quadrant_counts <- function(mapping = NULL, data = NULL, geom = "text_npc",
-                                position = "identity",
-                                quadrants = NULL,
-                                pool.along = "none",
-                                xintercept = 0, yintercept = 0,
-                                label.x = NULL, label.y = NULL,
-                                na.rm = FALSE, show.legend = FALSE,
-                                inherit.aes = TRUE, ...) {
+                                 position = "identity",
+                                 quadrants = NULL,
+                                 pool.along = "none",
+                                 xintercept = 0, yintercept = 0,
+                                 label.x = NULL, label.y = NULL,
+                                 na.rm = FALSE, show.legend = FALSE,
+                                 inherit.aes = TRUE, ...) {
   ggplot2::layer(
     stat = StatQuadrantCounts, data = data, mapping = mapping, geom = geom,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
