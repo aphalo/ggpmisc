@@ -101,7 +101,11 @@ This geom is identical to 'ggplot2' \code{geom_text()} except that it
   and 1 (top/left) or a character (`"left"`, `"middle"`, `"right"`,
   `"bottom"`, `"center"`, `"top"`). There are two special alignments:
   `"inward"` and `"outward"`. Inward always aligns text towards the center,
-  and outward aligns it away from the center.
+  and outward aligns it away from the center. When using textual positions
+  a shift is added based on grouping, however unsused levels are not dropped.
+  In plots with faceting so that not all groups appear in each panel, gaps
+  will appear in between labels. To solve this pass numeric values for
+  the npc coordinates of each label instead of character strings.
 }
 
 \examples{
