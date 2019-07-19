@@ -3,8 +3,6 @@
 vignettes/figure
 inst-not
 test
-^docs$
-^_pkgdown.yml$
 ^CONDUCT\.md$
 ^_pkgdown\.yml$
 ^README\.Rmd$
