@@ -127,14 +127,14 @@ ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
 Installation of the most recent stable version from CRAN:
 
 ```{r cran-instalaltion, eval=FALSE}
-install.packages("ggspectra")
+install.packages("ggpmisc")
 ```
 
 Installation of the current unstable version from Bitbucket:
 
 ```{r bb-instalaltion, eval=FALSE}
 # install.packages("devtools")
-devtools::install_bitbucket("aphalo/ggspectra")
+devtools::install_bitbucket("aphalo/ggpmisc")
 ```
 
 ## Documentation 

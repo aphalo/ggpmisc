@@ -79,6 +79,9 @@ ggplot(lynx, as.numeric = FALSE) + geom_line() +
              hjust = -0.1, x.label.fmt = "%Y") +
   stat_peaks(geom = "rug", colour = "red", sides = "b") +
   expand_limits(y = 8000)
+#> Registered S3 method overwritten by 'xts':
+#>   method     from
+#>   as.zoo.xts zoo
 ```
 
 ![](man/figures/README-readme-03-1.png)<!-- -->
@@ -120,8 +123,6 @@ ggplot(cars, aes(speed, dist)) +
                label.y.npc = "top", label.x.npc = "left",
               size = 2.5,
               parse = TRUE)
-#> Warning in seq.default(along = x): partial argument match of 'along' to
-#> 'along.with'
 ```
 
 ![](man/figures/README-readme-05-1.png)<!-- -->
@@ -149,14 +150,14 @@ ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
 Installation of the most recent stable version from CRAN:
 
 ``` r
-install.packages("ggspectra")
+install.packages("ggpmisc")
 ```
 
 Installation of the current unstable version from Bitbucket:
 
 ``` r
 # install.packages("devtools")
-devtools::install_bitbucket("aphalo/ggspectra")
+devtools::install_bitbucket("aphalo/ggpmisc")
 ```
 
 ## Documentation
@@ -185,19 +186,19 @@ publications, please cite according to:
 ``` r
 citation("ggpmisc")
 #> 
-#> To cite ggpmisc in publications, please use:
+#> To cite package 'ggpmisc' in publications use:
 #> 
-#>   Pedro J. Aphalo. (2016) Learn R ...as you learnt your mother
-#>   tongue. Leanpub, Helsinki.
+#>   Pedro J. Aphalo (2019). ggpmisc: Miscellaneous Extensions to
+#>   'ggplot2'. https://www.r4photobiology.info,
+#>   https://bitbucket.org/aphalo/ggpmisc.
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
-#>   @Book{,
+#>   @Manual{,
+#>     title = {ggpmisc: Miscellaneous Extensions to 'ggplot2'},
 #>     author = {Pedro J. Aphalo},
-#>     title = {Learn R ...as you learnt your mother tongue},
-#>     publisher = {Leanpub},
-#>     year = {2016},
-#>     url = {https://leanpub.com/learnr},
+#>     year = {2019},
+#>     note = {https://www.r4photobiology.info, https://bitbucket.org/aphalo/ggpmisc},
 #>   }
 ```
 
