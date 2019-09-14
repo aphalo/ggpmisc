@@ -53,7 +53,8 @@ using npcx and npcy aesthetics.}
 \item{hstep, vstep}{numeric in npc units, the horizontal and vertical step
 used between labels for different groups.}
 
-\item{output.type}{character One of "expression", "LaTeX" or "text".}
+\item{output.type}{character One of "expression", "LaTeX" or "text",
+or "numeric".}
 
 \item{na.rm}{a logical indicating whether NA values should be stripped before
 the computation proceeds.}
@@ -104,21 +105,32 @@ For backward compatibility a logical is accepted as argument for
 }
 
 \section{Computed variables}{
- \describe{ \item{x}{x position for left edge}
-  \item{y}{y position near upper edge} \item{eq.label}{equation for the
-  fitted polynomial as a character string to be parsed}
-  \item{rr.label}{\eqn{R^2} of the fitted model as a character string to be
-  parsed} \item{adj.rr.label}{Adjusted \eqn{R^2} of the fitted model as a
-  character string to be parsed} \item{AIC.label}{AIC for the fitted model.}
-  \item{BIC.label}{BIC for the fitted model.} \item{hjust}{Set to zero to
-  override the default of the "text" geom.}}
+
+If output.type different from \code{"numeric"} the returned tibble contains columns:
+\describe{
+  \item{x,npcx}{x position}
+  \item{y,npcy}{y position}
+  \item{coef.ls, r.squared, adj.r.squared, AIC, BIC}{as numric values extracted from fit object}
+  \item{eq.label}{equation for the fitted polynomial as a character string to be parsed}
+  \item{rr.label}{\eqn{R^2} of the fitted model as a character string to be parsed}
+  \item{adj.rr.label}{Adjusted \eqn{R^2} of the fitted model as a character string to be parsed}
+  \item{AIC.label}{AIC for the fitted model.}
+  \item{BIC.label}{BIC for the fitted model.}
+  \item{hjust, vjust}{Set to "inward" to override the default of the "text" geom.}}
+
+If output.type is \code{"numeric"} the returned tibble contains columns:
+\describe{
+  \item{x,npcx}{x position}
+  \item{y,npcy}{y position}
+  \item{coef.ls}{list containing the "coefficients" matrix from the summary of the fit object}
+  \item{r.squared, adj.r.squared, AIC, BIC}{numric values extracted from fit object}
+  \item{hjust, vjust}{Set to "inward" to override the default of the "text" geom.}}
 }
 
 \section{Warning!}{
- if using \code{output.type = "expression"}, then
+ if using the computed labels with \code{output.type = "expression"}, then
   \code{parse = TRUE} is needed, while if using \code{output.type = "LaTeX"}
-  \code{parse = FALSE}, the default of \code{geom_text} and
-  \code{geom_label}, should be used.
+  \code{parse = FALSE} is needed.
 }
 
 \examples{
@@ -176,6 +188,22 @@ ggplot(my.data, aes(x, y)) +
   geom_smooth(method = "lm", formula = formula) +
   stat_poly_eq(geom = "text", label.x = 100, label.y = 0, hjust = 1,
                formula = formula, parse = TRUE)
+# using numeric values
+# Here we use column "Estimate" from the matrix.
+# Other available columns are "Std. Error", "t value" and "Pr(>|t|)".
+my.format <-
+  "b[0]~`=`~\%.3g*\\", \\"*b[1]~`=`~\%.3g*\\", \\"*b[2]~`=`~\%.3g*\\", \\"*b[3]~`=`~\%.3g"
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_eq(formula = formula,
+               output.type = "numeric",
+               parse = TRUE,
+               mapping = aes(label = sprintf(my.format,
+                                              stat(coef.ls)[[1]][[1, "Estimate"]],
+                                              stat(coef.ls)[[1]][[2, "Estimate"]],
+                                              stat(coef.ls)[[1]][[3, "Estimate"]],
+                                              stat(coef.ls)[[1]][[4, "Estimate"]])))
 
 }
 \references{

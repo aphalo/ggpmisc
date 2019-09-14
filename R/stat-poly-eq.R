@@ -41,7 +41,8 @@
 #'   using npcx and npcy aesthetics.
 #' @param hstep,vstep numeric in npc units, the horizontal and vertical step
 #'   used between labels for different groups.
-#' @param output.type character One of "expression", "LaTeX" or "text".
+#' @param output.type character One of "expression", "LaTeX" or "text",
+#'   or "numeric".
 #'
 #' @note For backward compatibility a logical is accepted as argument for
 #'   \code{eq.with.lhs}, giving the same output than the current default
@@ -74,19 +75,30 @@
 #'   \code{numeric} variables. In addition the aesthetics undertood by the geom
 #'   used (\code{"text"} by default) are understood and grouping respected.
 #'
-#' @section Computed variables: \describe{ \item{x}{x position for left edge}
-#'   \item{y}{y position near upper edge} \item{eq.label}{equation for the
-#'   fitted polynomial as a character string to be parsed}
-#'   \item{rr.label}{\eqn{R^2} of the fitted model as a character string to be
-#'   parsed} \item{adj.rr.label}{Adjusted \eqn{R^2} of the fitted model as a
-#'   character string to be parsed} \item{AIC.label}{AIC for the fitted model.}
-#'   \item{BIC.label}{BIC for the fitted model.} \item{hjust}{Set to zero to
-#'   override the default of the "text" geom.}}
+#' @section Computed variables:
+#' If output.type different from \code{"numeric"} the returned tibble contains columns:
+#' \describe{
+#'   \item{x,npcx}{x position}
+#'   \item{y,npcy}{y position}
+#'   \item{coef.ls, r.squared, adj.r.squared, AIC, BIC}{as numric values extracted from fit object}
+#'   \item{eq.label}{equation for the fitted polynomial as a character string to be parsed}
+#'   \item{rr.label}{\eqn{R^2} of the fitted model as a character string to be parsed}
+#'   \item{adj.rr.label}{Adjusted \eqn{R^2} of the fitted model as a character string to be parsed}
+#'   \item{AIC.label}{AIC for the fitted model.}
+#'   \item{BIC.label}{BIC for the fitted model.}
+#'   \item{hjust, vjust}{Set to "inward" to override the default of the "text" geom.}}
 #'
-#' @section Warning!: if using \code{output.type = "expression"}, then
+#' If output.type is \code{"numeric"} the returned tibble contains columns:
+#' \describe{
+#'   \item{x,npcx}{x position}
+#'   \item{y,npcy}{y position}
+#'   \item{coef.ls}{list containing the "coefficients" matrix from the summary of the fit object}
+#'   \item{r.squared, adj.r.squared, AIC, BIC}{numric values extracted from fit object}
+#'   \item{hjust, vjust}{Set to "inward" to override the default of the "text" geom.}}
+#'
+#' @section Warning!: if using the computed labels with \code{output.type = "expression"}, then
 #'   \code{parse = TRUE} is needed, while if using \code{output.type = "LaTeX"}
-#'   \code{parse = FALSE}, the default of \code{geom_text} and
-#'   \code{geom_label}, should be used.
+#'   \code{parse = FALSE} is needed.
 #'
 #' @examples
 #' library(ggplot2)
@@ -143,6 +155,24 @@
 #'   geom_smooth(method = "lm", formula = formula) +
 #'   stat_poly_eq(geom = "text", label.x = 100, label.y = 0, hjust = 1,
 #'                formula = formula, parse = TRUE)
+#' # using numeric values
+#' # Here we use column "Estimate" from the matrix.
+#' # Other available columns are "Std. Error", "t value" and "Pr(>|t|)".
+#' my.format <-
+#'   "b[0]~`=`~%.3g*\", \"*b[1]~`=`~%.3g*\", \"*b[2]~`=`~%.3g*\", \"*b[3]~`=`~%.3g"
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   geom_smooth(method = "lm", formula = formula) +
+#'   stat_poly_eq(formula = formula,
+#'                output.type = "numeric",
+#'                parse = TRUE,
+#'                mapping = aes(label = sprintf(my.format,
+#'                                              stat(coef.ls)[[1]][[1, "Estimate"]],
+#'                                              stat(coef.ls)[[1]][[2, "Estimate"]],
+#'                                              stat(coef.ls)[[1]][[3, "Estimate"]],
+#'                                              stat(coef.ls)[[1]][[4, "Estimate"]])
+#'                                              )
+#'                              )
 #'
 #' @export
 #'
@@ -254,55 +284,67 @@ poly_eq_compute_group_fun <- function(data,
   lm.args <- list(quote(formula), data = quote(data), weights = quote(weight))
   mf <- do.call(stats::lm, lm.args)
 
-  coefs <- stats::coef(mf)
-  formula.rhs.chr <- as.character(formula)[3]
-  if (grepl("-1", formula.rhs.chr) || grepl("- 1", formula.rhs.chr)) {
-    coefs <- c(0, coefs)
-  }
   rr <- summary(mf)$r.squared
   adj.rr <- summary(mf)$adj.r.squared
   AIC <- AIC(mf)
   BIC <- BIC(mf)
-  eq.char <- as.character(signif(polynom::as.polynomial(coefs), coef.digits))
-  # as character drops 1
-  eq.char <- gsub("+ x", paste("+ 1.", stringr::str_dup("0", coef.digits - 1L),
-                               "*x", sep = ""),
-                  eq.char, fixed = TRUE)
-  eq.char <- gsub("e([+-]?[0-9]*)", "%*%10^{\\1}", eq.char)
-  if (output.type %in% c("latex", "tex", "tikz")) {
-    eq.char <- gsub("*", " ", eq.char, fixed = TRUE)
-  }
-  if (is.character(eq.with.lhs)) {
-    lhs <- eq.with.lhs
-    eq.with.lhs <- TRUE
-  } else if (eq.with.lhs) {
-    if (output.type == "expression") {
-      lhs <- "italic(y)~`=`~"
-    } else if (output.type %in% c("latex", "tex", "tikz", "text")) {
-      lhs <- "y = "
+
+  if (output.type == "numeric") {
+    z <- tibble::tibble(coef.ls = list(summary(mf)[["coefficients"]]),
+                        r.squared = rr,
+                        adj.r.squared = adj.rr,
+                        AIC = AIC,
+                        BIC = BIC)
+  } else {
+    coefs <- stats::coef(mf)
+    formula.rhs.chr <- as.character(formula)[3]
+    if (grepl("-1", formula.rhs.chr) || grepl("- 1", formula.rhs.chr)) {
+      coefs <- c(0, coefs)
     }
-  }
-  if (eq.with.lhs) {
-    eq.char <- paste(lhs, eq.char, sep = "")
-  }
-  rr.char <- format(rr, digits = rr.digits)
-  adj.rr.char <- format(adj.rr, digits = rr.digits)
-  AIC.char <- sprintf("%.4g", AIC)
-  BIC.char <- sprintf("%.4g", BIC)
-  if (output.type == "expression") {
-    z <- data.frame(eq.label = gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
-                    rr.label = paste("italic(R)^2", rr.char, sep = "~`=`~"),
-                    adj.rr.label = paste("italic(R)[adj]^2",
-                                         adj.rr.char, sep = "~`=`~"),
-                    AIC.label = paste("AIC", AIC.char, sep = "~`=`~"),
-                    BIC.label = paste("BIC", BIC.char, sep = "~`=`~"))
-  } else if (output.type %in% c("latex", "tex", "text")) {
-    z <- data.frame(eq.label = gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
-                    rr.label = paste("R^2", rr.char, sep = " = "),
-                    adj.rr.label = paste("R_{adj}^2",
-                                         adj.rr.char, sep = " = "),
-                    AIC.label = paste("AIC", AIC.char, sep = " = "),
-                    BIC.label = paste("BIC", BIC.char, sep = " = "))
+
+    eq.char <- as.character(signif(polynom::as.polynomial(coefs), coef.digits))
+    # as character drops 1
+    eq.char <- gsub("+ x", paste("+ 1.", stringr::str_dup("0", coef.digits - 1L),
+                                 "*x", sep = ""),
+                    eq.char, fixed = TRUE)
+    eq.char <- gsub("e([+-]?[0-9]*)", "%*%10^{\\1}", eq.char)
+    if (output.type %in% c("latex", "tex", "tikz")) {
+      eq.char <- gsub("*", " ", eq.char, fixed = TRUE)
+    }
+    if (is.character(eq.with.lhs)) {
+      lhs <- eq.with.lhs
+      eq.with.lhs <- TRUE
+    } else if (eq.with.lhs) {
+      if (output.type == "expression") {
+        lhs <- "italic(y)~`=`~"
+      } else if (output.type %in% c("latex", "tex", "tikz", "text")) {
+        lhs <- "y = "
+      }
+    }
+    if (eq.with.lhs) {
+      eq.char <- paste(lhs, eq.char, sep = "")
+    }
+    rr.char <- format(rr, digits = rr.digits)
+    adj.rr.char <- format(adj.rr, digits = rr.digits)
+    AIC.char <- sprintf("%.4g", AIC)
+    BIC.char <- sprintf("%.4g", BIC)
+    if (output.type == "expression") {
+      z <- tibble::tibble(eq.label = gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
+                                        rr.label = paste("italic(R)^2", rr.char, sep = "~`=`~"),
+                                        adj.rr.label = paste("italic(R)[adj]^2",
+                                                             adj.rr.char, sep = "~`=`~"),
+                                        AIC.label = paste("AIC", AIC.char, sep = "~`=`~"),
+                                        BIC.label = paste("BIC", BIC.char, sep = "~`=`~"))
+    } else if (output.type %in% c("latex", "tex", "text")) {
+      z <-tibble::tibble(eq.label = gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
+                                        rr.label = paste("R^2", rr.char, sep = " = "),
+                                        adj.rr.label = paste("R_{adj}^2",
+                                                             adj.rr.char, sep = " = "),
+                                        AIC.label = paste("AIC", AIC.char, sep = " = "),
+                                        BIC.label = paste("BIC", BIC.char, sep = " = "))
+    } else if (!output.type %in% c("numeric")) {
+      warning("Unknown 'output.type' argument: ", output.type)
+    }
   }
 
   if (npc.used) {
