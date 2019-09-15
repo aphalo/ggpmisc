@@ -83,14 +83,14 @@
 #' # ANOVA with renamed and selected columns
 #' ggplot(my.df, aes(group, x)) +
 #'   geom_point() +
-#'   stat_fit_tb(tb.vars = c(effect = "term", "italic(F)" = "statistic", "italic(P)" = "p.value"),
+#'   stat_fit_tb(tb.vars = c(Effect = "term", "italic(F)" = "statistic", "italic(P)" = "p.value"),
 #'               parse = TRUE)
 #'
 #' # ANCOVA (covariate not plotted)
 #' ggplot(my.df, aes(group, x, z = covariate)) +
 #'   geom_point() +
 #'   stat_fit_tb(method.args = list(formula = y ~ x + z),
-#'               tb.vars = c(effect = "term", "italic(F)" = "statistic", "italic(P)" = "p.value"),
+#'               tb.vars = c(Effect = "term", "italic(F)" = "statistic", "italic(P)" = "p.value"),
 #'               parse = TRUE)
 #'
 #' # t-test

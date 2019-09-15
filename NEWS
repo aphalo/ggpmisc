@@ -5,7 +5,7 @@ ggpmisc 0.3.2 (2019-09-15)
 * Update stat_poly_eq() so that optionally instead of text labels it can return
 numeric values extracted from the fit object.
 * Document with examples how to pass weights and covariates to stats based
-methods from package 'broom'.
+on methods from package 'broom'.
 
 ggpmisc 0.3.1 (2019-04-01)
 ==========================
