@@ -200,10 +200,12 @@ ggplot(my.data, aes(x, y)) +
                output.type = "numeric",
                parse = TRUE,
                mapping = aes(label = sprintf(my.format,
-                                              stat(coef.ls)[[1]][[1, "Estimate"]],
-                                              stat(coef.ls)[[1]][[2, "Estimate"]],
-                                              stat(coef.ls)[[1]][[3, "Estimate"]],
-                                              stat(coef.ls)[[1]][[4, "Estimate"]])))
+                                             stat(coef.ls)[[1]][[1, "Estimate"]],
+                                             stat(coef.ls)[[1]][[2, "Estimate"]],
+                                             stat(coef.ls)[[1]][[3, "Estimate"]],
+                                             stat(coef.ls)[[1]][[4, "Estimate"]])
+                                             )
+                             )
 
 }
 \references{

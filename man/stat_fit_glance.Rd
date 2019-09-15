@@ -88,18 +88,37 @@ The names of the columns in the returned data are consitent with those
 }
 
 \examples{
-# Regression example
-my.df <-
-  data.frame(X = c(44.4, 45.9, 41.9, 53.3, 44.7, 44.1, 50.7, 45.2, 60.1),
-             Y = c( 2.6,  3.1,  2.5,  5.0,  3.6,  4.0,  5.2,  2.8,  3.8))
-# We need to check the names of the returned values!
-broom::glance(lm(formula = Y ~ X, data = my.df ))
-ggplot(my.df, aes(X, Y)) +
+# Regression by panel example
+ggplot(mtcars, aes(x = disp, y = mpg)) +
+  stat_smooth(method = "lm") +
+  geom_point(aes(colour = factor(cyl))) +
+  stat_fit_glance(method = "lm",
+                  label.y = "bottom",
+                  method.args = list(formula = y ~ x),
+                  mapping = aes(label = sprintf('r^2~"="~\%.3f~~italic(P)~"="~\%.2g',
+                                stat(r.squared), stat(p.value))),
+                  parse = TRUE)
+
+# Regression by group example
+ggplot(mtcars, aes(x = disp, y = mpg, colour = factor(cyl))) +
+  stat_smooth(method = "lm") +
   geom_point() +
   stat_fit_glance(method = "lm",
+                  label.y = "bottom",
                   method.args = list(formula = y ~ x),
-                  aes(label = sprintf('r^2~"="~\%.3f~~italic(P)~"="~\%.2f',
-                      stat(r.squared), stat(p.value))),
+                  mapping = aes(label = sprintf('r^2~"="~\%.3f~~italic(P)~"="~\%.2g',
+                                stat(r.squared), stat(p.value))),
+                  parse = TRUE)
+
+# Weighted regression example
+ggplot(mtcars, aes(x = disp, y = mpg, weight = cyl)) +
+  stat_smooth(method = "lm") +
+  geom_point(aes(colour = factor(cyl))) +
+  stat_fit_glance(method = "lm",
+                  label.y = "bottom",
+                  method.args = list(formula = y ~ x, weights = quote(weight)),
+                  mapping = aes(label = sprintf('r^2~"="~\%.3f~~italic(P)~"="~\%.2g',
+                                stat(r.squared), stat(p.value))),
                   parse = TRUE)
 
 }

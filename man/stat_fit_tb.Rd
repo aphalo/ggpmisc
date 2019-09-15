@@ -64,6 +64,11 @@ can include aesthetics whose values you want to set, not map. See
   the model's summary or ANOVA table, using package 'broom'. The annotation
   is added to the plots in tabular form.
 }
+\note{
+The argument to \code{method} can be any fit method for which a
+  suitable \code{tidy()} method is available, including non-linear
+  regression. Fit methods retain their default arguments unless orverridden.
+}
 \section{Computed variables}{
  The output of \code{\link[broom]{tidy}} is
   returned as a single "cell" in a tibble (i.e. a tibble nested within a
@@ -73,16 +78,56 @@ can include aesthetics whose values you want to set, not map. See
 }
 
 \examples{
-library(ggplot2)
-# t-test example
+# data for examples
 x <- c(44.4, 45.9, 41.9, 53.3, 44.7, 44.1, 50.7, 45.2, 60.1)
+covariate <- sqrt(x) + rnorm(9)
 group <- factor(c(rep("A", 4), rep("B", 5)))
-my.df <- data.frame(x, group)
+my.df <- data.frame(x, group, covariate)
 
+# Linear regression
+ggplot(my.df, aes(covariate, x)) +
+  geom_point() +
+  stat_fit_tb() +
+  expand_limits(y = 70)
+
+# Polynomial regression
+ggplot(my.df, aes(covariate, x)) +
+  geom_point() +
+  stat_fit_tb(method.args = list(formula = y ~ poly(x, 2))) +
+  expand_limits(y = 70)
+
+# ANOVA
+ggplot(my.df, aes(group, x)) +
+  geom_point() +
+  stat_fit_tb() +
+  expand_limits(y = 70)
+
+# ANOVA with renamed and selected columns
+ggplot(my.df, aes(group, x)) +
+  geom_point() +
+  stat_fit_tb(tb.vars = c(effect = "term", "italic(F)" = "statistic", "italic(P)" = "p.value"),
+              parse = TRUE)
+
+# ANCOVA (covariate not plotted)
+ggplot(my.df, aes(group, x, z = covariate)) +
+  geom_point() +
+  stat_fit_tb(method.args = list(formula = y ~ x + z),
+              tb.vars = c(effect = "term", "italic(F)" = "statistic", "italic(P)" = "p.value"),
+              parse = TRUE)
+
+# t-test
 ggplot(my.df, aes(group, x)) +
   geom_point() +
   stat_fit_tb(method = "t.test",
-              tb.vars = c("italic(t)" = "estimate", "italic(P)" = "p.value"),
+              tb.vars = c("italic(t)" = "statistic", "italic(P)" = "p.value"),
+              parse = TRUE)
+
+# t-test (equal variances assumed)
+ggplot(my.df, aes(group, x)) +
+  geom_point() +
+  stat_fit_tb(method = "t.test",
+              method.args = list(formula = y ~ x, var.equal = TRUE),
+              tb.vars = c("italic(t)" = "statistic", "italic(P)" = "p.value"),
               parse = TRUE)
 
 }

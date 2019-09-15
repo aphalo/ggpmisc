@@ -65,16 +65,33 @@ can include aesthetics whose values you want to set, not map. See
 }
 
 \examples{
+# Regression by panel example
+ggplot(mtcars, aes(x = disp, y = mpg)) +
+  stat_smooth(method = "lm") +
+  geom_point(aes(colour = factor(cyl))) +
+  stat_fit_tidy(method = "lm",
+                label.x = "right",
+                method.args = list(formula = y ~ x),
+                mapping = aes(label = sprintf("Slope = \%.3g\\np-value = \%.3g",
+                                              stat(x_estimate), stat(x_p.value))))
 
-# Regression example
-my.df <-
-  data.frame(X = c(44.4, 45.9, 41.9, 53.3, 44.7, 44.1, 50.7, 45.2, 60.1),
-             Y = c( 2.6,  3.1,  2.5,  5.0,  3.6,  4.0,  5.2,  2.8,  3.8))
-
-ggplot(my.df, aes(X, Y)) +
+# Regression by group example
+ggplot(mtcars, aes(x = disp, y = mpg, colour = factor(cyl))) +
+  stat_smooth(method = "lm") +
   geom_point() +
   stat_fit_tidy(method = "lm",
+                label.x = "right",
                 method.args = list(formula = y ~ x),
+                mapping = aes(label = sprintf("Slope = \%.3g, p-value = \%.3g",
+                                              stat(x_estimate), stat(x_p.value))))
+
+# Weighted regression example
+ggplot(mtcars, aes(x = disp, y = mpg, weight = cyl)) +
+  stat_smooth(method = "lm") +
+  geom_point(aes(colour = factor(cyl))) +
+  stat_fit_tidy(method = "lm",
+                label.x = "right",
+                method.args = list(formula = y ~ x, weights = quote(weight)),
                 mapping = aes(label = sprintf("Slope = \%.3g\\np-value = \%.3g",
                                               stat(x_estimate), stat(x_p.value))))
 

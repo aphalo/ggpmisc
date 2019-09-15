@@ -68,3 +68,47 @@ The statistics \code{stat_fit_augment} accepts only \code{methods} that
   works as expected.
 }
 
+\examples{
+# Regression by panel example
+ggplot(mtcars, aes(x = disp, y = mpg)) +
+  geom_point(aes(colour = factor(cyl))) +
+  stat_fit_augment(method = "lm",
+                   method.args = list(formula = y ~ x))
+
+# Residuals from regression by panel example
+ggplot(mtcars, aes(x = disp, y = mpg)) +
+  geom_hline(yintercept = 0, linetype = "dotted") +
+  stat_fit_augment(geom = "point",
+                   method = "lm",
+                   method.args = list(formula = y ~ x),
+                   y.out = ".resid")
+
+# Regression by group example
+ggplot(mtcars, aes(x = disp, y = mpg, colour = factor(cyl))) +
+  geom_point() +
+  stat_fit_augment(method = "lm",
+                   method.args = list(formula = y ~ x))
+
+# Residuals from regression by group example
+ggplot(mtcars, aes(x = disp, y = mpg, colour = factor(cyl))) +
+  geom_hline(yintercept = 0, linetype = "dotted") +
+  stat_fit_augment(geom = "point",
+                   method.args = list(formula = y ~ x),
+                   y.out = ".resid")
+
+# Weighted regression example
+ggplot(mtcars, aes(x = disp, y = mpg, weight = cyl)) +
+  geom_point(aes(colour = factor(cyl))) +
+  stat_fit_augment(method = "lm",
+                   method.args = list(formula = y ~ x,
+                                 weights = quote(weight)))
+
+# Residuals from weighted regression example
+ggplot(mtcars, aes(x = disp, y = mpg, weight = cyl)) +
+  geom_hline(yintercept = 0, linetype = "dotted") +
+  stat_fit_augment(geom = "point",
+                   method.args = list(formula = y ~ x,
+                                 weights = quote(weight)),
+                   y.out = ".resid")
+
+}
