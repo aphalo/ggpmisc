@@ -61,14 +61,13 @@ find_peaks <-
 #' for \code{sprintf()}.
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
-#'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs
-#'   to be set
-#'    at the layer level if you are overriding the plot defaults.
+#'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs to be
+#'   set at the layer level if you are overriding the plot defaults.
 #' @param data A layer specific dataset - only needed if you want to override
 #'    the plot defaults.
-#' @param geom The geometric object to use display the data
+#' @param geom The geometric object to use display the data.
 #' @param position The position adjustment to use for overlapping points
-#'    on this layer
+#'    on this layer.
 #' @param show.legend logical. Should this layer be included in the legends?
 #'   \code{NA}, the default, includes if any aesthetics are mapped.
 #'   \code{FALSE} never includes, and \code{TRUE} always includes.
@@ -91,10 +90,12 @@ find_peaks <-
 #' @param strict logical flag: if TRUE, an element must be strictly greater than
 #'   all other values in its window to be considered a peak. Default: FALSE.
 #' @param label.fmt character  string giving a format definition for converting
-#'   values into character strings by means of function \code{\link{sprintf}}.
+#'   values into character strings by means of function \code{\link{sprintf}}
+#'   or \code{\link{strptime}}, its use is deprecated.
 #' @param x.label.fmt character  string giving a format definition for converting
 #'   $x$-values into character strings by means of function \code{\link{sprintf}}
-#'   or \code{\link{strftime}}.
+#'   or \code{\link{strftime}}. The default argument varies depending on the
+#'   scale in use.
 #' @param y.label.fmt character  string giving a format definition for converting
 #'   $y$-values into character strings by means of function \code{\link{sprintf}}.
 #'
@@ -113,10 +114,10 @@ find_peaks <-
 #'   \code{geom_hline} and \code{geom_vline}. The formatting of the labels
 #'   returned can be controlled by the user.
 #'
-#' @note These stats check the scale of the \code{x} aesthetic and if is Datetime they
-#'   correctly generate the labels by transforming the numeric x values to
-#'   POSIXct objects, in which case the \code{x.label.fmt} must be suitable for
-#'   \code{strftime()} rather than for \code{sprintf()}.
+#' @note These stats check the scale of the \code{x} aesthetic and if it is Date
+#'   or Datetime they correctly generate the labels by transforming the numeric
+#'   x values to POSIXct objects, in which case the \code{x.label.fmt} must be
+#'   suitable for \code{strftime()} rather than for \code{sprintf()}.
 #' These stats work nicely together with geoms
 #'   \code{\link[ggrepel]{geom_text_repel}} and
 #'   \code{\link[ggrepel]{geom_label_repel}} from package
@@ -143,8 +144,8 @@ find_peaks <-
 #'
 stat_peaks <- function(mapping = NULL, data = NULL, geom = "point",
                        span = 5, ignore_threshold = 0, strict = FALSE,
-                       label.fmt = "%.4g",
-                       x.label.fmt = NULL, y.label.fmt = label.fmt,
+                       label.fmt = NULL,
+                       x.label.fmt = NULL, y.label.fmt = NULL,
                        position = "identity", na.rm = FALSE,
                        show.legend = FALSE,
                        inherit.aes = TRUE, ...) {
@@ -178,6 +179,18 @@ peaks_compute_group_fun <- function(data,
                                     x.label.fmt,
                                     y.label.fmt) {
   force(data)
+  if (!is.null(label.fmt)) {
+    warning("Use of parameter 'label.format' is deprecated, ",
+            "use parameters 'x.label.format' and 'y.label.format' instead.")
+    if (is.null(x.label.fmt)) {
+      x.label.fmt <- label.fmt
+    }
+    if (is.null(y.label.fmt)) {
+      y.label.fmt <- label.fmt
+    }
+  } else if (is.null(y.label.fmt)) {
+    y.label.fmt <- "%.4g"
+  }
   if (inherits(scales$x, c("ScaleContinuousDatetime",
                            "ScaleContinuousDate"))) {
     as_label <- function(fmt, x) {
@@ -193,7 +206,7 @@ peaks_compute_group_fun <- function(data,
       sprintf(fmt, x)
     }
     if (is.null(x.label.fmt)) {
-      x.label.fmt <- label.fmt
+      x.label.fmt <- "%.4g"
     }
   }
   if (is.null(span)) {
@@ -205,8 +218,8 @@ peaks_compute_group_fun <- function(data,
                                 strict = strict), , drop = FALSE]
   }
   dplyr::mutate_(peaks.df,
-                x.label = ~as_label(x.label.fmt, x),
-                y.label = ~sprintf(y.label.fmt, y))
+                 x.label = ~as_label(x.label.fmt, x),
+                 y.label = ~sprintf(y.label.fmt, y))
 }
 
 # Define here to avoid a note in check as the import from 'dplyr' is not seen
@@ -225,6 +238,18 @@ valleys_compute_group_fun <- function(data,
                                       x.label.fmt,
                                       y.label.fmt) {
   force(data)
+  if (!is.null(label.fmt)) {
+    warning("Use of parameter 'label.format' is deprecated, ",
+            "use parameters 'x.label.format' and 'y.label.format' instead.")
+    if (is.null(x.label.fmt)) {
+      x.label.fmt <- label.fmt
+    }
+    if (is.null(y.label.fmt)) {
+      y.label.fmt <- label.fmt
+    }
+  } else if (is.null(y.label.fmt)) {
+    y.label.fmt <- "%.4g"
+  }
   if (inherits(scales$x, c("ScaleContinuousDatetime",
                            "ScaleContinuousDate"))) {
     as_label <- function(fmt, x) {
@@ -240,7 +265,7 @@ valleys_compute_group_fun <- function(data,
       sprintf(fmt, x)
     }
     if (is.null(x.label.fmt)) {
-      x.label.fmt <- label.fmt
+      x.label.fmt <- "%.4g"
     }
   }
   if (is.null(span)) {
@@ -289,8 +314,8 @@ StatPeaks <-
 #'
 stat_valleys <- function(mapping = NULL, data = NULL, geom = "point",
                          span = 5, ignore_threshold = 0, strict = FALSE,
-                         label.fmt = "%.4g",
-                         x.label.fmt = NULL, y.label.fmt = label.fmt,
+                         label.fmt = NULL,
+                         x.label.fmt = NULL, y.label.fmt = NULL,
                          position = "identity", na.rm = FALSE, show.legend = FALSE,
                          inherit.aes = TRUE, ...) {
   ggplot2::layer(

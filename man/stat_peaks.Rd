@@ -6,25 +6,24 @@
 \title{Local maxima (peaks) or minima (valleys)}
 \usage{
 stat_peaks(mapping = NULL, data = NULL, geom = "point", span = 5,
-  ignore_threshold = 0, strict = FALSE, label.fmt = "\%.4g",
-  x.label.fmt = NULL, y.label.fmt = label.fmt, position = "identity",
+  ignore_threshold = 0, strict = FALSE, label.fmt = NULL,
+  x.label.fmt = NULL, y.label.fmt = NULL, position = "identity",
   na.rm = FALSE, show.legend = FALSE, inherit.aes = TRUE, ...)
 
 stat_valleys(mapping = NULL, data = NULL, geom = "point", span = 5,
-  ignore_threshold = 0, strict = FALSE, label.fmt = "\%.4g",
-  x.label.fmt = NULL, y.label.fmt = label.fmt, position = "identity",
+  ignore_threshold = 0, strict = FALSE, label.fmt = NULL,
+  x.label.fmt = NULL, y.label.fmt = NULL, position = "identity",
   na.rm = FALSE, show.legend = FALSE, inherit.aes = TRUE, ...)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
-\code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs
-to be set
- at the layer level if you are overriding the plot defaults.}
+\code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs to be
+set at the layer level if you are overriding the plot defaults.}
 
 \item{data}{A layer specific dataset - only needed if you want to override
 the plot defaults.}
 
-\item{geom}{The geometric object to use display the data}
+\item{geom}{The geometric object to use display the data.}
 
 \item{span}{a peak is defined as an element in a sequence which is greater
 than all other elements within a window of width span centered at that
@@ -39,17 +38,19 @@ threshold below which peaks will be ignored.}
 all other values in its window to be considered a peak. Default: FALSE.}
 
 \item{label.fmt}{character  string giving a format definition for converting
-values into character strings by means of function \code{\link{sprintf}}.}
+values into character strings by means of function \code{\link{sprintf}}
+or \code{\link{strptime}}, its use is deprecated.}
 
 \item{x.label.fmt}{character  string giving a format definition for converting
 $x$-values into character strings by means of function \code{\link{sprintf}}
-or \code{\link{strftime}}.}
+or \code{\link{strftime}}. The default argument varies depending on the
+scale in use.}
 
 \item{y.label.fmt}{character  string giving a format definition for converting
 $y$-values into character strings by means of function \code{\link{sprintf}}.}
 
 \item{position}{The position adjustment to use for overlapping points
-on this layer}
+on this layer.}
 
 \item{na.rm}{a logical value indicating whether NA values should be
 stripped before the computation proceeds.}
@@ -83,10 +84,10 @@ These stats use \code{geom_point} by default as it is the geom most
   returned can be controlled by the user.
 }
 \note{
-These stats check the scale of the \code{x} aesthetic and if is Datetime they
-  correctly generate the labels by transforming the numeric x values to
-  POSIXct objects, in which case the \code{x.label.fmt} must be suitable for
-  \code{strftime()} rather than for \code{sprintf()}.
+These stats check the scale of the \code{x} aesthetic and if it is Date
+  or Datetime they correctly generate the labels by transforming the numeric
+  x values to POSIXct objects, in which case the \code{x.label.fmt} must be
+  suitable for \code{strftime()} rather than for \code{sprintf()}.
 These stats work nicely together with geoms
   \code{\link[ggrepel]{geom_text_repel}} and
   \code{\link[ggrepel]{geom_label_repel}} from package
