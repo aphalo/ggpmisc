@@ -217,9 +217,9 @@ peaks_compute_group_fun <- function(data,
                                 ignore_threshold = ignore_threshold,
                                 strict = strict), , drop = FALSE]
   }
-  dplyr::mutate_(peaks.df,
-                 x.label = ~as_label(x.label.fmt, x),
-                 y.label = ~sprintf(y.label.fmt, y))
+  peaks.df[["x.label"]] <- as_label(x.label.fmt, peaks.df[["x"]])
+  peaks.df[["y.label"]] <- sprintf(y.label.fmt, peaks.df[["y"]])
+  peaks.df
 }
 
 # Define here to avoid a note in check as the import from 'dplyr' is not seen
@@ -276,9 +276,9 @@ valleys_compute_group_fun <- function(data,
                                   ignore_threshold = ignore_threshold,
                                   strict = strict), , drop = FALSE]
   }
-  dplyr::mutate_(valleys.df,
-                x.label = ~as_label(x.label.fmt, x),
-                y.label = ~sprintf(y.label.fmt, y))
+  valleys.df[["x.label"]] <- as_label(x.label.fmt, valleys.df[["x"]])
+  valleys.df[["y.label"]] <- sprintf(y.label.fmt, valleys.df[["y"]])
+  valleys.df
 }
 
 #' \code{Stat*} Objects

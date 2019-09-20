@@ -13,13 +13,13 @@ test_that("multiple_ggplot", {
   p2 <- ggplot(mpg, aes(displ, hwy)) + geom_point()
   p3 <- ggplot(mpg, aes(cyl, displ)) + geom_point()
   my.tb <- tibble(x = 0:2, y = 0:2, tb = list(p1, p2, p3))
-  skip("false positive triggered")
+#  skip("false positive triggered")
   vdiffr::expect_doppelganger("geom_plot_three_plots",
                               ggplot() +
                                 geom_plot(data = my.tb,
                                            mapping = aes(x, y, label = tb)) +
                                 lims(x = c(0, 2), y = c(0, 2)))
-  skip("false positive triggered")
+#  skip("false positive triggered")
   vdiffr::expect_doppelganger("geom_plot_three_angles",
                               ggplot() +
                                 geom_plot(data = my.tb,
@@ -44,14 +44,14 @@ test_that("examples_geom_plot", {
                                            ylim = c(13, 16)) +
                            labs(x = NULL, y = NULL)))
 
-  skip("false positive triggered")
+#  skip("false positive triggered")
   vdiffr::expect_doppelganger("geom_plot_npc_1",
                               p +
                                 expand_limits(x = 0, y = 0) +
                                 geom_plot_npc(data = df,
                                               aes(npcx = x, npcy = y, label = plot))
   )
-  skip("false positive triggered")
+#  skip("false positive triggered")
   vdiffr::expect_doppelganger("geom_plot_npc_2",
                               p +
                                 expand_limits(x = 0, y = 0) +

@@ -39,7 +39,7 @@ test_that("numbers_tb", {
                                 geom_point() +
                                 geom_line() +
                                 stat_peaks(geom = "text", vjust = -0.5,
-                                           label.fmt = "x = %.0f") +
+                                           x.label.fmt = "x = %.0f") +
                                 expand_limits(y = c(-2.5, 2.5))
   )
   vdiffr::expect_doppelganger("stat_peaks_numeric__04",
@@ -48,7 +48,7 @@ test_that("numbers_tb", {
                                 geom_line() +
                                 stat_peaks(mapping = aes(label = stat(y.label)),
                                            geom = "text", hjust = -0.1,
-                                           label.fmt = "lambda~`=`~%.2f",
+                                           y.label.fmt = "lambda~`=`~%.2f",
                                            angle = 90,
                                            parse = TRUE) +
                               expand_limits(y = c(-2.5, 2.5))
