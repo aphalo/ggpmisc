@@ -2,6 +2,8 @@ ggpmisc 0.3.2 (2019-09-15)
 ==========================
 
 * Add geom_vhlines() and geom_quadrant_lines().
+* Add scale_x_logFC() and scale_x_logFC() convenience scales for data expressed
+as fold change.
 * Update stat_poly_eq() so that optionally instead of text labels it can return
 numeric values extracted from the fit object.
 * Document with examples how to pass weights and covariates to stats based

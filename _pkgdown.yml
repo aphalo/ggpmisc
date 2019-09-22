@@ -28,6 +28,7 @@ reference:
     - geom_x_margin_point
     - geom_x_margin_arrow
     - geom_x_margin_grob
+    - geom_quadrant_lines
   - title: Statistics
     desc: It is often useful to summarize data before plotting, and that is what these transformations do.
     contents:
@@ -45,9 +46,10 @@ reference:
     - stat_fmt_tb
     - stat_apply_group
   - title: Scales
-    desc: New scales for _x_ and _y_ expressed in "npc" units, corresponding to new aesthetics `npcx` and `npcy`.
+    desc: Scales control de mapping of data to aesthetics.
     contents:
     - scale_continuous_npc
+    - scale_x_logFC
   - title: Fortify or Try
     desc: Convert R objects containing observations in other formats into 'tibble' objects suitable for plotting.
     contents:
