@@ -4,6 +4,7 @@
 #' three way outcome from some statistical tests.
 #'
 #' @param ... other named arguments passed to \code{scale_manual}.
+#' @param name The name of the scale, used for the axis-label.
 #' @param ns.colour,down.colour,up.colour,de.colour The colour defintions to use for each
 #'   of the three possible outcomes.
 #' @param na.colour colour definition used for NA.
@@ -46,6 +47,7 @@
 #'   theme_bw()
 #'
 scale_colour_outcome <- function(...,
+                                 name = "Outcome",
                                  ns.colour = "grey80",
                                  up.colour = "red",
                                  down.colour = "dodgerblue2",
@@ -53,6 +55,7 @@ scale_colour_outcome <- function(...,
                                  na.colour = "black",
                                  aesthetics = "colour") {
   ggplot2::scale_colour_manual(...,
+                               name = name,
                                values = c("down" = down.colour,
                                           "uncertain" = ns.colour,
                                           "up" = up.colour,
@@ -66,6 +69,7 @@ scale_colour_outcome <- function(...,
 #' @export
 #'
 scale_fill_outcome <- function(...,
+                               name = "Outcome",
                                ns.colour = "grey80",
                                up.colour = "red",
                                down.colour = "dodgerblue2",
@@ -73,6 +77,7 @@ scale_fill_outcome <- function(...,
                                na.colour = "black",
                                aesthetics = "fill") {
   ggplot2::scale_fill_manual(...,
+                             name = name,
                              values = c("down" = down.colour,
                                         "uncertain" = ns.colour,
                                         "up" = up.colour,
@@ -107,11 +112,11 @@ scale_fill_outcome <- function(...,
 outcome2factor <- function(x, n.levels = 3L) {
   stopifnot(all(unique(stats::na.omit(x)) %in% -1:1))
   if (n.levels == 3L) {
-    fct.labels <- c("down", "uncertain", "up")
+    fct.labels <- c( "up", "uncertain","down")
   } else if (n.levels == 2) {
     fct.labels <- c("de", "uncertain", "de")
   }
-  factor(x, levels = c(-1, 0, +1), labels = fct.labels)
+  factor(x, levels = c(+1, 0, -1), labels = fct.labels)
 }
 
 

@@ -34,6 +34,6 @@ outcome2factor(c(-1, 1, 0, 1))
 \seealso{
 Other scales for omics data: \code{\link{scale_colour_outcome}},
   \code{\link{scale_shape_outcome}},
-  \code{\link{scale_x_logFC}}
+  \code{\link{scale_x_logFC}}, \code{\link{scale_y_Pvalue}}
 }
 \concept{scales for omics data}

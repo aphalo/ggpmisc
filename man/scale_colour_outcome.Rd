@@ -5,16 +5,19 @@
 \alias{scale_fill_outcome}
 \title{Colour and fill scales for ternary outcomes}
 \usage{
-scale_colour_outcome(..., ns.colour = "grey80", up.colour = "red",
-  down.colour = "dodgerblue2", de.colour = "goldenrod",
-  na.colour = "black", aesthetics = "colour")
+scale_colour_outcome(..., name = "Outcome", ns.colour = "grey80",
+  up.colour = "red", down.colour = "dodgerblue2",
+  de.colour = "goldenrod", na.colour = "black",
+  aesthetics = "colour")
 
-scale_fill_outcome(..., ns.colour = "grey80", up.colour = "red",
-  down.colour = "dodgerblue2", de.colour = "goldenrod",
-  na.colour = "black", aesthetics = "fill")
+scale_fill_outcome(..., name = "Outcome", ns.colour = "grey80",
+  up.colour = "red", down.colour = "dodgerblue2",
+  de.colour = "goldenrod", na.colour = "black", aesthetics = "fill")
 }
 \arguments{
 \item{...}{other named arguments passed to \code{scale_manual}.}
+
+\item{name}{The name of the scale, used for the axis-label.}
 
 \item{ns.colour, down.colour, up.colour, de.colour}{The colour defintions to use for each
 of the three possible outcomes.}
@@ -64,6 +67,6 @@ ggplot(my.df, aes(x, y, fill = outcome3)) +
 \seealso{
 Other scales for omics data: \code{\link{outcome2factor}},
   \code{\link{scale_shape_outcome}},
-  \code{\link{scale_x_logFC}}
+  \code{\link{scale_x_logFC}}, \code{\link{scale_y_Pvalue}}
 }
 \concept{scales for omics data}

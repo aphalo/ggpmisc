@@ -4,6 +4,7 @@
 #' three way outcome from some statistical tests.
 #'
 #' @param ... other named arguments passed to \code{scale_manual}.
+#' @param name The name of the scale, used for the axis-label.
 #' @param ns.shape,down.shape,up.shape,de.shape The shapes to use for each
 #'   of the three possible outcomes.
 #' @param na.shape Shape used for NA.
@@ -31,9 +32,20 @@
 #'   scale_shape_outcome() +
 #'   theme_bw()
 #'
+#' ggplot(my.df, aes(x, y, shape = outcome3)) +
+#'   geom_point() +
+#'   scale_shape_outcome(guide = FALSE) +
+#'   theme_bw()
+#'
 #' ggplot(my.df, aes(x, y, shape = outcome2)) +
 #'   geom_point(size = 2) +
 #'   scale_shape_outcome() +
+#'   theme_bw()
+#'
+#' ggplot(my.df, aes(x, y, shape = outcome3, fill = outcome2)) +
+#'   geom_point() +
+#'   scale_shape_outcome() +
+#'   scale_fill_outcome() +
 #'   theme_bw()
 #'
 #' ggplot(my.df, aes(x, y, shape = outcome3, fill = outcome2)) +
@@ -43,12 +55,14 @@
 #'   theme_bw()
 #'
 scale_shape_outcome <- function(...,
+                                name = "Outcome",
                                 ns.shape = "circle filled",
                                 up.shape = "triangle filled",
                                 down.shape = "triangle down filled",
                                 de.shape = "square filled",
                                 na.shape = "cross") {
   ggplot2::scale_shape_manual(...,
+                              name = name,
                               values = c("down" = down.shape,
                                          "uncertain" = ns.shape,
                                          "up" = up.shape,

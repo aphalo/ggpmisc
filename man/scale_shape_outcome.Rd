@@ -4,12 +4,14 @@
 \alias{scale_shape_outcome}
 \title{Shape scale for ternary outcomes}
 \usage{
-scale_shape_outcome(..., ns.shape = "circle filled",
+scale_shape_outcome(..., name = "Outcome", ns.shape = "circle filled",
   up.shape = "triangle filled", down.shape = "triangle down filled",
   de.shape = "square filled", na.shape = "cross")
 }
 \arguments{
 \item{...}{other named arguments passed to \code{scale_manual}.}
+
+\item{name}{The name of the scale, used for the axis-label.}
 
 \item{ns.shape, down.shape, up.shape, de.shape}{The shapes to use for each
 of the three possible outcomes.}
@@ -40,9 +42,20 @@ ggplot(my.df, aes(x, y, shape = outcome3)) +
   scale_shape_outcome() +
   theme_bw()
 
+ggplot(my.df, aes(x, y, shape = outcome3)) +
+  geom_point() +
+  scale_shape_outcome(guide = FALSE) +
+  theme_bw()
+
 ggplot(my.df, aes(x, y, shape = outcome2)) +
   geom_point(size = 2) +
   scale_shape_outcome() +
+  theme_bw()
+
+ggplot(my.df, aes(x, y, shape = outcome3, fill = outcome2)) +
+  geom_point() +
+  scale_shape_outcome() +
+  scale_fill_outcome() +
   theme_bw()
 
 ggplot(my.df, aes(x, y, shape = outcome3, fill = outcome2)) +
@@ -55,6 +68,6 @@ ggplot(my.df, aes(x, y, shape = outcome3, fill = outcome2)) +
 \seealso{
 Other scales for omics data: \code{\link{outcome2factor}},
   \code{\link{scale_colour_outcome}},
-  \code{\link{scale_x_logFC}}
+  \code{\link{scale_x_logFC}}, \code{\link{scale_y_Pvalue}}
 }
 \concept{scales for omics data}
