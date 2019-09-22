@@ -12,11 +12,12 @@ Package ‘**ggpmisc**’ (Miscellaneous Extensions to ‘ggplot2’) is a set
 of extensions to R package ‘ggplot2’ (\>= 3.0.0) with emphasis on
 annotations and highlighting related to fitted models and data
 summaries. Data summaries shown as text, tables or equations are
-implemented. The location of such summaries in the plotting area is
-usually set independently of the `x` and `y` scales. The same applies to
-plot insets and logos and other arbitrary graphical elements. The
-“natural” coordinates to use in such cases are expressed in ‘grid’
-“npc” units in the range \[0..1\].
+implemented. New geoms support graphical insets. The location of fit
+summaries and graphical insets within the plotting area needs usually to
+be set independently of the `x` and `y` scales. The “natural”
+coordinates to use in such cases are expressed in ‘grid’ “npc” units in
+the range \[0..1\] for which new aesthetics and their scales are made
+available.
 
 ## Geometries
 
@@ -47,6 +48,21 @@ observations based on the local 2D density of observations. These two
 stats are designed to work well together with `geom_text_repel()` and
 `geom_label_repel()` from package ‘ggrepel’.
 
+## Aesthetics and scales
+
+Scales `scale_npcx_continuous()` and `scale_npcy_continuous()` and the
+corresponding new aesthetics `npcx` and `npcy` make it possible to add
+graphic elements and text to plots using coordinates expressed in `npc`
+units for the location within the plotting area, improving support for
+annotations, most notably when using facets.
+
+Scales `scale_x_logFC()` and `scale_y_logFC()` are suitable for plotting
+of log fold change data, `scale_x_Pvalue()` and `scale_y_Pvalue()` for
+*P*-values, and `scale_x_FDR()` and `scale_y_FDR()` for false discovery
+rate. They are defined as wrappers on `scale_x_continuous()` and
+`scale_y_continuous()` with overriden default arguments suitable for
+volcano and quadrant plots as used for genomic data.
+
 ## ggplot methods
 
 Being `ggplot()` defined as a generic method in ‘ggplot2’ makes it
@@ -59,7 +75,8 @@ for `x` and `y`. A companion fucntion `try_tibble()` is also exported.
 
 Functions for the manipulation of layers in ggplot objects and
 statistics and geometries that echo their data input to the R console,
-earlier included in this package are now in package ‘gginnards’.
+earlier included in this package are now in package ‘gginnards’. [![cran
+version](https://www.r-pkg.org/badges/version/gginnards)](https://cran.r-project.org/package=gginnards)
 
 ## Examples
 
@@ -144,6 +161,20 @@ ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
 ```
 
 ![](man/figures/README-readme-06-1.png)<!-- -->
+
+A quadrant plot with counts.
+
+``` r
+set.seed(12346)
+my.df <- data.frame(x = rnorm(50), y = rnorm(50))
+ggplot(my.df, aes(x, y)) +
+  geom_point() +
+  geom_quadrant_lines() +
+  stat_quadrant_counts() +
+  expand_limits(x = c(-3, 3), y = c(-3, 3))
+```
+
+![](man/figures/README-unnamed-chunk-1-1.png)<!-- -->
 
 ## Installation
 

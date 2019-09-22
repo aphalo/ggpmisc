@@ -22,33 +22,69 @@ knitr::opts_chunk$set(
 Package '**ggpmisc**' (Miscellaneous Extensions to 'ggplot2') is a set of
 extensions to R package 'ggplot2' (>= 3.0.0) with emphasis on annotations and
 highlighting related to fitted models and data summaries. Data summaries shown
-as text, tables or equations are implemented. The location of such summaries in the plotting area is usually set independently of the `x` and `y` scales. The same applies to plot insets and logos and other arbitrary graphical elements. The "natural" coordinates to use in such cases are expressed in 'grid' "npc" units in the range [0..1]. 
+as text, tables or equations are implemented. New geoms support graphical
+insets. The location of fit summaries and graphical insets within the plotting
+area needs usually to be set independently of the `x` and `y` scales. The
+"natural" coordinates to use in such cases are expressed in 'grid' "npc" units
+in the range [0..1] for which new aesthetics and their scales are made
+available.
 
 ## Geometries
 
 Geometries `geom_table()`, `geom_plot()` and `geom_grob()` make it possible to
-add inset tables, inset plots, and arbitrary 'grid' graphical objects as layers to a ggplot using native coordinates for `x` and `y`. Geometries `geom_text_npc()`, `geom_label_npc()`, `geom_table_npc()`, `geom_plot_npc()` and `geom_grob_npc()` are versions that interpret `x` and `y` values as if expressed in "npc" units.
+add inset tables, inset plots, and arbitrary 'grid' graphical objects as layers
+to a ggplot using native coordinates for `x` and `y`. Geometries
+`geom_text_npc()`, `geom_label_npc()`, `geom_table_npc()`, `geom_plot_npc()` and
+`geom_grob_npc()` are versions that interpret `x` and `y` values as if expressed
+in "npc" units.
 
 ## Statistics
 
-Statistic `stat_fmt_tb()` helps with the formatting of tabbles to be plotted with `geom_table()`. Statistics `stat_peaks()` and `stat_valleys()` can be used to highlight and/or label maxima and minima in a plot. 
-`ggplot` constructors for time series objects. The provided `ggplot.ts()` and
-`ggplot.xts()` use `try_tibble()` which is also exported and accepts objects of
-additional classes as input. Statistics that help with reporting the resulst of
-model fits are `stat_poly_eq()`, `stat_fit_residuals()`, `stat_fit_deviations()`, `stat_fit_broom()`, `stat_fit_broom_tb()`. A summary statistic using special grouping for quadrants `stat_quadrant_counts()` can be used to automate labelling with the number of observations. `stat_apply_panel()` and `stat_apply_group()` can be useful for applying arbitrary summary functions. Two statistics, `stat_dens2d_filter()` and `stat_dens2d_label()`, implement tagging or selective labelling of observations based on the local 2D density of observations. These two stats are designed to work
-well together with `geom_text_repel()` and `geom_label_repel()` from package 
-'ggrepel'.
+Statistic `stat_fmt_tb()` helps with the formatting of tabbles to be plotted
+with `geom_table()`. Statistics `stat_peaks()` and `stat_valleys()` can be used
+to highlight and/or label maxima and minima in a plot. `ggplot` constructors for
+time series objects. The provided `ggplot.ts()` and `ggplot.xts()` use
+`try_tibble()` which is also exported and accepts objects of additional classes
+as input. Statistics that help with reporting the resulst of model fits are
+`stat_poly_eq()`, `stat_fit_residuals()`, `stat_fit_deviations()`,
+`stat_fit_broom()`, `stat_fit_broom_tb()`. A summary statistic using special
+grouping for quadrants `stat_quadrant_counts()` can be used to automate
+labelling with the number of observations. `stat_apply_panel()` and
+`stat_apply_group()` can be useful for applying arbitrary summary functions. Two
+statistics, `stat_dens2d_filter()` and `stat_dens2d_label()`, implement tagging
+or selective labelling of observations based on the local 2D density of
+observations. These two stats are designed to work well together with
+`geom_text_repel()` and `geom_label_repel()` from package 'ggrepel'.
+
+## Aesthetics and scales
+
+Scales `scale_npcx_continuous()` and  `scale_npcy_continuous()` and the
+corresponding new aesthetics `npcx` and `npcy` make it possible to add graphic
+elements and text to plots using coordinates expressed in `npc` units for the
+location within the plotting area, improving support for annotations, most
+notably when using facets.
+
+Scales `scale_x_logFC()` and `scale_y_logFC()` are suitable for plotting of log
+fold change data, `scale_x_Pvalue()` and `scale_y_Pvalue()` for _P_-values, and
+`scale_x_FDR()` and `scale_y_FDR()` for false discovery rate. They are defined
+as wrappers on `scale_x_continuous()` and `scale_y_continuous()` with overriden
+default arguments suitable for volcano and quadrant plots as used for genomic
+data.
 
 ## ggplot methods
 
 Being `ggplot()` defined as a generic method in 'ggplot2' makes it possible to
-define specializations, and we provide two for time series stored in objects of classes `ts` and `xts` which automatically convert these objects into tibbles and set the as default the aesthetic mappings for `x` and `y`. A companion fucntion `try_tibble()` is also exported.
+define specializations, and we provide two for time series stored in objects of
+classes `ts` and `xts` which automatically convert these objects into tibbles
+and set the as default the aesthetic mappings for `x` and `y`. A companion
+fucntion `try_tibble()` is also exported.
 
 ## MIGRATED
 
 Functions for the manipulation of layers in ggplot objects and statistics and
 geometries that echo their data input to the R console, earlier included in this
 package are now in package 'gginnards'.
+[![cran version](https://www.r-pkg.org/badges/version/gginnards)](https://cran.r-project.org/package=gginnards) 
 
 ## Examples
 
@@ -120,6 +156,18 @@ ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
   geom_plot_npc(data = df, mapping = aes(npcx = x, npcy = y, label = plot),
                 vjust = 0, hjust = 0) +
   expand_limits(y = 0, x = 0)
+```
+
+A quadrant plot with counts.
+
+```{r}
+set.seed(12346)
+my.df <- data.frame(x = rnorm(50), y = rnorm(50))
+ggplot(my.df, aes(x, y)) +
+  geom_point() +
+  geom_quadrant_lines() +
+  stat_quadrant_counts() +
+  expand_limits(x = c(-3, 3), y = c(-3, 3))
 ```
 
 ## Installation
