@@ -50,6 +50,9 @@ reference:
     contents:
     - scale_continuous_npc
     - scale_x_logFC
+    - scale_colour_outcome
+    - scale_shape_outcome
+    - outcome2factor
   - title: Fortify or Try
     desc: Convert R objects containing observations in other formats into 'tibble' objects suitable for plotting.
     contents:

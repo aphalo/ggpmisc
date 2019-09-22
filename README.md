@@ -30,13 +30,13 @@ that interpret `x` and `y` values as if expressed in “npc” units.
 
 ## Statistics
 
-Statistic `stat_fmt_tb()` helps with the formatting of tabbles to be
+Statistic `stat_fmt_tb()` helps with the formatting of tables to be
 plotted with `geom_table()`. Statistics `stat_peaks()` and
 `stat_valleys()` can be used to highlight and/or label maxima and minima
 in a plot. `ggplot` constructors for time series objects. The provided
 `ggplot.ts()` and `ggplot.xts()` use `try_tibble()` which is also
 exported and accepts objects of additional classes as input. Statistics
-that help with reporting the resulst of model fits are `stat_poly_eq()`,
+that help with reporting the results of model fits are `stat_poly_eq()`,
 `stat_fit_residuals()`, `stat_fit_deviations()`, `stat_fit_broom()`,
 `stat_fit_broom_tb()`. A summary statistic using special grouping for
 quadrants `stat_quadrant_counts()` can be used to automate labelling
@@ -57,11 +57,16 @@ units for the location within the plotting area, improving support for
 annotations, most notably when using facets.
 
 Scales `scale_x_logFC()` and `scale_y_logFC()` are suitable for plotting
-of log fold change data, `scale_x_Pvalue()` and `scale_y_Pvalue()` for
-*P*-values, and `scale_x_FDR()` and `scale_y_FDR()` for false discovery
-rate. They are defined as wrappers on `scale_x_continuous()` and
-`scale_y_continuous()` with overriden default arguments suitable for
-volcano and quadrant plots as used for genomic data.
+of log fold change data. Default arguments are suitable for volcano and
+quadrant plots as used for transcriptomics, metabolomics and similar
+data.
+
+Scales `scale_colour_outcome()`, `scale_fill_outcome()` and
+`scale_shape_outcome()` and function `outome2factor()` used together
+make it easy to map ternary numeric outputs and logical binary outcomes
+to colour, fill and shape aesthetics. Default arguments are suitable for
+volcano, quadrant and other plots as used for genomics, metabolomics and
+similar data.
 
 ## ggplot methods
 
@@ -69,7 +74,7 @@ Being `ggplot()` defined as a generic method in ‘ggplot2’ makes it
 possible to define specializations, and we provide two for time series
 stored in objects of classes `ts` and `xts` which automatically convert
 these objects into tibbles and set the as default the aesthetic mappings
-for `x` and `y`. A companion fucntion `try_tibble()` is also exported.
+for `x` and `y`. A companion function `try_tibble()` is also exported.
 
 ## MIGRATED
 

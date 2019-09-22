@@ -130,6 +130,12 @@ FC_name <- function(name = "Abundance%unit",
 #'   positions. The default is function that uses the arguments passed to
 #'   \code{log.base.data} and \code{log.base.labels} to generate suitable
 #'   labels.
+#' @param oob Function that handles limits outside of the scale limits (out of
+#'   bounds). The default squishes out-of-bounds values to the boundary.
+#' @param expand Vector of range expansion constants used to add some padding
+#'   around the data, to ensure that they are placed some distance away from
+#'   the axes. The default is to expand the scale by 15\% on each end for
+#'   log-fold-data, so as to leave space for counts annotations.
 #' @param log.base.labels,log.base.data integer or logical Base of logarithms used to
 #'   express fold-change values in tick labels and in \code{data}. Use \code{FALSE}
 #'   for no logarithm transformation.
@@ -143,6 +149,8 @@ FC_name <- function(name = "Abundance%unit",
 #'   names, breaks, and labels work as usual.
 #'
 #' @export
+#'
+#' @family scales for omics data
 #'
 #' @examples
 #'
@@ -174,9 +182,18 @@ FC_name <- function(name = "Abundance%unit",
 #'                 breaks = waiver(),
 #'                 labels = waiver())
 #'
-scale_x_logFC <- function(name = "Abundance%unit",
+#' ggplot(my.df, aes(x, y)) +
+#'   geom_point() +
+#'   scale_x_logFC() +
+#'   scale_y_logFC() +
+#'   geom_quadrant_lines() +
+#'   stat_quadrant_counts(size = 3.5)
+#'
+scale_x_logFC <- function(name = "Abundance of x%unit",
                           breaks = NULL,
                           labels = NULL,
+                          oob = scales::squish,
+                          expand = expand_scale(mult = 0.15, add = 0),
                           log.base.labels = FALSE,
                           log.base.data = 2L,
                           ...) {
@@ -202,6 +219,8 @@ scale_x_logFC <- function(name = "Abundance%unit",
   ggplot2::scale_x_continuous(name = FC_name(name = name, log.base = log.base.labels),
                               breaks = breaks,
                               labels = labels,
+                              oob = oob,
+                              expand = expand,
                               ...)
 }
 
@@ -212,6 +231,8 @@ scale_x_logFC <- function(name = "Abundance%unit",
 scale_y_logFC <- function(name = "Abundance of y%unit",
                           breaks = NULL,
                           labels = NULL,
+                          oob = scales::squish,
+                          expand = expand_scale(mult = 0.15, add = 0),
                           log.base.labels = FALSE,
                           log.base.data = 2L,
                           ...) {
@@ -237,5 +258,7 @@ scale_y_logFC <- function(name = "Abundance of y%unit",
   ggplot2::scale_y_continuous(name = FC_name(name = name, log.base = log.base.labels),
                               breaks = breaks,
                               labels = labels,
+                              oob = oob,
+                              expand = expand,
                               ...)
 }
