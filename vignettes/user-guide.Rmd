@@ -1453,3 +1453,82 @@ ggplot(data = make_data_tbl(300, rfun = rgamma, shape = 2),
   geom_point() +
   stat_dens2d_filter(color = "red", keep.fraction = 1/3)
 ```
+
+## Appendix: Volcano plots
+
+```{r}
+names(volcano_example.df)
+```
+
+
+```{r}
+volcano_example.df %>%
+  mutate(., outcome.fct = outcome2factor(outcome)) %>%
+  ggplot(., aes(logFC, PValue, colour = outcome.fct)) +
+  geom_point() +
+  scale_x_logFC(name = "Transcript abundance%unit") +
+  scale_y_Pvalue() +
+  scale_colour_outcome() +
+  stat_quadrant_counts(data = . %>% filter(outcome != 0))
+```
+```{r}
+volcano_example.df %>%
+  mutate(., outcome.fct = outcome2factor(outcome, n.levels = 2)) %>%
+  ggplot(., aes(logFC, PValue, colour = outcome.fct)) +
+  geom_point() +
+  scale_x_logFC(name = "Transcript abundance%unit") +
+  scale_y_Pvalue() +
+  scale_colour_outcome() +
+  stat_quadrant_counts(data = . %>% filter(outcome != 0))
+```
+
+## Appendix: Quadrant plots
+
+```{r}
+names(quadrant_example.df)
+```
+
+```{r}
+all_quadrant_counts <- function(...) {
+  list(  
+    stat_quadrant_counts(data = . %>% filter(outcome.xy.fct == "xy"), ...),
+    stat_quadrant_counts(data = . %>% filter(outcome.xy.fct == "x"), pool.along = "y", ...),
+    stat_quadrant_counts(data = . %>% filter(outcome.xy.fct == "y"), pool.along = "x", ...),
+    stat_quadrant_counts(data = . %>% filter(outcome.xy.fct == "none"), quadrants = 0L, ...)
+  )
+}
+```
+
+```{r}
+    # we use Inf instead NA and rely on clipping as rows containing NAs are removed
+all_quadrant_lines <- function(...) { 
+  list(
+    geom_quadrant_lines(data =  data.frame(outcome.xy.fct = factor(c("xy", "x", "y", "none"),
+                                                                   levels = c("xy", "x", "y", "none")),
+                                           xintercept = c(0, 0, Inf, Inf),
+                                           yintercept = c(0, Inf, 0, Inf)),
+                        xintercept = NULL, yintercept = NULL,
+                        aes_(xintercept = ~xintercept, yintercept = ~yintercept),
+                        ...)
+  )
+}
+```
+
+```{r}
+quadrant_example.df %>%
+  mutate(.,
+         outcome.x.fct = outcome2factor(outcome.x),
+         outcome.y.fct = outcome2factor(outcome.y),
+         outcome.xy.fct = xy_outcomes2factor(outcome.x, outcome.y)) %>%
+  ggplot(., aes(logFC.x, logFC.y, colour = outcome.x.fct, fill = outcome.y.fct)) +
+  geom_point(shape = 21) +
+  all_quadrant_lines(linetype = "dotted") +
+  all_quadrant_counts(size = 2.5) +
+  scale_x_logFC(name = "Transcript abundance for x%unit") +
+  scale_y_logFC(name = "Transcript abundance for y%unit") +
+  scale_colour_outcome() +
+  scale_fill_outcome() +
+  facet_wrap(~outcome.xy.fct)
+```
+
+

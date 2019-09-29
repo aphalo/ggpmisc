@@ -86,37 +86,3 @@ scale_fill_outcome <- function(...,
                              aesthetics = aesthetics)
 }
 
-#' Convert numeric ternary outcomes into a factor
-#'
-#' @param x a numeric vector of -1, 0, and +1 values, indicating down
-#'   regulation, uncertain response or upregulation.
-#' @param n.levels numeric Number of levels to create.
-#'
-#' @details This function converts the numerically encoded values into a factor
-#'   with the three levels \code{"down"}, \code{"uncertain"} and \code{"up"}, or
-#'   into a factor with two levels \code{de} and \code{uncertain} as expected
-#'   by scales \code{scale_colour_outcome()}, \code{scale_fill_outcome()} and
-#'   \code{scale_shape_outcome()}.
-#'
-#' @note When \code{n.levels = 2} both -1 and +1 are merged to the same level
-#'   with label \code{"de"}.
-#'
-#' @export
-#'
-#' @examples
-#'
-#' outcome2factor(c(-1, 1, 0, 1))
-#'
-#' @family scales for omics data
-#'
-outcome2factor <- function(x, n.levels = 3L) {
-  stopifnot(all(unique(stats::na.omit(x)) %in% -1:1))
-  if (n.levels == 3L) {
-    fct.labels <- c( "up", "uncertain","down")
-  } else if (n.levels == 2) {
-    fct.labels <- c("de", "uncertain", "de")
-  }
-  factor(x, levels = c(+1, 0, -1), labels = fct.labels)
-}
-
-

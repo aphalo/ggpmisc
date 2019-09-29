@@ -68,6 +68,8 @@ ggplot(my.df, aes(x, y, shape = outcome3, fill = outcome2)) +
 \seealso{
 Other scales for omics data: \code{\link{outcome2factor}},
   \code{\link{scale_colour_outcome}},
-  \code{\link{scale_x_logFC}}, \code{\link{scale_y_Pvalue}}
+  \code{\link{scale_x_logFC}},
+  \code{\link{scale_y_Pvalue}},
+  \code{\link{xy_outcomes2factor}}
 }
 \concept{scales for omics data}
