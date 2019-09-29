@@ -3,6 +3,8 @@
 \name{scale_y_Pvalue}
 \alias{scale_y_Pvalue}
 \alias{scale_y_FDR}
+\alias{scale_x_Pvalue}
+\alias{scale_x_FDR}
 \title{Covenience scale for P-values}
 \usage{
 scale_y_Pvalue(..., name = expression(italic(P) - plain(value)),
@@ -10,6 +12,14 @@ scale_y_Pvalue(..., name = expression(italic(P) - plain(value)),
   oob = NULL, expand = NULL)
 
 scale_y_FDR(..., name = "False discovery rate", trans = NULL,
+  breaks = NULL, labels = NULL, limits = c(1, 1e-10), oob = NULL,
+  expand = NULL)
+
+scale_x_Pvalue(..., name = expression(italic(P) - plain(value)),
+  trans = NULL, breaks = NULL, labels = NULL, limits = c(1, 1e-20),
+  oob = NULL, expand = NULL)
+
+scale_x_FDR(..., name = "False discovery rate", trans = NULL,
   breaks = NULL, labels = NULL, limits = c(1, 1e-10), oob = NULL,
   expand = NULL)
 }

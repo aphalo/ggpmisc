@@ -142,7 +142,7 @@ ggplot(cars, aes(speed, dist)) +
                           "M.S." = "meansq", 
                           "italic(F)" = "statistic", 
                           "italic(P)" = "p.value"),
-               label.y.npc = "top", label.x.npc = "left",
+              label.y.npc = "top", label.x.npc = "left",
               size = 2.5,
               parse = TRUE)
 ```

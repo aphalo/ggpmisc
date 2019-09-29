@@ -65,7 +65,6 @@ scale_y_Pvalue <- function(...,
                       scales::log_breaks(base = base),
                       domain = c(1e-100, Inf))
   }
-
   default.breaks <- c(1, 1e-3, 1e-10, 1e-20, 1e-30, 1e-40, 1e-50, 1e-60, 1e-70, 1e-80)
   default.labels <- scales::trans_format("log10", scales::math_format())
   default.expand <- ggplot2::expand_scale(mult = c(0.06, 0.14), add = 0)
@@ -102,3 +101,65 @@ scale_y_FDR <- function(...,
                  oob = oob,
                  expand = expand)
 }
+
+#' @rdname scale_y_Pvalue
+#'
+#' @export
+#'
+scale_x_Pvalue <- function(...,
+                           name = expression(italic(P)-plain(value)),
+                           trans = NULL,
+                           breaks = NULL,
+                           labels = NULL,
+                           limits = c(1, 1e-20),
+                           oob = NULL,
+                           expand = NULL) {
+
+  # define transformation needed for P-value tick labels
+  reverselog_trans <- function(base = exp(1)) {
+    trans <- function(x) -log(x, base)
+    inv <- function(x) base^(-x)
+    scales::trans_new(paste0("reverselog-", format(base)), trans, inv,
+                      scales::log_breaks(base = base),
+                      domain = c(1e-100, Inf))
+  }
+
+  default.breaks <- c(1, 1e-3, 1e-10, 1e-20, 1e-30, 1e-40, 1e-50, 1e-60, 1e-70, 1e-80)
+  default.labels <- scales::trans_format("log10", scales::math_format())
+  default.expand <- ggplot2::expand_scale(mult = c(0.06, 0.14), add = 0)
+
+  ggplot2::scale_x_continuous(...,
+                              name = name,
+                              trans = if (is.null(trans)) reverselog_trans(10) else trans,
+                              breaks = if (is.null(breaks)) default.breaks else breaks,
+                              labels = if (is.null(labels)) default.labels else labels,
+                              limits = if (is.null(limits)) c(1, 1e-10) else limits, # axis is reversed!
+                              oob = if (is.null(oob)) scales::squish else oob,
+                              minor_breaks = NULL,
+                              expand = if (is.null(expand)) default.expand else expand)
+}
+
+#' @rdname scale_y_Pvalue
+#'
+#' @export
+#'
+scale_x_FDR <- function(...,
+                        name = "False discovery rate",
+                        trans = NULL,
+                        breaks = NULL,
+                        labels = NULL,
+                        limits = c(1, 1e-10),
+                        oob = NULL,
+                        expand = NULL) {
+  scale_x_Pvalue(...,
+                 name = name,
+                 trans = trans,
+                 breaks = breaks,
+                 labels = labels,
+                 limits = limits,
+                 oob = oob,
+                 expand = expand)
+}
+
+
+

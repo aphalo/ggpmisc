@@ -6,12 +6,14 @@
 \title{Position scales for log fold change data}
 \usage{
 scale_x_logFC(name = "Abundance of x\%unit", breaks = NULL,
-  labels = NULL, oob = scales::squish, expand = expand_scale(mult =
-  0.15, add = 0), log.base.labels = FALSE, log.base.data = 2L, ...)
+  labels = NULL, limits = symmetric_limits, oob = scales::squish,
+  expand = expand_scale(mult = 0.15, add = 0), log.base.labels = FALSE,
+  log.base.data = 2L, ...)
 
 scale_y_logFC(name = "Abundance of y\%unit", breaks = NULL,
-  labels = NULL, oob = scales::squish, expand = expand_scale(mult =
-  0.15, add = 0), log.base.labels = FALSE, log.base.data = 2L, ...)
+  labels = NULL, limits = symmetric_limits, oob = scales::squish,
+  expand = expand_scale(mult = 0.15, add = 0), log.base.labels = FALSE,
+  log.base.data = 2L, ...)
 }
 \arguments{
 \item{name}{The name of the scale without units, used for the axis-label.}
@@ -23,6 +25,11 @@ varies depending on argument passed to \code{log.base.labels}.}
 positions. The default is function that uses the arguments passed to
 \code{log.base.data} and \code{log.base.labels} to generate suitable
 labels.}
+
+\item{limits}{limits    One of: NULL to use the default scale range A numeric
+vector of length two providing limits of the scale. Use NA to refer to the
+existing minimum or maximum. A function that accepts the existing
+(automatic) limits and returns new limits}
 
 \item{oob}{Function that handles limits outside of the scale limits (out of
 bounds). The default squishes out-of-bounds values to the boundary.}

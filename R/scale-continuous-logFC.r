@@ -115,6 +115,26 @@ FC_name <- function(name = "Abundance%unit",
   }
 }
 
+#' Expand limits to be symetric
+#'
+#' A simple function to expand scale limits to be symetric around zero.
+#' Can be used to with any continuos scale.
+#'
+#' @param x numeric The automatic limits
+#'
+#' @return A numeric vector of length two with the new limits.
+#'
+#' @export
+#'
+#' @examples
+#'
+#' symmetric_limits(c(-1, 1.8))
+#'
+symmetric_limits <- function(x) {
+  max <- max(abs(x))
+  c(-max, max)
+}
+
 #' Position scales for log fold change data
 #'
 #' Continuous scales for x and y aesthetics with defaults suitable for values
@@ -130,6 +150,10 @@ FC_name <- function(name = "Abundance%unit",
 #'   positions. The default is function that uses the arguments passed to
 #'   \code{log.base.data} and \code{log.base.labels} to generate suitable
 #'   labels.
+#' @param limits limits	One of: NULL to use the default scale range A numeric
+#'   vector of length two providing limits of the scale. Use NA to refer to the
+#'   existing minimum or maximum. A function that accepts the existing
+#'   (automatic) limits and returns new limits
 #' @param oob Function that handles limits outside of the scale limits (out of
 #'   bounds). The default squishes out-of-bounds values to the boundary.
 #' @param expand Vector of range expansion constants used to add some padding
@@ -192,6 +216,7 @@ FC_name <- function(name = "Abundance%unit",
 scale_x_logFC <- function(name = "Abundance of x%unit",
                           breaks = NULL,
                           labels = NULL,
+                          limits = symmetric_limits,
                           oob = scales::squish,
                           expand = expand_scale(mult = 0.15, add = 0),
                           log.base.labels = FALSE,
@@ -221,6 +246,7 @@ scale_x_logFC <- function(name = "Abundance of x%unit",
                               labels = labels,
                               oob = oob,
                               expand = expand,
+                              limits = limits,
                               ...)
 }
 
@@ -231,6 +257,7 @@ scale_x_logFC <- function(name = "Abundance of x%unit",
 scale_y_logFC <- function(name = "Abundance of y%unit",
                           breaks = NULL,
                           labels = NULL,
+                          limits = symmetric_limits,
                           oob = scales::squish,
                           expand = expand_scale(mult = 0.15, add = 0),
                           log.base.labels = FALSE,
@@ -260,5 +287,6 @@ scale_y_logFC <- function(name = "Abundance of y%unit",
                               labels = labels,
                               oob = oob,
                               expand = expand,
+                              limits = limits,
                               ...)
 }

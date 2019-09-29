@@ -1456,10 +1456,20 @@ ggplot(data = make_data_tbl(300, rfun = rgamma, shape = 2),
 
 ## Appendix: Volcano plots
 
+Volcano plots are frequently used for transcriptomics and metabolomics. They are used to show _P_-values as a function of effect size, which can be an increase or a decrease. Effect sizes are expressed as fold-changes compared to a control or reference condition. Colours are frequently used to highlight significant responses. Counts of significant increases and decreases are frequently also added.
+
+Package 'ggpmisc' provides several building blocks that facilitate the production of volcano plots: _scales_ and helper functions. Outcomes encoded as -1, 0 or 1, as seen in the tibble below need to be converted into factors with suitable labels for levels. This can be easily done with
+function `outcome2factor()`.
+
 ```{r}
-names(volcano_example.df)
+head(volcano_example.df) 
 ```
 
+By default the logFC data es expected as log2 transformed, but this can be
+overriden as well as the use of untransformed fold-change for tick labels. 
+Scale `scale_x_logFC()` in addition by default expands the scale limits to
+make them symmetric around zero. If `%unit` is included in the name character
+string, suitable units are appended as shown in the example below.
 
 ```{r}
 volcano_example.df %>%
@@ -1471,6 +1481,10 @@ volcano_example.df %>%
   scale_colour_outcome() +
   stat_quadrant_counts(data = . %>% filter(outcome != 0))
 ```
+
+By default `outcome2factor()` creates a factor with three levels as in the example above,
+but this default can be overriden as shown below.
+
 ```{r}
 volcano_example.df %>%
   mutate(., outcome.fct = outcome2factor(outcome, n.levels = 2)) %>%
@@ -1484,9 +1498,35 @@ volcano_example.df %>%
 
 ## Appendix: Quadrant plots
 
+Quadrant plots are used to compare responses to two different conditions or treatments, when many
+responses are measured as in transcriptomics or metabolomics. A single panel quadrant plot
+is as easy to produce as a volcano plot. The data includes to different outcomes and two
+different log fold-change variables. A quadrant plot is a scatter plot comparing responses to
+two different conditions. 
+
 ```{r}
 names(quadrant_example.df)
 ```
+
+```{r}
+quadrant_example.df %>%
+  mutate(.,
+         outcome.x.fct = outcome2factor(outcome.x),
+         outcome.y.fct = outcome2factor(outcome.y),
+         outcome.xy.fct = xy_outcomes2factor(outcome.x, outcome.y)) %>%
+         filter(outcome.xy.fct != "none") %>%
+  ggplot(., aes(logFC.x, logFC.y, colour = outcome.x.fct, fill = outcome.y.fct)) +
+  geom_quadrant_lines(linetype = "dotted") +
+  stat_quadrant_counts(size = 3, colour = "white") +
+  geom_point(shape = 21) +
+  scale_x_logFC(name = "Transcript abundance for x%unit") +
+  scale_y_logFC(name = "Transcript abundance for y%unit") +
+  scale_colour_outcome() +
+  scale_fill_outcome() +
+  theme_dark()
+```
+
+To plot in separate panels those observations that are significan along both _x_ and _y_ axes, _x_ axis, _y_ axis, or none, with quadrants merged takes more effort. We first define two helper functions to add counts and quadrant to each of the four panels.
 
 ```{r}
 all_quadrant_counts <- function(...) {
@@ -1514,6 +1554,8 @@ all_quadrant_lines <- function(...) {
 }
 ```
 
+And use these functions to build the final plot.
+
 ```{r}
 quadrant_example.df %>%
   mutate(.,
@@ -1523,12 +1565,13 @@ quadrant_example.df %>%
   ggplot(., aes(logFC.x, logFC.y, colour = outcome.x.fct, fill = outcome.y.fct)) +
   geom_point(shape = 21) +
   all_quadrant_lines(linetype = "dotted") +
-  all_quadrant_counts(size = 2.5) +
+  all_quadrant_counts(size = 3, colour = "white") +
   scale_x_logFC(name = "Transcript abundance for x%unit") +
   scale_y_logFC(name = "Transcript abundance for y%unit") +
   scale_colour_outcome() +
   scale_fill_outcome() +
-  facet_wrap(~outcome.xy.fct)
+  facet_wrap(~outcome.xy.fct) +
+  theme_dark()
 ```
 
 

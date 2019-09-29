@@ -9,8 +9,6 @@ xy_outcomes2factor(x, y)
 \arguments{
 \item{x, y}{numeric vectors of -1, 0, and +1 values, indicating down
 regulation, uncertain response or upregulation.}
-
-\item{n.levels}{numeric Number of levels to create.}
 }
 \description{
 Convert two numeric ternary outcomes into a factor
