@@ -5,14 +5,14 @@
 \alias{FC_plain}
 \title{Formatter for fold change tick labels}
 \usage{
-FC_format(log.base.labels = 2, log.base.data = 2, digits = 3, ...)
+FC_format(log.base.data = 2, log.base.labels = 10, digits = 3, ...)
 
-FC_plain(x, log.base.data = 2, log.base.labels = 2, digits = 3, ...)
+FC_plain(x, log.base.data = 2, log.base.labels = 10, digits = 3, ...)
 }
 \arguments{
-\item{log.base.labels}{of labels.}
-
 \item{log.base.data}{of data.}
+
+\item{log.base.labels}{of labels.}
 
 \item{digits}{number of significant digits to show.}
 

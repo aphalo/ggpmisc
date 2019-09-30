@@ -19,17 +19,21 @@ scale_y_logFC(name = "Abundance of y\%unit", breaks = NULL,
 \item{name}{The name of the scale without units, used for the axis-label.}
 
 \item{breaks}{The positions of ticks or a function to generate them. Default
-varies depending on argument passed to \code{log.base.labels}.}
+varies depending on argument passed to \code{log.base.labels}. if supplied
+as a numeric vector they should be given using the data as passed to
+parameter \code{data}.}
 
 \item{labels}{The tick labels or a function to generate them from the tick
 positions. The default is function that uses the arguments passed to
 \code{log.base.data} and \code{log.base.labels} to generate suitable
 labels.}
 
-\item{limits}{limits    One of: NULL to use the default scale range A numeric
-vector of length two providing limits of the scale. Use NA to refer to the
+\item{limits}{limits    One of: NULL to use the default scale range from
+ggplot2. A numeric
+vector of length two providing limits of the scale, using NA to refer to the
 existing minimum or maximum. A function that accepts the existing
-(automatic) limits and returns new limits}
+(automatic) limits and returns new limits. The default is function
+\code{symmetric_limits()} which keep 1 at the middle of the axis..}
 
 \item{oob}{Function that handles limits outside of the scale limits (out of
 bounds). The default squishes out-of-bounds values to the boundary.}
@@ -72,6 +76,13 @@ ggplot(my.df, aes(x, y)) +
 
 ggplot(my.df, aes(x, y)) +
   geom_point() +
+  scale_x_logFC(labels = scales::trans_format(function(x) {log10(2^x)},
+                         scales::math_format())) +
+  scale_y_logFC(labels = scales::trans_format(function(x) {log10(2^x)},
+                         scales::math_format()))
+
+ggplot(my.df, aes(x, y)) +
+  geom_point() +
   scale_x_logFC(log.base.labels = 2) +
   scale_y_logFC(log.base.labels = 2)
 
@@ -79,6 +90,24 @@ ggplot(my.df, aes(x, y)) +
   geom_point() +
   scale_x_logFC("A concentration\%unit", log.base.labels = 10) +
   scale_y_logFC("B concentration\%unit", log.base.labels = 10)
+
+ggplot(my.df, aes(x, y)) +
+  geom_point() +
+  scale_x_logFC("A concentration\%unit", breaks = NULL) +
+  scale_y_logFC("B concentration\%unit", breaks = NULL)
+
+# taking into account that data are expressed as log2 FC.
+ggplot(my.df, aes(x, y)) +
+  geom_point() +
+  scale_x_logFC("A concentration\%unit", breaks = log2(c(1/100, 1, 100))) +
+  scale_y_logFC("B concentration\%unit", breaks = log2(c(1/100, 1, 100)))
+
+ggplot(my.df, aes(x, y)) +
+  geom_point() +
+  scale_x_logFC(labels = scales::trans_format(function(x) {log10(2^x)},
+                         scales::math_format())) +
+  scale_y_logFC(labels = scales::trans_format(function(x) {log10(2^x)},
+                         scales::math_format()))
 
 # override "special" default arguments.
 ggplot(my.df, aes(x, y)) +

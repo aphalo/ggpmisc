@@ -23,7 +23,7 @@
 #' FC_format(10, FALSE)(c(1, 10, 100, 1000))
 #' FC_format(FALSE, 10)(c(-1, 1, 2, 3))
 #'
-FC_format <- function(log.base.labels = 2, log.base.data = 2, digits = 3, ...) {
+FC_format <- function(log.base.data = 2, log.base.labels = 10, digits = 3, ...) {
   function(x) FC_plain(x,
                        log.base.data = log.base.data,
                        log.base.labels = log.base.labels,
@@ -34,7 +34,7 @@ FC_format <- function(log.base.labels = 2, log.base.data = 2, digits = 3, ...) {
 #'
 #' @rdname FC_format
 #'
-FC_plain <- function(x, log.base.data = 2, log.base.labels = 2, digits = 3, ...) {
+FC_plain <- function(x, log.base.data = 2, log.base.labels = 10, digits = 3, ...) {
   if (log.base.data != log.base.labels) {
     if (log.base.data %in% c(2, exp(1), 10)) {
       x <- log.base.data^x
@@ -145,15 +145,19 @@ symmetric_limits <- function(x) {
 #'
 #' @param name The name of the scale without units, used for the axis-label.
 #' @param breaks The positions of ticks or a function to generate them. Default
-#'   varies depending on argument passed to \code{log.base.labels}.
+#'   varies depending on argument passed to \code{log.base.labels}. if supplied
+#'   as a numeric vector they should be given using the data as passed to
+#'   parameter \code{data}.
 #' @param labels The tick labels or a function to generate them from the tick
 #'   positions. The default is function that uses the arguments passed to
 #'   \code{log.base.data} and \code{log.base.labels} to generate suitable
 #'   labels.
-#' @param limits limits	One of: NULL to use the default scale range A numeric
-#'   vector of length two providing limits of the scale. Use NA to refer to the
+#' @param limits limits	One of: NULL to use the default scale range from
+#'   ggplot2. A numeric
+#'   vector of length two providing limits of the scale, using NA to refer to the
 #'   existing minimum or maximum. A function that accepts the existing
-#'   (automatic) limits and returns new limits
+#'   (automatic) limits and returns new limits. The default is function
+#'   \code{symmetric_limits()} which keep 1 at the middle of the axis..
 #' @param oob Function that handles limits outside of the scale limits (out of
 #'   bounds). The default squishes out-of-bounds values to the boundary.
 #' @param expand Vector of range expansion constants used to add some padding
@@ -188,6 +192,13 @@ symmetric_limits <- function(x) {
 #'
 #' ggplot(my.df, aes(x, y)) +
 #'   geom_point() +
+#'   scale_x_logFC(labels = scales::trans_format(function(x) {log10(2^x)},
+#'                          scales::math_format())) +
+#'   scale_y_logFC(labels = scales::trans_format(function(x) {log10(2^x)},
+#'                          scales::math_format()))
+#'
+#' ggplot(my.df, aes(x, y)) +
+#'   geom_point() +
 #'   scale_x_logFC(log.base.labels = 2) +
 #'   scale_y_logFC(log.base.labels = 2)
 #'
@@ -195,6 +206,24 @@ symmetric_limits <- function(x) {
 #'   geom_point() +
 #'   scale_x_logFC("A concentration%unit", log.base.labels = 10) +
 #'   scale_y_logFC("B concentration%unit", log.base.labels = 10)
+#'
+#' ggplot(my.df, aes(x, y)) +
+#'   geom_point() +
+#'   scale_x_logFC("A concentration%unit", breaks = NULL) +
+#'   scale_y_logFC("B concentration%unit", breaks = NULL)
+#'
+#' # taking into account that data are expressed as log2 FC.
+#' ggplot(my.df, aes(x, y)) +
+#'   geom_point() +
+#'   scale_x_logFC("A concentration%unit", breaks = log2(c(1/100, 1, 100))) +
+#'   scale_y_logFC("B concentration%unit", breaks = log2(c(1/100, 1, 100)))
+#'
+#' ggplot(my.df, aes(x, y)) +
+#'   geom_point() +
+#'   scale_x_logFC(labels = scales::trans_format(function(x) {log10(2^x)},
+#'                          scales::math_format())) +
+#'   scale_y_logFC(labels = scales::trans_format(function(x) {log10(2^x)},
+#'                          scales::math_format()))
 #'
 #' # override "special" default arguments.
 #' ggplot(my.df, aes(x, y)) +
@@ -225,11 +254,11 @@ scale_x_logFC <- function(name = "Abundance of x%unit",
 
   if (is.null(breaks)) {
     if (!log.base.labels) {
-      breaks <- c(1/1000, 1/100, 1/10, 1, 10, 100, 1000)
+      breaks <- 10^seq(from = -4, to = 4, by = 1)
     } else if (log.base.labels == 2L) {
       breaks <- 2^seq(from = -10, to = 10, by = 3)
     } else if (log.base.labels == 10L) {
-      breaks <- 10^seq(from = -3, to = 3, by = 1)
+      breaks <- 10^seq(from = -4, to = 4, by = 1)
     }
     if (log.base.data) {
       breaks <- log(breaks, base = log.base.data)
@@ -266,11 +295,11 @@ scale_y_logFC <- function(name = "Abundance of y%unit",
 
   if (is.null(breaks)) {
     if (!log.base.labels) {
-      breaks <- c(1/1000, 1/100, 1/10, 1, 10, 100, 1000)
+      breaks <- 10^seq(from = -4, to = 4, by = 1)
     } else if (log.base.labels == 2L) {
       breaks <- 2^seq(from = -10, to = 10, by = 3)
     } else if (log.base.labels == 10L) {
-      breaks <- 10^seq(from = -3, to = 3, by = 1)
+      breaks <- 10^seq(from = -4, to = 4, by = 1)
     }
     if (log.base.data) {
       breaks <- log(breaks, base = log.base.data)
