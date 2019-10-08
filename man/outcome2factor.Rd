@@ -7,10 +7,10 @@
 outcome2factor(x, n.levels = 3L)
 }
 \arguments{
-\item{x}{a numeric vector of -1, 0, and +1 values, indicating down
-regulation, uncertain response or upregulation.}
+\item{x}{a numeric vector of -1, 0, and +1 values, indicating downregulation,
+uncertain response or upregulation.}
 
-\item{n.levels}{numeric Number of levels to create.}
+\item{n.levels}{numeric Number of levels to create, either 3 or 2.}
 }
 \description{
 Convert numeric ternary outcomes into a factor
@@ -18,13 +18,16 @@ Convert numeric ternary outcomes into a factor
 \details{
 This function converts the numerically encoded values into a factor
   with the three levels \code{"down"}, \code{"uncertain"} and \code{"up"}, or
-  into a factor with two levels \code{de} and \code{uncertain} as expected
-  by scales \code{scale_colour_outcome()}, \code{scale_fill_outcome()} and
-  \code{scale_shape_outcome()}.
+  into a factor with two levels \code{de} and \code{uncertain} as expected by
+  default by scales \code{\link{scale_colour_outcome}},
+  \code{\link{scale_fill_outcome}} and \code{\link{scale_shape_outcome}}.
+  When \code{n.levels = 2} both -1 and +1 are merged to the same level of the
+  factor with label \code{"de"}.
 }
 \note{
-When \code{n.levels = 2} both -1 and +1 are merged to the same level
-  with label \code{"de"}.
+This is an utility function that only saves some typing. The same
+  result can be achieved by a direct call to \code{\link{factor}}. This
+  function aims at making it easier to draw volcano and quadrant plots.
 }
 \examples{
 

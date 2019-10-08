@@ -57,12 +57,15 @@ log2 fold-change and log10 fold-change. Supports addition of units to
 axis labels passed as argument to the \code{name} formal parameter.
 }
 \details{
-These scales only alter three default arguments of
+These scales only alter default arguments of
   \code{scale_x_continuous()} and \code{scale_y_continuous()}. Please, see
   documentation for \code{\link[ggplot2]{scale_continuous}} for details. The
   name argument supports the use of \code{"\%unit"} at the end of the string to
   automatically add a units string, otherwise user-supplied values for
-  names, breaks, and labels work as usual.
+  names, breaks, and labels work as usual. Tick labels are built based on
+  the transformation already applied to the data (log2 by default) and
+  apossibly different log transformation (default is fold-change with no
+  transformation).
 }
 \examples{
 

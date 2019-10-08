@@ -1387,6 +1387,144 @@ try_tibble(data.frame(x = rep(1,5), y = 1:5))
 try_tibble(matrix(1:10, ncol = 2))
 ```
 
+## Volcano plots
+
+Volcano plots are scatter plots with some peculiarities. They are frequently used for transcriptomics and metabolomics. They are used to show _P_-values or FDR (false discovery rate) as a function of effect size, which can be either an increase or a decrease. Effect sizes are expressed as fold-changes compared to a control or reference condition. Colours are frequently used to highlight significant responses. Counts of significant increases and decreases are frequently also added.
+
+Creating volcano plots from scratch using 'ggplot2' can be time consuming, but allows flexibility in design. Rather than providing a 'canned' function to produce volcano plots, package 'ggpmisc' provides several building blocks that facilitate the production of volcano and quadrant plots: Wrappers on _scales_ with suitable defaults plus helper functions to create factors from numeric outcomes.
+
+Outcomes encoded as -1, 0 or 1, as seen in the tibble below need to be converted into factors with suitable labels for levels. This can be easily achieved with function `outcome2factor()`.
+
+```{r}
+head(volcano_example.df) 
+```
+
+Most frequently fold-change data is available log-transformed, using either
+2 or 10 as base. In general it is more informative to use tick labels expressed
+as un-transformed fold-change. 
+
+By default `scale_x_logFC()` and `scale_y_logFC()` expect the logFC data
+log2-transformed, but this can be overriden. The default use of untransformed
+fold-change for tick labels can also be overriden. Scale `scale_x_logFC()` in
+addition by default expands the scale limits to make them symmetric around zero.
+If `%unit` is included in the name character string, suitable units are appended
+as shown in the example below.
+
+Scales `scale_y_Pvalue()` and `scale_x_Pvalue()` have suitable defaults for name
+and labels, while `scale_colour_outcome()` provides suitable defaults for the
+colours mapped to the outcomes. To change the labels and title of the `key` or
+`guide` pass suitable arguments to parameters `name` and `labels` of these
+scales. These x and y scales by default _squish_ off-limits (out-of-bounds)
+observations towards the limits.
+
+```{r}
+volcano_example.df %>%
+  mutate(., outcome.fct = outcome2factor(outcome)) %>%
+  ggplot(., aes(logFC, PValue, colour = outcome.fct)) +
+  geom_point() +
+  scale_x_logFC(name = "Transcript abundance%unit") +
+  scale_y_Pvalue() +
+  scale_colour_outcome() +
+  stat_quadrant_counts(data = . %>% filter(outcome != 0))
+```
+
+By default `outcome2factor()` creates a factor with three levels as in the example above,
+but this default can be overriden as shown below.
+
+```{r}
+volcano_example.df %>%
+  mutate(., outcome.fct = outcome2factor(outcome, n.levels = 2)) %>%
+  ggplot(., aes(logFC, PValue, colour = outcome.fct)) +
+  geom_point() +
+  scale_x_logFC(name = "Transcript abundance%unit") +
+  scale_y_Pvalue() +
+  scale_colour_outcome() +
+  stat_quadrant_counts(data = . %>% filter(outcome != 0))
+```
+
+## Quadrant plots
+
+Quadrant plots are scatter plots with comparable variables on both axes and usually include the four quadrants. When used for transcriptomics and metabolomics, they are used to compare responses expressed as fold-change to two different conditions or treatments. They are usefull when many responses are measured as in transcriptomics (many different genes) or metabolomics (many different metabolites). 
+
+A single panel quadrant plot is as easy to produce as a volcano plot using scales `scale_x_logFC()` and `scale_y_logFC()`. The data includes two different outcomes and two different log fold-change variables. See the previous section on volcano plots for details. In this example we use as shape a filled circle and map one of the outcomes to colour and the other to fill, using the two matched scales `scale_colour_outcome()` and `scale_fill_outcome()`.
+
+```{r}
+head(quadrant_example.df)
+```
+
+In this plot we do not include those genes whose change in transcript abundance is uncertain under both x and y conditions.
+
+```{r}
+quadrant_example.df %>%
+  mutate(.,
+         outcome.x.fct = outcome2factor(outcome.x),
+         outcome.y.fct = outcome2factor(outcome.y),
+         outcome.xy.fct = xy_outcomes2factor(outcome.x, outcome.y)) %>%
+         filter(outcome.xy.fct != "none") %>%
+  ggplot(., aes(logFC.x, logFC.y, colour = outcome.x.fct, fill = outcome.y.fct)) +
+  geom_quadrant_lines(linetype = "dotted") +
+  stat_quadrant_counts(size = 3, colour = "white") +
+  geom_point(shape = "circle filled") +
+  scale_x_logFC(name = "Transcript abundance for x%unit") +
+  scale_y_logFC(name = "Transcript abundance for y%unit") +
+  scale_colour_outcome() +
+  scale_fill_outcome() +
+  theme_dark()
+```
+
+To plot in separate panels those observations that are significan along both _x_ and _y_ axes, _x_ axis, _y_ axis, or none, with quadrants merged takes more effort. We first define two helper functions to add counts and quadrant lines to each of the four panels.
+
+```{r}
+all_quadrant_counts <- function(...) {
+  list(  
+    stat_quadrant_counts(data = . %>% filter(outcome.xy.fct == "xy"), ...),
+    stat_quadrant_counts(data = . %>% filter(outcome.xy.fct == "x"), pool.along = "y", ...),
+    stat_quadrant_counts(data = . %>% filter(outcome.xy.fct == "y"), pool.along = "x", ...),
+    stat_quadrant_counts(data = . %>% filter(outcome.xy.fct == "none"), quadrants = 0L, ...)
+  )
+}
+```
+
+
+```{r}
+all_quadrant_lines <- function(...) { 
+  list(
+    geom_hline(data =  data.frame(outcome.xy.fct = factor(c("xy", "x", "y", "none"),
+                                                          levels = c("xy", "x", "y", "none")),
+                                  yintercept = c(0, NA, 0, NA)),
+               aes_(yintercept = ~yintercept),
+               na.rm = TRUE,
+               ...),
+    geom_vline(data =  data.frame(outcome.xy.fct = factor(c("xy", "x", "y", "none"),
+                                                          levels = c("xy", "x", "y", "none")),
+                                  xintercept = c(0, 0, NA, NA)),
+               aes_(xintercept = ~xintercept),
+               na.rm = TRUE,
+               ...)
+  )
+}
+```
+
+And use these functions to build the final plot, in this case including all genes.
+
+```{r}
+quadrant_example.df %>%
+  mutate(.,
+         outcome.x.fct = outcome2factor(outcome.x),
+         outcome.y.fct = outcome2factor(outcome.y),
+         outcome.xy.fct = xy_outcomes2factor(outcome.x, outcome.y)) %>%
+  ggplot(., aes(logFC.x, logFC.y, colour = outcome.x.fct, fill = outcome.y.fct)) +
+  geom_point(shape = 21) +
+  all_quadrant_lines(linetype = "dotted") +
+  all_quadrant_counts(size = 3, colour = "white") +
+  scale_x_logFC(name = "Transcript abundance for x%unit") +
+  scale_y_logFC(name = "Transcript abundance for y%unit") +
+  scale_colour_outcome() +
+  scale_fill_outcome() +
+  facet_wrap(~outcome.xy.fct) +
+  theme_dark()
+```
+
 ## Appendix: Additional examples of the use density filtering
 
 We define a function to simplify the generation of random data sets.
@@ -1454,124 +1592,5 @@ ggplot(data = make_data_tbl(300, rfun = rgamma, shape = 2),
   stat_dens2d_filter(color = "red", keep.fraction = 1/3)
 ```
 
-## Appendix: Volcano plots
-
-Volcano plots are frequently used for transcriptomics and metabolomics. They are used to show _P_-values as a function of effect size, which can be an increase or a decrease. Effect sizes are expressed as fold-changes compared to a control or reference condition. Colours are frequently used to highlight significant responses. Counts of significant increases and decreases are frequently also added.
-
-Package 'ggpmisc' provides several building blocks that facilitate the production of volcano plots: _scales_ and helper functions. Outcomes encoded as -1, 0 or 1, as seen in the tibble below need to be converted into factors with suitable labels for levels. This can be easily done with
-function `outcome2factor()`.
-
-```{r}
-head(volcano_example.df) 
-```
-
-By default the logFC data es expected as log2 transformed, but this can be
-overriden as well as the use of untransformed fold-change for tick labels. 
-Scale `scale_x_logFC()` in addition by default expands the scale limits to
-make them symmetric around zero. If `%unit` is included in the name character
-string, suitable units are appended as shown in the example below.
-
-```{r}
-volcano_example.df %>%
-  mutate(., outcome.fct = outcome2factor(outcome)) %>%
-  ggplot(., aes(logFC, PValue, colour = outcome.fct)) +
-  geom_point() +
-  scale_x_logFC(name = "Transcript abundance%unit") +
-  scale_y_Pvalue() +
-  scale_colour_outcome() +
-  stat_quadrant_counts(data = . %>% filter(outcome != 0))
-```
-
-By default `outcome2factor()` creates a factor with three levels as in the example above,
-but this default can be overriden as shown below.
-
-```{r}
-volcano_example.df %>%
-  mutate(., outcome.fct = outcome2factor(outcome, n.levels = 2)) %>%
-  ggplot(., aes(logFC, PValue, colour = outcome.fct)) +
-  geom_point() +
-  scale_x_logFC(name = "Transcript abundance%unit") +
-  scale_y_Pvalue() +
-  scale_colour_outcome() +
-  stat_quadrant_counts(data = . %>% filter(outcome != 0))
-```
-
-## Appendix: Quadrant plots
-
-Quadrant plots are used to compare responses to two different conditions or treatments, when many
-responses are measured as in transcriptomics or metabolomics. A single panel quadrant plot
-is as easy to produce as a volcano plot. The data includes to different outcomes and two
-different log fold-change variables. A quadrant plot is a scatter plot comparing responses to
-two different conditions. 
-
-```{r}
-names(quadrant_example.df)
-```
-
-```{r}
-quadrant_example.df %>%
-  mutate(.,
-         outcome.x.fct = outcome2factor(outcome.x),
-         outcome.y.fct = outcome2factor(outcome.y),
-         outcome.xy.fct = xy_outcomes2factor(outcome.x, outcome.y)) %>%
-         filter(outcome.xy.fct != "none") %>%
-  ggplot(., aes(logFC.x, logFC.y, colour = outcome.x.fct, fill = outcome.y.fct)) +
-  geom_quadrant_lines(linetype = "dotted") +
-  stat_quadrant_counts(size = 3, colour = "white") +
-  geom_point(shape = 21) +
-  scale_x_logFC(name = "Transcript abundance for x%unit") +
-  scale_y_logFC(name = "Transcript abundance for y%unit") +
-  scale_colour_outcome() +
-  scale_fill_outcome() +
-  theme_dark()
-```
-
-To plot in separate panels those observations that are significan along both _x_ and _y_ axes, _x_ axis, _y_ axis, or none, with quadrants merged takes more effort. We first define two helper functions to add counts and quadrant to each of the four panels.
-
-```{r}
-all_quadrant_counts <- function(...) {
-  list(  
-    stat_quadrant_counts(data = . %>% filter(outcome.xy.fct == "xy"), ...),
-    stat_quadrant_counts(data = . %>% filter(outcome.xy.fct == "x"), pool.along = "y", ...),
-    stat_quadrant_counts(data = . %>% filter(outcome.xy.fct == "y"), pool.along = "x", ...),
-    stat_quadrant_counts(data = . %>% filter(outcome.xy.fct == "none"), quadrants = 0L, ...)
-  )
-}
-```
-
-```{r}
-    # we use Inf instead NA and rely on clipping as rows containing NAs are removed
-all_quadrant_lines <- function(...) { 
-  list(
-    geom_quadrant_lines(data =  data.frame(outcome.xy.fct = factor(c("xy", "x", "y", "none"),
-                                                                   levels = c("xy", "x", "y", "none")),
-                                           xintercept = c(0, 0, Inf, Inf),
-                                           yintercept = c(0, Inf, 0, Inf)),
-                        xintercept = NULL, yintercept = NULL,
-                        aes_(xintercept = ~xintercept, yintercept = ~yintercept),
-                        ...)
-  )
-}
-```
-
-And use these functions to build the final plot.
-
-```{r}
-quadrant_example.df %>%
-  mutate(.,
-         outcome.x.fct = outcome2factor(outcome.x),
-         outcome.y.fct = outcome2factor(outcome.y),
-         outcome.xy.fct = xy_outcomes2factor(outcome.x, outcome.y)) %>%
-  ggplot(., aes(logFC.x, logFC.y, colour = outcome.x.fct, fill = outcome.y.fct)) +
-  geom_point(shape = 21) +
-  all_quadrant_lines(linetype = "dotted") +
-  all_quadrant_counts(size = 3, colour = "white") +
-  scale_x_logFC(name = "Transcript abundance for x%unit") +
-  scale_y_logFC(name = "Transcript abundance for y%unit") +
-  scale_colour_outcome() +
-  scale_fill_outcome() +
-  facet_wrap(~outcome.xy.fct) +
-  theme_dark()
-```
 
 

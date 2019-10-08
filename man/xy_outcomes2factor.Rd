@@ -15,14 +15,14 @@ Convert two numeric ternary outcomes into a factor
 }
 \details{
 This function converts the numerically encoded values into a factor
-  with the four levels \code{"xy"}, \code{"x"}, \code{"y"} and \code{"none"}, or
-  into a factor with two levels \code{de} and \code{uncertain} as expected
-  by scales \code{scale_colour_outcome()}, \code{scale_fill_outcome()} and
-  \code{scale_shape_outcome()}.
+  with the four levels \code{"xy"}, \code{"x"}, \code{"y"} and \code{"none"}.
+  The factor created can be used for faceting or can be mapped to aesthetics.
 }
 \note{
-When \code{n.levels = 2} both -1 and +1 are merged to the same level
-  with label \code{"de"}.
+This is an utility function that only saves some typing. The same
+  result can be achieved by a direct call to \code{\link{factor}}. This
+  function aims at making it easier to draw quadrant plots with facets
+  based on the combined outcomes.
 }
 \examples{
 

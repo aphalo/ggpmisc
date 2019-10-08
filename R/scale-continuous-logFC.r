@@ -117,8 +117,9 @@ FC_name <- function(name = "Abundance%unit",
 
 #' Expand limits to be symetric
 #'
-#' A simple function to expand scale limits to be symetric around zero.
-#' Can be used to with any continuos scale.
+#' A simple function to expand scale limits to be symetric around zero. Can be
+#' passed as argument to parameter \code{limits} of continuous scales from
+#' packages 'ggplot2' or 'scales'.
 #'
 #' @param x numeric The automatic limits
 #'
@@ -169,12 +170,15 @@ symmetric_limits <- function(x) {
 #'   for no logarithm transformation.
 #' @param ... other named arguments passed to \code{scale_y_continuous}.
 #'
-#' @details These scales only alter three default arguments of
+#' @details These scales only alter default arguments of
 #'   \code{scale_x_continuous()} and \code{scale_y_continuous()}. Please, see
 #'   documentation for \code{\link[ggplot2]{scale_continuous}} for details. The
 #'   name argument supports the use of \code{"\%unit"} at the end of the string to
 #'   automatically add a units string, otherwise user-supplied values for
-#'   names, breaks, and labels work as usual.
+#'   names, breaks, and labels work as usual. Tick labels are built based on
+#'   the transformation already applied to the data (log2 by default) and
+#'   apossibly different log transformation (default is fold-change with no
+#'   transformation).
 #'
 #' @export
 #'

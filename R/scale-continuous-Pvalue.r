@@ -57,14 +57,6 @@ scale_y_Pvalue <- function(...,
                            oob = NULL,
                            expand = NULL) {
 
-  # define transformation needed for P-value tick labels
-  reverselog_trans <- function(base = exp(1)) {
-    trans <- function(x) -log(x, base)
-    inv <- function(x) base^(-x)
-    scales::trans_new(paste0("reverselog-", format(base)), trans, inv,
-                      scales::log_breaks(base = base),
-                      domain = c(1e-100, Inf))
-  }
   default.breaks <- c(1, 1e-3, 1e-10, 1e-20, 1e-30, 1e-40, 1e-50, 1e-60, 1e-70, 1e-80)
   default.labels <- scales::trans_format("log10", scales::math_format())
   default.expand <- ggplot2::expand_scale(mult = c(0.06, 0.14), add = 0)
@@ -115,15 +107,6 @@ scale_x_Pvalue <- function(...,
                            oob = NULL,
                            expand = NULL) {
 
-  # define transformation needed for P-value tick labels
-  reverselog_trans <- function(base = exp(1)) {
-    trans <- function(x) -log(x, base)
-    inv <- function(x) base^(-x)
-    scales::trans_new(paste0("reverselog-", format(base)), trans, inv,
-                      scales::log_breaks(base = base),
-                      domain = c(1e-100, Inf))
-  }
-
   default.breaks <- c(1, 1e-3, 1e-10, 1e-20, 1e-30, 1e-40, 1e-50, 1e-60, 1e-70, 1e-80)
   default.labels <- scales::trans_format("log10", scales::math_format())
   default.expand <- ggplot2::expand_scale(mult = c(0.06, 0.14), add = 0)
@@ -161,5 +144,20 @@ scale_x_FDR <- function(...,
                  expand = expand)
 }
 
+#' Reverse log transformation
+#'
+#' @param base numeric Base of logarithm
+#'
+#' @keywords internal
+#'
+#' define transformation needed for P-value tick labels
+#'
+reverselog_trans <- function(base = exp(1)) {
+  trans <- function(x) -log(x, base)
+  inv <- function(x) base^(-x)
+  scales::trans_new(paste0("reverselog-", format(base)), trans, inv,
+                    scales::log_breaks(base = base),
+                    domain = c(1e-100, Inf))
+}
 
 

@@ -1,17 +1,20 @@
 #' Convert numeric ternary outcomes into a factor
 #'
-#' @param x a numeric vector of -1, 0, and +1 values, indicating down
-#'   regulation, uncertain response or upregulation.
-#' @param n.levels numeric Number of levels to create.
+#' @param x a numeric vector of -1, 0, and +1 values, indicating downregulation,
+#'   uncertain response or upregulation.
+#' @param n.levels numeric Number of levels to create, either 3 or 2.
 #'
 #' @details This function converts the numerically encoded values into a factor
 #'   with the three levels \code{"down"}, \code{"uncertain"} and \code{"up"}, or
-#'   into a factor with two levels \code{de} and \code{uncertain} as expected
-#'   by scales \code{scale_colour_outcome()}, \code{scale_fill_outcome()} and
-#'   \code{scale_shape_outcome()}.
+#'   into a factor with two levels \code{de} and \code{uncertain} as expected by
+#'   default by scales \code{\link{scale_colour_outcome}},
+#'   \code{\link{scale_fill_outcome}} and \code{\link{scale_shape_outcome}}.
+#'   When \code{n.levels = 2} both -1 and +1 are merged to the same level of the
+#'   factor with label \code{"de"}.
 #'
-#' @note When \code{n.levels = 2} both -1 and +1 are merged to the same level
-#'   with label \code{"de"}.
+#' @note This is an utility function that only saves some typing. The same
+#'   result can be achieved by a direct call to \code{\link{factor}}. This
+#'   function aims at making it easier to draw volcano and quadrant plots.
 #'
 #' @export
 #'
@@ -39,13 +42,13 @@ outcome2factor <- function(x, n.levels = 3L) {
 #'   regulation, uncertain response or upregulation.
 #'
 #' @details This function converts the numerically encoded values into a factor
-#'   with the four levels \code{"xy"}, \code{"x"}, \code{"y"} and \code{"none"}, or
-#'   into a factor with two levels \code{de} and \code{uncertain} as expected
-#'   by scales \code{scale_colour_outcome()}, \code{scale_fill_outcome()} and
-#'   \code{scale_shape_outcome()}.
+#'   with the four levels \code{"xy"}, \code{"x"}, \code{"y"} and \code{"none"}.
+#'   The factor created can be used for faceting or can be mapped to aesthetics.
 #'
-#' @note When \code{n.levels = 2} both -1 and +1 are merged to the same level
-#'   with label \code{"de"}.
+#' @note This is an utility function that only saves some typing. The same
+#'   result can be achieved by a direct call to \code{\link{factor}}. This
+#'   function aims at making it easier to draw quadrant plots with facets
+#'   based on the combined outcomes.
 #'
 #' @export
 #'

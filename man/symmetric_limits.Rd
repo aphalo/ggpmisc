@@ -13,8 +13,9 @@ symmetric_limits(x)
 A numeric vector of length two with the new limits.
 }
 \description{
-A simple function to expand scale limits to be symetric around zero.
-Can be used to with any continuos scale.
+A simple function to expand scale limits to be symetric around zero. Can be
+passed as argument to parameter \code{limits} of continuous scales from
+packages 'ggplot2' or 'scales'.
 }
 \examples{
 

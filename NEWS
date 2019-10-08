@@ -1,13 +1,17 @@
-ggpmisc 0.3.2 (2019-09-22)
+ggpmisc 0.3.2 (2019-10-08)
 ==========================
 
 * Add geometries geom_vhlines() and geom_quadrant_lines().
-* Add convenience scales scale_x_logFC() and scale_x_logFC() for data expressed
+* Add convenience scales scale_x_logFC() and scale_y_logFC() for data expressed
 as fold change.
+* Add convenience scales scale_x_Pvalue(), scale_y_Pvalue(), scale_x_FDR(),
+scale_y_FDR().
 * Add convenience scales scale_colour_outcome(), scale_fill_outcome() and
-scale_shape_outcome() for data expressed as ternary or binary outcomes.
-Also a conversion function outcome2factor() to convert vectors of numeric
+scale_shape_outcome() for data expressed as ternary or binary outcomes, complemented
+by a conversion function outcome2factor() to convert vectors of numeric
 outcomes into factors suitable for use with these scales.
+* Add conversion function xy_outcomes2factor() to combine two vectors numeric
+outcomes into a factor.
 * Update stat_poly_eq() so that optionally instead of text labels it can return
 numeric values extracted from the fit object.
 * Document with examples how to pass weights and covariates to statistics based
