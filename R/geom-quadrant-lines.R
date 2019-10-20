@@ -1,8 +1,8 @@
 #' Reference lines: horizontal plus vertical, and quadrants
 #'
-#' \code{geom_vhlines()} add in a single layer both vertical and horizontal
+#' \code{geom_vhlines()} adds in a single layer both vertical and horizontal
 #' guide lines. Can be thought of as a convenience function that helps with
-#' producing consitent vertical and horizontal guide lines. It behaves like
+#' producing consistent vertical and horizontal guide lines. It behaves like
 #' \code{\link[ggplot2]{geom_vline}} and \code{\link[ggplot2]{geom_hline}}.
 #' \code{geom_quadrant_lines()} displays the boundaries of four quadrants
 #' with an arbitrary origin. The quadrants are specified in the same way as
@@ -36,8 +36,12 @@
 #'
 #' @details While \code{geom_vhlines()} does not provide defaults for the
 #'   intercepts and accept vectors of length > 1, \code{geom_quadrant_lines()}
-#'   set by default the intercepts to zero producing the natural quadrants and
-#'   only accepts vectors of length one per panel.
+#'   sets by default the intercepts to zero producing the natural quadrants and
+#'   only accepts vectors of length one per panel. That is \code{geom_vhlines()}
+#'   can be used to plot a grid while \code{geom_quadrant_lines()} plots at
+#'   most one vertical and one horizontal line. In the case of
+#'   \code{geom_quadrant_lines()} the pooling along axes can be specified in the
+#'   same way as in \code{\link{stat_quadrant_counts}()}.
 #'
 #' @examples
 #' # generate artificial data

@@ -2,13 +2,20 @@
 % Please edit documentation in R/outcome2factor.r
 \name{xy_outcomes2factor}
 \alias{xy_outcomes2factor}
+\alias{xy_thresholds2factor}
 \title{Convert two numeric ternary outcomes into a factor}
 \usage{
 xy_outcomes2factor(x, y)
+
+xy_thresholds2factor(x, y, x_threshold = 0, y_threshold = x_threshold)
 }
 \arguments{
 \item{x, y}{numeric vectors of -1, 0, and +1 values, indicating down
-regulation, uncertain response or upregulation.}
+regulation, uncertain response or upregulation, or numeric vectors that can be
+converted into such values using a pair of thresholds.}
+
+\item{x_threshold, y_threshold}{numeric vector Ranges enclosing the values to be considered
+uncertain for each of the two vectors..}
 }
 \description{
 Convert two numeric ternary outcomes into a factor
@@ -27,6 +34,7 @@ This is an utility function that only saves some typing. The same
 \examples{
 
 xy_outcomes2factor(c(-1, 0, 0, 1, -1), c(0, 1, 0, 1, -1))
+xy_thresholds2factor(c(-1, 0, 0, 0.1, -5), c(0, 2, 0, 1, -1))
 
 }
 \seealso{

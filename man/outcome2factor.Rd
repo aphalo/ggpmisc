@@ -2,21 +2,28 @@
 % Please edit documentation in R/outcome2factor.r
 \name{outcome2factor}
 \alias{outcome2factor}
+\alias{threshold2factor}
 \title{Convert numeric ternary outcomes into a factor}
 \usage{
 outcome2factor(x, n.levels = 3L)
+
+threshold2factor(x, n.levels = 3L, threshold = 0)
 }
 \arguments{
 \item{x}{a numeric vector of -1, 0, and +1 values, indicating downregulation,
-uncertain response or upregulation.}
+uncertain response or upregulation, or a numeric vector that can be
+converted into such values using a pair of thresholds.}
 
 \item{n.levels}{numeric Number of levels to create, either 3 or 2.}
+
+\item{threshold}{numeric vector Range enclosing the values to be considered
+uncertain.}
 }
 \description{
 Convert numeric ternary outcomes into a factor
 }
 \details{
-This function converts the numerically encoded values into a factor
+These functions convert the numerically encoded values into a factor
   with the three levels \code{"down"}, \code{"uncertain"} and \code{"up"}, or
   into a factor with two levels \code{de} and \code{uncertain} as expected by
   default by scales \code{\link{scale_colour_outcome}},
@@ -25,14 +32,19 @@ This function converts the numerically encoded values into a factor
   factor with label \code{"de"}.
 }
 \note{
-This is an utility function that only saves some typing. The same
-  result can be achieved by a direct call to \code{\link{factor}}. This
-  function aims at making it easier to draw volcano and quadrant plots.
+These are conveneince functions that only save some typing. The same
+  result can be achieved by a direct call to \code{\link{factor}} and
+  comparisons. These functions aim at making it easier to draw volcano and
+  quadrant plots.
 }
 \examples{
 
 outcome2factor(c(-1, 1, 0, 1))
 outcome2factor(c(-1, 1, 0, 1), n.levels = 2L)
+
+threshold2factor(c(-0.1, -2, 0, +5))
+threshold2factor(c(-0.1, -2, 0, +5), n.levels = 2L)
+threshold2factor(c(-0.1, -2, 0, +5), threshold = c(-1, 1))
 
 }
 \seealso{
