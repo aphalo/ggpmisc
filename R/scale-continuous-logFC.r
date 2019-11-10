@@ -14,6 +14,8 @@
 #'
 #' @keywords internal
 #'
+#' @family Geometries, scales and statistics for quadrant and volcano plots
+#'
 #' @export
 #'
 #' @examples

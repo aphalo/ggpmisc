@@ -71,3 +71,8 @@ personality" as both annotations and geometries.
 
 
 }
+\seealso{
+Other Geometries for marginal annotaions in ggplots: \code{\link{geom_x_margin_arrow}},
+  \code{\link{geom_x_margin_point}}
+}
+\concept{Geometries for marginal annotaions in ggplots}

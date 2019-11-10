@@ -73,6 +73,8 @@
 #'   been discussed as an issue at
 #'   \url{https://github.com/tidyverse/ggplot2/issues/1399}.
 #'
+#' @family Statistics for adding insets to ggplots
+#'
 #' @export
 #'
 #' @examples

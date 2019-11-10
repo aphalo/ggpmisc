@@ -103,3 +103,8 @@ The idea of implementing a \code{geom_custom()} for grobs has
   been discussed as an issue at
   \url{https://github.com/tidyverse/ggplot2/issues/1399}.
 }
+\seealso{
+Other Statistics for adding insets to ggplots: \code{\link{geom_plot}},
+  \code{\link{geom_table}}
+}
+\concept{Statistics for adding insets to ggplots}

@@ -34,36 +34,69 @@
 #' @param hstep,vstep numeric in npc units, the horizontal and vertical step
 #'   used between labels for different groups.
 #'
+#' @details \code{stat_fit_glance} together with \code{\link{stat_fit_tidy}}
+#'   and \code{\link{stat_fit_augment}}, based on package 'broom' can be used
+#'   with a broad range of model fitting functions as supported at any given
+#'   time by package 'broom'. In contrast to \code{\link{stat_poly_eq}} wich can
+#'   generate text or expression labels automatically, for these functions the
+#'   mapping of aesthetic \code{label} needs to be explicitly supplied in the
+#'   callm, and labels built on the fly.
+#'
+#'   A ggplot statistic receives as data a data frame that is not the one passed
+#'   as argument by the user, but instead a data frame with the variables mapped
+#'   to aesthetics. In other words, it respects the grammar of graphics and
+#'   consequently within arguments passed through \code{method.args} names of
+#'   aesthetics like $x$ and $y$ should be used intead of the original variable
+#'   names, while data is automatically passed the data frame. This helps ensure
+#'   that the model is fitted to the same data as plotted in other layers.
+#'
+#' @section Handling of grouping: \code{stat_fit_glance} applies the function
+#'   given by \code{method} separately to each group of observations, and
+#'   factors mapped to aesthetics generate a separate group for each factor
+#'   level. Because of this, \code{stat_fit_glance} is not useful for annotating
+#'   plots with results from \code{t.test()}, ANOVA or ANCOVA. In such cases use
+#'   the \code{stat_fit_tb()} statistic which applie the model fitting per
+#'   panel.
+#'
+#' @section Model formula required: The current implementation works only with
+#'   methods that accept a formula as argument and which have a \code{data}
+#'   parameter through which a data frame can be passed. For example,
+#'   \code{lm()} should be used with the formula interface, as the evaluation of
+#'   \code{x} and \code{y} needs to be delayed until the internal \code{object}
+#'   of the ggplot is available.  With some methods like \code{cor.test()} the
+#'   data embedded in the \code{"ggplot"} object cannot be automatically passed
+#'   as argument for the \code{data} parameter of the test or model fit
+#'   function.
+#'
 #' @section Computed variables: The output of \code{\link[broom]{glance}} is
 #'   returned as is in the \code{data} object. If you do not know what names
 #'   to expect for the variables returned, use \code{broom::glance()} and
 #'   \code{names()} or \code{print()} to find out.
 #'
-#' @section Warning!: The current implementation works only with methods that
-#'   accept a formula as argument and which have a \code{data} paremeter through
-#'   which a data frame can be passed. For example, \code{lm()} should be
-#'   used with the formula interface, as the evaluation of \code{x} and \code{y}
-#'   needs to be delayed until the internal \code{object} of the ggplot is
-#'   available.
-#'
-#' @note The names of the columns in the returned data are consitent with those
+#'   The names of the columns in the returned data are consitent with those
 #'   returned by method \code{glance()} from package 'broom', that will
 #'   frequently differ from the name of values returned by the print methods
-#'   corresponding to fit or test function used. With some methods like
-#'   \code{cor.test()} the data embedded in the \code{"ggplot"} object cannot be
-#'   automatically passed as argument for the \code{data} parameter of the test
-#'   or model fit function.
+#'   corresponding to the fit or test function used. To explore the values
+#'   returned by this statistic, which vary depending on the model fitting
+#'   function and model formula we suggest the use of
+#'   \code{\link[gginnards]{geom_debug}}. An example is shown below.
 #'
-#' @section Warning!: \code{stat_fit_glance} applies the function given by
-#'   \code{method} separately to each group of observations, and factors mapped
-#'   to aesthetics generate a separate group for each factor level. Because of
-#'   this, it is not useful for annotating plots with results from
-#'   \code{t.test()} or ANOVA or ANCOVA. In such cases use the
-#'   \code{stat_fit_tb()} statistic which does the model fitting per panel.
+#' @family ggplot2 statistics based on 'broom'.
+#'
+#' @seealso \code{\link[broom]{glance}}
 #'
 #' @export
 #'
 #' @examples
+#' library(gginnards)
+#' # Regression by panel example, using geom_debug.
+#' ggplot(mtcars, aes(x = disp, y = mpg)) +
+#'   stat_smooth(method = "lm") +
+#'   geom_point(aes(colour = factor(cyl))) +
+#'   stat_fit_glance(method = "lm",
+#'                   method.args = list(formula = y ~ x),
+#'                   geom = "debug")
+#'
 #' # Regression by panel example
 #' ggplot(mtcars, aes(x = disp, y = mpg)) +
 #'   stat_smooth(method = "lm") +
@@ -102,7 +135,7 @@ stat_fit_glance <- function(mapping = NULL, data = NULL, geom = "text_npc",
                             method.args = list(formula = y ~ x),
                             label.x = "left", label.y = "top",
                             hstep = 0,
-                            vstep = NULL,
+                            vstep = 0.075,
                             position = "identity",
                             na.rm = FALSE, show.legend = FALSE,
                             inherit.aes = TRUE, ...) {
@@ -113,6 +146,8 @@ stat_fit_glance <- function(mapping = NULL, data = NULL, geom = "text_npc",
                   method.args = method.args,
                   label.x = label.x,
                   label.y = label.y,
+                  hstep = hstep,
+                  vstep = vstep,
                   npc.used = grepl("_npc", geom),
                   na.rm = na.rm,
                   ...)
@@ -132,6 +167,8 @@ fit_glance_compute_group_fun <- function(data,
                                          method.args,
                                          label.x,
                                          label.y,
+                                         hstep,
+                                         vstep,
                                          npc.used) {
 
   force(data) # needed because it appears only wihtin quote()
@@ -202,28 +239,43 @@ fit_glance_compute_group_fun <- function(data,
 
   if (npc.used) {
     margin.npc = 0.05
-    hstep <- 0
-    hsteps <- hstep * (group.idx - 1L)
-    margin.npc = 0.05
-    if (is.character(label.x)) {
-      label.x <- switch(label.x,
-                        right = (1 - margin.npc) - hsteps,
-                        center = 0.5 - hsteps,
-                        centre = 0.5 - hsteps,
-                        middle = 0.5 - hsteps,
-                        left = (0 + margin.npc) +  hsteps)
+  } else {
+    margin.npc = 0
+  }
+#  hstep <- 0
+  hsteps <- hstep * (group.idx - 1L)
+  margin.npc = 0.05
+  if (is.character(label.x)) {
+    label.x <- switch(label.x,
+                      right = (1 - margin.npc) - hsteps,
+                      center = 0.5 - hsteps,
+                      centre = 0.5 - hsteps,
+                      middle = 0.5 - hsteps,
+                      left = (0 + margin.npc) +  hsteps
+    )
+    if (!npc.used) {
+      x.delta <- abs(diff(range(data$x)))
+      x.min <- min(data$x)
+      label.x <- label.x * x.delta + x.min
     }
-    vstep <- 0.075
-    vsteps <- vstep * (group.idx - 1L)
-    if (is.character(label.y)) {
-      label.y <- switch(label.y,
-                        top = (1 - margin.npc) - vsteps,
-                        center = 0.5 - vsteps,
-                        centre = 0.5 - vsteps,
-                        middle = 0.5 - vsteps,
-                        bottom = (0 + margin.npc) + vsteps
-      )
+  }
+#  vstep <- 0.075
+  vsteps <- vstep * (group.idx - 1L)
+  if (is.character(label.y)) {
+    label.y <- switch(label.y,
+                      top = (1 - margin.npc) - vsteps,
+                      center = 0.5 - vsteps,
+                      centre = 0.5 - vsteps,
+                      middle = 0.5 - vsteps,
+                      bottom = (0 + margin.npc) + vsteps
+    )
+    if (!npc.used) {
+      y.delta <- abs(diff(range(data$y)))
+      y.min <- min(data$y)
+      label.y <- label.y * y.delta + y.min
     }
+  }
+  if (npc.used) {
     z$npcx <- label.x
     z$x <- NA_real_
     z$npcy <- label.y
@@ -286,21 +338,60 @@ StatFitGlance <-
 #' @param level numeric Level of confidence interval to use (0.95 by default)
 #' @param y.out character (or numeric) index to column to return as \code{y}.
 #'
+#' @details \code{stat_fit_augment} together with \code{\link{stat_fit_glance}}
+#'   and \code{\link{stat_fit_tidy}}, based on package 'broom' can be used
+#'   with a broad range of model fitting functions as supported at any given
+#'   time by 'broom'. In contrast to \code{\link{stat_poly_eq}} wich can
+#'   generate text or expression labels automatically, for these functions the
+#'   mapping of aesthetic \code{label} needs to be explicitly supplied in the
+#'   call, and labels built on the fly.
+#'
+#'   A ggplot statistic receives as data a data frame that is not the one passed
+#'   as argument by the user, but instead a data frame with the variables mapped
+#'   to aesthetics. In other words, it respects the grammar of graphics and
+#'   consequently within arguments passed through \code{method.args} names of
+#'   aesthetics like $x$ and $y$ should be used intead of the original variable
+#'   names, while data is automatically passed the data frame. This helps ensure
+#'   that the model is fitted to the same data as plotted in other layers.
+#'
+#' @section Handling of grouping: \code{stat_fit_augment} applies the function
+#'   given by \code{method} separately to each group of observations; in ggplot2
+#'   factors mapped to aesthetics generate a separate group for each level.
+#'   Because of this, \code{stat_fit_augment} is not useful for annotating plots
+#'   with results from \code{t.test()} or ANOVA or ANCOVA. In such cases use
+#'   instead \code{stat_fit_tb()} which applies the model fitting per panel.
+#'
 #' @section Computed variables: The output of \code{\link[broom]{augment}} is
 #'   returned as is, except for \code{y} which is set based on \code{y.out} and
 #'   \code{y.observed} which preserves the \code{y} returned by the
 #'   \code{broom::augment} methods. This renaming is needed so that the geom
 #'   works as expected.
 #'
-#' @note The statistics \code{stat_fit_augment} accepts only \code{methods} that
+#'   To explore the values returned by this statistic, which vary depending
+#'   on the model fitting function and model formula we suggest the use of
+#'   \code{\link[gginnards]{geom_debug}}. An example is shown below.
+#'
+#' @note The statistic \code{stat_fit_augment} can be used only with \code{methods} that
 #'   accept formulas under any formal parameter name and a \code{data} argument.
 #'   Use \code{ggplot2::stat_smooth()} instead of \code{stat_fit_augment} in
-#'   production code if the additional features are not needed. At the moment
-#'   \code{stat_fit_augment} is under development and may change.
+#'   production code if the additional features are not needed.
+#'
+#' @family ggplot2 statistics based on 'broom'.
+#'
+#' @seealso \code{\link[broom]{augment}}
 #'
 #' @export
 #'
 #' @examples
+#' library(gginnards)
+#' # Regression by panel, using geom_debug() to explore computed variables
+#' ggplot(mtcars, aes(x = disp, y = mpg)) +
+#'   geom_point(aes(colour = factor(cyl))) +
+#'   stat_fit_augment(method = "lm",
+#'                    method.args = list(formula = y ~ x),
+#'                    geom = "debug",
+#'                    summary.fun = colnames)
+#'
 #' # Regression by panel example
 #' ggplot(mtcars, aes(x = disp, y = mpg)) +
 #'   geom_point(aes(colour = factor(cyl))) +
@@ -465,14 +556,61 @@ StatFitAugment <-
 #' @param hstep,vstep numeric in npc units, the horizontal and vertical step
 #'   used between labels for different groups.
 #'
+#' @details \code{stat_fit_tidy} together with \code{\link{stat_fit_glance}}
+#'   and \code{\link{stat_fit_augment}}, based on package 'broom' can be used
+#'   with a broad range of model fitting functions as supported at any given
+#'   time by 'broom'. In contrast to \code{\link{stat_poly_eq}} wich can
+#'   generate text or expression labels automatically, for these functions the
+#'   mapping of aesthetic \code{label} needs to be explicitly supplied in the
+#'   call, and labels built on the fly.
+#'
+#'   A ggplot statistic receives as data a data frame that is not the one passed
+#'   as argument by the user, but instead a data frame with the variables mapped
+#'   to aesthetics. In other words, it respects the grammar of graphics and
+#'   consequently within arguments passed through \code{method.args} names of
+#'   aesthetics like $x$ and $y$ should be used intead of the original variable
+#'   names, while data is automatically passed the data frame. This helps ensure
+#'   that the model is fitted to the same data as plotted in other layers.
+#'
+#' @section Handling of grouping: \code{stat_fit_tidy} applies the function
+#'   given by \code{method} separately to each group of observations; in ggplot2
+#'   factors mapped to aesthetics generate a separate group for each level.
+#'   Because of this, \code{stat_fit_tidy} is not useful for annotating plots
+#'   with results from \code{t.test()} or ANOVA or ANCOVA. In such cases use
+#'   instead \code{stat_fit_tb()} which applies the model fitting per panel.
+#'
 #' @section Computed variables: The output of \code{\link[broom]{tidy}} is
 #'   returned after reshaping it into a single row. Grouping is respected, and
 #'   the model fit separatately to each group of data. The returned \code{data}
-#'   object has one row for each group within a panel.
+#'   object has one row for each group within a panel. To use the intercept, note
+#'   that output of tidy() is renamed from \code{(Intercept)} to
+#'   \code{Intercept}.
+#'
+#'   To explore the values returned by this statistic, which vary depending
+#'   on the model fitting function and model formula we suggest the use of
+#'   \code{\link[gginnards]{geom_debug}}. An example is shown below.
+#'
+#' @note The statistic \code{stat_fit_augment} can be used only with \code{methods} that
+#'   accept formulas under any formal parameter name and a \code{data} argument.
+#'   Use \code{ggplot2::stat_smooth()} instead of \code{stat_fit_augment} in
+#'   production code if the additional features are not needed.
+#'
+#' @family ggplot2 statistics based on 'broom'.
+#'
+#' @seealso \code{\link[broom]{tidy}}
 #'
 #' @export
 #'
 #' @examples
+#' library(gginnards)
+#' # Regression by panel, exploring computed variables with geom_debug()
+#' ggplot(mtcars, aes(x = disp, y = mpg)) +
+#'   stat_smooth(method = "lm") +
+#'   geom_point(aes(colour = factor(cyl))) +
+#'   stat_fit_tidy(method = "lm",
+#'                 method.args = list(formula = y ~ x),
+#'                 geom = "debug")
+#'
 #' # Regression by panel example
 #' ggplot(mtcars, aes(x = disp, y = mpg)) +
 #'   stat_smooth(method = "lm") +
@@ -599,25 +737,43 @@ fit_tidy_compute_group_fun <- function(data,
 
   if (npc.used) {
     margin.npc = 0.05
-    hsteps <- hstep * (group.idx - 1L)
-    if (is.character(label.x)) {
-      label.x <- switch(label.x,
-                        right = (1 - margin.npc) - hsteps,
-                        center = 0.5 - hsteps,
-                        centre = 0.5 - hsteps,
-                        middle = 0.5 - hsteps,
-                        left = (0 + margin.npc) +  hsteps)
+  } else {
+    margin.npc = 0
+  }
+  hstep <- 0
+  hsteps <- hstep * (group.idx - 1L)
+  margin.npc = 0.05
+  if (is.character(label.x)) {
+    label.x <- switch(label.x,
+                      right = (1 - margin.npc) - hsteps,
+                      center = 0.5 - hsteps,
+                      centre = 0.5 - hsteps,
+                      middle = 0.5 - hsteps,
+                      left = (0 + margin.npc) +  hsteps
+    )
+    if (!npc.used) {
+      x.delta <- abs(diff(range(data$x)))
+      x.min <- min(data$x)
+      label.x <- label.x * x.delta + x.min
     }
-    vsteps <- vstep * (group.idx - 1L)
-    if (is.character(label.y)) {
-      label.y <- switch(label.y,
-                        top = (1 - margin.npc) - vsteps,
-                        center = 0.5 - vsteps,
-                        centre = 0.5 - vsteps,
-                        middle = 0.5 - vsteps,
-                        bottom = (0 + margin.npc) + vsteps
-      )
+  }
+  vstep <- 0.075
+  vsteps <- vstep * (group.idx - 1L)
+  if (is.character(label.y)) {
+    label.y <- switch(label.y,
+                      top = (1 - margin.npc) - vsteps,
+                      center = 0.5 - vsteps,
+                      centre = 0.5 - vsteps,
+                      middle = 0.5 - vsteps,
+                      bottom = (0 + margin.npc) + vsteps
+    )
+    if (!npc.used) {
+      y.delta <- abs(diff(range(data$y)))
+      y.min <- min(data$y)
+      label.y <- label.y * y.delta + y.min
     }
+  }
+  if (npc.used) {
     z$npcx <- label.x
     z$x <- NA_real_
     z$npcy <- label.y
@@ -628,6 +784,7 @@ fit_tidy_compute_group_fun <- function(data,
     z$y <- label.y
     z$npcy <- NA_real_
   }
+
   z
 }
 
@@ -645,3 +802,4 @@ StatFitTidy <-
                                   vjust = "inward"),
                    required_aes = c("x", "y")
   )
+

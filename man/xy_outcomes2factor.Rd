@@ -7,7 +7,7 @@
 \usage{
 xy_outcomes2factor(x, y)
 
-xy_thresholds2factor(x, y, x_threshold = 0, y_threshold = x_threshold)
+xy_thresholds2factor(x, y, x_threshold = 0, y_threshold = 0)
 }
 \arguments{
 \item{x, y}{numeric vectors of -1, 0, and +1 values, indicating down
@@ -34,13 +34,22 @@ This is an utility function that only saves some typing. The same
 \examples{
 
 xy_outcomes2factor(c(-1, 0, 0, 1, -1), c(0, 1, 0, 1, -1))
+xy_thresholds2factor(c(-1, 0, 0, 1, -1), c(0, 1, 0, 1, -1))
 xy_thresholds2factor(c(-1, 0, 0, 0.1, -5), c(0, 2, 0, 1, -1))
 
 }
 \seealso{
-Other scales for omics data: \code{\link{outcome2factor}},
+Other Geometries, scales and statistics for quadrant and volcano plots: \code{\link{FC_format}},
+  \code{\link{geom_quadrant_lines}},
+  \code{\link{outcome2factor}},
   \code{\link{scale_colour_outcome}},
   \code{\link{scale_shape_outcome}},
-  \code{\link{scale_x_logFC}}, \code{\link{scale_y_Pvalue}}
+  \code{\link{scale_y_Pvalue}},
+  \code{\link{stat_quadrant_counts}}
+
+Other scales for omics data: \code{\link{outcome2factor}},
+  \code{\link{scale_shape_outcome}},
+  \code{\link{scale_x_logFC}}
 }
+\concept{Geometries, scales and statistics for quadrant and volcano plots}
 \concept{scales for omics data}

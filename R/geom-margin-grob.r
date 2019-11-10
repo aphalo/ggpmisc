@@ -37,6 +37,8 @@
 #'   the marginal points. If these are set, data, mapping and show.legend are
 #'   overridden.
 #'
+#' @family Geometries for marginal annotaions in ggplots
+#'
 #' @export
 #'
 #' @examples

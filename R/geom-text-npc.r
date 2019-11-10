@@ -69,6 +69,7 @@
 #'   layer will not be plotted.
 #'
 #' @seealso \code{\link[ggplot2]{geom_text}}
+#'
 #' @export
 #' @examples
 #'

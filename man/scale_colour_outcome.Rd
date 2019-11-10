@@ -65,10 +65,12 @@ ggplot(my.df, aes(x, y, fill = outcome3)) +
 
 }
 \seealso{
-Other scales for omics data: \code{\link{outcome2factor}},
+Other Geometries, scales and statistics for quadrant and volcano plots: \code{\link{FC_format}},
+  \code{\link{geom_quadrant_lines}},
+  \code{\link{outcome2factor}},
   \code{\link{scale_shape_outcome}},
-  \code{\link{scale_x_logFC}},
   \code{\link{scale_y_Pvalue}},
+  \code{\link{stat_quadrant_counts}},
   \code{\link{xy_outcomes2factor}}
 }
-\concept{scales for omics data}
+\concept{Geometries, scales and statistics for quadrant and volcano plots}

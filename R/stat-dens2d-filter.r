@@ -41,9 +41,12 @@
 #'
 #' @seealso \code{\link[MASS]{kde2d}} used internally.
 #'
+#' @family statistics for selection of observations based on local density
+#'
 #' @examples
 #'
 #' library(ggrepel)
+#' library(gginnards)
 #'
 #' random_string <- function(len = 6) {
 #' paste(sample(letters, len, replace = TRUE), collapse = "")
@@ -61,6 +64,12 @@
 #' ggplot(data = d, aes(x, y)) +
 #'   geom_point() +
 #'   stat_dens2d_filter(color = "red")
+#'
+#' # Using geom_debug() we can see that only 10 out off 100 rows in \code{d} are
+#' # returned. Those highlighted in red in the previous example.
+#' ggplot(data = d, aes(x, y)) +
+#'   geom_point() +
+#'   stat_dens2d_filter(geom = "debug")
 #'
 #' ggplot(data = d, aes(x, y)) +
 #'   geom_point() +

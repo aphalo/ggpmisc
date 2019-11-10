@@ -30,7 +30,7 @@
 #'
 #' @export
 #'
-#' @family scales for omics data
+#' @family Geometries, scales and statistics for quadrant and volcano plots
 #'
 #' @examples
 #'

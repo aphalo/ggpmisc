@@ -18,7 +18,17 @@ combine two vectors of numeric outcomes into a 4-level factor.
 * Update stat_poly_eq() so that optionally instead of text labels it can return
 numeric values extracted from the fit object.
 * Document with examples how to pass weights and covariates to statistics based
-on methods from package 'broom'.
+on methods from package 'broom'. Highlight the differences among stat_poly_eq()
+and the stat_fit_xxx() statistics implemented using package 'broom'.
+
+** Revise stat_apply_fun() to allow simultaneous application of functions to
+x and y aesthetics, and handling of diff() and other functions returning
+slightly shorter vectors than their input.
+
+** Support in stat_fit_tb(), stat_fit_augment(), stat_fit_tidy() and
+stat_fit_glance() the use of character strings as position arguments for
+parameters label.x and label.y when using geoms based on x and y aesthetics in
+addition to when using those taking the npcx and npcy aesthetics.
 
 ggpmisc 0.3.1 (2019-04-01)
 ==========================

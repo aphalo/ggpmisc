@@ -57,44 +57,69 @@ In most cases one should simply use transformations through scales or summary
 functions through \code{stat_summary()}. There are some computations that are
 not scale transformations but are not usual summaries either, the number of
 data values does not decrease. It is always possible to precompute quantities
-like cummulative sums or running medians, and normalizations it can be
+like cummulative sums or running medians, and for normalizations it can be
 convenient to apply such functions on-the-fly to ensure that grouping is
 consistent between computations and aesthetics. One particularity of these
-statistics is that they can apply simulateneously different functions to
+statistics is that they can apply simultaneously different functions to
 \code{x} values and to \code{y} values when needed. In contrast
 \code{\link[ggplot2]{geom_smooth}} applies a function that takes both
 \code{x} and \code{y} values as arguments.
 }
 \details{
-The function to be applied is expected to be vectorized and to
-  return a vector of the same length. The vector mapped to the x or y
-  aesthetic is passed as the first positional argument to the call. The
+The function(s) to be applied is expected to be vectorized and to
+  return a vector of (almost) the same length. The vector mapped to the x or
+  y aesthetic is passed as the first positional argument to the call. The
   function must accept as first argument a vector or list that matches the
   data.
 }
 \note{
 This stat is at early stages of development and its interface may
-  change at any time, or it may be even removed from the package without
-  previous notice.
+  change at any time.
 }
 \section{Computed variables}{
- One x or y of is replaced by the vector returned
-  by the applied function. \describe{ \item{x}{x-value as returned by
+ One of x or y or both x and y replaced by the
+  vector returned by the corresponding applied function.
+  \describe{ \item{x}{x-value as returned by
   \code{.fun.x}} \item{y}{y-value as returned by \code{.fun.y}} }
 }
 
 \examples{
-
+library(gginnards)
 set.seed(123456)
-df <- data.frame(X = rep(1:20,2),
-                 Y = runif(40),
-                 category = rep(c("A","B"), each = 20))
-ggplot(df, aes(x = X, y = Y, colour = category)) +
+my.df <- data.frame(X = rep(1:20,2),
+                    Y = runif(40),
+                    category = rep(c("A","B"), each = 20))
+
+# make sure row are ordered for X as we will use functions that rely on this
+my.df <- my.df[order(my.df[["X"]]), ]
+
+ggplot(my.df, aes(x = X, y = Y, colour = category)) +
   stat_apply_group(.fun.y = cumsum)
-ggplot(df, aes(x = X, y = Y, colour = category)) +
+
+# Use of geom_debug() to inspect the computed values
+ggplot(my.df, aes(x = X, y = Y, colour = category)) +
+  stat_apply_group(.fun.y = cumsum, geom = "debug")
+
+ggplot(my.df, aes(x = X, y = Y, colour = category)) +
+  stat_apply_group(.fun.y = cummax)
+
+ggplot(my.df, aes(x = X, y = Y, colour = category)) +
+  stat_apply_group(.fun.x = cumsum, .fun.y = cumsum)
+
+# diff returns a shorter vector by 1 for each group
+ggplot(my.df, aes(x = X, y = Y, colour = category)) +
+  stat_apply_group(.fun.y = diff, na.rm = TRUE)
+
+ggplot(my.df, aes(x = X, y = Y, colour = category)) +
   geom_point() +
   stat_apply_group(.fun.y = runmed, .fun.y.args = list(k = 5))
-ggplot(df, aes(x = X, y = Y, colour = category)) +
+
+# Rescaling per group
+ggplot(my.df, aes(x = X, y = Y, colour = category)) +
+  stat_apply_group(.fun.y = function(x) {(x - min(x)) / (max(x) - min(x))})
+
+# Joint rescaling for whole panel
+ggplot(my.df, aes(x = X, y = Y, colour = category)) +
   stat_apply_panel(.fun.y = function(x) {(x - min(x)) / (max(x) - min(x))})
 
 }
