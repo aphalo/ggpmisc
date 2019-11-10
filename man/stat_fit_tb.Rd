@@ -16,7 +16,7 @@ stat_fit_tb(mapping = NULL, data = NULL, geom = "table_npc",
 \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs to be
 set at the layer level if you are overriding the plot defaults.}
 
-\item{data}{A layer specific dataset - only needed if you want to override
+\item{data}{A layer specific dataset, only needed if you want to override
 the plot defaults.}
 
 \item{geom}{The geometric object to use display the data}
@@ -73,9 +73,17 @@ can include aesthetics whose values you want to set, not map. See
   The argument to \code{method} can be any fit method for which a
   suitable \code{tidy()} method is available, including non-linear
   regression. Fit methods retain their default arguments unless orverridden.
+
+  A ggplot statistic receives as data a data frame that is not the one passed
+  as argument by the user, but instead a data frame with the variables mapped
+  to aesthetics. In other words, it respects the grammar of graphics and
+  consequently within arguments passed through \code{method.args} names of
+  aesthetics like $x$ and $y$ should be used intead of the original variable
+  names, while data is automatically passed the data frame. This helps ensure
+  that the model is fitted to the same data as plotted in other layers.
 }
 \section{Computed variables}{
- The output of \code{\link[broom]{tidy}} is
+ The output of \code{tidy()} is
   returned as a single "cell" in a tibble (i.e. a tibble nested within a
   tibble). The returned \code{data} object contains a single, containing the
   result from a single model fit to all data in a panel. If grouping is
@@ -148,7 +156,7 @@ ggplot(my.df, aes(group, x)) +
 
 }
 \seealso{
-\code{\link[broom]{tidy}} for details on how the tidying of the
+\code{\link[broom]{broom}} for details on how the tidying of the
   resulst of model fits is done. See \code{\link{geom_table}} for details
   on how the formating and location of the table can be adjusted.
 

@@ -63,6 +63,14 @@ can include aesthetics whose values you want to set, not map. See
   generate text or expression labels automatically, for these functions the
   mapping of aesthetic \code{label} needs to be explicitly supplied in the
   callm, and labels built on the fly.
+
+  A ggplot statistic receives as data a data frame that is not the one passed
+  as argument by the user, but instead a data frame with the variables mapped
+  to aesthetics. In other words, it respects the grammar of graphics and
+  consequently within arguments passed through \code{method.args} names of
+  aesthetics like $x$ and $y$ should be used intead of the original variable
+  names, while data is automatically passed the data frame. This helps ensure
+  that the model is fitted to the same data as plotted in other layers.
 }
 \section{Handling of grouping}{
  \code{stat_fit_glance} applies the function
@@ -87,11 +95,8 @@ can include aesthetics whose values you want to set, not map. See
 }
 
 \section{Computed variables}{
- The output of \code{\link[broom]{glance}} is
-  returned as is in the \code{data} object. If you do not know what names
-  to expect for the variables returned, use \code{broom::glance()} and
-  \code{names()} or \code{print()} to find out.
-
+ The output of \code{glance()} is
+  returned almost as is in the \code{data} object.
   The names of the columns in the returned data are consitent with those
   returned by method \code{glance()} from package 'broom', that will
   frequently differ from the name of values returned by the print methods
@@ -146,7 +151,7 @@ ggplot(mtcars, aes(x = disp, y = mpg, weight = cyl)) +
 
 }
 \seealso{
-\code{\link[broom]{glance}}
+\code{\link[broom]{broom}}
 
 Other ggplot2 statistics based on 'broom'.: \code{\link{stat_fit_augment}},
   \code{\link{stat_fit_tb}}, \code{\link{stat_fit_tidy}}

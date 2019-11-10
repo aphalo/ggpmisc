@@ -56,7 +56,7 @@
 #'   names, while data is automatically passed the data frame. This helps ensure
 #'   that the model is fitted to the same data as plotted in other layers.
 #'
-#' @section Computed variables: The output of \code{\link[broom]{tidy}} is
+#' @section Computed variables: The output of \code{tidy()} is
 #'   returned as a single "cell" in a tibble (i.e. a tibble nested within a
 #'   tibble). The returned \code{data} object contains a single, containing the
 #'   result from a single model fit to all data in a panel. If grouping is
@@ -66,7 +66,7 @@
 #'   on the model fitting function and model formula we suggest the use of
 #'   \code{\link[gginnards]{geom_debug}}. An example is shown below.
 #'
-#' @seealso \code{\link[broom]{tidy}} for details on how the tidying of the
+#' @seealso \code{\link[broom]{broom}} for details on how the tidying of the
 #'   resulst of model fits is done. See \code{\link{geom_table}} for details
 #'   on how the formating and location of the table can be adjusted.
 #'

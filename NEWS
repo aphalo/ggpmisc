@@ -1,6 +1,11 @@
 ggpmisc 0.3.2 (2019-10-20)
 ==========================
 
+This version implements some new features and fixes bugs in the features
+introduced in version 0.3.1, please do rise an issue if you notice any
+remaining bugs! Some reported weaknesses in the documentation have been
+addressed. This updated version depends on 'ggplot2' (>= 3.2.1).
+
 ** Add support for volcano and quadrant plots of outcomes.
 * Add geometries geom_vhlines() and geom_quadrant_lines().
 * Add convenience scales scale_x_logFC() and scale_y_logFC() for data expressed

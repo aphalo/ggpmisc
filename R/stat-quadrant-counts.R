@@ -49,20 +49,18 @@
 #'   expansion. The default positions of the labels is in the farthest corner or
 #'   edge of each quadrant using npc coordinates. Consequently, when using
 #'   facets even with free limits for $x$ and $y$ axes, the location of the labels
-#'   is consistent across panels. This is achieved by use of \code{geom =
-#'   "text_npc"} or \code{geom = "label_npc"}. To pass the positions in native
+#'   is consistent across panels. This is achieved by use of
+#'   \code{geom = "text_npc"} or \code{geom = "label_npc"}. To pass the positions in native
 #'   data units, pass \code{geom = "text"} explicitly as argument.
 #'
 #' @section Computed variables: Data frame with one to four rows, one for each
 #'   quadrant for which counts are counted in \code{data}. \describe{
-#'   \item{quadrant}{integer, one of 0:4}
-#'   \item{x}{x value of label position in data units}
-#'   \item{y}{y value of label position in data units}
-#'    \item{npcx}{x value of label position in npc units}
-#'    \item{npcy}{y value of label position in npc units}
-#'    \item{count}{number of  observations}}.
+#'   \item{quadrant}{integer, one of 0:4} \item{x}{x value of label position in
+#'   data units} \item{y}{y value of label position in data units} \item{npcx}{x
+#'   value of label position in npc units} \item{npcy}{y value of label position
+#'   in npc units} \item{count}{number of  observations} }.
 #'
-#'   As shown in one example below \code{\link[gginnards]{geom_debug} can be
+#'   As shown in one example below \code{\link[gginnards]{geom_debug}} can be
 #'   used to print the computed values returned by any statistic. The output
 #'   shown includes also values mapped to aesthetics, like \code{label} in the
 #'   example.

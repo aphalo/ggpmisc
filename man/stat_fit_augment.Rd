@@ -61,6 +61,14 @@ can include aesthetics whose values you want to set, not map. See
   generate text or expression labels automatically, for these functions the
   mapping of aesthetic \code{label} needs to be explicitly supplied in the
   call, and labels built on the fly.
+
+  A ggplot statistic receives as data a data frame that is not the one passed
+  as argument by the user, but instead a data frame with the variables mapped
+  to aesthetics. In other words, it respects the grammar of graphics and
+  consequently within arguments passed through \code{method.args} names of
+  aesthetics like $x$ and $y$ should be used intead of the original variable
+  names, while data is automatically passed the data frame. This helps ensure
+  that the model is fitted to the same data as plotted in other layers.
 }
 \note{
 The statistic \code{stat_fit_augment} can be used only with \code{methods} that
@@ -78,7 +86,7 @@ The statistic \code{stat_fit_augment} can be used only with \code{methods} that
 }
 
 \section{Computed variables}{
- The output of \code{\link[broom]{augment}} is
+ The output of \code{augment()} is
   returned as is, except for \code{y} which is set based on \code{y.out} and
   \code{y.observed} which preserves the \code{y} returned by the
   \code{broom::augment} methods. This renaming is needed so that the geom
@@ -143,7 +151,7 @@ ggplot(mtcars, aes(x = disp, y = mpg, weight = cyl)) +
 
 }
 \seealso{
-\code{\link[broom]{augment}}
+\code{\link[broom]{broom}}
 
 Other ggplot2 statistics based on 'broom'.: \code{\link{stat_fit_glance}},
   \code{\link{stat_fit_tb}}, \code{\link{stat_fit_tidy}}

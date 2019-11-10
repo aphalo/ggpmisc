@@ -1,3 +1,3 @@
 cd ..
-R CMD INSTALL --build ggpmisc_0.3.1.9000.tar.gz
+R CMD INSTALL --build ggpmisc_0.3.2.tar.gz
 cd ./ggpmisc

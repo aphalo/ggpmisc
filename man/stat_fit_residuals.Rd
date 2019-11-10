@@ -21,7 +21,8 @@ the plot defaults.}
 
 \item{method}{character Currently only "lm" is implemented.}
 
-\item{formula}{a "formula" object.}
+\item{formula}{a "formula" object. Using aesthetic names instead of
+original variable names.}
 
 \item{resid.type}{character passed to \code{residuals()} as argument for
 \code{type}.}
@@ -53,6 +54,14 @@ can include aesthetics whose values you want to set, not map. See
 This stat can be used to automatically plot residuals as points in a
   plot. At the moment it supports only linear models fitted with function
   \code{lm()}. This stat only generates the residuals.
+
+  A ggplot statistic receives as data a data frame that is not the one passed
+  as argument by the user, but instead a data frame with the variables mapped
+  to aesthetics. In other words, it respects the grammar of graphics and
+  consequently within the model \code{formula} names of
+  aesthetics like $x$ and $y$ should be used intead of the original variable
+  names, while data is automatically passed the data frame. This helps ensure
+  that the model is fitted to the same data as plotted in other layers.
 }
 \section{Computed variables}{
  Data frame with same \code{nrow} as \code{data}

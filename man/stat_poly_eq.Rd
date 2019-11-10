@@ -17,7 +17,7 @@ stat_poly_eq(mapping = NULL, data = NULL, geom = "text_npc",
 \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs to be
 set at the layer level if you are overriding the plot defaults.}
 
-\item{data}{A layer specific dataset - only needed if you want to override
+\item{data}{A layer specific dataset, only needed if you want to override
 the plot defaults.}
 
 \item{geom}{The geometric object to use display the data}
@@ -29,7 +29,8 @@ layer}
 can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 
-\item{formula}{a formula object.}
+\item{formula}{a formula object. Using aesthetic names instead of
+original variable names.}
 
 \item{eq.with.lhs}{If \code{character} the string is pasted to the front of
 the equation label before parsing or a \code{logical} (see note).}
@@ -84,10 +85,17 @@ This stat can be used to automatically annotate a plot with R^2,
   terms, except possibly for the intercept indicated by "- 1" or "-1" in the
   formula. The validity of the \code{formula} is not checked in the current
   implementation, and for this reason the default aesthetics sets R^2 as
-  label for the annotation. This stat only generates the label, the predicted
+  label for the annotation. This stat only generates labels, the predicted
   values need to be separately added to the plot, so to make sure that the
   same model formula is used in all steps it is best to save the formula as
   an object and supply this object as argument to the different statistics.
+
+  A ggplot statistic receives as data a data frame that is not the one passed
+  as argument by the user, but instead a data frame with the variables mapped
+  to aesthetics. stat_poly_eq() mimics how stat_smooth() works, except that
+  only polynomials can be fitted. In other words, it respects the grammar of
+  graphics. This helps ensure that the model is fitted to the same data as
+  plotted in other layers.
 }
 \note{
 For backward compatibility a logical is accepted as argument for

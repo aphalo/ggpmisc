@@ -20,7 +20,8 @@ the plot defaults.}
 
 \item{method}{character Currently only "lm" is implemented.}
 
-\item{formula}{a "formula" object.}
+\item{formula}{a "formula" object. Using aesthetic names instead of
+original variable names.}
 
 \item{position}{The position adjustment to use for overlapping points on this
 layer}
@@ -53,6 +54,14 @@ This stat can be used to automatically highlight residuals as
   to the plot, so to make sure that the same model formula is used in all
   steps it is best to save the formula as an object and supply this object as
   argument to the different statistics.
+
+  A ggplot statistic receives as data a data frame that is not the one passed
+  as argument by the user, but instead a data frame with the variables mapped
+  to aesthetics. In other words, it respects the grammar of graphics and
+  consequently within the model \code{formula} names of
+  aesthetics like $x$ and $y$ should be used intead of the original variable
+  names, while data is automatically passed the data frame. This helps ensure
+  that the model is fitted to the same data as plotted in other layers.
 }
 \note{
 For linear models \code{x1} is equal to \code{x2}.

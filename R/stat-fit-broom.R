@@ -68,11 +68,8 @@
 #'   as argument for the \code{data} parameter of the test or model fit
 #'   function.
 #'
-#' @section Computed variables: The output of \code{\link[broom]{glance}} is
-#'   returned as is in the \code{data} object. If you do not know what names
-#'   to expect for the variables returned, use \code{broom::glance()} and
-#'   \code{names()} or \code{print()} to find out.
-#'
+#' @section Computed variables: The output of \code{glance()} is
+#'   returned almost as is in the \code{data} object.
 #'   The names of the columns in the returned data are consitent with those
 #'   returned by method \code{glance()} from package 'broom', that will
 #'   frequently differ from the name of values returned by the print methods
@@ -83,7 +80,7 @@
 #'
 #' @family ggplot2 statistics based on 'broom'.
 #'
-#' @seealso \code{\link[broom]{glance}}
+#' @seealso \code{\link[broom]{broom}}
 #'
 #' @export
 #'
@@ -361,7 +358,7 @@ StatFitGlance <-
 #'   with results from \code{t.test()} or ANOVA or ANCOVA. In such cases use
 #'   instead \code{stat_fit_tb()} which applies the model fitting per panel.
 #'
-#' @section Computed variables: The output of \code{\link[broom]{augment}} is
+#' @section Computed variables: The output of \code{augment()} is
 #'   returned as is, except for \code{y} which is set based on \code{y.out} and
 #'   \code{y.observed} which preserves the \code{y} returned by the
 #'   \code{broom::augment} methods. This renaming is needed so that the geom
@@ -378,7 +375,7 @@ StatFitGlance <-
 #'
 #' @family ggplot2 statistics based on 'broom'.
 #'
-#' @seealso \code{\link[broom]{augment}}
+#' @seealso \code{\link[broom]{broom}}
 #'
 #' @export
 #'
@@ -579,11 +576,11 @@ StatFitAugment <-
 #'   with results from \code{t.test()} or ANOVA or ANCOVA. In such cases use
 #'   instead \code{stat_fit_tb()} which applies the model fitting per panel.
 #'
-#' @section Computed variables: The output of \code{\link[broom]{tidy}} is
+#' @section Computed variables: The output of \code{tidy()} is
 #'   returned after reshaping it into a single row. Grouping is respected, and
 #'   the model fit separatately to each group of data. The returned \code{data}
 #'   object has one row for each group within a panel. To use the intercept, note
-#'   that output of tidy() is renamed from \code{(Intercept)} to
+#'   that output of \code{tidy()} is renamed from \code{(Intercept)} to
 #'   \code{Intercept}.
 #'
 #'   To explore the values returned by this statistic, which vary depending
@@ -597,7 +594,7 @@ StatFitAugment <-
 #'
 #' @family ggplot2 statistics based on 'broom'.
 #'
-#' @seealso \code{\link[broom]{tidy}}
+#' @seealso \code{\link[broom]{broom}}
 #'
 #' @export
 #'
