@@ -46,13 +46,13 @@ can include aesthetics whose values you want to set, not map. See
 residuals ready to be plotted as segments.
 }
 \details{
-This stat can be used to automatically show residuals as segments
-in a plot of a fitted model equation. At the moment it supports only linear
-models fitted with function \code{lm()}. This stat only generates the
-residuals, the predicted values need to be separately added to the plot,
-so to make sure that the same model formula is used in all steps it is best
-to save the formula as an object and supply this object as argument to the
-different statistics.
+This stat can be used to automatically highlight residuals as
+  segments in a plot of a fitted model equation. At the moment it supports
+  only linear models fitted with function \code{lm()}. This stat only
+  generates the residuals, the predicted values need to be separately added
+  to the plot, so to make sure that the same model formula is used in all
+  steps it is best to save the formula as an object and supply this object as
+  argument to the different statistics.
 }
 \note{
 For linear models \code{x1} is equal to \code{x2}.
@@ -60,24 +60,43 @@ For linear models \code{x1} is equal to \code{x2}.
 \section{Computed variables}{
  Data frame with same \code{nrow} as \code{data}
   as subset for each group containing five numeric variables. \describe{
-  \item{x1}{x coordinates of observations} \item{x2}{x coordinates of fitted
-  values} \item{y1}{y coordinates of observations} \item{y2}{y coordinates of
+  \item{x}{x coordinates of observations} \item{y.fitted}{x coordinates of fitted
+  values} \item{y}{y coordinates of observations} \item{y.fitted}{y coordinates of
   fitted values}}
+
+  To explore the values returned by this statistic we suggest the use of
+  \code{\link[gginnards]{geom_debug}}. An example is shown below, where one
+  can also see in addition to the computed values the default mapping of the
+  fitted values to aesthetics \code{xend} and \code{yend}.
 }
 
 \examples{
-library(ggplot2)
+library(gginnards) # needed for geom_debug()
 # generate artificial data
 set.seed(4321)
 x <- 1:100
 y <- (x + x^2 + x^3) + rnorm(length(x), mean = 0, sd = mean(x^3) / 4)
 my.data <- data.frame(x, y, group = c("A", "B"), y2 = y * c(0.5,2))
+
 # give a name to a formula
 my.formula <- y ~ poly(x, 3, raw = TRUE)
+
 # plot
 ggplot(my.data, aes(x, y)) +
   geom_smooth(method = "lm", formula = my.formula) +
   stat_fit_deviations(formula = my.formula, color = "red") +
   geom_point()
 
+# plot, using geom_debug()
+ggplot(my.data, aes(x, y)) +
+  geom_smooth(method = "lm", formula = my.formula) +
+  stat_fit_deviations(formula = my.formula, color = "red",
+  geom = "debug") +
+  geom_point()
+
 }
+\seealso{
+Other statistics for linear model fits: \code{\link{stat_fit_residuals}},
+  \code{\link{stat_poly_eq}}
+}
+\concept{statistics for linear model fits}

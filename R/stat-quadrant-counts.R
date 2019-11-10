@@ -38,29 +38,41 @@
 #'
 #' @details This stat can be used to automatically count observations in each of
 #'   the four quadrants of a plot, and by default add these counts as text
-#'   labels.
-#'
-#' @section Computed variables: Data frame with one to four rows, one for each
-#'   quadrant for which observations are present in \code{data}. \describe{
-#'   \item{quadrant}{integer, one of 0:4} \item{x}{extreme x value in the
-#'   quadrant} \item{y}{extreme y value in the quadrant} \item{count}{number of
-#'   observations} }
-#'
-#' @note Values exactly equal to zero are counted as belonging to the positve
+#'   labels. Values exactly equal to zero are counted as belonging to the positve
 #'   quadrant. An argument value of zero, passed to formal parameter
 #'   \code{quadrants} is interpreted as a request for the count of all
-#'   observations in each plot panel. By default, which quadrants to compute
-#'   counts for is decided based on which quadrants are expected to be visible
-#'   in the plot. In the current implementation, the default positions of the
-#'   labels is based on the range of the coordinates in a given panel.
-#'   Consequently, when using facets even with free limits for x and y axes, the
-#'   location of the labels will be consistent accross panels. This is achieved
-#'   by use of \code{geom = "text_npc"} or \code{geom = "label_npc"}. To pass
-#'   the positions in native data units, pass \code{geom = "text"} explicitly as
-#'   argument, or labels will be positioned relative to the data range in each
-#'   panel.
+#'   observations in each plot panel.
+#'
+#'   The default origin of quadrants is at \code{xintercept = 0},
+#'   \code{yintercept = 0}. Alsoby default, counts are computed for all quadrants
+#'   within the $x$ and $y$ scale limits, but ignoring any marginal scale
+#'   expansion. The default positions of the labels is in the farthest corner or
+#'   edge of each quadrant using npc coordinates. Consequently, when using
+#'   facets even with free limits for $x$ and $y$ axes, the location of the labels
+#'   is consistent across panels. This is achieved by use of \code{geom =
+#'   "text_npc"} or \code{geom = "label_npc"}. To pass the positions in native
+#'   data units, pass \code{geom = "text"} explicitly as argument.
+#'
+#' @section Computed variables: Data frame with one to four rows, one for each
+#'   quadrant for which counts are counted in \code{data}. \describe{
+#'   \item{quadrant}{integer, one of 0:4}
+#'   \item{x}{x value of label position in data units}
+#'   \item{y}{y value of label position in data units}
+#'    \item{npcx}{x value of label position in npc units}
+#'    \item{npcy}{y value of label position in npc units}
+#'    \item{count}{number of  observations}}.
+#'
+#'   As shown in one example below \code{\link[gginnards]{geom_debug} can be
+#'   used to print the computed values returned by any statistic. The output
+#'   shown includes also values mapped to aesthetics, like \code{label} in the
+#'   example.
+#'
+#' @family Geometries, scales and statistics for quadrant and volcano plots
+#'
+#' @export
 #'
 #' @examples
+#' library(gginnards)
 #' # generate artificial data
 #' set.seed(4321)
 #' x <- 1:100
@@ -70,6 +82,11 @@
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   stat_quadrant_counts()
+#'
+#' # We use geom_debug() to see the computed values
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   stat_quadrant_counts(geom = "debug")
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
@@ -97,8 +114,6 @@
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   stat_quadrant_counts(geom = "text") # use "tex" instead
-#'
-#' @export
 #'
 stat_quadrant_counts <- function(mapping = NULL, data = NULL, geom = "text_npc",
                                  position = "identity",

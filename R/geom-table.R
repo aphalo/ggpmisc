@@ -5,12 +5,13 @@
 #' \code{geom_table_npc} is similar to \code{geom_label_npc} in that \code{x}
 #' and \code{y} coordinates are given in npc units.
 #'
-#' Note the "width" and "height" like of a text element are 0, so stacking
-#' and dodging tables will not work by default, and axis limits are not
-#' automatically expanded to include all tables. Obviously, tables do have
-#' height and width, but they are physical units, not data units. The amount of
-#' space they occupy on that plot is not constant in data units: when you resize
-#' a plot, tables stay the same size, but the size of the axes changes.
+#' The "width" and "height" of the table, like for text elements are 0, so
+#' stacking and dodging tables will not work by default. In addition, axis
+#' limits are not automatically expanded to include the whole tables, but
+#' instead only their x and y coordinates. Obviously, tables do have height and
+#' width, but they are in physical units, not data units. The amount of space
+#' they occupy on a plot is not constant in data units: when you resize a plot,
+#' tables stay the same size, but the size of the axes changes.
 #'
 #' @section Alignment: You can modify table alignment with the \code{vjust} and
 #'   \code{hjust} aesthetics. These can either be a number between 0
@@ -53,13 +54,13 @@
 #'   determine the position of the whole inset table, similarly to that of a text
 #'   label, justification is interpreted as indicating the position of the table
 #'   with respect to the $x$ and $y$ coordinates in the data, and \code{angle}
-#'   is used to rotate the plot as a whole.
+#'   is used to rotate the table as a whole.
 #'
 #'   In the case of \code{geom_table_npc()}, \code{npcx} and \code{npcy} aesthetics
 #'   determine the position of the whole inset table, similarly to that of a text
 #'   label, justification is interpreted as indicating the position of the table
 #'   with respect to the $x$ and $y$ coordinates in "npc" units, and \code{angle}
-#'   is used to rotate the plot as a whole.
+#'   is used to rotate the table as a whole.
 #'
 #'   \strong{\code{annotate()} cannot be used with \code{geom = "table"}}. Use
 #'   \code{\link[ggplot2]{annotation_custom}} directly when adding inset tables
@@ -75,18 +76,23 @@
 #' @seealso function \code{\link[gridExtra]{tableGrob}} as it is used to
 #'   construct the table.
 #'
+#' @family Statistics for adding insets to ggplots
+#'
 #' @export
 #'
 #' @examples
 #' library(dplyr)
 #' library(tibble)
+#'
 #' mtcars %>%
 #'   group_by(cyl) %>%
 #'   summarize(wt = mean(wt), mpg = mean(mpg)) %>%
 #'   ungroup() %>%
 #'   mutate(wt = sprintf("%.2f", wt),
 #'          mpg = sprintf("%.1f", mpg)) -> tb
+#'
 #' df <- tibble(x = 0.95, y = 0.95, tb = list(tb))
+#'
 #' ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
 #'   geom_point() +
 #'   geom_table_npc(data = df, aes(npcx = x, npcy = y, label = tb),

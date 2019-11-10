@@ -10,15 +10,16 @@ volcano_example.df
 }
 \description{
 A dataset containing reshaped and simplified output from an
-  analysis of data from RNAseq done with package edgeR.
+  analysis of data from RNAseq done with package edgeR. Original data from
+  gene expression in the plant species \emph{Arabidopsis thaliana}.
 }
 \examples{
-names(volcano_example.df)
+colnames(volcano_example.df)
 head(volcano_example.df)
 
 }
 \seealso{
-Other Spectral data examples: \code{\link{quadrant_example.df}}
+Other Transcriptomics data examples: \code{\link{quadrant_example.df}}
 }
-\concept{Spectral data examples}
+\concept{Transcriptomics data examples}
 \keyword{datasets}

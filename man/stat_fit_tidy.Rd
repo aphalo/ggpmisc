@@ -57,14 +57,53 @@ can include aesthetics whose values you want to set, not map. See
   \code{stat_fit_tidy()} you will most likely want to change the default
   mapping for label.
 }
+\details{
+\code{stat_fit_tidy} together with \code{\link{stat_fit_glance}}
+  and \code{\link{stat_fit_augment}}, based on package 'broom' can be used
+  with a broad range of model fitting functions as supported at any given
+  time by 'broom'. In contrast to \code{\link{stat_poly_eq}} wich can
+  generate text or expression labels automatically, for these functions the
+  mapping of aesthetic \code{label} needs to be explicitly supplied in the
+  call, and labels built on the fly.
+}
+\note{
+The statistic \code{stat_fit_augment} can be used only with \code{methods} that
+  accept formulas under any formal parameter name and a \code{data} argument.
+  Use \code{ggplot2::stat_smooth()} instead of \code{stat_fit_augment} in
+  production code if the additional features are not needed.
+}
+\section{Handling of grouping}{
+ \code{stat_fit_tidy} applies the function
+  given by \code{method} separately to each group of observations; in ggplot2
+  factors mapped to aesthetics generate a separate group for each level.
+  Because of this, \code{stat_fit_tidy} is not useful for annotating plots
+  with results from \code{t.test()} or ANOVA or ANCOVA. In such cases use
+  instead \code{stat_fit_tb()} which applies the model fitting per panel.
+}
+
 \section{Computed variables}{
  The output of \code{\link[broom]{tidy}} is
   returned after reshaping it into a single row. Grouping is respected, and
   the model fit separatately to each group of data. The returned \code{data}
-  object has one row for each group within a panel.
+  object has one row for each group within a panel. To use the intercept, note
+  that output of tidy() is renamed from \code{(Intercept)} to
+  \code{Intercept}.
+
+  To explore the values returned by this statistic, which vary depending
+  on the model fitting function and model formula we suggest the use of
+  \code{\link[gginnards]{geom_debug}}. An example is shown below.
 }
 
 \examples{
+library(gginnards)
+# Regression by panel, exploring computed variables with geom_debug()
+ggplot(mtcars, aes(x = disp, y = mpg)) +
+  stat_smooth(method = "lm") +
+  geom_point(aes(colour = factor(cyl))) +
+  stat_fit_tidy(method = "lm",
+                method.args = list(formula = y ~ x),
+                geom = "debug")
+
 # Regression by panel example
 ggplot(mtcars, aes(x = disp, y = mpg)) +
   stat_smooth(method = "lm") +
@@ -96,3 +135,10 @@ ggplot(mtcars, aes(x = disp, y = mpg, weight = cyl)) +
                                               stat(x_estimate), stat(x_p.value))))
 
 }
+\seealso{
+\code{\link[broom]{tidy}}
+
+Other ggplot2 statistics based on 'broom'.: \code{\link{stat_fit_augment}},
+  \code{\link{stat_fit_glance}}, \code{\link{stat_fit_tb}}
+}
+\concept{ggplot2 statistics based on 'broom'.}

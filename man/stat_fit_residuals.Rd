@@ -50,30 +50,41 @@ can include aesthetics whose values you want to set, not map. See
    residuals ready to be plotted as points.
 }
 \details{
-This stat can be used to automatically plot residuals as points
-in a plot. At the moment it supports only linear
-models fitted with function \code{lm()}. This stat only generates the
-residuals.
+This stat can be used to automatically plot residuals as points in a
+  plot. At the moment it supports only linear models fitted with function
+  \code{lm()}. This stat only generates the residuals.
 }
 \section{Computed variables}{
  Data frame with same \code{nrow} as \code{data}
   as subset for each group containing five numeric variables. \describe{
-  \item{x1}{x coordinates of observations} \item{x2}{x coordinates of fitted
-  values} \item{y1}{y coordinates of observations} \item{y2}{y coordinates of
-  fitted values} \item{residuals}{residuals from the fit}}
+  \item{x}{x coordinates of observations} \item{y.resid}{residuals from
+  fitted values} \item{y.resid.abs}{absolute residuals from the fit}}.
+
+  By default \code{stat(y.resid)} is mapped to the \code{y} aesthetic.
 }
 
 \examples{
-library(ggplot2)
+library(gginnards) # needed for geom_debug()
 # generate artificial data
 set.seed(4321)
 x <- 1:100
 y <- (x + x^2 + x^3) + rnorm(length(x), mean = 0, sd = mean(x^3) / 4)
 my.data <- data.frame(x, y, group = c("A", "B"), y2 = y * c(0.5,2))
+
 # give a name to a formula
 my.formula <- y ~ poly(x, 3, raw = TRUE)
+
 # plot
 ggplot(my.data, aes(x, y)) +
   stat_fit_residuals(formula = my.formula, resid.type = "working")
 
+# plot
+ggplot(my.data, aes(x, y)) +
+  stat_fit_residuals(formula = my.formula, resid.type = "working", geom = "debug")
+
 }
+\seealso{
+Other statistics for linear model fits: \code{\link{stat_fit_deviations}},
+  \code{\link{stat_poly_eq}}
+}
+\concept{statistics for linear model fits}

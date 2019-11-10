@@ -99,3 +99,13 @@ ggplot(my.data, aes(x, y)) +
   theme_bw()
 
 }
+\seealso{
+Other Geometries, scales and statistics for quadrant and volcano plots: \code{\link{FC_format}},
+  \code{\link{outcome2factor}},
+  \code{\link{scale_colour_outcome}},
+  \code{\link{scale_shape_outcome}},
+  \code{\link{scale_y_Pvalue}},
+  \code{\link{stat_quadrant_counts}},
+  \code{\link{xy_outcomes2factor}}
+}
+\concept{Geometries, scales and statistics for quadrant and volcano plots}

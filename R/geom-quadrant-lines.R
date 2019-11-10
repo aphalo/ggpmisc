@@ -43,6 +43,10 @@
 #'   \code{geom_quadrant_lines()} the pooling along axes can be specified in the
 #'   same way as in \code{\link{stat_quadrant_counts}()}.
 #'
+#' @family Geometries, scales and statistics for quadrant and volcano plots
+#'
+#' @export
+#'
 #' @examples
 #' # generate artificial data
 #' set.seed(4321)
@@ -71,8 +75,6 @@
 #'                linetype = "dotted", colour = "red") +
 #'   geom_point() +
 #'   theme_bw()
-#'
-#' @export
 #'
 geom_quadrant_lines <- function(mapping = NULL, data = NULL,
                                 stat = "identity", position = "identity",
@@ -134,6 +136,12 @@ GeomQuadrantLines <-
               data.vline$y    <- ranges$y[1]
               data.vline$yend <- ranges$y[2]
             }
+
+            # discard infinite values
+            # other off-range values still respect oob
+            #
+            data.hline <- data.hline[is.finite(data.hline$y)]
+            data.vline <- data.vline[is.finite(data.vline$x)]
 
             data <- switch(tolower(pool.along),
                            none = rbind(data.hline, data.vline),

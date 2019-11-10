@@ -64,8 +64,13 @@ can include aesthetics whose values you want to set, not map. See
   the model's summary or ANOVA table, using package 'broom'. The annotation
   is added to the plots in tabular form.
 }
-\note{
-The argument to \code{method} can be any fit method for which a
+\details{
+\code{stat_fit_tb} Applies a model fitting function per panel,
+  using the grouping factors from easthetic mappings in the fitted model.
+  This is suitable, for example for analysis of variance used to test for
+  differences among groups.
+
+  The argument to \code{method} can be any fit method for which a
   suitable \code{tidy()} method is available, including non-linear
   regression. Fit methods retain their default arguments unless orverridden.
 }
@@ -75,9 +80,14 @@ The argument to \code{method} can be any fit method for which a
   tibble). The returned \code{data} object contains a single, containing the
   result from a single model fit to all data in a panel. If grouping is
   present, it is ignored.
+
+  To explore the values returned by this statistic, which vary depending
+  on the model fitting function and model formula we suggest the use of
+  \code{\link[gginnards]{geom_debug}}. An example is shown below.
 }
 
 \examples{
+library(gginnards)
 # data for examples
 x <- c(44.4, 45.9, 41.9, 53.3, 44.7, 44.1, 50.7, 45.2, 60.1)
 covariate <- sqrt(x) + rnorm(9)
@@ -88,6 +98,12 @@ my.df <- data.frame(x, group, covariate)
 ggplot(my.df, aes(covariate, x)) +
   geom_point() +
   stat_fit_tb() +
+  expand_limits(y = 70)
+
+# Linear regression
+ggplot(my.df, aes(covariate, x)) +
+  geom_point() +
+  stat_fit_tb(geom = "debug") +
   expand_limits(y = 70)
 
 # Polynomial regression
@@ -135,4 +151,9 @@ ggplot(my.df, aes(group, x)) +
 \code{\link[broom]{tidy}} for details on how the tidying of the
   resulst of model fits is done. See \code{\link{geom_table}} for details
   on how the formating and location of the table can be adjusted.
+
+Other ggplot2 statistics based on 'broom'.: \code{\link{stat_fit_augment}},
+  \code{\link{stat_fit_glance}},
+  \code{\link{stat_fit_tidy}}
 }
+\concept{ggplot2 statistics based on 'broom'.}

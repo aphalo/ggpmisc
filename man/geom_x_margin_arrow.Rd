@@ -76,3 +76,8 @@ p + geom_x_margin_arrow(data = data.frame(x = c(2.5, 4.5)),
                          sides="tb")
 
 }
+\seealso{
+Other Geometries for marginal annotaions in ggplots: \code{\link{geom_x_margin_grob}},
+  \code{\link{geom_x_margin_point}}
+}
+\concept{Geometries for marginal annotaions in ggplots}

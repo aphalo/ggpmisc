@@ -99,8 +99,8 @@ For backward compatibility a logical is accepted as argument for
 \section{Aesthetics}{
  \code{stat_poly_eq} understands \code{x} and \code{y},
   to be referenced in the \code{formula} and \code{weight} passed as argument
-  to parameter \code{weights} of \code{lm()}. All three must be mappeed to
-  \code{numeric} variables. In addition the aesthetics undertood by the geom
+  to parameter \code{weights} of \code{lm()}. All three must be mapped to
+  \code{numeric} variables. In addition, the aesthetics undertood by the geom
   used (\code{"text"} by default) are understood and grouping respected.
 }
 
@@ -125,16 +125,19 @@ If output.type is \code{"numeric"} the returned tibble contains columns:
   \item{coef.ls}{list containing the "coefficients" matrix from the summary of the fit object}
   \item{r.squared, adj.r.squared, AIC, BIC}{numric values extracted from fit object}
   \item{hjust, vjust}{Set to "inward" to override the default of the "text" geom.}}
+
+To explore the computed values returned for a given input we sugegst the use
+of \code{\link[gginnards]{geom_debug}} as shown in the example below.
 }
 
-\section{Warning!}{
- if using the computed labels with \code{output.type = "expression"}, then
-  \code{parse = TRUE} is needed, while if using \code{output.type = "LaTeX"}
-  \code{parse = FALSE} is needed.
+\section{Parsing may be required}{
+ if using the computed labels with
+  \code{output.type = "expression"}, then \code{parse = TRUE} is needed,
+  while if using \code{output.type = "LaTeX"} \code{parse = FALSE} is needed.
 }
 
 \examples{
-library(ggplot2)
+library(gginnards)
 # generate artificial data
 set.seed(4321)
 x <- 1:100
@@ -143,51 +146,68 @@ my.data <- data.frame(x = x, y = y,
                       group = c("A", "B"),
                       y2 = y * c(0.5,2),
                       w = sqrt(x))
+
 # give a name to a formula
 formula <- y ~ poly(x, 3, raw = TRUE)
+
 # no weights
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
   stat_poly_eq(formula = formula, parse = TRUE)
+
+# as above but using geom_debug()
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_eq(formula = formula,
+               geom = "debug")
+
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
   stat_poly_eq(formula = formula, parse = TRUE,
                label.y = "bottom", label.x = "right")
+
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
   stat_poly_eq(formula = formula, parse = TRUE,
                label.y = 0.1, label.x = 0.9)
+
 # using weights
 ggplot(my.data, aes(x, y, weight = w)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
   stat_poly_eq(formula = formula, parse = TRUE)
+
 # no weights, digits for R square
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
   stat_poly_eq(formula = formula, rr.digits = 4, parse = TRUE)
+
 # user specified label
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
   stat_poly_eq(aes(label =  paste(stat(eq.label), stat(adj.rr.label), sep = "~~~~")),
                formula = formula, parse = TRUE)
+
 # user specified label and digits
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
   stat_poly_eq(aes(label =  paste(stat(eq.label), stat(adj.rr.label), sep = "~~~~")),
                formula = formula, rr.digits = 3, coef.digits = 2, parse = TRUE)
+
 # geom = "text"
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
   stat_poly_eq(geom = "text", label.x = 100, label.y = 0, hjust = 1,
                formula = formula, parse = TRUE)
+
 # using numeric values
 # Here we use column "Estimate" from the matrix.
 # Other available columns are "Std. Error", "t value" and "Pr(>|t|)".
@@ -212,3 +232,15 @@ ggplot(my.data, aes(x, y)) +
 Written as an answer to a question at Stackoverflow.
   \url{https://stackoverflow.com/questions/7549694/adding-regression-line-equation-and-r2-on-graph}
 }
+\seealso{
+This \code{stat_poly_eq} statistic can return ready formatted labels
+  depending on the argument passed to \code{output.type}. This is possible
+  because only polynomial models are supported. For other types of models,
+  statistics \code{\link{stat_fit_glance}},  \code{\link{stat_fit_tidy}} and
+  \code{\link{stat_fit_glance}} should be used instead and the mapping of
+  aesthetic \code{label} explicitly supplied in the call.
+
+Other statistics for linear model fits: \code{\link{stat_fit_deviations}},
+  \code{\link{stat_fit_residuals}}
+}
+\concept{statistics for linear model fits}

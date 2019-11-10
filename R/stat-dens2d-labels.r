@@ -32,13 +32,23 @@
 #' @param na.rm	a logical value indicating whether NA values should be stripped
 #'   before the computation proceeds.
 #'
+#' @details \code{stat_dens2d_labels()} is designed to work together with
+#'   statistics from package 'ggrepel'.  To avoid text labels being plotted over
+#'   unlabelled points the corresponding rows in data need to be retained but
+#'   labels replaced with the empty character string, \code{""}.
+#'   \code{stat_dens2d_labels()} replaces labels by  \code{""} based on the
+#'   local density of observations.
+#'
 #' @section Computed variables: \describe{ \item{labels}{x at centre of range} }
 #'
 #' @seealso \code{\link[MASS]{kde2d}} used internally.
 #'
+#' @family statistics for selection of observations based on local density
+#'
 #' @examples
 #'
 #' library(ggrepel)
+#' library(gginnards)
 #'
 #' random_string <- function(len = 6) {
 #' paste(sample(letters, len, replace = TRUE), collapse = "")
@@ -56,6 +66,13 @@
 #' ggplot(data = d, aes(x, y, label = lab)) +
 #'   geom_point() +
 #'   stat_dens2d_labels()
+#'
+#' # Using geom_debug() we can see that all 100 rows in \code{d} are
+#' # returned. But only those labelled in the previous example still contain
+#' # the original labels.
+#' ggplot(data = d, aes(x, y, label = lab)) +
+#'   geom_point() +
+#'   stat_dens2d_labels(geom = "debug")
 #'
 #' ggplot(data = d, aes(x, y, label = lab, color = group)) +
 #'   geom_point() +
