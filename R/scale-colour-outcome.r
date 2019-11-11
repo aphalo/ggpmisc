@@ -20,7 +20,7 @@
 #'
 #' @export
 #'
-#' @family Geometries, scales and statistics for quadrant and volcano plots
+#' @family Functions for quadrant and volcano plots
 #'
 #' @examples
 #'

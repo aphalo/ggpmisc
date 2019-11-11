@@ -20,7 +20,7 @@
 #'   comparisons. These functions aim at making it easier to draw volcano and
 #'   quadrant plots.
 #'
-#' @family Geometries, scales and statistics for quadrant and volcano plots
+#' @family Functions for quadrant and volcano plots
 #'
 #' @export
 #'
@@ -74,7 +74,7 @@ threshold2factor <- function(x, n.levels = 3L, threshold = 0) {
 #'   function aims at making it easier to draw quadrant plots with facets
 #'   based on the combined outcomes.
 #'
-#' @family Geometries, scales and statistics for quadrant and volcano plots
+#' @family Functions for quadrant and volcano plots
 #'
 #' @export
 #'

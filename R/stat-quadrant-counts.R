@@ -65,7 +65,7 @@
 #'   shown includes also values mapped to aesthetics, like \code{label} in the
 #'   example.
 #'
-#' @family Geometries, scales and statistics for quadrant and volcano plots
+#' @family Functions for quadrant and volcano plots
 #'
 #' @export
 #'

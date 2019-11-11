@@ -43,7 +43,7 @@
 #'   \code{geom_quadrant_lines()} the pooling along axes can be specified in the
 #'   same way as in \code{\link{stat_quadrant_counts}()}.
 #'
-#' @family Geometries, scales and statistics for quadrant and volcano plots
+#' @family Functions for quadrant and volcano plots
 #'
 #' @export
 #'
