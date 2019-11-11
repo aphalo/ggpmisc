@@ -235,10 +235,6 @@ Please report bugs and request new features at
 (<https://bitbucket.org/aphalo/ggpmisc/issues>). Pull requests are
 welcome at (<https://bitbucket.org/aphalo/ggpmisc>).
 
-Please note that this project is released with a [Contributor Code of
-Conduct](CONDUCT.md). By participating in this project you agree to
-abide by its terms.
-
 ## Citation
 
 If you use this package to produce scientific or commercial

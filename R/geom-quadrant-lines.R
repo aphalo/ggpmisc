@@ -3,7 +3,7 @@
 #' \code{geom_vhlines()} adds in a single layer both vertical and horizontal
 #' guide lines. Can be thought of as a convenience function that helps with
 #' producing consistent vertical and horizontal guide lines. It behaves like
-#' \code{\link[ggplot2]{geom_vline}} and \code{\link[ggplot2]{geom_hline}}.
+#' \code{geom_vline()} and \code{geom_hline()}.
 #' \code{geom_quadrant_lines()} displays the boundaries of four quadrants
 #' with an arbitrary origin. The quadrants are specified in the same way as
 #' in \code{stat_quadrant_counts()} and is intended to be used to add guide
@@ -44,6 +44,9 @@
 #'   same way as in \code{\link{stat_quadrant_counts}()}.
 #'
 #' @family Functions for quadrant and volcano plots
+#'
+#' @seealso \code{\link[ggplot2]{geom_abline}}, the topic where
+#'   \code{geom_vline()} and \code{geom_hline()} are described.
 #'
 #' @export
 #'

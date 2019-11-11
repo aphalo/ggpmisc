@@ -1,7 +1,7 @@
 #' @title Reset labels of observations in high density regions
 #'
-#' @description \code{stat_low_dens} Sets \code{labels} to NA in regions of a
-#'   plot panel with high density of observations.
+#' @description \code{stat_low_dens} Sets values ampped to \code{label} to
+#'   \code{""} in regions of a plot panel with high density of observations.
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs

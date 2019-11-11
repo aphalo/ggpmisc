@@ -53,7 +53,7 @@ can include aesthetics whose values you want to set, not map. See
 \code{geom_vhlines()} adds in a single layer both vertical and horizontal
 guide lines. Can be thought of as a convenience function that helps with
 producing consistent vertical and horizontal guide lines. It behaves like
-\code{\link[ggplot2]{geom_vline}} and \code{\link[ggplot2]{geom_hline}}.
+\code{geom_vline()} and \code{geom_hline()}.
 \code{geom_quadrant_lines()} displays the boundaries of four quadrants
 with an arbitrary origin. The quadrants are specified in the same way as
 in \code{stat_quadrant_counts()} and is intended to be used to add guide
@@ -100,7 +100,10 @@ ggplot(my.data, aes(x, y)) +
 
 }
 \seealso{
-Other Geometries, scales and statistics for quadrant and volcano plots: \code{\link{FC_format}},
+\code{\link[ggplot2]{geom_abline}}, the topic where
+  \code{geom_vline()} and \code{geom_hline()} are described.
+
+Other Functions for quadrant and volcano plots: \code{\link{FC_format}},
   \code{\link{outcome2factor}},
   \code{\link{scale_colour_outcome}},
   \code{\link{scale_shape_outcome}},
@@ -108,4 +111,4 @@ Other Geometries, scales and statistics for quadrant and volcano plots: \code{\l
   \code{\link{stat_quadrant_counts}},
   \code{\link{xy_outcomes2factor}}
 }
-\concept{Geometries, scales and statistics for quadrant and volcano plots}
+\concept{Functions for quadrant and volcano plots}

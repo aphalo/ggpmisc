@@ -52,8 +52,8 @@ can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 }
 \description{
-\code{stat_low_dens} Sets \code{labels} to NA in regions of a
-  plot panel with high density of observations.
+\code{stat_low_dens} Sets values ampped to \code{label} to
+  \code{""} in regions of a plot panel with high density of observations.
 }
 \details{
 \code{stat_dens2d_labels()} is designed to work together with

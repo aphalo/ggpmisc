@@ -339,6 +339,10 @@ poly_eq_compute_group_fun <- function(data,
       coefs <- c(0, coefs)
     }
 
+    stopifnot(coef.digits > 0)
+    if (coef.digits < 3) {
+      warning("Rounding coefficient estimates to fewer than three significant digits! Likely information loss!")
+    }
     eq.char <- as.character(signif(polynom::as.polynomial(coefs), coef.digits))
     # as character drops 1
     eq.char <- gsub("+ x", paste("+ 1.", stringr::str_dup("0", coef.digits - 1L),
@@ -360,6 +364,11 @@ poly_eq_compute_group_fun <- function(data,
     }
     if (eq.with.lhs) {
       eq.char <- paste(lhs, eq.char, sep = "")
+    }
+
+    stopifnot(rr.digits > 0)
+    if (rr.digits < 2) {
+      warning("Rounding R-square to fewer than two significant digits! Likely information loss!")
     }
     rr.char <- format(rr, digits = rr.digits)
     adj.rr.char <- format(adj.rr, digits = rr.digits)

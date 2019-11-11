@@ -79,7 +79,7 @@ ggplot(my.df, aes(x, y)) +
 
 }
 \seealso{
-Other Geometries, scales and statistics for quadrant and volcano plots: \code{\link{FC_format}},
+Other Functions for quadrant and volcano plots: \code{\link{FC_format}},
   \code{\link{geom_quadrant_lines}},
   \code{\link{outcome2factor}},
   \code{\link{scale_colour_outcome}},
@@ -87,4 +87,4 @@ Other Geometries, scales and statistics for quadrant and volcano plots: \code{\l
   \code{\link{stat_quadrant_counts}},
   \code{\link{xy_outcomes2factor}}
 }
-\concept{Geometries, scales and statistics for quadrant and volcano plots}
+\concept{Functions for quadrant and volcano plots}
