@@ -121,7 +121,6 @@
 #' @family statistics for linear model fits
 #'
 #' @examples
-#' library(gginnards)
 #' # generate artificial data
 #' set.seed(4321)
 #' x <- 1:100
@@ -210,6 +209,25 @@
 #'                                              stat(coef.ls)[[1]][[4, "Estimate"]])
 #'                                              )
 #'                              )
+#' # Examples using geom_debug() to show computed values
+#'
+#' library(gginnards)
+#'
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   geom_smooth(method = "lm", formula = formula) +
+#'   stat_poly_eq(formula = formula, geom = "debug")
+#'
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   geom_smooth(method = "lm", formula = formula) +
+#'   stat_poly_eq(formula = formula, geom = "debug", output.type = "text")
+#'
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   geom_smooth(method = "lm", formula = formula) +
+#'   stat_poly_eq(formula = formula, geom = "debug", output.type = "numeric")
+#'
 #'
 #' @export
 #'
@@ -218,7 +236,7 @@ stat_poly_eq <- function(mapping = NULL, data = NULL,
                          position = "identity",
                          ...,
                          formula = NULL,
-                         eq.with.lhs = "italic(y)~`=`~",
+                         eq.with.lhs = TRUE,
                          eq.x.rhs = NULL,
                          coef.digits = 3,
                          rr.digits = 2,
@@ -278,7 +296,7 @@ poly_eq_compute_group_fun <- function(data,
                                       scales,
                                       formula = NULL,
                                       weight = 1,
-                                      eq.with.lhs = "italic(y)~`=`~",
+                                      eq.with.lhs = TRUE,
                                       eq.x.rhs = NULL,
                                       coef.digits = 3,
                                       rr.digits = 2,
@@ -295,9 +313,11 @@ poly_eq_compute_group_fun <- function(data,
     return(tibble::new_tibble())
   }
 
+  output.type <- if (!length(output.type)) "expression" else tolower(output.type)
+  stopifnot(output.type %in% c("expression", "text", "numeric", "latex", "tex", "tikz"))
+
   if (is.null(data$weight)) data$weight <- 1
 
-  output.type = tolower(output.type)
   if (is.null(eq.x.rhs)) {
     if (output.type == "expression") {
       eq.x.rhs <- "~italic(x)"
@@ -328,10 +348,12 @@ poly_eq_compute_group_fun <- function(data,
 
   if (output.type == "numeric") {
     z <- tibble::tibble(coef.ls = list(summary(mf)[["coefficients"]]),
+                        coefs = list(stats::coefficients(mf)),
                         r.squared = rr,
                         adj.r.squared = adj.rr,
                         AIC = AIC,
-                        BIC = BIC)
+                        BIC = BIC,
+                        rr.label = "") # needed for default 'label' mapping
   } else {
     coefs <- stats::coef(mf)
     formula.rhs.chr <- as.character(formula)[3]
@@ -341,7 +363,7 @@ poly_eq_compute_group_fun <- function(data,
 
     stopifnot(coef.digits > 0)
     if (coef.digits < 3) {
-      warning("Rounding coefficient estimates to fewer than three significant digits! Likely information loss!")
+      warning("'coef.digits < 3' Likely information loss!")
     }
     eq.char <- as.character(signif(polynom::as.polynomial(coefs), coef.digits))
     # as character drops 1
@@ -368,7 +390,7 @@ poly_eq_compute_group_fun <- function(data,
 
     stopifnot(rr.digits > 0)
     if (rr.digits < 2) {
-      warning("Rounding R-square to fewer than two significant digits! Likely information loss!")
+      warning("'rr.digits < 2' Likely information loss!")
     }
     rr.char <- format(rr, digits = rr.digits)
     adj.rr.char <- format(adj.rr, digits = rr.digits)
@@ -376,19 +398,19 @@ poly_eq_compute_group_fun <- function(data,
     BIC.char <- sprintf("%.4g", BIC)
     if (output.type == "expression") {
       z <- tibble::tibble(eq.label = gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
-                                        rr.label = paste("italic(R)^2", rr.char, sep = "~`=`~"),
-                                        adj.rr.label = paste("italic(R)[adj]^2",
-                                                             adj.rr.char, sep = "~`=`~"),
-                                        AIC.label = paste("AIC", AIC.char, sep = "~`=`~"),
-                                        BIC.label = paste("BIC", BIC.char, sep = "~`=`~"))
-    } else if (output.type %in% c("latex", "tex", "text")) {
+                          rr.label = paste("italic(R)^2", rr.char, sep = "~`=`~"),
+                          adj.rr.label = paste("italic(R)[adj]^2",
+                                               adj.rr.char, sep = "~`=`~"),
+                          AIC.label = paste("AIC", AIC.char, sep = "~`=`~"),
+                          BIC.label = paste("BIC", BIC.char, sep = "~`=`~"))
+    } else if (output.type %in% c("latex", "tex", "text", "tikz")) {
       z <-tibble::tibble(eq.label = gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
-                                        rr.label = paste("R^2", rr.char, sep = " = "),
-                                        adj.rr.label = paste("R_{adj}^2",
-                                                             adj.rr.char, sep = " = "),
-                                        AIC.label = paste("AIC", AIC.char, sep = " = "),
-                                        BIC.label = paste("BIC", BIC.char, sep = " = "))
-    } else if (!output.type %in% c("numeric")) {
+                         rr.label = paste("R^2", rr.char, sep = " = "),
+                         adj.rr.label = paste("R_{adj}^2",
+                                              adj.rr.char, sep = " = "),
+                         AIC.label = paste("AIC", AIC.char, sep = " = "),
+                         BIC.label = paste("BIC", BIC.char, sep = " = "))
+    } else {
       warning("Unknown 'output.type' argument: ", output.type)
     }
   }

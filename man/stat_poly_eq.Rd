@@ -5,10 +5,10 @@
 \title{Equation, p-value, R^2, AIC or BIC of fitted polynomial}
 \usage{
 stat_poly_eq(mapping = NULL, data = NULL, geom = "text_npc",
-  position = "identity", ..., formula = NULL,
-  eq.with.lhs = "italic(y)~`=`~", eq.x.rhs = NULL, coef.digits = 3,
-  rr.digits = 2, label.x = "left", label.y = "top",
-  label.x.npc = NULL, label.y.npc = NULL, hstep = 0, vstep = NULL,
+  position = "identity", ..., formula = NULL, eq.with.lhs = TRUE,
+  eq.x.rhs = NULL, coef.digits = 3, rr.digits = 2,
+  label.x = "left", label.y = "top", label.x.npc = NULL,
+  label.y.npc = NULL, hstep = 0, vstep = NULL,
   output.type = "expression", na.rm = FALSE, show.legend = FALSE,
   inherit.aes = TRUE)
 }
@@ -145,7 +145,6 @@ of \code{\link[gginnards]{geom_debug}} as shown in the example below.
 }
 
 \examples{
-library(gginnards)
 # generate artificial data
 set.seed(4321)
 x <- 1:100
@@ -234,6 +233,25 @@ ggplot(my.data, aes(x, y)) +
                                              stat(coef.ls)[[1]][[4, "Estimate"]])
                                              )
                              )
+# Examples using geom_debug() to show computed values
+
+library(gginnards)
+
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_eq(formula = formula, geom = "debug")
+
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_eq(formula = formula, geom = "debug", output.type = "text")
+
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_eq(formula = formula, geom = "debug", output.type = "numeric")
+
 
 }
 \references{
