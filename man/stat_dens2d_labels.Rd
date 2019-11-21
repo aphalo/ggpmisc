@@ -4,10 +4,21 @@
 \alias{stat_dens2d_labels}
 \title{Reset labels of observations in high density regions}
 \usage{
-stat_dens2d_labels(mapping = NULL, data = NULL, geom = "text",
-  position = "identity", keep.fraction = 0.1, keep.number = Inf,
-  h = NULL, n = NULL, label.fill = "", na.rm = TRUE,
-  show.legend = FALSE, inherit.aes = TRUE, ...)
+stat_dens2d_labels(
+  mapping = NULL,
+  data = NULL,
+  geom = "text",
+  position = "identity",
+  keep.fraction = 0.1,
+  keep.number = Inf,
+  h = NULL,
+  n = NULL,
+  label.fill = "",
+  na.rm = TRUE,
+  show.legend = FALSE,
+  inherit.aes = TRUE,
+  ...
+)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
@@ -112,6 +123,7 @@ ggplot(data = d, aes(x, y, label = lab, color = group)) +
 \seealso{
 \code{\link[MASS]{kde2d}} used internally.
 
-Other statistics for selection of observations based on local density: \code{\link{stat_dens2d_filter}}
+Other statistics for selection of observations based on local density: 
+\code{\link{stat_dens2d_filter}()}
 }
 \concept{statistics for selection of observations based on local density}

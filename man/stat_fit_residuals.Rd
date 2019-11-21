@@ -4,10 +4,19 @@
 \alias{stat_fit_residuals}
 \title{Residuals from a model fit}
 \usage{
-stat_fit_residuals(mapping = NULL, data = NULL, geom = "point",
-  method = "lm", formula = NULL, resid.type = NULL,
-  position = "identity", na.rm = FALSE, show.legend = FALSE,
-  inherit.aes = TRUE, ...)
+stat_fit_residuals(
+  mapping = NULL,
+  data = NULL,
+  geom = "point",
+  method = "lm",
+  formula = NULL,
+  resid.type = NULL,
+  position = "identity",
+  na.rm = FALSE,
+  show.legend = FALSE,
+  inherit.aes = TRUE,
+  ...
+)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
@@ -93,7 +102,8 @@ ggplot(my.data, aes(x, y)) +
 
 }
 \seealso{
-Other statistics for linear model fits: \code{\link{stat_fit_deviations}},
-  \code{\link{stat_poly_eq}}
+Other statistics for linear model fits: 
+\code{\link{stat_fit_deviations}()},
+\code{\link{stat_poly_eq}()}
 }
 \concept{statistics for linear model fits}

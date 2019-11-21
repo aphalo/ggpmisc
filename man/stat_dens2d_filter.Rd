@@ -5,15 +5,37 @@
 \alias{stat_dens2d_filter_g}
 \title{Filter observations by local density}
 \usage{
-stat_dens2d_filter(mapping = NULL, data = NULL, geom = "point",
-  position = "identity", keep.fraction = 0.1, keep.number = Inf,
-  keep.sparse = TRUE, na.rm = TRUE, show.legend = FALSE,
-  inherit.aes = TRUE, h = NULL, n = NULL, ...)
+stat_dens2d_filter(
+  mapping = NULL,
+  data = NULL,
+  geom = "point",
+  position = "identity",
+  keep.fraction = 0.1,
+  keep.number = Inf,
+  keep.sparse = TRUE,
+  na.rm = TRUE,
+  show.legend = FALSE,
+  inherit.aes = TRUE,
+  h = NULL,
+  n = NULL,
+  ...
+)
 
-stat_dens2d_filter_g(mapping = NULL, data = NULL, geom = "point",
-  position = "identity", keep.fraction = 0.1, keep.number = Inf,
-  keep.sparse = TRUE, na.rm = TRUE, show.legend = FALSE,
-  inherit.aes = TRUE, h = NULL, n = NULL, ...)
+stat_dens2d_filter_g(
+  mapping = NULL,
+  data = NULL,
+  geom = "point",
+  position = "identity",
+  keep.fraction = 0.1,
+  keep.number = Inf,
+  keep.sparse = TRUE,
+  na.rm = TRUE,
+  show.legend = FALSE,
+  inherit.aes = TRUE,
+  h = NULL,
+  n = NULL,
+  ...
+)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
@@ -128,6 +150,7 @@ ggplot(data = d, aes(x, y, label = lab, color = group)) +
 \seealso{
 \code{\link[MASS]{kde2d}} used internally.
 
-Other statistics for selection of observations based on local density: \code{\link{stat_dens2d_labels}}
+Other statistics for selection of observations based on local density: 
+\code{\link{stat_dens2d_labels}()}
 }
 \concept{statistics for selection of observations based on local density}

@@ -5,11 +5,14 @@
 \alias{try_tibble}
 \title{Convert an R object into a tibble}
 \usage{
-try_data_frame(x, time.resolution = "month", as.numeric = FALSE,
-  col.names = NULL)
+try_data_frame(
+  x,
+  time.resolution = "month",
+  as.numeric = FALSE,
+  col.names = NULL
+)
 
-try_tibble(x, time.resolution = "month", as.numeric = FALSE,
-  col.names = NULL)
+try_tibble(x, time.resolution = "month", as.numeric = FALSE, col.names = NULL)
 }
 \arguments{
 \item{x}{An R object}

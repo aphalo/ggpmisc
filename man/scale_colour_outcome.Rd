@@ -5,14 +5,27 @@
 \alias{scale_fill_outcome}
 \title{Colour and fill scales for ternary outcomes}
 \usage{
-scale_colour_outcome(..., name = "Outcome", ns.colour = "grey80",
-  up.colour = "red", down.colour = "dodgerblue2",
-  de.colour = "goldenrod", na.colour = "black",
-  aesthetics = "colour")
+scale_colour_outcome(
+  ...,
+  name = "Outcome",
+  ns.colour = "grey80",
+  up.colour = "red",
+  down.colour = "dodgerblue2",
+  de.colour = "goldenrod",
+  na.colour = "black",
+  aesthetics = "colour"
+)
 
-scale_fill_outcome(..., name = "Outcome", ns.colour = "grey80",
-  up.colour = "red", down.colour = "dodgerblue2",
-  de.colour = "goldenrod", na.colour = "black", aesthetics = "fill")
+scale_fill_outcome(
+  ...,
+  name = "Outcome",
+  ns.colour = "grey80",
+  up.colour = "red",
+  down.colour = "dodgerblue2",
+  de.colour = "goldenrod",
+  na.colour = "black",
+  aesthetics = "fill"
+)
 }
 \arguments{
 \item{...}{other named arguments passed to \code{scale_manual}.}
@@ -65,12 +78,13 @@ ggplot(my.df, aes(x, y, fill = outcome3)) +
 
 }
 \seealso{
-Other Functions for quadrant and volcano plots: \code{\link{FC_format}},
-  \code{\link{geom_quadrant_lines}},
-  \code{\link{outcome2factor}},
-  \code{\link{scale_shape_outcome}},
-  \code{\link{scale_y_Pvalue}},
-  \code{\link{stat_quadrant_counts}},
-  \code{\link{xy_outcomes2factor}}
+Other Functions for quadrant and volcano plots: 
+\code{\link{FC_format}()},
+\code{\link{geom_quadrant_lines}()},
+\code{\link{outcome2factor}()},
+\code{\link{scale_shape_outcome}()},
+\code{\link{scale_y_Pvalue}()},
+\code{\link{stat_quadrant_counts}()},
+\code{\link{xy_outcomes2factor}()}
 }
 \concept{Functions for quadrant and volcano plots}

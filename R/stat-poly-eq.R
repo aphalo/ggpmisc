@@ -139,13 +139,6 @@
 #'   geom_smooth(method = "lm", formula = formula) +
 #'   stat_poly_eq(formula = formula, parse = TRUE)
 #'
-#' # as above but using geom_debug()
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_point() +
-#'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(formula = formula,
-#'                geom = "debug")
-#'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   geom_smooth(method = "lm", formula = formula) +
@@ -209,7 +202,12 @@
 #'                                              stat(coef.ls)[[1]][[4, "Estimate"]])
 #'                                              )
 #'                              )
+#'
 #' # Examples using geom_debug() to show computed values
+#' #
+#' # This provides a quick way of finding out which variables are available for
+#' # use in mapping of aesthetics when using other geoms as in the examples
+#' # above.
 #'
 #' library(gginnards)
 #'
@@ -228,6 +226,12 @@
 #'   geom_smooth(method = "lm", formula = formula) +
 #'   stat_poly_eq(formula = formula, geom = "debug", output.type = "numeric")
 #'
+#' # show the content of a list column
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   geom_smooth(method = "lm", formula = formula) +
+#'   stat_poly_eq(formula = formula, geom = "debug", output.type = "numeric",
+#'                summary.fun = function(x) {x[["coef.ls"]][[1]]})
 #'
 #' @export
 #'

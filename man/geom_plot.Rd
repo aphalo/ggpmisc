@@ -5,13 +5,27 @@
 \alias{geom_plot_npc}
 \title{Inset plots}
 \usage{
-geom_plot(mapping = NULL, data = NULL, stat = "identity",
-  position = "identity", ..., na.rm = FALSE, show.legend = FALSE,
-  inherit.aes = FALSE)
+geom_plot(
+  mapping = NULL,
+  data = NULL,
+  stat = "identity",
+  position = "identity",
+  ...,
+  na.rm = FALSE,
+  show.legend = FALSE,
+  inherit.aes = FALSE
+)
 
-geom_plot_npc(mapping = NULL, data = NULL, stat = "identity",
-  position = "identity", ..., na.rm = FALSE, show.legend = FALSE,
-  inherit.aes = FALSE)
+geom_plot_npc(
+  mapping = NULL,
+  data = NULL,
+  stat = "identity",
+  position = "identity",
+  ...,
+  na.rm = FALSE,
+  show.legend = FALSE,
+  inherit.aes = FALSE
+)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
@@ -123,7 +137,8 @@ The idea of implementing a \code{geom_custom()} for grobs has
   \url{https://github.com/tidyverse/ggplot2/issues/1399}.
 }
 \seealso{
-Other Statistics for adding insets to ggplots: \code{\link{geom_grob}},
-  \code{\link{geom_table}}
+Other Statistics for adding insets to ggplots: 
+\code{\link{geom_grob}()},
+\code{\link{geom_table}()}
 }
 \concept{Statistics for adding insets to ggplots}

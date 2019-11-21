@@ -5,14 +5,32 @@
 \alias{geom_vhlines}
 \title{Reference lines: horizontal plus vertical, and quadrants}
 \usage{
-geom_quadrant_lines(mapping = NULL, data = NULL, stat = "identity",
-  position = "identity", pool.along = "none", xintercept = 0,
-  yintercept = 0, na.rm = FALSE, show.legend = FALSE,
-  inherit.aes = FALSE, ...)
+geom_quadrant_lines(
+  mapping = NULL,
+  data = NULL,
+  stat = "identity",
+  position = "identity",
+  pool.along = "none",
+  xintercept = 0,
+  yintercept = 0,
+  na.rm = FALSE,
+  show.legend = FALSE,
+  inherit.aes = FALSE,
+  ...
+)
 
-geom_vhlines(mapping = NULL, data = NULL, stat = "identity",
-  position = "identity", xintercept = NULL, yintercept = NULL,
-  na.rm = FALSE, show.legend = FALSE, inherit.aes = FALSE, ...)
+geom_vhlines(
+  mapping = NULL,
+  data = NULL,
+  stat = "identity",
+  position = "identity",
+  xintercept = NULL,
+  yintercept = NULL,
+  na.rm = FALSE,
+  show.legend = FALSE,
+  inherit.aes = FALSE,
+  ...
+)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
@@ -103,12 +121,13 @@ ggplot(my.data, aes(x, y)) +
 \code{\link[ggplot2]{geom_abline}}, the topic where
   \code{geom_vline()} and \code{geom_hline()} are described.
 
-Other Functions for quadrant and volcano plots: \code{\link{FC_format}},
-  \code{\link{outcome2factor}},
-  \code{\link{scale_colour_outcome}},
-  \code{\link{scale_shape_outcome}},
-  \code{\link{scale_y_Pvalue}},
-  \code{\link{stat_quadrant_counts}},
-  \code{\link{xy_outcomes2factor}}
+Other Functions for quadrant and volcano plots: 
+\code{\link{FC_format}()},
+\code{\link{outcome2factor}()},
+\code{\link{scale_colour_outcome}()},
+\code{\link{scale_shape_outcome}()},
+\code{\link{scale_y_Pvalue}()},
+\code{\link{stat_quadrant_counts}()},
+\code{\link{xy_outcomes2factor}()}
 }
 \concept{Functions for quadrant and volcano plots}

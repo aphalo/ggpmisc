@@ -56,5 +56,5 @@ Suggests:
 URL: https://www.r4photobiology.info, https://bitbucket.org/aphalo/ggpmisc
 BugReports: https://bitbucket.org/aphalo/ggpmisc/issues
 Encoding: UTF-8
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.0
 VignetteBuilder: knitr

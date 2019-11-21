@@ -5,15 +5,35 @@
 \alias{stat_apply_panel}
 \title{Apply a function to x or y values}
 \usage{
-stat_apply_group(mapping = NULL, data = NULL, geom = "line",
-  .fun.x = NULL, .fun.x.args = list(), .fun.y = NULL,
-  .fun.y.args = list(), position = "identity", na.rm = FALSE,
-  show.legend = FALSE, inherit.aes = TRUE, ...)
+stat_apply_group(
+  mapping = NULL,
+  data = NULL,
+  geom = "line",
+  .fun.x = NULL,
+  .fun.x.args = list(),
+  .fun.y = NULL,
+  .fun.y.args = list(),
+  position = "identity",
+  na.rm = FALSE,
+  show.legend = FALSE,
+  inherit.aes = TRUE,
+  ...
+)
 
-stat_apply_panel(mapping = NULL, data = NULL, geom = "line",
-  .fun.x = NULL, .fun.x.args = list(), .fun.y = NULL,
-  .fun.y.args = list(), position = "identity", na.rm = FALSE,
-  show.legend = FALSE, inherit.aes = TRUE, ...)
+stat_apply_panel(
+  mapping = NULL,
+  data = NULL,
+  geom = "line",
+  .fun.x = NULL,
+  .fun.x.args = list(),
+  .fun.y = NULL,
+  .fun.y.args = list(),
+  position = "identity",
+  na.rm = FALSE,
+  show.legend = FALSE,
+  inherit.aes = TRUE,
+  ...
+)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with

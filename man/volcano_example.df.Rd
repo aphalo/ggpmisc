@@ -19,7 +19,8 @@ head(volcano_example.df)
 
 }
 \seealso{
-Other Transcriptomics data examples: \code{\link{quadrant_example.df}}
+Other Transcriptomics data examples: 
+\code{\link{quadrant_example.df}}
 }
 \concept{Transcriptomics data examples}
 \keyword{datasets}

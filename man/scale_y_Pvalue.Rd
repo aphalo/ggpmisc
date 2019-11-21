@@ -7,21 +7,49 @@
 \alias{scale_x_FDR}
 \title{Covenience scale for P-values}
 \usage{
-scale_y_Pvalue(..., name = expression(italic(P) - plain(value)),
-  trans = NULL, breaks = NULL, labels = NULL, limits = c(1, 1e-20),
-  oob = NULL, expand = NULL)
+scale_y_Pvalue(
+  ...,
+  name = expression(italic(P) - plain(value)),
+  trans = NULL,
+  breaks = NULL,
+  labels = NULL,
+  limits = c(1, 1e-20),
+  oob = NULL,
+  expand = NULL
+)
 
-scale_y_FDR(..., name = "False discovery rate", trans = NULL,
-  breaks = NULL, labels = NULL, limits = c(1, 1e-10), oob = NULL,
-  expand = NULL)
+scale_y_FDR(
+  ...,
+  name = "False discovery rate",
+  trans = NULL,
+  breaks = NULL,
+  labels = NULL,
+  limits = c(1, 1e-10),
+  oob = NULL,
+  expand = NULL
+)
 
-scale_x_Pvalue(..., name = expression(italic(P) - plain(value)),
-  trans = NULL, breaks = NULL, labels = NULL, limits = c(1, 1e-20),
-  oob = NULL, expand = NULL)
+scale_x_Pvalue(
+  ...,
+  name = expression(italic(P) - plain(value)),
+  trans = NULL,
+  breaks = NULL,
+  labels = NULL,
+  limits = c(1, 1e-20),
+  oob = NULL,
+  expand = NULL
+)
 
-scale_x_FDR(..., name = "False discovery rate", trans = NULL,
-  breaks = NULL, labels = NULL, limits = c(1, 1e-10), oob = NULL,
-  expand = NULL)
+scale_x_FDR(
+  ...,
+  name = "False discovery rate",
+  trans = NULL,
+  breaks = NULL,
+  labels = NULL,
+  limits = c(1, 1e-10),
+  oob = NULL,
+  expand = NULL
+)
 }
 \arguments{
 \item{...}{other named arguments passed to \code{scale_y_continuous}.}
@@ -79,12 +107,13 @@ ggplot(my.df, aes(x, y)) +
 
 }
 \seealso{
-Other Functions for quadrant and volcano plots: \code{\link{FC_format}},
-  \code{\link{geom_quadrant_lines}},
-  \code{\link{outcome2factor}},
-  \code{\link{scale_colour_outcome}},
-  \code{\link{scale_shape_outcome}},
-  \code{\link{stat_quadrant_counts}},
-  \code{\link{xy_outcomes2factor}}
+Other Functions for quadrant and volcano plots: 
+\code{\link{FC_format}()},
+\code{\link{geom_quadrant_lines}()},
+\code{\link{outcome2factor}()},
+\code{\link{scale_colour_outcome}()},
+\code{\link{scale_shape_outcome}()},
+\code{\link{stat_quadrant_counts}()},
+\code{\link{xy_outcomes2factor}()}
 }
 \concept{Functions for quadrant and volcano plots}

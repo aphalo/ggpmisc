@@ -5,15 +5,33 @@
 \alias{geom_y_margin_point}
 \title{Reference points on the margins}
 \usage{
-geom_x_margin_point(mapping = NULL, data = NULL, stat = "identity",
-  position = "identity", ..., xintercept, sides = "b",
-  point.shift = 0.017, na.rm = FALSE, show.legend = FALSE,
-  inherit.aes = FALSE)
+geom_x_margin_point(
+  mapping = NULL,
+  data = NULL,
+  stat = "identity",
+  position = "identity",
+  ...,
+  xintercept,
+  sides = "b",
+  point.shift = 0.017,
+  na.rm = FALSE,
+  show.legend = FALSE,
+  inherit.aes = FALSE
+)
 
-geom_y_margin_point(mapping = NULL, data = NULL, stat = "identity",
-  position = "identity", ..., yintercept, sides = "l",
-  point.shift = 0.017, na.rm = FALSE, show.legend = FALSE,
-  inherit.aes = FALSE)
+geom_y_margin_point(
+  mapping = NULL,
+  data = NULL,
+  stat = "identity",
+  position = "identity",
+  ...,
+  yintercept,
+  sides = "l",
+  point.shift = 0.017,
+  na.rm = FALSE,
+  show.legend = FALSE,
+  inherit.aes = FALSE
+)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
@@ -77,7 +95,8 @@ p + geom_x_margin_point(data = data.frame(x = c(2.5, 4.5)),
 
 }
 \seealso{
-Other Geometries for marginal annotaions in ggplots: \code{\link{geom_x_margin_arrow}},
-  \code{\link{geom_x_margin_grob}}
+Other Geometries for marginal annotaions in ggplots: 
+\code{\link{geom_x_margin_arrow}()},
+\code{\link{geom_x_margin_grob}()}
 }
 \concept{Geometries for marginal annotaions in ggplots}

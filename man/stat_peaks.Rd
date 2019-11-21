@@ -5,15 +5,39 @@
 \alias{stat_valleys}
 \title{Local maxima (peaks) or minima (valleys)}
 \usage{
-stat_peaks(mapping = NULL, data = NULL, geom = "point", span = 5,
-  ignore_threshold = 0, strict = FALSE, label.fmt = NULL,
-  x.label.fmt = NULL, y.label.fmt = NULL, position = "identity",
-  na.rm = FALSE, show.legend = FALSE, inherit.aes = TRUE, ...)
+stat_peaks(
+  mapping = NULL,
+  data = NULL,
+  geom = "point",
+  span = 5,
+  ignore_threshold = 0,
+  strict = FALSE,
+  label.fmt = NULL,
+  x.label.fmt = NULL,
+  y.label.fmt = NULL,
+  position = "identity",
+  na.rm = FALSE,
+  show.legend = FALSE,
+  inherit.aes = TRUE,
+  ...
+)
 
-stat_valleys(mapping = NULL, data = NULL, geom = "point", span = 5,
-  ignore_threshold = 0, strict = FALSE, label.fmt = NULL,
-  x.label.fmt = NULL, y.label.fmt = NULL, position = "identity",
-  na.rm = FALSE, show.legend = FALSE, inherit.aes = TRUE, ...)
+stat_valleys(
+  mapping = NULL,
+  data = NULL,
+  geom = "point",
+  span = 5,
+  ignore_threshold = 0,
+  strict = FALSE,
+  label.fmt = NULL,
+  x.label.fmt = NULL,
+  y.label.fmt = NULL,
+  position = "identity",
+  na.rm = FALSE,
+  show.legend = FALSE,
+  inherit.aes = TRUE,
+  ...
+)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
@@ -121,6 +145,7 @@ ggplot(lynx.df, aes(year, lynx)) + geom_line() +
 
 }
 \seealso{
-Other peaks and valleys functions: \code{\link{find_peaks}}
+Other peaks and valleys functions: 
+\code{\link{find_peaks}()}
 }
 \concept{peaks and valleys functions}

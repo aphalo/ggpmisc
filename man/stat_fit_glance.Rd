@@ -4,11 +4,22 @@
 \alias{stat_fit_glance}
 \title{One row summary data frame for a fitted model}
 \usage{
-stat_fit_glance(mapping = NULL, data = NULL, geom = "text_npc",
-  method = "lm", method.args = list(formula = y ~ x),
-  label.x = "left", label.y = "top", hstep = 0, vstep = 0.075,
-  position = "identity", na.rm = FALSE, show.legend = FALSE,
-  inherit.aes = TRUE, ...)
+stat_fit_glance(
+  mapping = NULL,
+  data = NULL,
+  geom = "text_npc",
+  method = "lm",
+  method.args = list(formula = y ~ x),
+  label.x = "left",
+  label.y = "top",
+  hstep = 0,
+  vstep = 0.075,
+  position = "identity",
+  na.rm = FALSE,
+  show.legend = FALSE,
+  inherit.aes = TRUE,
+  ...
+)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
@@ -153,7 +164,9 @@ ggplot(mtcars, aes(x = disp, y = mpg, weight = cyl)) +
 \seealso{
 \code{\link[broom]{broom}}
 
-Other ggplot2 statistics based on 'broom'.: \code{\link{stat_fit_augment}},
-  \code{\link{stat_fit_tb}}, \code{\link{stat_fit_tidy}}
+Other ggplot2 statistics based on 'broom'.: 
+\code{\link{stat_fit_augment}()},
+\code{\link{stat_fit_tb}()},
+\code{\link{stat_fit_tidy}()}
 }
 \concept{ggplot2 statistics based on 'broom'.}

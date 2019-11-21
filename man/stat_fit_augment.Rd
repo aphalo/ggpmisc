@@ -4,11 +4,21 @@
 \alias{stat_fit_augment}
 \title{Augment data with fitted values and statistics}
 \usage{
-stat_fit_augment(mapping = NULL, data = NULL, geom = "smooth",
-  method = "lm", method.args = list(formula = y ~ x),
-  augment.args = list(), level = 0.95, y.out = ".fitted",
-  position = "identity", na.rm = FALSE, show.legend = FALSE,
-  inherit.aes = TRUE, ...)
+stat_fit_augment(
+  mapping = NULL,
+  data = NULL,
+  geom = "smooth",
+  method = "lm",
+  method.args = list(formula = y ~ x),
+  augment.args = list(),
+  level = 0.95,
+  y.out = ".fitted",
+  position = "identity",
+  na.rm = FALSE,
+  show.legend = FALSE,
+  inherit.aes = TRUE,
+  ...
+)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
@@ -153,7 +163,9 @@ ggplot(mtcars, aes(x = disp, y = mpg, weight = cyl)) +
 \seealso{
 \code{\link[broom]{broom}}
 
-Other ggplot2 statistics based on 'broom'.: \code{\link{stat_fit_glance}},
-  \code{\link{stat_fit_tb}}, \code{\link{stat_fit_tidy}}
+Other ggplot2 statistics based on 'broom'.: 
+\code{\link{stat_fit_glance}()},
+\code{\link{stat_fit_tb}()},
+\code{\link{stat_fit_tidy}()}
 }
 \concept{ggplot2 statistics based on 'broom'.}

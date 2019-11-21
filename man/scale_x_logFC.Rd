@@ -5,15 +5,29 @@
 \alias{scale_y_logFC}
 \title{Position scales for log fold change data}
 \usage{
-scale_x_logFC(name = "Abundance of x\%unit", breaks = NULL,
-  labels = NULL, limits = symmetric_limits, oob = scales::squish,
-  expand = expand_scale(mult = 0.15, add = 0), log.base.labels = FALSE,
-  log.base.data = 2L, ...)
+scale_x_logFC(
+  name = "Abundance of x\%unit",
+  breaks = NULL,
+  labels = NULL,
+  limits = symmetric_limits,
+  oob = scales::squish,
+  expand = expand_scale(mult = 0.15, add = 0),
+  log.base.labels = FALSE,
+  log.base.data = 2L,
+  ...
+)
 
-scale_y_logFC(name = "Abundance of y\%unit", breaks = NULL,
-  labels = NULL, limits = symmetric_limits, oob = scales::squish,
-  expand = expand_scale(mult = 0.15, add = 0), log.base.labels = FALSE,
-  log.base.data = 2L, ...)
+scale_y_logFC(
+  name = "Abundance of y\%unit",
+  breaks = NULL,
+  labels = NULL,
+  limits = symmetric_limits,
+  oob = scales::squish,
+  expand = expand_scale(mult = 0.15, add = 0),
+  log.base.labels = FALSE,
+  log.base.data = 2L,
+  ...
+)
 }
 \arguments{
 \item{name}{The name of the scale without units, used for the axis-label.}
@@ -131,8 +145,9 @@ ggplot(my.df, aes(x, y)) +
 
 }
 \seealso{
-Other scales for omics data: \code{\link{outcome2factor}},
-  \code{\link{scale_shape_outcome}},
-  \code{\link{xy_outcomes2factor}}
+Other scales for omics data: 
+\code{\link{outcome2factor}()},
+\code{\link{scale_shape_outcome}()},
+\code{\link{xy_outcomes2factor}()}
 }
 \concept{scales for omics data}

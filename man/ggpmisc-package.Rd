@@ -116,7 +116,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Pedro J. Aphalo \email{pedro.aphalo@helsinki.fi} (0000-0003-3385-972X)
+\strong{Maintainer}: Pedro J. Aphalo \email{pedro.aphalo@helsinki.fi} (\href{https://orcid.org/0000-0003-3385-972X}{ORCID})
 
 Other contributors:
 \itemize{

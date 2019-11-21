@@ -5,15 +5,33 @@
 \alias{geom_y_margin_grob}
 \title{Add Grobs on the margins}
 \usage{
-geom_x_margin_grob(mapping = NULL, data = NULL, stat = "identity",
-  position = "identity", ..., xintercept, sides = "b",
-  grob.shift = 0, na.rm = FALSE, show.legend = FALSE,
-  inherit.aes = FALSE)
+geom_x_margin_grob(
+  mapping = NULL,
+  data = NULL,
+  stat = "identity",
+  position = "identity",
+  ...,
+  xintercept,
+  sides = "b",
+  grob.shift = 0,
+  na.rm = FALSE,
+  show.legend = FALSE,
+  inherit.aes = FALSE
+)
 
-geom_y_margin_grob(mapping = NULL, data = NULL, stat = "identity",
-  position = "identity", ..., yintercept, sides = "l",
-  grob.shift = 0, na.rm = FALSE, show.legend = FALSE,
-  inherit.aes = FALSE)
+geom_y_margin_grob(
+  mapping = NULL,
+  data = NULL,
+  stat = "identity",
+  position = "identity",
+  ...,
+  yintercept,
+  sides = "l",
+  grob.shift = 0,
+  na.rm = FALSE,
+  show.legend = FALSE,
+  inherit.aes = FALSE
+)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
@@ -72,7 +90,8 @@ personality" as both annotations and geometries.
 
 }
 \seealso{
-Other Geometries for marginal annotaions in ggplots: \code{\link{geom_x_margin_arrow}},
-  \code{\link{geom_x_margin_point}}
+Other Geometries for marginal annotaions in ggplots: 
+\code{\link{geom_x_margin_arrow}()},
+\code{\link{geom_x_margin_point}()}
 }
 \concept{Geometries for marginal annotaions in ggplots}

@@ -5,16 +5,37 @@
 \alias{geom_text_npc}
 \title{Text with Normalised Parent Coordinates}
 \usage{
-geom_label_npc(mapping = NULL, data = NULL, stat = "identity",
-  position = "identity", ..., parse = FALSE, nudge_x = 0,
-  nudge_y = 0, label.padding = unit(0.25, "lines"),
-  label.r = unit(0.15, "lines"), label.size = 0.25, na.rm = FALSE,
-  show.legend = FALSE, inherit.aes = FALSE)
+geom_label_npc(
+  mapping = NULL,
+  data = NULL,
+  stat = "identity",
+  position = "identity",
+  ...,
+  parse = FALSE,
+  nudge_x = 0,
+  nudge_y = 0,
+  label.padding = unit(0.25, "lines"),
+  label.r = unit(0.15, "lines"),
+  label.size = 0.25,
+  na.rm = FALSE,
+  show.legend = FALSE,
+  inherit.aes = FALSE
+)
 
-geom_text_npc(mapping = NULL, data = NULL, stat = "identity",
-  position = "identity", ..., parse = FALSE, nudge_x = 0,
-  nudge_y = 0, check_overlap = FALSE, na.rm = FALSE,
-  show.legend = FALSE, inherit.aes = FALSE)
+geom_text_npc(
+  mapping = NULL,
+  data = NULL,
+  stat = "identity",
+  position = "identity",
+  ...,
+  parse = FALSE,
+  nudge_x = 0,
+  nudge_y = 0,
+  check_overlap = FALSE,
+  na.rm = FALSE,
+  show.legend = FALSE,
+  inherit.aes = FALSE
+)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with

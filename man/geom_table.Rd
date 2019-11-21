@@ -5,13 +5,29 @@
 \alias{geom_table_npc}
 \title{Inset tables}
 \usage{
-geom_table(mapping = NULL, data = NULL, stat = "identity",
-  position = "identity", ..., parse = FALSE, na.rm = FALSE,
-  show.legend = FALSE, inherit.aes = FALSE)
+geom_table(
+  mapping = NULL,
+  data = NULL,
+  stat = "identity",
+  position = "identity",
+  ...,
+  parse = FALSE,
+  na.rm = FALSE,
+  show.legend = FALSE,
+  inherit.aes = FALSE
+)
 
-geom_table_npc(mapping = NULL, data = NULL, stat = "identity",
-  position = "identity", ..., parse = FALSE, na.rm = FALSE,
-  show.legend = FALSE, inherit.aes = FALSE)
+geom_table_npc(
+  mapping = NULL,
+  data = NULL,
+  stat = "identity",
+  position = "identity",
+  ...,
+  parse = FALSE,
+  na.rm = FALSE,
+  show.legend = FALSE,
+  inherit.aes = FALSE
+)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
@@ -126,7 +142,8 @@ This geometry is inspired on answers to two questions in
 function \code{\link[gridExtra]{tableGrob}} as it is used to
   construct the table.
 
-Other Statistics for adding insets to ggplots: \code{\link{geom_grob}},
-  \code{\link{geom_plot}}
+Other Statistics for adding insets to ggplots: 
+\code{\link{geom_grob}()},
+\code{\link{geom_plot}()}
 }
 \concept{Statistics for adding insets to ggplots}

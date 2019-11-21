@@ -4,12 +4,25 @@
 \alias{stat_fit_tb}
 \title{Model-fit summary or ANOVA}
 \usage{
-stat_fit_tb(mapping = NULL, data = NULL, geom = "table_npc",
-  method = "lm", method.args = list(formula = y ~ x),
-  tb.type = "fit.summary", tb.vars = NULL, digits = 3,
-  label.x = "center", label.y = "top", label.x.npc = NULL,
-  label.y.npc = NULL, position = "identity", na.rm = FALSE,
-  show.legend = FALSE, inherit.aes = TRUE, ...)
+stat_fit_tb(
+  mapping = NULL,
+  data = NULL,
+  geom = "table_npc",
+  method = "lm",
+  method.args = list(formula = y ~ x),
+  tb.type = "fit.summary",
+  tb.vars = NULL,
+  digits = 3,
+  label.x = "center",
+  label.y = "top",
+  label.x.npc = NULL,
+  label.y.npc = NULL,
+  position = "identity",
+  na.rm = FALSE,
+  show.legend = FALSE,
+  inherit.aes = TRUE,
+  ...
+)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
@@ -160,8 +173,9 @@ ggplot(my.df, aes(group, x)) +
   resulst of model fits is done. See \code{\link{geom_table}} for details
   on how the formating and location of the table can be adjusted.
 
-Other ggplot2 statistics based on 'broom'.: \code{\link{stat_fit_augment}},
-  \code{\link{stat_fit_glance}},
-  \code{\link{stat_fit_tidy}}
+Other ggplot2 statistics based on 'broom'.: 
+\code{\link{stat_fit_augment}()},
+\code{\link{stat_fit_glance}()},
+\code{\link{stat_fit_tidy}()}
 }
 \concept{ggplot2 statistics based on 'broom'.}

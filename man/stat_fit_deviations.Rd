@@ -4,9 +4,18 @@
 \alias{stat_fit_deviations}
 \title{Residuals from model fit as segments}
 \usage{
-stat_fit_deviations(mapping = NULL, data = NULL, geom = "segment",
-  method = "lm", formula = NULL, position = "identity",
-  na.rm = FALSE, show.legend = FALSE, inherit.aes = TRUE, ...)
+stat_fit_deviations(
+  mapping = NULL,
+  data = NULL,
+  geom = "segment",
+  method = "lm",
+  formula = NULL,
+  position = "identity",
+  na.rm = FALSE,
+  show.legend = FALSE,
+  inherit.aes = TRUE,
+  ...
+)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
@@ -105,7 +114,8 @@ ggplot(my.data, aes(x, y)) +
 
 }
 \seealso{
-Other statistics for linear model fits: \code{\link{stat_fit_residuals}},
-  \code{\link{stat_poly_eq}}
+Other statistics for linear model fits: 
+\code{\link{stat_fit_residuals}()},
+\code{\link{stat_poly_eq}()}
 }
 \concept{statistics for linear model fits}

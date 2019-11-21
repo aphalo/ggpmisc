@@ -4,10 +4,22 @@
 \alias{stat_quadrant_counts}
 \title{Number of observations in quadrants}
 \usage{
-stat_quadrant_counts(mapping = NULL, data = NULL, geom = "text_npc",
-  position = "identity", quadrants = NULL, pool.along = "none",
-  xintercept = 0, yintercept = 0, label.x = NULL, label.y = NULL,
-  na.rm = FALSE, show.legend = FALSE, inherit.aes = TRUE, ...)
+stat_quadrant_counts(
+  mapping = NULL,
+  data = NULL,
+  geom = "text_npc",
+  position = "identity",
+  quadrants = NULL,
+  pool.along = "none",
+  xintercept = 0,
+  yintercept = 0,
+  label.x = NULL,
+  label.y = NULL,
+  na.rm = FALSE,
+  show.legend = FALSE,
+  inherit.aes = TRUE,
+  ...
+)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
@@ -136,12 +148,13 @@ ggplot(my.data, aes(x, y)) +
 
 }
 \seealso{
-Other Functions for quadrant and volcano plots: \code{\link{FC_format}},
-  \code{\link{geom_quadrant_lines}},
-  \code{\link{outcome2factor}},
-  \code{\link{scale_colour_outcome}},
-  \code{\link{scale_shape_outcome}},
-  \code{\link{scale_y_Pvalue}},
-  \code{\link{xy_outcomes2factor}}
+Other Functions for quadrant and volcano plots: 
+\code{\link{FC_format}()},
+\code{\link{geom_quadrant_lines}()},
+\code{\link{outcome2factor}()},
+\code{\link{scale_colour_outcome}()},
+\code{\link{scale_shape_outcome}()},
+\code{\link{scale_y_Pvalue}()},
+\code{\link{xy_outcomes2factor}()}
 }
 \concept{Functions for quadrant and volcano plots}

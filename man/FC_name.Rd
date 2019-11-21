@@ -4,8 +4,11 @@
 \alias{FC_name}
 \title{Fold change- axis labels}
 \usage{
-FC_name(name = "Abundance\%unit", log.base = FALSE,
-  format = getOption("photobiology.math", default = "R.expression"))
+FC_name(
+  name = "Abundance\%unit",
+  log.base = FALSE,
+  format = getOption("photobiology.math", default = "R.expression")
+)
 }
 \arguments{
 \item{format}{character string, "R", "R.expresion", "R.character", or

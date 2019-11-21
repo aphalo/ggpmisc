@@ -4,9 +4,15 @@
 \alias{scale_shape_outcome}
 \title{Shape scale for ternary outcomes}
 \usage{
-scale_shape_outcome(..., name = "Outcome", ns.shape = "circle filled",
-  up.shape = "triangle filled", down.shape = "triangle down filled",
-  de.shape = "square filled", na.shape = "cross")
+scale_shape_outcome(
+  ...,
+  name = "Outcome",
+  ns.shape = "circle filled",
+  up.shape = "triangle filled",
+  down.shape = "triangle down filled",
+  de.shape = "square filled",
+  na.shape = "cross"
+)
 }
 \arguments{
 \item{...}{other named arguments passed to \code{scale_manual}.}
@@ -66,17 +72,19 @@ ggplot(my.df, aes(x, y, shape = outcome3, fill = outcome2)) +
 
 }
 \seealso{
-Other Functions for quadrant and volcano plots: \code{\link{FC_format}},
-  \code{\link{geom_quadrant_lines}},
-  \code{\link{outcome2factor}},
-  \code{\link{scale_colour_outcome}},
-  \code{\link{scale_y_Pvalue}},
-  \code{\link{stat_quadrant_counts}},
-  \code{\link{xy_outcomes2factor}}
+Other Functions for quadrant and volcano plots: 
+\code{\link{FC_format}()},
+\code{\link{geom_quadrant_lines}()},
+\code{\link{outcome2factor}()},
+\code{\link{scale_colour_outcome}()},
+\code{\link{scale_y_Pvalue}()},
+\code{\link{stat_quadrant_counts}()},
+\code{\link{xy_outcomes2factor}()}
 
-Other scales for omics data: \code{\link{outcome2factor}},
-  \code{\link{scale_x_logFC}},
-  \code{\link{xy_outcomes2factor}}
+Other scales for omics data: 
+\code{\link{outcome2factor}()},
+\code{\link{scale_x_logFC}()},
+\code{\link{xy_outcomes2factor}()}
 }
 \concept{Functions for quadrant and volcano plots}
 \concept{scales for omics data}
