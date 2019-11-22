@@ -101,7 +101,7 @@ aesthetics.
 ```{r}
 ggplot(mpg, aes(displ, hwy, colour = factor(cyl))) +
   geom_table(data = data.tb, aes(x, y, label = tb),
-             size = 3, colour = "dark blue",
+             size = 3, colour = "darkblue",
              stat = "fmt_tb", tb.vars = c(Cylinders = "cyl", "MPG" = "hwy")) +
   labs(x = "Engine displacement (l)", y = "Fuel use efficiency (MPG)",
        colour = "Engine cylinders\n(number)") +
@@ -318,14 +318,14 @@ Alternatively we produce the same plot by creating a data frame to contain the
 grob and the coordinates, and then map these variable to the aesthetics using
 `aes()`.
 ```{r}
-logo.tb <- tibble(x = 0.02,
-                  y = 0.95,
-                  width = 2/3,
-                  height = 1/4,
-                  grob = list(grid::rasterGrob(image = Robinin)))
+flavo.tb <- tibble(x = 0.02,
+                   y = 0.95,
+                   width = 1/2,
+                   height = 1/4,
+                   grob = list(grid::rasterGrob(image = Robinin)))
 
 ggplot(data.tb, aes(x, y)) +
-  geom_grob_npc(data = logo.tb, 
+  geom_grob_npc(data = flavo.tb, 
                 aes(label = grob, npcx = x, npcy = y, 
                     vp.width = width, vp.height = height)) +
   geom_point() +
@@ -761,25 +761,28 @@ ggplot(my.data, aes(x, y2, fill = block)) +
                formula = formula, parse = TRUE) +
   facet_wrap(~group, scales = "free_y")
 ```
-At the moment if the same variable used for faceting is also mapped to an
-aesthetic the automatic location of labels results in "odd" alignment. **This is
-bug that needs fixing.**
+If grouping is not the same within each panel created by faceting the automatic
+location of labels results in "spillover" of the automatic positioning of
+labels, and consistent positioning requires passing explicitly positions for
+each individual group. In the plot below the simulataneous mapping to both color
+and fill aesthetics creates four groups, two with data in panel A
+and the other two in panel B.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2, colour = group, fill = block)) +
   geom_point(shape = 21, size = 3) +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = ..rr.label..), size = 3,
-               geom = "label_npc", alpha = 0.2,
+  stat_poly_eq(aes(label = ..rr.label..), size = 3, alpha = 0.2,
+               geom = "label_npc", label.y = c(0.95, 0.85, 0.95, 0.85),
                formula = formula, parse = TRUE) +
   facet_wrap(~group, scales = "free_y")
 ```
 
-It is possible to use `geom_text()` and `geom_label()` but in this case label
-coordinates need to be given explicitly in native data coordinates. When
-multiple labels need to be positioned a vector of coordinates can be used as
-shown here for `label.y`.
+It is possible to use `geom_text()` and `geom_label()` but in this case, if
+label coordinates are given explicitly they should be expressed in native data
+coordinates. When multiple labels need to be positioned a vector of coordinates
+can be used as shown here for  `label.x` and `label.y`.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -787,9 +790,13 @@ ggplot(my.data, aes(x, y2, colour = group)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
   stat_poly_eq(geom = "text", aes(label = ..eq.label..),
-               label.x = 0, label.y = c(1e6, 1.2e6), hjust = 0,
+               label.x = c(100, 90), label.y = c(-1e4, 2.1e6), hjust = "inward",
                formula = formula, parse = TRUE)
 ```
+
+**Note:** Automatic positioning using `geom_text()` and `geom_label()` is not
+supported when faceting uses free scales. In this case `geom_text_npc()` and/or 
+`geom_label_npc()` must be used.
 
 ## stat_fit_residuals
 
