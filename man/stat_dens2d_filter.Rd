@@ -114,7 +114,7 @@ ggplot(data = d, aes(x, y)) +
   geom_point() +
   stat_dens2d_filter(color = "red")
 
-# Using geom_debug() we can see that only 10 out off 100 rows in \\code{d} are
+# Using geom_debug() we can see that only 10 out off 100 rows in \code{d} are
 # returned. Those highlighted in red in the previous example.
 ggplot(data = d, aes(x, y)) +
   geom_point() +

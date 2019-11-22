@@ -144,7 +144,7 @@ gplot_draw_panel_fun <-
 
     plot.grobs <- grid::gList()
 
-    for (row.idx in 1:nrow(data)) {
+    for (row.idx in seq_len(nrow(data))) {
       plotGrob <-
         ggplotGrob(x = data$label[[row.idx]])
 
@@ -245,7 +245,7 @@ gplotnpc_draw_panel_fun <-
 
     plot.grobs <- grid::gList()
 
-    for (row.idx in 1:nrow(data)) {
+    for (row.idx in seq_len(nrow(data))) {
       plotGrob <-
         ggplotGrob(x = data$label[[row.idx]])
 

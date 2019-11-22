@@ -81,10 +81,11 @@ can include aesthetics whose values you want to set, not map. See
   that the model is fitted to the same data as plotted in other layers.
 }
 \note{
-The statistic \code{stat_fit_augment} can be used only with \code{methods} that
-  accept formulas under any formal parameter name and a \code{data} argument.
-  Use \code{ggplot2::stat_smooth()} instead of \code{stat_fit_augment} in
-  production code if the additional features are not needed.
+The statistic \code{stat_fit_augment} can be used only with
+  \code{methods} that accept formulas under any formal parameter name and a
+  \code{data} argument. Use \code{ggplot2::stat_smooth()} instead of
+  \code{stat_fit_augment} in production code if the additional features are
+  not needed.
 }
 \section{Handling of grouping}{
  \code{stat_fit_augment} applies the function

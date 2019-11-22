@@ -235,13 +235,13 @@ fit_glance_compute_group_fun <- function(data,
   }
 
   if (npc.used) {
-    margin.npc = 0.05
+    margin.npc <- 0.05
   } else {
-    margin.npc = 0
+    margin.npc <- 0
   }
-#  hstep <- 0
+
   hsteps <- hstep * (group.idx - 1L)
-  margin.npc = 0.05
+  margin.npc <- 0.05
   if (is.character(label.x)) {
     label.x <- switch(label.x,
                       right = (1 - margin.npc) - hsteps,
@@ -256,7 +256,7 @@ fit_glance_compute_group_fun <- function(data,
       label.x <- label.x * x.delta + x.min
     }
   }
-#  vstep <- 0.075
+
   vsteps <- vstep * (group.idx - 1L)
   if (is.character(label.y)) {
     label.y <- switch(label.y,
@@ -368,10 +368,11 @@ StatFitGlance <-
 #'   on the model fitting function and model formula we suggest the use of
 #'   \code{\link[gginnards]{geom_debug}}. An example is shown below.
 #'
-#' @note The statistic \code{stat_fit_augment} can be used only with \code{methods} that
-#'   accept formulas under any formal parameter name and a \code{data} argument.
-#'   Use \code{ggplot2::stat_smooth()} instead of \code{stat_fit_augment} in
-#'   production code if the additional features are not needed.
+#' @note The statistic \code{stat_fit_augment} can be used only with
+#'   \code{methods} that accept formulas under any formal parameter name and a
+#'   \code{data} argument. Use \code{ggplot2::stat_smooth()} instead of
+#'   \code{stat_fit_augment} in production code if the additional features are
+#'   not needed.
 #'
 #' @family ggplot2 statistics based on 'broom'.
 #'
@@ -549,7 +550,8 @@ StatFitAugment <-
 #' @param method.args list of arguments to pass to \code{method}.
 #' @param label.x,label.y \code{numeric} with range 0..1 or character.
 #'   Coordinates to be used for positioning the output, expressed in "normalized
-#'   parent coordinates" or character string. If too short they will be recycled.
+#'   parent coordinates" or character string. If too short they will be
+#'   recycled.
 #' @param hstep,vstep numeric in npc units, the horizontal and vertical step
 #'   used between labels for different groups.
 #'
@@ -576,21 +578,21 @@ StatFitAugment <-
 #'   with results from \code{t.test()} or ANOVA or ANCOVA. In such cases use
 #'   instead \code{stat_fit_tb()} which applies the model fitting per panel.
 #'
-#' @section Computed variables: The output of \code{tidy()} is
-#'   returned after reshaping it into a single row. Grouping is respected, and
-#'   the model fit separatately to each group of data. The returned \code{data}
-#'   object has one row for each group within a panel. To use the intercept, note
-#'   that output of \code{tidy()} is renamed from \code{(Intercept)} to
-#'   \code{Intercept}.
+#' @section Computed variables: The output of \code{tidy()} is returned after
+#'   reshaping it into a single row. Grouping is respected, and the model fit
+#'   separatately to each group of data. The returned \code{data} object has one
+#'   row for each group within a panel. To use the intercept, note that output
+#'   of \code{tidy()} is renamed from \code{(Intercept)} to \code{Intercept}.
 #'
 #'   To explore the values returned by this statistic, which vary depending
 #'   on the model fitting function and model formula we suggest the use of
 #'   \code{\link[gginnards]{geom_debug}}. An example is shown below.
 #'
-#' @note The statistic \code{stat_fit_augment} can be used only with \code{methods} that
-#'   accept formulas under any formal parameter name and a \code{data} argument.
-#'   Use \code{ggplot2::stat_smooth()} instead of \code{stat_fit_augment} in
-#'   production code if the additional features are not needed.
+#' @note The statistic \code{stat_fit_augment} can be used only with
+#'   \code{methods} that accept formulas under any formal parameter name and a
+#'   \code{data} argument. Use \code{ggplot2::stat_smooth()} instead of
+#'   \code{stat_fit_augment} in production code if the additional features are
+#'   not needed.
 #'
 #' @family ggplot2 statistics based on 'broom'.
 #'
@@ -616,7 +618,8 @@ StatFitAugment <-
 #'                 label.x = "right",
 #'                 method.args = list(formula = y ~ x),
 #'                 mapping = aes(label = sprintf("Slope = %.3g\np-value = %.3g",
-#'                                               stat(x_estimate), stat(x_p.value))))
+#'                                               stat(x_estimate),
+#'                                               stat(x_p.value))))
 #'
 #' # Regression by group example
 #' ggplot(mtcars, aes(x = disp, y = mpg, colour = factor(cyl))) +
@@ -626,7 +629,8 @@ StatFitAugment <-
 #'                 label.x = "right",
 #'                 method.args = list(formula = y ~ x),
 #'                 mapping = aes(label = sprintf("Slope = %.3g, p-value = %.3g",
-#'                                               stat(x_estimate), stat(x_p.value))))
+#'                                               stat(x_estimate),
+#'                                               stat(x_p.value))))
 #'
 #' # Weighted regression example
 #' ggplot(mtcars, aes(x = disp, y = mpg, weight = cyl)) +
@@ -636,7 +640,8 @@ StatFitAugment <-
 #'                 label.x = "right",
 #'                 method.args = list(formula = y ~ x, weights = quote(weight)),
 #'                 mapping = aes(label = sprintf("Slope = %.3g\np-value = %.3g",
-#'                                               stat(x_estimate), stat(x_p.value))))
+#'                                               stat(x_estimate),
+#'                                               stat(x_p.value))))
 #'
 stat_fit_tidy <- function(mapping = NULL, data = NULL, geom = "text_npc",
                           method = "lm",
@@ -733,11 +738,11 @@ fit_tidy_compute_group_fun <- function(data,
   }
 
   if (npc.used) {
-    margin.npc = 0.05
+    margin.npc <- 0.05
   } else {
-    margin.npc = 0
+    margin.npc <- 0
   }
-  hstep <- 0
+
   hsteps <- hstep * (group.idx - 1L)
   margin.npc = 0.05
   if (is.character(label.x)) {
@@ -754,7 +759,7 @@ fit_tidy_compute_group_fun <- function(data,
       label.x <- label.x * x.delta + x.min
     }
   }
-  vstep <- 0.075
+
   vsteps <- vstep * (group.idx - 1L)
   if (is.character(label.y)) {
     label.y <- switch(label.y,

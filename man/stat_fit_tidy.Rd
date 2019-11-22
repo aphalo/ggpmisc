@@ -37,7 +37,8 @@ the plot defaults.}
 
 \item{label.x, label.y}{\code{numeric} with range 0..1 or character.
 Coordinates to be used for positioning the output, expressed in "normalized
-parent coordinates" or character string. If too short they will be recycled.}
+parent coordinates" or character string. If too short they will be
+recycled.}
 
 \item{hstep, vstep}{numeric in npc units, the horizontal and vertical step
 used between labels for different groups.}
@@ -86,10 +87,11 @@ can include aesthetics whose values you want to set, not map. See
   that the model is fitted to the same data as plotted in other layers.
 }
 \note{
-The statistic \code{stat_fit_augment} can be used only with \code{methods} that
-  accept formulas under any formal parameter name and a \code{data} argument.
-  Use \code{ggplot2::stat_smooth()} instead of \code{stat_fit_augment} in
-  production code if the additional features are not needed.
+The statistic \code{stat_fit_augment} can be used only with
+  \code{methods} that accept formulas under any formal parameter name and a
+  \code{data} argument. Use \code{ggplot2::stat_smooth()} instead of
+  \code{stat_fit_augment} in production code if the additional features are
+  not needed.
 }
 \section{Handling of grouping}{
  \code{stat_fit_tidy} applies the function
@@ -101,12 +103,11 @@ The statistic \code{stat_fit_augment} can be used only with \code{methods} that
 }
 
 \section{Computed variables}{
- The output of \code{tidy()} is
-  returned after reshaping it into a single row. Grouping is respected, and
-  the model fit separatately to each group of data. The returned \code{data}
-  object has one row for each group within a panel. To use the intercept, note
-  that output of \code{tidy()} is renamed from \code{(Intercept)} to
-  \code{Intercept}.
+ The output of \code{tidy()} is returned after
+  reshaping it into a single row. Grouping is respected, and the model fit
+  separatately to each group of data. The returned \code{data} object has one
+  row for each group within a panel. To use the intercept, note that output
+  of \code{tidy()} is renamed from \code{(Intercept)} to \code{Intercept}.
 
   To explore the values returned by this statistic, which vary depending
   on the model fitting function and model formula we suggest the use of
@@ -130,8 +131,9 @@ ggplot(mtcars, aes(x = disp, y = mpg)) +
   stat_fit_tidy(method = "lm",
                 label.x = "right",
                 method.args = list(formula = y ~ x),
-                mapping = aes(label = sprintf("Slope = \%.3g\\np-value = \%.3g",
-                                              stat(x_estimate), stat(x_p.value))))
+                mapping = aes(label = sprintf("Slope = \%.3g\np-value = \%.3g",
+                                              stat(x_estimate),
+                                              stat(x_p.value))))
 
 # Regression by group example
 ggplot(mtcars, aes(x = disp, y = mpg, colour = factor(cyl))) +
@@ -141,7 +143,8 @@ ggplot(mtcars, aes(x = disp, y = mpg, colour = factor(cyl))) +
                 label.x = "right",
                 method.args = list(formula = y ~ x),
                 mapping = aes(label = sprintf("Slope = \%.3g, p-value = \%.3g",
-                                              stat(x_estimate), stat(x_p.value))))
+                                              stat(x_estimate),
+                                              stat(x_p.value))))
 
 # Weighted regression example
 ggplot(mtcars, aes(x = disp, y = mpg, weight = cyl)) +
@@ -150,8 +153,9 @@ ggplot(mtcars, aes(x = disp, y = mpg, weight = cyl)) +
   stat_fit_tidy(method = "lm",
                 label.x = "right",
                 method.args = list(formula = y ~ x, weights = quote(weight)),
-                mapping = aes(label = sprintf("Slope = \%.3g\\np-value = \%.3g",
-                                              stat(x_estimate), stat(x_p.value))))
+                mapping = aes(label = sprintf("Slope = \%.3g\np-value = \%.3g",
+                                              stat(x_estimate),
+                                              stat(x_p.value))))
 
 }
 \seealso{

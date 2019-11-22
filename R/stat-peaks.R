@@ -75,8 +75,8 @@ find_peaks <-
 #'   rather than combining with them. This is most useful for helper functions
 #'   that define both data and aesthetics and shouldn't inherit behaviour from
 #'   the default plot specification, e.g. \code{\link[ggplot2]{borders}}.
-#' @param ... other arguments passed on to \code{\link[ggplot2]{layer}}. This can
-#'   include aesthetics whose values you want to set, not map. See
+#' @param ... other arguments passed on to \code{\link[ggplot2]{layer}}. This
+#'   can include aesthetics whose values you want to set, not map. See
 #'   \code{\link[ggplot2]{layer}} for more details.
 #' @param na.rm	a logical value indicating whether NA values should be
 #'   stripped before the computation proceeds.
@@ -92,12 +92,13 @@ find_peaks <-
 #' @param label.fmt character  string giving a format definition for converting
 #'   values into character strings by means of function \code{\link{sprintf}}
 #'   or \code{\link{strptime}}, its use is deprecated.
-#' @param x.label.fmt character  string giving a format definition for converting
-#'   $x$-values into character strings by means of function \code{\link{sprintf}}
-#'   or \code{\link{strftime}}. The default argument varies depending on the
-#'   scale in use.
-#' @param y.label.fmt character  string giving a format definition for converting
-#'   $y$-values into character strings by means of function \code{\link{sprintf}}.
+#' @param x.label.fmt character  string giving a format definition for
+#'   converting $x$-values into character strings by means of function
+#'   \code{\link{sprintf}} or \code{\link{strftime}}. The default argument
+#'   varies depending on the scale in use.
+#' @param y.label.fmt character  string giving a format definition for
+#'   converting $y$-values into character strings by means of function
+#'   \code{\link{sprintf}}.
 #'
 #' @section Computed variables:
 #' \describe{
@@ -287,9 +288,9 @@ valleys_compute_group_fun <- function(data,
 #' contains a \code{Stat*} object (like \code{StatBin}). The \code{Stat*}
 #' object is responsible for rendering the data in the plot.
 #'
-#' Each of the \code{Stat*} objects is a \code{\link[ggplot2]{ggproto}} object, descended
-#' from the top-level \code{Stat}, and each implements various methods and
-#' fields. To create a new type of Stat object, you typically will want to
+#' Each of the \code{Stat*} objects is a \code{\link[ggplot2]{ggproto}} object,
+#' derived from the top-level \code{Stat}, and each implements various methods
+#' and fields. To create a new type of Stat object, you typically will want to
 #' implement one or more of the following:
 #'
 #' @name Stats

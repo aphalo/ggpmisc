@@ -129,7 +129,8 @@ For backward compatibility a logical is accepted as argument for
 
 \section{Computed variables}{
 
-If output.type different from \code{"numeric"} the returned tibble contains columns:
+If output.type different from \code{"numeric"} the returned tibble contains
+columns:
 \describe{
   \item{x,npcx}{x position}
   \item{y,npcy}{y position}
@@ -206,15 +207,18 @@ ggplot(my.data, aes(x, y)) +
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label =  paste(stat(eq.label), stat(adj.rr.label), sep = "~~~~")),
+  stat_poly_eq(aes(label =  paste(stat(eq.label),
+                                  stat(adj.rr.label), sep = "~~~~")),
                formula = formula, parse = TRUE)
 
 # user specified label and digits
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label =  paste(stat(eq.label), stat(adj.rr.label), sep = "~~~~")),
-               formula = formula, rr.digits = 3, coef.digits = 2, parse = TRUE)
+  stat_poly_eq(aes(label =  paste(stat(eq.label),
+                                  stat(adj.rr.label), sep = "~~~~")),
+               formula = formula, rr.digits = 3, coef.digits = 2,
+               parse = TRUE)
 
 # geom = "text"
 ggplot(my.data, aes(x, y)) +
@@ -234,18 +238,19 @@ ggplot(my.data, aes(x, y)) +
   stat_poly_eq(formula = formula,
                output.type = "numeric",
                parse = TRUE,
-               mapping = aes(label = sprintf(my.format,
-                                             stat(coef.ls)[[1]][[1, "Estimate"]],
-                                             stat(coef.ls)[[1]][[2, "Estimate"]],
-                                             stat(coef.ls)[[1]][[3, "Estimate"]],
-                                             stat(coef.ls)[[1]][[4, "Estimate"]])
-                                             )
-                             )
+               mapping =
+                aes(label = sprintf(my.format,
+                                    stat(coef.ls)[[1]][[1, "Estimate"]],
+                                    stat(coef.ls)[[1]][[2, "Estimate"]],
+                                    stat(coef.ls)[[1]][[3, "Estimate"]],
+                                    stat(coef.ls)[[1]][[4, "Estimate"]])
+                                    )
+                   )
 
 # Examples using geom_debug() to show computed values
 #
 # This provides a quick way of finding out which variables are available for
-# use in mapping of aesthtics when using other geoms as in the examples
+# use in mapping of aesthetics when using other geoms as in the examples
 # above.
 
 library(gginnards)

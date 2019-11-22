@@ -82,7 +82,6 @@ This stat can be used to automatically plot residuals as points in a
 }
 
 \examples{
-library(gginnards) # needed for geom_debug()
 # generate artificial data
 set.seed(4321)
 x <- 1:100
@@ -96,9 +95,11 @@ my.formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   stat_fit_residuals(formula = my.formula, resid.type = "working")
 
-# plot
+library(gginnards) # needed for geom_debug()
+# print to the console the returned data
 ggplot(my.data, aes(x, y)) +
-  stat_fit_residuals(formula = my.formula, resid.type = "working", geom = "debug")
+  stat_fit_residuals(formula = my.formula, resid.type = "working",
+                     geom = "debug")
 
 }
 \seealso{

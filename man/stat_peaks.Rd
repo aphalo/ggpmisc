@@ -65,13 +65,14 @@ all other values in its window to be considered a peak. Default: FALSE.}
 values into character strings by means of function \code{\link{sprintf}}
 or \code{\link{strptime}}, its use is deprecated.}
 
-\item{x.label.fmt}{character  string giving a format definition for converting
-$x$-values into character strings by means of function \code{\link{sprintf}}
-or \code{\link{strftime}}. The default argument varies depending on the
-scale in use.}
+\item{x.label.fmt}{character  string giving a format definition for
+converting $x$-values into character strings by means of function
+\code{\link{sprintf}} or \code{\link{strftime}}. The default argument
+varies depending on the scale in use.}
 
-\item{y.label.fmt}{character  string giving a format definition for converting
-$y$-values into character strings by means of function \code{\link{sprintf}}.}
+\item{y.label.fmt}{character  string giving a format definition for
+converting $y$-values into character strings by means of function
+\code{\link{sprintf}}.}
 
 \item{position}{The position adjustment to use for overlapping points
 on this layer.}
@@ -88,8 +89,8 @@ rather than combining with them. This is most useful for helper functions
 that define both data and aesthetics and shouldn't inherit behaviour from
 the default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
 
-\item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This can
-include aesthetics whose values you want to set, not map. See
+\item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This
+can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 }
 \description{

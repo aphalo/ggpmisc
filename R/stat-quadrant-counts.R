@@ -38,20 +38,21 @@
 #'
 #' @details This stat can be used to automatically count observations in each of
 #'   the four quadrants of a plot, and by default add these counts as text
-#'   labels. Values exactly equal to zero are counted as belonging to the positve
-#'   quadrant. An argument value of zero, passed to formal parameter
+#'   labels. Values exactly equal to zero are counted as belonging to the
+#'   positve quadrant. An argument value of zero, passed to formal parameter
 #'   \code{quadrants} is interpreted as a request for the count of all
 #'   observations in each plot panel.
 #'
 #'   The default origin of quadrants is at \code{xintercept = 0},
-#'   \code{yintercept = 0}. Alsoby default, counts are computed for all quadrants
-#'   within the $x$ and $y$ scale limits, but ignoring any marginal scale
-#'   expansion. The default positions of the labels is in the farthest corner or
-#'   edge of each quadrant using npc coordinates. Consequently, when using
-#'   facets even with free limits for $x$ and $y$ axes, the location of the labels
-#'   is consistent across panels. This is achieved by use of
-#'   \code{geom = "text_npc"} or \code{geom = "label_npc"}. To pass the positions in native
-#'   data units, pass \code{geom = "text"} explicitly as argument.
+#'   \code{yintercept = 0}. Alsoby default, counts are computed for all
+#'   quadrants within the $x$ and $y$ scale limits, but ignoring any marginal
+#'   scale expansion. The default positions of the labels is in the farthest
+#'   corner or edge of each quadrant using npc coordinates. Consequently, when
+#'   using facets even with free limits for $x$ and $y$ axes, the location of
+#'   the labels is consistent across panels. This is achieved by use of
+#'   \code{geom = "text_npc"} or \code{geom = "label_npc"}. To pass the
+#'   positions in native data units, pass \code{geom = "text"} explicitly as
+#'   argument.
 #'
 #' @section Computed variables: Data frame with one to four rows, one for each
 #'   quadrant for which counts are counted in \code{data}. \describe{

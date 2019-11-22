@@ -107,14 +107,14 @@ GeomXMarginArrow <-
 
     # For coord_flip, coord$tranform does not flip the sides where to
     # draw the rugs. We have to flip them.
-    flipped <- inherits(coord, 'CoordFlip')
+    flipped <- inherits(coord, "CoordFlip")
     if (flipped) {
-      sides <- chartr('tblr', 'rlbt', sides)
+      sides <- chartr("tblr", "rlbt", sides)
     }
 
     arrow <- arrow(length = unit(arrow.length / 3, "npc"), ends = "first", type = "open")
     gp <- gpar(col = alpha(data$colour, data$alpha), lty = data$linetype, lwd = data$size * .pt)
-    if (!flipped && !is.null(data$xintercept) ) {
+    if (!flipped && !is.null(data$xintercept)) {
       if (grepl("b", sides)) {
         rugarrows$x_b <- segmentsGrob(
           x0 = unit(data$xintercept, "native"), x1 = unit(data$xintercept, "native"),
@@ -221,9 +221,9 @@ GeomYMarginArrow <-
 
             # For coord_flip, coord$tranform does not flip the sides where to
             # draw the rugs. We have to flip them.
-            flipped <- inherits(coord, 'CoordFlip')
+            flipped <- inherits(coord, "CoordFlip")
             if (flipped) {
-              sides <- chartr('tblr', 'rlbt', sides)
+              sides <- chartr("tblr", "rlbt", sides)
             }
 
             arrow <- arrow(length = unit(arrow.length / 3, "npc"), ends = "first", type = "open")
@@ -249,7 +249,7 @@ GeomYMarginArrow <-
               }
             }
             # needed for handling flipped coords
-            if (flipped && !is.null(data$xintercept) ) {
+            if (flipped && !is.null(data$xintercept)) {
               if (grepl("b", sides)) {
                 rugarrows$x_b <- segmentsGrob(
                   x0 = unit(data$xintercept, "native"), x1 = unit(data$xintercept, "native"),

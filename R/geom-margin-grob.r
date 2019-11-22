@@ -129,7 +129,7 @@ GeomXMarginGrob <-
               } else if (grepl("t", sides)) {
                 y.pos <- unit(1 - grob.shift, "npc")
               }
-              for (row.idx in 1:nrow(data)) {
+              for (row.idx in seq_len(nrow(data))) {
                 userGrob <- data$label[[row.idx]]
 
                 userGrob$vp <-
@@ -157,7 +157,7 @@ GeomXMarginGrob <-
               } else if (grepl("r", sides)) {
                 x.pos <- unit(1 - grob.shift, "npc")
               }
-              for (row.idx in 1:nrow(data)) {
+              for (row.idx in seq_len(nrow(data))) {
                 userGrob <- data$label[[row.idx]]
                 userGrob$vp <-
                   grid::viewport(x = x.pos,
@@ -273,7 +273,7 @@ GeomYMarginGrob <-
               } else if (grepl("t", sides)) {
                 y.pos <- unit(1 - grob.shift, "npc")
               }
-              for (row.idx in 1:nrow(data)) {
+              for (row.idx in seq_len(nrow(data))) {
                 userGrob <- data$label[[row.idx]]
 
                 userGrob$vp <-
@@ -301,7 +301,7 @@ GeomYMarginGrob <-
               } else if (grepl("r", sides)) {
                 x.pos <- unit(1 - grob.shift, "npc")
               }
-              for (row.idx in 1:nrow(data)) {
+              for (row.idx in seq_len(nrow(data))) {
                 userGrob <- data$label[[row.idx]]
                 userGrob$vp <-
                   grid::viewport(x = x.pos,

@@ -14,13 +14,13 @@ geom_label_npc <- function(mapping = NULL, data = NULL,
                       label.size = 0.25,
                       na.rm = FALSE,
                       show.legend = FALSE,
-                      inherit.aes = FALSE)
-{
+                      inherit.aes = FALSE) {
+
   if (!missing(nudge_x) || !missing(nudge_y)) {
     if (!missing(position)) {
-      stop("You must specify either `position` or `nudge_x`/`nudge_y`.", call. = FALSE)
+      stop("You must specify either `position` or `nudge_x`/`nudge_y`.",
+           call. = FALSE)
     }
-
     position <- position_nudge(nudge_x, nudge_y)
   }
 

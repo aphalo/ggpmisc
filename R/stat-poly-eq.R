@@ -84,7 +84,8 @@
 #'   used (\code{"text"} by default) are understood and grouping respected.
 #'
 #' @section Computed variables:
-#' If output.type different from \code{"numeric"} the returned tibble contains columns:
+#' If output.type different from \code{"numeric"} the returned tibble contains
+#' columns:
 #' \describe{
 #'   \item{x,npcx}{x position}
 #'   \item{y,npcy}{y position}
@@ -167,15 +168,18 @@
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(aes(label =  paste(stat(eq.label), stat(adj.rr.label), sep = "~~~~")),
+#'   stat_poly_eq(aes(label =  paste(stat(eq.label),
+#'                                   stat(adj.rr.label), sep = "~~~~")),
 #'                formula = formula, parse = TRUE)
 #'
 #' # user specified label and digits
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(aes(label =  paste(stat(eq.label), stat(adj.rr.label), sep = "~~~~")),
-#'                formula = formula, rr.digits = 3, coef.digits = 2, parse = TRUE)
+#'   stat_poly_eq(aes(label =  paste(stat(eq.label),
+#'                                   stat(adj.rr.label), sep = "~~~~")),
+#'                formula = formula, rr.digits = 3, coef.digits = 2,
+#'                parse = TRUE)
 #'
 #' # geom = "text"
 #' ggplot(my.data, aes(x, y)) +
@@ -195,13 +199,14 @@
 #'   stat_poly_eq(formula = formula,
 #'                output.type = "numeric",
 #'                parse = TRUE,
-#'                mapping = aes(label = sprintf(my.format,
-#'                                              stat(coef.ls)[[1]][[1, "Estimate"]],
-#'                                              stat(coef.ls)[[1]][[2, "Estimate"]],
-#'                                              stat(coef.ls)[[1]][[3, "Estimate"]],
-#'                                              stat(coef.ls)[[1]][[4, "Estimate"]])
-#'                                              )
-#'                              )
+#'                mapping =
+#'                 aes(label = sprintf(my.format,
+#'                                     stat(coef.ls)[[1]][[1, "Estimate"]],
+#'                                     stat(coef.ls)[[1]][[2, "Estimate"]],
+#'                                     stat(coef.ls)[[1]][[3, "Estimate"]],
+#'                                     stat(coef.ls)[[1]][[4, "Estimate"]])
+#'                                     )
+#'                    )
 #'
 #' # Examples using geom_debug() to show computed values
 #' #
@@ -317,8 +322,13 @@ poly_eq_compute_group_fun <- function(data,
     return(tibble::new_tibble())
   }
 
-  output.type <- if (!length(output.type)) "expression" else tolower(output.type)
-  stopifnot(output.type %in% c("expression", "text", "numeric", "latex", "tex", "tikz"))
+  output.type <- if (!length(output.type)) {
+    "expression"
+  } else {
+    tolower(output.type)
+  }
+  stopifnot(output.type %in%
+              c("expression", "text", "numeric", "latex", "tex", "tikz"))
 
   if (is.null(data$weight)) data$weight <- 1
 
@@ -371,9 +381,11 @@ poly_eq_compute_group_fun <- function(data,
     }
     eq.char <- as.character(signif(polynom::as.polynomial(coefs), coef.digits))
     # as character drops 1
-    eq.char <- gsub("+ x", paste("+ 1.", stringr::str_dup("0", coef.digits - 1L),
-                                 "*x", sep = ""),
-                    eq.char, fixed = TRUE)
+    eq.char <-
+      gsub("+ x",
+           paste("+ 1.", stringr::str_dup("0", coef.digits - 1L), "*x",
+                 sep = ""),
+           eq.char, fixed = TRUE)
     eq.char <- gsub("e([+-]?[0-9]*)", "%*%10^{\\1}", eq.char)
     if (output.type %in% c("latex", "tex", "tikz")) {
       eq.char <- gsub("*", " ", eq.char, fixed = TRUE)
@@ -408,7 +420,7 @@ poly_eq_compute_group_fun <- function(data,
                           AIC.label = paste("AIC", AIC.char, sep = "~`=`~"),
                           BIC.label = paste("BIC", BIC.char, sep = "~`=`~"))
     } else if (output.type %in% c("latex", "tex", "text", "tikz")) {
-      z <-tibble::tibble(eq.label = gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
+      z <- tibble::tibble(eq.label = gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
                          rr.label = paste("R^2", rr.char, sep = " = "),
                          adj.rr.label = paste("R_{adj}^2",
                                               adj.rr.char, sep = " = "),
@@ -426,7 +438,8 @@ poly_eq_compute_group_fun <- function(data,
     margin.npc <- 0
   }
   if (is.character(label.x)) {
-    label.x <- compute_npcx(x = label.x, group = group.idx, h.step = hstep, margin.npc = margin.npc)
+    label.x <- compute_npcx(x = label.x, group = group.idx, h.step = hstep,
+                            margin.npc = margin.npc)
     if (!npc.used) {
       x.expanse <- abs(diff(range(data$x)))
       x.min <- min(data$x)
@@ -434,7 +447,8 @@ poly_eq_compute_group_fun <- function(data,
     }
   }
   if (is.character(label.y)) {
-    label.y <- compute_npcy(y = label.y, group = group.idx, v.step = vstep, margin.npc = margin.npc)
+    label.y <- compute_npcy(y = label.y, group = group.idx, v.step = vstep,
+                            margin.npc = margin.npc)
     if (!npc.used) {
       y.expanse <- abs(diff(range(data$y)))
       y.min <- min(data$y)

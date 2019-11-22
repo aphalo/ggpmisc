@@ -100,7 +100,7 @@ ggplot(data = d, aes(x, y, label = lab)) +
   geom_point() +
   stat_dens2d_labels()
 
-# Using geom_debug() we can see that all 100 rows in \\code{d} are
+# Using geom_debug() we can see that all 100 rows in \code{d} are
 # returned. But only those labelled in the previous example still contain
 # the original labels.
 ggplot(data = d, aes(x, y, label = lab)) +

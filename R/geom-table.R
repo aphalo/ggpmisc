@@ -152,7 +152,7 @@ gtb_draw_panel_fun <-
 
     tb.grobs <- grid::gList()
 
-    for (row.idx in 1:nrow(data)) {
+    for (row.idx in seq_len(nrow(data))) {
       gtb <-
         gridExtra::tableGrob(
           d = data$label[[row.idx]],
@@ -262,7 +262,7 @@ gtbnpc_draw_panel_fun <-
 
     tb.grobs <- grid::gList()
 
-    for (row.idx in 1:nrow(data)) {
+    for (row.idx in seq_len(nrow(data))) {
       gtb <-
         gridExtra::tableGrob(
           d = data$label[[row.idx]],

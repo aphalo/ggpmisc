@@ -223,7 +223,7 @@ fit_tb_compute_panel_fun <- function(data,
   num.cols <- sapply(mf_tb, is.numeric)
   mf_tb[num.cols] <- signif(mf_tb[num.cols], digits = digits)
 
-  if(!is.null(tb.vars)) {
+  if (!is.null(tb.vars)) {
     mf_tb <- dplyr::select(mf_tb, !!tb.vars)
   }
 
@@ -232,9 +232,9 @@ fit_tb_compute_panel_fun <- function(data,
   z <- tibble::tibble(mf_tb = list(mf_tb))
 
   if (npc.used) {
-    margin.npc = 0.05
+    margin.npc <- 0.05
   } else {
-    margin.npc = 0
+    margin.npc <- 0
   }
 
   if (is.character(label.x)) {
@@ -293,4 +293,3 @@ StatFitTb <-
                                   label = stat(mf_tb)),
                    required_aes = c("x", "y")
   )
-

@@ -51,7 +51,6 @@
 #' @family statistics for linear model fits
 #'
 #' @examples
-#' library(gginnards) # needed for geom_debug()
 #' # generate artificial data
 #' set.seed(4321)
 #' x <- 1:100
@@ -65,9 +64,11 @@
 #' ggplot(my.data, aes(x, y)) +
 #'   stat_fit_residuals(formula = my.formula, resid.type = "working")
 #'
-#' # plot
+#' library(gginnards) # needed for geom_debug()
+#' # print to the console the returned data
 #' ggplot(my.data, aes(x, y)) +
-#'   stat_fit_residuals(formula = my.formula, resid.type = "working", geom = "debug")
+#'   stat_fit_residuals(formula = my.formula, resid.type = "working",
+#'                      geom = "debug")
 #'
 #' @export
 #'

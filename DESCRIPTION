@@ -2,7 +2,7 @@ Package: ggpmisc
 Type: Package
 Title: Miscellaneous Extensions to 'ggplot2'
 Version: 0.3.2.90000
-Date: 2019-11-14
+Date: 2019-11-21
 Authors@R:
     c(
     person("Pedro J.", "Aphalo", email = "pedro.aphalo@helsinki.fi", role = c("aut", "cre"), comment = c(ORCID = "0000-0003-3385-972X")),
@@ -35,7 +35,7 @@ Imports:
     magrittr (>= 1.5),
     gridExtra (>= 2.3),
     scales (>= 1.0.0),
-    MASS (>= 7.3-51.4),
+    MASS (>= 7.3-51.3),
     polynom (>= 1.4-0),
     splus2R (>= 1.2-2),
     tibble (>= 2.1.3),
@@ -56,5 +56,5 @@ Suggests:
 URL: https://www.r4photobiology.info, https://bitbucket.org/aphalo/ggpmisc
 BugReports: https://bitbucket.org/aphalo/ggpmisc/issues
 Encoding: UTF-8
-RoxygenNote: 7.0.0
+RoxygenNote: 7.0.1
 VignetteBuilder: knitr

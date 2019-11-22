@@ -32,10 +32,10 @@
 #'   account as even for yearly data when conversion is to POSIXct a day (1st of
 #'   January) will be set, but then shifted some hours if printed on a TZ
 #'   different from "UTC". I recommend reading the documentation of package
-#'   \code{\link[lubridate]{lubridate-package}} where the irregularities of time data
-#'   and the difficulties they cause are very well described. In many cases when
-#'   working with time series with yearly observations it is best to work with
-#'   numeric values for years.
+#'   \code{\link[lubridate]{lubridate-package}} where the irregularities of time
+#'   data and the difficulties they cause are very well described. In many cases
+#'   when working with time series with yearly observations it is best to work
+#'   with numeric values for years.
 #'
 #' @export
 #'
@@ -67,7 +67,7 @@ try_data_frame <- function(x,
   } else {
     data.xts <- x
   }
-  times.raw <- zoo::index(data.xts) # TZ = "UTC"
+  times.raw <- zoo::index(data.xts) # because TZ = "UTC"
   if (as.numeric) {
     if (is.numeric(times.raw)) {
       times <- times.raw
@@ -75,7 +75,6 @@ try_data_frame <- function(x,
       times <- as.numeric(times.raw)
     } else {
       times <- lubridate::decimal_date(times.raw)
-#      times <- as.numeric(times.raw)
     }
     times <- as.double(times) # remove "ts" class attribute
   } else {
@@ -84,7 +83,6 @@ try_data_frame <- function(x,
     } else if (inherits(times.raw, "yearmon") ||
                  inherits(times.raw, "yearqtr") ) {
       times <- as.POSIXct(format(times.raw, "%Y-%m-01"))
-#      times <- lubridate::round_date(times, unit = time.resolution)
     } else if (is.numeric(times.raw)) {
       times <- lubridate::date_decimal(times.raw, "UTC") # handles conversion from classes in xts and zoo
       times <- lubridate::round_date(times, unit = time.resolution)

@@ -47,9 +47,9 @@
 #'
 #' @section Computed variables: Data frame with same \code{nrow} as \code{data}
 #'   as subset for each group containing five numeric variables. \describe{
-#'   \item{x}{x coordinates of observations} \item{y.fitted}{x coordinates of fitted
-#'   values} \item{y}{y coordinates of observations} \item{y.fitted}{y coordinates of
-#'   fitted values}}
+#'   \item{x}{x coordinates of observations} \item{y.fitted}{x coordinates of
+#'   fitted values} \item{y}{y coordinates of observations} \item{y.fitted}{y
+#'   coordinates of fitted values}}
 #'
 #'   To explore the values returned by this statistic we suggest the use of
 #'   \code{\link[gginnards]{geom_debug}}. An example is shown below, where one
