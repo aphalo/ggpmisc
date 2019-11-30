@@ -1,7 +1,7 @@
 Package: ggpmisc
 Type: Package
 Title: Miscellaneous Extensions to 'ggplot2'
-Version: 0.3.2.90000
+Version: 0.3.3
 Date: 2019-11-23
 Authors@R:
     c(

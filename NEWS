@@ -1,4 +1,4 @@
-ggpmisc 0.3.3 (2019-xx-xx)
+ggpmisc 0.3.3 (2019-11-23)
 ==========================
 
 * Fix bug in stat_poly_eq().
