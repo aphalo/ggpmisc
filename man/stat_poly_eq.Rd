@@ -208,7 +208,14 @@ ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
   stat_poly_eq(aes(label =  paste(stat(eq.label),
-                                  stat(adj.rr.label), sep = "~~~~")),
+                                  stat(adj.rr.label), sep = "*\", \"*")),
+               formula = formula, parse = TRUE)
+
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_eq(aes(label =  paste(stat(f.value.label),
+                                  stat(p.value.label), sep = "*\", \"*")),
                formula = formula, parse = TRUE)
 
 # user specified label and digits
@@ -216,8 +223,8 @@ ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
   stat_poly_eq(aes(label =  paste(stat(eq.label),
-                                  stat(adj.rr.label), sep = "~~~~")),
-               formula = formula, rr.digits = 3, coef.digits = 2,
+                                  stat(adj.rr.label), sep = "*\", \"*")),
+               formula = formula, rr.digits = 3, coef.digits = 4,
                parse = TRUE)
 
 # geom = "text"

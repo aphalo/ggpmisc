@@ -4,7 +4,9 @@
 \name{quadrant_example.df}
 \alias{quadrant_example.df}
 \title{Example gene expression data}
-\format{A \code{data.frame} object with 6088 rows and 6 variables}
+\format{
+A \code{data.frame} object with 6088 rows and 6 variables
+}
 \usage{
 quadrant_example.df
 }

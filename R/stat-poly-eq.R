@@ -169,7 +169,14 @@
 #'   geom_point() +
 #'   geom_smooth(method = "lm", formula = formula) +
 #'   stat_poly_eq(aes(label =  paste(stat(eq.label),
-#'                                   stat(adj.rr.label), sep = "~~~~")),
+#'                                   stat(adj.rr.label), sep = "*\", \"*")),
+#'                formula = formula, parse = TRUE)
+#'
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   geom_smooth(method = "lm", formula = formula) +
+#'   stat_poly_eq(aes(label =  paste(stat(f.value.label),
+#'                                   stat(p.value.label), sep = "*\", \"*")),
 #'                formula = formula, parse = TRUE)
 #'
 #' # user specified label and digits
@@ -177,8 +184,8 @@
 #'   geom_point() +
 #'   geom_smooth(method = "lm", formula = formula) +
 #'   stat_poly_eq(aes(label =  paste(stat(eq.label),
-#'                                   stat(adj.rr.label), sep = "~~~~")),
-#'                formula = formula, rr.digits = 3, coef.digits = 2,
+#'                                   stat(adj.rr.label), sep = "*\", \"*")),
+#'                formula = formula, rr.digits = 3, coef.digits = 4,
 #'                parse = TRUE)
 #'
 #' # geom = "text"
@@ -355,16 +362,26 @@ poly_eq_compute_group_fun <- function(data,
   lm.args <- list(quote(formula), data = quote(data), weights = quote(weight))
   mf <- do.call(stats::lm, lm.args)
 
-  rr <- summary(mf)$r.squared
-  adj.rr <- summary(mf)$adj.r.squared
+  mf.summary <- summary(mf)
+  rr <- mf.summary$r.squared
+  adj.rr <- mf.summary$adj.r.squared
   AIC <- AIC(mf)
   BIC <- BIC(mf)
+  f.value <- mf.summary$fstatistic["value"]
+  f.df1 <- mf.summary$fstatistic["numdf"]
+  f.df2 <- mf.summary$fstatistic["dendf"]
+
+  p.value <- 1 - stats::pf(q = f.value, f.df1, f.df2)
 
   if (output.type == "numeric") {
     z <- tibble::tibble(coef.ls = list(summary(mf)[["coefficients"]]),
                         coefs = list(stats::coefficients(mf)),
                         r.squared = rr,
                         adj.r.squared = adj.rr,
+                        f.value = f.value,
+                        f.df1 = f.df1,
+                        f.df2 = f.df2,
+                        p.value = p.value,
                         AIC = AIC,
                         BIC = BIC,
                         rr.label = "") # needed for default 'label' mapping
@@ -412,20 +429,34 @@ poly_eq_compute_group_fun <- function(data,
     adj.rr.char <- format(adj.rr, digits = rr.digits)
     AIC.char <- sprintf("%.4g", AIC)
     BIC.char <- sprintf("%.4g", BIC)
+    f.value.char <- sprintf("%.4g", f.value)
+    f.df1.char <- as.character(f.df1)
+    f.df2.char <- as.character(f.df2)
+    p.value.char <- sprintf("%1.3f", p.value)
+
     if (output.type == "expression") {
       z <- tibble::tibble(eq.label = gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
                           rr.label = paste("italic(R)^2", rr.char, sep = "~`=`~"),
                           adj.rr.label = paste("italic(R)[adj]^2",
                                                adj.rr.char, sep = "~`=`~"),
                           AIC.label = paste("AIC", AIC.char, sep = "~`=`~"),
-                          BIC.label = paste("BIC", BIC.char, sep = "~`=`~"))
+                          BIC.label = paste("BIC", BIC.char, sep = "~`=`~"),
+                          f.value.label = paste("italic(F)[", f.df1.char, "*\",\"*", f.df2.char,
+                                                "]~`=`~", f.value.char, sep = ""),
+                          p.value.label =  paste("italic(P)",
+                                                 ifelse(p.value < 0.001, "0.001", p.value.char),
+                                                 sep = ifelse(p.value < 0.001, "~`<=`~", "~`=`~")))
     } else if (output.type %in% c("latex", "tex", "text", "tikz")) {
       z <- tibble::tibble(eq.label = gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
                          rr.label = paste("R^2", rr.char, sep = " = "),
                          adj.rr.label = paste("R_{adj}^2",
                                               adj.rr.char, sep = " = "),
                          AIC.label = paste("AIC", AIC.char, sep = " = "),
-                         BIC.label = paste("BIC", BIC.char, sep = " = "))
+                         BIC.label = paste("BIC", BIC.char, sep = " = "),
+                         f.value.label = paste("F_{", f.df1.char, ",", f.df2.char,
+                                               "} = ", f.value.char, sep = ""),
+                         p.value.label =  paste("P", p.value.char,
+                                                sep = ifelse(p.value < 0.001, " \\leq ", " = ")))
     } else {
       warning("Unknown 'output.type' argument: ", output.type)
     }

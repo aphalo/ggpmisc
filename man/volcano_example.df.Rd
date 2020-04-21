@@ -4,7 +4,9 @@
 \name{volcano_example.df}
 \alias{volcano_example.df}
 \title{Example gene expression data}
-\format{A \code{data.frame} object with 1218 rows and 5 variables}
+\format{
+A \code{data.frame} object with 1218 rows and 5 variables
+}
 \usage{
 volcano_example.df
 }
