@@ -7,3 +7,5 @@ vignettes/*.R
 inst/doc
 tests/figs
 docs
+
+*.log
