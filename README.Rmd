@@ -139,7 +139,7 @@ ggplot(cars, aes(speed, dist)) +
   geom_point() +
   stat_fit_deviations(method = "lm", formula = formula, colour = "red") +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label =  paste(stat(eq.label), stat(adj.rr.label), sep = "~~~~")),
+  stat_poly_eq(aes(label =  paste(stat(eq.label), stat(adj.rr.label), sep = "*\", \"*")),
                formula = formula, parse = TRUE)
 ```
 

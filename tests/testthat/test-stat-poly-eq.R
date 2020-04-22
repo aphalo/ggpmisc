@@ -14,6 +14,81 @@ my.data <- data.frame(x,
                       wt = sqrt(x))
                       formula <- y ~ poly(x, 3, raw = TRUE)
 
+test_that("poly_formulas", {
+  vdiffr::expect_doppelganger("stat_poly_eq_formula_1",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_eq(formula = y ~ 1, parse = TRUE,
+                                             mapping =
+                                  aes(label = paste(stat(eq.label),
+                                                    stat(adj.rr.label),
+                                                    stat(AIC.label),
+                                                    stat(BIC.label),
+                                                    sep = "~~")))
+  )
+
+  vdiffr::expect_doppelganger("stat_poly_eq_formula_1a",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_eq(formula = y ~ 1, parse = TRUE,
+                                             mapping =
+                                               aes(label = paste(stat(eq.label),
+                                                                 stat(adj.rr.label),
+                                                                 stat(f.value.label),
+                                                                 stat(p.value.label),
+                                                                 sep = "~~")))
+  )
+
+  vdiffr::expect_doppelganger("stat_poly_eq_formula_x",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_eq(formula = y ~ x, parse = TRUE,
+                                             mapping =
+                                               aes(label = paste(stat(eq.label),
+                                                                 stat(adj.rr.label),
+                                                                 stat(f.value.label),
+                                                                 stat(p.value.label),
+                                                                 sep = "~~")))
+  )
+
+  vdiffr::expect_doppelganger("stat_poly_eq_formula_xminus1",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_eq(formula = y ~ x - 1, parse = TRUE,
+                                             mapping =
+                                               aes(label = paste(stat(eq.label),
+                                                                 stat(adj.rr.label),
+                                                                 stat(f.value.label),
+                                                                 stat(p.value.label),
+                                                                 sep = "~~")))
+  )
+
+  vdiffr::expect_doppelganger("stat_poly_eq_formula_poly1",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_eq(formula = y ~ poly(x, 1), parse = TRUE,
+                                             mapping =
+                                               aes(label = paste(stat(eq.label),
+                                                                 stat(adj.rr.label),
+                                                                 stat(f.value.label),
+                                                                 stat(p.value.label),
+                                                                 sep = "~~")))
+  )
+
+  vdiffr::expect_doppelganger("stat_poly_eq_formula_poly3",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_eq(formula = y ~ poly(x, 3), parse = TRUE,
+                                             mapping =
+                                               aes(label = paste(stat(eq.label),
+                                                                 stat(adj.rr.label),
+                                                                 stat(f.value.label),
+                                                                 stat(p.value.label),
+                                                                 sep = "~~")))
+  )
+
+})
+
 test_that("textual_positions", {
   vdiffr::expect_doppelganger("stat_poly_eq_0",
                               ggplot(my.data, aes(x, y)) +

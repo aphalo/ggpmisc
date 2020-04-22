@@ -31,8 +31,8 @@
 #' @param eq.x.rhs \code{character} this string will be used as replacement for
 #'   \code{"x"} in the model equation when generating the label before parsing
 #'   it.
-#' @param coef.digits,rr.digits integer Number of significant digits to use in
-#'   for the vector of fitted coefficients and for $R^2$ labels.
+#' @param coef.digits,rr.digits,f.digits,p.digits integer Number of significant
+#'   digits to use for the fitted coefficients, R^2, F-value and P-value in labels.
 #' @param label.x,label.y \code{numeric} with range 0..1 "normalized parent
 #'   coordinates" (npc units) or character if using \code{geom_text_npc()} or
 #'   \code{geom_label_npc()}. If using \code{geom_text()} or \code{geom_label()}
@@ -259,6 +259,8 @@ stat_poly_eq <- function(mapping = NULL, data = NULL,
                          eq.x.rhs = NULL,
                          coef.digits = 3,
                          rr.digits = 2,
+                         f.digits = 3,
+                         p.digits = 3,
                          label.x = "left", label.y = "top",
                          label.x.npc = NULL, label.y.npc = NULL,
                          hstep = 0,
@@ -289,6 +291,8 @@ stat_poly_eq <- function(mapping = NULL, data = NULL,
                   eq.x.rhs = eq.x.rhs,
                   coef.digits = coef.digits,
                   rr.digits = rr.digits,
+                  f.digits = f.digits,
+                  p.digits = p.digits,
                   label.x = label.x,
                   label.y = label.y,
                   hstep = hstep,
@@ -313,19 +317,21 @@ stat_poly_eq <- function(mapping = NULL, data = NULL,
 #'
 poly_eq_compute_group_fun <- function(data,
                                       scales,
-                                      formula = NULL,
-                                      weight = 1,
-                                      eq.with.lhs = TRUE,
-                                      eq.x.rhs = NULL,
-                                      coef.digits = 3,
-                                      rr.digits = 2,
-                                      label.x = "left",
-                                      label.y = "top",
-                                      hstep = 0,
-                                      vstep = 0.075,
-                                      npc.used = TRUE,
-                                      output.type = "expression",
-                                      na.rm = FALSE) {
+                                      formula,
+                                      weight,
+                                      eq.with.lhs,
+                                      eq.x.rhs,
+                                      coef.digits,
+                                      rr.digits,
+                                      f.digits,
+                                      p.digits,
+                                      label.x,
+                                      label.y,
+                                      hstep,
+                                      vstep,
+                                      npc.used,
+                                      output.type,
+                                      na.rm) {
   force(data)
   if (length(unique(data$x)) < 2) {
     # Not enough data to perform fit
@@ -431,14 +437,22 @@ poly_eq_compute_group_fun <- function(data,
     if (rr.digits < 2) {
       warning("'rr.digits < 2' Likely information loss!")
     }
+    stopifnot(p.digits > 0)
+    if (f.digits < 2) {
+      warning("'f.digits < 2' Likely information loss!")
+    }
+    stopifnot(p.digits > 0)
+    if (p.digits < 2) {
+      warning("'p.digits < 2' Likely information loss!")
+    }
     rr.char <- format(rr, digits = rr.digits)
     adj.rr.char <- format(adj.rr, digits = rr.digits)
     AIC.char <- sprintf("%.4g", AIC)
     BIC.char <- sprintf("%.4g", BIC)
-    f.value.char <- sprintf("%.4g", f.value)
+    f.value.char <- as.character(signif(f.value, digits = f.digits))
     f.df1.char <- as.character(f.df1)
     f.df2.char <- as.character(f.df2)
-    p.value.char <- sprintf("%1.3f", p.value)
+    p.value.char <- as.character(signif(p.value, digits = p.digits))
 
     if (output.type == "expression") {
       z <- tibble::tibble(eq.label = gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
@@ -448,12 +462,13 @@ poly_eq_compute_group_fun <- function(data,
                           AIC.label = paste("AIC", AIC.char, sep = "~`=`~"),
                           BIC.label = paste("BIC", BIC.char, sep = "~`=`~"),
                           f.value.label =
-                            ifelse(is.na(f.value), "",
+      # character(0) instead of "" avoids in paste() the insertion of sep missing labels
+                            ifelse(is.na(f.value), character(0L),
                                    paste("italic(F)[", f.df1.char,
                                          "*\",\"*", f.df2.char,
                                          "]~`=`~", f.value.char, sep = "")),
                           p.value.label =
-                            ifelse(is.na(p.value), "",
+                            ifelse(is.na(p.value), character(0L),
                                    paste("italic(P)",
                                          ifelse(p.value < 0.001, "0.001", p.value.char),
                                          sep = ifelse(p.value < 0.001, "~`<=`~", "~`=`~"))))
@@ -465,11 +480,11 @@ poly_eq_compute_group_fun <- function(data,
                            AIC.label = paste("AIC", AIC.char, sep = " = "),
                            BIC.label = paste("BIC", BIC.char, sep = " = "),
                            f.value.label =
-                             ifelse(is.na(f.value), "",
+                             ifelse(is.na(f.value), character(0L),
                                     paste("F_{", f.df1.char, ",", f.df2.char,
                                           "} = ", f.value.char, sep = "")),
                            p.value.label =
-                             ifelse(is.na(p.value), "",
+                             ifelse(is.na(p.value), character(0L),
                                     paste("P", p.value.char,
                                           sep = ifelse(p.value < 0.001, " \\leq ", " = "))))
      } else {

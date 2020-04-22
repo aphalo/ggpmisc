@@ -15,6 +15,8 @@ stat_poly_eq(
   eq.x.rhs = NULL,
   coef.digits = 3,
   rr.digits = 2,
+  f.digits = 3,
+  p.digits = 3,
   label.x = "left",
   label.y = "top",
   label.x.npc = NULL,
@@ -54,8 +56,9 @@ the equation label before parsing or a \code{logical} (see note).}
 \code{"x"} in the model equation when generating the label before parsing
 it.}
 
-\item{coef.digits, rr.digits}{integer Number of significant digits to use in
-for the vector of fitted coefficients and for $R^2$ labels.}
+\item{coef.digits, rr.digits, f.digits, p.digits}{integer Number of significant
+digits to use in for the vector of fitted coefficients and for $R^2$
+labels.}
 
 \item{label.x, label.y}{\code{numeric} with range 0..1 "normalized parent
 coordinates" (npc units) or character if using \code{geom_text_npc()} or

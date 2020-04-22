@@ -123,9 +123,6 @@ ggplot(lynx, as.numeric = FALSE) + geom_line() +
              hjust = -0.1, x.label.fmt = "%Y") +
   stat_peaks(geom = "rug", colour = "red", sides = "b") +
   expand_limits(y = 8000)
-#> Registered S3 method overwritten by 'xts':
-#>   method     from
-#>   as.zoo.xts zoo
 ```
 
 ![](man/figures/README-readme-03-1.png)<!-- -->
@@ -141,7 +138,7 @@ ggplot(cars, aes(speed, dist)) +
   geom_point() +
   stat_fit_deviations(method = "lm", formula = formula, colour = "red") +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label =  paste(..eq.label.., ..adj.rr.label.., sep = "~~~~")),
+  stat_poly_eq(aes(label =  paste(stat(eq.label), stat(adj.rr.label), sep = "*\", \"*")),
                formula = formula, parse = TRUE)
 ```
 
@@ -245,8 +242,8 @@ citation("ggpmisc")
 #> 
 #> To cite package 'ggpmisc' in publications use:
 #> 
-#>   Pedro J. Aphalo (2019). ggpmisc: Miscellaneous Extensions to
-#>   'ggplot2'. https://www.r4photobiology.info,
+#>   Pedro J. Aphalo (2020). ggpmisc: Miscellaneous Extensions to
+#>   'ggplot2'. https://docs.r4photobiology.info/ggpmisc/,
 #>   https://bitbucket.org/aphalo/ggpmisc.
 #> 
 #> A BibTeX entry for LaTeX users is
@@ -254,13 +251,14 @@ citation("ggpmisc")
 #>   @Manual{,
 #>     title = {ggpmisc: Miscellaneous Extensions to 'ggplot2'},
 #>     author = {Pedro J. Aphalo},
-#>     year = {2019},
-#>     note = {https://www.r4photobiology.info, https://bitbucket.org/aphalo/ggpmisc},
+#>     year = {2020},
+#>     note = {https://docs.r4photobiology.info/ggpmisc/,
+#> https://bitbucket.org/aphalo/ggpmisc},
 #>   }
 ```
 
 ## License
 
-© 2016-2019 Pedro J. Aphalo (<pedro.aphalo@helsinki.fi>). Released under
+© 2016-2020 Pedro J. Aphalo (<pedro.aphalo@helsinki.fi>). Released under
 the GPL, version 2 or greater. This software carries no warranty of any
 kind.
