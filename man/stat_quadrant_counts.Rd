@@ -129,7 +129,7 @@ ggplot(my.data, aes(x, y)) +
   geom_quadrant_lines(colour = "blue", xintercept = 50, yintercept = 10) +
   stat_quadrant_counts(colour = "blue", xintercept = 50, yintercept = 10) +
   geom_point() +
-  scale_y_continuous(expand = expand_scale(mult = 0.15, add = 0))
+  scale_y_continuous(expand = expansion(mult = 0.15, add = 0))
 
 ggplot(my.data, aes(x, y)) +
   geom_quadrant_lines(colour = "blue",

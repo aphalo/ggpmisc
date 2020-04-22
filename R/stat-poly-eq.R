@@ -1,7 +1,7 @@
 #' Equation, p-value, R^2, AIC or BIC of fitted polynomial
 #'
 #' \code{stat_poly_eq} fits a polynomial and generates several labels including
-#' the equation and/or p-value, coefficient of determination (R^2), 'AIC' or
+#' the equation, p-value, coefficient of determination (R^2), 'AIC' and
 #' 'BIC'.
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
@@ -93,6 +93,8 @@
 #'   \item{eq.label}{equation for the fitted polynomial as a character string to be parsed}
 #'   \item{rr.label}{\eqn{R^2} of the fitted model as a character string to be parsed}
 #'   \item{adj.rr.label}{Adjusted \eqn{R^2} of the fitted model as a character string to be parsed}
+#'   \item{f.value.label}{F value and degrees of freedom for the fitted model as a whole.}
+#'   \item{p.value..label}{P-value for the F-value above.}
 #'   \item{AIC.label}{AIC for the fitted model.}
 #'   \item{BIC.label}{BIC for the fitted model.}
 #'   \item{hjust, vjust}{Set to "inward" to override the default of the "text" geom.}}
@@ -102,10 +104,10 @@
 #'   \item{x,npcx}{x position}
 #'   \item{y,npcy}{y position}
 #'   \item{coef.ls}{list containing the "coefficients" matrix from the summary of the fit object}
-#'   \item{r.squared, adj.r.squared, AIC, BIC}{numric values extracted from fit object}
+#'   \item{r.squared, adj.r.squared, f.value, f.df1, f.df2, p.value, AIC, BIC}{numeric values extracted or computed from fit object}
 #'   \item{hjust, vjust}{Set to "inward" to override the default of the "text" geom.}}
 #'
-#' To explore the computed values returned for a given input we sugegst the use
+#' To explore the computed values returned for a given input we suggest the use
 #' of \code{\link[gginnards]{geom_debug}} as shown in the example below.
 #'
 #' @section Parsing may be required: if using the computed labels with
@@ -116,8 +118,9 @@
 #'   depending on the argument passed to \code{output.type}. This is possible
 #'   because only polynomial models are supported. For other types of models,
 #'   statistics \code{\link{stat_fit_glance}},  \code{\link{stat_fit_tidy}} and
-#'   \code{\link{stat_fit_glance}} should be used instead and the mapping of
-#'   aesthetic \code{label} explicitly supplied in the call.
+#'   \code{\link{stat_fit_glance}} should be used instead and the code for
+#'   construction of character strings from numeric values and their mapping to
+#'   aesthetic \code{label} needs to be explicitly supplied in the call.
 #'
 #' @family statistics for linear model fits
 #'

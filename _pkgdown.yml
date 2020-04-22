@@ -1,14 +1,15 @@
 destination: ../ggpmisc-docs
+url: https://docs.r4photobiology.info/ggpmisc/
 
 home:
   strip_header: true
   links:
-  - text: Photobiology packages
+  - text: Pedro J. Aphalo's packages
     href: https://www.r4photobiology.info/
   - text: More on 'ggplot2'
-    href: https://r4ds.had.co.nz/data-visualisation.html
+    href: https://ggplot2.tidyverse.org/
   - text: Other extensions
-    href: https://www.ggplot2-exts.org/gallery/
+    href: http://exts.ggplot2.tidyverse.org/
 
 reference:
   - title: Package overview

@@ -5,7 +5,7 @@
 #' functions through \code{stat_summary()}. There are some computations that are
 #' not scale transformations but are not usual summaries either, the number of
 #' data values does not decrease. It is always possible to precompute quantities
-#' like cummulative sums or running medians, and for normalizations it can be
+#' like cumulative sums or running medians, and for normalizations it can be
 #' convenient to apply such functions on-the-fly to ensure that grouping is
 #' consistent between computations and aesthetics. One particularity of these
 #' statistics is that they can apply simultaneously different functions to

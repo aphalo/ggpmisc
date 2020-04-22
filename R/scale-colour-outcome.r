@@ -64,6 +64,13 @@ scale_colour_outcome <- function(...,
                                aesthetics = aesthetics)
 }
 
+
+#' @rdname scale_colour_outcome
+#'
+#' @export
+#'
+scale_color_outcome <- scale_colour_outcome
+
 #' @rdname scale_colour_outcome
 #'
 #' @export

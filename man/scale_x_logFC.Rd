@@ -11,7 +11,7 @@ scale_x_logFC(
   labels = NULL,
   limits = symmetric_limits,
   oob = scales::squish,
-  expand = expand_scale(mult = 0.15, add = 0),
+  expand = expansion(mult = 0.15, add = 0),
   log.base.labels = FALSE,
   log.base.data = 2L,
   ...
@@ -23,7 +23,7 @@ scale_y_logFC(
   labels = NULL,
   limits = symmetric_limits,
   oob = scales::squish,
-  expand = expand_scale(mult = 0.15, add = 0),
+  expand = expansion(mult = 0.15, add = 0),
   log.base.labels = FALSE,
   log.base.data = 2L,
   ...

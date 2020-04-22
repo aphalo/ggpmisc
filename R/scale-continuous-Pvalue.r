@@ -59,7 +59,7 @@ scale_y_Pvalue <- function(...,
 
   default.breaks <- c(1, 1e-3, 1e-10, 1e-20, 1e-30, 1e-40, 1e-50, 1e-60, 1e-70, 1e-80)
   default.labels <- scales::trans_format("log10", scales::math_format())
-  default.expand <- ggplot2::expand_scale(mult = c(0.06, 0.14), add = 0)
+  default.expand <- ggplot2::expansion(mult = c(0.06, 0.14), add = 0)
 
   ggplot2::scale_y_continuous(...,
                               name = name,
@@ -109,7 +109,7 @@ scale_x_Pvalue <- function(...,
 
   default.breaks <- c(1, 1e-3, 1e-10, 1e-20, 1e-30, 1e-40, 1e-50, 1e-60, 1e-70, 1e-80)
   default.labels <- scales::trans_format("log10", scales::math_format())
-  default.expand <- ggplot2::expand_scale(mult = c(0.06, 0.14), add = 0)
+  default.expand <- ggplot2::expansion(mult = c(0.06, 0.14), add = 0)
 
   ggplot2::scale_x_continuous(...,
                               name = name,
