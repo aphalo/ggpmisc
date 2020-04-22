@@ -26,7 +26,7 @@ stat_fit_glance(
 \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs
 to be set at the layer level if you are overriding the plot defaults.}
 
-\item{data}{A layer specific dataset - only needed if you want to override
+\item{data}{A layer specific data set - only needed if you want to override
 the plot defaults.}
 
 \item{geom}{The geometric object to use display the data}

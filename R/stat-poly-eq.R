@@ -370,11 +370,14 @@ poly_eq_compute_group_fun <- function(data,
   adj.rr <- mf.summary$adj.r.squared
   AIC <- AIC(mf)
   BIC <- BIC(mf)
-  f.value <- mf.summary$fstatistic["value"]
-  f.df1 <- mf.summary$fstatistic["numdf"]
-  f.df2 <- mf.summary$fstatistic["dendf"]
-
-  p.value <- 1 - stats::pf(q = f.value, f.df1, f.df2)
+  if ("fstatistic" %in% names(mf.summary)) {
+    f.value <- mf.summary$fstatistic["value"]
+    f.df1 <- mf.summary$fstatistic["numdf"]
+    f.df2 <- mf.summary$fstatistic["dendf"]
+    p.value <- 1 - stats::pf(q = f.value, f.df1, f.df2)
+  } else {
+    f.value <- f.df1 <- f.df2 <- p.value <- NA_real_
+  }
 
   if (output.type == "numeric") {
     z <- tibble::tibble(coef.ls = list(summary(mf)[["coefficients"]]),
@@ -444,23 +447,32 @@ poly_eq_compute_group_fun <- function(data,
                                                adj.rr.char, sep = "~`=`~"),
                           AIC.label = paste("AIC", AIC.char, sep = "~`=`~"),
                           BIC.label = paste("BIC", BIC.char, sep = "~`=`~"),
-                          f.value.label = paste("italic(F)[", f.df1.char, "*\",\"*", f.df2.char,
-                                                "]~`=`~", f.value.char, sep = ""),
-                          p.value.label =  paste("italic(P)",
-                                                 ifelse(p.value < 0.001, "0.001", p.value.char),
-                                                 sep = ifelse(p.value < 0.001, "~`<=`~", "~`=`~")))
-    } else if (output.type %in% c("latex", "tex", "text", "tikz")) {
-      z <- tibble::tibble(eq.label = gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
-                         rr.label = paste("R^2", rr.char, sep = " = "),
-                         adj.rr.label = paste("R_{adj}^2",
-                                              adj.rr.char, sep = " = "),
-                         AIC.label = paste("AIC", AIC.char, sep = " = "),
-                         BIC.label = paste("BIC", BIC.char, sep = " = "),
-                         f.value.label = paste("F_{", f.df1.char, ",", f.df2.char,
-                                               "} = ", f.value.char, sep = ""),
-                         p.value.label =  paste("P", p.value.char,
-                                                sep = ifelse(p.value < 0.001, " \\leq ", " = ")))
-    } else {
+                          f.value.label =
+                            ifelse(is.na(f.value), "",
+                                   paste("italic(F)[", f.df1.char,
+                                         "*\",\"*", f.df2.char,
+                                         "]~`=`~", f.value.char, sep = "")),
+                          p.value.label =
+                            ifelse(is.na(p.value), "",
+                                   paste("italic(P)",
+                                         ifelse(p.value < 0.001, "0.001", p.value.char),
+                                         sep = ifelse(p.value < 0.001, "~`<=`~", "~`=`~"))))
+     } else if (output.type %in% c("latex", "tex", "text", "tikz")) {
+       z <- tibble::tibble(eq.label = gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
+                           rr.label = paste("R^2", rr.char, sep = " = "),
+                           adj.rr.label = paste("R_{adj}^2",
+                                                adj.rr.char, sep = " = "),
+                           AIC.label = paste("AIC", AIC.char, sep = " = "),
+                           BIC.label = paste("BIC", BIC.char, sep = " = "),
+                           f.value.label =
+                             ifelse(is.na(f.value), "",
+                                    paste("F_{", f.df1.char, ",", f.df2.char,
+                                          "} = ", f.value.char, sep = "")),
+                           p.value.label =
+                             ifelse(is.na(p.value), "",
+                                    paste("P", p.value.char,
+                                          sep = ifelse(p.value < 0.001, " \\leq ", " = "))))
+     } else {
       warning("Unknown 'output.type' argument: ", output.type)
     }
   }
