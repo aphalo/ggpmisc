@@ -57,8 +57,7 @@ the equation label before parsing or a \code{logical} (see note).}
 it.}
 
 \item{coef.digits, rr.digits, f.digits, p.digits}{integer Number of significant
-digits to use in for the vector of fitted coefficients and for $R^2$
-labels.}
+digits to use for the fitted coefficients, R^2, F-value and P-value in labels.}
 
 \item{label.x, label.y}{\code{numeric} with range 0..1 "normalized parent
 coordinates" (npc units) or character if using \code{geom_text_npc()} or
