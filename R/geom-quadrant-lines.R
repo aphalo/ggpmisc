@@ -12,7 +12,7 @@
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs to be
 #'   set at the layer level if you are overriding the plot defaults.
-#' @param data A layer specific dataset - only needed if you want to override
+#' @param data A layer specific data set - only needed if you want to override
 #'   the plot defaults.
 #' @param stat The statistic object to use display the data
 #' @param position The position adjustment to use for overlapping points on this

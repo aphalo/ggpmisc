@@ -10,8 +10,8 @@ outcome2factor(x, n.levels = 3L)
 threshold2factor(x, n.levels = 3L, threshold = 0)
 }
 \arguments{
-\item{x}{a numeric vector of -1, 0, and +1 values, indicating downregulation,
-uncertain response or upregulation, or a numeric vector that can be
+\item{x}{a numeric vector of -1, 0, and +1 values, indicating down-regulation,
+uncertain response or up-regulation, or a numeric vector that can be
 converted into such values using a pair of thresholds.}
 
 \item{n.levels}{numeric Number of levels to create, either 3 or 2.}
@@ -32,7 +32,7 @@ These functions convert the numerically encoded values into a factor
   factor with label \code{"de"}.
 }
 \note{
-These are conveneince functions that only save some typing. The same
+These are convenience functions that only save some typing. The same
   result can be achieved by a direct call to \code{\link{factor}} and
   comparisons. These functions aim at making it easier to draw volcano and
   quadrant plots.

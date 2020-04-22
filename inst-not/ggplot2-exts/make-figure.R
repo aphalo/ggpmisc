@@ -18,7 +18,7 @@ fig <-
   ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = ..eq.label..),
+  stat_poly_eq(aes(label = stat(eq.label)),
                eq.with.lhs = "italic(hat(y))~`=`~",
                formula = formula,
                size = 5,

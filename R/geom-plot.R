@@ -9,7 +9,7 @@
 #' height and width, but they are physical units, not data units. The amount of
 #' space they occupy on the main plot is not constant in data units of the base
 #' plot: when you modify scale limits, inset plots stay the same size relative
-#' to the physiscal size of the base plot.
+#' to the physical size of the base plot.
 #'
 #' @section Inset alignment: You can modify inset plot alignment with the
 #'   \code{vjust} and \code{hjust} aesthetics. These can either be a number
@@ -19,13 +19,13 @@
 #'
 #' @section Inset size: You can modify inset plot size with the \code{vp.width}
 #'   and \code{vp.height} aesthetics. These can be a number between 0 (smallest
-#'   posisble inset) and 1 (whole plotting area width or height). The default
+#'   possible inset) and 1 (whole plotting area width or height). The default
 #'   value for for both of these aesthetics is 1/3.
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs to be
 #'   set at the layer level if you are overriding the plot defaults.
-#' @param data A layer specific dataset - only needed if you want to override
+#' @param data A layer specific data set - only needed if you want to override
 #'   the plot defaults.
 #' @param stat The statistical transformation to use on the data for this layer,
 #'   as a string.
@@ -45,7 +45,7 @@
 #'   default plot specification, e.g. \code{\link[ggplot2]{borders}}.
 #'
 #' @section Known problem!: In some cases when explicit coordinates are added
-#'   to the inner plot, it may be also necessary to add explicitly coordinsates
+#'   to the inner plot, it may be also necessary to add explicitly coordinates
 #'   to the outer plots.
 #'
 #' @note These geoms work only with tibbles as \code{data}, as they expects a

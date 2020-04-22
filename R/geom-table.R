@@ -24,7 +24,7 @@
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs
 #'   to be set at the layer level if you are overriding the plot defaults.
-#' @param data A layer specific dataset - only needed if you want to override
+#' @param data A layer specific data set - only needed if you want to override
 #'   the plot defaults.
 #' @param stat The statistical transformation to use on the data for this layer,
 #'   as a string.
@@ -36,7 +36,7 @@
 #'   can include aesthetics whose values you want to set, not map. See
 #'   \code{\link[ggplot2]{layer}} for more details.
 #' @param parse If TRUE, the labels will be parsed into expressions and
-#'   displayed as described in ?plotmath.
+#'   displayed as described in \code{?plotmath}.
 #' @param show.legend logical. Should this layer be included in the legends?
 #'   \code{NA}, the default, includes if any aesthetics are mapped. \code{FALSE}
 #'   never includes, and \code{TRUE} always includes.

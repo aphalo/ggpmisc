@@ -4,7 +4,7 @@
 #' rectangle behind the text, making it easier to read. The difference is that x
 #' and y mappings are expected to be given in `npc` graphic units. They are
 #' intended to be used for positioning text relative to the physical dimensions
-#' of a plot. This can be achieved with `annotate()` except when facetting is
+#' of a plot. This can be achieved with `annotate()` except when faceting is
 #' used.
 #'
 #' Note that the "width" and "height" of a text element are 0, so stacking and
@@ -35,7 +35,7 @@
 #'   `"bottom"`, `"center"`, `"top"`). There are two special alignments:
 #'   `"inward"` and `"outward"`. Inward always aligns text towards the center,
 #'   and outward aligns it away from the center. When using textual positions
-#'   a shift is added based on grouping, however unsused levels are not dropped.
+#'   a shift is added based on grouping, however unused levels are not dropped.
 #'   In plots with faceting so that not all groups appear in each panel, gaps
 #'   will appear in between labels. To solve this pass numeric values for
 #'   the npc coordinates of each label instead of character strings.
@@ -43,7 +43,7 @@
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs
 #'   to be set at the layer level if you are overriding the plot defaults.
-#' @param data A layer specific dataset - only needed if you want to override
+#' @param data A layer specific data set - only needed if you want to override
 #'   the plot defaults.
 #' @param stat The statistical transformation to use on the data for this layer,
 #'   as a string.
@@ -55,7 +55,7 @@
 #'   can include aesthetics whose values you want to set, not map. See
 #'   \code{\link[ggplot2]{layer}} for more details.
 #' @param parse If TRUE, the labels will be parsed into expressions and
-#'   displayed as described in ?plotmath.
+#'   displayed as described in \code{?plotmath}.
 #' @param show.legend logical. Should this layer be included in the legends?
 #'   \code{NA}, the default, includes if any aesthetics are mapped. \code{FALSE}
 #'   never includes, and \code{TRUE} always includes.

@@ -32,21 +32,21 @@ ggplot(data=stuff, aes(x=var, y=mean, weight=n))+
 ggplot(data=stuff, aes(x=var, y=mean))+
   geom_point()+
   geom_smooth(method='lm', formula = y~x)+
-  stat_poly_eq(aes(label=paste(..eq.label.., ..rr.label.., sep="~~~")),
+  stat_poly_eq(aes(label=paste(..eq.label.., stat(rr.label), sep="~~~")),
                formula=y~x, label.x.npc=0.8, label.y.npc=0.8,
                coef.digits=3, parse=TRUE)
 
 ggplot(data=stuff, aes(x=var, y=mean, weight=n))+
   geom_point()+
   geom_smooth(method='lm', formula = y~x)+
-  stat_poly_eq(aes(label=paste(..eq.label.., ..rr.label.., sep="~~~")),
+  stat_poly_eq(aes(label=paste(..eq.label.., stat(rr.label), sep="~~~")),
                formula=y~x, label.x.npc=0.8, label.y.npc=0.8,
                coef.digits=3, parse=TRUE)
 
 ggplot(data=stuff, aes(x=var, y=mean, weight=n))+
   geom_point()+
   geom_smooth(aes(weight=NULL), method='lm', formula = y~x)+
-  stat_poly_eq(aes(weight=NULL, label=paste(..eq.label.., ..rr.label.., sep="~~~")),
+  stat_poly_eq(aes(weight=NULL, label=paste(..eq.label.., stat(rr.label), sep="~~~")),
                formula=y~x, label.x.npc=0.8, label.y.npc=0.8,
                coef.digits=3, parse=TRUE)
 
@@ -54,9 +54,9 @@ ggplot(data=stuff, aes(x=var, y=mean))+
   geom_point()+
   geom_smooth(method='lm', formula = y~x, colour = "blue")+
   geom_smooth(aes(weight = n), method='lm', formula = y~x, colour = "red")+
-  stat_poly_eq(aes(label=paste(..eq.label.., ..rr.label.., sep="~~~")),
+  stat_poly_eq(aes(label=paste(..eq.label.., stat(rr.label), sep="~~~")),
                formula=y~x, label.x.npc=0.8, label.y.npc=0.8,
                coef.digits=3, parse=TRUE, vjust = 1.5, colour = "blue") +
-  stat_poly_eq(aes(weight = n, label=paste(..eq.label.., ..rr.label.., sep="~~~")),
+  stat_poly_eq(aes(weight = n, label=paste(..eq.label.., stat(rr.label), sep="~~~")),
                formula=y~x, label.x.npc=0.8, label.y.npc=0.8,
                coef.digits=3, parse=TRUE, vjust = -0.5, colour = "red")

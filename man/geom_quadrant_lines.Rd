@@ -37,7 +37,7 @@ geom_vhlines(
 \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs to be
 set at the layer level if you are overriding the plot defaults.}
 
-\item{data}{A layer specific dataset - only needed if you want to override
+\item{data}{A layer specific data set - only needed if you want to override
 the plot defaults.}
 
 \item{stat}{The statistic object to use display the data}

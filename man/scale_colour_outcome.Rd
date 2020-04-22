@@ -44,7 +44,7 @@ scale_fill_outcome(
 
 \item{name}{The name of the scale, used for the axis-label.}
 
-\item{ns.colour, down.colour, up.colour, de.colour}{The colour defintions to use for each
+\item{ns.colour, down.colour, up.colour, de.colour}{The colour definitions to use for each
 of the three possible outcomes.}
 
 \item{na.colour}{colour definition used for NA.}

@@ -63,7 +63,7 @@
 #'
 #' ggplot(data = d, aes(x, y)) +
 #'   geom_point() +
-#'   stat_dens2d_filter(color = "red")
+#'   stat_dens2d_filter(colour = "red")
 #'
 #' # Using geom_debug() we can see that only 10 out off 100 rows in \code{d} are
 #' # returned. Those highlighted in red in the previous example.
@@ -73,27 +73,27 @@
 #'
 #' ggplot(data = d, aes(x, y)) +
 #'   geom_point() +
-#'   stat_dens2d_filter(color = "red", keep.fraction = 0.5)
+#'   stat_dens2d_filter(colour = "red", keep.fraction = 0.5)
 #'
 #' ggplot(data = d, aes(x, y)) +
 #'   geom_point() +
-#'   stat_dens2d_filter(color = "red",
+#'   stat_dens2d_filter(colour = "red",
 #'                      keep.fraction = 0.5,
 #'                      keep.number = 12)
 #'
-#' ggplot(data = d, aes(x, y, color = group)) +
+#' ggplot(data = d, aes(x, y, colour = group)) +
 #'   geom_point() +
 #'   stat_dens2d_filter(shape = 1, size = 3, keep.fraction = 1/4)
 #'
-#' ggplot(data = d, aes(x, y, color = group)) +
+#' ggplot(data = d, aes(x, y, colour = group)) +
 #'   geom_point() +
 #'   stat_dens2d_filter_g(shape = 1, size = 3, keep.fraction = 1/4)
 #'
-#' ggplot(data = d, aes(x, y, label = lab, color = group)) +
+#' ggplot(data = d, aes(x, y, label = lab, colour = group)) +
 #'   geom_point() +
 #'   stat_dens2d_filter(geom = "text")
 #'
-#' ggplot(data = d, aes(x, y, label = lab, color = group)) +
+#' ggplot(data = d, aes(x, y, label = lab, colour = group)) +
 #'   geom_point() +
 #'   stat_dens2d_filter(geom = "text_repel")
 #'

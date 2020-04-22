@@ -88,23 +88,23 @@ tb <- mpg %>%
   group_by(cyl) %>%
   summarise(hwy = median(hwy), cty = median(cty))
 data.tb <- tibble(x = 7, y = 44, tb = list(tb))
-ggplot(mpg, aes(displ, hwy, color = factor(cyl))) +
+ggplot(mpg, aes(displ, hwy, colour = factor(cyl))) +
   geom_table(data = data.tb, aes(x, y, label = tb)) +
   geom_point() 
 ```
 
 Using `stat_fmt_tb()` we can rename columns of the tibble,
 and/or select a subset of columns or a slice of rows as shown below. To provide
-a complete example we also replace the names of the _x_, _y_ and _color_
+a complete example we also replace the names of the _x_, _y_ and _colour_
 aesthetics.
 
 ```{r}
-ggplot(mpg, aes(displ, hwy, color = factor(cyl))) +
+ggplot(mpg, aes(displ, hwy, colour = factor(cyl))) +
   geom_table(data = data.tb, aes(x, y, label = tb),
-             size = 3, color = "darkblue",
+             size = 3, colour = "darkblue",
              stat = "fmt_tb", tb.vars = c(Cylinders = "cyl", "MPG" = "hwy")) +
   labs(x = "Engine displacement (l)", y = "Fuel use efficiency (MPG)",
-       color = "Engine cylinders\n(number)") +
+       colour = "Engine cylinders\n(number)") +
   geom_point() +
   theme_bw()
 
@@ -148,7 +148,7 @@ As an example we produce plot where the inset plot is a zoomed-in detail from
 the main plot. In this case the main and inset plots start as the same plot.
 
 ```{r}
-p <- ggplot(mpg, aes(displ, hwy, color = factor(cyl))) +
+p <- ggplot(mpg, aes(displ, hwy, colour = factor(cyl))) +
   geom_point() 
 
 data.tb <- tibble(x = 7, y = 44, 
@@ -156,13 +156,13 @@ data.tb <- tibble(x = 7, y = 44,
                                 coord_cartesian(xlim = c(4.9, 6.2), ylim = c(13, 21)) +
                                 labs(x = NULL, y = NULL) +
                                 theme_bw(8) +
-                                scale_color_discrete(guide = FALSE)))
+                                scale_colour_discrete(guide = FALSE)))
 
-ggplot(mpg, aes(displ, hwy, color = factor(cyl))) +
+ggplot(mpg, aes(displ, hwy, colour = factor(cyl))) +
   geom_plot(data = data.tb, aes(x, y, label = plot)) +
   annotate(geom = "rect", 
            xmin = 4.9, xmax = 6.2, ymin = 13, ymax = 21,
-           linetype = "dotted", fill = NA, color = "black") +
+           linetype = "dotted", fill = NA, colour = "black") +
   geom_point() 
 ```
 In general, the inset plot can be any ggplot object, allowing the creation of
@@ -179,11 +179,11 @@ data.tb <- tibble(x = 7, y = 44,
                   plot = list(p +
                                 theme_bw(8)))
 
-ggplot(mpg, aes(displ, hwy, color = factor(cyl))) +
+ggplot(mpg, aes(displ, hwy, colour = factor(cyl))) +
   geom_plot(data = data.tb, aes(x, y, label = plot)) +
   geom_point() +
   labs(x = "Engine displacement (l)", y = "Fuel use efficiency (MPG)",
-       color = "Engine cylinders\n(number)") +
+       colour = "Engine cylinders\n(number)") +
   theme_bw()
 ```
 
@@ -247,11 +247,11 @@ guide lines on the same plot layer, using the same syntax as `geom_hline()` and
 `geom_vline()` from package 'ggplot2'.
 
 ```{r}
-ggplot(mpg, aes(displ, hwy, color = factor(cyl))) +
+ggplot(mpg, aes(displ, hwy, colour = factor(cyl))) +
   geom_vhlines(xintercept = c(2.75, 4), yintercept = 27, linetype = "dashed") +
   geom_point() +
   labs(x = "Engine displacement (l)", y = "Fuel use efficiency (MPG)",
-       color = "Engine cylinders\n(number)") +
+       colour = "Engine cylinders\n(number)") +
   theme_bw()
 
 ```
@@ -373,7 +373,7 @@ filled triangles.
 data.tb <- mpg %>%
   group_by(cyl) %>%
   summarise(hwy = median(hwy), displ = median(displ))
-ggplot(mpg, aes(displ, hwy, color = factor(cyl))) +
+ggplot(mpg, aes(displ, hwy, colour = factor(cyl))) +
   geom_x_margin_point(data = data.tb,
                       aes(xintercept = displ, fill = factor(cyl))) +
   expand_limits(y = 10) +
@@ -389,8 +389,8 @@ render overlapping labels.
 
 ```{r}
 ggplot(lynx, as.numeric = FALSE) + geom_line() + 
-  stat_peaks(color = "red") +
-  stat_peaks(geom = "text", color = "red", vjust = -0.5, 
+  stat_peaks(colour = "red") +
+  stat_peaks(geom = "text", colour = "red", vjust = -0.5, 
              check_overlap = TRUE) +
   ylim(-100, 7300)
 ```
@@ -401,11 +401,11 @@ we also highlight and label the valleys.
 
 ```{r}
 ggplot(lynx) + geom_line() + 
-  stat_peaks(color = "red") +
-  stat_peaks(geom = "text", color = "red", hjust = -0.2, vjust = 0.5, 
+  stat_peaks(colour = "red") +
+  stat_peaks(geom = "text", colour = "red", hjust = -0.2, vjust = 0.5, 
              angle = 90, check_overlap = TRUE) +
-  stat_valleys(color = "blue") +
-  stat_valleys(geom = "text", color = "blue", hjust = 1.2, vjust = 0.5, 
+  stat_valleys(colour = "blue") +
+  stat_valleys(geom = "text", colour = "blue", hjust = 1.2, vjust = 0.5, 
              angle = 90, check_overlap = TRUE) +
   expand_limits(y = c(-900, 8000))
 ```
@@ -415,11 +415,11 @@ peaks and valleys.
 
 ```{r}
 ggplot(lynx, as.numeric = FALSE) + geom_line() + 
-  stat_peaks(color = "red") +
-  stat_peaks(geom = "text", color = "red", hjust = -0.2, vjust = 0.5, 
+  stat_peaks(colour = "red") +
+  stat_peaks(geom = "text", colour = "red", hjust = -0.2, vjust = 0.5, 
              angle = 90, check_overlap = TRUE, x.label.fmt = "%Y") +
-  stat_valleys(color = "blue") +
-  stat_valleys(geom = "text", color = "blue", hjust = 1.2, vjust = 0.5, 
+  stat_valleys(colour = "blue") +
+  stat_valleys(geom = "text", colour = "blue", hjust = 1.2, vjust = 0.5, 
              angle = 90, check_overlap = TRUE, x.label.fmt = "%Y") +
   expand_limits(y = c(-900, 8000))
 ```
@@ -428,10 +428,10 @@ Using `geom_rug` for the peaks and valleys.
 
 ```{r}
 ggplot(lynx, as.numeric = FALSE) + geom_line() + 
-  stat_peaks(color = "red") +
-  stat_peaks(geom = "rug", color = "red") +
-  stat_valleys(color = "blue") +
-  stat_valleys(geom = "rug", color = "blue")
+  stat_peaks(colour = "red") +
+  stat_peaks(geom = "rug", colour = "red") +
+  stat_valleys(colour = "blue") +
+  stat_valleys(geom = "rug", colour = "blue")
 ```
 
 ## stat_quadrant_counts and geom_quadrant_lines
@@ -453,12 +453,12 @@ my.data <- data.frame(x,
                       group = c("A", "B"))
 ```
 
-Using defaults except for color.
+Using defaults except for colour.
 
 ```{r}
 ggplot(my.data, aes(x, y)) +
-  geom_quadrant_lines(color = "red") +
-  stat_quadrant_counts(color = "red") +
+  geom_quadrant_lines(colour = "red") +
+  stat_quadrant_counts(colour = "red") +
   geom_point() +
   expand_limits(y = c(-250, 250))
 ```
@@ -467,8 +467,8 @@ Pooling quadrants along the _x_-axis. (`pool.along = "y"` pools along _y_.)
 
 ```{r}
 ggplot(my.data, aes(x, y)) +
-  geom_quadrant_lines(color = "red", pool.along = "x") +
-  stat_quadrant_counts(color = "red", pool.along = "x") +
+  geom_quadrant_lines(colour = "red", pool.along = "x") +
+  stat_quadrant_counts(colour = "red", pool.along = "x") +
   geom_point()
 ```
 
@@ -486,8 +486,8 @@ Annotation of only specific quadrants.
 
 ```{r}
 ggplot(my.data, aes(x, y)) +
-  geom_quadrant_lines(color = "red") +
-  stat_quadrant_counts(color = "red", quadrants = c(2, 4)) +
+  geom_quadrant_lines(colour = "red") +
+  stat_quadrant_counts(colour = "red", quadrants = c(2, 4)) +
   geom_point()
 ```
 Using facets, even with free scale limits, the labels are placed consistently. This achieved
@@ -495,7 +495,7 @@ by the default use of `geom_text_npc()` or as shown below by use of `geom_label_
 expand the _y_ limits to ensure that no observations are occluded by the labels.
 
 ```{r}
-ggplot(my.data, aes(x, y, color = group)) +
+ggplot(my.data, aes(x, y, colour = group)) +
   geom_quadrant_lines() +
   stat_quadrant_counts(geom = "label_npc") +
   geom_point() +
@@ -538,7 +538,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = ..eq.label..), formula = formula, 
+  stat_poly_eq(aes(label = stat(eq.label)), formula = formula, 
                parse = TRUE)
 ```
 
@@ -555,9 +555,9 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = ..adj.rr.label..), formula = formula, 
+  stat_poly_eq(aes(label = stat(adj.rr.label)), formula = formula, 
                parse = TRUE) +
-  stat_poly_eq(aes(label = ..AIC.label..),
+  stat_poly_eq(aes(label = stat(AIC.label)),
                label.x = "right", label.y = "bottom", size = 3,     
                formula = formula, 
                parse = TRUE)
@@ -580,7 +580,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label =  paste(..eq.label.., ..adj.rr.label.., 
+  stat_poly_eq(aes(label =  paste(stat(eq.label), stat(adj.rr.label), 
                                   sep = "*\", \"*")),
                formula = formula, parse = TRUE) +
   labs(x = expression(italic(x)), y = expression(italic(y)))
@@ -596,10 +596,10 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label =  paste(..eq.label.., "*\" with \"*", 
-                                  ..rr.label.., "*\", \"*", 
-                                  ..f.value.label.., "*\", and \"*",
-                                  ..p.value.label.., "*\".\"",
+  stat_poly_eq(aes(label =  paste(stat(eq.label), "*\" with \"*", 
+                                  stat(rr.label), "*\", \"*", 
+                                  stat(f.value.label), "*\", and \"*",
+                                  stat(p.value.label), "*\".\"",
                                   sep = "")),
                formula = formula, parse = TRUE, size = 3)
 ```
@@ -611,7 +611,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label =  paste(..eq.label.., ..adj.rr.label.., 
+  stat_poly_eq(aes(label =  paste(stat(eq.label), stat(adj.rr.label), 
                                   sep = "~~italic(\"with\")~~")),
                formula = formula, parse = TRUE)
 ```
@@ -626,7 +626,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = paste("atop(", ..AIC.label.., ",", ..BIC.label.., ")", sep = "")), 
+  stat_poly_eq(aes(label = paste("atop(", stat(AIC.label), ",", stat(BIC.label), ")", sep = "")), 
                formula = formula, 
                parse = TRUE)
 ```
@@ -638,7 +638,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = ..eq.label..),
+  stat_poly_eq(aes(label = stat(eq.label)),
                eq.with.lhs = FALSE,
                formula = formula, parse = TRUE)
 ```
@@ -650,7 +650,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = ..eq.label..),
+  stat_poly_eq(aes(label = stat(eq.label)),
                eq.with.lhs = "italic(hat(y))~`=`~",
                formula = formula, parse = TRUE)
 ```
@@ -663,7 +663,7 @@ ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
   labs(x = expression(italic(z)), y = expression(italic(h)) ) + 
-  stat_poly_eq(aes(label = ..eq.label..),
+  stat_poly_eq(aes(label = stat(eq.label)),
                eq.with.lhs = "italic(h)~`=`~",
                eq.x.rhs = "~italic(z)",
                formula = formula, parse = TRUE)
@@ -680,7 +680,7 @@ formula <- y ~ poly(x, 2, raw = TRUE)
 ggplot(my.data, aes(x, log10(y + 1e6))) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = ..eq.label..),
+  stat_poly_eq(aes(label = stat(eq.label)),
                eq.with.lhs = "plain(log)[10](italic(delta)+10^6)~`=`~",
                eq.x.rhs = "~Omega",
                formula = formula, parse = TRUE) +
@@ -697,7 +697,7 @@ formula <- y ~ poly(x, 5, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = ..eq.label..), formula = formula, parse = TRUE)
+  stat_poly_eq(aes(label = stat(eq.label)), formula = formula, parse = TRUE)
 ```
 
 Intercept forced to zero.
@@ -707,7 +707,7 @@ formula <- y ~ x + I(x^2) + I(x^3) - 1
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = ..eq.label..), formula = formula, 
+  stat_poly_eq(aes(label = stat(eq.label)), formula = formula, 
                parse = TRUE)
 ```
 
@@ -722,7 +722,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = ..eq.label..), size = 3,
+  stat_poly_eq(aes(label = stat(eq.label)), size = 3,
                formula = formula, parse = TRUE) +
   facet_wrap(~group)
 ```
@@ -732,21 +732,21 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = ..eq.label..), size = 3,
+  stat_poly_eq(aes(label = stat(eq.label)), size = 3,
                formula = formula, parse = TRUE) +
   facet_wrap(~group, scales = "free_y")
 ```
 
-Grouping, in this example using the color aesthetic also works as expected. We
+Grouping, in this example using the colour aesthetic also works as expected. We
 can use justification and supply an absolute location for the equation, but the
 default frequently works well as in the example below.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y2, color = group)) +
+ggplot(my.data, aes(x, y2, colour = group)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = ..eq.label..),
+  stat_poly_eq(aes(label = stat(eq.label)),
                formula = formula, parse = TRUE)
 ```
 
@@ -756,10 +756,10 @@ supported, both through string constants and numeric values in the range
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y2, color = group)) +
+ggplot(my.data, aes(x, y2, colour = group)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = ..eq.label..),
+  stat_poly_eq(aes(label = stat(eq.label)),
                formula = formula, parse = TRUE,
                label.x = "centre")
 ```
@@ -773,7 +773,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2, fill = block)) +
   geom_point(shape = 21, size = 3) +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = ..rr.label..), size = 3,
+  stat_poly_eq(aes(label = stat(rr.label)), size = 3,
                geom = "label_npc", alpha = 0.33,
                formula = formula, parse = TRUE) +
   facet_wrap(~group, scales = "free_y")
@@ -781,16 +781,16 @@ ggplot(my.data, aes(x, y2, fill = block)) +
 If grouping is not the same within each panel created by faceting the automatic
 location of labels results in "spillover" of the automatic positioning of
 labels, and consistent positioning requires passing explicitly positions for
-each individual group. In the plot below the simultaneous mapping to both color
+each individual group. In the plot below the simultaneous mapping to both colour
 and fill aesthetics creates four groups, two with data in panel A
 and the other two in panel B.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y2, color = group, fill = block)) +
+ggplot(my.data, aes(x, y2, colour = group, fill = block)) +
   geom_point(shape = 21, size = 3) +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = ..rr.label..), size = 3, alpha = 0.2,
+  stat_poly_eq(aes(label = stat(rr.label)), size = 3, alpha = 0.2,
                geom = "label_npc", label.y = c(0.95, 0.85, 0.95, 0.85),
                formula = formula, parse = TRUE) +
   facet_wrap(~group, scales = "free_y")
@@ -803,10 +803,10 @@ can be used as shown here for  `label.x` and `label.y`.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y2, color = group)) +
+ggplot(my.data, aes(x, y2, colour = group)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(geom = "text", aes(label = ..eq.label..),
+  stat_poly_eq(geom = "text", aes(label = stat(eq.label)),
                label.x = c(100, 90), label.y = c(-1e4, 2.1e6), hjust = "inward",
                formula = formula, parse = TRUE)
 ```
@@ -822,7 +822,7 @@ using grouping and facets, so a new (simple) statistic was born.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y, color = group)) +
+ggplot(my.data, aes(x, y, colour = group)) +
   geom_hline(yintercept = 0, linetype = "dashed") +
   stat_fit_residuals(formula = formula)
 ```
@@ -836,7 +836,7 @@ teaching, another statistic was born.
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_smooth(method = "lm", formula = formula) +
-  stat_fit_deviations(formula = formula, color = "red") +
+  stat_fit_deviations(formula = formula, colour = "red") +
   geom_point()
 ```
 The geometry used by default is `geom_segment()` to which additional aesthetics
@@ -847,7 +847,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_smooth(method = "lm", formula = formula) +
   geom_point() +
-  stat_fit_deviations(formula = formula, color = "red",
+  stat_fit_deviations(formula = formula, colour = "red",
                       arrow = arrow(length = unit(0.015, "npc"), 
                                    ends = "both"))
 ```
@@ -867,7 +867,7 @@ parsed into a expression. We also change the default position of the labels.
 # formula <- y ~ poly(x, 3, raw = TRUE)
 # broom::augment does not handle poly() correctly!
 formula <- y ~ x + I(x^2) + I(x^3)
-ggplot(my.data, aes(x, y, color = group)) +
+ggplot(my.data, aes(x, y, colour = group)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
   stat_fit_glance(method = "lm", 
@@ -875,7 +875,7 @@ ggplot(my.data, aes(x, y, color = group)) +
                   label.x = "right",
                   label.y = "bottom",
                   aes(label = paste("italic(P)*\"-value = \"*", 
-                                    signif(..p.value.., digits = 4), sep = "")),
+                                    signif(stat(p.value), digits = 4), sep = "")),
                   parse = TRUE)
 ```
 
@@ -886,15 +886,15 @@ rate versus concentration data.
 
 ```{r}
 micmen.formula <- y ~ SSmicmen(x, Vm, K) 
-ggplot(Puromycin, aes(conc, rate, color = state)) +
+ggplot(Puromycin, aes(conc, rate, colour = state)) +
   geom_point() +
   geom_smooth(method = "nls", 
               formula = micmen.formula,
               se = FALSE) +
   stat_fit_glance(method = "nls", 
                   method.args = list(formula = micmen.formula),
-                  aes(label = paste("AIC = ", signif(..AIC.., digits = 3), 
-                                    ", BIC = ", signif(..BIC.., digits = 3),
+                  aes(label = paste("AIC = ", signif(stat(AIC), digits = 3), 
+                                    ", BIC = ", signif(stat(BIC), digits = 3),
                                     sep = "")),
                   label.x = "centre", label.y = "bottom")
 ```
@@ -911,7 +911,7 @@ the returned `data`.
 
 ```{r}
 micmen.formula <- y ~ SSmicmen(x, Vm, K) 
-ggplot(Puromycin, aes(conc, rate, color = state)) +
+ggplot(Puromycin, aes(conc, rate, colour = state)) +
   geom_point() +
   geom_smooth(method = "nls", 
               formula = micmen.formula,
@@ -920,17 +920,17 @@ ggplot(Puromycin, aes(conc, rate, color = state)) +
                 method.args = list(formula = micmen.formula),
                 label.x = "right",
                 label.y = "bottom",
-                aes(label = paste("V[m]~`=`~", signif(..Vm_estimate.., digits = 3),
-                                  "%+-%", signif(..Vm_se.., digits = 2),
-                                  "~~~~K~`=`~", signif(..K_estimate.., digits = 3),
-                                  "%+-%", signif(..K_se.., digits = 2),
+                aes(label = paste("V[m]~`=`~", signif(stat(Vm_estimate), digits = 3),
+                                  "%+-%", signif(stat(Vm_se), digits = 2),
+                                  "~~~~K~`=`~", signif(stat(K_estimate), digits = 3),
+                                  "%+-%", signif(stat(K_se), digits = 2),
                                   sep = "")),
                 parse = TRUE)
 ```
 
 ```{r}
 micmen.formula <- y ~ SSmicmen(x, Vm, K) 
-ggplot(Puromycin, aes(conc, rate, color = state)) +
+ggplot(Puromycin, aes(conc, rate, colour = state)) +
   geom_point() +
   geom_smooth(method = "nls", 
               formula = micmen.formula,
@@ -941,8 +941,8 @@ ggplot(Puromycin, aes(conc, rate, color = state)) +
                 label.x = "center",
                 label.y = "bottom",
                 vstep = 0.18,
-                aes(label = paste("V~`=`~frac(", signif(..Vm_estimate.., digits = 2), "~C,",
-                                  signif(..K_estimate.., digits = 2), "+C)",
+                aes(label = paste("V~`=`~frac(", signif(stat(Vm_estimate), digits = 2), "~C,",
+                                  signif(stat(K_estimate), digits = 2), "+C)",
                                   sep = "")),
                 parse = TRUE) +
   labs(x = "C", y = "V")
@@ -1014,13 +1014,13 @@ ggplot(my.data, aes(x, y)) +
 ```
 
 Faceting works as expected, but grouping is ignored as mentioned above. In this
-case, the color aesthetic is not applied to the text of the tables.
+case, the colour aesthetic is not applied to the text of the tables.
 Furthermore, if `label.x.npc` or `label.y.npc` are passed numeric vectors of
 length > 1, the values are obeyed by the different panels.
 
 ```{r}
 micmen.formula <- y ~ SSmicmen(x, Vm, K)
-ggplot(Puromycin, aes(conc, rate, color = state)) +
+ggplot(Puromycin, aes(conc, rate, colour = state)) +
   facet_wrap(~state) +
   geom_point() +
   geom_smooth(method = "nls",
@@ -1099,7 +1099,7 @@ ggplot(my.data, aes(x, y)) +
 
 ```{r}
 formula <- y ~ x + I(x^2) + I(x^3)
-ggplot(my.data, aes(x, y, color = group)) +
+ggplot(my.data, aes(x, y, colour = group)) +
   geom_point() +
   stat_fit_augment(method = "lm", 
                    method.args = list(formula = formula))
@@ -1120,7 +1120,7 @@ ggplot(my.data, aes(x, y)) +
 
 ```{r}
 formula <- y ~ x + I(x^2) + I(x^3)
-ggplot(my.data, aes(x, y, color = group)) +
+ggplot(my.data, aes(x, y, colour = group)) +
   stat_fit_augment(method = "lm",
                    method.args = list(formula = formula),
                    geom = "point",
@@ -1153,7 +1153,7 @@ args <- list(model = y ~ SSlogis(x, Asym, xmid, scal),
              fixed = Asym + xmid + scal ~1,
              random = Asym ~1 | group,
              start = c(Asym = 200, xmid = 725, scal = 350))
-ggplot(Orange, aes(age, circumference, color = Tree)) +
+ggplot(Orange, aes(age, circumference, colour = Tree)) +
   geom_point() +
   stat_fit_augment(method = "nlme",
                    method.args = args,
@@ -1193,22 +1193,22 @@ The stat `stat_dens2d_filter` _filters_ observations, in other words passes to
 the geom a subset of the data received as input. The default value for `geom` is
 `"point"`.
 
-Using defaults except for the color aesthetic. Highlight 1/10 of observations 
+Using defaults except for the colour aesthetic. Highlight 1/10 of observations 
 from lowest density areas of the plot panel.
 
 ```{r}
 ggplot(data = d, aes(x, y)) +
   geom_point() +
-  stat_dens2d_filter(color = "red")
+  stat_dens2d_filter(colour = "red")
 ```
 
 Highlighting  1/4 of the observations by under-plotting with larger black points.
 
 ```{r}
-ggplot(data = d, aes(x, y, color = group)) +
+ggplot(data = d, aes(x, y, colour = group)) +
    stat_dens2d_filter(keep.fraction = 0.25,
                       size = 3,
-                      color = "black") +
+                      colour = "black") +
    geom_point()
 ```
 
@@ -1217,7 +1217,7 @@ a 'hollow' shape. We also shift one group with respect to the other.
 
 ```{r}
 ggplot(data = d, aes(x + rep(c(-2,2), rep(50,2)), 
-                     y, color = group)) +
+                     y, colour = group)) +
    geom_point() +
    stat_dens2d_filter(shape = 1, size = 3,
                       keep.fraction = 0.25)
@@ -1225,11 +1225,11 @@ ggplot(data = d, aes(x + rep(c(-2,2), rep(50,2)),
 
 Highlight 1/4 of observations from lowest density areas of the plot, with
 density considered separately for each individual group. In this case grouping
-is based on the color aesthetic.
+is based on the colour aesthetic.
 
 ```{r}
 ggplot(data = d, aes(x + rep(c(-2,2), rep(50,2)), 
-                     y, color = group)) +
+                     y, colour = group)) +
    geom_point() +
    stat_dens2d_filter_g(shape = 1, size = 3,
                       keep.fraction = 0.25)
@@ -1239,7 +1239,7 @@ Add text labels to 1/10 of the observations. The "text_repel" geom sees only
 these observations.
 
 ```{r}
-ggplot(data = d, aes(x, y, label = lab, color = group)) +
+ggplot(data = d, aes(x, y, label = lab, colour = group)) +
   geom_point() + 
   stat_dens2d_filter(geom = "text_repel")
 ```
@@ -1247,7 +1247,7 @@ ggplot(data = d, aes(x, y, label = lab, color = group)) +
 Add text labels to 1/2 of the observations. 
 
 ```{r}
-ggplot(data = d, aes(x, y, label = lab, color = group)) +
+ggplot(data = d, aes(x, y, label = lab, colour = group)) +
   geom_point() +
   stat_dens2d_filter(geom = "text_repel", keep.fraction = 0.5)
 ```
@@ -1260,7 +1260,7 @@ label (aesthetic) variable in data in the high density regions of the panel with
 Label 1/10 of observations from lowest density areas of the plot panels.
 
 ```{r}
-ggplot(data = d, aes(x, y, label = lab, color = group)) +
+ggplot(data = d, aes(x, y, label = lab, colour = group)) +
   geom_point() +
   stat_dens2d_labels()
 ```
@@ -1268,7 +1268,7 @@ ggplot(data = d, aes(x, y, label = lab, color = group)) +
 Add text labels to 45% of the observations. 
 
 ```{r}
-ggplot(data = d, aes(x, y, label = lab, color = group)) +
+ggplot(data = d, aes(x, y, label = lab, colour = group)) +
   geom_point() +
   stat_dens2d_labels(keep.fraction = 0.45)
 ```
@@ -1277,7 +1277,7 @@ When using geom `"text"` we can statically adjust the positioning of labels, but
 this is rarely enough even when keeping 1/4 of the labels.
 
 ```{r}
-ggplot(data = d, aes(x, y, label = lab, color = group)) +
+ggplot(data = d, aes(x, y, label = lab, colour = group)) +
   geom_point() +
   stat_dens2d_labels(keep.fraction = 0.25,
                      vjust = -0.3)
@@ -1288,7 +1288,7 @@ data points. This works with versions 0.6.0 and newer of 'ggrepel'. One example
 with `geom_text_repel` follows.
 
 ```{r}
-ggplot(data = d, aes(x, y, label = lab, color = group)) +
+ggplot(data = d, aes(x, y, label = lab, colour = group)) +
   geom_point() +
   stat_dens2d_labels(geom = "text_repel", 
                      keep.fraction = 0.45)
@@ -1298,7 +1298,7 @@ With `geom_label_repel` one needs to use a smaller value for `keep.fracton`, or
 a smaller `size`, as labels use more space on the plot than the test alone.
 
 ```{r}
-ggplot(data = d, aes(x, y, label = lab, color = group)) +
+ggplot(data = d, aes(x, y, label = lab, colour = group)) +
   geom_point() +
   stat_dens2d_labels(geom = "label_repel", 
                      keep.fraction = 0.25)
@@ -1310,7 +1310,7 @@ but may give unexpected output when labels are long as the repulsion algorithm
 or angles that are multiples of 90 degrees, there is no such problem.
 
 ```{r}
-ggplot(data = d, aes(x, y, label = lab, color = group)) +
+ggplot(data = d, aes(x, y, label = lab, colour = group)) +
 geom_point() +
 stat_dens2d_labels(geom = "text_repel",
 keep.fraction = 0.25, angle = 90)
@@ -1322,7 +1322,7 @@ unlabelled observations around the boundary of the regions where labels are kept
 or discarded. We use here `alpha` so that the overlaps can be seen.
 
 ```{r}
-ggplot(data = d, aes(x, y, label = lab, color = group)) +
+ggplot(data = d, aes(x, y, label = lab, colour = group)) +
   geom_point() +
   stat_dens2d_labels(geom = "label_repel", 
                      keep.fraction = 0.35, 
@@ -1413,7 +1413,7 @@ try_tibble(matrix(1:10, ncol = 2))
 
 ## Volcano plots
 
-Volcano plots are scatter plots with some peculiarities. They are frequently used for transcriptomics and metabolomics. They are used to show _P_-values or FDR (false discovery rate) as a function of effect size, which can be either an increase or a decrease. Effect sizes are expressed as fold-changes compared to a control or reference condition. Colors are frequently used to highlight significant responses. Counts of significant increases and decreases are frequently also added.
+Volcano plots are scatter plots with some peculiarities. They are frequently used for transcriptomics and metabolomics. They are used to show _P_-values or FDR (false discovery rate) as a function of effect size, which can be either an increase or a decrease. Effect sizes are expressed as fold-changes compared to a control or reference condition. Colours are frequently used to highlight significant responses. Counts of significant increases and decreases are frequently also added.
 
 Creating volcano plots from scratch using 'ggplot2' can be time consuming, but allows flexibility in design. Rather than providing a 'canned' function to produce volcano plots, package 'ggpmisc' provides several building blocks that facilitate the production of volcano and quadrant plots: Wrappers on _scales_ with suitable defaults plus helper functions to create factors from numeric outcomes.
 
@@ -1435,8 +1435,8 @@ If `%unit` is included in the name character string, suitable units are appended
 as shown in the example below.
 
 Scales `scale_y_Pvalue()` and `scale_x_Pvalue()` have suitable defaults for name
-and labels, while `scale_color_outcome()` provides suitable defaults for the
-colors mapped to the outcomes. To change the labels and title of the `key` or
+and labels, while `scale_colour_outcome()` provides suitable defaults for the
+colours mapped to the outcomes. To change the labels and title of the `key` or
 `guide` pass suitable arguments to parameters `name` and `labels` of these
 scales. These x and y scales by default _squish_ off-limits (out-of-bounds)
 observations towards the limits.
@@ -1444,11 +1444,11 @@ observations towards the limits.
 ```{r}
 volcano_example.df %>%
   mutate(., outcome.fct = outcome2factor(outcome)) %>%
-  ggplot(., aes(logFC, PValue, color = outcome.fct)) +
+  ggplot(., aes(logFC, PValue, colour = outcome.fct)) +
   geom_point() +
   scale_x_logFC(name = "Transcript abundance%unit") +
   scale_y_Pvalue() +
-  scale_color_outcome() +
+  scale_colour_outcome() +
   stat_quadrant_counts(data = . %>% filter(outcome != 0))
 ```
 
@@ -1458,11 +1458,11 @@ but this default can be overridden as shown below.
 ```{r}
 volcano_example.df %>%
   mutate(., outcome.fct = outcome2factor(outcome, n.levels = 2)) %>%
-  ggplot(., aes(logFC, PValue, color = outcome.fct)) +
+  ggplot(., aes(logFC, PValue, colour = outcome.fct)) +
   geom_point() +
   scale_x_logFC(name = "Transcript abundance%unit") +
   scale_y_Pvalue() +
-  scale_color_outcome() +
+  scale_colour_outcome() +
   stat_quadrant_counts(data = . %>% filter(outcome != 0))
 ```
 
@@ -1470,7 +1470,7 @@ volcano_example.df %>%
 
 Quadrant plots are scatter plots with comparable variables on both axes and usually include the four quadrants. When used for transcriptomics and metabolomics, they are used to compare responses expressed as fold-change to two different conditions or treatments. They are useful when many responses are measured as in transcriptomics (many different genes) or metabolomics (many different metabolites). 
 
-A single panel quadrant plot is as easy to produce as a volcano plot using scales `scale_x_logFC()` and `scale_y_logFC()`. The data includes two different outcomes and two different log fold-change variables. See the previous section on volcano plots for details. In this example we use as shape a filled circle and map one of the outcomes to color and the other to fill, using the two matched scales `scale_color_outcome()` and `scale_fill_outcome()`.
+A single panel quadrant plot is as easy to produce as a volcano plot using scales `scale_x_logFC()` and `scale_y_logFC()`. The data includes two different outcomes and two different log fold-change variables. See the previous section on volcano plots for details. In this example we use as shape a filled circle and map one of the outcomes to colour and the other to fill, using the two matched scales `scale_colour_outcome()` and `scale_fill_outcome()`.
 
 ```{r}
 head(quadrant_example.df)
@@ -1485,13 +1485,13 @@ quadrant_example.df %>%
          outcome.y.fct = outcome2factor(outcome.y),
          outcome.xy.fct = xy_outcomes2factor(outcome.x, outcome.y)) %>%
          filter(outcome.xy.fct != "none") %>%
-  ggplot(., aes(logFC.x, logFC.y, color = outcome.x.fct, fill = outcome.y.fct)) +
+  ggplot(., aes(logFC.x, logFC.y, colour = outcome.x.fct, fill = outcome.y.fct)) +
   geom_quadrant_lines(linetype = "dotted") +
-  stat_quadrant_counts(size = 3, color = "white") +
+  stat_quadrant_counts(size = 3, colour = "white") +
   geom_point(shape = "circle filled") +
   scale_x_logFC(name = "Transcript abundance for x%unit") +
   scale_y_logFC(name = "Transcript abundance for y%unit") +
-  scale_color_outcome() +
+  scale_colour_outcome() +
   scale_fill_outcome() +
   theme_dark()
 ```
@@ -1537,13 +1537,13 @@ quadrant_example.df %>%
          outcome.x.fct = outcome2factor(outcome.x),
          outcome.y.fct = outcome2factor(outcome.y),
          outcome.xy.fct = xy_outcomes2factor(outcome.x, outcome.y)) %>%
-  ggplot(., aes(logFC.x, logFC.y, color = outcome.x.fct, fill = outcome.y.fct)) +
+  ggplot(., aes(logFC.x, logFC.y, colour = outcome.x.fct, fill = outcome.y.fct)) +
   geom_point(shape = 21) +
   all_quadrant_lines(linetype = "dotted") +
-  all_quadrant_counts(size = 3, color = "white") +
+  all_quadrant_counts(size = 3, colour = "white") +
   scale_x_logFC(name = "Transcript abundance for x%unit") +
   scale_y_logFC(name = "Transcript abundance for y%unit") +
-  scale_color_outcome() +
+  scale_colour_outcome() +
   scale_fill_outcome() +
   facet_wrap(~outcome.xy.fct) +
   theme_dark()
@@ -1576,12 +1576,12 @@ to an uncluttered one.
 old_theme <- theme_set(theme_bw())
 ```
 
-In all the examples in this vignette we use colors to demonstrate which data points are selected, but any other suitable aesthetic and discrete scale can be used instead. With `keep.sparse = FALSE` we keep 1/3 of the observations in the denser region of the plot. Although here we first plot all data points and later overplot the selected ones this is not necessary.
+In all the examples in this vignette we use colours to demonstrate which data points are selected, but any other suitable aesthetic and discrete scale can be used instead. With `keep.sparse = FALSE` we keep 1/3 of the observations in the denser region of the plot. Although here we first plot all data points and later overplot the selected ones this is not necessary.
 
 ```{r}
 ggplot(data = make_data_tbl(300), aes(x, y)) +
   geom_point() +
-  stat_dens2d_filter(color = "red", 
+  stat_dens2d_filter(colour = "red", 
                      keep.sparse = FALSE, 
                      keep.fraction = 1/3)
 ```
@@ -1592,10 +1592,10 @@ different density of observations.
 ```{r}
 ggplot(data = make_data_tbl(300), aes(x, y)) +
   geom_point() +
-  stat_dens2d_filter(color = "red", 
+  stat_dens2d_filter(colour = "red", 
                      keep.sparse = FALSE, 
                      keep.fraction = 1/3)+
-  stat_dens2d_filter(color = "blue", 
+  stat_dens2d_filter(colour = "blue", 
                      keep.fraction = 1/3)
 ```
 
@@ -1604,7 +1604,7 @@ The algorithm seems to work well also with other distributions, in this example 
 ```{r}
 ggplot(data = make_data_tbl(300, rfun = runif), aes(x, y)) +
   geom_point() +
-  stat_dens2d_filter(color = "red", keep.fraction = 1/2)
+  stat_dens2d_filter(colour = "red", keep.fraction = 1/2)
 ```
 
 One example with the gamma distribution, which is asymmetric.
@@ -1613,7 +1613,7 @@ One example with the gamma distribution, which is asymmetric.
 ggplot(data = make_data_tbl(300, rfun = rgamma, shape = 2), 
        aes(x, y)) +
   geom_point() +
-  stat_dens2d_filter(color = "red", keep.fraction = 1/3)
+  stat_dens2d_filter(colour = "red", keep.fraction = 1/3)
 ```
 
 

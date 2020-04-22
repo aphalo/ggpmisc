@@ -12,7 +12,7 @@ ggplot(aes(x = x, y = y), data = tdf) +
   geom_point() +
   geom_smooth(method = "lm") +
   stat_poly_eq(
-    aes(label = paste(..eq.label.., ..rr.label.., sep = "*plain(\",\")~")),
+    aes(label = paste(stat(eq.label), stat(rr.label), sep = "*plain(\",\")~")),
     formula = y ~ x,
     coef.digits = 2,
     rr.digits = 3,

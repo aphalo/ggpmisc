@@ -11,7 +11,7 @@ xy_thresholds2factor(x, y, x_threshold = 0, y_threshold = 0)
 }
 \arguments{
 \item{x, y}{numeric vectors of -1, 0, and +1 values, indicating down
-regulation, uncertain response or upregulation, or numeric vectors that can be
+regulation, uncertain response or up-regulation, or numeric vectors that can be
 converted into such values using a pair of thresholds.}
 
 \item{x_threshold, y_threshold}{numeric vector Ranges enclosing the values to be considered

@@ -72,13 +72,13 @@
 #' # plot
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_smooth(method = "lm", formula = my.formula) +
-#'   stat_fit_deviations(formula = my.formula, color = "red") +
+#'   stat_fit_deviations(formula = my.formula, colour = "red") +
 #'   geom_point()
 #'
 #' # plot, using geom_debug()
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_smooth(method = "lm", formula = my.formula) +
-#'   stat_fit_deviations(formula = my.formula, color = "red",
+#'   stat_fit_deviations(formula = my.formula, colour = "red",
 #'   geom = "debug") +
 #'   geom_point()
 #'

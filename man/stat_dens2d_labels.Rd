@@ -107,15 +107,15 @@ ggplot(data = d, aes(x, y, label = lab)) +
   geom_point() +
   stat_dens2d_labels(geom = "debug")
 
-ggplot(data = d, aes(x, y, label = lab, color = group)) +
+ggplot(data = d, aes(x, y, label = lab, colour = group)) +
   geom_point() +
   stat_dens2d_labels()
 
-ggplot(data = d, aes(x, y, label = lab, color = group)) +
+ggplot(data = d, aes(x, y, label = lab, colour = group)) +
   geom_point() +
   stat_dens2d_labels(geom = "text_repel")
 
-ggplot(data = d, aes(x, y, label = lab, color = group)) +
+ggplot(data = d, aes(x, y, label = lab, colour = group)) +
   geom_point() +
   stat_dens2d_labels(geom = "text_repel", label.fill = NA)
 

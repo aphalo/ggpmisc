@@ -5,7 +5,7 @@
 #'
 #' @param ... other named arguments passed to \code{scale_manual}.
 #' @param name The name of the scale, used for the axis-label.
-#' @param ns.colour,down.colour,up.colour,de.colour The colour defintions to use for each
+#' @param ns.colour,down.colour,up.colour,de.colour The colour definitions to use for each
 #'   of the three possible outcomes.
 #' @param na.colour colour definition used for NA.
 #' @param aesthetics Character string or vector of character strings listing the

@@ -7,9 +7,9 @@ df <- data.frame(x = c(1:100))
 df$y <- 2 + 3 * df$x + rnorm(100, sd = 40)
 my.formula <- y ~ x
 p <- ggplot(data = df, aes(x = x, y = y)) +
-  geom_smooth(method = "lm", se = FALSE, color = "black", formula = my.formula) +
+  geom_smooth(method = "lm", se = FALSE, colour = "black", formula = my.formula) +
   stat_poly_eq(formula = my.formula,
-               aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")),
+               aes(label = paste(..eq.label.., stat(rr.label), sep = "~~~")),
                parse = TRUE) +
   geom_point()
 p
@@ -20,20 +20,20 @@ df <- data.frame(x = c(1:100))
 df$y <- 2 + 3 * df$x + rnorm(100, sd = 40)
 my.formula <- y ~ x
 p <- ggplot(data = df, aes(x = x, y = y)) +
-  geom_smooth(method = "lm", se = FALSE, color = "black", formula = my.formula) +
+  geom_smooth(method = "lm", se = FALSE, colour = "black", formula = my.formula) +
   stat_poly_eq(formula = my.formula,
                eq.with.lhs = "italic(hat(y))~`=`~",
-               aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")),
+               aes(label = paste(..eq.label.., stat(rr.label), sep = "~~~")),
                parse = TRUE) +
   geom_point()
 p
 
 p <- ggplot(data = df, aes(x = x, y = y)) +
-  geom_smooth(method = "lm", se = FALSE, color = "black", formula = my.formula) +
+  geom_smooth(method = "lm", se = FALSE, colour = "black", formula = my.formula) +
   stat_poly_eq(formula = my.formula,
                eq.with.lhs = "italic(h)~`=`~",
                eq.x.rhs = "~italic(z)",
-               aes(label = ..eq.label..),
+               aes(label = stat(eq.label)),
                parse = TRUE) +
   labs(x = expression(italic(z)), y = expression(italic(h))) +
   geom_point()
@@ -60,7 +60,7 @@ ggplot(data = my.data, mapping=aes(x = x, y = y2, colour = group)) +
   geom_point() +
   geom_smooth(method = "lm", se =  FALSE, formula = y ~ poly(x=x, degree = 2, raw = TRUE)) +
   stat_poly_eq(
-    mapping     = aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~"))
+    mapping     = aes(label = paste(..eq.label.., stat(rr.label), sep = "~~~"))
     , formula     = y ~ poly(x, 2, raw = TRUE)
     , eq.with.lhs = "hat(Y)~`=`~"
     , eq.x.rhs    = "X"

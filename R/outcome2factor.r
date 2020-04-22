@@ -1,7 +1,7 @@
 #' Convert numeric ternary outcomes into a factor
 #'
-#' @param x a numeric vector of -1, 0, and +1 values, indicating downregulation,
-#'   uncertain response or upregulation, or a numeric vector that can be
+#' @param x a numeric vector of -1, 0, and +1 values, indicating down-regulation,
+#'   uncertain response or up-regulation, or a numeric vector that can be
 #'   converted into such values using a pair of thresholds.
 #' @param n.levels numeric Number of levels to create, either 3 or 2.
 #' @param threshold numeric vector Range enclosing the values to be considered
@@ -15,7 +15,7 @@
 #'   When \code{n.levels = 2} both -1 and +1 are merged to the same level of the
 #'   factor with label \code{"de"}.
 #'
-#' @note These are conveneince functions that only save some typing. The same
+#' @note These are convenience functions that only save some typing. The same
 #'   result can be achieved by a direct call to \code{\link{factor}} and
 #'   comparisons. These functions aim at making it easier to draw volcano and
 #'   quadrant plots.
@@ -60,7 +60,7 @@ threshold2factor <- function(x, n.levels = 3L, threshold = 0) {
 #' Convert two numeric ternary outcomes into a factor
 #'
 #' @param x,y numeric vectors of -1, 0, and +1 values, indicating down
-#'   regulation, uncertain response or upregulation, or numeric vectors that can be
+#'   regulation, uncertain response or up-regulation, or numeric vectors that can be
 #'   converted into such values using a pair of thresholds.
 #' @param x_threshold,y_threshold numeric vector Ranges enclosing the values to be considered
 #'   uncertain for each of the two vectors..

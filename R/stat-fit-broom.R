@@ -511,8 +511,8 @@ StatFitAugment <-
                    ggplot2::Stat,
                    compute_group = fit_augment_compute_group_fun,
                    default_aes =
-                     ggplot2::aes(ymax = ..y.. + ...se.fit.. * ..t.value..,
-                                  ymin = ..y.. - ...se.fit.. * ..t.value..),
+                     ggplot2::aes(ymax = stat(y + .se.fit * t.value),
+                                  ymin = stat(y - .se.fit * t.value)),
                    required_aes = c("x", "y")
 )
 

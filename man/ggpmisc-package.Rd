@@ -88,7 +88,7 @@ formula <- y ~ poly(x, 2, raw = TRUE)
 ggplot(cars, aes(speed, dist)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = ..eq.label..), formula = formula,
+  stat_poly_eq(aes(label = stat(eq.label)), formula = formula,
                parse = TRUE)
 
 formula <- y ~ x

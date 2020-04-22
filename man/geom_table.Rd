@@ -34,7 +34,7 @@ geom_table_npc(
 \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs
 to be set at the layer level if you are overriding the plot defaults.}
 
-\item{data}{A layer specific dataset - only needed if you want to override
+\item{data}{A layer specific data set - only needed if you want to override
 the plot defaults.}
 
 \item{stat}{The statistical transformation to use on the data for this layer,
@@ -48,7 +48,7 @@ can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 
 \item{parse}{If TRUE, the labels will be parsed into expressions and
-displayed as described in ?plotmath.}
+displayed as described in \code{?plotmath}.}
 
 \item{na.rm}{If \code{FALSE} (the default), removes missing values with a
 warning.  If \code{TRUE} silently removes missing values.}
