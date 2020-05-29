@@ -35,6 +35,10 @@
 #' @param ... other arguments passed on to \code{\link[ggplot2]{layer}}. This
 #'   can include aesthetics whose values you want to set, not map. See
 #'   \code{\link[ggplot2]{layer}} for more details.
+#' @param table.theme NULL, list or function A gridExtra ttheme defintion, or
+#'   a constructor for a ttheme or NULL for default.
+#' @param table.rownames,table.colnames logical flag to enable or disabling
+#'   printing of row names and column names.
 #' @param parse If TRUE, the labels will be parsed into expressions and
 #'   displayed as described in \code{?plotmath}.
 #' @param show.legend logical. Should this layer be included in the legends?
@@ -45,7 +49,7 @@
 #'   define both data and aesthetics and shouldn't inherit behaviour from the
 #'   default plot specification, e.g. \code{\link[ggplot2]{borders}}.
 #'
-#' @note These geoms work only with tibbles as \code{data}, as they expects a
+#' @details These geoms work only with tibbles as \code{data}, as they expects a
 #'   list of data frames or tibbles ("tb" objects) to be mapped to the
 #'   \code{label} aesthetic. Aesthetics mappings in the inset plot are
 #'   independent of those in the base plot.
@@ -62,6 +66,15 @@
 #'   with respect to the $x$ and $y$ coordinates in "npc" units, and \code{angle}
 #'   is used to rotate the table as a whole.
 #'
+#' @note Inset tables are handled consistently with the label aesthetic as data
+#'   and consequently are not affected by ggplot themes'. The formatting of the
+#'   inset follows the argument passed to \code{table.theme}. If the
+#'   argument is a constructor, the values mapped to \code{color}, \code{size},
+#'   \code{alpha}, and \code{family} aesthetics will the passed to the theme
+#'   constructor. For additional control a ready constructed ttheme as a list
+#'   object will be used as is.
+#'
+#' @section Warning!:
 #'   \strong{\code{annotate()} cannot be used with \code{geom = "table"}}. Use
 #'   \code{\link[ggplot2]{annotation_custom}} directly when adding inset tables
 #'   as annotations.
@@ -91,16 +104,45 @@
 #'   mutate(wt = sprintf("%.2f", wt),
 #'          mpg = sprintf("%.1f", mpg)) -> tb
 #'
-#' df <- tibble(x = 0.95, y = 0.95, tb = list(tb))
+#' df <- tibble(x = 5.45, y = 34, tb = list(tb))
 #'
 #' ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
 #'   geom_point() +
-#'   geom_table_npc(data = df, aes(npcx = x, npcy = y, label = tb),
-#'                  hjust = 1, vjust = 1)
+#'   geom_table(data = df, aes(x = x, y = y, label = tb))
+#'
+#' ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
+#'   geom_point() +
+#'   geom_table(data = df, aes(x = x, y = y, label = tb),
+#'              color = "red", family = "serif", size = 5,
+#'              angle = 90, vjust = 0)
+#'
+#' ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
+#'   geom_point() +
+#'   geom_table(data = df, aes(x = x, y = y, label = tb),
+#'              table.theme = gridExtra::ttheme_minimal) +
+#'   theme_classic()
+#'
+#' df2 <- tibble(x = 5.45, y = c(34, 29, 24), cyl = c(4, 6, 8),
+#'               tb = list(tb[1, 1:3], tb[2, 1:3], tb[3, 1:3]))
+#'
+#' ggplot(data = mtcars, mapping = aes(wt, mpg, color = factor(cyl))) +
+#'   geom_point() +
+#'   geom_table(data = df2,
+#'              inherit.aes = TRUE,
+#'              mapping = aes(x = x, y = y, label = tb))
+#'
+#' dfnpc <- tibble(x = 0.95, y = 0.95, tb = list(tb))
+#'
+#' ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
+#'   geom_point() +
+#'   geom_table_npc(data = dfnpc, aes(npcx = x, npcy = y, label = tb))
 #'
 geom_table <- function(mapping = NULL, data = NULL,
                        stat = "identity", position = "identity",
                        ...,
+                       table.theme = NULL,
+                       table.rownames = FALSE,
+                       table.colnames = TRUE,
                        parse = FALSE,
                        na.rm = FALSE,
                        show.legend = FALSE,
@@ -114,6 +156,9 @@ geom_table <- function(mapping = NULL, data = NULL,
     show.legend = show.legend,
     inherit.aes = inherit.aes,
     params = list(
+      table.theme = table.theme,
+      table.rownames = table.rownames,
+      table.colnames = table.colnames,
       parse = parse,
       na.rm = na.rm,
       ...
@@ -129,8 +174,14 @@ geom_table <- function(mapping = NULL, data = NULL,
 #' @usage NULL
 #'
 gtb_draw_panel_fun <-
-  function(data, panel_params, coord, parse = FALSE,
-           na.rm = FALSE) {
+  function(data,
+           panel_params,
+           coord,
+           table.theme,
+           table.rownames,
+           table.colnames,
+           parse,
+           na.rm) {
 
     if (nrow(data) == 0) {
       return(grid::nullGrob())
@@ -150,16 +201,31 @@ gtb_draw_panel_fun <-
       data$hjust <- compute_just(data$hjust, data$x)
     }
 
+    # replace NULL with default
+    if (is.null(table.theme)) {
+      table.theme <- gridExtra::ttheme_default
+    }
+
     tb.grobs <- grid::gList()
 
     for (row.idx in seq_len(nrow(data))) {
+      # if needed, construct the table theme
+      if (is.function(table.theme)) {
+        this.table.theme <-
+          table.theme(base_size = data$size[[row.idx]] * .pt,
+                      base_colour = ggplot2::alpha(data$colour[[row.idx]],
+                                                   data$alpha[[row.idx]]),
+                      base_family = data$family[[row.idx]],
+                      parse = parse,
+                      padding = unit(c(1, 0.6), "char"))
+      }
+      table.tb <- data[["label"]][[row.idx]]
       gtb <-
         gridExtra::tableGrob(
-          d = data$label[[row.idx]],
-          theme = gridExtra::ttheme_default(base_size = data$size * .pt,
-                                            base_colour = ggplot2::alpha(data$colour, data$alpha),
-                                            parse = parse),
-          rows = NULL
+          d = table.tb,
+          theme = this.table.theme,
+          rows = if (table.rownames) rownames(table.tb) else NULL,
+          cols = if (table.colnames) colnames(table.tb) else NULL
         )
 
       gtb$vp <-
@@ -194,7 +260,7 @@ GeomTable <-
 
           default_aes = aes(
             colour = "black", size = 3.2, angle = 0, hjust = "inward",
-            vjust = "inward", alpha = NA, family = "", fontface = 1,
+            vjust = "inward", alpha = 1, family = "", fontface = 1,
             lineheight = 1.2
           ),
 
@@ -210,6 +276,9 @@ GeomTable <-
 geom_table_npc <- function(mapping = NULL, data = NULL,
                            stat = "identity", position = "identity",
                            ...,
+                           table.theme = NULL,
+                           table.rownames = FALSE,
+                           table.colnames = TRUE,
                            parse = FALSE,
                            na.rm = FALSE,
                            show.legend = FALSE,
@@ -223,6 +292,9 @@ geom_table_npc <- function(mapping = NULL, data = NULL,
     show.legend = show.legend,
     inherit.aes = inherit.aes,
     params = list(
+      table.theme = table.theme,
+      table.rownames = table.rownames,
+      table.colnames = table.colnames,
       parse = parse,
       na.rm = na.rm,
       ...
@@ -238,8 +310,14 @@ geom_table_npc <- function(mapping = NULL, data = NULL,
 #' @usage NULL
 #'
 gtbnpc_draw_panel_fun <-
-  function(data, panel_params, coord, parse = FALSE,
-           na.rm = FALSE) {
+  function(data,
+           panel_params,
+           coord,
+           table.theme,
+           table.rownames,
+           table.colnames,
+           parse,
+           na.rm) {
 
     if (nrow(data) == 0) {
       return(grid::nullGrob())
@@ -260,16 +338,31 @@ gtbnpc_draw_panel_fun <-
       data$hjust <- compute_just(data$hjust, data$npcx)
     }
 
+    # replace NULL with default
+    if (is.null(table.theme)) {
+      table.theme <- gridExtra::ttheme_default
+    }
+
     tb.grobs <- grid::gList()
 
     for (row.idx in seq_len(nrow(data))) {
+      # if needed, construct the table theme
+      if (is.function(table.theme)) {
+        this.table.theme <-
+          table.theme(base_size = data$size[[row.idx]] * .pt,
+                      base_colour = ggplot2::alpha(data$colour[[row.idx]],
+                                                   data$alpha[[row.idx]]),
+                      base_family = data$family[[row.idx]],
+                      parse = parse,
+                      padding = unit(c(1, 0.6), "char"))
+      }
+      table.tb <- data[["label"]][[row.idx]]
       gtb <-
         gridExtra::tableGrob(
-          d = data$label[[row.idx]],
-          theme = gridExtra::ttheme_default(base_size = data$size * .pt,
-                                            base_colour = ggplot2::alpha(data$colour, data$alpha),
-                                            parse = parse),
-          rows = NULL
+          d = table.tb,
+          theme = this.table.theme,
+          rows = if (table.rownames) rownames(table.tb) else NULL,
+          cols = if (table.colnames) colnames(table.tb) else NULL
         )
 
       gtb$vp <-
@@ -304,7 +397,7 @@ GeomTableNpc <-
 
           default_aes = aes(
             colour = "black", size = 3.2, angle = 0, hjust = "inward",
-            vjust = "inward", alpha = NA, family = "", fontface = 1,
+            vjust = "inward", alpha = 1, family = "", fontface = 1,
             lineheight = 1.2
           ),
 

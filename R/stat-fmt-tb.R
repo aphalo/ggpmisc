@@ -33,6 +33,12 @@
 #' @param tb.vars character vector, optionally named, used to select and or
 #'   rename the columns of the table returned.
 #' @param tb.rows integer vector of row indexes of rows to be retained.
+#' @param table.theme NULL, list or function A gridExtra ttheme defintion, or
+#'   a constructor for a ttheme or NULL for default.
+#' @param table.rownames,table.colnames logical flag to enable or disabling
+#'   printing of row names and column names.
+#' @param parse If TRUE, the labels will be parsed into expressions and
+#'   displayed as described in \code{?plotmath}.
 #'
 #' @section Computed variables: The output of sequentially applying
 #'   \code{\link[dplyr]{slice}} with \code{tb.rows} as argument and
@@ -62,12 +68,19 @@
 #'                tb.rows = 1:3) +
 #'   expand_limits(x = c(0,3), y = c(-2, 6))
 #'
-stat_fmt_tb <- function(mapping = NULL, data = NULL, geom = "table",
+stat_fmt_tb <- function(mapping = NULL,
+                        data = NULL,
+                        geom = "table",
                         tb.vars = NULL,
                         tb.rows = NULL,
                         digits = 3,
                         position = "identity",
-                        na.rm = FALSE, show.legend = FALSE,
+                        table.theme = NULL,
+                        table.rownames = FALSE,
+                        table.colnames = TRUE,
+                        parse = FALSE,
+                        na.rm = FALSE,
+                        show.legend = FALSE,
                         inherit.aes = TRUE,
                         ...) {
   ggplot2::layer(
@@ -76,6 +89,10 @@ stat_fmt_tb <- function(mapping = NULL, data = NULL, geom = "table",
     params = list(tb.vars = tb.vars,
                   tb.rows = tb.rows,
                   digits = digits,
+                  table.theme = table.theme,
+                  table.rownames = table.rownames,
+                  table.colnames = table.colnames,
+                  parse = parse,
                   na.rm = na.rm,
                   ...)
   )

@@ -1,3 +1,8 @@
+ggpmisc 0.3.5 (2020-05-xx)
+==========================
+
+* Add support for "table themes" to geom_table() and geom_table_npc().
+
 ggpmisc 0.3.4 (2020-04-22)
 ==========================
 

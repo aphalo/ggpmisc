@@ -12,6 +12,10 @@ stat_fmt_tb(
   tb.rows = NULL,
   digits = 3,
   position = "identity",
+  table.theme = NULL,
+  table.rownames = FALSE,
+  table.colnames = TRUE,
+  parse = FALSE,
   na.rm = FALSE,
   show.legend = FALSE,
   inherit.aes = TRUE,
@@ -38,6 +42,15 @@ retained in data.}
 
 \item{position}{The position adjustment to use for overlapping points on this
 layer}
+
+\item{table.theme}{NULL, list or function A gridExtra ttheme defintion, or
+a constructor for a ttheme or NULL for default.}
+
+\item{table.rownames, table.colnames}{logical flag to enable or disabling
+printing of row names and column names.}
+
+\item{parse}{If TRUE, the labels will be parsed into expressions and
+displayed as described in \code{?plotmath}.}
 
 \item{na.rm}{a logical indicating whether NA values should be stripped before
 the computation proceeds.}

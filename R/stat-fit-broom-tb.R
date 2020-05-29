@@ -38,6 +38,12 @@
 #'   recycled.
 #' @param label.x,label.y \code{numeric} Coordinates (in data units) to be used
 #'   for absolute positioning of the output. If too short they will be recycled.
+#' @param table.theme NULL, list or function A gridExtra ttheme defintion, or
+#'   a constructor for a ttheme or NULL for default.
+#' @param table.rownames,table.colnames logical flag to enable or disabling
+#'   printing of row names and column names.
+#' @param parse If TRUE, the labels will be parsed into expressions and
+#'   displayed as described in \code{?plotmath}.
 #'
 #' @details \code{stat_fit_tb} Applies a model fitting function per panel,
 #'   using the grouping factors from easthetic mappings in the fitted model.
@@ -143,6 +149,10 @@ stat_fit_tb <- function(mapping = NULL, data = NULL, geom = "table_npc",
                         label.x = "center", label.y = "top",
                         label.x.npc = NULL, label.y.npc = NULL,
                         position = "identity",
+                        table.theme = NULL,
+                        table.rownames = FALSE,
+                        table.colnames = TRUE,
+                        parse = FALSE,
                         na.rm = FALSE, show.legend = FALSE,
                         inherit.aes = TRUE,
                         ...) {
@@ -166,6 +176,10 @@ stat_fit_tb <- function(mapping = NULL, data = NULL, geom = "table_npc",
                   label.x = label.x,
                   label.y = label.y,
                   npc.used = grepl("_npc", geom),
+                  table.theme = table.theme,
+                  table.rownames = table.rownames,
+                  table.colnames = table.colnames,
+                  parse = parse,
                   na.rm = na.rm,
                   ...)
   )

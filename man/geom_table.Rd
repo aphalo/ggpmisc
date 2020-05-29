@@ -11,6 +11,9 @@ geom_table(
   stat = "identity",
   position = "identity",
   ...,
+  table.theme = NULL,
+  table.rownames = FALSE,
+  table.colnames = TRUE,
   parse = FALSE,
   na.rm = FALSE,
   show.legend = FALSE,
@@ -23,6 +26,9 @@ geom_table_npc(
   stat = "identity",
   position = "identity",
   ...,
+  table.theme = NULL,
+  table.rownames = FALSE,
+  table.colnames = TRUE,
   parse = FALSE,
   na.rm = FALSE,
   show.legend = FALSE,
@@ -46,6 +52,12 @@ call to a position adjustment function.}
 \item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This
 can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
+
+\item{table.theme}{NULL, list or function A gridExtra ttheme defintion, or
+a constructor for a ttheme or NULL for default.}
+
+\item{table.rownames, table.colnames}{logical flag to enable or disabling
+printing of row names and column names.}
 
 \item{parse}{If TRUE, the labels will be parsed into expressions and
 displayed as described in \code{?plotmath}.}
@@ -76,8 +88,7 @@ instead only their x and y coordinates. Obviously, tables do have height and
 width, but they are in physical units, not data units. The amount of space
 they occupy on a plot is not constant in data units: when you resize a plot,
 tables stay the same size, but the size of the axes changes.
-}
-\note{
+
 These geoms work only with tibbles as \code{data}, as they expects a
   list of data frames or tibbles ("tb" objects) to be mapped to the
   \code{label} aesthetic. Aesthetics mappings in the inset plot are
@@ -94,10 +105,15 @@ These geoms work only with tibbles as \code{data}, as they expects a
   label, justification is interpreted as indicating the position of the table
   with respect to the $x$ and $y$ coordinates in "npc" units, and \code{angle}
   is used to rotate the table as a whole.
-
-  \strong{\code{annotate()} cannot be used with \code{geom = "table"}}. Use
-  \code{\link[ggplot2]{annotation_custom}} directly when adding inset tables
-  as annotations.
+}
+\note{
+Inset tables are handled consistently with the label aesthetic as data
+  and consequently are not affected by ggplot themes'. The formatting of the
+  inset follows the argument passed to \code{table.theme}. If the
+  argument is a constructor, the values mapped to \code{color}, \code{size},
+  \code{alpha}, and \code{family} aesthetics will the passed to the theme
+  constructor. For additional control a ready constructed ttheme as a list
+  object will be used as is.
 }
 \section{Alignment}{
  You can modify table alignment with the \code{vjust} and
@@ -111,6 +127,13 @@ These geoms work only with tibbles as \code{data}, as they expects a
   aesthetics, which determines the size of text within the table.
 }
 
+\section{Warning!}{
+
+  \strong{\code{annotate()} cannot be used with \code{geom = "table"}}. Use
+  \code{\link[ggplot2]{annotation_custom}} directly when adding inset tables
+  as annotations.
+}
+
 \examples{
 library(dplyr)
 library(tibble)
@@ -122,12 +145,38 @@ mtcars \%>\%
   mutate(wt = sprintf("\%.2f", wt),
          mpg = sprintf("\%.1f", mpg)) -> tb
 
-df <- tibble(x = 0.95, y = 0.95, tb = list(tb))
+df <- tibble(x = 5.45, y = 34, tb = list(tb))
 
 ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
   geom_point() +
-  geom_table_npc(data = df, aes(npcx = x, npcy = y, label = tb),
-                 hjust = 1, vjust = 1)
+  geom_table(data = df, aes(x = x, y = y, label = tb))
+
+ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
+  geom_point() +
+  geom_table(data = df, aes(x = x, y = y, label = tb),
+             color = "red", family = "serif", size = 5,
+             angle = 90, vjust = 0)
+
+ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
+  geom_point() +
+  geom_table(data = df, aes(x = x, y = y, label = tb),
+             table.theme = gridExtra::ttheme_minimal) +
+  theme_classic()
+
+df2 <- tibble(x = 5.45, y = c(34, 29, 24), cyl = c(4, 6, 8),
+              tb = list(tb[1, 1:3], tb[2, 1:3], tb[3, 1:3]))
+
+ggplot(data = mtcars, mapping = aes(wt, mpg, color = factor(cyl))) +
+  geom_point() +
+  geom_table(data = df2,
+             inherit.aes = TRUE,
+             mapping = aes(x = x, y = y, label = tb))
+
+dfnpc <- tibble(x = 0.95, y = 0.95, tb = list(tb))
+
+ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
+  geom_point() +
+  geom_table_npc(data = dfnpc, aes(npcx = x, npcy = y, label = tb))
 
 }
 \references{
