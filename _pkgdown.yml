@@ -22,14 +22,15 @@ reference:
   - title: Geoms
     desc: Geoms, short for geometric objects, describe the type of plot you will produce.
     contents:
-    - geom_table
-    - geom_plot
-    - geom_grob
     - geom_label_npc
     - geom_x_margin_point
     - geom_x_margin_arrow
     - geom_x_margin_grob
     - geom_quadrant_lines
+    - geom_plot
+    - geom_grob
+    - geom_table
+    - ttheme_gtdefault
   - title: Statistics
     desc: It is often useful to summarize data before plotting, and that is what these transformations do.
     contents:

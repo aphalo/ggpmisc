@@ -98,7 +98,7 @@
 #' @seealso function \code{\link[gridExtra]{tableGrob}} as it is used to
 #'   construct the table.
 #'
-#' @family Statistics for adding insets to ggplots
+#' @family geometries for adding insets to ggplots
 #'
 #' @export
 #'
@@ -220,11 +220,12 @@ gtb_draw_panel_fun <-
 
     # replace NULL with default
     if (is.null(table.theme)) {
-      table.theme <- gridExtra::ttheme_default
+      table.theme <- ttheme_gtdefault
     }
 
     tb.grobs <- grid::gList()
 
+ #   use.base.colour <- !"colour" %in% colnames(data)
     for (row.idx in seq_len(nrow(data))) {
       # if needed, construct the table theme
       if (is.function(table.theme)) {
@@ -241,7 +242,6 @@ gtb_draw_panel_fun <-
                                                    data$alpha[[row.idx]]),
                       base_family = data$family[[row.idx]],
                       parse = parse,
-                      padding = unit(c(1, 0.6), "char"),
                       rowhead = list(fg_params = list(hjust = 1, x = 0.9)),
                       colhead = list(fg_params = list(hjust = table.hjust, x = table.x)),
                       core = core.params)
@@ -371,7 +371,7 @@ gtbnpc_draw_panel_fun <-
 
     # replace NULL with default
     if (is.null(table.theme)) {
-      table.theme <- gridExtra::ttheme_default
+      table.theme <- ttheme_gtdefault
     }
 
     tb.grobs <- grid::gList()
@@ -392,7 +392,6 @@ gtbnpc_draw_panel_fun <-
                                                    data$alpha[[row.idx]]),
                       base_family = data$family[[row.idx]],
                       parse = parse,
-                      padding = unit(c(1, 0.6), "char"),
                       rowhead = list(fg_params = list(hjust = 1, x = 0.9)),
                       colhead = list(fg_params = list(hjust = table.hjust, x = table.x)),
                       core = core.params)
@@ -449,6 +448,185 @@ GeomTableNpc <-
             grid::nullGrob()
           }
   )
+
+#' Table themes
+#'
+#' Additional theme constructors for use with \code{\link{geom_table}}.
+#'
+#' @param base_size numeric, default font size.
+#' @param base_colour	default font colour.
+#' @param base_family	default font family.
+#' @param parse	logical, default behaviour for parsing text as plotmath.
+#' @param padding length-2 unit vector specifying the horizontal and vertical
+#'   padding of text within each cell.
+#' @param ... further arguments to control the gtable.
+#'
+#' @note These theme constructors are wrappers on
+#'   \code{gridExtra::ttheme_default()} and \code{gridExtra::ttheme_minimal()}.
+#'   They can also be used with \code{\link[gridExtra]{grid.table}} if desired.
+#'
+#' @export
+#'
+#' @family geometries for adding insets to ggplots
+#'
+#' @examples
+#' library(dplyr)
+#' library(tibble)
+#'
+#' mtcars %>%
+#'   group_by(cyl) %>%
+#'   summarize(wt = mean(wt), mpg = mean(mpg)) %>%
+#'   ungroup() %>%
+#'   mutate(wt = sprintf("%.2f", wt),
+#'          mpg = sprintf("%.1f", mpg)) -> tb
+#'
+#' df <- tibble(x = 5.45, y = 34, tb = list(tb))
+#'
+#' ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
+#'   geom_point() +
+#'   geom_table(data = df, aes(x = x, y = y, label = tb),
+#'              table.theme = ttheme_gtminimal) +
+#'   theme_classic()
+#'
+#' ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
+#'   geom_point() +
+#'   geom_table(data = df, aes(x = x, y = y, label = tb),
+#'              table.theme = ttheme_gtbw) +
+#'   theme_bw()
+#'
+#' ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
+#'   geom_point() +
+#'   geom_table(data = df, aes(x = x, y = y, label = tb),
+#'              table.theme = ttheme_gtdark, colour = "white") +
+#'   theme_dark()
+#'
+#'
+ttheme_gtdefault <- function (base_size = 12,
+                              base_colour = "black",
+                              base_family = "",
+                              parse = FALSE,
+                              padding = unit(c(1, 0.6), "char"),
+                              ...)
+{
+  gridExtra::ttheme_default(base_size = base_size,
+                            base_colour = base_colour,
+                            base_family = base_family,
+                            parse = parse,
+                            padding = padding,
+                            ...)
+}
+
+#' @rdname ttheme_gtdefault
+#'
+#' @export
+#'
+ttheme_gtminimal <- function (base_size = 12,
+                              base_colour = "black",
+                              base_family = "",
+                              parse = FALSE,
+                              padding = unit(c(1, 0.6), "char"),
+                              ...)
+{
+  gridExtra::ttheme_minimal(base_size = base_size,
+                            base_colour = base_colour,
+                            base_family = base_family,
+                            parse = parse,
+                            padding = padding,
+                            ...)
+}
+
+#' @rdname ttheme_gtdefault
+#'
+#' @export
+#'
+ttheme_gtbw <- function (base_size = 12,
+                         base_colour = "black",
+                         base_family = "",
+                         parse = FALSE,
+                         padding = unit(c(1, 0.6), "char"),
+                         ...)
+{
+  core <-
+    list(bg_params = list(fill = "white", lwd = 1.5, col = "grey90"))
+  colhead <-
+    list(bg_params = list(fill = "grey80", lwd = 1.5, col = "grey90"))
+  rowhead <-
+    list(bg_params = list(fill = "grey80", lwd = 1.5, col = "grey90"))
+
+  default <-
+    gridExtra::ttheme_default(base_size = base_size,
+                              base_colour = base_colour,
+                              base_family = base_family,
+                              parse = parse,
+                              padding = padding,
+                              core = core,
+                              colhead = colhead,
+                              rowhead = rowhead)
+
+  utils::modifyList(default, list(...))
+}
+
+#' @rdname ttheme_gtdefault
+#'
+#' @export
+#'
+ttheme_gtplain <- function (base_size = 12,
+                         base_colour = "black",
+                         base_family = "",
+                         parse = FALSE,
+                         padding = unit(c(1, 0.6), "char"),
+                         ...)
+{
+  core <-
+    list(bg_params = list(fill = "white"))
+  colhead <-
+    list(bg_params = list(fill = "grey90"))
+  rowhead <-
+    list(bg_params = list(fill = "grey90"))
+
+  default <-
+    gridExtra::ttheme_default(base_size = base_size,
+                              base_colour = base_colour,
+                              base_family = base_family,
+                              parse = parse,
+                              padding = padding,
+                              core = core,
+                              colhead = colhead,
+                              rowhead = rowhead)
+
+  utils::modifyList(default, list(...))
+}
+
+#' @rdname ttheme_gtdefault
+#'
+#' @export
+#'
+ttheme_gtdark <- function (base_size = 12,
+                           base_colour = "white",
+                           base_family = "",
+                           parse = FALSE,
+                           padding = unit(c(1, 0.6), "char"),
+                           ...)
+{
+  core <-
+    list(bg_params = list(fill = "grey30", lwd = 1.5, col = "grey90"))
+  colhead <-
+    list(bg_params = list(fill = "black", lwd = 1.5, col = "white"))
+  rowhead <-
+    list(bg_params = list(fill = "black", lwd = 1.5, col = "white"))
+
+  default <-
+    gridExtra::ttheme_default(base_size = base_size,
+                              base_colour = base_colour,
+                              base_family = base_family,
+                              parse = parse,
+                              padding = padding,
+                              core = core,
+                              colhead = colhead,
+                              rowhead = rowhead)
+
+  utils::modifyList(default, list(...))
+}
 
 # copied from geom-text.r from 'ggplot2' 3.1.0
 compute_just <- function(just, x) {
