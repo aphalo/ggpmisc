@@ -102,8 +102,17 @@ ggplot(my.df, aes(x, y, label = tbs)) +
   expand_limits(x = c(0,3), y = c(-2, 6))
 
 ggplot(my.df, aes(x, y, label = tbs)) +
+  stat_fmt_tb(table.theme = ttheme_gtlight) +
+  expand_limits(x = c(0,3), y = c(-2, 6))
+
+ggplot(my.df, aes(x, y, label = tbs)) +
   stat_fmt_tb(tb.vars = c(value = "X", group = "Y"),
                tb.rows = 1:3) +
   expand_limits(x = c(0,3), y = c(-2, 6))
 
+}
+\seealso{
+See \code{\link{geom_table}} for details on how tables respond
+  to mapped aesthetics and table themes. For details on predefined table
+  themes see \code{\link{ttheme_gtdefault}}.
 }

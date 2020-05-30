@@ -60,7 +60,7 @@
 #'   as argument by the user, but instead a data frame with the variables mapped
 #'   to aesthetics. In other words, it respects the grammar of graphics and
 #'   consequently within arguments passed through \code{method.args} names of
-#'   aesthetics like $x$ and $y$ should be used intead of the original variable
+#'   aesthetics like $x$ and $y$ should be used instead of the original variable
 #'   names, while data is automatically passed the data frame. This helps ensure
 #'   that the model is fitted to the same data as plotted in other layers.
 #'
@@ -75,15 +75,15 @@
 #'   \code{\link[gginnards]{geom_debug}}. An example is shown below.
 #'
 #' @seealso \code{\link[broom]{broom}} for details on how the tidying of the
-#'   resulst of model fits is done. See \code{\link{geom_table}} for details
-#'   on how the formating and location of the table can be adjusted.
+#'   result of model fits is done. See \code{\link{geom_table}} for details
+#'   on how inset tables respond to mapped aesthetics and table themes. For
+#'   details on predefined table themes see \code{\link{ttheme_gtdefault}}.
 #'
 #' @family ggplot2 statistics based on 'broom'.
 #'
 #' @export
 #'
 #' @examples
-#' library(gginnards)
 #' # data for examples
 #' x <- c(44.4, 45.9, 41.9, 53.3, 44.7, 44.1, 50.7, 45.2, 60.1)
 #' covariate <- sqrt(x) + rnorm(9)
@@ -96,10 +96,10 @@
 #'   stat_fit_tb() +
 #'   expand_limits(y = 70)
 #'
-#' # Linear regression
+#' # Linear regression using a table theme
 #' ggplot(my.df, aes(covariate, x)) +
 #'   geom_point() +
-#'   stat_fit_tb(geom = "debug") +
+#'   stat_fit_tb(table.theme = ttheme_gtlight) +
 #'   expand_limits(y = 70)
 #'
 #' # Polynomial regression

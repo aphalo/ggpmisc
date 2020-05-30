@@ -42,6 +42,10 @@
 #' @param parse If TRUE, the labels will be parsed into expressions and
 #'   displayed as described in \code{?plotmath}.
 #'
+#' @seealso See \code{\link{geom_table}} for details on how tables respond
+#'   to mapped aesthetics and table themes. For details on predefined table
+#'   themes see \code{\link{ttheme_gtdefault}}.
+#'
 #' @section Computed variables: The output of sequentially applying
 #'   \code{\link[dplyr]{slice}} with \code{tb.rows} as argument and
 #'   \code{\link[dplyr]{select}} with \code{tb.vars} to a list variable
@@ -62,6 +66,10 @@
 #'
 #' ggplot(my.df, aes(x, y, label = tbs)) +
 #'   stat_fmt_tb() +
+#'   expand_limits(x = c(0,3), y = c(-2, 6))
+#'
+#' ggplot(my.df, aes(x, y, label = tbs)) +
+#'   stat_fmt_tb(table.theme = ttheme_gtlight) +
 #'   expand_limits(x = c(0,3), y = c(-2, 6))
 #'
 #' ggplot(my.df, aes(x, y, label = tbs)) +
