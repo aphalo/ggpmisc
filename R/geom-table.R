@@ -286,12 +286,8 @@ GeomTable <-
           required_aes = c("x", "y", "label"),
 
           default_aes = aes(
-<<<<<<< HEAD
             colour = "black", fill = NA,
             size = 3.2, angle = 0, hjust = "inward",
-=======
-            colour = "black", fill = NA, size = 3.2, angle = 0, hjust = "inward",
->>>>>>> no-debug
             vjust = "inward", alpha = 1, family = "", fontface = 1,
             lineheight = 1.2
           ),
