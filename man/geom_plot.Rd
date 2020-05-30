@@ -138,7 +138,6 @@ The idea of implementing a \code{geom_custom()} for grobs has
 }
 \seealso{
 Other Statistics for adding insets to ggplots: 
-\code{\link{geom_grob}()},
-\code{\link{geom_table}()}
+\code{\link{geom_grob}()}
 }
 \concept{Statistics for adding insets to ggplots}

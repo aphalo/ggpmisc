@@ -58,7 +58,7 @@ can include aesthetics whose values you want to set, not map. See
 \item{table.theme}{NULL, list or function A gridExtra ttheme defintion, or
 a constructor for a ttheme or NULL for default.}
 
-\item{table.rownames, table.colnames}{logical flag to enable or disabling
+\item{table.rownames, table.colnames}{logical flag to enable or disable
 printing of row names and column names.}
 
 \item{table.hjust}{numeric Horizontal justification for the core and column
@@ -116,16 +116,21 @@ As all geoms, \code{geom_table()} and \code{geom_table_npc()} add a
   layer to a plot, and behave as expected in the grammar of graphics: ggplot
   themes do not affect how layers are rendered. The formatting of the inset
   table is done according to the the argument passed to \code{table.theme}.
+
   As the table is built with function gridExtra::gtable(), for formatting
   details, please, consult \code{\link[gridExtra]{tableGrob}}. If the
   argument passed to \code{table.theme} is a constructor function, the values
-  mapped to \code{size}, \code{color}, \code{fill}, \code{alpha}, and \code{family}
-  aesthetics will the passed to the theme constructor for each table. The
-  constructor \code{gridExtra::ttheme()} is used by default. For additional control
-  a ready constructed ttheme as a list object will be used as is, which means
-  that mapped aesthetics normally set through the table theme are ignored. A
-  better alternative to access all the flexibility of gridExtra is to define and pass as argument a customized ttheme
-  constructor.
+  mapped to \code{size}, \code{color}, \code{fill}, \code{alpha}, and
+  \code{family} aesthetics will the passed to the theme constructor for each
+  table. In the case of \code{colour} and \code{fill}, the default mapping
+  is to \code{NA} which triggers the use of the default base_colour of the
+  \code{ttheme}.
+
+  The constructor \code{ttheme_gtdefault} is used by default, but others
+  are available predefined or can created by the user. If instead of a
+  constructor a ready constructed ttheme as a list object is passed as
+  argument, it will be used as is. In such a case mapped aesthetics normally
+  mapped aesthetics are ignored if present.
 }
 \section{Alignment}{
  You can modify table alignment with the \code{vjust} and
@@ -175,7 +180,7 @@ ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
 ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
   geom_point() +
   geom_table(data = df, aes(x = x, y = y, label = tb),
-             table.theme = gridExtra::ttheme_minimal) +
+             table.theme = ttheme_gtminimal) +
   theme_classic()
 
 df2 <- tibble(x = 5.45, y = c(34, 29, 24), cyl = c(4, 6, 8),
@@ -208,8 +213,7 @@ This geometry is inspired on answers to two questions in
 function \code{\link[gridExtra]{tableGrob}} as it is used to
   construct the table.
 
-Other Statistics for adding insets to ggplots: 
-\code{\link{geom_grob}()},
-\code{\link{geom_plot}()}
+Other geometries for adding insets to ggplots: 
+\code{\link{ttheme_gtdefault}()}
 }
-\concept{Statistics for adding insets to ggplots}
+\concept{geometries for adding insets to ggplots}

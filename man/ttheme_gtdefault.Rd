@@ -6,11 +6,12 @@
 \alias{ttheme_gtbw}
 \alias{ttheme_gtplain}
 \alias{ttheme_gtdark}
+\alias{ttheme_gtlight}
 \title{Table themes}
 \usage{
 ttheme_gtdefault(
-  base_size = 12,
-  base_colour = "white",
+  base_size = 10,
+  base_colour = "black",
   base_family = "",
   parse = FALSE,
   padding = unit(c(1, 0.6), "char"),
@@ -18,8 +19,8 @@ ttheme_gtdefault(
 )
 
 ttheme_gtminimal(
-  base_size = 12,
-  base_colour = "white",
+  base_size = 10,
+  base_colour = "black",
   base_family = "",
   parse = FALSE,
   padding = unit(c(1, 0.6), "char"),
@@ -27,7 +28,7 @@ ttheme_gtminimal(
 )
 
 ttheme_gtbw(
-  base_size = 12,
+  base_size = 10,
   base_colour = "black",
   base_family = "",
   parse = FALSE,
@@ -36,8 +37,8 @@ ttheme_gtbw(
 )
 
 ttheme_gtplain(
-  base_size = 12,
-  base_colour = "white",
+  base_size = 10,
+  base_colour = "black",
   base_family = "",
   parse = FALSE,
   padding = unit(c(1, 0.6), "char"),
@@ -45,8 +46,17 @@ ttheme_gtplain(
 )
 
 ttheme_gtdark(
-  base_size = 12,
-  base_colour = "white",
+  base_size = 10,
+  base_colour = "grey90",
+  base_family = "",
+  parse = FALSE,
+  padding = unit(c(1, 0.6), "char"),
+  ...
+)
+
+ttheme_gtlight(
+  base_size = 10,
+  base_colour = "grey10",
   base_family = "",
   parse = FALSE,
   padding = unit(c(1, 0.6), "char"),
@@ -68,11 +78,12 @@ padding of text within each cell.}
 \item{...}{further arguments to control the gtable.}
 }
 \description{
-Addtional theme constructors for tables
+Additional theme constructors for use with \code{\link{geom_table}}.
 }
 \note{
 These theme constructors are wrappers on
   \code{gridExtra::ttheme_default()} and \code{gridExtra::ttheme_minimal()}.
+  They can also be used with \code{\link[gridExtra]{grid.table}} if desired.
 }
 \examples{
 library(dplyr)
@@ -87,23 +98,65 @@ mtcars \%>\%
 
 df <- tibble(x = 5.45, y = 34, tb = list(tb))
 
+# Same as the default theme constructor
+ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
+  geom_point() +
+  geom_table(data = df, aes(x = x, y = y, label = tb),
+             table.theme = ttheme_gtdefault) +
+  theme_classic()
+
+# Minimal theme constructor
 ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
   geom_point() +
   geom_table(data = df, aes(x = x, y = y, label = tb),
              table.theme = ttheme_gtminimal) +
   theme_classic()
 
+# A theme with white background
 ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
   geom_point() +
   geom_table(data = df, aes(x = x, y = y, label = tb),
              table.theme = ttheme_gtbw) +
   theme_bw()
 
+# Default colour of theme superceded by aesthetic constant
 ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
   geom_point() +
   geom_table(data = df, aes(x = x, y = y, label = tb),
-             table.theme = ttheme_gtdark, color = "white") +
+             table.theme = ttheme_gtbw, colour = "darkblue") +
+  theme_bw()
+
+# A theme with dark background
+ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
+  geom_point() +
+  geom_table(data = df, aes(x = x, y = y, label = tb),
+             table.theme = ttheme_gtdark) +
   theme_dark()
 
+# Default colour of theme superceded by aesthetic constant
+ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
+  geom_point() +
+  geom_table(data = df, aes(x = x, y = y, label = tb),
+             table.theme = ttheme_gtdark, colour = "yellow") +
+  theme_dark()
+
+# A theme with light background
+ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
+  geom_point() +
+  geom_table(data = df, aes(x = x, y = y, label = tb),
+             table.theme = ttheme_gtlight) +
+  theme_dark()
+
+# Default colour of theme superceded by aesthetic constant
+ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
+  geom_point() +
+  geom_table(data = df, aes(x = x, y = y, label = tb),
+             table.theme = ttheme_gtlight, colour = "darkred") +
+  theme_dark()
 
 }
+\seealso{
+Other geometries for adding insets to ggplots: 
+\code{\link{geom_table}()}
+}
+\concept{geometries for adding insets to ggplots}
