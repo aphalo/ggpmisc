@@ -21,6 +21,7 @@ stat_fit_tb(
   table.theme = NULL,
   table.rownames = FALSE,
   table.colnames = TRUE,
+  table.hjust = 1,
   parse = FALSE,
   na.rm = FALSE,
   show.legend = FALSE,
@@ -65,6 +66,9 @@ a constructor for a ttheme or NULL for default.}
 
 \item{table.rownames, table.colnames}{logical flag to enable or disabling
 printing of row names and column names.}
+
+\item{table.hjust}{numeric Horizontal justification for the core and column
+headings of the table.}
 
 \item{parse}{If TRUE, the labels will be parsed into expressions and
 displayed as described in \code{?plotmath}.}

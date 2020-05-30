@@ -37,6 +37,8 @@
 #'   a constructor for a ttheme or NULL for default.
 #' @param table.rownames,table.colnames logical flag to enable or disabling
 #'   printing of row names and column names.
+#' @param table.hjust numeric Horizontal justification for the core and column
+#'   headings of the table.
 #' @param parse If TRUE, the labels will be parsed into expressions and
 #'   displayed as described in \code{?plotmath}.
 #'
@@ -78,6 +80,7 @@ stat_fmt_tb <- function(mapping = NULL,
                         table.theme = NULL,
                         table.rownames = FALSE,
                         table.colnames = TRUE,
+                        table.hjust = 0.5,
                         parse = FALSE,
                         na.rm = FALSE,
                         show.legend = FALSE,
@@ -92,6 +95,7 @@ stat_fmt_tb <- function(mapping = NULL,
                   table.theme = table.theme,
                   table.rownames = table.rownames,
                   table.colnames = table.colnames,
+                  table.hjust = table.hjust,
                   parse = parse,
                   na.rm = na.rm,
                   ...)

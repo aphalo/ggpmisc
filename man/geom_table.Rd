@@ -14,6 +14,7 @@ geom_table(
   table.theme = NULL,
   table.rownames = FALSE,
   table.colnames = TRUE,
+  table.hjust = 0.5,
   parse = FALSE,
   na.rm = FALSE,
   show.legend = FALSE,
@@ -58,6 +59,9 @@ a constructor for a ttheme or NULL for default.}
 
 \item{table.rownames, table.colnames}{logical flag to enable or disabling
 printing of row names and column names.}
+
+\item{table.hjust}{numeric Horizontal justification for the core and column
+headings of the table.}
 
 \item{parse}{If TRUE, the labels will be parsed into expressions and
 displayed as described in \code{?plotmath}.}
@@ -107,13 +111,20 @@ These geoms work only with tibbles as \code{data}, as they expects a
   is used to rotate the table as a whole.
 }
 \note{
-Inset tables are handled consistently with the label aesthetic as data
-  and consequently are not affected by ggplot themes'. The formatting of the
-  inset follows the argument passed to \code{table.theme}. If the
-  argument is a constructor, the values mapped to \code{color}, \code{size},
-  \code{alpha}, and \code{family} aesthetics will the passed to the theme
-  constructor. For additional control a ready constructed ttheme as a list
-  object will be used as is.
+As all geoms, \code{geom_table()} and \code{geom_table_npc()} add a
+  layer to a plot, and behave as expected in the grammar of graphics: ggplot
+  themes do not affect how layers are rendered. The formatting of the inset
+  table is done according to the the argument passed to \code{table.theme}.
+  As the table is built with function gridExtra::gtable(), for formatting
+  details, please, consult \code{\link[gridExtra]{tableGrob}}. If the
+  argument passed to \code{table.theme} is a constructor function, the values
+  mapped to \code{size}, \code{color}, \code{fill}, \code{alpha}, and \code{family}
+  aesthetics will the passed to the theme constructor for each table. The
+  constructor \code{gridExtra::ttheme()} is used by default. For additional control
+  a ready constructed ttheme as a list object will be used as is, which means
+  that mapped aesthetics normally set through the table theme are ignored. A
+  better alternative to access all the flexibility of gridExtra is to define and pass as argument a customized ttheme
+  constructor.
 }
 \section{Alignment}{
  You can modify table alignment with the \code{vjust} and
@@ -147,16 +158,19 @@ mtcars \%>\%
 
 df <- tibble(x = 5.45, y = 34, tb = list(tb))
 
+# using defaults
 ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
   geom_point() +
   geom_table(data = df, aes(x = x, y = y, label = tb))
 
+# settings aesthetics to constants
 ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
   geom_point() +
   geom_table(data = df, aes(x = x, y = y, label = tb),
-             color = "red", family = "serif", size = 5,
+             color = "red", fill = "#FFCCCC", family = "serif", size = 5,
              angle = 90, vjust = 0)
 
+# passing a theme constructor as argument
 ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
   geom_point() +
   geom_table(data = df, aes(x = x, y = y, label = tb),
@@ -166,12 +180,14 @@ ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
 df2 <- tibble(x = 5.45, y = c(34, 29, 24), cyl = c(4, 6, 8),
               tb = list(tb[1, 1:3], tb[2, 1:3], tb[3, 1:3]))
 
+# mapped aesthetics
 ggplot(data = mtcars, mapping = aes(wt, mpg, color = factor(cyl))) +
   geom_point() +
   geom_table(data = df2,
              inherit.aes = TRUE,
              mapping = aes(x = x, y = y, label = tb))
 
+# Using native plot coordinates instead of data coordinates
 dfnpc <- tibble(x = 0.95, y = 0.95, tb = list(tb))
 
 ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
