@@ -1,15 +1,10 @@
 #' Inset plots
 #'
-#' \code{geom_plot} adds ggplot objects as insets to the base ggplot, using
-#' syntax similar to that of \code{\link[ggplot2]{geom_label}}.
-#'
-#' Note the "width" and "height" like of a text element are 0, so stacking and
-#' dodging inset plots will not work by default, and axis limits are not
-#' automatically expanded to include all inset plots. Obviously, plots do have
-#' height and width, but they are physical units, not data units. The amount of
-#' space they occupy on the main plot is not constant in data units of the base
-#' plot: when you modify scale limits, inset plots stay the same size relative
-#' to the physical size of the base plot.
+#' \code{geom_plot} and \code{geom_plot_npc} add ggplot objects as insets to the
+#' base ggplot, using syntax similar to that of
+#' \code{\link[ggplot2]{geom_label}}. In most respects they behave as any other
+#' ggplot geometry: a layer con contain multiple tables and faceting works as
+#' usual.
 #'
 #' @section Inset alignment: You can modify inset plot alignment with the
 #'   \code{vjust} and \code{hjust} aesthetics. These can either be a number
@@ -48,6 +43,15 @@
 #'   to the inner plot, it may be also necessary to add explicitly coordinates
 #'   to the outer plots.
 #'
+#' @details The "width" and "height" of an inset as for a text element are
+#'   0, so stacking and dodging inset plots will not work by default, and axis
+#'   limits are not automatically expanded to include all inset plots.
+#'   Obviously, insets do have height and width, but they are physical units,
+#'   not data units. The amount of space they occupy on the main plot is not
+#'   constant in data units of the base plot: when you modify scale limits,
+#'   inset plots stay the same size relative to the physical size of the base
+#'   plot.
+#'
 #' @note These geoms work only with tibbles as \code{data}, as they expects a
 #'   list of ggplots ("gg" objects) to be mapped to the \code{label} aesthetic.
 #'   Aesthetics mappings in the inset plot are independent of those in the base
@@ -73,7 +77,7 @@
 #'   been discussed as an issue at
 #'   \url{https://github.com/tidyverse/ggplot2/issues/1399}.
 #'
-#' @family Statistics for adding insets to ggplots
+#' @family geometries for adding insets to ggplots
 #'
 #' @export
 #'

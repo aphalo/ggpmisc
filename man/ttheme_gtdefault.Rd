@@ -77,8 +77,18 @@ padding of text within each cell.}
 
 \item{...}{further arguments to control the gtable.}
 }
+\value{
+A \code{list} object that can be used as \code{ttheme} in the
+  construction of tables with functions from package 'gridExtra'.
+}
 \description{
 Additional theme constructors for use with \code{\link{geom_table}}.
+}
+\details{
+Depending on the theme, the base_colour, which is
+  mapped to the \code{colour} aesthetic if present, is applied to only the
+  text elements, or to the text elements and rules. The difference is
+  exemplified below.
 }
 \note{
 These theme constructors are wrappers on
@@ -144,19 +154,19 @@ ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
 ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
   geom_point() +
   geom_table(data = df, aes(x = x, y = y, label = tb),
-             table.theme = ttheme_gtlight) +
-  theme_dark()
+             table.theme = ttheme_gtlight)
 
 # Default colour of theme superceded by aesthetic constant
 ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
   geom_point() +
   geom_table(data = df, aes(x = x, y = y, label = tb),
-             table.theme = ttheme_gtlight, colour = "darkred") +
-  theme_dark()
+             table.theme = ttheme_gtlight, colour = "darkred")
 
 }
 \seealso{
 Other geometries for adding insets to ggplots: 
+\code{\link{geom_grob}()},
+\code{\link{geom_plot}()},
 \code{\link{geom_table}()}
 }
 \concept{geometries for adding insets to ggplots}

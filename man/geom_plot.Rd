@@ -58,17 +58,21 @@ define both data and aesthetics and shouldn't inherit behaviour from the
 default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
 }
 \description{
-\code{geom_plot} adds ggplot objects as insets to the base ggplot, using
-syntax similar to that of \code{\link[ggplot2]{geom_label}}.
+\code{geom_plot} and \code{geom_plot_npc} add ggplot objects as insets to the
+base ggplot, using syntax similar to that of
+\code{\link[ggplot2]{geom_label}}. In most respects they behave as any other
+ggplot geometry: a layer con contain multiple tables and faceting works as
+usual.
 }
 \details{
-Note the "width" and "height" like of a text element are 0, so stacking and
-dodging inset plots will not work by default, and axis limits are not
-automatically expanded to include all inset plots. Obviously, plots do have
-height and width, but they are physical units, not data units. The amount of
-space they occupy on the main plot is not constant in data units of the base
-plot: when you modify scale limits, inset plots stay the same size relative
-to the physical size of the base plot.
+The "width" and "height" of an inset as for a text element are
+  0, so stacking and dodging inset plots will not work by default, and axis
+  limits are not automatically expanded to include all inset plots.
+  Obviously, insets do have height and width, but they are physical units,
+  not data units. The amount of space they occupy on the main plot is not
+  constant in data units of the base plot: when you modify scale limits,
+  inset plots stay the same size relative to the physical size of the base
+  plot.
 }
 \note{
 These geoms work only with tibbles as \code{data}, as they expects a
@@ -137,7 +141,9 @@ The idea of implementing a \code{geom_custom()} for grobs has
   \url{https://github.com/tidyverse/ggplot2/issues/1399}.
 }
 \seealso{
-Other Statistics for adding insets to ggplots: 
-\code{\link{geom_grob}()}
+Other geometries for adding insets to ggplots: 
+\code{\link{geom_grob}()},
+\code{\link{geom_table}()},
+\code{\link{ttheme_gtdefault}()}
 }
-\concept{Statistics for adding insets to ggplots}
+\concept{geometries for adding insets to ggplots}

@@ -83,33 +83,36 @@ default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
 \code{geom_table} adds a textual table directly to the ggplot using syntax
 similar to that of \code{\link[ggplot2]{geom_label}} while
 \code{geom_table_npc} is similar to \code{geom_label_npc} in that \code{x}
-and \code{y} coordinates are given in npc units.
+and \code{y} coordinates are given in npc units. In most respects they
+behave as any other ggplot geometry: a layer con contain multiple tables
+and faceting works as usual.
 }
 \details{
-The "width" and "height" of the table, like for text elements are 0, so
-stacking and dodging tables will not work by default. In addition, axis
-limits are not automatically expanded to include the whole tables, but
-instead only their x and y coordinates. Obviously, tables do have height and
-width, but they are in physical units, not data units. The amount of space
-they occupy on a plot is not constant in data units: when you resize a plot,
-tables stay the same size, but the size of the axes changes.
-
 These geoms work only with tibbles as \code{data}, as they expects a
   list of data frames or tibbles ("tb" objects) to be mapped to the
   \code{label} aesthetic. Aesthetics mappings in the inset plot are
   independent of those in the base plot.
 
   In the case of \code{geom_table()}, \code{x} and \code{y} aesthetics
-  determine the position of the whole inset table, similarly to that of a text
-  label, justification is interpreted as indicating the position of the table
-  with respect to the $x$ and $y$ coordinates in the data, and \code{angle}
-  is used to rotate the table as a whole.
+  determine the position of the whole inset table, similarly to that of a
+  text label, justification is interpreted as indicating the position of the
+  table with respect to the $x$ and $y$ coordinates in the data, and
+  \code{angle} is used to rotate the table as a whole.
 
-  In the case of \code{geom_table_npc()}, \code{npcx} and \code{npcy} aesthetics
-  determine the position of the whole inset table, similarly to that of a text
-  label, justification is interpreted as indicating the position of the table
-  with respect to the $x$ and $y$ coordinates in "npc" units, and \code{angle}
-  is used to rotate the table as a whole.
+  In the case of \code{geom_table_npc()}, \code{npcx} and \code{npcy}
+  aesthetics determine the position of the whole inset table, similarly to
+  that of a text label, justification is interpreted as indicating the
+  position of the table with respect to the $x$ and $y$ coordinates in "npc"
+  units, and \code{angle} is used to rotate the table as a whole.
+
+  The "width" and "height" of an inset as for a text element are
+  0, so stacking and dodging inset plots will not work by default, and axis
+  limits are not automatically expanded to include all inset plots.
+  Obviously, insets do have height and width, but they are physical units,
+  not data units. The amount of space they occupy on the main plot is not
+  constant in data units of the base plot: when you modify scale limits,
+  inset plots stay the same size relative to the physical size of the base
+  plot.
 }
 \note{
 As all geoms, \code{geom_table()} and \code{geom_table_npc()} add a
@@ -131,6 +134,11 @@ As all geoms, \code{geom_table()} and \code{geom_table_npc()} add a
   constructor a ready constructed ttheme as a list object is passed as
   argument, it will be used as is. In such a case mapped aesthetics normally
   mapped aesthetics are ignored if present.
+
+  Complex tables with annotations or different coloring of rows or cells can
+  be constructed with functions in package 'gridExtra' or in any other way
+  as long as they can be saved as grid graphical objects and added to a
+  ggplot as a new layer with \code{\link{geom_grob}}.
 }
 \section{Alignment}{
  You can modify table alignment with the \code{vjust} and
@@ -214,6 +222,8 @@ function \code{\link[gridExtra]{tableGrob}} as it is used to
   construct the table.
 
 Other geometries for adding insets to ggplots: 
+\code{\link{geom_grob}()},
+\code{\link{geom_plot}()},
 \code{\link{ttheme_gtdefault}()}
 }
 \concept{geometries for adding insets to ggplots}

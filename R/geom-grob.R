@@ -1,13 +1,9 @@
 #' Inset graphical objects
 #'
-#' \code{geom_grob} adds a Grob as inset to the ggplot using syntax
-#' similar to that of \code{\link[ggplot2]{geom_label}}.
-#'
-#' Note the "width" and "height" like of a text element are 0, so stacking
-#' and dodging Grobs will not work by default, and axis limits are not
-#' automatically expanded to include all inset Grobs. Obviously, Grobs do have
-#' height and width, but they are in physical units, not data units. The amount of
-#' space they occupy on the main plot is constant in data units.
+#' \code{geom_grob} and \code{geom_grob_npc} add a Grob as inset to the ggplot
+#' using syntax similar to that of \code{\link[ggplot2]{geom_label}}.In most
+#' respects they behave as any other ggplot geometry: a layer con contain
+#' multiple tables and faceting works as usual.
 #'
 #' @section Alignment: You can modify table alignment with the \code{vjust} and
 #'   \code{hjust} aesthetics. These can either be a number between 0
@@ -41,6 +37,15 @@
 #'   define both data and aesthetics and shouldn't inherit behaviour from the
 #'   default plot specification, e.g. \code{\link[ggplot2]{borders}}.
 #'
+#' @details The "width" and "height" of an inset as for a text element are
+#'   0, so stacking and dodging inset plots will not work by default, and axis
+#'   limits are not automatically expanded to include all inset plots.
+#'   Obviously, insets do have height and width, but they are physical units,
+#'   not data units. The amount of space they occupy on the main plot is not
+#'   constant in data units of the base plot: when you modify scale limits,
+#'   inset plots stay the same size relative to the physical size of the base
+#'   plot.
+#'
 #' @note These geoms work only with tibbles as \code{data}, as they expects a list
 #'   of graphics objects ("grob") to be mapped to the \code{label} aesthetic.
 #'   Aesthetics mappings in the inset plot are independent of those in the base
@@ -66,7 +71,7 @@
 #'   been discussed as an issue at
 #'   \url{https://github.com/tidyverse/ggplot2/issues/1399}.
 #'
-#' @family Statistics for adding insets to ggplots
+#' @family geometries for adding insets to ggplots
 #'
 #' @export
 #'
