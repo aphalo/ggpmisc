@@ -42,6 +42,8 @@
 #'   a constructor for a ttheme or NULL for default.
 #' @param table.rownames,table.colnames logical flag to enable or disabling
 #'   printing of row names and column names.
+#' @param table.hjust numeric Horizontal justification for the core and column
+#'   headings of the table.
 #' @param parse If TRUE, the labels will be parsed into expressions and
 #'   displayed as described in \code{?plotmath}.
 #'
@@ -152,6 +154,7 @@ stat_fit_tb <- function(mapping = NULL, data = NULL, geom = "table_npc",
                         table.theme = NULL,
                         table.rownames = FALSE,
                         table.colnames = TRUE,
+                        table.hjust = 1,
                         parse = FALSE,
                         na.rm = FALSE, show.legend = FALSE,
                         inherit.aes = TRUE,
@@ -179,6 +182,7 @@ stat_fit_tb <- function(mapping = NULL, data = NULL, geom = "table_npc",
                   table.theme = table.theme,
                   table.rownames = table.rownames,
                   table.colnames = table.colnames,
+                  table.hjust = table.hjust,
                   parse = parse,
                   na.rm = na.rm,
                   ...)
