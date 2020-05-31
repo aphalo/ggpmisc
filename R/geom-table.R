@@ -134,6 +134,11 @@
 #'   geom_point() +
 #'   geom_table(data = df, aes(x = x, y = y, label = tb))
 #'
+#' ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
+#'   geom_point() +
+#'   geom_table(data = df, aes(x = x, y = y, label = tb),
+#'              table.rownames = TRUE, table.theme = ttheme_gtstripes)
+#'
 #' # settings aesthetics to constants
 #' ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
 #'   geom_point() +
@@ -235,7 +240,8 @@ gtb_draw_panel_fun <-
 
     # replace NULL with default
     if (is.null(table.theme)) {
-      table.theme <- ttheme_gtdefault
+      table.theme <-
+        getOption("ggpmisc.ttheme.default", default = ttheme_gtdefault)
     }
 
     tb.grobs <- grid::gList()
@@ -404,7 +410,8 @@ gtbnpc_draw_panel_fun <-
 
     # replace NULL with default
     if (is.null(table.theme)) {
-      table.theme <- ttheme_gtdefault
+      table.theme <-
+        getOption("ggpmisc.ttheme.default", default = ttheme_gtdefault)
     }
 
     tb.grobs <- grid::gList()
@@ -412,6 +419,7 @@ gtbnpc_draw_panel_fun <-
     for (row.idx in seq_len(nrow(data))) {
       # if needed, construct the table theme
       if (is.function(table.theme)) {
+        # text position in cell depends on hjust
         table.x <- if(table.hjust == 0.5) 0.5 else table.hjust * 0.9
         if (is.na(data$fill[row.idx])) {
           core.params <-
@@ -595,11 +603,24 @@ GeomTableNpc <-
 #'   geom_table(data = df, aes(x = x, y = y, label = tb),
 #'              table.theme = ttheme_gtlight, colour = "darkred")
 #'
+#' # Default colour of theme superceded by aesthetic constant
+#' ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
+#'   geom_point() +
+#'   geom_table(data = df, aes(x = x, y = y, label = tb),
+#'              table.theme = ttheme_gtsimple)
+#'
+#' # Default colour of theme superceded by aesthetic constant
+#' ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
+#'   geom_point() +
+#'   geom_table(data = df, aes(x = x, y = y, label = tb),
+#'              table.theme = ttheme_gtstripes) +
+#'   theme_dark()
+#'
 ttheme_gtdefault <- function (base_size = 10,
                               base_colour = "black",
                               base_family = "",
                               parse = FALSE,
-                              padding = unit(c(1, 0.6), "char"),
+                              padding = unit(c(0.8, 0.6), "char"),
                               ...)
 {
   gridExtra::ttheme_default(base_size = base_size,
@@ -618,7 +639,7 @@ ttheme_gtminimal <- function (base_size = 10,
                               base_colour = "black",
                               base_family = "",
                               parse = FALSE,
-                              padding = unit(c(1, 0.6), "char"),
+                              padding = unit(c(0.5, 0.4), "char"),
                               ...)
 {
   gridExtra::ttheme_minimal(base_size = base_size,
@@ -637,7 +658,7 @@ ttheme_gtbw <- function (base_size = 10,
                          base_colour = "black",
                          base_family = "",
                          parse = FALSE,
-                         padding = unit(c(1, 0.6), "char"),
+                         padding = unit(c(0.8, 0.6), "char"),
                          ...)
 {
   core <-
@@ -665,11 +686,11 @@ ttheme_gtbw <- function (base_size = 10,
 #' @export
 #'
 ttheme_gtplain <- function (base_size = 10,
-                         base_colour = "black",
-                         base_family = "",
-                         parse = FALSE,
-                         padding = unit(c(1, 0.6), "char"),
-                         ...)
+                            base_colour = "black",
+                            base_family = "",
+                            parse = FALSE,
+                            padding = unit(c(0.8, 0.6), "char"),
+                            ...)
 {
   core <-
     list(bg_params = list(fill = "white"))
@@ -699,7 +720,7 @@ ttheme_gtdark <- function (base_size = 10,
                            base_colour = "grey90",
                            base_family = "",
                            parse = FALSE,
-                           padding = unit(c(1, 0.6), "char"),
+                           padding = unit(c(0.8, 0.6), "char"),
                            ...)
 {
   core <-
@@ -730,7 +751,7 @@ ttheme_gtlight <- function (base_size = 10,
                             base_colour = "grey10",
                             base_family = "",
                             parse = FALSE,
-                            padding = unit(c(1, 0.6), "char"),
+                            padding = unit(c(0.8, 0.6), "char"),
                             ...)
 {
   core <-
@@ -751,6 +772,120 @@ ttheme_gtlight <- function (base_size = 10,
                               rowhead = rowhead)
 
   utils::modifyList(default, list(...))
+}
+
+#' @rdname ttheme_gtdefault
+#'
+#' @export
+#'
+ttheme_gtsimple <- function (base_size = 10,
+                            base_colour = "grey10",
+                            base_family = "",
+                            parse = FALSE,
+                            padding = unit(c(0.5, 0.4), "char"),
+                            ...)
+{
+  core <-
+    list(bg_params = list(fill = "white", lwd = 0, col = NA))
+  colhead <-
+    list(bg_params = list(fill = "grey80", lwd = 0, col = NA))
+  rowhead <-
+    list(bg_params = list(fill = "grey80", lwd = 0, col = NA))
+
+  default <-
+    gridExtra::ttheme_default(base_size = base_size,
+                              base_colour = base_colour,
+                              base_family = base_family,
+                              parse = parse,
+                              padding = padding,
+                              core = core,
+                              colhead = colhead,
+                              rowhead = rowhead)
+
+  utils::modifyList(default, list(...))
+}
+
+#' @rdname ttheme_gtdefault
+#'
+#' @export
+#'
+ttheme_gtstripes <- function (base_size = 10,
+                              base_colour = "grey10",
+                              base_family = "",
+                              parse = FALSE,
+                              padding = unit(c(0.8, 0.6), "char"),
+                              ...)
+{
+  core <-
+    list(bg_params = list(fill = c("white", "grey90"), lwd = 0, col = NA))
+  colhead <-
+    list(bg_params = list(fill = "grey75", lwd = 0, col = NA))
+  rowhead <-
+    list(bg_params = list(fill = "grey75", lwd = 0, col = NA))
+
+  default <-
+    gridExtra::ttheme_default(base_size = base_size,
+                              base_colour = base_colour,
+                              base_family = base_family,
+                              parse = parse,
+                              padding = padding,
+                              core = core,
+                              colhead = colhead,
+                              rowhead = rowhead)
+
+  utils::modifyList(default, list(...))
+}
+
+#' Set default table theme
+#'
+#' Set R option to the theme to use as current default. This function is
+#' implemented differently but is used in the same way as
+#' \code{ggplot2::theme_set()} but affects the default table-theme instead
+#' of the plot theme.
+#'
+#' @note The ttheme is set when a plot object is constructed, and consequently
+#' the option setting does not affect rendering of ready built plot objects.
+#'
+#' @param table.theme NULL, list or function A gridExtra ttheme defintion, or
+#'   a constructor for a ttheme or NULL for default.
+#'
+#' @return A named list with the previous value of the option.
+#'
+#' @export
+#'
+#' @examples
+#' library(dplyr)
+#' library(tibble)
+#'
+#' mtcars %>%
+#'   group_by(cyl) %>%
+#'   summarize(wt = mean(wt), mpg = mean(mpg)) %>%
+#'   ungroup() %>%
+#'   mutate(wt = sprintf("%.2f", wt),
+#'          mpg = sprintf("%.1f", mpg)) -> tb
+#'
+#' df <- tibble(x = 5.45, y = 34, tb = list(tb))
+#'
+#' # Same as the default theme constructor
+#' ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
+#'   geom_point() +
+#'   geom_table(data = df, aes(x = x, y = y, label = tb))
+#'
+#' # set a new default
+#' old_ttheme <- ttheme_set(ttheme_gtstripes)
+#'
+#' ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
+#'   geom_point() +
+#'   geom_table(data = df, aes(x = x, y = y, label = tb))
+#'
+#' # restore previous setting
+#' ttheme_set(old_ttheme)
+#'
+ttheme_set <- function(table.theme = NULL) {
+  stopifnot(is.null(table.theme) ||
+              is.function(table.theme) ||
+              is.list(table.theme))
+  invisible(options(ggpmisc.ttheme.default = table.theme)[[1]])
 }
 
 # copied from geom-text.r from 'ggplot2' 3.1.0

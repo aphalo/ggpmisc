@@ -177,6 +177,11 @@ ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
   geom_point() +
   geom_table(data = df, aes(x = x, y = y, label = tb))
 
+ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
+  geom_point() +
+  geom_table(data = df, aes(x = x, y = y, label = tb),
+             table.rownames = TRUE, table.theme = ttheme_gtstripes)
+
 # settings aesthetics to constants
 ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
   geom_point() +

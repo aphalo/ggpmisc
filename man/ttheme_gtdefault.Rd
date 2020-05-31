@@ -7,6 +7,8 @@
 \alias{ttheme_gtplain}
 \alias{ttheme_gtdark}
 \alias{ttheme_gtlight}
+\alias{ttheme_gtsimple}
+\alias{ttheme_gtstripes}
 \title{Table themes}
 \usage{
 ttheme_gtdefault(
@@ -14,7 +16,7 @@ ttheme_gtdefault(
   base_colour = "black",
   base_family = "",
   parse = FALSE,
-  padding = unit(c(1, 0.6), "char"),
+  padding = unit(c(0.8, 0.6), "char"),
   ...
 )
 
@@ -23,7 +25,7 @@ ttheme_gtminimal(
   base_colour = "black",
   base_family = "",
   parse = FALSE,
-  padding = unit(c(1, 0.6), "char"),
+  padding = unit(c(0.5, 0.4), "char"),
   ...
 )
 
@@ -32,7 +34,7 @@ ttheme_gtbw(
   base_colour = "black",
   base_family = "",
   parse = FALSE,
-  padding = unit(c(1, 0.6), "char"),
+  padding = unit(c(0.8, 0.6), "char"),
   ...
 )
 
@@ -41,7 +43,7 @@ ttheme_gtplain(
   base_colour = "black",
   base_family = "",
   parse = FALSE,
-  padding = unit(c(1, 0.6), "char"),
+  padding = unit(c(0.8, 0.6), "char"),
   ...
 )
 
@@ -50,7 +52,7 @@ ttheme_gtdark(
   base_colour = "grey90",
   base_family = "",
   parse = FALSE,
-  padding = unit(c(1, 0.6), "char"),
+  padding = unit(c(0.8, 0.6), "char"),
   ...
 )
 
@@ -59,7 +61,25 @@ ttheme_gtlight(
   base_colour = "grey10",
   base_family = "",
   parse = FALSE,
-  padding = unit(c(1, 0.6), "char"),
+  padding = unit(c(0.8, 0.6), "char"),
+  ...
+)
+
+ttheme_gtsimple(
+  base_size = 10,
+  base_colour = "grey10",
+  base_family = "",
+  parse = FALSE,
+  padding = unit(c(0.5, 0.4), "char"),
+  ...
+)
+
+ttheme_gtstripes(
+  base_size = 10,
+  base_colour = "grey10",
+  base_family = "",
+  parse = FALSE,
+  padding = unit(c(0.8, 0.6), "char"),
   ...
 )
 }
@@ -161,6 +181,19 @@ ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
   geom_point() +
   geom_table(data = df, aes(x = x, y = y, label = tb),
              table.theme = ttheme_gtlight, colour = "darkred")
+
+# Default colour of theme superceded by aesthetic constant
+ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
+  geom_point() +
+  geom_table(data = df, aes(x = x, y = y, label = tb),
+             table.theme = ttheme_gtsimple)
+
+# Default colour of theme superceded by aesthetic constant
+ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
+  geom_point() +
+  geom_table(data = df, aes(x = x, y = y, label = tb),
+             table.theme = ttheme_gtstripes) +
+  theme_dark()
 
 }
 \seealso{
