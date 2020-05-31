@@ -181,6 +181,14 @@ geom_table <- function(mapping = NULL, data = NULL,
                        na.rm = FALSE,
                        show.legend = FALSE,
                        inherit.aes = FALSE) {
+  if (is.character(table.hjust)) {
+    table.hjust <- switch(table.hjust,
+                          left = 0,
+                          middle = 0.5,
+                          center = 0.5,
+                          right = 1,
+                          0.5)
+  }
   layer(
     data = data,
     mapping = mapping,
@@ -249,7 +257,7 @@ gtb_draw_panel_fun <-
     for (row.idx in seq_len(nrow(data))) {
       # if needed, construct the table theme
       if (is.function(table.theme)) {
-        table.x <- if(table.hjust == 0.5) 0.5 else table.hjust * 0.9
+        table.x <- if(table.hjust == 0.5) 0.5 else table.hjust * 0.8 + 0.1
         if (is.na(data$fill[[row.idx]])) {
           core.params <-
             list(fg_params = list(hjust = table.hjust, x = table.x))
@@ -350,6 +358,14 @@ geom_table_npc <- function(mapping = NULL, data = NULL,
                            na.rm = FALSE,
                            show.legend = FALSE,
                            inherit.aes = FALSE) {
+  if (is.character(table.hjust)) {
+    table.hjust <- switch(table.hjust,
+                          left = 0,
+                          middle = 0.5,
+                          center = 0.5,
+                          right = 1,
+                          0.5)
+  }
   layer(
     data = data,
     mapping = mapping,
@@ -420,7 +436,7 @@ gtbnpc_draw_panel_fun <-
       # if needed, construct the table theme
       if (is.function(table.theme)) {
         # text position in cell depends on hjust
-        table.x <- if(table.hjust == 0.5) 0.5 else table.hjust * 0.9
+        table.x <- if(table.hjust == 0.5) 0.5 else table.hjust * 0.8 + 0.1
         if (is.na(data$fill[row.idx])) {
           core.params <-
             list(fg_params = list(hjust = table.hjust, x = table.x))

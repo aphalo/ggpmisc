@@ -93,6 +93,26 @@ ggplot(mpg, aes(displ, hwy, colour = factor(cyl))) +
   geom_point() 
 ```
 
+Table themes are supported through parameter `table.theme` and if variables or constants are mapped to the 
+`colour`, `fill`, `size`, `family`, aesthetics they override the corresponding
+theme settings. The display of `rownames` and `colnames` can be enabled or
+disable through parameter `table.rownames` and `table.colnames` and the 
+horizontal justification of text in the core of the table through parameter
+`table.hjust`.
+
+Parameter `table.theme` accepts as arguments `NULL` for use of the current
+default, a `ttheme` constructor function such as those defined in package
+'gridExtra', or the variations on them defined in this package. The current
+default can be set with function `ttheme_set()`.
+
+```{r}
+ggplot(mpg, aes(displ, hwy, colour = factor(cyl))) +
+  geom_table(data = data.tb, aes(x, y, label = tb),
+             table.theme = ttheme_gtsimple,
+             table.hjust = 0, colour = "darkred", fill = "#FFFFBB") +
+  geom_point() 
+```
+
 Using `stat_fmt_tb()` we can rename columns of the tibble,
 and/or select a subset of columns or a slice of rows as shown below. To provide
 a complete example we also replace the names of the _x_, _y_ and _colour_
@@ -101,6 +121,7 @@ aesthetics.
 ```{r}
 ggplot(mpg, aes(displ, hwy, colour = factor(cyl))) +
   geom_table(data = data.tb, aes(x, y, label = tb),
+             table.theme = ttheme_gtlight,
              size = 3, colour = "darkblue",
              stat = "fmt_tb", tb.vars = c(Cylinders = "cyl", "MPG" = "hwy")) +
   labs(x = "Engine displacement (l)", y = "Fuel use efficiency (MPG)",
@@ -109,8 +130,6 @@ ggplot(mpg, aes(displ, hwy, colour = factor(cyl))) +
   theme_bw()
 
 ```
-
-
 
 Parsed text, using plot math syntax is supported in the table, with fall-back to
 plain text in case of parsing errors, on a cell by cell basis. Here we plot
@@ -958,7 +977,7 @@ models when `x` or `y` is a factor (as in such cases `ggplot` splits the data
 into groups, one for each level of the factor, which is needed for example for
 `stat_summary()` to work as expected). By default, the `"table"` geometry is
 used. The use of `geom_table()` is described in a separate section of this User
-Guide.
+Guide. Table themes and mapped aesthetic are supported.
 
 The default output of `stat_fit_tb` is the default output from `tidy(mf)` where
 `mf` is the fitted model.
