@@ -31,6 +31,7 @@ reference:
     - geom_grob
     - geom_table
     - ttheme_gtdefault
+    - ttheme_set
   - title: Statistics
     desc: It is often useful to summarize data before plotting, and that is what these transformations do.
     contents:

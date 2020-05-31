@@ -58,6 +58,97 @@ test_that("numbers_tb", {
                                            mapping = aes(x, y, label = tb)))
 })
 
+test_that("theme_tb", {
+  my_data.tb <- tibble(x = -5:5, y = -5:5)
+  tb <- tibble(a = 2^(2:4), b = 2^(4:2))
+  my.tb <- tibble(x = 0, y = 0, tb = list(tb))
+  ttheme_set(ttheme_gtdark)
+  vdiffr::expect_doppelganger("ttheme_set_dark",
+                              ggplot() +
+                                geom_table(data = my.tb,
+                                           mapping = aes(x, y, label = tb)))
+  ttheme_set()
+  vdiffr::expect_doppelganger("ttheme_gtdefault_just_1",
+                              ggplot() +
+                                geom_table(data = my.tb,
+                                           table.theme = ttheme_gtdefault,
+                                           table.hjust = 1,
+                                           mapping = aes(x, y, label = tb)))
+  vdiffr::expect_doppelganger("ttheme_gtdefault_just_0",
+                              ggplot() +
+                                geom_table(data = my.tb,
+                                           table.theme = ttheme_gtdefault,
+                                           table.hjust = 0,
+                                           mapping = aes(x, y, label = tb)))
+  vdiffr::expect_doppelganger("ttheme_gtdefault_just_05",
+                              ggplot() +
+                                geom_table(data = my.tb,
+                                           table.theme = ttheme_gtdefault,
+                                           table.hjust = 0.5,
+                                           mapping = aes(x, y, label = tb)))
+  vdiffr::expect_doppelganger("ttheme_gtdefault_just_right",
+                              ggplot() +
+                                geom_table(data = my.tb,
+                                           table.theme = ttheme_gtdefault,
+                                           table.hjust = "right",
+                                           mapping = aes(x, y, label = tb)))
+  vdiffr::expect_doppelganger("ttheme_gtdefault_just_middle",
+                              ggplot() +
+                                geom_table(data = my.tb,
+                                           table.theme = ttheme_gtdefault,
+                                           table.hjust = "middle",
+                                           mapping = aes(x, y, label = tb)))
+  vdiffr::expect_doppelganger("ttheme_gtdefault_just_center",
+                              ggplot() +
+                                geom_table(data = my.tb,
+                                           table.theme = ttheme_gtdefault,
+                                           table.hjust = "center",
+                                           mapping = aes(x, y, label = tb)))
+  vdiffr::expect_doppelganger("ttheme_gtdefault_just_left",
+                              ggplot() +
+                                geom_table(data = my.tb,
+                                           table.theme = ttheme_gtdefault,
+                                           table.hjust = "left",
+                                           mapping = aes(x, y, label = tb)))
+  vdiffr::expect_doppelganger("ttheme_gtdefault_rownames",
+                              ggplot() +
+                                geom_table(data = my.tb,
+                                           table.theme = ttheme_gtdefault,
+                                           table.rownames = TRUE,
+                                           mapping = aes(x, y, label = tb)))
+  vdiffr::expect_doppelganger("ttheme_gtdefault_colnames",
+                              ggplot() +
+                                geom_table(data = my.tb,
+                                           table.theme = ttheme_gtdefault,
+                                           table.colnames = FALSE,
+                                           mapping = aes(x, y, label = tb)))
+  vdiffr::expect_doppelganger("ttheme_gtminimal",
+                              ggplot() +
+                                geom_table(data = my.tb,
+                                           table.theme = ttheme_gtminimal,
+                                           mapping = aes(x, y, label = tb)))
+  vdiffr::expect_doppelganger("ttheme_gtsimple",
+                              ggplot() +
+                                geom_table(data = my.tb,
+                                           table.theme = ttheme_gtsimple,
+                                           mapping = aes(x, y, label = tb)))
+  vdiffr::expect_doppelganger("ttheme_gtdark",
+                              ggplot() +
+                                geom_table(data = my.tb,
+                                           table.theme = ttheme_gtdark,
+                                           mapping = aes(x, y, label = tb)))
+  vdiffr::expect_doppelganger("ttheme_gtlight",
+                              ggplot() +
+                                geom_table(data = my.tb,
+                                           table.theme = ttheme_gtlight,
+                                           mapping = aes(x, y, label = tb)))
+  vdiffr::expect_doppelganger("ttheme_gtstripes",
+                              ggplot() +
+                                geom_table(data = my.tb,
+                                           table.theme = ttheme_gtstripes,
+                                           mapping = aes(x, y, label = tb)))
+})
+
 test_that("letters_tb", {
   tb <- tibble(a = LETTERS[2:4], b = letters[4:2])
   my.tb <- tibble(x = 0, y = 0, tb = list(tb))
