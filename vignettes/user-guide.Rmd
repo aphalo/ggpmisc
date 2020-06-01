@@ -18,7 +18,8 @@ opts_chunk$set(fig.align = 'center',
                fig.show = 'hold', fig.width = 7, fig.height = 4)
 options(warnPartialMatchArgs = FALSE,
         tibble.print.max = 4,
-        tibble.print.min = 4)
+        tibble.print.min = 4,
+        dplyr.summarise.inform = FALSE)
 ```
 
 ## Preliminaries
