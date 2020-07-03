@@ -33,11 +33,11 @@
 #'   \code{\link[ggplot2]{layer}} for more details.
 #' @param na.rm	a logical value indicating whether NA values should be stripped
 #'   before the computation proceeds.
-#' @param .fun.x,.fun.y function to be applied or the name of the function to be
-#'   applied as a character string. One and only one of these parameters should
-#'   be passed a non-null argument.
-#' @param .fun.x.args,.fun.y.args additional arguments to be passed to the
-#'   function as a named list.
+#' @param .fun.x,.fun.y,.fun function to be applied or the name of the function
+#'   to be applied as a character string. One and only one of these parameters
+#'   should be passed a non-null argument.
+#' @param .fun.x.args,.fun.y.args,.fun.args additional arguments to be passed to
+#'   the function as a named list.
 #'
 #' @details The function(s) to be applied is expected to be vectorized and to
 #'   return a vector of (almost) the same length. The vector mapped to the x or
@@ -97,6 +97,16 @@
 #' ggplot(my.df, aes(x = X, y = Y, colour = category)) +
 #'   stat_apply_panel(.fun.y = function(x) {(x - min(x)) / (max(x) - min(x))})
 #'
+#' # Centroid
+#' ggplot(my.df, aes(x = X, y = Y, colour = category)) +
+#'   stat_centroid(shape = "cross", size = 6) +
+#'   geom_point()
+#'
+#' # Centroid
+#' ggplot(my.df, aes(x = X, y = Y, colour = category)) +
+#'   stat_centroid(geom = "text", aes(label = category)) +
+#'   geom_point()
+#'
 #' @rdname stat_apply
 #'
 #' @export
@@ -115,6 +125,7 @@ stat_apply_group <- function(mapping = NULL, data = NULL, geom = "line",
                   .fun.y = .fun.y,
                   .fun.y.args = .fun.y.args,
                   na.rm = na.rm,
+                  single.row = FALSE,
                   ...)
   )
 }
@@ -136,6 +147,7 @@ stat_apply_panel <- function(mapping = NULL, data = NULL, geom = "line",
                   .fun.y = .fun.y,
                   .fun.y.args = .fun.y.args,
                   na.rm = na.rm,
+                  single.row = FALSE,
                   ...)
   )
 }
@@ -150,7 +162,8 @@ stat_apply_panel <- function(mapping = NULL, data = NULL, geom = "line",
 stat_apply_fun <- function(data,
                            scales,
                            .fun.x, .fun.x.args,
-                           .fun.y, .fun.y.args) {
+                           .fun.y, .fun.y.args,
+                           single.row) {
 
   #  Fill with NAs if returned vector is too short
   fill2length <- function(x, nrow) {
@@ -159,21 +172,27 @@ stat_apply_fun <- function(data,
 
   force(data)
 #  stopifnot(xor(is.null(.fun.x), is.null(.fun.y)))
-  new.data <- tibble::tibble(y = data[["y"]],
-                             x = data[["x"]])
+  if (single.row) {
+    new.data <- data[ 1, ]
+    if (exists("label", data) && length(unique(data[["label"]])) > 1L) {
+      warning("Non-unique value in 'data$label' for group.")
+      new.data[["label"]] <- NA
+    }
+  } else {
+    new.data <- data
+  }
   if (!is.null(.fun.x)) {
     args <- c(unname(data["x"]), .fun.x.args)
     new.data[["x"]] <- fill2length(do.call(.fun.x, args = args),
-                                  nrow = nrow(data))
+                                  nrow = nrow(new.data))
 
   }
   if (!is.null(.fun.y)) {
     args <- c(unname(data["y"]), .fun.y.args)
     new.data[["y"]] <- fill2length(do.call(.fun.y, args = args),
-                                  nrow = nrow(data))
+                                  nrow = nrow(new.data))
   }
-  data %>%
-    dplyr::mutate(x = new.data[["x"]], y = new.data[["y"]])
+  new.data
 }
 
 #' \code{Stat*} Objects
@@ -223,3 +242,47 @@ StatApplyPanel <-
                    compute_panel = stat_apply_fun,
                    required_aes = c("x", "y")
   )
+
+#' @rdname stat_apply
+#'
+#' @export
+#'
+stat_summary_xy <- function(mapping = NULL, data = NULL, geom = "point",
+                             .fun.x = NULL, .fun.x.args = list(),
+                             .fun.y = NULL, .fun.y.args = list(),
+                             position = "identity", na.rm = FALSE, show.legend = FALSE,
+                             inherit.aes = TRUE, ...) {
+  ggplot2::layer(
+    stat = StatApplyGroup, data = data, mapping = mapping, geom = geom,
+    position = position, show.legend = show.legend, inherit.aes = inherit.aes,
+    params = list(.fun.x = .fun.x,
+                  .fun.x.args = .fun.x.args,
+                  .fun.y = .fun.y,
+                  .fun.y.args = .fun.y.args,
+                  na.rm = na.rm,
+                  single.row = TRUE,
+                  ...)
+  )
+}
+
+#' @rdname stat_apply
+#'
+#' @export
+#'
+stat_centroid <- function(mapping = NULL, data = NULL, geom = "point",
+                          .fun = mean, .fun.args = list(),
+                          position = "identity", na.rm = FALSE, show.legend = FALSE,
+                          inherit.aes = TRUE, ...) {
+  ggplot2::layer(
+    stat = StatApplyGroup, data = data, mapping = mapping, geom = geom,
+    position = position, show.legend = show.legend, inherit.aes = inherit.aes,
+    params = list(.fun.x = .fun,
+                  .fun.x.args = .fun.args,
+                  .fun.y = .fun,
+                  .fun.y.args = .fun.args,
+                  na.rm = na.rm,
+                  single.row = TRUE,
+                  ...)
+  )
+}
+

@@ -1,4 +1,9 @@
-ggpmisc 0.3.5 (2020-05-xx)
+ggpmisc 0.3.6 (2020-07-xx)
+==========================
+
+* Add stat_sumamry_xy() and stat_centroid().
+
+ggpmisc 0.3.5 (2020-06-01)
 ==========================
 
 * Add support for "table themes" to geom_table() and geom_table_npc().

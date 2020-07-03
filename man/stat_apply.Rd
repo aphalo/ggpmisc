@@ -3,6 +3,8 @@
 \name{stat_apply_group}
 \alias{stat_apply_group}
 \alias{stat_apply_panel}
+\alias{stat_summary_xy}
+\alias{stat_centroid}
 \title{Apply a function to x or y values}
 \usage{
 stat_apply_group(
@@ -34,6 +36,34 @@ stat_apply_panel(
   inherit.aes = TRUE,
   ...
 )
+
+stat_summary_xy(
+  mapping = NULL,
+  data = NULL,
+  geom = "point",
+  .fun.x = NULL,
+  .fun.x.args = list(),
+  .fun.y = NULL,
+  .fun.y.args = list(),
+  position = "identity",
+  na.rm = FALSE,
+  show.legend = FALSE,
+  inherit.aes = TRUE,
+  ...
+)
+
+stat_centroid(
+  mapping = NULL,
+  data = NULL,
+  geom = "point",
+  .fun = mean,
+  .fun.args = list(),
+  position = "identity",
+  na.rm = FALSE,
+  show.legend = FALSE,
+  inherit.aes = TRUE,
+  ...
+)
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
@@ -45,12 +75,12 @@ the plot defaults.}
 
 \item{geom}{The geometric object to use display the data}
 
-\item{.fun.x, .fun.y}{function to be applied or the name of the function to be
-applied as a character string. One and only one of these parameters should
-be passed a non-null argument.}
+\item{.fun.x, .fun.y, .fun}{function to be applied or the name of the function
+to be applied as a character string. One and only one of these parameters
+should be passed a non-null argument.}
 
-\item{.fun.x.args, .fun.y.args}{additional arguments to be passed to the
-function as a named list.}
+\item{.fun.x.args, .fun.y.args, .fun.args}{additional arguments to be passed to
+the function as a named list.}
 
 \item{position}{The position adjustment to use for overlapping points on this
 layer}
@@ -141,6 +171,16 @@ ggplot(my.df, aes(x = X, y = Y, colour = category)) +
 # Joint rescaling for whole panel
 ggplot(my.df, aes(x = X, y = Y, colour = category)) +
   stat_apply_panel(.fun.y = function(x) {(x - min(x)) / (max(x) - min(x))})
+
+# Centroid
+ggplot(my.df, aes(x = X, y = Y, colour = category)) +
+  stat_centroid(shape = "cross", size = 6) +
+  geom_point()
+
+# Centroid
+ggplot(my.df, aes(x = X, y = Y, colour = category)) +
+  stat_centroid(geom = "text", aes(label = category)) +
+  geom_point()
 
 }
 \references{
