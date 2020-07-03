@@ -346,7 +346,20 @@ poly_eq_compute_group_fun <- function(data,
   stopifnot(output.type %in%
               c("expression", "text", "numeric", "latex", "tex", "tikz"))
 
-  if (is.null(data$weight)) data$weight <- 1
+  if (is.null(data$weight)) {
+    data$weight <- 1
+  }
+
+  if (exists("grp.label", data)) {
+    if (length(unique(data[["grp.label"]])) > 1L) {
+    warning("Non-unique value in 'data$grp.label' for group.")
+      grp.label <- ""
+    } else {
+      grp.label <- data[["grp.label"]][1]
+    }
+  } else {
+    grp.label <- ""
+  }
 
   if (is.null(eq.x.rhs)) {
     if (output.type == "expression") {
@@ -462,7 +475,7 @@ poly_eq_compute_group_fun <- function(data,
                           AIC.label = paste("AIC", AIC.char, sep = "~`=`~"),
                           BIC.label = paste("BIC", BIC.char, sep = "~`=`~"),
                           f.value.label =
-      # character(0) instead of "" avoids in paste() the insertion of sep missing labels
+                            # character(0) instead of "" avoids in paste() the insertion of sep missing labels
                             ifelse(is.na(f.value), character(0L),
                                    paste("italic(F)[", f.df1.char,
                                          "*\",\"*", f.df2.char,
@@ -471,23 +484,25 @@ poly_eq_compute_group_fun <- function(data,
                             ifelse(is.na(p.value), character(0L),
                                    paste("italic(P)",
                                          ifelse(p.value < 0.001, "0.001", p.value.char),
-                                         sep = ifelse(p.value < 0.001, "~`<=`~", "~`=`~"))))
-     } else if (output.type %in% c("latex", "tex", "text", "tikz")) {
-       z <- tibble::tibble(eq.label = gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
-                           rr.label = paste("R^2", rr.char, sep = " = "),
-                           adj.rr.label = paste("R_{adj}^2",
-                                                adj.rr.char, sep = " = "),
-                           AIC.label = paste("AIC", AIC.char, sep = " = "),
-                           BIC.label = paste("BIC", BIC.char, sep = " = "),
-                           f.value.label =
-                             ifelse(is.na(f.value), character(0L),
-                                    paste("F_{", f.df1.char, ",", f.df2.char,
-                                          "} = ", f.value.char, sep = "")),
-                           p.value.label =
-                             ifelse(is.na(p.value), character(0L),
-                                    paste("P", p.value.char,
-                                          sep = ifelse(p.value < 0.001, " \\leq ", " = "))))
-     } else {
+                                         sep = ifelse(p.value < 0.001, "~`<=`~", "~`=`~"))),
+                          grp.label = grp.label)
+    } else if (output.type %in% c("latex", "tex", "text", "tikz")) {
+      z <- tibble::tibble(eq.label = gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
+                          rr.label = paste("R^2", rr.char, sep = " = "),
+                          adj.rr.label = paste("R_{adj}^2",
+                                               adj.rr.char, sep = " = "),
+                          AIC.label = paste("AIC", AIC.char, sep = " = "),
+                          BIC.label = paste("BIC", BIC.char, sep = " = "),
+                          f.value.label =
+                            ifelse(is.na(f.value), character(0L),
+                                   paste("F_{", f.df1.char, ",", f.df2.char,
+                                         "} = ", f.value.char, sep = "")),
+                          p.value.label =
+                            ifelse(is.na(p.value), character(0L),
+                                   paste("P", p.value.char,
+                                         sep = ifelse(p.value < 0.001, " \\leq ", " = "))),
+                          grp.label = grp.label)
+    } else {
       warning("Unknown 'output.type' argument: ", output.type)
     }
   }

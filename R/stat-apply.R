@@ -112,11 +112,18 @@
 #' @export
 #' @family summary stats
 #'
-stat_apply_group <- function(mapping = NULL, data = NULL, geom = "line",
-                             .fun.x = NULL, .fun.x.args = list(),
-                             .fun.y = NULL, .fun.y.args = list(),
-                             position = "identity", na.rm = FALSE, show.legend = FALSE,
-                             inherit.aes = TRUE, ...) {
+stat_apply_group <- function(mapping = NULL,
+                             data = NULL,
+                             geom = "line",
+                             .fun.x = function(x) {x},
+                             .fun.x.args = list(),
+                             .fun.y = function(y) {y},
+                             .fun.y.args = list(),
+                             position = "identity",
+                             na.rm = FALSE,
+                             show.legend = FALSE,
+                             inherit.aes = TRUE,
+                             ...) {
   ggplot2::layer(
     stat = StatApplyGroup, data = data, mapping = mapping, geom = geom,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
@@ -134,10 +141,16 @@ stat_apply_group <- function(mapping = NULL, data = NULL, geom = "line",
 #'
 #' @export
 #'
-stat_apply_panel <- function(mapping = NULL, data = NULL, geom = "line",
-                             .fun.x = NULL, .fun.x.args = list(),
-                             .fun.y = NULL, .fun.y.args = list(),
-                             position = "identity", na.rm = FALSE, show.legend = FALSE,
+stat_apply_panel <- function(mapping = NULL,
+                             data = NULL,
+                             geom = "line",
+                             .fun.x = function(x) {x},
+                             .fun.x.args = list(),
+                             .fun.y = function(y) {y},
+                             .fun.y.args = list(),
+                             position = "identity",
+                             na.rm = FALSE,
+                             show.legend = FALSE,
                              inherit.aes = TRUE, ...) {
   ggplot2::layer(
     stat = StatApplyPanel, data = data, mapping = mapping, geom = geom,
@@ -176,7 +189,7 @@ stat_apply_fun <- function(data,
     new.data <- data[ 1, ]
     if (exists("label", data) && length(unique(data[["label"]])) > 1L) {
       warning("Non-unique value in 'data$label' for group.")
-      new.data[["label"]] <- NA
+      new.data[["label"]] <- new.data[["label"]][NA]
     }
   } else {
     new.data <- data
@@ -184,13 +197,12 @@ stat_apply_fun <- function(data,
   if (!is.null(.fun.x)) {
     args <- c(unname(data["x"]), .fun.x.args)
     new.data[["x"]] <- fill2length(do.call(.fun.x, args = args),
-                                  nrow = nrow(new.data))
-
+                                   nrow = nrow(new.data))
   }
   if (!is.null(.fun.y)) {
     args <- c(unname(data["y"]), .fun.y.args)
     new.data[["y"]] <- fill2length(do.call(.fun.y, args = args),
-                                  nrow = nrow(new.data))
+                                   nrow = nrow(new.data))
   }
   new.data
 }
@@ -247,11 +259,18 @@ StatApplyPanel <-
 #'
 #' @export
 #'
-stat_summary_xy <- function(mapping = NULL, data = NULL, geom = "point",
-                             .fun.x = NULL, .fun.x.args = list(),
-                             .fun.y = NULL, .fun.y.args = list(),
-                             position = "identity", na.rm = FALSE, show.legend = FALSE,
-                             inherit.aes = TRUE, ...) {
+stat_summary_xy <- function(mapping = NULL,
+                            data = NULL,
+                            geom = "point",
+                            .fun.x = function(x) {x},
+                            .fun.x.args = list(),
+                            .fun.y = function(y) {y},
+                            .fun.y.args = list(),
+                            position = "identity",
+                            na.rm = FALSE,
+                            show.legend = FALSE,
+                            inherit.aes = TRUE,
+                            ...) {
   ggplot2::layer(
     stat = StatApplyGroup, data = data, mapping = mapping, geom = geom,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
@@ -269,10 +288,16 @@ stat_summary_xy <- function(mapping = NULL, data = NULL, geom = "point",
 #'
 #' @export
 #'
-stat_centroid <- function(mapping = NULL, data = NULL, geom = "point",
-                          .fun = mean, .fun.args = list(),
-                          position = "identity", na.rm = FALSE, show.legend = FALSE,
-                          inherit.aes = TRUE, ...) {
+stat_centroid <- function(mapping = NULL,
+                          data = NULL,
+                          geom = "point",
+                          .fun = mean,
+                          .fun.args = list(),
+                          position = "identity",
+                          na.rm = FALSE,
+                          show.legend = FALSE,
+                          inherit.aes = TRUE,
+                          ...) {
   ggplot2::layer(
     stat = StatApplyGroup, data = data, mapping = mapping, geom = geom,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,

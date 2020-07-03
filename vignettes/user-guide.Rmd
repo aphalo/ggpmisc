@@ -400,6 +400,31 @@ ggplot(mpg, aes(displ, hwy, colour = factor(cyl))) +
   geom_point() 
 ```
 
+## Centroid markings and labels
+
+It can be useful to mark the centroid of a group of observations with a point
+or with a label. By default `stat_centroid()` applies function `mean()` to
+both `x` and `y` by group. If all the values mapped to `label` within each group
+are identical, this value is copied to the returned `data`.
+
+```{r}
+ggplot(mpg, aes(displ, hwy, colour = factor(cyl))) +
+  geom_point(alpha = 0.33) +
+  stat_centroid(shape = "cross", size = 4)
+```
+
+Other functions can be passed to this statistic as long as they return a single
+value that can be mapped to the `x` and `y` aesthetics (numeric, time or a
+factor).
+
+```{r}
+ggplot(mpg, aes(displ, hwy, colour = factor(cyl))) +
+  geom_point(alpha = 0.33) +
+  stat_centroid(shape = "cross", size = 4, .fun = median)
+```
+
+The very similar `stat_summary_xy()` accepts different functions for `x` and `y`.
+
 ## stat_peaks and stat_valleys
 
 Two statistics make it possible to highlight and/or label peaks and valleys (local maxima
@@ -767,6 +792,18 @@ ggplot(my.data, aes(x, y2, colour = group)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
   stat_poly_eq(aes(label = stat(eq.label)),
+               formula = formula, parse = TRUE)
+```
+To add a label to the equation for each group we map it to a pseudo-aesthetic
+named `grp.label`. 
+
+```{r}
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y2, colour = group, grp.label = group)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_eq(aes(label = stat(paste("bold(", grp.label, ")~~~", 
+                                      eq.label, sep = ""))),
                formula = formula, parse = TRUE)
 ```
 
@@ -1180,6 +1217,21 @@ ggplot(Orange, aes(age, circumference, colour = Tree)) +
                    augment.args = list(data = quote(data)))
 ```
 
+## stat_apply_group and stat_apply_panel
+
+These statistics apply a function to `x` and `y` data. The function is expected
+to return a vector of the same length as its input. It is usually better to
+apply such functions through mappings using `aes()` when they are independent of
+grouping or to use a transformation for the scale. However, when grouping is
+important, these statistics solve a problem that would otherwise require
+pre-computation of the data. Here we plot the difference in circumference
+between dates for each tree.
+
+```{r}
+ggplot(Orange, aes(age, circumference, colour = Tree)) +
+  stat_apply_group(.fun.y = function(x) {c(NA, diff(x))}, na.rm = TRUE)
+```
+
 ## stat_dens2d_labels and stat_dens2d_filter
 
 These stats had their origin in an enhancement suggestion for 'ggrepel' from 
@@ -1187,8 +1239,14 @@ Hadley Wickham and discussion with Kamil Slowikowski (ggrepel's author) and
 others. In fact the code is based on code Kamil gave during the discussion,
 but simplified and taking a few further ideas from `ggplot::stat_dens2d`.
 
-**Warning!** Which observations are selected by the algorithm used, based on 
-`MASS:kde2d`, depends strongly on the values of parameters `h` and `n`. You may need to alter the defaults by passing explicit arguments to these stats. Beware, though, that what are good values, may depend on individual data sets even if they include the same number of observations. For the selection of observations to work cleanly, the argument for `n` must create a dense grid. Much larger values of `n` than in the examples in the documentation of `MASS::kde2d` and `ggplot2::stat_dens2d` will be needed in most cases.
+**Warning!** Which observations are selected by the algorithm used, based on
+`MASS:kde2d`, depends strongly on the values of parameters `h` and `n`. You may
+need to alter the defaults by passing explicit arguments to these stats. Beware,
+though, that what are good values, may depend on individual data sets even if
+they include the same number of observations. For the selection of observations
+to work cleanly, the argument for `n` must create a dense grid. Much larger
+values of `n` than in the examples in the documentation of `MASS::kde2d` and
+`ggplot2::stat_dens2d` will be needed in most cases.
 
 Some random data with random labels.
 
