@@ -795,13 +795,27 @@ ggplot(my.data, aes(x, y2, colour = group)) +
                formula = formula, parse = TRUE)
 ```
 To add a label to the equation for each group we map it to a pseudo-aesthetic
-named `grp.label`. 
+named `grp.label`. (Labelling uses a "back door" in 'ggplot2' that may be closed
+in future versions, meaning that this approach to labelling may stop working in the future.)
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2, colour = group, grp.label = group)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
+  stat_poly_eq(aes(label = stat(paste("bold(", grp.label, ")~~~", 
+                                      eq.label, sep = ""))),
+               formula = formula, parse = TRUE)
+```
+
+Being able to label equations allows us to dispense with the use of color,
+which in many cases is needed for printed output.
+
+```{r}
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y2, linetype = group, grp.label = group)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula, color = "black") +
   stat_poly_eq(aes(label = stat(paste("bold(", grp.label, ")~~~", 
                                       eq.label, sep = ""))),
                formula = formula, parse = TRUE)
