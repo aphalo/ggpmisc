@@ -71,8 +71,8 @@ using npcx and npcy aesthetics.}
 \item{hstep, vstep}{numeric in npc units, the horizontal and vertical step
 used between labels for different groups.}
 
-\item{output.type}{character One of "expression", "LaTeX" or "text",
-or "numeric".}
+\item{output.type}{character One of "expression", "LaTeX", "text",
+"markdown" or "numeric".}
 
 \item{na.rm}{a logical indicating whether NA values should be stripped before
 the computation proceeds.}
@@ -270,6 +270,13 @@ ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
   stat_poly_eq(formula = formula, geom = "debug")
+
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_eq(aes(label = stat(eq.label)),
+               formula = formula, geom = "debug",
+               output.type = "markdown")
 
 ggplot(my.data, aes(x, y)) +
   geom_point() +
