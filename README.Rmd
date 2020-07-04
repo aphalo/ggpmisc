@@ -26,7 +26,7 @@ as text, tables or equations are implemented. New geoms support insets in
 ggplots. The location of fit summaries and graphical insets within the plotting
 area needs usually to be set independently of the `x` and `y` scales. The
 "natural" coordinates to use in such cases are expressed in 'grid' "npc" units
-in the range [0..1] for which new aesthetics and their scales are made
+in the range 0..1 for which new aesthetics and their scales are made
 available.
 
 ## ggplot methods
