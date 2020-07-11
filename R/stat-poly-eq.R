@@ -370,7 +370,7 @@ poly_eq_compute_group_fun <- function(data,
 
   if (is.null(eq.x.rhs)) {
     if (output.type == "expression") {
-      eq.x.rhs <- "\\,italic(x)"
+      eq.x.rhs <- "~italic(x)"
     } else if (output.type == "markdown") {
       eq.x.rhs <- "_x_"
     } else{
