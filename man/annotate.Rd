@@ -46,6 +46,11 @@ Note that all position aesthetics are scaled (i.e., they will
   aesthetics are set. This means that layers created with this function will
   never affect the legend.
 }
+\note{
+At the moment geoms "text_npc" and "label_npc" are the only NPC geoms
+  supported. (This is so because tables, plots and grobs connot be stored in
+  data frame columns, and require the use of tibbles.)
+}
 \examples{
 
 p <- ggplot(mtcars, aes(x = wt, y = mpg)) + geom_point()
