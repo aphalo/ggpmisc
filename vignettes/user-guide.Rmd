@@ -816,7 +816,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2, linetype = group, grp.label = group)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula, color = "black") +
-  stat_poly_eq(aes(label = stat(paste("bold(", grp.label, ")~~~", 
+  stat_poly_eq(aes(label = stat(paste("bold(", grp.label, "*':')~~~", 
                                       eq.label, sep = ""))),
                formula = formula, parse = TRUE)
 ```
