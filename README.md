@@ -176,11 +176,10 @@ p <- ggplot(mtcars, aes(factor(cyl), mpg, colour = factor(cyl))) +
   stat_boxplot() +
   labs(y = NULL) +
   theme_bw(9) + theme(legend.position = "none")
-df <- tibble(x = 0.01, y = 0.015, plot = list(p))
+
 ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
   geom_point() +
-  geom_plot_npc(data = df, mapping = aes(npcx = x, npcy = y, label = plot),
-                vjust = 0, hjust = 0) +
+  annotate("plot_npc", npcx = "left", npcy = "bottom", label = p) +
   expand_limits(y = 0, x = 0)
 ```
 

@@ -28,18 +28,18 @@
 #' @examples
 #'
 #' p <- ggplot(mtcars, aes(x = wt, y = mpg)) + geom_point()
-#' p + annotate("text_npc", npcx = .9, npcy = .9, label = "Some text")
+#' p + annotate("text_npc", npcx = 0.9, npcy = 0.9, label = "Some text")
 #' p + annotate("text_npc", npcx = "right", npcy = "top", label = "Some text")
-#' p + annotate("label_npc", npcx = c(.1, .9), npcy = c(.1, .9),
+#' p + annotate("label_npc", npcx = c(0.1, 0.9), npcy = c(0.1, 0.9),
 #'              label = c("A", "B"))
-#' p + annotate("label_npc", npcx = .9, npcy = c(.1, .9),
+#' p + annotate("label_npc", npcx = 0.9, npcy = c(0.1, 0.9),
 #'              label = c("A", "B"))
-#' p + annotate("table_npc", npcx = .9, npcy = .9,
+#' p + annotate("table_npc", npcx = 0.9, npcy = 0.9,
 #'              label = data.frame(A = 1:2, B = letters[1:2]))
 #' p + annotate("plot_npc", npcx = 1, npcy = 1,
-#'              label = p + theme_bw())
+#'              label = p + theme_bw(9))
 #' p + annotate("plot_npc", npcx = c(0, 1), npcy = c(0, 1),
-#'              label = list(p + theme_bw(), p),
+#'              label = list(p + theme_bw(9), p + theme_grey(9)),
 #'              vp.width = 0.3, vp.height = 0.4)
 #'
 annotate <-
