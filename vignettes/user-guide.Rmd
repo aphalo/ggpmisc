@@ -78,19 +78,38 @@ ggplot(lynx, as.numeric = FALSE) + geom_line()
 
 ## geom_table and stat_fmt_table
 
-The _geometry_ `geom_table()` plots a data frame or tibble, nested in a tibble passed as data
-argument, using _aesthetics_ `x` and `y` for positioning, and `label` for the
-data frame containing the data for the table. The table is created as a 'grid'
-grob and added as usual to the ggplot object. In contrast to "standard"
-geoms, this geom by default does not inherit the globally mapped aesthetics.
+The _geometry_ `geom_table()` plots a data frame or tibble, nested in a tibble
+passed as data argument, using _aesthetics_ `x` and `y` for positioning, and
+`label` for the data frame containing the data for the table. The table is
+created as a 'grid' grob and added as usual to the ggplot object. In contrast to
+"standard" geoms, this geom by default does not inherit the globally mapped
+aesthetics. With these approach in plots with facets the insets can be different
+in each panel. It is also possible to inset more than one table in a single call
+simply by creating a tibble with multiple rows.
 
 ```{r}
 tb <- mpg %>%
   group_by(cyl) %>%
   summarise(hwy = median(hwy), cty = median(cty))
+
 data.tb <- tibble(x = 7, y = 44, tb = list(tb))
+
 ggplot(mpg, aes(displ, hwy, colour = factor(cyl))) +
   geom_table(data = data.tb, aes(x, y, label = tb)) +
+  geom_point() 
+```
+
+In plots with a single panel it is easier to use `annotate()` to add inset 
+tables, giving the same plot as above. In this case single data frames, ggplots 
+or grobs do not need to be wrapped in a list, although lists are also supported. 
+
+```{r, eval=FALSE}
+tb <- mpg %>%
+  group_by(cyl) %>%
+  summarise(hwy = median(hwy), cty = median(cty))
+
+ggplot(mpg, aes(displ, hwy, colour = factor(cyl))) +
+  annotate("table", x = 7, y = 44, label = tb) +
   geom_point() 
 ```
 
@@ -159,24 +178,34 @@ Please see section **Normalised Parent Coordinates** below for a description of
 
 ## geom_plot
 
-The `geom_plot()` _geometry_ plots ggplot objects, nested in a tibble passed as data
-argument, using _aesthetics_ `x` and `y` for positioning, and `label` for the
-ggplot object containing the definition of the plot to be nested. A Grob is 
-created with 'ggplotGrob' and added as usual to the ggplot object.
+The `geom_plot()` _geometry_ plots ggplot objects, nested in a tibble passed as
+data argument, using _aesthetics_ `x` and `y` for positioning, and `label` for
+the ggplot object containing the definition of the plot to be nested. With this
+approach in plots with facets the insets can be different in each panel. It is
+also possible to inset more than one plot in a single call simply by creating a
+tibble with multiple rows.
 
-As an example we produce plot where the inset plot is a zoomed-in detail from
-the main plot. In this case the main and inset plots start as the same plot.
+Behind the scenes, one Grob is created for each plot to be inset. The conversion
+is done with `ggplotGrob()` and the Grobs added the main ggplot object.
+
+As an example we produce a plot where the inset plot is a zoomed-in detail from
+the main plot. In this case the main and inset plots start as the same plot. In
+most cases the size of text and other elements in the inset should be smaller
+than in the main plot. Here we override the default theme setting the
+`base_size` from its default of 11 pt to 8 pt.
 
 ```{r}
 p <- ggplot(mpg, aes(displ, hwy, colour = factor(cyl))) +
   geom_point() 
 
-data.tb <- tibble(x = 7, y = 44, 
-                  plot = list(p + 
-                                coord_cartesian(xlim = c(4.9, 6.2), ylim = c(13, 21)) +
-                                labs(x = NULL, y = NULL) +
-                                theme_bw(8) +
-                                scale_colour_discrete(guide = FALSE)))
+data.tb <- 
+  tibble(x = 7, y = 44, 
+         plot = list(p + 
+                       coord_cartesian(xlim = c(4.9, 6.2), 
+                                       ylim = c(13, 21)) +
+                       labs(x = NULL, y = NULL) +
+                       theme_bw(8) +
+                       scale_colour_discrete(guide = FALSE)))
 
 ggplot(mpg, aes(displ, hwy, colour = factor(cyl))) +
   geom_plot(data = data.tb, aes(x, y, label = plot)) +
@@ -186,8 +215,8 @@ ggplot(mpg, aes(displ, hwy, colour = factor(cyl))) +
   geom_point() 
 ```
 In general, the inset plot can be any ggplot object, allowing the creation of
-very different combinations of main plot and inset plot. Here we use the inset
-to summaries as in the previous example of an inset table.
+very different combinations of main plot and inset plots. Here we use the inset
+to show summaries as in the previous example of an inset table.
 
 ```{r}
 p <- ggplot(mpg, aes(factor(cyl), hwy, fill = factor(cyl))) +
@@ -207,9 +236,26 @@ ggplot(mpg, aes(displ, hwy, colour = factor(cyl))) +
   theme_bw()
 ```
 
+The same plot as above can be created using `annotate()` but be aware that when
+using facets in 'ggplot2' annotations are identical in all panels.
+
+```{r, eval=FALSE}
+p <- ggplot(mpg, aes(factor(cyl), hwy, fill = factor(cyl))) +
+  stat_summary(geom = "col", fun = mean, width = 2/3) +
+  labs(x = "Number of cylinders", y = NULL, title = "Means") +
+  scale_fill_discrete(guide = FALSE)
+
+ggplot(mpg, aes(displ, hwy, colour = factor(cyl))) +
+  annotate("plot", x = 7, y = 44, label = p + theme_bw(8)) +
+  geom_point() +
+  labs(x = "Engine displacement (l)", y = "Fuel use efficiency (MPG)",
+       colour = "Engine cylinders\n(number)") +
+  theme_bw()
+```
+
 As implemented, there is no limitation to the number of insets, and faceting is
-respected. If the base plot shows a map, multiple small plots could be
-superimposed on different countries or regions. The size of the insets is set
+respected. If the base plot shows a map or a bitmap, multiple small plots could
+be superimposed on different countries or regions. The size of the insets is set
 relative to the main plot, so the combined plot can be scaled. A possible
 unintuitive but useful feature, is that the theme is linked to each plot.
 
@@ -223,7 +269,7 @@ The `geom_grob()` _geometry_ plots grobs (graphical objects as created with
 `y` for positioning, and `label` for the Grob object. While `geom_table()` and
 `geom_plot()` take as values to plot tibbles or data frames, and ggplots,
 respectively, and convert them into Grobs before adding them to the plot,
-`geom_grob()` expects Grobs ready to be rendered.
+`geom_grob()` expects Grobs ready to be rendered. 
 
 ```{r}
 file.name <- 
@@ -246,18 +292,33 @@ ggplot() +
   scale_x_continuous(expand = expansion(mult = 0.2, add = 0)) +
  theme_bw(12)
 ```
+As shown above for inset tables and inset plots, it is also possible to use
+`annotate()` with Grobs. The next example insets a single `Grob`. Here we reuse
+the bitmap `Isoquercitin` read in the previous example. The Grob is contained in
+a viewport. Here setting `width = 1` ("npc" units) when creating the `Grob` from
+the bitmap ensures that the bitmap fills the width of the viewport (to ensure
+that the inset is not distorted, set only one of `width` or `height`). The
+argument to `vp.width` or `vp.height`, also in "npc" units, determines the size
+of the `Grob` relative to the size of the plotting area.
+
+```{r}
+ggplot() +
+  annotate("grob", x = 1, y = 3, vp.width = 0.5,
+           label = grid::rasterGrob(image = Isoquercitin, width = 1)) +
+ theme_bw(12)
+```
+
 `geom_grob()` is designed thinking that its main use will in graphical annotations,
 although one could use it for infographics with multiple copies of each grob, this
 would go against the grammar of graphics. In this implementation grobs cannot
 to mapped to an aesthetic through a scale.
 
 As implemented, there is no limitation to the number of insets, and faceting is
-respected. If the base plot shows a map, multiple simple grobs (e.g. national
-flags) could be
-superimposed on different countries. The size of the insets is set
-relative to the main plot, so the combined plot can be scaled.
+respected. If the base plot shows a map or a bitmap, multiple simple grobs (e.g.
+national flags) could be superimposed on different countries. The size of the
+insets is set relative to the main plot, so the combined plot can be scaled.
 
-Please see next section for a description of
+Please see section **Normalised Parent Coordinates** below for a description of
 `geom_grob_npc()`.
 
 ## geom_vhlines
@@ -283,40 +344,51 @@ R's 'grid' package defines several units that can be used to describe the locati
 of plot elements. In 'ggplot2' the _x_ and _y_ aesthetics are directly mapped
 to `"native"` or data units. For consistent location of **annotations** with
 respect to the plotting area we need to rely on `"npc"` which are expressed
-relative to the size of the grid viewport, as the plotting area in a ggplot
-if implemented as viewport.
+relative to the size of the grid viewport. The plotting area in a ggplot
+is implemented as viewport and support for `"npc"` coordinates is relatively
+easy to implement.
 
-To support this we have implemented _scales_ for two new _aesthetics_, `npcx`
-and `npcy`. These are very simple continuous scales which do not support any
-transformation or change to their limits, which are meaningless for `"npc"`
-units. Variables mapped to these aesthetics can be either numerical with
-values in the range zero to one or
-character. A limited set of strings are recognised and converted to "npc" units:
-`"top"`, `"bottom"`, `"left"`, `"right"` and `"centre"` (or its synonyms 
-`"center"` and `"middle"`). Justification defaults to "inward".
+To support `"npc"` positions we have implemented _scales_ for two new
+_aesthetics_, `npcx` and `npcy`. These are very simple continuous scales which
+do not support any transformation or changes to their limits, both of which
+would be meaningless for `"npc"` units. Variables mapped to these aesthetics can
+be either numerical with values in the range zero to one or character. A limited
+set of strings are recognised and converted to `"npc"` units: `"bottom"`,
+`"center"`, `"top"`, `"left"`, `"middle"`, `"right"` (`"centre"` is a synonym
+for `"center"`). 
 
 To make these scales useful we need also to define _geometries_ that use these
 new aesthetics. Package 'ggpmisc' currently provides `geom_text_npc()`,
 `geom_label_npc()`, `geom_table_npc()`, `geom_plot_npc()` and `geom_grob_npc()`.
 
-These are used internally by several of the statistics described below. They 
-can also be useful on their own right in those cases when we want to
-add annotations at specific positions within the plotting area, while the
-usual _x_ and _y_ aesthetics should be used whenever the positions of plot
-elements represent data values. When writing scripts or functions that may
-be applied to different data sets they help in keeping the code concise and
-reusable.
+As is the case for `geom_text()` and `geom_text()` from package 'ggplot2',
+`"bottom"`, `"center"`, `"top"`, `"left"`, `"middle"`, `"right"`, plus
+`"inward"` and `"outward"` can be used, as well as numeric values, to control
+the justification. Justification defaults to `"inward"` in the geometries
+described here.
 
-As an example let's imagine that we want to add an institutional logo to a plot. 
-Its position has nothing to
-do with the data mapped to _x_ and _y_, so it is conceptually better to use
-`"npc"` coordinates. The big practical advantage is that this also allows to
-keep this part of the plot definition independent of the data being plotted,
-giving a major advantage in the case of plots with facets with free scale
-limits.
+While the usual _x_ and _y_ aesthetics are used whenever the positions of plot
+elements represent data values, these new scales and geometries are useful only
+for annotations, i.e., in those cases when we want to elements at specific
+positions within the plotting area irrespective of the ranges of the data mapped
+to the _x_ and _y_ aesthetics. When writing scripts or functions that may be
+applied to different data sets these new _aesthetics_ help by keeping the code
+concise and reusable. These _geometries_ are used by default by several of the statistics described in later sections. 
 
-We assume here that the tiger is being used as a logo, and we simply map
-all aesthetics to constant values.
+As an example let's imagine that we want to add the structure of a metabolite to
+a plot. Its position has nothing to do with the data mapped to _x_ and _y_, so
+it is conceptually better to use `"npc"` coordinates. The big practical
+advantage is that this also allows to keep this part of the plot definition
+independent of the data being plotted, giving a major advantage in the case of
+plots with facets with free scale limits. This example can be easily adapted to
+`geom_plot_npc()` where a ggplot should mapped to `label`, and to
+`geom_table_npc()` where a data frame should be mapped to `label`.
+
+We produce the example plot by first constructing a tibble to contain the
+grob and the coordinate data, and then map these variables to aesthetics using
+`aes()`. In the example the tibble has a single row, but this is not a 
+requirement. In this respect these geoms behave as normal geoms, with facets 
+also supported.
 
 ```{r}
 file.name <- 
@@ -327,17 +399,6 @@ Robinin <- magick::image_read(file.name)
 set.seed(123456)
 data.tb <- tibble(x = 1:20, y = (1:20) + rnorm(20, 0, 10))
 
-ggplot(data.tb, aes(x, y)) +
-  geom_grob_npc(label = list(grid::rasterGrob(image = Robinin)), 
-                npcx = 0.01, npcy = 0.95, hjust = 0, vp.width = 0.5) +
-  geom_point() +
-  expand_limits(y = 45, x = 0)
-```
-
-Alternatively we produce the same plot by creating a data frame to contain the
-grob and the coordinates, and then map these variable to the aesthetics using
-`aes()`.
-```{r}
 flavo.tb <- tibble(x = 0.02,
                    y = 0.95,
                    width = 1/2,
@@ -352,10 +413,34 @@ ggplot(data.tb, aes(x, y)) +
   expand_limits(y = 55, x = 0)
 ```
 
-Two geometries are based on existing 'ggplot2' geometries. They are almost like
-wrappers built on top of `geom_text()` and `geom_label()`. We give an example
-using `geom_text_npc()` to produce a "classic" labelling for facets matching 
-the style of `theme_classic()` and traditional scientific journals' design.
+Alternatively, we can pass constant values to `geom_grob_npc()` to obtain the
+same plot. This approach can be handy in simple cases.
+
+```{r}
+ggplot(data.tb, aes(x, y)) +
+  geom_grob_npc(label = list(grid::rasterGrob(image = Robinin, width = 1)), 
+                npcx = 0.01, npcy = 0.95, hjust = 0, vp.width = 0.5) +
+  geom_point() +
+  expand_limits(y = 45, x = 0)
+```
+
+We can also use `annotate()` if the annotation should be the same for all 
+panels, or if we have a single figure panel. In this case there is no need to
+wrap a single `grob` in a list.
+
+```{r}
+ggplot(data.tb, aes(x, y)) +
+  annotate("grob_npc", label = grid::rasterGrob(image = Robinin, width = 1), 
+                npcx = 0.01, npcy = 0.95, hjust = 0, vp.width = 0.5) +
+  geom_point() +
+  expand_limits(y = 45, x = 0)
+
+```
+
+Two geometries are based on existing 'ggplot2' geometries. They are based on
+`geom_text()` and `geom_label()`. We give an example using `geom_text_npc()` to
+produce a "classic" labelling for facets matching the style of `theme_classic()`
+and traditional scientific journals' design.
 
 ```{r}
 corner_letters.tb <- tibble(label = LETTERS[1:4],
@@ -427,10 +512,10 @@ The very similar `stat_summary_xy()` accepts different functions for `x` and `y`
 
 ## stat_peaks and stat_valleys
 
-Two statistics make it possible to highlight and/or label peaks and valleys (local maxima
-and local minima) in a curve. Here we use a time series, using POSIXct for `time` 
-and the default formatting of labels. We also instruct `geom_text()` not to
-render overlapping labels.
+Two statistics make it possible to highlight and/or label peaks and valleys
+(local maxima and local minima) in a curve. Here we use a time series, using
+POSIXct for `time` and the default formatting of labels. We also instruct
+`geom_text()` not to render overlapping labels.
 
 ```{r}
 ggplot(lynx, as.numeric = FALSE) + geom_line() + 
@@ -535,9 +620,10 @@ ggplot(my.data, aes(x, y)) +
   stat_quadrant_counts(colour = "red", quadrants = c(2, 4)) +
   geom_point()
 ```
-Using facets, even with free scale limits, the labels are placed consistently. This achieved
-by the default use of `geom_text_npc()` or as shown below by use of `geom_label_npc(). We
-expand the _y_ limits to ensure that no observations are occluded by the labels.
+Using facets, even with free scale limits, the labels are placed consistently.
+This achieved by the default use of `geom_text_npc()` or as shown below by use
+of `geom_label_npc(). We expand the _y_ limits to ensure that no observations
+are occluded by the labels.
 
 ```{r}
 ggplot(my.data, aes(x, y, colour = group)) +
@@ -676,7 +762,7 @@ ggplot(my.data, aes(x, y)) +
                parse = TRUE)
 ```
 
-Next, one example how to remove the left hand side (_lhs_).
+Next, one example of how to remove the left hand side (_lhs_).
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -700,7 +786,8 @@ ggplot(my.data, aes(x, y)) +
                formula = formula, parse = TRUE)
 ```
 
-And a final example replacing both the  _lhs_ and the variable symbol used on the _rhs_.
+And a final example replacing both the  _lhs_ and the variable symbol used on
+the _rhs_.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -794,16 +881,17 @@ ggplot(my.data, aes(x, y2, colour = group)) +
   stat_poly_eq(aes(label = stat(eq.label)),
                formula = formula, parse = TRUE)
 ```
-To add a label to the equation for each group we map it to a pseudo-aesthetic
-named `grp.label`. (Labelling uses a "back door" in 'ggplot2' that may be closed
-in future versions, meaning that this approach to labelling may stop working in the future.)
+To add a label to the equation for each group, we map it to a pseudo-aesthetic
+named `grp.label`. (Equation labelling uses a "back door" in 'ggplot2' that may
+be closed in future versions, meaning that this approach to labelling may stop
+working in the future.)
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2, colour = group, grp.label = group)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = stat(paste("bold(", grp.label, ")~~~", 
+  stat_poly_eq(aes(label = stat(paste("bold(", grp.label, "*\":\")~~", 
                                       eq.label, sep = ""))),
                formula = formula, parse = TRUE)
 ```
@@ -849,12 +937,12 @@ ggplot(my.data, aes(x, y2, fill = block)) +
                formula = formula, parse = TRUE) +
   facet_wrap(~group, scales = "free_y")
 ```
-If grouping is not the same within each panel created by faceting the automatic
-location of labels results in "spillover" of the automatic positioning of
-labels, and consistent positioning requires passing explicitly positions for
-each individual group. In the plot below the simultaneous mapping to both colour
-and fill aesthetics creates four groups, two with data in panel A
-and the other two in panel B.
+If grouping is not the same within each panel created by faceting, the automatic
+location of labels results in "holes" for the factor levels not present in a
+given panel. In this case, consistent positioning requires passing explicitly
+the positions for each individual group. In the plot below the simultaneous
+mapping to both colour and fill aesthetics creates four groups, two with data in
+panel A and the other two in panel B.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -888,8 +976,8 @@ supported when faceting uses free scales. In this case `geom_text_npc()` and/or
 
 ## stat_fit_residuals
 
-I had the need to quickly plot residuals matching fits plotted with `geom_smooth()`
-using grouping and facets, so a new (simple) statistic was born.
+I had the need to quickly plot residuals matching fits plotted with
+`geom_smooth()` using grouping and facets, so a new (simple) statistic was born.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -998,6 +1086,8 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
                                   sep = "")),
                 parse = TRUE)
 ```
+Using paste we can build a string that can be parsed into an R expression, in
+this case for a non-linear equation.
 
 ```{r}
 micmen.formula <- y ~ SSmicmen(x, Vm, K) 
@@ -1129,7 +1219,8 @@ ggplot(chickwts, aes(factor(feed), weight)) +
   coord_flip()
 ```
 
-It is also possible to rotate the table using `angle`.
+It is also possible to rotate the table using `angle`. Here we also show how to
+replace the column headers with strings to be parsed into R expressions.
 
 ```{r}
 ggplot(chickwts, aes(factor(feed), weight)) +
@@ -1239,7 +1330,8 @@ apply such functions through mappings using `aes()` when they are independent of
 grouping or to use a transformation for the scale. However, when grouping is
 important, these statistics solve a problem that would otherwise require
 pre-computation of the data. Here we plot the difference in circumference
-between dates for each tree.
+between dates for each tree. (As the vector returned by `diff()` is one element
+shorter than its input, we prepend `NA`.)
 
 ```{r}
 ggplot(Orange, aes(age, circumference, colour = Tree)) +
