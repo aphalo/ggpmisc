@@ -1,4 +1,4 @@
-ggpmisc 0.3.6 (2020-09-xx)
+ggpmisc 0.3.6 (2020-09-06)
 ==========================
 
 * Override ggplot2::annotate() adding support for aesthetics npcx and npcy.

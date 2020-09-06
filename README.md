@@ -171,7 +171,6 @@ ggplot(cars, aes(speed, dist)) +
 A plot with an inset plot.
 
 ``` r
-library(tibble)
 p <- ggplot(mtcars, aes(factor(cyl), mpg, colour = factor(cyl))) +
   stat_boxplot() +
   labs(y = NULL) +
