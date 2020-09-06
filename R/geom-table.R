@@ -220,12 +220,12 @@ gtb_draw_panel_fun <-
   function(data,
            panel_params,
            coord,
-           table.theme,
-           table.rownames,
-           table.colnames,
-           table.hjust,
-           parse,
-           na.rm) {
+           table.theme = NULL,
+           table.rownames = FALSE,
+           table.colnames = TRUE,
+           table.hjust = 0.5,
+           parse = FALSE,
+           na.rm = FALSE) {
 
     if (nrow(data) == 0) {
       return(grid::nullGrob())
@@ -397,12 +397,12 @@ gtbnpc_draw_panel_fun <-
   function(data,
            panel_params,
            coord,
-           table.theme,
-           table.rownames,
-           table.colnames,
-           table.hjust,
-           parse,
-           na.rm) {
+           table.theme = NULL,
+           table.rownames = FALSE,
+           table.colnames = TRUE,
+           table.hjust = 0.5,
+           parse = FALSE,
+           na.rm = FALSE) {
 
     if (nrow(data) == 0) {
       return(grid::nullGrob())

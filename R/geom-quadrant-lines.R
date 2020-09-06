@@ -122,7 +122,7 @@ geom_quadrant_lines <- function(mapping = NULL, data = NULL,
 #' @export
 GeomQuadrantLines <-
   ggproto("GeomQuadrantLines", Geom,
-          draw_panel = function(data, panel_params, coord, pool.along) {
+          draw_panel = function(data, panel_params, coord, pool.along = "none") {
             ranges <- coord$backtransform_range(panel_params)
             data.hline <- data.vline <- data
 
