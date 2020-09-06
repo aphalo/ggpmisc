@@ -2,7 +2,7 @@
 % Please edit documentation in R/scale-continuous-logFC.r
 \name{symmetric_limits}
 \alias{symmetric_limits}
-\title{Expand limits to be symetric}
+\title{Expand limits to be symmetric}
 \usage{
 symmetric_limits(x)
 }
@@ -13,7 +13,7 @@ symmetric_limits(x)
 A numeric vector of length two with the new limits.
 }
 \description{
-A simple function to expand scale limits to be symetric around zero. Can be
+A simple function to expand scale limits to be symmetric around zero. Can be
 passed as argument to parameter \code{limits} of continuous scales from
 packages 'ggplot2' or 'scales'.
 }

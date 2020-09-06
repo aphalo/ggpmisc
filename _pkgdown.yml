@@ -22,6 +22,7 @@ reference:
   - title: Geoms
     desc: Geoms, short for geometric objects, describe the type of plot you will produce.
     contents:
+    - annotate
     - geom_label_npc
     - geom_x_margin_point
     - geom_x_margin_arrow

@@ -117,9 +117,9 @@ FC_name <- function(name = "Abundance%unit",
   }
 }
 
-#' Expand limits to be symetric
+#' Expand limits to be symmetric
 #'
-#' A simple function to expand scale limits to be symetric around zero. Can be
+#' A simple function to expand scale limits to be symmetric around zero. Can be
 #' passed as argument to parameter \code{limits} of continuous scales from
 #' packages 'ggplot2' or 'scales'.
 #'

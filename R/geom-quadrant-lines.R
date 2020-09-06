@@ -157,7 +157,10 @@ GeomQuadrantLines <-
 
           },
 
-          default_aes = aes(colour = "black", size = 0.5, linetype = "dashed", alpha = NA),
+          default_aes = aes(colour = "black",
+                            size = 0.5,
+                            linetype = "dashed",
+                            alpha = NA),
           required_aes = c("xintercept", "yintercept"),
           non_missing_aes = c("size", "linetype", "colour"),
 

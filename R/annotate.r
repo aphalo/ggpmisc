@@ -4,7 +4,7 @@
 #' for \code{npcx} and \code{npcy} position aesthetics, allowing use of the
 #' geometries defined in the current package such as \code{geom_text_npc()}. It
 #' also has a parameter \code{label} that directly accepts data frames, ggplots
-#' and grobs as arguments in addition to objects of attomic classes like
+#' and grobs as arguments in addition to objects of atomic classes like
 #' character. When package 'ggpmisc' is loaded this definition of
 #' \code{annotate()} overrides that in package 'ggplot2'.
 #'
@@ -13,7 +13,7 @@
 #'   aesthetics - you must specify at least one of these.
 #' @param label character, data.frame, ggplot or grob.
 #' @param ...	Other named arguments passed on to \code{layer()}. These are often
-#'   aesthetics, used to set an aesthetic to a fixed value, like colour = "red"
+#'   aesthetics, used to set an aesthetic to a fixed value, like color = "red"
 #'   or size = 3. They may also be parameters to the paired geom/stat.
 #' @param na.rm	logical If \code{FALSE}, the default, missing values are removed
 #'   with a warning. If TRUE, missing values are silently removed.
@@ -22,6 +22,9 @@
 #'   expand the limits of the plot so they are visible), but all other
 #'   aesthetics are set. This means that layers created with this function will
 #'   never affect the legend.
+#'
+#' @note To use the original definition of \code{annotate()} after loading
+#'   package 'ggpmisc', use \code{ggplot2::annotate()}.
 #'
 #' @export
 #'

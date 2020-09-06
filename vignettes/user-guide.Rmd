@@ -26,7 +26,7 @@ options(warnPartialMatchArgs = FALSE,
 
 We load all the packages used in the examples.
 
-```{r}
+```{r, message=FALSE}
 library(ggpmisc)
 library(ggrepel)
 library(xts)
@@ -35,6 +35,7 @@ library(tibble)
 library(dplyr)
 library(nlme)
 ```
+
 As we will use text and labels on the plotting area we change the default theme
 to an uncluttered one.
 
@@ -76,7 +77,9 @@ to character strings or printed.
 ggplot(lynx, as.numeric = FALSE) + geom_line()
 ```
 
-## geom_table and stat_fmt_table
+## Geometries
+
+### geom_table and stat_fmt_table
 
 The _geometry_ `geom_table()` plots a data frame or tibble, nested in a tibble
 passed as data argument, using _aesthetics_ `x` and `y` for positioning, and
@@ -176,7 +179,7 @@ relative to the main plot, so the combined plot can be scaled.
 Please see section **Normalised Parent Coordinates** below for a description of
 `geom_table_npc()`.
 
-## geom_plot
+### geom_plot
 
 The `geom_plot()` _geometry_ plots ggplot objects, nested in a tibble passed as
 data argument, using _aesthetics_ `x` and `y` for positioning, and `label` for
@@ -262,7 +265,7 @@ unintuitive but useful feature, is that the theme is linked to each plot.
 Please see section **Normalised Parent Coordinates** below for a description of
 `geom_plot_npc()`.
 
-## geom_grob
+### geom_grob
 
 The `geom_grob()` _geometry_ plots grobs (graphical objects as created with
 'grid'), nested in a tibble passed as data argument, using _aesthetics_ `x` and
@@ -292,6 +295,7 @@ ggplot() +
   scale_x_continuous(expand = expansion(mult = 0.2, add = 0)) +
  theme_bw(12)
 ```
+
 As shown above for inset tables and inset plots, it is also possible to use
 `annotate()` with Grobs. The next example insets a single `Grob`. Here we reuse
 the bitmap `Isoquercitin` read in the previous example. The Grob is contained in
@@ -321,7 +325,7 @@ insets is set relative to the main plot, so the combined plot can be scaled.
 Please see section **Normalised Parent Coordinates** below for a description of
 `geom_grob_npc()`.
 
-## geom_vhlines
+### geom_vhlines
 
 This is a convenience geometry that adds both vertical and horizontal
 guide lines on the same plot layer, using the same syntax as `geom_hline()` and
@@ -337,8 +341,7 @@ ggplot(mpg, aes(displ, hwy, colour = factor(cyl))) +
 
 ```
 
-
-## Normalised Parent Coordinates
+### Normalised Parent Coordinates
 
 R's 'grid' package defines several units that can be used to describe the locations
 of plot elements. In 'ggplot2' the _x_ and _y_ aesthetics are directly mapped
@@ -373,7 +376,8 @@ for annotations, i.e., in those cases when we want to elements at specific
 positions within the plotting area irrespective of the ranges of the data mapped
 to the _x_ and _y_ aesthetics. When writing scripts or functions that may be
 applied to different data sets these new _aesthetics_ help by keeping the code
-concise and reusable. These _geometries_ are used by default by several of the statistics described in later sections. 
+concise and reusable. These _geometries_ are used by default by several of the
+statistics described in later sections.
 
 As an example let's imagine that we want to add the structure of a metabolite to
 a plot. Its position has nothing to do with the data mapped to _x_ and _y_, so
@@ -457,7 +461,7 @@ ggplot(mpg, aes(displ, hwy)) +
         strip.text.x = element_blank())
 ```
 
-## Marginal markings
+### Marginal markings
 
 'ggplot2' provides `geom_rug()`, `geom_vline()` and `geom_hline()`. Rug plots
 are intended to be used to represent distributions along the margins of plot.
@@ -485,7 +489,9 @@ ggplot(mpg, aes(displ, hwy, colour = factor(cyl))) +
   geom_point() 
 ```
 
-## Centroid markings and labels
+## Statistics
+
+### stat_centroid
 
 It can be useful to mark the centroid of a group of observations with a point
 or with a label. By default `stat_centroid()` applies function `mean()` to
@@ -510,7 +516,7 @@ ggplot(mpg, aes(displ, hwy, colour = factor(cyl))) +
 
 The very similar `stat_summary_xy()` accepts different functions for `x` and `y`.
 
-## stat_peaks and stat_valleys
+### stat_peaks and stat_valleys
 
 Two statistics make it possible to highlight and/or label peaks and valleys
 (local maxima and local minima) in a curve. Here we use a time series, using
@@ -564,7 +570,7 @@ ggplot(lynx, as.numeric = FALSE) + geom_line() +
   stat_valleys(geom = "rug", colour = "blue")
 ```
 
-## stat_quadrant_counts and geom_quadrant_lines
+### stat_quadrant_counts and geom_quadrant_lines
 
 This statistic automates the annotation of plots with number of observations,
 either by quadrant, by pairs of quadrants or the four quadrants taken together
@@ -634,7 +640,7 @@ ggplot(my.data, aes(x, y, colour = group)) +
   facet_wrap(~group)
 ```
 
-## stat_poly_eq
+### stat_poly_eq
 
 We generate another set of artificial data.
 
@@ -974,7 +980,7 @@ ggplot(my.data, aes(x, y2, colour = group)) +
 supported when faceting uses free scales. In this case `geom_text_npc()` and/or 
 `geom_label_npc()` must be used.
 
-## stat_fit_residuals
+### stat_fit_residuals
 
 I had the need to quickly plot residuals matching fits plotted with
 `geom_smooth()` using grouping and facets, so a new (simple) statistic was born.
@@ -986,7 +992,7 @@ ggplot(my.data, aes(x, y, colour = group)) +
   stat_fit_residuals(formula = formula)
 ```
 
-## stat_fit_deviations
+### stat_fit_deviations
 
 As I also had the need to highlight residuals in slides and notes to be used in
 teaching, another statistic was born.
@@ -1011,7 +1017,7 @@ ggplot(my.data, aes(x, y)) +
                                    ends = "both"))
 ```
 
-## stat_fit_glance
+### stat_fit_glance
 
 Package 'broom' provides consistently formatted output from different model fitting
 functions. These makes possible to write model-annotation statistic that are 
@@ -1058,7 +1064,7 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
                   label.x = "centre", label.y = "bottom")
 ```
 
-## stat_fit_tidy
+### stat_fit_tidy
 
 This stat makes it possible to add the equation for any fitted model for which
 `broom::tidy()` is implemented. Alternatively, individual values such as
@@ -1109,7 +1115,7 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
   labs(x = "C", y = "V")
 ```
 
-## stat_fit_tb
+### stat_fit_tb
 
 This stat makes it possible to add summary or ANOVA tables for any fitted model
 for which `broom::tidy()` is implemented. The output from `tidy()` is embedded
@@ -1239,7 +1245,7 @@ ggplot(chickwts, aes(factor(feed), weight)) +
   expand_limits(y = 0)
 ```
 
-## stat_fit_augment
+### stat_fit_augment
 
 **Experimental!** 
 Use `ggplot2::stat_smooth` instead of `stat_fit_augment` if possible.
@@ -1310,7 +1316,8 @@ ggplot(mtcars, aes(wt, mpg)) +
                    y.out = ".resid")
 ```
 
-```{r}
+```{r, echo=FALSE, eval=FALSE}
+# augment no longer available for "nlme"
 args <- list(model = y ~ SSlogis(x, Asym, xmid, scal),
              fixed = Asym + xmid + scal ~1,
              random = Asym ~1 | group,
@@ -1322,7 +1329,7 @@ ggplot(Orange, aes(age, circumference, colour = Tree)) +
                    augment.args = list(data = quote(data)))
 ```
 
-## stat_apply_group and stat_apply_panel
+### stat_apply_group and stat_apply_panel
 
 These statistics apply a function to `x` and `y` data. The function is expected
 to return a vector of the same length as its input. It is usually better to
@@ -1338,7 +1345,7 @@ ggplot(Orange, aes(age, circumference, colour = Tree)) +
   stat_apply_group(.fun.y = function(x) {c(NA, diff(x))}, na.rm = TRUE)
 ```
 
-## stat_dens2d_labels and stat_dens2d_filter
+### stat_dens2d_labels and stat_dens2d_filter
 
 These stats had their origin in an enhancement suggestion for 'ggrepel' from 
 Hadley Wickham and discussion with Kamil Slowikowski (ggrepel's author) and 
@@ -1514,92 +1521,31 @@ ggplot(data = d, aes(x, y, label = lab, colour = group)) +
                      label.fill = NA)
 ```
 
-## try_tibble
+## Scales
 
-### Time series
+Volcano and quadrant plots are scatter plots with some peculiarities. 
+Creating these plots from scratch using 'ggplot2' can be time consuming, but allows flexibility in design. Rather than providing a 'canned' function to produce volcano plots, package 'ggpmisc' provides several building blocks that facilitate the production of volcano and quadrant plots as wrappers on _scales_ with suitable defaults plus helper functions to create factors from numeric outcomes.
 
-Several different formats for storing time series data are used in R. Here we
-use in the examples objects of class `ts` but several other classes are
-supported as `try.xts()` is used internally. The first example is a quarterly
-series.
+### scale_color_outcome, scale_fill_outcome
 
-```{r}
-class(austres)
-austres.df <- try_tibble(austres)
-class(austres.df)
-lapply(austres.df, "class")
-head(austres.df, 4)
-```
+Manual scales for color and fill aesthetics with defaults suitable for the three
+way outcomes from statistical tests.
 
-The next chunk demonstrates that numeric times are expressed as decimal years in
-the returned data frame.
+### scale_x_FDR, scale_y_FDR, scale_x_logFC, scale_y_logFC, scale_x_Pvalue, scale_y_Pvalue
 
-```{r}
-austres.df <- try_tibble(austres, as.numeric = TRUE)
-lapply(austres.df, "class")
-head(austres.df, 4)
-```
+Scales for _x_ or _y_ aesthetics mapped to _P_-values, FDR (false discovery
+rate) or log FC (logarithm of fold-change) as used in volcano and quadrant plots
+of transcriptomics and metabolomics data.
 
-This second example is for a series of yearly values.
+### symmetric_limits
 
-```{r}
-class(lynx)
-lynx.df <- try_tibble(lynx)
-class(lynx.df)
-lapply(lynx.df, "class")
-head(lynx.df, 3)
-```
+A simple function to expand scale limits to be symetric around zero. Can be
+passed as argument to parameter limits of continuous scales from packages
+'ggpmisc', 'ggplot2' or 'scales' (and extensions).
 
-Above there is a small rounding error of 1 s for these old dates. We can correct
-this by rounding to year.
+### Volcano-plot examples
 
-```{r}
-lynx.df <- try_tibble(lynx, "year")
-head(lynx.df, 3)
-```
-
-In addition we can convert the POSIXct values into numeric values in calendar
-years plus a decimal fraction.
-
-```{r}
-lynx_n.df <- try_tibble(lynx, "year", as.numeric = TRUE)
-lapply(lynx_n.df, "class")
-head(lynx_n.df, 3)
-```
-
-### Other classes
-
-`try_tibble()` attempts to handle gracefully objects that are not time series.
-
-```{r}
-try_tibble(1:5)
-```
-
-```{r}
-try_tibble(letters[1:5])
-```
-
-```{r}
-try_tibble(factor(letters[1:5]))
-```
-
-```{r}
-try_tibble(list(x = rep(1,5), y = 1:5))
-```
-
-```{r}
-try_tibble(data.frame(x = rep(1,5), y = 1:5))
-```
-
-```{r}
-try_tibble(matrix(1:10, ncol = 2))
-```
-
-## Volcano plots
-
-Volcano plots are scatter plots with some peculiarities. They are frequently used for transcriptomics and metabolomics. They are used to show _P_-values or FDR (false discovery rate) as a function of effect size, which can be either an increase or a decrease. Effect sizes are expressed as fold-changes compared to a control or reference condition. Colours are frequently used to highlight significant responses. Counts of significant increases and decreases are frequently also added.
-
-Creating volcano plots from scratch using 'ggplot2' can be time consuming, but allows flexibility in design. Rather than providing a 'canned' function to produce volcano plots, package 'ggpmisc' provides several building blocks that facilitate the production of volcano and quadrant plots: Wrappers on _scales_ with suitable defaults plus helper functions to create factors from numeric outcomes.
+Volcano plots are frequently used for transcriptomics and metabolomics. They are used to show _P_-values or FDR (false discovery rate) as a function of effect size, which can be either an increase or a decrease. Effect sizes are expressed as fold-changes compared to a control or reference condition. Colors are frequently used to highlight significant responses. Counts of significant increases and decreases are frequently also added.
 
 Outcomes encoded as -1, 0 or 1, as seen in the tibble below need to be converted into factors with suitable labels for levels. This can be easily achieved with function `outcome2factor()`.
 
@@ -1636,8 +1582,8 @@ volcano_example.df %>%
   stat_quadrant_counts(data = . %>% filter(outcome != 0))
 ```
 
-By default `outcome2factor()` creates a factor with three levels as in the example above,
-but this default can be overridden as shown below.
+By default `outcome2factor()` creates a factor with three levels as in the
+example above, but this default can be overridden as shown below.
 
 ```{r}
 volcano_example.df %>%
@@ -1650,7 +1596,7 @@ volcano_example.df %>%
   stat_quadrant_counts(data = . %>% filter(outcome != 0))
 ```
 
-## Quadrant plots
+### Quadrant-plot examples
 
 Quadrant plots are scatter plots with comparable variables on both axes and usually include the four quadrants. When used for transcriptomics and metabolomics, they are used to compare responses expressed as fold-change to two different conditions or treatments. They are useful when many responses are measured as in transcriptomics (many different genes) or metabolomics (many different metabolites). 
 
@@ -1731,6 +1677,88 @@ quadrant_example.df %>%
   scale_fill_outcome() +
   facet_wrap(~outcome.xy.fct) +
   theme_dark()
+```
+
+
+## try_tibble
+
+### Time series
+
+Several different formats for storing time series data are used in R. Here we
+use in the examples objects of class `ts` but several other classes are
+supported as `try.xts()` is used internally. The first example is a quarterly
+series.
+
+```{r}
+class(austres)
+austres.df <- try_tibble(austres)
+class(austres.df)
+lapply(austres.df, "class")
+head(austres.df, 4)
+```
+
+The next chunk demonstrates that numeric times are expressed as decimal years in
+the returned data frame.
+
+```{r}
+austres.df <- try_tibble(austres, as.numeric = TRUE)
+lapply(austres.df, "class")
+head(austres.df, 4)
+```
+
+This second example is for a series of yearly values.
+
+```{r}
+class(lynx)
+lynx.df <- try_tibble(lynx)
+class(lynx.df)
+lapply(lynx.df, "class")
+head(lynx.df, 3)
+```
+
+Above there is a small rounding error of 1 s for these old dates. We can correct
+this by rounding to year.
+
+```{r}
+lynx.df <- try_tibble(lynx, "year")
+head(lynx.df, 3)
+```
+
+In addition we can convert the POSIXct values into numeric values in calendar
+years plus a decimal fraction.
+
+```{r}
+lynx_n.df <- try_tibble(lynx, "year", as.numeric = TRUE)
+lapply(lynx_n.df, "class")
+head(lynx_n.df, 3)
+```
+
+### Other classes
+
+`try_tibble()` attempts to handle gracefully objects that are not time series.
+
+```{r}
+try_tibble(1:5)
+```
+
+```{r}
+try_tibble(letters[1:5])
+```
+
+```{r}
+try_tibble(factor(letters[1:5]))
+```
+
+```{r}
+try_tibble(list(x = rep(1,5), y = 1:5))
+```
+
+```{r}
+try_tibble(data.frame(x = rep(1,5), y = 1:5))
+```
+
+```{r}
+try_tibble(matrix(1:10, ncol = 2))
 ```
 
 ## Appendix: Additional examples of the use density filtering
