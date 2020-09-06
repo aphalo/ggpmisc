@@ -488,7 +488,7 @@ fit_augment_compute_group_fun <- function(data,
   augment.args <- c(list(x = mf), augment.args)
   z <- do.call(broom::augment, augment.args)
   z <- plyr::colwise(unAsIs)(z)
-  tibble::as_data_frame(z)
+  tibble::as_tibble(z)
   z[["y.observed"]] <- z[["y"]]
   z[["y"]] <- z[[y.out]]
   if (exists("df.residual", mf) && y.out == ".fitted") {
