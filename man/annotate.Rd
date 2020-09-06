@@ -16,6 +16,7 @@ annotate(
   yend = NULL,
   npcx = NULL,
   npcy = NULL,
+  label = NULL,
   ...,
   na.rm = FALSE
 )
@@ -25,6 +26,8 @@ annotate(
 
 \item{x, y, xmin, ymin, xmax, ymax, xend, yend, npcx, npcy}{numeric Positioning
 aesthetics - you must specify at least one of these.}
+
+\item{label}{character, data.frame, ggplot or grob.}
 
 \item{...}{Other named arguments passed on to \code{layer()}. These are often
 aesthetics, used to set an aesthetic to a fixed value, like colour = "red"
@@ -36,9 +39,11 @@ with a warning. If TRUE, missing values are silently removed.}
 \description{
 A revised version of \code{annotate()} from package 'ggplot2' adding support
 for \code{npcx} and \code{npcy} position aesthetics, allowing use of the
-geometries defined in the current package such as \code{geom_text_npc()}.
-When package 'ggpmisc' is loaded this definitions overrides that in package
-'ggplot2'.
+geometries defined in the current package such as \code{geom_text_npc()}. It
+also has a parameter \code{label} that directly accepts data frames, ggplots
+and grobs as arguments in addition to objects of attomic classes like
+character. When package 'ggpmisc' is loaded this definition of
+\code{annotate()} overrides that in package 'ggplot2'.
 }
 \details{
 Note that all position aesthetics are scaled (i.e., they will
@@ -56,6 +61,11 @@ p + annotate("label_npc", npcx = c(.1, .9), npcy = c(.1, .9),
 p + annotate("label_npc", npcx = .9, npcy = c(.1, .9),
              label = c("A", "B"))
 p + annotate("table_npc", npcx = .9, npcy = .9,
-             label = list(data.frame(A = 1:2, B = letters[1:2])))
+             label = data.frame(A = 1:2, B = letters[1:2]))
+p + annotate("plot_npc", npcx = 1, npcy = 1,
+             label = p + theme_bw())
+p + annotate("plot_npc", npcx = c(0, 1), npcy = c(0, 1),
+             label = list(p + theme_bw(), p),
+             vp.width = 0.3, vp.height = 0.4)
 
 }
