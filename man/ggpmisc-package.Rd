@@ -104,7 +104,7 @@ ggplot(PlantGrowth, aes(group, weight)) +
 Package suite 'r4photobiology' web site at
 \url{https://www.r4photobiology.info/}\cr Package 'ggplot2' documentation at
 \url{https://ggplot2.tidyverse.org/}\cr Package 'ggplot2' source code at
-\url{https://github.com/hadley/ggplot2}
+\url{https://github.com/tidyverse/ggplot2}
 }
 \seealso{
 Useful links:
