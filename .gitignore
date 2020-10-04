@@ -1,11 +1,5 @@
 .Rproj.user
 .Rhistory
 .RData
-vignettes/figure/
-vignettes/*.html
-vignettes/*.R
-inst/doc
 tests/figs
-docs
-
 *.log
