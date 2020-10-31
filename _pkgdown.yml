@@ -9,7 +9,7 @@ home:
   - text: More on 'ggplot2'
     href: https://ggplot2.tidyverse.org/
   - text: Other extensions
-    href: http://exts.ggplot2.tidyverse.org/
+    href: https://exts.ggplot2.tidyverse.org/
 
 reference:
   - title: Package overview
