@@ -9,7 +9,7 @@ version](https://www.r-pkg.org/badges/version/ggpmisc)](https://cran.r-project.o
 ## Purpose
 
 Package ‘**ggpmisc**’ (Miscellaneous Extensions to ‘ggplot2’) is a set
-of extensions to R package ‘ggplot2’ (\>= 3.0.0) with emphasis on
+of extensions to R package ‘ggplot2’ (&gt;= 3.0.0) with emphasis on
 annotations and highlighting related to fitted models and data
 summaries. Data summaries shown as text, tables or equations are
 implemented. New geoms support insets in ggplots. The location of fit
@@ -161,9 +161,12 @@ ggplot(cars, aes(speed, dist)) +
                           "M.S." = "meansq", 
                           "italic(F)" = "statistic", 
                           "italic(P)" = "p.value"),
+              tb.params = c(x = 1, "x^2" = 2),
               label.y.npc = "top", label.x.npc = "left",
               size = 2.5,
               parse = TRUE)
+#> Dropping column(s) from table.
+#> Warning in f(...): Dropping row(s) from table.
 ```
 
 ![](man/figures/README-readme-05-1.png)<!-- -->
