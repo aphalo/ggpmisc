@@ -333,8 +333,17 @@ fit_tb_compute_panel_fun <- function(data,
     mf_tb <- broom::tidy(mf)[c("term", "estimate")]
   }
 
+  # reduce number of significant digits to all numeric columns
   num.cols <- sapply(mf_tb, is.numeric)
   mf_tb[num.cols] <- signif(mf_tb[num.cols], digits = digits)
+  # treat p.value as a special case
+  if ("p.value" %in% colnames(mf_tb)) {
+    mf_tb[["p.value"]] <- round(mf_tb[["p.value"]], digits = digits)
+    limit.text <- paste("<", format(1 * 10^-digits, nsmall = digits))
+    mf_tb[["p.value"]] <- ifelse(mf_tb[["p.value"]] > 0,
+                                 format(mf_tb[["p.value"]], nsmall = digits),
+                                 limit.text)
+  }
 
   if (!is.null(tb.vars)) {
     if (is.character(tb.vars)) {
