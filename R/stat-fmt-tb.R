@@ -160,7 +160,7 @@ fmt_tb_compute_group_fun <- function(data,
         idxs <- pmatch(tb.vars, colnames(temp_tb))
         if (length(idxs) < length(tb.vars) || anyNA(idxs)) {
           warning("Attempt to select nonexistent columns")
-          idxs <- na.omit(idxs)
+          idxs <- stats::na.omit(idxs)
           # no renaming possible, as we do not know which name was not matched
           tb.vars <- unname(tb.vars)
         }
@@ -193,7 +193,7 @@ fmt_tb_compute_group_fun <- function(data,
         idxs <- pmatch(tb.rows, rownames(temp_tb))
         if (length(idxs) < length(tb.rows) || anyNA(idxs)) {
           warning("Attempt to select nonexistent rows")
-          idxs <- na.omit(idxs)
+          idxs <- stats::na.omit(idxs)
           # no renaming possible, as we do not know which name was not matched
           tb.rows <- unname(tb.rows)
         }

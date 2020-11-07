@@ -341,7 +341,7 @@ fit_tb_compute_panel_fun <- function(data,
       idxs <- pmatch(tb.vars, colnames(mf_tb))
        if (length(idxs) < length(tb.vars) || anyNA(idxs)) {
         warning("Attempt to select nonexistent columns by name")
-        idxs <- na.omit(idxs)
+        idxs <- stats::na.omit(idxs)
         # no renaming possible, as we do not know which name was not matched
         tb.vars <- unname(tb.vars)
        }
@@ -373,7 +373,7 @@ fit_tb_compute_panel_fun <- function(data,
       idxs <- pmatch(tb.params, mf_tb[[1]])
       if (length(idxs) < length(tb.params) || anyNA(idxs)) {
         warning("Attempt to select nonexistent params")
-        idxs <- na.omit(idxs)
+        idxs <- stats::na.omit(idxs)
         # no renaming possible, as we do not know which name was not matched
         tb.params <- unname(tb.params)
       }
