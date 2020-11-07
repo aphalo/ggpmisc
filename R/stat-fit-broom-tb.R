@@ -30,8 +30,9 @@
 #' @param method.args list of arguments to pass to \code{method}.
 #' @param tb.type character One of "fit.summary", "fit.anova" or "fit.coefs".
 #' @param digits integer indicating the number of significant digits to be used.
-#' @param tb.vars character vector, optionally named, used to select and or
-#'   rename the columns of the table returned.
+#' @param tb.vars,tb.params character or numeric vectors, optionally named, used
+#'   to select and/or rename the columns or the parameters in the table
+#'   returned.
 #' @param label.x.npc,label.y.npc \code{numeric} with range 0..1 or character.
 #'   Coordinates to be used for positioning the output, expressed in "normalized
 #'   parent coordinates" or character string. If too short they will be
@@ -90,22 +91,53 @@
 #' group <- factor(c(rep("A", 4), rep("B", 5)))
 #' my.df <- data.frame(x, group, covariate)
 #'
-#' # Linear regression
+#' # Linear regression fit summary, by default
 #' ggplot(my.df, aes(covariate, x)) +
 #'   geom_point() +
 #'   stat_fit_tb() +
 #'   expand_limits(y = 70)
 #'
-#' # Linear regression using a table theme
+#' # Linear regression fit summary
 #' ggplot(my.df, aes(covariate, x)) +
 #'   geom_point() +
-#'   stat_fit_tb(table.theme = ttheme_gtlight) +
+#'   stat_fit_tb(tb.type = "fit.summary") +
+#'   expand_limits(y = 70)
+#'
+#' # Linear regression ANOVA table
+#' ggplot(my.df, aes(covariate, x)) +
+#'   geom_point() +
+#'   stat_fit_tb(tb.type = "fit.anova") +
+#'   expand_limits(y = 70)
+#'
+#' # Linear regression fit coeficients
+#' ggplot(my.df, aes(covariate, x)) +
+#'   geom_point() +
+#'   stat_fit_tb(tb.type = "fit.coefs") +
 #'   expand_limits(y = 70)
 #'
 #' # Polynomial regression
 #' ggplot(my.df, aes(covariate, x)) +
 #'   geom_point() +
 #'   stat_fit_tb(method.args = list(formula = y ~ poly(x, 2))) +
+#'   expand_limits(y = 70)
+#'
+#' # Polynomial regression with renamed parameters
+#' ggplot(my.df, aes(covariate, x)) +
+#'   geom_point() +
+#'   stat_fit_tb(method.args = list(formula = y ~ poly(x, 2)),
+#'               tb.params = c("x^0" = 1, "x^1" = 2, "x^2" = 3),
+#'               parse = TRUE) +
+#'   expand_limits(y = 70)
+#'
+#' # Polynomial regression with renamed parameters and columns
+#' # using numeric indexes
+#' ggplot(my.df, aes(covariate, x)) +
+#'   geom_point() +
+#'   stat_fit_tb(method.args = list(formula = y ~ poly(x, 2)),
+#'               tb.params = c("x^0" = 1, "x^1" = 2, "x^2" = 3),
+#'               tb.vars = c("Term" = 1, "Estimate" = 2, "S.E." = 3,
+#'                           "italic(F)-value" = 4, "italic(P)-value" = 5),
+#'               parse = TRUE) +
 #'   expand_limits(y = 70)
 #'
 #' # ANOVA
@@ -115,9 +147,19 @@
 #'   expand_limits(y = 70)
 #'
 #' # ANOVA with renamed and selected columns
+#' # using column names
 #' ggplot(my.df, aes(group, x)) +
 #'   geom_point() +
-#'   stat_fit_tb(tb.vars = c(Effect = "term", "italic(F)" = "statistic", "italic(P)" = "p.value"),
+#'   stat_fit_tb(tb.vars = c(Effect = "term", "italic(F)" = "statistic",
+#'                           "italic(P)" = "p.value"),
+#'               parse = TRUE)
+#'
+#' # ANOVA with renamed and selected columns
+#' # using column names with partial matching
+#' ggplot(my.df, aes(group, x)) +
+#'   geom_point() +
+#'   stat_fit_tb(tb.vars = c(Effect = "term", "italic(F)" = "stat",
+#'                           "italic(P)" = "p.val"),
 #'               parse = TRUE)
 #'
 #' # ANCOVA (covariate not plotted)
@@ -142,11 +184,18 @@
 #'               tb.vars = c("italic(t)" = "statistic", "italic(P)" = "p.value"),
 #'               parse = TRUE)
 #'
+#' # Linear regression using a table theme
+#' ggplot(my.df, aes(covariate, x)) +
+#'   geom_point() +
+#'   stat_fit_tb(table.theme = ttheme_gtlight) +
+#'   expand_limits(y = 70)
+#'
 stat_fit_tb <- function(mapping = NULL, data = NULL, geom = "table_npc",
                         method = "lm",
                         method.args = list(formula = y ~ x),
                         tb.type = "fit.summary",
                         tb.vars = NULL,
+                        tb.params = NULL,
                         digits = 3,
                         label.x = "center", label.y = "top",
                         label.x.npc = NULL, label.y.npc = NULL,
@@ -175,6 +224,7 @@ stat_fit_tb <- function(mapping = NULL, data = NULL, geom = "table_npc",
                   method.args = method.args,
                   tb.type = tb.type,
                   tb.vars = tb.vars,
+                  tb.params = tb.params,
                   digits = digits,
                   label.x = label.x,
                   label.y = label.y,
@@ -202,6 +252,7 @@ fit_tb_compute_panel_fun <- function(data,
                                      method.args,
                                      tb.type,
                                      tb.vars,
+                                     tb.params,
                                      digits,
                                      npc.used = TRUE,
                                      label.x,
@@ -242,10 +293,41 @@ fit_tb_compute_panel_fun <- function(data,
   mf_tb[num.cols] <- signif(mf_tb[num.cols], digits = digits)
 
   if (!is.null(tb.vars)) {
-    mf_tb <- dplyr::select(mf_tb, !!tb.vars)
+    if (is.character(tb.vars)) {
+      idxs <- pmatch(tb.vars, colnames(mf_tb))
+    } else {
+      idxs <- unname(tb.vars)
+    }
+    if (length(idxs) < ncol(mf_tb)) {
+      message("Dropping column(s) from table.")
+    }
+    if (length(idxs) < 1L) {
+      stop("No matching column(s).")
+    }
+    mf_tb <- mf_tb[ , idxs]
+    if (rlang::is_named(tb.vars)) {
+      colnames(mf_tb) <- names(tb.vars)
+    }
+  }
+  if (!is.null(tb.params)) {
+    if (length(tb.params) < nrow(mf_tb)) {
+      warning("Dropping row(s) from table.")
+    }
+    if (is.character(tb.params)) {
+      idxs <- pmatch(tb.params, mf_tb[[1]])
+    } else {
+      idxs <- unname(tb.params)
+    }
+    if (length(idxs) < 1L) {
+      stop("No matching parameters(s).")
+    }
+    mf_tb <- mf_tb[idxs, ]
+    if (rlang::is_named(tb.params)) {
+      mf_tb[[1]] <- names(tb.params)
+    }
   }
 
-  # we need to enclose the tibble in a list to mannualy nest the table in
+  # we need to enclose the tibble in a list to manually nest the table in
   # data.
   z <- tibble::tibble(mf_tb = list(mf_tb))
 

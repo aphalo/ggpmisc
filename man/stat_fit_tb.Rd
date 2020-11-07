@@ -12,6 +12,7 @@ stat_fit_tb(
   method.args = list(formula = y ~ x),
   tb.type = "fit.summary",
   tb.vars = NULL,
+  tb.params = NULL,
   digits = 3,
   label.x = "center",
   label.y = "top",
@@ -45,8 +46,9 @@ the plot defaults.}
 
 \item{tb.type}{character One of "fit.summary", "fit.anova" or "fit.coefs".}
 
-\item{tb.vars}{character vector, optionally named, used to select and or
-rename the columns of the table returned.}
+\item{tb.vars, tb.params}{character or numeric vectors, optionally named, used
+to select and/or rename the columns or the parameters in the table
+returned.}
 
 \item{digits}{integer indicating the number of significant digits to be used.}
 
@@ -131,22 +133,53 @@ covariate <- sqrt(x) + rnorm(9)
 group <- factor(c(rep("A", 4), rep("B", 5)))
 my.df <- data.frame(x, group, covariate)
 
-# Linear regression
+# Linear regression fit summary, by default
 ggplot(my.df, aes(covariate, x)) +
   geom_point() +
   stat_fit_tb() +
   expand_limits(y = 70)
 
-# Linear regression using a table theme
+# Linear regression fit summary
 ggplot(my.df, aes(covariate, x)) +
   geom_point() +
-  stat_fit_tb(table.theme = ttheme_gtlight) +
+  stat_fit_tb(tb.type = "fit.summary") +
+  expand_limits(y = 70)
+
+# Linear regression ANOVA table
+ggplot(my.df, aes(covariate, x)) +
+  geom_point() +
+  stat_fit_tb(tb.type = "fit.anova") +
+  expand_limits(y = 70)
+
+# Linear regression fit coeficients
+ggplot(my.df, aes(covariate, x)) +
+  geom_point() +
+  stat_fit_tb(tb.type = "fit.coefs") +
   expand_limits(y = 70)
 
 # Polynomial regression
 ggplot(my.df, aes(covariate, x)) +
   geom_point() +
   stat_fit_tb(method.args = list(formula = y ~ poly(x, 2))) +
+  expand_limits(y = 70)
+
+# Polynomial regression with renamed parameters
+ggplot(my.df, aes(covariate, x)) +
+  geom_point() +
+  stat_fit_tb(method.args = list(formula = y ~ poly(x, 2)),
+              tb.params = c("x^0" = 1, "x^1" = 2, "x^2" = 3),
+              parse = TRUE) +
+  expand_limits(y = 70)
+
+# Polynomial regression with renamed parameters and columns
+# using numeric indexes
+ggplot(my.df, aes(covariate, x)) +
+  geom_point() +
+  stat_fit_tb(method.args = list(formula = y ~ poly(x, 2)),
+              tb.params = c("x^0" = 1, "x^1" = 2, "x^2" = 3),
+              tb.vars = c("Term" = 1, "Estimate" = 2, "S.E." = 3,
+                          "italic(F)-value" = 4, "italic(P)-value" = 5),
+              parse = TRUE) +
   expand_limits(y = 70)
 
 # ANOVA
@@ -156,9 +189,19 @@ ggplot(my.df, aes(group, x)) +
   expand_limits(y = 70)
 
 # ANOVA with renamed and selected columns
+# using column names
 ggplot(my.df, aes(group, x)) +
   geom_point() +
-  stat_fit_tb(tb.vars = c(Effect = "term", "italic(F)" = "statistic", "italic(P)" = "p.value"),
+  stat_fit_tb(tb.vars = c(Effect = "term", "italic(F)" = "statistic",
+                          "italic(P)" = "p.value"),
+              parse = TRUE)
+
+# ANOVA with renamed and selected columns
+# using column names with partial matching
+ggplot(my.df, aes(group, x)) +
+  geom_point() +
+  stat_fit_tb(tb.vars = c(Effect = "term", "italic(F)" = "stat",
+                          "italic(P)" = "p.val"),
               parse = TRUE)
 
 # ANCOVA (covariate not plotted)
@@ -182,6 +225,12 @@ ggplot(my.df, aes(group, x)) +
               method.args = list(formula = y ~ x, var.equal = TRUE),
               tb.vars = c("italic(t)" = "statistic", "italic(P)" = "p.value"),
               parse = TRUE)
+
+# Linear regression using a table theme
+ggplot(my.df, aes(covariate, x)) +
+  geom_point() +
+  stat_fit_tb(table.theme = ttheme_gtlight) +
+  expand_limits(y = 70)
 
 }
 \seealso{

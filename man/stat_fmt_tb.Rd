@@ -33,10 +33,9 @@ the plot defaults.}
 
 \item{geom}{The geometric object to use display the data}
 
-\item{tb.vars}{character vector, optionally named, used to select and or
-rename the columns of the table returned.}
-
-\item{tb.rows}{integer vector of row indexes of rows to be retained.}
+\item{tb.vars, tb.rows}{character or numeric vectors, optionally named, used
+to select and/or rename the columns or rows in the table
+returned.}
 
 \item{digits}{integer indicating the number of significant digits to be
 retained in data.}
@@ -44,7 +43,7 @@ retained in data.}
 \item{position}{The position adjustment to use for overlapping points on this
 layer}
 
-\item{table.theme}{NULL, list or function A gridExtra ttheme defintion, or
+\item{table.theme}{NULL, list or function A gridExtra ttheme definition, or
 a constructor for a ttheme or NULL for default.}
 
 \item{table.rownames, table.colnames}{logical flag to enable or disabling
@@ -72,12 +71,15 @@ default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
 can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 }
+\value{
+The returned value is a copy code{data} in which the data frames mapped
+   to \code{label} have been modified.
+}
 \description{
-\code{stat_partial_tb} selects columns and/or remanes them
-  and/or slices rows from a tible nested in \code{data}. This stat is
-  designed to be used to pre-process \code{tibble} objects mapped to the
-  \code{label} aesthetic before adding them to a plot with
-  \code{geom_table}.
+\code{stat_fmt_tb} selects, reorders and/or renames columns and
+  or rows of a tibble nested in \code{data}. This stat is intended to be used
+  to pre-process \code{tibble} objects mapped to the \code{label} aesthetic
+  before adding them to a plot with \code{geom_table}.
 }
 \section{Computed variables}{
  The output of sequentially applying
@@ -93,21 +95,41 @@ my.df <-
     x = c(1, 2),
     y = c(0, 4),
     group = c("A", "B"),
-    tbs = list(a = tibble::tibble(X = 1:6, Y = rep(c("x", "y"), 3)),
-               b = tibble::tibble(X = 1:3, Y = "x"))
+    tbs = list(a = tibble::tibble(Xa = 1:6, Y = rep(c("x", "y"), 3)),
+               b = tibble::tibble(Xb = 1:3, Y = "x"))
   )
 
 ggplot(my.df, aes(x, y, label = tbs)) +
   stat_fmt_tb() +
   expand_limits(x = c(0,3), y = c(-2, 6))
 
+# Hide column names, diplay row names
+ggplot(my.df, aes(x, y, label = tbs)) +
+  stat_fmt_tb(table.colnames = FALSE,
+              table.rownames = TRUE) +
+  expand_limits(x = c(0,3), y = c(-2, 6))
+
+# Use a theme for the table
 ggplot(my.df, aes(x, y, label = tbs)) +
   stat_fmt_tb(table.theme = ttheme_gtlight) +
   expand_limits(x = c(0,3), y = c(-2, 6))
 
+# selection and renaming by column position
+ggplot(my.df, aes(x, y, label = tbs)) +
+  stat_fmt_tb(tb.vars = c(value = 1, group = 2),
+               tb.rows = 1:3) +
+  expand_limits(x = c(0,3), y = c(-2, 6))
+
+# selection and renaming, using partial matching to column name
 ggplot(my.df, aes(x, y, label = tbs)) +
   stat_fmt_tb(tb.vars = c(value = "X", group = "Y"),
                tb.rows = 1:3) +
+  expand_limits(x = c(0,3), y = c(-2, 6))
+
+# selection, renaming and reordering, missing rows set to NA
+ggplot(my.df, aes(x, y, label = tbs)) +
+  stat_fmt_tb(tb.vars = c(group = "Y", value = "X"),
+               tb.rows = 5:2) +
   expand_limits(x = c(0,3), y = c(-2, 6))
 
 }
