@@ -182,27 +182,41 @@ ggplot(my.df, aes(covariate, x)) +
               parse = TRUE) +
   expand_limits(y = 70)
 
-# ANOVA
+# ANOVA summary
 ggplot(my.df, aes(group, x)) +
   geom_point() +
   stat_fit_tb() +
   expand_limits(y = 70)
 
-# ANOVA with renamed and selected columns
+# ANOVA table
+ggplot(my.df, aes(group, x)) +
+  geom_point() +
+  stat_fit_tb(tb.type = "fit.anova") +
+  expand_limits(y = 70)
+
+# ANOVA table with renamed and selected columns
 # using column names
 ggplot(my.df, aes(group, x)) +
   geom_point() +
-  stat_fit_tb(tb.vars = c(Effect = "term", "italic(F)" = "statistic",
+  stat_fit_tb(tb.type = "fit.anova",
+              tb.vars = c(Effect = "term", "df", "italic(F)" = "statistic",
                           "italic(P)" = "p.value"),
               parse = TRUE)
 
-# ANOVA with renamed and selected columns
+# ANOVA table with renamed and selected columns
 # using column names with partial matching
 ggplot(my.df, aes(group, x)) +
   geom_point() +
-  stat_fit_tb(tb.vars = c(Effect = "term", "italic(F)" = "stat",
-                          "italic(P)" = "p.val"),
+  stat_fit_tb(tb.type = "fit.anova",
+              tb.vars = c(Effect = "term", "df", "italic(F)" = "stat",
+                          "italic(P)" = "p"),
               parse = TRUE)
+
+# ANOVA summary
+ggplot(my.df, aes(group, x)) +
+  geom_point() +
+  stat_fit_tb() +
+  expand_limits(y = 70)
 
 # ANCOVA (covariate not plotted)
 ggplot(my.df, aes(group, x, z = covariate)) +
@@ -230,6 +244,36 @@ ggplot(my.df, aes(group, x)) +
 ggplot(my.df, aes(covariate, x)) +
   geom_point() +
   stat_fit_tb(table.theme = ttheme_gtlight) +
+  expand_limits(y = 70)
+
+# Linear regression using a table theme
+ggplot(my.df, aes(covariate, x)) +
+  geom_point() +
+  stat_fit_tb(tb.vars = 1:10) +
+  expand_limits(y = 70)
+
+# Linear regression using a table theme
+ggplot(my.df, aes(covariate, x)) +
+  geom_point() +
+  stat_fit_tb(tb.vars = 7:10) +
+  expand_limits(y = 70)
+
+# Linear regression using a table theme
+ggplot(my.df, aes(covariate, x)) +
+  geom_point() +
+  stat_fit_tb(tb.vars = c(a = 1, b = 2, z = 7)) +
+  expand_limits(y = 70)
+
+# Linear regression using a table theme
+ggplot(my.df, aes(covariate, x)) +
+  geom_point() +
+  stat_fit_tb(tb.vars = c(a = "term", b = "esti", zz = "z")) +
+  expand_limits(y = 70)
+
+# Linear regression using a table theme
+ggplot(my.df, aes(covariate, x)) +
+  geom_point() +
+  stat_fit_tb(tb.vars = c(zz = "z")) +
   expand_limits(y = 70)
 
 }

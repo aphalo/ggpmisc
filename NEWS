@@ -5,8 +5,7 @@ ggpmisc 0.3.7 (2020-11-xx)
 table. Also implement selection and renaming of columns and terms/parameters
 using positional indexes in addtion to names. In the case names add support
 for partial matching.
-* Update stat_fmt_tb() to support the same expanded syntax as described above
-for stat_fit_tb().
+* Update stat_fmt_tb() to support the same expanded syntax as stat_fit_tb().
 
 ggpmisc 0.3.6 (2020-09-06)
 ==========================

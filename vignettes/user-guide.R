@@ -58,7 +58,9 @@ ggplot(mpg, aes(displ, hwy, colour = factor(cyl))) +
   geom_table(data = data.tb, aes(x, y, label = tb),
              table.theme = ttheme_gtlight,
              size = 3, colour = "darkblue",
-             stat = "fmt_tb", tb.vars = c(Cylinders = "cyl", "MPG" = "hwy")) +
+             stat = "fmt_tb", 
+             tb.vars = c(Cylinders = "cyl", MPG = "hwy"), # rename
+             tb.rows = 4:1) + # change order
   labs(x = "Engine displacement (l)", y = "Fuel use efficiency (MPG)",
        colour = "Engine cylinders\n(number)") +
   geom_point() +
@@ -636,11 +638,11 @@ ggplot(my.data, aes(x, y)) +
               method.args = list(formula = formula),
               tb.type = "fit.anova",
               tb.vars = c(Effect = "term", 
-                          "df",
-                          "M.S." = "meansq", 
+                          df = "df",
                           "italic(F)" = "statistic", 
                           "italic(P)" = "p.value"),
-               label.y = "top", label.x = "left",
+              tb.params = c(x = 1, "x^2" = 2, "x^3" = 3, Resid = 4),
+              label.y = "top", label.x = "left",
               parse = TRUE)
 
 ## -----------------------------------------------------------------------------

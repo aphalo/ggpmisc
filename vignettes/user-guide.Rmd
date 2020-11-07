@@ -116,12 +116,12 @@ ggplot(mpg, aes(displ, hwy, colour = factor(cyl))) +
   geom_point() 
 ```
 
-Table themes are supported through parameter `table.theme` and if variables or constants are mapped to the 
-`colour`, `fill`, `size`, `family`, aesthetics they override the corresponding
-theme settings. The display of `rownames` and `colnames` can be enabled or
-disable through parameter `table.rownames` and `table.colnames` and the 
-horizontal justification of text in the core of the table through parameter
-`table.hjust`.
+Table themes are supported through parameter `table.theme` and if variables or
+constants are mapped to the `colour`, `fill`, `size`, `family`, aesthetics they
+override the corresponding theme settings. The display of `rownames` and
+`colnames` can be enabled or disable through parameter `table.rownames` and
+`table.colnames` and the horizontal justification of text in the core of the
+table through parameter `table.hjust`.
 
 Parameter `table.theme` accepts as arguments `NULL` for use of the current
 default, a `ttheme` constructor function such as those defined in package
@@ -136,17 +136,21 @@ ggplot(mpg, aes(displ, hwy, colour = factor(cyl))) +
   geom_point() 
 ```
 
-Using `stat_fmt_tb()` we can rename columns of the tibble,
-and/or select a subset of columns or a slice of rows as shown below. To provide
-a complete example we also replace the names of the _x_, _y_ and _colour_
-aesthetics.
+Using `stat_fmt_tb()` we can rename columns and rows of the tibble, reorder them
+and/or select a subset of columns or rows as shown below. To provide a complete
+example we also replace the names of the scales for _x_, _y_ and _colour_
+aesthetics. Here we pass a `character` vector with the original names of the
+columns in full, but partial matching is tried when needed. It is also possible
+to use a `numeric` vector of positional indexes.
 
 ```{r}
 ggplot(mpg, aes(displ, hwy, colour = factor(cyl))) +
   geom_table(data = data.tb, aes(x, y, label = tb),
              table.theme = ttheme_gtlight,
              size = 3, colour = "darkblue",
-             stat = "fmt_tb", tb.vars = c(Cylinders = "cyl", "MPG" = "hwy")) +
+             stat = "fmt_tb", 
+             tb.vars = c(Cylinders = "cyl", MPG = "hwy"), # rename
+             tb.rows = 4:1) + # change order
   labs(x = "Engine displacement (l)", y = "Fuel use efficiency (MPG)",
        colour = "Engine cylinders\n(number)") +
   geom_point() +
@@ -1125,7 +1129,7 @@ models when `x` or `y` is a factor (as in such cases `ggplot` splits the data
 into groups, one for each level of the factor, which is needed for example for
 `stat_summary()` to work as expected). By default, the `"table"` geometry is
 used. The use of `geom_table()` is described in a separate section of this User
-Guide. Table themes and mapped aesthetic are supported.
+Guide. Table themes and mapped aesthetics are supported.
 
 The default output of `stat_fit_tb` is the default output from `tidy(mf)` where
 `mf` is the fitted model.
@@ -1147,7 +1151,8 @@ ggplot(my.data, aes(x, y)) +
 ```
 
 When `tb.type = "fit.anova"` the output returned is that from `tidy(anova(mf))`
-where `mf` is the fitted model.
+where `mf` is the fitted model. Here we also show how to replace names of
+columns and terms, and exclude one column, in this case, the mean squares.
 
 ```{r}
 formula <- y ~ x + I(x^2) + I(x^3)
@@ -1158,11 +1163,11 @@ ggplot(my.data, aes(x, y)) +
               method.args = list(formula = formula),
               tb.type = "fit.anova",
               tb.vars = c(Effect = "term", 
-                          "df",
-                          "M.S." = "meansq", 
+                          df = "df",
                           "italic(F)" = "statistic", 
                           "italic(P)" = "p.value"),
-               label.y = "top", label.x = "left",
+              tb.params = c(x = 1, "x^2" = 2, "x^3" = 3, Resid = 4),
+              label.y = "top", label.x = "left",
               parse = TRUE)
 ```
 
@@ -1183,7 +1188,7 @@ ggplot(my.data, aes(x, y)) +
 Faceting works as expected, but grouping is ignored as mentioned above. In this
 case, the colour aesthetic is not applied to the text of the tables.
 Furthermore, if `label.x.npc` or `label.y.npc` are passed numeric vectors of
-length > 1, the values are obeyed by the different panels.
+length > 1, the corresponding values are obeyed by the different panels.
 
 ```{r}
 micmen.formula <- y ~ SSmicmen(x, Vm, K)

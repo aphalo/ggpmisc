@@ -140,27 +140,41 @@
 #'               parse = TRUE) +
 #'   expand_limits(y = 70)
 #'
-#' # ANOVA
+#' # ANOVA summary
 #' ggplot(my.df, aes(group, x)) +
 #'   geom_point() +
 #'   stat_fit_tb() +
 #'   expand_limits(y = 70)
 #'
-#' # ANOVA with renamed and selected columns
+#' # ANOVA table
+#' ggplot(my.df, aes(group, x)) +
+#'   geom_point() +
+#'   stat_fit_tb(tb.type = "fit.anova") +
+#'   expand_limits(y = 70)
+#'
+#' # ANOVA table with renamed and selected columns
 #' # using column names
 #' ggplot(my.df, aes(group, x)) +
 #'   geom_point() +
-#'   stat_fit_tb(tb.vars = c(Effect = "term", "italic(F)" = "statistic",
+#'   stat_fit_tb(tb.type = "fit.anova",
+#'               tb.vars = c(Effect = "term", "df", "italic(F)" = "statistic",
 #'                           "italic(P)" = "p.value"),
 #'               parse = TRUE)
 #'
-#' # ANOVA with renamed and selected columns
+#' # ANOVA table with renamed and selected columns
 #' # using column names with partial matching
 #' ggplot(my.df, aes(group, x)) +
 #'   geom_point() +
-#'   stat_fit_tb(tb.vars = c(Effect = "term", "italic(F)" = "stat",
-#'                           "italic(P)" = "p.val"),
+#'   stat_fit_tb(tb.type = "fit.anova",
+#'               tb.vars = c(Effect = "term", "df", "italic(F)" = "stat",
+#'                           "italic(P)" = "p"),
 #'               parse = TRUE)
+#'
+#' # ANOVA summary
+#' ggplot(my.df, aes(group, x)) +
+#'   geom_point() +
+#'   stat_fit_tb() +
+#'   expand_limits(y = 70)
 #'
 #' # ANCOVA (covariate not plotted)
 #' ggplot(my.df, aes(group, x, z = covariate)) +
@@ -188,6 +202,36 @@
 #' ggplot(my.df, aes(covariate, x)) +
 #'   geom_point() +
 #'   stat_fit_tb(table.theme = ttheme_gtlight) +
+#'   expand_limits(y = 70)
+#'
+#' # Linear regression using a table theme
+#' ggplot(my.df, aes(covariate, x)) +
+#'   geom_point() +
+#'   stat_fit_tb(tb.vars = 1:10) +
+#'   expand_limits(y = 70)
+#'
+#' # Linear regression using a table theme
+#' ggplot(my.df, aes(covariate, x)) +
+#'   geom_point() +
+#'   stat_fit_tb(tb.vars = 7:10) +
+#'   expand_limits(y = 70)
+#'
+#' # Linear regression using a table theme
+#' ggplot(my.df, aes(covariate, x)) +
+#'   geom_point() +
+#'   stat_fit_tb(tb.vars = c(a = 1, b = 2, z = 7)) +
+#'   expand_limits(y = 70)
+#'
+#' # Linear regression using a table theme
+#' ggplot(my.df, aes(covariate, x)) +
+#'   geom_point() +
+#'   stat_fit_tb(tb.vars = c(a = "term", b = "esti", zz = "z")) +
+#'   expand_limits(y = 70)
+#'
+#' # Linear regression using a table theme
+#' ggplot(my.df, aes(covariate, x)) +
+#'   geom_point() +
+#'   stat_fit_tb(tb.vars = c(zz = "z")) +
 #'   expand_limits(y = 70)
 #'
 stat_fit_tb <- function(mapping = NULL, data = NULL, geom = "table_npc",
@@ -295,21 +339,52 @@ fit_tb_compute_panel_fun <- function(data,
   if (!is.null(tb.vars)) {
     if (is.character(tb.vars)) {
       idxs <- pmatch(tb.vars, colnames(mf_tb))
-    } else {
+       if (length(idxs) < length(tb.vars) || anyNA(idxs)) {
+        warning("Attempt to select nonexistent columns by name")
+        idxs <- na.omit(idxs)
+        # no renaming possible, as we do not know which name was not matched
+        tb.vars <- unname(tb.vars)
+       }
+     } else {
       idxs <- unname(tb.vars)
+      if (any(idxs > ncol(mf_tb))) {
+        warning("Attempt to select nonexistent columns")
+        idxs <- idxs[idxs <= ncol(mf_tb)]
+        tb.vars <- tb.vars[idxs]
+      }
     }
     if (length(idxs) < ncol(mf_tb)) {
       message("Dropping column(s) from table.")
     }
     if (length(idxs) < 1L) {
-      stop("No matching column(s).")
-    }
-    mf_tb <- mf_tb[ , idxs]
-    if (rlang::is_named(tb.vars)) {
-      colnames(mf_tb) <- names(tb.vars)
+      warning("No matching column(s).")
+      mf_tb <- NULL
+    } else {
+      mf_tb <- mf_tb[ , idxs]
+      if (!is.null(names(tb.vars))) {
+        # support renaming of only some selected columns
+        selector <- names(tb.vars) != ""
+        colnames(mf_tb)[selector] <- names(tb.vars)[selector]
+      }
     }
   }
-  if (!is.null(tb.params)) {
+  if (!is.null(tb.params) && !is.null(mf_tb)) {
+    if (is.character(tb.params)) {
+      idxs <- pmatch(tb.params, mf_tb[[1]])
+      if (length(idxs) < length(tb.params) || anyNA(idxs)) {
+        warning("Attempt to select nonexistent params")
+        idxs <- na.omit(idxs)
+        # no renaming possible, as we do not know which name was not matched
+        tb.params <- unname(tb.params)
+      }
+    } else {
+      idxs <- unname(tb.params)
+      if (any(idxs > nrow(mf_tb))) {
+        warning("Attempt to select nonexistent params")
+        idxs <- idxs[idxs <= nrow(mf_tb)]
+        tb.params <- tb.params[idxs]
+      }
+    }
     if (length(tb.params) < nrow(mf_tb)) {
       warning("Dropping row(s) from table.")
     }
@@ -319,11 +394,15 @@ fit_tb_compute_panel_fun <- function(data,
       idxs <- unname(tb.params)
     }
     if (length(idxs) < 1L) {
-      stop("No matching parameters(s).")
-    }
-    mf_tb <- mf_tb[idxs, ]
-    if (rlang::is_named(tb.params)) {
-      mf_tb[[1]] <- names(tb.params)
+      warning("No matching parameters(s).")
+      mf_tb <- NULL
+    } else {
+      mf_tb <- mf_tb[idxs, ]
+      if (!is.null(names(tb.params))) {
+        # support renaming of only some selected columns
+        selector <- names(tb.params) != ""
+        mf_tb[[1]][selector] <- names(tb.params)[selector]
+      }
     }
   }
 
@@ -393,3 +472,4 @@ StatFitTb <-
                                   label = stat(mf_tb)),
                    required_aes = c("x", "y")
   )
+

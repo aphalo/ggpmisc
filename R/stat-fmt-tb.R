@@ -85,16 +85,16 @@
 #'                tb.rows = 1:3) +
 #'   expand_limits(x = c(0,3), y = c(-2, 6))
 #'
+#' # selection, reordering and renaming by column position
+#' ggplot(my.df, aes(x, y, label = tbs)) +
+#'   stat_fmt_tb(tb.vars = c(group = 2, value = 1),
+#'                tb.rows = 1:3) +
+#'   expand_limits(x = c(0,3), y = c(-2, 6))
+#'
 #' # selection and renaming, using partial matching to column name
 #' ggplot(my.df, aes(x, y, label = tbs)) +
 #'   stat_fmt_tb(tb.vars = c(value = "X", group = "Y"),
 #'                tb.rows = 1:3) +
-#'   expand_limits(x = c(0,3), y = c(-2, 6))
-#'
-#' # selection, renaming and reordering, missing rows set to NA
-#' ggplot(my.df, aes(x, y, label = tbs)) +
-#'   stat_fmt_tb(tb.vars = c(group = "Y", value = "X"),
-#'                tb.rows = 5:2) +
 #'   expand_limits(x = c(0,3), y = c(-2, 6))
 #'
 stat_fmt_tb <- function(mapping = NULL,
@@ -158,36 +158,66 @@ fmt_tb_compute_group_fun <- function(data,
     if (!is.null(tb.vars)) {
       if (is.character(tb.vars)) {
         idxs <- pmatch(tb.vars, colnames(temp_tb))
+        if (length(idxs) < length(tb.vars) || anyNA(idxs)) {
+          warning("Attempt to select nonexistent columns")
+          idxs <- na.omit(idxs)
+          # no renaming possible, as we do not know which name was not matched
+          tb.vars <- unname(tb.vars)
+        }
       } else {
         idxs <- unname(tb.vars)
+        if (any(idxs > ncol(temp_tb))) {
+          warning("Attempt to select nonexistent columns")
+          idxs <- idxs[idxs <= ncol(temp_tb)]
+          tb.vars <- tb.vars[idxs]
+        }
       }
       if (length(idxs) < ncol(temp_tb)) {
         message("Dropping column(s) from table.")
       }
       if (length(idxs) < 1L) {
         message("No matching column(s).")
-      }
-      temp_tb <- temp_tb[ , idxs]
-      if (rlang::is_named(tb.vars)) {
-        colnames(temp_tb) <- names(tb.vars)
+        temp_tb <- NULL
+      } else {
+        temp_tb <- temp_tb[ , idxs]
+        if (!is.null(names(tb.vars))) {
+          # support renaming of only some selected columns
+          selector <- names(tb.vars) != ""
+          colnames(temp_tb)[selector] <- names(tb.vars)[selector]
+        }
       }
     }
 
-    if (!is.null(tb.rows)) {
+    if (!is.null(tb.rows) && !is.null(temp_tb)) {
+      if (is.character(tb.rows)) {
+        idxs <- pmatch(tb.rows, rownames(temp_tb))
+        if (length(idxs) < length(tb.rows) || anyNA(idxs)) {
+          warning("Attempt to select nonexistent rows")
+          idxs <- na.omit(idxs)
+          # no renaming possible, as we do not know which name was not matched
+          tb.rows <- unname(tb.rows)
+        }
+      } else {
+        idxs <- unname(tb.rows)
+        if (any(idxs > nrow(temp_tb))) {
+          warning("Attempt to select nonexistent rows")
+          idxs <- idxs[idxs <= nrow(temp_tb)]
+          tb.rows <- tb.rows[idxs]
+        }
+      }
       if (length(tb.rows) < nrow(temp_tb)) {
         message("Dropping row(s) from table.")
       }
-      if (is.character(tb.rows)) {
-        idxs <- pmatch(tb.rows, rownames(temp_tb))
-      } else {
-        idxs <- unname(tb.rows)
-      }
       if (length(idxs) < 1L) {
-        message("No matching rows.")
-      }
-      temp_tb <- temp_tb[idxs, ]
-      if (rlang::is_named(tb.rows)) {
-        rownames(temp_tb) <- names(tb.rows)
+        warning("No matching row(s).")
+        temp_tb <- NULL
+      } else {
+        temp_tb <- temp_tb[idxs, ]
+        if (!is.null(names(tb.rows))) {
+          # support renaming of only some selected rows
+          selector <- names(tb.rows) != ""
+          colnames(temp_tb)[selector] <- names(tb.rows)[selector]
+        }
       }
     }
 
@@ -196,7 +226,7 @@ fmt_tb_compute_group_fun <- function(data,
   }
 
   data
-  }
+}
 
 #' @rdname ggpmisc-ggproto
 #' @format NULL
