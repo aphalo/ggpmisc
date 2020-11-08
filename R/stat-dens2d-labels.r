@@ -36,7 +36,7 @@
 #'   apply to both directions.
 #' @param n Number of grid points in each direction. Can be scalar or a length-2
 #'   integer vector
-#' @param label.fill character vector of length 1.
+#' @param label.fill character vector of length 1 or a function.
 #' @param position The position adjustment to use for overlapping points on this
 #'   layer
 #' @param show.legend logical. Should this layer be included in the legends?
@@ -59,6 +59,8 @@
 #' @seealso \code{\link[MASS]{kde2d}} used internally.
 #'
 #' @family statistics that filter cases in \code{data}
+#'
+#' @export
 #'
 #' @examples
 #'
@@ -98,7 +100,13 @@
 #'   geom_point() +
 #'   stat_dens2d_labels(geom = "text_repel", label.fill = NA)
 #'
-#' @export
+#' # we keep labels starting with "a" across the whole plot, but all in sparse
+#' # regions. To achieve this we pass as argument to label.fill a fucntion
+#' # instead of a character string.
+#' label.fun <- function(x) {ifelse(grepl("^a", x), x, "")}
+#' ggplot(data = d, aes(x, y, label = lab, colour = group)) +
+#'   geom_point() +
+#'   stat_dens2d_labels(geom = "text_repel", label.fill = label.fun)
 #'
 stat_dens2d_labels <-
   function(mapping = NULL,
@@ -132,7 +140,8 @@ stat_dens2d_labels <-
   }
 
 dens2d_labs_compute_fun <-
-  function(data, scales,
+  function(data,
+           scales,
            keep.fraction,
            keep.number,
            keep.sparse,
@@ -194,10 +203,35 @@ dens2d_labs_compute_fun <-
       }
     }
 
-    if (invert.selection){
-      data[["label"]] <- ifelse(!keep, data[["label"]], label.fill)
+    if (is.function(label.fill)) {
+      if (invert.selection){
+        data[["label"]] <- ifelse(!keep,
+                                  data[["label"]],
+                                  label.fill(data[["label"]]))
+      } else {
+        data[["label"]] <- ifelse(keep,
+                                  data[["label"]],
+                                  label.fill(data[["label"]]))
+      }
     } else {
-      data[["label"]] <- ifelse(keep, data[["label"]], label.fill)
+      if (!is.character(label.fill)) {
+        if (is.na(label.fill)) {
+          # NA_logical_, the default NA, cannot be assigned to character
+          label.fill <- NA_character_
+        } else {
+          stop("'label.fill' is :", mode(label.fill),
+               "instead of 'character' or 'function'.")
+        }
+      }
+      if (invert.selection){
+        data[["label"]] <- ifelse(!keep,
+                                  data[["label"]],
+                                  label.fill)
+      } else {
+        data[["label"]] <- ifelse(keep,
+                                  data[["label"]],
+                                  label.fill)
+      }
     }
 
     data
@@ -213,5 +247,5 @@ StatDens2dLabels <-
     ggplot2::Stat,
     compute_panel =
       dens2d_labs_compute_fun,
-    required_aes = c("x", "y", "label")
+    required_aes = c("x", "y")
   )

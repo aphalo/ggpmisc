@@ -45,7 +45,7 @@
 #'   details.
 #' @param orientation	character The aesthetic along which density is computed.
 #'   Given explicitly by setting orientation to either "x" or "y".
-#' @param label.fill character vector of length 1.
+#' @param label.fill character vector of length 1 or a function.
 #' @param position The position adjustment to use for overlapping points on this
 #'   layer
 #' @param show.legend logical. Should this layer be included in the legends?
@@ -126,6 +126,14 @@
 #' ggplot(data = d, aes(x, y, label = lab, colour = group)) +
 #'   geom_point() +
 #'   stat_dens1d_labels(geom = "text_repel", label.fill = NA)
+#'
+#' # we keep labels starting with "a" across the whole plot, but all in sparse
+#' # regions. To achieve this we pass as argument to label.fill a fucntion
+#' # instead of a character string.
+#' label.fun <- function(x) {ifelse(grepl("^a", x), x, "")}
+#' ggplot(data = d, aes(x, y, label = lab, colour = group)) +
+#'   geom_point() +
+#'   stat_dens1d_labels(geom = "text_repel", label.fill = label.fun)
 #'
 #' @export
 #'
@@ -222,10 +230,35 @@ dens1d_labs_compute_fun <-
       }
     }
 
-    if (invert.selection){
-      data[["label"]] <- ifelse(!keep, data[["label"]], label.fill)
+    if (is.function(label.fill)) {
+      if (invert.selection){
+        data[["label"]] <- ifelse(!keep,
+                                  data[["label"]],
+                                  label.fill(data[["label"]]))
+      } else {
+        data[["label"]] <- ifelse(keep,
+                                  data[["label"]],
+                                  label.fill(data[["label"]]))
+      }
     } else {
-      data[["label"]] <- ifelse(keep, data[["label"]], label.fill)
+      if (!is.character(label.fill)) {
+        if (is.na(label.fill)) {
+          # NA_logical_, the default NA, cannot be assigned to character
+          label.fill <- NA_character_
+        } else {
+          stop("'label.fill' is :", mode(label.fill),
+               "instead of 'character' or 'function'.")
+        }
+      }
+      if (invert.selection){
+        data[["label"]] <- ifelse(!keep,
+                                  data[["label"]],
+                                  label.fill)
+      } else {
+        data[["label"]] <- ifelse(keep,
+                                  data[["label"]],
+                                  label.fill)
+      }
     }
 
     data

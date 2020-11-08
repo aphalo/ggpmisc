@@ -60,7 +60,7 @@ apply to both directions.}
 \item{n}{Number of grid points in each direction. Can be scalar or a length-2
 integer vector}
 
-\item{label.fill}{character vector of length 1.}
+\item{label.fill}{character vector of length 1 or a function.}
 
 \item{na.rm}{a logical value indicating whether NA values should be stripped
 before the computation proceeds.}
@@ -133,6 +133,14 @@ ggplot(data = d, aes(x, y, label = lab, colour = group)) +
 ggplot(data = d, aes(x, y, label = lab, colour = group)) +
   geom_point() +
   stat_dens2d_labels(geom = "text_repel", label.fill = NA)
+
+# we keep labels starting with "a" across the whole plot, but all in sparse
+# regions. To achieve this we pass as argument to label.fill a fucntion
+# instead of a character string.
+label.fun <- function(x) {ifelse(grepl("^a", x), x, "")}
+ggplot(data = d, aes(x, y, label = lab, colour = group)) +
+  geom_point() +
+  stat_dens2d_labels(geom = "text_repel", label.fill = label.fun)
 
 }
 \seealso{

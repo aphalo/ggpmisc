@@ -44,6 +44,8 @@ reference:
     - stat_fit_augment
     - stat_fit_deviations
     - stat_fit_residuals
+    - stat_dens1d_filter
+    - stat_dens1d_labels
     - stat_dens2d_filter
     - stat_dens2d_labels
     - stat_quadrant_counts
