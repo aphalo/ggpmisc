@@ -1,7 +1,8 @@
-#' @title Filter observations by local density
+#' @title Filter observations by local 2D density
 #'
 #' @description \code{stat_dens2d_filter} Filters-out/filters-in observations in
-#'   regions of a plot panel with high density of observations.
+#'   regions of a plot panel with high density of observations, based on the
+#'   values mapped to both \code{x} and \code{y} aesthetics.
 #'   \code{stat_dens2d_filter_g} does the filtering by group instead of by
 #'   panel. This second stat is useful for highlighting observations, while
 #'   the first one tends to be most useful when the aim is to prevent clashes
@@ -13,10 +14,16 @@
 #' @param data A layer specific dataset - only needed if you want to override
 #'   the plot defaults.
 #' @param geom The geometric object to use display the data.
-#' @param keep.fraction numeric [0..1].
-#' @param keep.number integer number of labels to keep.
-#' @param keep.sparse logical If false the observations from the densest regions
-#'   are kept.
+#' @param keep.fraction numeric [0..1]. The fraction of the observations (or
+#'   rows) in \code{data} to be retained.
+#' @param keep.number integer Set the maximum number of observations to retain,
+#'   effective only if obeying \code{keep.fraction} would result in a larger
+#'   number.
+#' @param keep.sparse logical If \code{TRUE}, the default, observations from the
+#'   more sparse regions are retained, if \code{FALSE} those from the densest
+#'   regions.
+#' @param invert.selection logical If \code{TRUE}, the complement of the
+#'   selected rows are returned.
 #' @param h vector of bandwidths for x and y directions. Defaults to normal
 #'   reference bandwidth (see bandwidth.nrd). A scalar value will be taken to
 #'   apply to both directions.
@@ -37,16 +44,16 @@
 #' @param na.rm	a logical value indicating whether NA values should be stripped
 #'   before the computation proceeds.
 #'
-#' @section Computed variables: \describe{ \item{labels}{x at centre of range} }
+#' @return A copy of \code{data} with a subset of the rows retained based on
+#'   a 2D-density-based filtering criterion.
 #'
 #' @seealso \code{\link[MASS]{kde2d}} used internally.
 #'
-#' @family statistics for selection of observations based on local density
+#' @family statistics that filter cases in \code{data}
 #'
 #' @examples
 #'
 #' library(ggrepel)
-#' library(gginnards)
 #'
 #' random_string <- function(len = 6) {
 #' paste(sample(letters, len, replace = TRUE), collapse = "")
@@ -61,38 +68,55 @@
 #'   lab = replicate(100, { random_string() })
 #' )
 #'
+#' # filter (and here highlight) 1/10 observations in sparsest regions
 #' ggplot(data = d, aes(x, y)) +
 #'   geom_point() +
 #'   stat_dens2d_filter(colour = "red")
 #'
-#' # Using geom_debug() we can see that only 10 out off 100 rows in \code{d} are
-#' # returned. Those highlighted in red in the previous example.
+#' # filter observations not in the sparsest regions
 #' ggplot(data = d, aes(x, y)) +
 #'   geom_point() +
-#'   stat_dens2d_filter(geom = "debug")
+#'   stat_dens2d_filter(colour = "blue", invert.selection = TRUE)
 #'
+#' # filter observations in dense regions of the plot
+#' ggplot(data = d, aes(x, y)) +
+#'   geom_point() +
+#'   stat_dens2d_filter(colour = "blue", keep.sparse = FALSE)
+#'
+#' # filter 1/2 the observations
 #' ggplot(data = d, aes(x, y)) +
 #'   geom_point() +
 #'   stat_dens2d_filter(colour = "red", keep.fraction = 0.5)
 #'
+#' # filter 1/2 the observations but cap their number to maximum 12 observations
 #' ggplot(data = d, aes(x, y)) +
 #'   geom_point() +
 #'   stat_dens2d_filter(colour = "red",
 #'                      keep.fraction = 0.5,
 #'                      keep.number = 12)
 #'
+#' # density filtering done jointly across groups
 #' ggplot(data = d, aes(x, y, colour = group)) +
 #'   geom_point() +
 #'   stat_dens2d_filter(shape = 1, size = 3, keep.fraction = 1/4)
 #'
+#' # density filtering done independently for each group
 #' ggplot(data = d, aes(x, y, colour = group)) +
 #'   geom_point() +
 #'   stat_dens2d_filter_g(shape = 1, size = 3, keep.fraction = 1/4)
 #'
+#' # density filtering done jointly across groups by overriding grouping
+#' ggplot(data = d, aes(x, y, colour = group)) +
+#'   geom_point() +
+#'   stat_dens2d_filter_g(colour = "black",
+#'                        shape = 1, size = 3, keep.fraction = 1/4)
+#'
+#' # label observations
 #' ggplot(data = d, aes(x, y, label = lab, colour = group)) +
 #'   geom_point() +
 #'   stat_dens2d_filter(geom = "text")
 #'
+#' # repulsive labels with ggrepel::geom_text_repel()
 #' ggplot(data = d, aes(x, y, label = lab, colour = group)) +
 #'   geom_point() +
 #'   stat_dens2d_filter(geom = "text_repel")
@@ -105,6 +129,7 @@ stat_dens2d_filter <-
            keep.fraction = 0.10,
            keep.number = Inf,
            keep.sparse = TRUE,
+           invert.selection = FALSE,
            na.rm = TRUE, show.legend = FALSE,
            inherit.aes = TRUE,
            h = NULL,
@@ -117,6 +142,7 @@ stat_dens2d_filter <-
                     keep.fraction = keep.fraction,
                     keep.number = keep.number,
                     keep.sparse = keep.sparse,
+                    invert.selection = invert.selection,
                     h = h,
                     n = n,
                     ...)
@@ -133,6 +159,7 @@ stat_dens2d_filter_g <-
            keep.fraction = 0.10,
            keep.number = Inf,
            keep.sparse = TRUE,
+           invert.selection = FALSE,
            na.rm = TRUE, show.legend = FALSE,
            inherit.aes = TRUE,
            h = NULL,
@@ -145,6 +172,7 @@ stat_dens2d_filter_g <-
                     keep.fraction = keep.fraction,
                     keep.number = keep.number,
                     keep.sparse = keep.sparse,
+                    invert.selection = invert.selection,
                     h = h,
                     n = n,
                     ...)
@@ -157,38 +185,58 @@ dens2d_flt_compute_fun <-
            keep.fraction,
            keep.number,
            keep.sparse,
+           invert.selection,
            h,
            n) {
+
+    if (is.na(keep.fraction) || keep.fraction < 0 || keep.fraction > 1) {
+      stop("Out of range or missing value for 'keep.fraction': ", keep.fraction)
+    }
+    if (is.na(keep.number) || keep.number < 0) {
+      stop("Out of range or missing value for 'keep.number': ", keep.number)
+    }
+
     force(data)
     if (nrow(data) * keep.fraction > keep.number) {
       keep.fraction <- keep.number / nrow(data)
     }
 
-    if (is.null(h)) {
-      h <- c(MASS::bandwidth.nrd(data$x), MASS::bandwidth.nrd(data$y))
-    }
-
-    if (is.null(n)) {
-      n <- trunc(sqrt(nrow(data))) * 8L
-    }
-
-    kk <-  MASS::kde2d(
-      data$x, data$y, h = h, n = n,
-      lims = c(scales$x$dimension(), scales$y$dimension()))
-
-    dimnames(kk$z) <- list(kk$x, kk$y)
-
-    # Identify points that are in the low density regions of the plot.
-    kx <- cut(data$x, kk$x, labels = FALSE, include.lowest = TRUE)
-    ky <- cut(data$y, kk$y, labels = FALSE, include.lowest = TRUE)
-    kz <- sapply(seq_along(kx), function(i) kk$z[kx[i], ky[i]])
-
-    if (keep.sparse) {
-      keep <- kz < stats::quantile(kz, keep.fraction, names = FALSE)
+    if (keep.fraction == 1) {
+      keep <- TRUE
+    } else if (keep.fraction == 0) {
+      keep <- FALSE
     } else {
-      keep <- kz >= stats::quantile(kz, 1 - keep.fraction, names = FALSE)
+
+      if (is.null(h)) {
+        h <- c(MASS::bandwidth.nrd(data$x), MASS::bandwidth.nrd(data$y))
+      }
+
+      if (is.null(n)) {
+        n <- trunc(sqrt(nrow(data))) * 8L
+      }
+
+      kk <-  MASS::kde2d(
+        data$x, data$y, h = h, n = n,
+        lims = c(scales$x$dimension(), scales$y$dimension()))
+
+      dimnames(kk$z) <- list(kk$x, kk$y)
+
+      # Identify points that are in the low density regions of the plot.
+      kx <- cut(data$x, kk$x, labels = FALSE, include.lowest = TRUE)
+      ky <- cut(data$y, kk$y, labels = FALSE, include.lowest = TRUE)
+      kz <- sapply(seq_along(kx), function(i) kk$z[kx[i], ky[i]])
+
+      if (keep.sparse) {
+        keep <- kz < stats::quantile(kz, keep.fraction, names = FALSE)
+      } else {
+        keep <- kz >= stats::quantile(kz, 1 - keep.fraction, names = FALSE)
+      }
     }
-    data[keep, ]
+    if (invert.selection){
+      data[!keep, ]
+    } else {
+      data[keep, ]
+    }
   }
 
 #' @rdname ggpmisc-ggproto

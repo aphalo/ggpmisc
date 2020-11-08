@@ -2,10 +2,10 @@
 % Please edit documentation in R/geom-grob.R, R/geom-label-npc.r,
 %   R/geom-margin-arrow.r, R/geom-margin-grob.r, R/geom-margin-point.r,
 %   R/geom-plot.R, R/geom-quadrant-lines.R, R/geom-table.R, R/geom-text-npc.r,
-%   R/stat-apply.R, R/stat-dens2d-filter.r, R/stat-dens2d-labels.r,
-%   R/stat-fit-broom-tb.R, R/stat-fit-broom.R, R/stat-fit-deviations.R,
-%   R/stat-fit-residuals.R, R/stat-fmt-tb.R, R/stat-peaks.R, R/stat-poly-eq.R,
-%   R/stat-quadrant-counts.R
+%   R/stat-apply.R, R/stat-dens1d-filter.r, R/stat-dens1d-labels.r,
+%   R/stat-dens2d-filter.r, R/stat-dens2d-labels.r, R/stat-fit-broom-tb.R,
+%   R/stat-fit-broom.R, R/stat-fit-deviations.R, R/stat-fit-residuals.R,
+%   R/stat-fmt-tb.R, R/stat-peaks.R, R/stat-poly-eq.R, R/stat-quadrant-counts.R
 \docType{data}
 \name{grob_draw_panel_fun}
 \alias{grob_draw_panel_fun}
@@ -34,6 +34,9 @@
 \alias{Stats}
 \alias{StatApplyGroup}
 \alias{StatApplyPanel}
+\alias{StatDens1dFilter}
+\alias{StatDens1dFilterG}
+\alias{StatDens1dLabels}
 \alias{StatDens2dFilter}
 \alias{StatDens2dFilterG}
 \alias{StatDens2dLabels}

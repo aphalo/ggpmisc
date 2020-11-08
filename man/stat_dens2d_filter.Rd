@@ -3,7 +3,7 @@
 \name{stat_dens2d_filter}
 \alias{stat_dens2d_filter}
 \alias{stat_dens2d_filter_g}
-\title{Filter observations by local density}
+\title{Filter observations by local 2D density}
 \usage{
 stat_dens2d_filter(
   mapping = NULL,
@@ -13,6 +13,7 @@ stat_dens2d_filter(
   keep.fraction = 0.1,
   keep.number = Inf,
   keep.sparse = TRUE,
+  invert.selection = FALSE,
   na.rm = TRUE,
   show.legend = FALSE,
   inherit.aes = TRUE,
@@ -29,6 +30,7 @@ stat_dens2d_filter_g(
   keep.fraction = 0.1,
   keep.number = Inf,
   keep.sparse = TRUE,
+  invert.selection = FALSE,
   na.rm = TRUE,
   show.legend = FALSE,
   inherit.aes = TRUE,
@@ -50,12 +52,19 @@ the plot defaults.}
 \item{position}{The position adjustment to use for overlapping points on this
 layer}
 
-\item{keep.fraction}{numeric [0..1].}
+\item{keep.fraction}{numeric [0..1]. The fraction of the observations (or
+rows) in \code{data} to be retained.}
 
-\item{keep.number}{integer number of labels to keep.}
+\item{keep.number}{integer Set the maximum number of observations to retain,
+effective only if obeying \code{keep.fraction} would result in a larger
+number.}
 
-\item{keep.sparse}{logical If false the observations from the densest regions
-are kept.}
+\item{keep.sparse}{logical If \code{TRUE}, the default, observations from the
+more sparse regions are retained, if \code{FALSE} those from the densest
+regions.}
+
+\item{invert.selection}{logical If \code{TRUE}, the complement of the
+selected rows are returned.}
 
 \item{na.rm}{a logical value indicating whether NA values should be stripped
 before the computation proceeds.}
@@ -80,22 +89,22 @@ length-2 integer vector}
 can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 }
+\value{
+A copy of \code{data} with a subset of the rows retained based on
+  a 2D-density-based filtering criterion.
+}
 \description{
 \code{stat_dens2d_filter} Filters-out/filters-in observations in
-  regions of a plot panel with high density of observations.
+  regions of a plot panel with high density of observations, based on the
+  values mapped to both \code{x} and \code{y} aesthetics.
   \code{stat_dens2d_filter_g} does the filtering by group instead of by
   panel. This second stat is useful for highlighting observations, while
   the first one tends to be most useful when the aim is to prevent clashes
   among text labels.
 }
-\section{Computed variables}{
- \describe{ \item{labels}{x at centre of range} }
-}
-
 \examples{
 
 library(ggrepel)
-library(gginnards)
 
 random_string <- function(len = 6) {
 paste(sample(letters, len, replace = TRUE), collapse = "")
@@ -110,38 +119,55 @@ d <- tibble::tibble(
   lab = replicate(100, { random_string() })
 )
 
+# filter (and here highlight) 1/10 observations in sparsest regions
 ggplot(data = d, aes(x, y)) +
   geom_point() +
   stat_dens2d_filter(colour = "red")
 
-# Using geom_debug() we can see that only 10 out off 100 rows in \code{d} are
-# returned. Those highlighted in red in the previous example.
+# filter observations not in the sparsest regions
 ggplot(data = d, aes(x, y)) +
   geom_point() +
-  stat_dens2d_filter(geom = "debug")
+  stat_dens2d_filter(colour = "blue", invert.selection = TRUE)
 
+# filter observations in dense regions of the plot
+ggplot(data = d, aes(x, y)) +
+  geom_point() +
+  stat_dens2d_filter(colour = "blue", keep.sparse = FALSE)
+
+# filter 1/2 the observations
 ggplot(data = d, aes(x, y)) +
   geom_point() +
   stat_dens2d_filter(colour = "red", keep.fraction = 0.5)
 
+# filter 1/2 the observations but cap their number to maximum 12 observations
 ggplot(data = d, aes(x, y)) +
   geom_point() +
   stat_dens2d_filter(colour = "red",
                      keep.fraction = 0.5,
                      keep.number = 12)
 
+# density filtering done jointly across groups
 ggplot(data = d, aes(x, y, colour = group)) +
   geom_point() +
   stat_dens2d_filter(shape = 1, size = 3, keep.fraction = 1/4)
 
+# density filtering done independently for each group
 ggplot(data = d, aes(x, y, colour = group)) +
   geom_point() +
   stat_dens2d_filter_g(shape = 1, size = 3, keep.fraction = 1/4)
 
+# density filtering done jointly across groups by overriding grouping
+ggplot(data = d, aes(x, y, colour = group)) +
+  geom_point() +
+  stat_dens2d_filter_g(colour = "black",
+                       shape = 1, size = 3, keep.fraction = 1/4)
+
+# label observations
 ggplot(data = d, aes(x, y, label = lab, colour = group)) +
   geom_point() +
   stat_dens2d_filter(geom = "text")
 
+# repulsive labels with ggrepel::geom_text_repel()
 ggplot(data = d, aes(x, y, label = lab, colour = group)) +
   geom_point() +
   stat_dens2d_filter(geom = "text_repel")
@@ -150,7 +176,9 @@ ggplot(data = d, aes(x, y, label = lab, colour = group)) +
 \seealso{
 \code{\link[MASS]{kde2d}} used internally.
 
-Other statistics for selection of observations based on local density: 
+Other statistics that filter cases in \code{data}: 
+\code{\link{stat_dens1d_filter}()},
+\code{\link{stat_dens1d_labels}()},
 \code{\link{stat_dens2d_labels}()}
 }
-\concept{statistics for selection of observations based on local density}
+\concept{statistics that filter cases in \code{data}}

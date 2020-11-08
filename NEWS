@@ -6,6 +6,11 @@ table. Also implement selection and renaming of columns and terms/parameters
 using positional indexes in addtion to names. In the case names add support
 for partial matching. Improve formatting of small P-values.
 * Update stat_fmt_tb() to support the same expanded syntax as stat_fit_tb().
+* Add stat_dens1d_filter(), stat_dens1d_filter_g() and stat_dens1d_labels(),
+to complement existing stat_dens2d_filter(), stat_dens2d_filter_g() and
+stat_dens2d_labels().
+* Update stat_dens2d_filter(), stat_dens2d_filter_g() and stat_dens2d_labels()
+adding formal parameters keep.sparse and invert.selection.
 
 ggpmisc 0.3.6 (2020-09-06)
 ==========================
