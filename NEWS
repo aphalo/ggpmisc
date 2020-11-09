@@ -4,7 +4,7 @@ ggpmisc 0.3.7 (2020-11-09)
 * Update stat_fit_tb() to support renaming of terms/parameter names in the
 table (Suggested by Big Old Dave and Z. Lin). In addition implement selection,
 reordering and renaming of columns and terms/parameters using positional indexes
-and pattern maching of truncated names in addtion to whole names. Improve
+and pattern matching of truncated names in addition to whole names. Improve
 formatting of small P-values.
 * Update stat_fmt_tb() to support the same expanded syntax as stat_fit_tb().
 * Add stat_dens1d_filter(), stat_dens1d_filter_g() and stat_dens1d_labels(),
