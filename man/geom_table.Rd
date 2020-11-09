@@ -226,9 +226,8 @@ This geometry is inspired on answers to two questions in
 function \code{\link[gridExtra]{tableGrob}} as it is used to
   construct the table.
 
-Other geometries for adding insets to ggplots: 
+Other geometries adding layers with insets: 
 \code{\link{geom_grob}()},
-\code{\link{geom_plot}()},
-\code{\link{ttheme_gtdefault}()}
+\code{\link{geom_plot}()}
 }
-\concept{geometries for adding insets to ggplots}
+\concept{geometries adding layers with insets}

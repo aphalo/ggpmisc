@@ -1,16 +1,21 @@
-ggpmisc 0.3.7 (2020-11-xx)
+ggpmisc 0.3.7 (2020-11-09)
 ==========================
 
 * Update stat_fit_tb() to support renaming of terms/parameter names in the
-table. Also implement selection and renaming of columns and terms/parameters
-using positional indexes in addtion to names. In the case names add support
-for partial matching. Improve formatting of small P-values.
+table (Suggested by Big Old Dave and Z. Lin). In addition implement selection,
+reordering and renaming of columns and terms/parameters using positional indexes
+and pattern maching of truncated names in addtion to whole names. Improve
+formatting of small P-values.
 * Update stat_fmt_tb() to support the same expanded syntax as stat_fit_tb().
 * Add stat_dens1d_filter(), stat_dens1d_filter_g() and stat_dens1d_labels(),
 to complement existing stat_dens2d_filter(), stat_dens2d_filter_g() and
 stat_dens2d_labels().
 * Update stat_dens2d_filter(), stat_dens2d_filter_g() and stat_dens2d_labels()
-adding formal parameters keep.sparse and invert.selection.
+adding formal parameters keep.sparse and invert.selection, as available in the
+new 1D versions.
+* Update stat_dens2d_labels() to accept not only character strings but also
+functions as argument to label.fill as the new stat_dens1d_labels() does.
+* Revise documentation including the User Guide.
 
 ggpmisc 0.3.6 (2020-09-06)
 ==========================

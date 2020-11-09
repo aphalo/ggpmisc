@@ -70,15 +70,24 @@
 #' ggplot(cars, aes(speed, dist)) +
 #'   geom_point() +
 #'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(aes(label = stat(eq.label)), formula = formula,
-#'                parse = TRUE)
+#'   stat_poly_eq(aes(label = stat(eq.label)),
+#'                formula = formula,
+#'                parse = TRUE) +
+#'   labs(x = expression("Speed, "*x~("mph")),
+#'        y = expression("Stopping distance, "*y~("ft")))
 #'
 #' formula <- y ~ x
 #' ggplot(PlantGrowth, aes(group, weight)) +
 #'   stat_summary(fun.data = "mean_se") +
 #'   stat_fit_tb(method = "lm",
 #'               method.args = list(formula = formula),
-#'               tb.type = "fit.anova") +
+#'               tb.type = "fit.anova",
+#'               tb.vars = c(Term = "term", "df", "M.S." = "meansq",
+#'                           "italic(F)" = "statistic",
+#'                           "italic(p)" = "p.value"),
+#'               tb.params = c("Group" = 1, "Error" = 2),
+#'               table.theme = ttheme_gtbw(parse = TRUE)) +
+#'   labs(x = "Group", y = "Dry weight of plants") +
 #'   theme_classic()
 #'
 "_PACKAGE"

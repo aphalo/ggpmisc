@@ -204,36 +204,6 @@
 #'   stat_fit_tb(table.theme = ttheme_gtlight) +
 #'   expand_limits(y = 70)
 #'
-#' # Linear regression using a table theme
-#' ggplot(my.df, aes(covariate, x)) +
-#'   geom_point() +
-#'   stat_fit_tb(tb.vars = 1:10) +
-#'   expand_limits(y = 70)
-#'
-#' # Linear regression using a table theme
-#' ggplot(my.df, aes(covariate, x)) +
-#'   geom_point() +
-#'   stat_fit_tb(tb.vars = 7:10) +
-#'   expand_limits(y = 70)
-#'
-#' # Linear regression using a table theme
-#' ggplot(my.df, aes(covariate, x)) +
-#'   geom_point() +
-#'   stat_fit_tb(tb.vars = c(a = 1, b = 2, z = 7)) +
-#'   expand_limits(y = 70)
-#'
-#' # Linear regression using a table theme
-#' ggplot(my.df, aes(covariate, x)) +
-#'   geom_point() +
-#'   stat_fit_tb(tb.vars = c(a = "term", b = "esti", zz = "z")) +
-#'   expand_limits(y = 70)
-#'
-#' # Linear regression using a table theme
-#' ggplot(my.df, aes(covariate, x)) +
-#'   geom_point() +
-#'   stat_fit_tb(tb.vars = c(zz = "z")) +
-#'   expand_limits(y = 70)
-#'
 stat_fit_tb <- function(mapping = NULL, data = NULL, geom = "table_npc",
                         method = "lm",
                         method.args = list(formula = y ~ x),

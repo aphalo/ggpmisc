@@ -60,13 +60,13 @@ Statistics that help with reporting the results of model fits are
 `stat_fit_tb()`.
 
 Two statistics, `stat_dens2d_filter()` and `stat_dens2d_label()`,
-implement tagging or selective labelling of observations based on the
+implement tagging or selective labeling of observations based on the
 local 2D density of observations. These two stats are designed to work
 well together with `geom_text_repel()` and `geom_label_repel()` from
 package ‘ggrepel’.
 
 A summary statistic using special grouping for quadrants
-`stat_quadrant_counts()` can be used to automate labelling with the
+`stat_quadrant_counts()` can be used to automate labeling with the
 number of observations.
 
 The statistics `stat_apply_panel()` and `stat_apply_group()` can be
@@ -93,7 +93,7 @@ Scales `scale_colour_outcome()`, `scale_fill_outcome()` and
 `scale_shape_outcome()` and functions `outome2factor()`,
 `threshold2factor()`, `xy_outcomes2factor()` and
 `xy_thresholds2factor()` used together make it easy to map ternary
-numeric outputs and logical binary outcomes to colour, fill and shape
+numeric outputs and logical binary outcomes to color, fill and shape
 aesthetics. Default arguments are suitable for volcano, quadrant and
 other plots as used for genomics, metabolomics and similar data.
 

@@ -71,7 +71,7 @@
 #'   been discussed as an issue at
 #'   \url{https://github.com/tidyverse/ggplot2/issues/1399}.
 #'
-#' @family geometries for adding insets to ggplots
+#' @family geometries adding layers with insets
 #'
 #' @export
 #'

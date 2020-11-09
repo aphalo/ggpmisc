@@ -2,23 +2,29 @@
 % Please edit documentation in R/scale-continuous-logFC.r
 \name{symmetric_limits}
 \alias{symmetric_limits}
-\title{Expand limits to be symmetric}
+\title{Expand a range to make it symmetric}
 \usage{
 symmetric_limits(x)
 }
 \arguments{
-\item{x}{numeric The automatic limits}
+\item{x}{numeric The automatic limits when used as argument to a scale's
+\code{limits} formal parameter. Otherwise a numeric vector, possibly a
+range, for which to compute a symmetric enclosing range.}
 }
 \value{
-A numeric vector of length two with the new limits.
+A numeric vector of length two with the new limits, which are always
+  such that the absolute value of upper and lower limits is the same.
 }
 \description{
-A simple function to expand scale limits to be symmetric around zero. Can be
+Expand scale limits to make them symmetric around zero. Can be
 passed as argument to parameter \code{limits} of continuous scales from
-packages 'ggplot2' or 'scales'.
+packages 'ggplot2' or 'scales'. Can be also used to obtain an enclosing
+symmetric range for numeric vectors.
 }
 \examples{
 
 symmetric_limits(c(-1, 1.8))
+symmetric_limits(c(-10, 1.8))
+symmetric_limits(-5:20)
 
 }

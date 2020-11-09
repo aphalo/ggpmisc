@@ -146,9 +146,9 @@ ggplot(data = d, aes(x, y, label = lab, colour = group)) +
 \seealso{
 \code{\link[MASS]{kde2d}} used internally.
 
-Other statistics that filter cases in \code{data}: 
+Other statistics returning a subset of data: 
 \code{\link{stat_dens1d_filter}()},
 \code{\link{stat_dens1d_labels}()},
 \code{\link{stat_dens2d_filter}()}
 }
-\concept{statistics that filter cases in \code{data}}
+\concept{statistics returning a subset of data}

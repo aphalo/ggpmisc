@@ -123,9 +123,8 @@ The idea of implementing a \code{geom_custom()} for grobs has
   \url{https://github.com/tidyverse/ggplot2/issues/1399}.
 }
 \seealso{
-Other geometries for adding insets to ggplots: 
+Other geometries adding layers with insets: 
 \code{\link{geom_plot}()},
-\code{\link{geom_table}()},
-\code{\link{ttheme_gtdefault}()}
+\code{\link{geom_table}()}
 }
-\concept{geometries for adding insets to ggplots}
+\concept{geometries adding layers with insets}

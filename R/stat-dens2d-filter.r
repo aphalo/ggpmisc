@@ -49,7 +49,7 @@
 #'
 #' @seealso \code{\link[MASS]{kde2d}} used internally.
 #'
-#' @family statistics that filter cases in \code{data}
+#' @family statistics returning a subset of data
 #'
 #' @examples
 #'

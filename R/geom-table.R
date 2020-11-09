@@ -112,7 +112,7 @@
 #' @seealso function \code{\link[gridExtra]{tableGrob}} as it is used to
 #'   construct the table.
 #'
-#' @family geometries for adding insets to ggplots
+#' @family geometries adding layers with insets
 #'
 #' @export
 #'

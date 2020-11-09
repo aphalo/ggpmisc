@@ -187,16 +187,17 @@ ggplot(data.tb, aes(x, y)) +
 ## -----------------------------------------------------------------------------
 ggplot(data.tb, aes(x, y)) +
   geom_grob_npc(label = list(grid::rasterGrob(image = Robinin, width = 1)), 
-                npcx = 0.01, npcy = 0.95, hjust = 0, vp.width = 0.5) +
+                npcx = 0.02, npcy = 0.95,
+                vp.width = 1/2, vp.height = 1/4) +
   geom_point() +
-  expand_limits(y = 45, x = 0)
+  expand_limits(y = 55, x = 0)
 
 ## -----------------------------------------------------------------------------
 ggplot(data.tb, aes(x, y)) +
   annotate("grob_npc", label = grid::rasterGrob(image = Robinin, width = 1), 
-                npcx = 0.01, npcy = 0.95, hjust = 0, vp.width = 0.5) +
+                npcx = 0.02, npcy = 0.95, vp.width = 1/2, vp.height = 1/4) +
   geom_point() +
-  expand_limits(y = 45, x = 0)
+  expand_limits(y = 55, x = 0)
 
 
 ## -----------------------------------------------------------------------------
@@ -560,7 +561,8 @@ ggplot(my.data, aes(x, y, colour = group)) +
                   label.x = "right",
                   label.y = "bottom",
                   aes(label = paste("italic(P)*\"-value = \"*", 
-                                    signif(stat(p.value), digits = 4), sep = "")),
+                                    signif(stat(p.value), digits = 4),
+                                    sep = "")),
                   parse = TRUE)
 
 ## -----------------------------------------------------------------------------
@@ -768,7 +770,7 @@ ggplot(Orange, aes(age, circumference, colour = Tree)) +
   stat_apply_group(.fun.y = function(x) {c(NA, diff(x))}, na.rm = TRUE)
 
 ## -----------------------------------------------------------------------------
-random_string <- function(len = 6) {
+random_string <- function(len = 3) {
 paste(sample(letters, len, replace = TRUE), collapse = "")
 }
 
@@ -784,7 +786,17 @@ d <- tibble::tibble(
 ## -----------------------------------------------------------------------------
 ggplot(data = d, aes(x, y)) +
   geom_point() +
-  stat_dens2d_filter(colour = "red")
+  stat_dens2d_filter(keep.fraction = 1/4, colour = "red")
+
+## -----------------------------------------------------------------------------
+ggplot(data = d, aes(x, y)) +
+  geom_point() +
+  stat_dens2d_filter(keep.fraction = 1/4, keep.number = 50, colour = "red")
+
+## -----------------------------------------------------------------------------
+ggplot(data = d, aes(x, y)) +
+  geom_point() +
+  stat_dens2d_filter(keep.fraction = 1, keep.number = 50, colour = "red")
 
 ## -----------------------------------------------------------------------------
 ggplot(data = d, aes(x, y, colour = group)) +
@@ -809,29 +821,9 @@ ggplot(data = d, aes(x + rep(c(-2,2), rep(50,2)),
 
 ## -----------------------------------------------------------------------------
 ggplot(data = d, aes(x, y, label = lab, colour = group)) +
-  geom_point() + 
-  stat_dens2d_filter(geom = "text_repel")
-
-## -----------------------------------------------------------------------------
-ggplot(data = d, aes(x, y, label = lab, colour = group)) +
-  geom_point() +
-  stat_dens2d_filter(geom = "text_repel", keep.fraction = 0.5)
-
-## -----------------------------------------------------------------------------
-ggplot(data = d, aes(x, y, label = lab, colour = group)) +
-  geom_point() +
-  stat_dens2d_labels()
-
-## -----------------------------------------------------------------------------
-ggplot(data = d, aes(x, y, label = lab, colour = group)) +
-  geom_point() +
-  stat_dens2d_labels(keep.fraction = 0.45)
-
-## -----------------------------------------------------------------------------
-ggplot(data = d, aes(x, y, label = lab, colour = group)) +
-  geom_point() +
-  stat_dens2d_labels(keep.fraction = 0.25,
-                     vjust = -0.3)
+  stat_dens2d_labels(keep.fraction = 1/10, 
+                     hjust = "outward", vjust = "outward") +
+  geom_point()
 
 ## -----------------------------------------------------------------------------
 ggplot(data = d, aes(x, y, label = lab, colour = group)) +
@@ -841,23 +833,47 @@ ggplot(data = d, aes(x, y, label = lab, colour = group)) +
 
 ## -----------------------------------------------------------------------------
 ggplot(data = d, aes(x, y, label = lab, colour = group)) +
-  geom_point() +
-  stat_dens2d_labels(geom = "label_repel", 
-                     keep.fraction = 0.25)
-
-## -----------------------------------------------------------------------------
-ggplot(data = d, aes(x, y, label = lab, colour = group)) +
-geom_point() +
-stat_dens2d_labels(geom = "text_repel",
-keep.fraction = 0.25, angle = 90)
-
-## -----------------------------------------------------------------------------
-ggplot(data = d, aes(x, y, label = lab, colour = group)) +
-  geom_point() +
   stat_dens2d_labels(geom = "label_repel", 
                      keep.fraction = 0.35, 
-                     alpha = 0.5,
-                     label.fill = NA)
+                     label.fill = NA) +
+    geom_point()
+
+## ---- eval = FALSE------------------------------------------------------------
+#  random_string <- function(len = 6) {
+#  paste(sample(letters, len, replace = TRUE), collapse = "")
+#  }
+#  
+#  # Make random data.
+#  set.seed(1001)
+#  d <- tibble::tibble(
+#    x = rnorm(100),
+#    y = rnorm(100),
+#    group = rep(c("A", "B"), c(50, 50)),
+#    lab = replicate(100, { random_string() })
+#  )
+
+## -----------------------------------------------------------------------------
+ggplot(data = d, aes(x, y)) +
+  geom_point() +
+  stat_dens1d_filter(keep.fraction = 0.25,
+                     colour = "red")
+
+## -----------------------------------------------------------------------------
+ggplot(data = d, aes(x, y)) +
+  geom_point() +
+  stat_dens1d_filter(keep.fraction = 0.25,
+                     colour = "red",
+                     orientation = "y")
+
+## -----------------------------------------------------------------------------
+ggplot(data = d, aes(x, y, label = lab, colour = group)) +
+  geom_point() +
+  stat_dens1d_labels(geom = "text_repel")
+
+## -----------------------------------------------------------------------------
+ggplot(data = d, aes(x, y, label = lab, colour = group)) +
+  geom_point() +
+  stat_dens1d_labels(geom = "text_repel", orientation = "y")
 
 ## -----------------------------------------------------------------------------
 head(volcano_example.df) 

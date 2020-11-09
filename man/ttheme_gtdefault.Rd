@@ -196,10 +196,4 @@ ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
   theme_dark()
 
 }
-\seealso{
-Other geometries for adding insets to ggplots: 
-\code{\link{geom_grob}()},
-\code{\link{geom_plot}()},
-\code{\link{geom_table}()}
-}
 \concept{geometries for adding insets to ggplots}
