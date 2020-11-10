@@ -29,7 +29,12 @@
 #' @param method character.
 #' @param method.args list of arguments to pass to \code{method}.
 #' @param tb.type character One of "fit.summary", "fit.anova" or "fit.coefs".
-#' @param digits integer indicating the number of significant digits to be used.
+#' @param digits integer indicating the number of significant digits
+#'   to be used for all numeric values in the table.
+#' @param p.digits integer indicating the number of decimal places to round
+#'   p-values to, with those rounded to zero displayed as the next larger
+#'   possible value preceded by "<". If \code{p.digits} is outside the
+#'   range 1..22 no rounding takes place.
 #' @param tb.vars,tb.params character or numeric vectors, optionally named, used
 #'   to select and/or rename the columns or the parameters in the table
 #'   returned.
@@ -95,6 +100,12 @@
 #' ggplot(my.df, aes(covariate, x)) +
 #'   geom_point() +
 #'   stat_fit_tb() +
+#'   expand_limits(y = 70)
+#'
+#' # Linear regression fit summary, by default
+#' ggplot(my.df, aes(covariate, x)) +
+#'   geom_point() +
+#'   stat_fit_tb(digits = 2, p.digits = 4) +
 #'   expand_limits(y = 70)
 #'
 #' # Linear regression fit summary
@@ -211,6 +222,7 @@ stat_fit_tb <- function(mapping = NULL, data = NULL, geom = "table_npc",
                         tb.vars = NULL,
                         tb.params = NULL,
                         digits = 3,
+                        p.digits = digits,
                         label.x = "center", label.y = "top",
                         label.x.npc = NULL, label.y.npc = NULL,
                         position = "identity",
@@ -240,6 +252,7 @@ stat_fit_tb <- function(mapping = NULL, data = NULL, geom = "table_npc",
                   tb.vars = tb.vars,
                   tb.params = tb.params,
                   digits = digits,
+                  p.digits = p.digits,
                   label.x = label.x,
                   label.y = label.y,
                   npc.used = grepl("_npc", geom),
@@ -268,6 +281,7 @@ fit_tb_compute_panel_fun <- function(data,
                                      tb.vars,
                                      tb.params,
                                      digits,
+                                     p.digits,
                                      npc.used = TRUE,
                                      label.x,
                                      label.y) {
@@ -307,12 +321,50 @@ fit_tb_compute_panel_fun <- function(data,
   num.cols <- sapply(mf_tb, is.numeric)
   mf_tb[num.cols] <- signif(mf_tb[num.cols], digits = digits)
   # treat p.value as a special case
-  if ("p.value" %in% colnames(mf_tb)) {
-    mf_tb[["p.value"]] <- round(mf_tb[["p.value"]], digits = digits)
-    limit.text <- paste("<", format(1 * 10^-digits, nsmall = digits))
+  if ("p.value" %in% colnames(mf_tb) && p.digits > 0 && p.digits <= 22) {
+    mf_tb[["p.value"]] <- round(mf_tb[["p.value"]], digits = p.digits)
+    limit.text <- paste("<", format(1 * 10^-p.digits, nsmall = p.digits))
     mf_tb[["p.value"]] <- ifelse(mf_tb[["p.value"]] > 0,
-                                 format(mf_tb[["p.value"]], nsmall = digits),
+                                 format(mf_tb[["p.value"]], nsmall = p.digits),
                                  limit.text)
+  }
+
+  if (!is.null(tb.params) && !is.null(mf_tb)) {
+    if (is.character(tb.params)) {
+      idxs <- pmatch(tb.params, mf_tb[[1]])
+      if (length(idxs) < length(tb.params) || anyNA(idxs)) {
+        warning("Attempt to select nonexistent params")
+        idxs <- stats::na.omit(idxs)
+        # no renaming possible, as we do not know which name was not matched
+        tb.params <- unname(tb.params)
+      }
+    } else {
+      idxs <- unname(tb.params)
+      if (any(idxs > nrow(mf_tb))) {
+        warning("Attempt to select nonexistent params")
+        idxs <- idxs[idxs <= nrow(mf_tb)]
+        tb.params <- tb.params[idxs]
+      }
+    }
+    if (length(idxs) < nrow(mf_tb)) {
+      message("Dropping params/terms (rows) from table!")
+    }
+    if (is.character(tb.params)) {
+      idxs <- pmatch(tb.params, mf_tb[[1]])
+    } else {
+      idxs <- unname(tb.params)
+    }
+    if (length(idxs) < 1L) {
+      warning("No matching parameters(s).")
+      mf_tb <- NULL
+    } else {
+      mf_tb <- mf_tb[idxs, ]
+      if (!is.null(names(tb.params))) {
+        # support renaming of only some selected columns
+        selector <- names(tb.params) != ""
+        mf_tb[[1]][selector] <- names(tb.params)[selector]
+      }
+    }
   }
 
   if (!is.null(tb.vars)) {
@@ -332,8 +384,8 @@ fit_tb_compute_panel_fun <- function(data,
         tb.vars <- tb.vars[idxs]
       }
     }
-    if (length(idxs) < ncol(mf_tb)) {
-      message("Dropping column(s) from table.")
+    if (!(1L %in% idxs)) {
+      message("Dropping param names from table!")
     }
     if (length(idxs) < 1L) {
       warning("No matching column(s).")
@@ -344,43 +396,6 @@ fit_tb_compute_panel_fun <- function(data,
         # support renaming of only some selected columns
         selector <- names(tb.vars) != ""
         colnames(mf_tb)[selector] <- names(tb.vars)[selector]
-      }
-    }
-  }
-  if (!is.null(tb.params) && !is.null(mf_tb)) {
-    if (is.character(tb.params)) {
-      idxs <- pmatch(tb.params, mf_tb[[1]])
-      if (length(idxs) < length(tb.params) || anyNA(idxs)) {
-        warning("Attempt to select nonexistent params")
-        idxs <- stats::na.omit(idxs)
-        # no renaming possible, as we do not know which name was not matched
-        tb.params <- unname(tb.params)
-      }
-    } else {
-      idxs <- unname(tb.params)
-      if (any(idxs > nrow(mf_tb))) {
-        warning("Attempt to select nonexistent params")
-        idxs <- idxs[idxs <= nrow(mf_tb)]
-        tb.params <- tb.params[idxs]
-      }
-    }
-    if (length(tb.params) < nrow(mf_tb)) {
-      warning("Dropping row(s) from table.")
-    }
-    if (is.character(tb.params)) {
-      idxs <- pmatch(tb.params, mf_tb[[1]])
-    } else {
-      idxs <- unname(tb.params)
-    }
-    if (length(idxs) < 1L) {
-      warning("No matching parameters(s).")
-      mf_tb <- NULL
-    } else {
-      mf_tb <- mf_tb[idxs, ]
-      if (!is.null(names(tb.params))) {
-        # support renaming of only some selected columns
-        selector <- names(tb.params) != ""
-        mf_tb[[1]][selector] <- names(tb.params)[selector]
       }
     }
   }

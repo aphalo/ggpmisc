@@ -14,6 +14,7 @@ stat_fit_tb(
   tb.vars = NULL,
   tb.params = NULL,
   digits = 3,
+  p.digits = digits,
   label.x = "center",
   label.y = "top",
   label.x.npc = NULL,
@@ -50,7 +51,13 @@ the plot defaults.}
 to select and/or rename the columns or the parameters in the table
 returned.}
 
-\item{digits}{integer indicating the number of significant digits to be used.}
+\item{digits}{integer indicating the number of significant digits
+to be used for all numeric values in the table.}
+
+\item{p.digits}{integer indicating the number of decimal places to round
+p-values to, with those rounded to zero displayed as the next larger
+possible value preceded by "<". If \code{p.digits} is outside the
+range 1..22 no rounding takes place.}
 
 \item{label.x, label.y}{\code{numeric} Coordinates (in data units) to be used
 for absolute positioning of the output. If too short they will be recycled.}
@@ -137,6 +144,12 @@ my.df <- data.frame(x, group, covariate)
 ggplot(my.df, aes(covariate, x)) +
   geom_point() +
   stat_fit_tb() +
+  expand_limits(y = 70)
+
+# Linear regression fit summary, by default
+ggplot(my.df, aes(covariate, x)) +
+  geom_point() +
+  stat_fit_tb(digits = 2, p.digits = 4) +
   expand_limits(y = 70)
 
 # Linear regression fit summary
