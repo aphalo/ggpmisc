@@ -172,9 +172,9 @@ fmt_tb_compute_group_fun <- function(data,
           tb.vars <- tb.vars[idxs]
         }
       }
-      if (length(idxs) < ncol(temp_tb)) {
-        message("Dropping column(s) from table.")
-      }
+      # if (length(idxs) < ncol(temp_tb)) {
+      #   message("Dropping column(s) from table.")
+      # }
       if (length(idxs) < 1L) {
         message("No matching column(s).")
         temp_tb <- NULL
@@ -205,9 +205,9 @@ fmt_tb_compute_group_fun <- function(data,
           tb.rows <- tb.rows[idxs]
         }
       }
-      if (length(tb.rows) < nrow(temp_tb)) {
-        message("Dropping row(s) from table.")
-      }
+      # if (length(idxs) < nrow(temp_tb)) {
+      #   message("Dropping row(s) from table.")
+      # }
       if (length(idxs) < 1L) {
         warning("No matching row(s).")
         temp_tb <- NULL
