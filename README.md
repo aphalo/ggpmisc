@@ -234,7 +234,7 @@ Installation of the current unstable version from Bitbucket:
 
 ``` r
 # install.packages("devtools")
-devtools::install_bitbucket("aphalo/ggpmisc")
+devtools::install_github("aphalo/ggpmisc")
 ```
 
 ## Documentation
@@ -248,8 +248,8 @@ News about updates are regularly posted at
 ## Contributing
 
 Please report bugs and request new features at
-(<https://bitbucket.org/aphalo/ggpmisc/issues>). Pull requests are
-welcome at (<https://bitbucket.org/aphalo/ggpmisc>).
+(<https://github.com/aphalo/ggpmisc/issues>). Pull requests are welcome
+at (<https://github.com/aphalo/ggpmisc>).
 
 ## Citation
 

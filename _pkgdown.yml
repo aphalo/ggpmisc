@@ -15,10 +15,19 @@ reference:
   - title: Package overview
     contents:
     - '`ggpmisc-package`'
-  - title: Plot creation
-    desc: Additional ggplot methods
+  - title: Scales
+    desc: Scales control de mapping of data to aesthetics.
     contents:
-    - ggplot
+    - scale_continuous_npc
+    - scale_x_logFC
+    - FC_format
+    - FC_name
+    - scale_y_Pvalue
+    - scale_colour_outcome
+    - scale_shape_outcome
+    - outcome2factor
+    - xy_outcomes2factor
+    - symmetric_limits
   - title: Geoms
     desc: Geoms, short for geometric objects, describe the type of plot you will produce.
     contents:
@@ -51,19 +60,10 @@ reference:
     - stat_quadrant_counts
     - stat_fmt_tb
     - stat_apply_group
-  - title: Scales
-    desc: Scales control de mapping of data to aesthetics.
+  - title: Plot creation
+    desc: Additional ggplot methods
     contents:
-    - scale_continuous_npc
-    - scale_x_logFC
-    - FC_format
-    - FC_name
-    - scale_y_Pvalue
-    - scale_colour_outcome
-    - scale_shape_outcome
-    - outcome2factor
-    - xy_outcomes2factor
-    - symmetric_limits
+    - ggplot
   - title: Fortify or Try
     desc: Convert R objects containing observations in other formats into 'tibble' objects suitable for plotting.
     contents:
