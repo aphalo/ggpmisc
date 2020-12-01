@@ -5,6 +5,9 @@
 
 [![cran
 version](https://www.r-pkg.org/badges/version/ggpmisc)](https://cran.r-project.org/package=ggpmisc)
+<!-- badges: start --> [![R build
+status](https://github.com/aphalo/ggpmisc/workflows/R-CMD-check/badge.svg)](https://github.com/aphalo/ggpmisc/actions)
+<!-- badges: end -->
 
 ## Purpose
 
@@ -244,8 +247,8 @@ citation("ggpmisc")
 #> To cite package 'ggpmisc' in publications use:
 #> 
 #>   Pedro J. Aphalo (2020). ggpmisc: Miscellaneous Extensions to
-#>   'ggplot2'. https://docs.r4photobiology.info/ggpmisc/,
-#>   https://bitbucket.org/aphalo/ggpmisc.
+#>   'ggplot2'. R package version 0.3.7.
+#>   https://CRAN.R-project.org/package=ggpmisc
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
@@ -253,8 +256,8 @@ citation("ggpmisc")
 #>     title = {ggpmisc: Miscellaneous Extensions to 'ggplot2'},
 #>     author = {Pedro J. Aphalo},
 #>     year = {2020},
-#>     note = {https://docs.r4photobiology.info/ggpmisc/,
-#> https://bitbucket.org/aphalo/ggpmisc},
+#>     note = {R package version 0.3.7},
+#>     url = {https://CRAN.R-project.org/package=ggpmisc},
 #>   }
 ```
 
