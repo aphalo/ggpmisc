@@ -1,3 +1,11 @@
+ggpmisc 0.3.8 (2020-12-05)
+==========================
+
+* Add param p.digits to stat_fit_tb().
+* Vignette explaing how the grammar of graphics is expanded to support
+annotations.
+* Move git repository from Bitbucket to Github.
+
 ggpmisc 0.3.7 (2020-11-09)
 ==========================
 

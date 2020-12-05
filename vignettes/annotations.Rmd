@@ -7,7 +7,7 @@ output:
   rmarkdown::html_vignette:
     toc: yes
 vignette: >
-  %\VignetteIndexEntry{GG and annotations}
+  %\VignetteIndexEntry{Annotations are not data labels}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
@@ -153,7 +153,9 @@ be thought also an being annotations.
 p2 <- ggplot(mtcars, aes(factor(cyl), mpg, colour = factor(cyl))) +
   stat_boxplot() +
   labs(y = NULL) +
-  theme_bw(9) + theme(legend.position = "none")
+  theme_bw(9) + 
+  theme(legend.position = "none",
+        panel.grid = element_blank())
 
 ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
   geom_point() +
