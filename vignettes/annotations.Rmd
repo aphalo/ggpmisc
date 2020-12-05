@@ -1,0 +1,234 @@
+---
+title: "Annotations are not data labels"
+subtitle: "On how 'ggpmisc' extends the grammar of graphics"
+author: "Pedro J. Aphalo"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+    toc: yes
+vignette: >
+  %\VignetteIndexEntry{GG and annotations}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      fig.align = 'center', 
+                      fig.show = 'hold', fig.width = 7, fig.height = 4)
+```
+
+## Data labels, annotations and insets
+
+*Data labels* add textual information directly related to individual
+data points (shown as glyphs). Text position in this case is dependent
+on the scales used to represent data points. Text is usually displaced
+so that it does not occlude the glyph representing the data point and
+when the link to the data point is unclear, this link is signaled with a
+line segment or arrow. Data labels are distinct from annotations but
+instead contribute to the representation of data on a plot or map.
+
+*References* are lines, shading or marks used to help the reading of a
+plot. These elements are used to highlight specific values on an axis or
+a region in a plot. They, like data labels, are positioned relative to
+the scales used for data. The position of data labels and lines, glyphs
+or shading used as reference cannot be altered by the designer of a
+plot, as the position conveys information. I will use the term *data
+labels* irrespective if the "labels" are texttual or graphical, like
+icons and small plots and simple tables linked to data points or map
+features.
+
+According to Koponen and Hildén (2019), "[in a statistical chart]
+annotations can be used to draw reader attention to relevant detail".
+These authors use as an example a text box in a plot to highlight a data
+point that is off-scale and has been "squeezed" to a position
+immediately outside the plotting area.
+
+*Annotations* differ from data labels, in that their position is
+decoupled from their meaning. Insets can be thought as larger, but still
+self-contained annotations. In most cases the reading of inset tables
+and plots depends only weakly on the plot or map in which they are
+included.
+
+In the case of annotations and insets the designer of a data
+visualization has the freedom to locate them anywhere, as long they do
+not occlude features used to describe data. I will use the term
+*annotation* irrespective if the "labels" are textual or graphical.
+Insets are similar to annotations, but the term *inset* is used would
+the inset graphical or textual element is complex, and usually lager
+than an annotation. Insets can be either positioned within the main
+plotting area, or adjacent to it, usually as a smaller panel, without
+any loss of meaning .
+
+That the position of annotations and insets is independent of the
+plotted data cannot be expressed using the grammar of graphics (GG) as
+implemented in package 'ggplot2'.
+
+## Annotations in 'ggplot2'
+
+In *The Layered Grammar of Graphics* (Wickham 2000) as implemented in
+package 'ggplot2' (Wickham et al. 2016) annotations are "second class",
+but still data-dependent features. As layers they behave differently
+than data layers and ignore faceting into panels. So `annotate()`
+disconnects the resulting plot elements from the data source, but not
+from the scales used to graphically map the data values.
+
+In our view, the main practical difference between data labels and
+annotations is the scales used to position them. Instead of using an
+`annotate()` function to implement annotations, we could retain the use
+of GG but based on native plot coordinates (npc). Support of annotations
+done in this way would allow "annotation layers" to behave almost
+identically to "data layers". The *X* and *y* position aesthetics used
+for data could be supplemented with pseudo-aesthetics without any
+translation relative to the native plotting coordinates of the plotting
+area or viewport. Doing so, would allow the graphic design flexibility
+conceptually inherent to annotations.
+
+## Extending 'ggplot2'
+
+Based on this insight, a new approach to adding annotations and insets
+was implemented in package 'ggpmisc' through two new *x* and *y*
+pseudo-aesthetics, *npcx* and *npcy*, and corresponding dumb scales and
+various geometries that make use of them. These scales and geometries
+were implemented as an extension to package 'ggplot2'.
+
+Before showing how this works in practice, we load the package and set an
+uncluttered theme as default.
+
+```{r}
+library(ggpmisc)
+theme_set(theme_bw() + theme(panel.grid = element_blank()))
+```
+
+Native plot coordinates have range 0..1 but the "npc" geoms also recognize some
+positions by name with the same text strings as used for text justification in
+'ggplot2'. The default justification is `"inward"`.
+
+```{r}
+p1 <- ggplot(mtcars, aes(factor(cyl), mpg)) +
+  geom_point() +
+  geom_text_npc(data = data.frame(x = c("left", "left"),
+                                  y = c("top", "bottom"),
+                                  label = c("Most\nefficient",
+                                            "Least\nefficient")),
+                mapping = aes(npcx = x, npcy = y, label = label),
+                size = 3)
+p1
+
+```
+
+The advantage of this approach becomes apparent when we modify the limits of the
+_y_ scale. We do not show it here, but when a script or user defined plotting
+function sets the scale limits based on the input data, in the absence of the
+extensions proposed here, setting annotations consistently within the plotting
+area becomes rather complex.
+
+```{r}
+p1 + expand_limits(y = 0)
+```
+
+So as to support the existing syntax for annotations using the new geometries,
+function `ggplot2::annotate()` gets overridden when package 'ggpmisc' is loaded.
+The new definition adds support for the new pseudo-aesthetics *npcx* and *npcy*
+retaining the old behaviour otherwise.
+
+```{r}
+ggplot(mtcars, aes(factor(cyl), mpg)) +
+  geom_point() +
+  annotate(geom = "text_npc",
+           npcx = c("left", "left"),
+           npcy = c("top", "bottom"),
+           label = c("Most\nefficient",
+                     "Least\nefficient"),
+           size = 3)
+```
+
+Inset plots can be added with the same syntax using `geom_plot_npc()`. They can
+be thought also an being annotations.
+
+```{r}
+p2 <- ggplot(mtcars, aes(factor(cyl), mpg, colour = factor(cyl))) +
+  stat_boxplot() +
+  labs(y = NULL) +
+  theme_bw(9) + theme(legend.position = "none")
+
+ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
+  geom_point() +
+  annotate("plot_npc", npcx = "left", npcy = "bottom", label = p2) +
+  expand_limits(y = 0, x = 0)
+
+```
+
+An example with facets, labeling of panels in a more traditional way.
+Panel tags within the plotting are at same "npc" location with free
+scale limits in panels.
+
+```{r}
+ggplot(mtcars, aes(wt, mpg)) +
+  geom_point() +
+  geom_text_npc(data = data.frame(cyl = levels(factor(mtcars$cyl)),
+                                  label = LETTERS[seq_along(levels(factor(mtcars$cyl)))],
+                                  x = 0.90,
+                                  y = 0.95),
+                 mapping = aes(npcx = x, npcy = y, label = label),
+                size = 4) +
+  facet_wrap(~factor(cyl), scales = "free") +
+  theme(strip.background = element_blank(),
+        strip.text = element_blank())
+```
+
+This approach was first implemented in 'ggpmisc' version 0.3.1 released
+in April 2919. As of version \>= 0.3.8, the implementation can be
+considered fairly stabl. However, this implementation is to an extent
+dependent on undocumented behaviour of 'ggplot2' functions, which means
+that future updates to 'ggplot2' can break this functionality.
+
+## When to use annotations and insets
+
+Package 'ggpmisc' adds support for various plot annotations and reference
+guides. It also adds support for some data labels related to data features.
+While developing these statistics, it became clear that expanding GG's support
+for annotations would simplify the code of these statistics considerably and
+also more cleanly separate the computations on data from the positioning of
+annotations.
+
+Geometries useful for data labels and annotations.
+
+| Data labels (data coordinates) | Annotations (npc)  | Mapped to `label` aesthetic |
+|--------------------------------|--------------------|---------------------------|
+| `ggplot2::geom_text()`         | `geom_text_npc()`  | `character` vector        |
+| `ggplot2::geom_label()`        | `geom_label_npc()` | `character` vector        |
+| `geom_plot()`                  | `geom_plot_npc()`  | `list()` of `ggplot2::gg` |
+| `geom_table()`                 | `geom_table_npc()` | `list()` of `data.frame`  |
+| `geom_grob()`                  | `geom_grob_npc()`  | `list()` of `grid::grob`  |
+
+To decide on the best approach, consider if the location of an element of a plot
+is more "naturally" expressed in the original data units or as position relative
+to the edges or centre of the plotting area. In the second case, prefer the
+"npc" geoms as you are dealing with _annotations_, otherwise, use the ordinary
+geoms as are dealing with data labels or data points.
+
+## Thoughts for the future
+
+Although we have discussed only scales for *x* and *y* aesthetics, the
+same consideration applies to other aesthetics like *colour*. It seems
+generally useful to allow aesthetics to use a different scale for
+annotations than for data. Defining pseudo-aesthetics for annotations
+instead of allowing multiple scales for each aesthetic in a plot would
+add flexibility and still keep the guarantee that the meaning of
+aesthetics values remains consistent across all plot elements
+representing data.
+
+## List of references
+
+Koponen, J; Hildén, J. (2019) *Data visualization handbook*. Aalto ARTS
+books, Espoo. ISBN 978-952-60-7449-8.
+
+Wickham H. (2010) A Layered Grammar of Graphics. *Journal of
+Computational and Graphical Statistics* **19:** 3--28.
+
+Wickham H. (2016) *ggplot2*. Springer International Publishing. ISBN
+978-3-319-24275-0.

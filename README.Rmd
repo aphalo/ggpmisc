@@ -32,7 +32,7 @@ graphic design considerations rather than on properties such as the range of
 values in the data being plotted. In particular, the location within the
 plotting area of large annotation objects like model-fit summaries, location
 maps, plots, and tables needs usually to be set independently of the `x` and `y`
-scales, rescaling or any transformations. To acknowledge this, the Grammar of
+scales, re-scaling or any transformations. To acknowledge this, the Grammar of
 Graphics is here expanded by supporting _x_ and _y_ positions expressed in
 'grid' "npc" units in the range 0..1. This is implemented with new
 (pseudo-)aesthetics _npcx_ and _npcy_ and their corresponding scales, plus
@@ -40,7 +40,7 @@ geometries and a revised `annotate()` function. The new aesthetics function in
 "parallel" with the _x_ and _y_ aesthetics used for plotting data. The advantage
 of this approach is that the syntax used for annotations becomes identical to
 that used for plotting data and that annotations with approach _cleanly_ support
-facets in a way consistent with the rest of the gramamr.
+facets in a way consistent with the rest of the grammar.
 
 ## Aesthetics and scales
 
