@@ -211,7 +211,7 @@ To decide on the best approach, consider if the location of an element of a plot
 is more "naturally" expressed in the original data units or as position relative
 to the edges or centre of the plotting area. In the second case, prefer the
 "npc" geoms as you are dealing with _annotations_, otherwise, use the ordinary
-geoms as are dealing with data labels or data points.
+geometries as you are dealing with data labels or data points.
 
 ## Thoughts for the future
 

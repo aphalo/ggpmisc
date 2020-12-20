@@ -13,6 +13,8 @@
 #'   its neighbors. Default: 3.
 #' @param strict logical flag: if TRUE, an element must be strictly greater than
 #'   all other values in its window to be considered a peak. Default: TRUE.
+#' @param na.rm logical indicating whether \code{NA} values should be stripped
+#'   before searching for peaks.
 #'
 #' @return A vector of logical values. Values that are TRUE
 #'   correspond to local peaks in the data.
@@ -28,27 +30,63 @@
 #'
 #' @keywords internal
 #'
+# find_peaks <-
+#   function(x,
+#            ignore_threshold = 0.0,
+#            span = 3,
+#            strict = TRUE,
+#            na.rm = FALSE) {
+#     range_x <- range(x, finite = TRUE)
+#     min_x <- range_x[1]
+#     max_x <- range_x[2]
+#     x <- ifelse(!is.finite(x), min_x, x)
+#     # the next two lines cater for the case when max_x < 0, which is quite
+#     # common with logs
+#     delta <- max_x - min_x
+#     top_flag <- ignore_threshold > 0.0
+#     scaled_threshold <- delta * abs(ignore_threshold)
+#     pks <- splus2R::peaks(x = x, span = span, strict = strict)
+#     if (abs(ignore_threshold) < 1e-5)
+#       return(pks)
+#     if (top_flag) {
+#       return(ifelse(x - min_x > scaled_threshold, pks, FALSE))
+#     } else {
+#       return(ifelse(max_x - x > scaled_threshold, pks, FALSE))
+#     }
+#   }
+#
 find_peaks <-
   function(x,
-           ignore_threshold = 0.0,
+           ignore_threshold = 0,
            span = 3,
-           strict = TRUE) {
-    range_x <- range(x, finite = TRUE)
-    min_x <- range_x[1]
-    max_x <- range_x[2]
-    x <- ifelse(!is.finite(x), min_x, x)
-    # the next two lines cater for the case when max_x < 0, which is quite
-    # common with logs
-    delta <- max_x - min_x
-    top_flag <- ignore_threshold > 0.0
-    scaled_threshold <- delta * abs(ignore_threshold)
-    pks <- splus2R::peaks(x = x, span = span, strict = strict)
-    if (abs(ignore_threshold) < 1e-5)
-      return(pks)
-    if (top_flag) {
-      return(ifelse(x - min_x > scaled_threshold, pks, FALSE))
+           strict = TRUE,
+           na.rm = FALSE) {
+    # find peaks
+    if(is.null(span)) {
+      pks <- x == max(x, na.rm = na.rm)
+      if (strict && sum(pks) != 1L) {
+        pks <- logical(length(x)) # all FALSE
+      }
     } else {
-      return(ifelse(max_x - x > scaled_threshold, pks, FALSE))
+      pks <- splus2R::peaks(x = x, span = span, strict = strict)
+    }
+    # apply threshold to found peaks
+    if (abs(ignore_threshold) < 1e-5) {
+      pks
+    } else {
+      range_x <- range(x, na.rm = na.rm, finite = TRUE)
+      min_x <- range_x[1]
+      max_x <- range_x[2]
+      x <- ifelse(!is.finite(x), min_x, x)
+      # this can cater for the case when max_x < 0, as with logs
+      delta <- max_x - min_x
+      top_flag <- ignore_threshold > 0.0
+      scaled_threshold <- delta * abs(ignore_threshold)
+      if (top_flag) {
+        ifelse(x - min_x > scaled_threshold, pks , FALSE)
+      } else {
+        ifelse(max_x - x > scaled_threshold, pks , FALSE)
+      }
     }
   }
 
@@ -132,11 +170,14 @@ find_peaks <-
 #'
 #' @examples
 #' library(ggplot2)
-#' lynx.df <- data.frame(year = as.numeric(time(lynx)), lynx = as.matrix(lynx))
-#' ggplot(lynx.df, aes(year, lynx)) + geom_line() +
+#' lynx.df <- data.frame(year = as.numeric(time(lynx)),
+#'                       lynx = as.matrix(lynx))
+#' ggplot(lynx.df, aes(year, lynx)) +
+#'   geom_line() +
 #'   stat_peaks(colour = "red") +
 #'   stat_valleys(colour = "blue")
-#' ggplot(lynx.df, aes(year, lynx)) + geom_line() +
+#' ggplot(lynx.df, aes(year, lynx)) +
+#'   geom_line() +
 #'   stat_peaks(colour = "red") +
 #'   stat_peaks(colour = "red", geom = "rug")
 #'
@@ -192,11 +233,18 @@ peaks_compute_group_fun <- function(data,
   } else if (is.null(y.label.fmt)) {
     y.label.fmt <- "%.4g"
   }
-  if (inherits(scales$x, c("ScaleContinuousDatetime",
-                           "ScaleContinuousDate"))) {
+  if (inherits(scales$x, "ScaleContinuousDatetime")) {
     as_label <- function(fmt, x) {
       x <- as.POSIXct(x,
                       origin = lubridate::origin)
+      strftime(x, fmt)
+    }
+    if (is.null(x.label.fmt)) {
+      x.label.fmt <- "%Y-%m-%d"
+    }
+  } else if (inherits(scales$x, "ScaleContinuousDate")) {
+    as_label <- function(fmt, x) {
+      x <- as.Date(x, origin = lubridate::origin)
       strftime(x, fmt)
     }
     if (is.null(x.label.fmt)) {
@@ -216,7 +264,8 @@ peaks_compute_group_fun <- function(data,
     peaks.df <- data[find_peaks(data$y,
                                 span = span,
                                 ignore_threshold = ignore_threshold,
-                                strict = strict), , drop = FALSE]
+                                strict = strict,
+                                na.rm = TRUE), , drop = FALSE]
   }
   peaks.df[["x.label"]] <- as_label(x.label.fmt, peaks.df[["x"]])
   peaks.df[["y.label"]] <- sprintf(y.label.fmt, peaks.df[["y"]])
@@ -251,11 +300,18 @@ valleys_compute_group_fun <- function(data,
   } else if (is.null(y.label.fmt)) {
     y.label.fmt <- "%.4g"
   }
-  if (inherits(scales$x, c("ScaleContinuousDatetime",
-                           "ScaleContinuousDate"))) {
+  if (inherits(scales$x, "ScaleContinuousDatetime")) {
     as_label <- function(fmt, x) {
       x <- as.POSIXct(x,
                       origin = lubridate::origin)
+      strftime(x, fmt)
+    }
+    if (is.null(x.label.fmt)) {
+      x.label.fmt <- "%Y-%m-%d"
+    }
+  } else if (inherits(scales$x, "ScaleContinuousDate")) {
+    as_label <- function(fmt, x) {
+      x <- as.Date(x, origin = lubridate::origin)
       strftime(x, fmt)
     }
     if (is.null(x.label.fmt)) {
@@ -275,7 +331,8 @@ valleys_compute_group_fun <- function(data,
     valleys.df <- data[find_peaks(-data$y,
                                   span = span,
                                   ignore_threshold = ignore_threshold,
-                                  strict = strict), , drop = FALSE]
+                                  strict = strict,
+                                  na.rm = TRUE), , drop = FALSE]
   }
   valleys.df[["x.label"]] <- as_label(x.label.fmt, valleys.df[["x"]])
   valleys.df[["y.label"]] <- sprintf(y.label.fmt, valleys.df[["y"]])

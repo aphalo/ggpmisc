@@ -4,7 +4,7 @@
 \alias{find_peaks}
 \title{Find local maxima or global maximum (peaks)}
 \usage{
-find_peaks(x, ignore_threshold = 0, span = 3, strict = TRUE)
+find_peaks(x, ignore_threshold = 0, span = 3, strict = TRUE, na.rm = FALSE)
 }
 \arguments{
 \item{x}{numeric array}
@@ -19,6 +19,9 @@ its neighbors. Default: 3.}
 
 \item{strict}{logical flag: if TRUE, an element must be strictly greater than
 all other values in its window to be considered a peak. Default: TRUE.}
+
+\item{na.rm}{logical indicating whether \code{NA} values should be stripped
+before searching for peaks.}
 }
 \value{
 A vector of logical values. Values that are TRUE
