@@ -60,18 +60,21 @@ New `ggplot()` method specializations for classes `ts` and `xts` make the call t
 
 `ggplot()` methods for classes `"ts"` and `"xts"` automate plotting of time
 series data, as _x_ and _y_ aesthetics are mapped to time and the variable of
-the time series, respectively. For plotting time series data stored in objects of other classes,
-see the conversion functions `try_tibble()` and `try_data_frame()` in the last
-section of this vignette.
+the time series, respectively. For plotting time series data stored in objects
+of other classes, see the conversion functions `try_tibble()` and
+`try_data_frame()` in the last section of this vignette.
+
+By default, `time` is of class `Date` or of class `POSIXct` depending on how
+time is stored in the time series object. On-the-fly coversion of `time` to
+`numeric` is possible (shown in the second example below).
 
 ```{r}
 class(lynx)
 ggplot(lynx) + geom_line()
 ```
 
-It is possible to control the conversion of the time variable to numeric or datetime. As we will see
-below this affects the scale used by default as well as the formatting of values when converted
-to character strings or printed.
+Whether the class variable `time`affects the scale used by default as well as
+the formatting of values when converted to character strings or printed.
 
 ```{r}
 ggplot(lynx, as.numeric = FALSE) + geom_line()
@@ -538,8 +541,10 @@ The very similar `stat_summary_xy()` accepts different functions for `x` and `y`
 
 Two statistics make it possible to highlight and/or label peaks and valleys
 (local maxima and local minima) in a curve. Here we use a time series, using
-POSIXct for `time` and the default formatting of labels. We also instruct
-`geom_text()` not to render overlapping labels.
+`Date` objects for `time` and the default formatting of labels. We also instruct
+`geom_text()` not to render overlapping labels. They support numeric, date or
+datetime mapped to the _x_ aesthetic. Currently a numeric variables has to be
+mapped to the _y_ aesthetic.
 
 ```{r}
 ggplot(lynx, as.numeric = FALSE) + geom_line() + 
@@ -564,7 +569,7 @@ ggplot(lynx) + geom_line() +
   expand_limits(y = c(-900, 8000))
 ```
 
-Using POSIXct for `time` but supplying a format string. In addition marking both
+Using Date for `time` but supplying a format string. In addition marking both
 peaks and valleys.
 
 ```{r}

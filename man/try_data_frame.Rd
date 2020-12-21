@@ -61,14 +61,15 @@ This function can be used to easily convert time series data into a
 }
 
 \examples{
-library(xts)
 class(lynx)
-try_data_frame(lynx)
-try_data_frame(lynx, "year")
+try_tibble(lynx)
+try_tibble(lynx, as.numeric = TRUE)
+try_tibble(lynx, "year")
 class(austres)
-try_data_frame(austres)
-try_data_frame(austres, "quarter")
+try_tibble(austres)
+try_tibble(austres, as.numeric = TRUE)
+try_tibble(austres, "quarter")
 class(cars)
-try_data_frame(cars)
+try_tibble(cars)
 
 }

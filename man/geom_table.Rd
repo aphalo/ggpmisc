@@ -48,8 +48,7 @@ the plot defaults.}
 \item{stat}{The statistical transformation to use on the data for this layer,
 as a string.}
 
-\item{position}{Position adjustment, either as a string, or the result of a
-call to a position adjustment function.}
+\item{position}{Position adjustment, either as a string, or the result of a}
 
 \item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This
 can include aesthetics whose values you want to set, not map. See
@@ -106,39 +105,46 @@ These geoms work only with tibbles as \code{data}, as they expects a
   units, and \code{angle} is used to rotate the table as a whole.
 
   The "width" and "height" of an inset as for a text element are
-  0, so stacking and dodging inset plots will not work by default, and axis
-  limits are not automatically expanded to include all inset plots.
+  0, so stacking and dodging inset tables will not work by default, and axis
+  limits are not automatically expanded to include all inset tables.
   Obviously, insets do have height and width, but they are physical units,
   not data units. The amount of space they occupy on the main plot is not
   constant in data units of the base plot: when you modify scale limits,
   inset plots stay the same size relative to the physical size of the base
   plot.
-}
-\note{
-As all geoms, \code{geom_table()} and \code{geom_table_npc()} add a
-  layer to a plot, and behave as expected in the grammar of graphics: ggplot
-  themes do not affect how layers are rendered. The formatting of the inset
-  table is done according to the the argument passed to \code{table.theme}.
 
-  As the table is built with function gridExtra::gtable(), for formatting
-  details, please, consult \code{\link[gridExtra]{tableGrob}}. If the
-  argument passed to \code{table.theme} is a constructor function, the values
-  mapped to \code{size}, \code{color}, \code{fill}, \code{alpha}, and
-  \code{family} aesthetics will the passed to the theme constructor for each
-  table. In the case of \code{colour} and \code{fill}, the default mapping
-  is to \code{NA} which triggers the use of the default base_colour of the
+  If the argument passed to \code{table.theme} is a constructor function
+  (passing its name without parenthesis), the values mapped to \code{size},
+  \code{colour}, \code{fill}, \code{alpha}, and \code{family} aesthetics will
+  the passed to this theme constructor for each individual table. In
+  contrast, if a ready constructed ttheme as a list object is passed as
+  argument (e.g., by calling the constructor, using contructor name followed
+  by parenthesis), it will be used as is, i.e., mappings to aesthetics such
+  as \code{colour} are ignored if present.
+
+  By default the constructor \code{ttheme_gtdefault} is used and
+  \code{colour} and \code{fill}, are mapped to \code{NA}. Mapping these
+  aesthetics to \code{NA} triggers the use of the default base_colour of the
   \code{ttheme}.
 
-  The constructor \code{ttheme_gtdefault} is used by default, but others
-  are available predefined or can created by the user. If instead of a
-  constructor a ready constructed ttheme as a list object is passed as
-  argument, it will be used as is. In such a case mapped aesthetics normally
-  mapped aesthetics are ignored if present.
+  As the table is built with function \code{gridExtra::gtable()}, for
+  formatting details, please, consult \code{\link[gridExtra]{tableGrob}}.
+}
+\note{
+As all geometries, \code{geom_table()} and \code{geom_table_npc()} add
+  a layer to a plot, and behave as expected in the grammar of graphics. In general
+  ggplot themes do not affect how layers are rendered, and this is also the
+  case for \code{geom_table()}. As described abovem, the formatting of the
+  inset table is done according to the the argument passed to parameter
+  \code{table.theme}.
 
-  Complex tables with annotations or different coloring of rows or cells can
+  Complex tables with annotations or different colouring of rows or cells can
   be constructed with functions in package 'gridExtra' or in any other way
-  as long as they can be saved as grid graphical objects and added to a
+  as long as they can be saved as grid graphical objects and then added to a
   ggplot as a new layer with \code{\link{geom_grob}}.
+
+  In 'ggpmisc' (>= 0.3.6) \strong{\code{annotate()} can be used with
+  \code{geom = "table"}}.
 }
 \section{Alignment}{
  You can modify table alignment with the \code{vjust} and
@@ -150,13 +156,6 @@ As all geoms, \code{geom_table()} and \code{geom_table_npc()} add a
 \section{Inset size}{
  You can modify inset table size with the \code{size}
   aesthetics, which determines the size of text within the table.
-}
-
-\section{Warning!}{
-
-  \strong{\code{annotate()} cannot be used with \code{geom = "table"}}. Use
-  \code{\link[ggplot2]{annotation_custom}} directly when adding inset tables
-  as annotations.
 }
 
 \examples{

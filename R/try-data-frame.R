@@ -40,15 +40,16 @@
 #' @export
 #'
 #' @examples
-#' library(xts)
 #' class(lynx)
-#' try_data_frame(lynx)
-#' try_data_frame(lynx, "year")
+#' try_tibble(lynx)
+#' try_tibble(lynx, as.numeric = TRUE)
+#' try_tibble(lynx, "year")
 #' class(austres)
-#' try_data_frame(austres)
-#' try_data_frame(austres, "quarter")
+#' try_tibble(austres)
+#' try_tibble(austres, as.numeric = TRUE)
+#' try_tibble(austres, "quarter")
 #' class(cars)
-#' try_data_frame(cars)
+#' try_tibble(cars)
 #'
 try_data_frame <- function(x,
                            time.resolution = "month",
@@ -61,11 +62,11 @@ try_data_frame <- function(x,
       (is.list(x) || is.factor(x) || is.vector(x) || is.matrix(x))) {
     return(as.data.frame(x))
   }
-  if (!(xts::is.xts(x) || stats::is.ts(x) || stats::is.mts(x))) {
-    stopifnot(xts::xtsible(x))
-    data.xts <- xts::try.xts(x)
-  } else {
+  if (xts::is.xts(x)) {
     data.xts <- x
+  } else {
+    stopifnot(xts::xtsible(x))
+    data.xts <- xts::as.xts(x)
   }
   times.raw <- zoo::index(data.xts) # because TZ = "UTC"
   if (as.numeric) {
@@ -73,16 +74,20 @@ try_data_frame <- function(x,
       times <- times.raw
     } else if (inherits(times.raw, "yearmon")) {
       times <- as.numeric(times.raw)
+    } else if (inherits(times.raw, "yearqtr")) {
+      times <- zoo::as.Date(times.raw)
+      times <- lubridate::decimal_date(times)
     } else {
       times <- lubridate::decimal_date(times.raw)
     }
     times <- as.double(times) # remove "ts" class attribute
   } else {
-    if (lubridate::is.POSIXct(times.raw[1])) {
+    if (lubridate::is.POSIXct(times.raw) || lubridate::is.Date(times.raw)) {
       times <- times.raw
-    } else if (inherits(times.raw, "yearmon") ||
-                 inherits(times.raw, "yearqtr") ) {
+    } else if (inherits(times.raw, "yearmon")) {
       times <- as.POSIXct(format(times.raw, "%Y-%m-01"))
+    } else if (inherits(times.raw, "yearqtr")) {
+      times <- zoo::as.Date(times.raw)
     } else if (is.numeric(times.raw)) {
       times <- lubridate::date_decimal(times.raw, "UTC") # handles conversion from classes in xts and zoo
       times <- lubridate::round_date(times, unit = time.resolution)

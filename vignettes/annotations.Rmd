@@ -37,7 +37,7 @@ a region in a plot. They, like data labels, are positioned relative to
 the scales used for data. The position of data labels and lines, glyphs
 or shading used as reference cannot be altered by the designer of a
 plot, as the position conveys information. I will use the term *data
-labels* irrespective if the "labels" are texttual or graphical, like
+labels* irrespective if the "labels" are textual or graphical, like
 icons and small plots and simple tables linked to data points or map
 features.
 
@@ -183,8 +183,8 @@ ggplot(mtcars, aes(wt, mpg)) +
 ```
 
 This approach was first implemented in 'ggpmisc' version 0.3.1 released
-in April 2919. As of version \>= 0.3.8, the implementation can be
-considered fairly stabl. However, this implementation is to an extent
+in April 2919. As of version >= 0.3.8, the implementation can be
+considered fairly stable. However, this implementation is to an extent
 dependent on undocumented behaviour of 'ggplot2' functions, which means
 that future updates to 'ggplot2' can break this functionality.
 

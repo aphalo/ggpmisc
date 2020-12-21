@@ -96,9 +96,9 @@ can include aesthetics whose values you want to set, not map. See
 \description{
 \code{stat_peaks} finds at which x positions local y maxima are located and
 \code{stat_valleys} finds at which x positions local y minima are located.
-Both stats return x and y numeric values for peaks or valleys and formatted
-character labels. The formatting is determined by a format string suitable
-for \code{sprintf()}.
+Both stats return a subset of \code{data} with rows matching for peaks or
+valleys with formatted character labels added. The formatting is determined
+by a format string compatible with \code{sprintf()} or \code{strftime()}.
 }
 \details{
 These stats use \code{geom_point} by default as it is the geom most
@@ -111,20 +111,21 @@ These stats use \code{geom_point} by default as it is the geom most
 \note{
 These stats check the scale of the \code{x} aesthetic and if it is Date
   or Datetime they correctly generate the labels by transforming the numeric
-  x values to POSIXct objects, in which case the \code{x.label.fmt} must be
-  suitable for \code{strftime()} rather than for \code{sprintf()}.
-These stats work nicely together with geoms
-  \code{\link[ggrepel]{geom_text_repel}} and
+  \code{x} values to Date or POSIXct objects, respectively. In which case the
+  \code{x.label.fmt} must follow the syntax supported by \code{strftime()}
+  rather than by \code{sprintf()}. These stats work nicely together with
+  geoms \code{\link[ggrepel]{geom_text_repel}} and
   \code{\link[ggrepel]{geom_label_repel}} from package
   \code{\link[ggrepel]{ggrepel}} to solve the problem of overlapping labels
   by displacing them. Alternatively, to discard overlapping labels use
-  \code{check_overlap = TRUE} as argument to \code{geom_text}.
- By default the labels are character values suitable to be plotted as is, but
- with a suitable \code{label.fmt} labels suitable for parsing by the geoms
- (e.g. into expressions containing Greek letters, super- or subscripts,
- maths symbols or maths constructs) can be also easily obtained.
+  \code{check_overlap = TRUE} as argument to \code{geom_text}. By default the
+  labels are character values suitable to be plotted as is, but with a
+  suitable format passed as argument to \code{label.fmt} labels suitable for
+  parsing by the geoms (e.g. into expressions containing Greek letters,
+  super- or subscripts, maths symbols or maths constructs) can be also easily
+  obtained.
 }
-\section{Computed variables}{
+\section{Returned and computed variables}{
 
 \describe{
   \item{x}{x-value at the peak (or valley) as numeric}
@@ -135,17 +136,40 @@ These stats work nicely together with geoms
 }
 
 \examples{
-library(ggplot2)
-lynx.df <- data.frame(year = as.numeric(time(lynx)),
-                      lynx = as.matrix(lynx))
-ggplot(lynx.df, aes(year, lynx)) +
+# lynx is a time.series object
+lynx_num.df <-
+  try_tibble(lynx,
+             col.names = c("year", "lynx"),
+             as.numeric = TRUE) # years -> as numeric
+
+ggplot(lynx_num.df, aes(year, lynx)) +
   geom_line() +
   stat_peaks(colour = "red") +
   stat_valleys(colour = "blue")
-ggplot(lynx.df, aes(year, lynx)) +
+ggplot(lynx_num.df, aes(year, lynx)) +
   geom_line() +
   stat_peaks(colour = "red") +
   stat_peaks(colour = "red", geom = "rug")
+ggplot(lynx_num.df, aes(year, lynx)) +
+  geom_line() +
+  stat_peaks(colour = "red") +
+  stat_peaks(colour = "red", geom = "text", hjust = -0.1, angle = 33)
+
+lynx_datetime.df <-
+   try_tibble(lynx,
+              col.names = c("year", "lynx")) # years -> POSIXct
+ggplot(lynx_datetime.df, aes(year, lynx)) +
+  geom_line() +
+  stat_peaks(colour = "red") +
+  stat_valleys(colour = "blue")
+ggplot(lynx_datetime.df, aes(year, lynx)) +
+  geom_line() +
+  stat_peaks(colour = "red") +
+  stat_peaks(colour = "red",
+             geom = "text",
+             hjust = -0.1,
+             x.label.fmt = "\%Y",
+             angle = 33)
 
 }
 \seealso{

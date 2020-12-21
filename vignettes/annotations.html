@@ -12,62 +12,11 @@
 
 <meta name="author" content="Pedro J. Aphalo" />
 
-<meta name="date" content="2020-12-07" />
+<meta name="date" content="2020-12-21" />
 
 <title>Annotations are not data labels</title>
 
-<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
-// be compatible with the behavior of Pandoc < 2.8).
-document.addEventListener('DOMContentLoaded', function(e) {
-  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
-  var i, h, a;
-  for (i = 0; i < hs.length; i++) {
-    h = hs[i];
-    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
-    a = h.attributes;
-    while (a.length > 0) h.removeAttribute(a[0].name);
-  }
-});
-</script>
-<style type="text/css">
-a.anchor-section {margin-left: 10px; visibility: hidden; color: inherit;}
-a.anchor-section::before {content: '#';}
-.hasAnchor:hover a.anchor-section {visibility: visible;}
-</style>
-<script>// Anchor sections v1.0 written by Atsushi Yasumoto on Oct 3rd, 2020.
-document.addEventListener('DOMContentLoaded', function() {
-  // Do nothing if AnchorJS is used
-  if (typeof window.anchors === 'object' && anchors.hasOwnProperty('hasAnchorJSLink')) {
-    return;
-  }
-
-  const h = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
-
-  // Do nothing if sections are already anchored
-  if (Array.from(h).some(x => x.classList.contains('hasAnchor'))) {
-    return null;
-  }
-
-  // Use section id when pandoc runs with --section-divs
-  const section_id = function(x) {
-    return ((x.classList.contains('section') || (x.tagName === 'SECTION'))
-            ? x.id : '');
-  };
-
-  // Add anchors
-  h.forEach(function(x) {
-    const id = x.id || section_id(x.parentElement);
-    if (id === '') {
-      return null;
-    }
-    let anchor = document.createElement('a');
-    anchor.href = '#' + id;
-    anchor.classList = ['anchor-section'];
-    x.classList.add('hasAnchor');
-    x.appendChild(anchor);
-  });
-});
-</script>
+<script src="data:application/javascript;base64,Ly8gUGFuZG9jIDIuOSBhZGRzIGF0dHJpYnV0ZXMgb24gYm90aCBoZWFkZXIgYW5kIGRpdi4gV2UgcmVtb3ZlIHRoZSBmb3JtZXIgKHRvCi8vIGJlIGNvbXBhdGlibGUgd2l0aCB0aGUgYmVoYXZpb3Igb2YgUGFuZG9jIDwgMi44KS4KZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsIGZ1bmN0aW9uKGUpIHsKICB2YXIgaHMgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCJkaXYuc2VjdGlvbltjbGFzcyo9J2xldmVsJ10gPiA6Zmlyc3QtY2hpbGQiKTsKICB2YXIgaSwgaCwgYTsKICBmb3IgKGkgPSAwOyBpIDwgaHMubGVuZ3RoOyBpKyspIHsKICAgIGggPSBoc1tpXTsKICAgIGlmICghL15oWzEtNl0kL2kudGVzdChoLnRhZ05hbWUpKSBjb250aW51ZTsgIC8vIGl0IHNob3VsZCBiZSBhIGhlYWRlciBoMS1oNgogICAgYSA9IGguYXR0cmlidXRlczsKICAgIHdoaWxlIChhLmxlbmd0aCA+IDApIGgucmVtb3ZlQXR0cmlidXRlKGFbMF0ubmFtZSk7CiAgfQp9KTsK"></script>
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -169,187 +118,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
-<style type="text/css">body {
-background-color: #fff;
-margin: 1em auto;
-max-width: 700px;
-overflow: visible;
-padding-left: 2em;
-padding-right: 2em;
-font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-font-size: 14px;
-line-height: 1.35;
-}
-#TOC {
-clear: both;
-margin: 0 0 10px 10px;
-padding: 4px;
-width: 400px;
-border: 1px solid #CCCCCC;
-border-radius: 5px;
-background-color: #f6f6f6;
-font-size: 13px;
-line-height: 1.3;
-}
-#TOC .toctitle {
-font-weight: bold;
-font-size: 15px;
-margin-left: 5px;
-}
-#TOC ul {
-padding-left: 40px;
-margin-left: -1.5em;
-margin-top: 5px;
-margin-bottom: 5px;
-}
-#TOC ul ul {
-margin-left: -2em;
-}
-#TOC li {
-line-height: 16px;
-}
-table {
-margin: 1em auto;
-border-width: 1px;
-border-color: #DDDDDD;
-border-style: outset;
-border-collapse: collapse;
-}
-table th {
-border-width: 2px;
-padding: 5px;
-border-style: inset;
-}
-table td {
-border-width: 1px;
-border-style: inset;
-line-height: 18px;
-padding: 5px 5px;
-}
-table, table th, table td {
-border-left-style: none;
-border-right-style: none;
-}
-table thead, table tr.even {
-background-color: #f7f7f7;
-}
-p {
-margin: 0.5em 0;
-}
-blockquote {
-background-color: #f6f6f6;
-padding: 0.25em 0.75em;
-}
-hr {
-border-style: solid;
-border: none;
-border-top: 1px solid #777;
-margin: 28px 0;
-}
-dl {
-margin-left: 0;
-}
-dl dd {
-margin-bottom: 13px;
-margin-left: 13px;
-}
-dl dt {
-font-weight: bold;
-}
-ul {
-margin-top: 0;
-}
-ul li {
-list-style: circle outside;
-}
-ul ul {
-margin-bottom: 0;
-}
-pre, code {
-background-color: #f7f7f7;
-border-radius: 3px;
-color: #333;
-white-space: pre-wrap; 
-}
-pre {
-border-radius: 3px;
-margin: 5px 0px 10px 0px;
-padding: 10px;
-}
-pre:not([class]) {
-background-color: #f7f7f7;
-}
-code {
-font-family: Consolas, Monaco, 'Courier New', monospace;
-font-size: 85%;
-}
-p > code, li > code {
-padding: 2px 0px;
-}
-div.figure {
-text-align: center;
-}
-img {
-background-color: #FFFFFF;
-padding: 2px;
-border: 1px solid #DDDDDD;
-border-radius: 3px;
-border: 1px solid #CCCCCC;
-margin: 0 5px;
-}
-h1 {
-margin-top: 0;
-font-size: 35px;
-line-height: 40px;
-}
-h2 {
-border-bottom: 4px solid #f7f7f7;
-padding-top: 10px;
-padding-bottom: 2px;
-font-size: 145%;
-}
-h3 {
-border-bottom: 2px solid #f7f7f7;
-padding-top: 10px;
-font-size: 120%;
-}
-h4 {
-border-bottom: 1px solid #f7f7f7;
-margin-left: 8px;
-font-size: 105%;
-}
-h5, h6 {
-border-bottom: 1px solid #ccc;
-font-size: 105%;
-}
-a {
-color: #0033dd;
-text-decoration: none;
-}
-a:hover {
-color: #6666ff; }
-a:visited {
-color: #800080; }
-a:visited:hover {
-color: #BB00BB; }
-a[href^="http:"] {
-text-decoration: underline; }
-a[href^="https:"] {
-text-decoration: underline; }
 
-code > span.kw { color: #555; font-weight: bold; } 
-code > span.dt { color: #902000; } 
-code > span.dv { color: #40a070; } 
-code > span.bn { color: #d14; } 
-code > span.fl { color: #d14; } 
-code > span.ch { color: #d14; } 
-code > span.st { color: #d14; } 
-code > span.co { color: #888888; font-style: italic; } 
-code > span.ot { color: #007020; } 
-code > span.al { color: #ff0000; font-weight: bold; } 
-code > span.fu { color: #900; font-weight: bold; } 
-code > span.er { color: #a61717; background-color: #e3d2d2; } 
-</style>
+<link rel="stylesheet" href="data:text/css,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" type="text/css" />
 
 
 
@@ -364,7 +134,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <h1 class="title toc-ignore">Annotations are not data labels</h1>
 <h3 class="subtitle">On how ‘ggpmisc’ extends the grammar of graphics</h3>
 <h4 class="author">Pedro J. Aphalo</h4>
-<h4 class="date">2020-12-07</h4>
+<h4 class="date">2020-12-21</h4>
 
 
 <div id="TOC">
@@ -381,7 +151,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div id="data-labels-annotations-and-insets" class="section level2">
 <h2>Data labels, annotations and insets</h2>
 <p><em>Data labels</em> add textual information directly related to individual data points (shown as glyphs). Text position in this case is dependent on the scales used to represent data points. Text is usually displaced so that it does not occlude the glyph representing the data point and when the link to the data point is unclear, this link is signaled with a line segment or arrow. Data labels are distinct from annotations but instead contribute to the representation of data on a plot or map.</p>
-<p><em>References</em> are lines, shading or marks used to help the reading of a plot. These elements are used to highlight specific values on an axis or a region in a plot. They, like data labels, are positioned relative to the scales used for data. The position of data labels and lines, glyphs or shading used as reference cannot be altered by the designer of a plot, as the position conveys information. I will use the term <em>data labels</em> irrespective if the “labels” are texttual or graphical, like icons and small plots and simple tables linked to data points or map features.</p>
+<p><em>References</em> are lines, shading or marks used to help the reading of a plot. These elements are used to highlight specific values on an axis or a region in a plot. They, like data labels, are positioned relative to the scales used for data. The position of data labels and lines, glyphs or shading used as reference cannot be altered by the designer of a plot, as the position conveys information. I will use the term <em>data labels</em> irrespective if the “labels” are textual or graphical, like icons and small plots and simple tables linked to data points or map features.</p>
 <p>According to Koponen and Hildén (2019), “[in a statistical chart] annotations can be used to draw reader attention to relevant detail”. These authors use as an example a text box in a plot to highlight a data point that is off-scale and has been “squeezed” to a position immediately outside the plotting area.</p>
 <p><em>Annotations</em> differ from data labels, in that their position is decoupled from their meaning. Insets can be thought as larger, but still self-contained annotations. In most cases the reading of inset tables and plots depends only weakly on the plot or map in which they are included.</p>
 <p>In the case of annotations and insets the designer of a data visualization has the freedom to locate them anywhere, as long they do not occlude features used to describe data. I will use the term <em>annotation</em> irrespective if the “labels” are textual or graphical. Insets are similar to annotations, but the term <em>inset</em> is used would the inset graphical or textual element is complex, and usually lager than an annotation. Insets can be either positioned within the main plotting area, or adjacent to it, usually as a smaller panel, without any loss of meaning .</p>
@@ -448,7 +218,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">strip.background =</span> <span class="fu">element_blank</span>(),</span>
 <span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">strip.text =</span> <span class="fu">element_blank</span>())</span></code></pre></div>
 <p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
-<p>This approach was first implemented in ‘ggpmisc’ version 0.3.1 released in April 2919. As of version &gt;= 0.3.8, the implementation can be considered fairly stabl. However, this implementation is to an extent dependent on undocumented behaviour of ‘ggplot2’ functions, which means that future updates to ‘ggplot2’ can break this functionality.</p>
+<p>This approach was first implemented in ‘ggpmisc’ version 0.3.1 released in April 2919. As of version &gt;= 0.3.8, the implementation can be considered fairly stable. However, this implementation is to an extent dependent on undocumented behaviour of ‘ggplot2’ functions, which means that future updates to ‘ggplot2’ can break this functionality.</p>
 </div>
 <div id="when-to-use-annotations-and-insets" class="section level2">
 <h2>When to use annotations and insets</h2>
