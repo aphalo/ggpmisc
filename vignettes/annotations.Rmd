@@ -53,15 +53,14 @@ self-contained annotations. In most cases the reading of inset tables
 and plots depends only weakly on the plot or map in which they are
 included.
 
-In the case of annotations and insets the designer of a data
-visualization has the freedom to locate them anywhere, as long they do
-not occlude features used to describe data. I will use the term
-*annotation* irrespective if the "labels" are textual or graphical.
-Insets are similar to annotations, but the term *inset* is used would
-the inset graphical or textual element is complex, and usually lager
-than an annotation. Insets can be either positioned within the main
-plotting area, or adjacent to it, usually as a smaller panel, without
-any loss of meaning .
+In the case of annotations and insets the designer of a data visualization has
+the freedom to locate them anywhere, as long they do not occlude features used
+to describe data. I will use the term *annotation* irrespective if the "labels"
+are textual or graphical. Insets are similar to annotations, but the term
+*inset* is used when an annotation's graphical or textual element is complex and
+occupies more space within the plotting area. Insets can be moved from within
+the main plotting area to being adjacent to it, e.g., as a smaller panel,
+without any loss of meaning .
 
 That the position of annotations and insets is independent of the
 plotted data cannot be expressed using the grammar of graphics (GG) as
@@ -69,28 +68,30 @@ implemented in package 'ggplot2'.
 
 ## Annotations in 'ggplot2'
 
-In *The Layered Grammar of Graphics* (Wickham 2000) as implemented in
-package 'ggplot2' (Wickham et al. 2016) annotations are "second class",
-but still data-dependent features. As layers they behave differently
-than data layers and ignore faceting into panels. So `annotate()`
-disconnects the resulting plot elements from the data source, but not
-from the scales used to graphically map the data values.
+In *The Layered Grammar of Graphics* (Wickham 2000) as implemented in package
+'ggplot2' (Wickham et al. 2016) annotations are "second class" features. As
+layers they behave differently than data layers: Only constant values can be
+mapped to aesthetics and do no support faceting into panels. In escence
+`annotate()` disconnects the resulting plot elements from the data source and
+facetting, but not from the scales used to graphically display the data values.
 
-In our view, the main practical difference between data labels and
-annotations is the scales used to position them. Instead of using an
-`annotate()` function to implement annotations, we could retain the use
-of GG but based on native plot coordinates (npc). Support of annotations
-done in this way would allow "annotation layers" to behave almost
-identically to "data layers". The *X* and *y* position aesthetics used
-for data could be supplemented with pseudo-aesthetics without any
-translation relative to the native plotting coordinates of the plotting
-area or viewport. Doing so, would allow the graphic design flexibility
-conceptually inherent to annotations.
+From the data visualization perspective the main practical and conceptual
+difference between data labels and annotations is in the scales used to position
+them within the plotting area. Instead of using an `annotate()` function that
+deviates from the grammar of graphics to implement annotations, we could retain
+the use of the grammar of graphics for annotations but add support of native
+plot coordinates (npc). Support of annotations done in this way would allow
+"annotation layers" to behave almost identically to "data layers", and use the
+same grammar. The *x* and *y* position aesthetics used for data could be
+supplemented with pseudo-aesthetics without any translation relative to the
+native plotting coordinates of the plotting area or viewport. Doing so, would
+allow the graphic design flexibility conceptually inherent to annotations within
+a user-friendly syntax.
 
 ## Extending 'ggplot2'
 
 Based on this insight, a new approach to adding annotations and insets
-was implemented in package 'ggpmisc' through two new *x* and *y*
+was implemented in package 'ggpmisc' (>= 0.3.1) through two new *x* and *y*
 pseudo-aesthetics, *npcx* and *npcy*, and corresponding dumb scales and
 various geometries that make use of them. These scales and geometries
 were implemented as an extension to package 'ggplot2'.
@@ -98,14 +99,16 @@ were implemented as an extension to package 'ggplot2'.
 Before showing how this works in practice, we load the package and set an
 uncluttered theme as default.
 
-```{r}
+```{r, message=FALSE}
 library(ggpmisc)
 theme_set(theme_bw() + theme(panel.grid = element_blank()))
 ```
 
-Native plot coordinates have range 0..1 but the "npc" geoms also recognize some
-positions by name with the same text strings as used for text justification in
-'ggplot2'. The default justification is `"inward"`.
+Native plot coordinates have range 0..1. However, the "npc" geoms also recognize
+some positions by name with the same text strings as used for text justification
+in 'ggplot2'. The default justification is `"inward"`, as this protects from
+clipping at the edges the plotting area irrespective the arguments passed to the
+`witdth` and `height` parameters of R's graphic devices.
 
 ```{r}
 p1 <- ggplot(mtcars, aes(factor(cyl), mpg)) +
@@ -120,20 +123,21 @@ p1
 
 ```
 
-The advantage of this approach becomes apparent when we modify the limits of the
-_y_ scale. We do not show it here, but when a script or user defined plotting
-function sets the scale limits based on the input data, in the absence of the
-extensions proposed here, setting annotations consistently within the plotting
-area becomes rather complex.
+The advantage of this approach becomes apparent when the limits of the _y_ scale
+are unknown or vary. When a script or user defined plotting function sets the
+scale limits based on the input data, in the absence of the extensions proposed
+here, setting annotations consistently within the plotting area becomes
+laborious. The example below, shows how the annotations remain at the desired
+position when the _y_ scale limts are expanded.
 
 ```{r}
 p1 + expand_limits(y = 0)
 ```
 
-So as to support the existing syntax for annotations using the new geometries,
-function `ggplot2::annotate()` gets overridden when package 'ggpmisc' is loaded.
+To support the existing syntax for annotations using the new geometries,
+function `ggplot2::annotate()` is overridden when package 'ggpmisc' is loaded.
 The new definition adds support for the new pseudo-aesthetics *npcx* and *npcy*
-retaining the old behaviour otherwise.
+retaining its original 'ggplot2' behaviour in all other respects.
 
 ```{r}
 ggplot(mtcars, aes(factor(cyl), mpg)) +
@@ -147,7 +151,9 @@ ggplot(mtcars, aes(factor(cyl), mpg)) +
 ```
 
 Inset plots can be added with the same syntax using `geom_plot_npc()`. They can
-be thought also an being annotations.
+be thought also as being annotations. Here we use `annotate()` but `geom_plot()`
+can be also used directly, in which case the inset plots can be different for
+each panel.
 
 ```{r}
 p2 <- ggplot(mtcars, aes(factor(cyl), mpg, colour = factor(cyl))) +
@@ -164,9 +170,9 @@ ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
 
 ```
 
-An example with facets, labeling of panels in a more traditional way.
-Panel tags within the plotting are at same "npc" location with free
-scale limits in panels.
+A simple example with facets, labeling of panels in a traditional way as
+requiered by some book and journal styles. In this case panel tags within the
+plotting are at same "npc" location with free scale limits in panels.
 
 ```{r}
 ggplot(mtcars, aes(wt, mpg)) +
@@ -175,7 +181,7 @@ ggplot(mtcars, aes(wt, mpg)) +
                                   label = LETTERS[seq_along(levels(factor(mtcars$cyl)))],
                                   x = 0.90,
                                   y = 0.95),
-                 mapping = aes(npcx = x, npcy = y, label = label),
+                mapping = aes(npcx = x, npcy = y, label = label),
                 size = 4) +
   facet_wrap(~factor(cyl), scales = "free") +
   theme(strip.background = element_blank(),
@@ -192,12 +198,16 @@ that future updates to 'ggplot2' can break this functionality.
 
 Package 'ggpmisc' adds support for various plot annotations and reference
 guides. It also adds support for some data labels related to data features.
-While developing these statistics, it became clear that expanding GG's support
-for annotations would simplify the code of these statistics considerably and
-also more cleanly separate the computations on data from the positioning of
-annotations.
+While developing these statistics, it became clear that expanding the grammar of
+graphics's support for annotations would simplify the code of these statistics
+considerably and also more cleanly separate the computations on data from the
+positioning of annotations.
 
-Geometries useful for data labels and annotations.
+**Table**. Geometries useful for data labels and annotations. Currently 
+implemented _ordinary_ geometries and their _npc_ versions. The rightmost
+column shows the expected class of the objects mapped to the `label` aesthetic.
+When using `annotate()` to add a single plot, table or grob as an inset, 
+enclosing them in a list is allowed, but not a requirement.
 
 | Data labels (data coordinates) | Annotations (npc)  | Mapped to `label` aesthetic |
 |--------------------------------|--------------------|---------------------------|
@@ -207,11 +217,13 @@ Geometries useful for data labels and annotations.
 | `geom_table()`                 | `geom_table_npc()` | `list()` of `data.frame`  |
 | `geom_grob()`                  | `geom_grob_npc()`  | `list()` of `grid::grob`  |
 
-To decide on the best approach, consider if the location of an element of a plot
-is more "naturally" expressed in the original data units or as position relative
-to the edges or centre of the plotting area. In the second case, prefer the
-"npc" geoms as you are dealing with _annotations_, otherwise, use the ordinary
-geometries as you are dealing with data labels or data points.
+When adding an informative element to a plot, assess whether it is an
+_annotation_ or a _data label_. To decide on the best approach, consider if the
+location of the element is more "naturally" expressed in the original data units
+or as position relative to the edges or centre of the plotting area. In the
+second case, prefer the "npc" geoms as you are dealing with _annotations_,
+otherwise, use the ordinary geometries as you are dealing with data labels or
+data points.
 
 ## Thoughts for the future
 
@@ -220,7 +232,7 @@ same consideration applies to other aesthetics like *colour*. It seems
 generally useful to allow aesthetics to use a different scale for
 annotations than for data. Defining pseudo-aesthetics for annotations
 instead of allowing multiple scales for each aesthetic in a plot would
-add flexibility and still keep the guarantee that the meaning of
+add flexibility while still keeping the guarantee that the meaning of
 aesthetics values remains consistent across all plot elements
 representing data.
 
