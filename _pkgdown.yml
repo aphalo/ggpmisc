@@ -1,16 +1,6 @@
 destination: ../ggpmisc-docs
 url: https://docs.r4photobiology.info/ggpmisc/
 
-home:
-  strip_header: true
-  links:
-  - text: Pedro J. Aphalo's packages
-    href: https://www.r4photobiology.info/
-  - text: More on 'ggplot2'
-    href: https://ggplot2.tidyverse.org/
-  - text: Other extensions
-    href: https://exts.ggplot2.tidyverse.org/
-
 reference:
   - title: Package overview
     contents:
@@ -77,3 +67,47 @@ reference:
     desc: Geometries, statistics and functions moved to package 'gginnards'.
     contents:
     - Moved
+
+
+navbar:
+  structure:
+    left:
+    - home
+    - reference
+    - articles
+    - tutorials
+    - news
+    - intro
+    right: github
+  components:
+    home:
+      icon: fas fa-home fa-lg
+      href: index.html
+    reference:
+      text: Reference
+      href: reference/index.html
+    news:
+      text: Changelog
+      href: news/index.html
+    github:
+      icon: fab fa-github fa-lg
+      href: https://github.com/aphalo/ggpmisc/
+    articles:
+      text: Articles
+      menu:
+      - text: User Guide
+        href: articles/user-guide.html
+      - text: Annotations as a grammar extension
+        href: articles/annotations.html
+    tutorials:
+      text: Resources
+      menu:
+      - text: Blog on R by Pedro J. Aphalo
+        href: https://www.r4photobiology.info/
+      - text: Package 'gginnards'
+        href: https://docs.r4photobiology.info/gginnards/
+      - text: Resources about 'ggplot2'
+        href: https://ggplot2.tidyverse.org/
+      - text: Other 'ggplot2' extensions
+        href: https://exts.ggplot2.tidyverse.org/
+
