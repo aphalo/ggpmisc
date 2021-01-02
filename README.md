@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# ggpmisc
+# ggpmisc <img src="man/figures/hex-ggpmisc.png" align="right" width="150" />
 
 [![cran
 version](https://www.r-pkg.org/badges/version/ggpmisc)](https://cran.r-project.org/package=ggpmisc)
@@ -21,7 +21,7 @@ cases on graphic design considerations rather than on properties such as
 the range of values in the data being plotted. In particular, the
 location within the plotting area of large annotation objects like
 model-fit summaries, location maps, plots, and tables needs usually to
-be set independently of the `x` and `y` scales, rescaling or any
+be set independently of the `x` and `y` scales, re-scaling or any
 transformations. To acknowledge this, the Grammar of Graphics is here
 expanded by supporting *x* and *y* positions expressed in ‘grid’ “npc”
 units in the range 0..1. This is implemented with new
@@ -31,7 +31,7 @@ function in “parallel” with the *x* and *y* aesthetics used for plotting
 data. The advantage of this approach is that the syntax used for
 annotations becomes identical to that used for plotting data and that
 annotations with approach *cleanly* support facets in a way consistent
-with the rest of the gramamr.
+with the rest of the grammar.
 
 ## Aesthetics and scales
 
@@ -183,8 +183,7 @@ ggplot(cars, aes(speed, dist)) +
               label.y.npc = "top", label.x.npc = "left",
               size = 2.5,
               parse = TRUE)
-#> Dropping column(s) from table.
-#> Warning in f(...): Dropping row(s) from table.
+#> Dropping params/terms (rows) from table!
 ```
 
 ![](man/figures/README-readme-05-1.png)<!-- -->
@@ -218,6 +217,8 @@ ggplot(quadrant_example.df, aes(logFC.x, logFC.y)) +
                      geom = "text_repel", size = 2, colour = "red") +
   scale_x_logFC(name = "Transcript abundance after A%unit") +
   scale_y_logFC(name = "Transcript abundance after B%unit")
+#> Warning: ggrepel: 2 unlabeled data points (too many overlaps). Consider
+#> increasing max.overlaps
 ```
 
 ![](man/figures/README-unnamed-chunk-1-1.png)<!-- -->
@@ -262,8 +263,8 @@ citation("ggpmisc")
 #> To cite package 'ggpmisc' in publications use:
 #> 
 #>   Pedro J. Aphalo (2020). ggpmisc: Miscellaneous Extensions to
-#>   'ggplot2'. R package version 0.3.7.
-#>   https://CRAN.R-project.org/package=ggpmisc
+#>   'ggplot2'. https://docs.r4photobiology.info/ggpmisc/,
+#>   https://github.com/aphalo/ggpmisc.
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
@@ -271,8 +272,8 @@ citation("ggpmisc")
 #>     title = {ggpmisc: Miscellaneous Extensions to 'ggplot2'},
 #>     author = {Pedro J. Aphalo},
 #>     year = {2020},
-#>     note = {R package version 0.3.7},
-#>     url = {https://CRAN.R-project.org/package=ggpmisc},
+#>     note = {https://docs.r4photobiology.info/ggpmisc/,
+#> https://github.com/aphalo/ggpmisc},
 #>   }
 ```
 

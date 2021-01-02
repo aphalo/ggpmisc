@@ -6,5 +6,6 @@ test
 data-raw
 ^CONDUCT\.md$
 ^_pkgdown\.yml$
+^pkgdown$
 ^README\.Rmd$
 ^build-binary-from-source.sh$
