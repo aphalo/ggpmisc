@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# ggpmisc <img src="man/figures/hex-ggpmisc.png" align="right" width="150" />
+# ggpmisc <img src="man/figures/logo-ggpmisc.png" align="right" width="150" />
 
 [![cran
 version](https://www.r-pkg.org/badges/version/ggpmisc)](https://cran.r-project.org/package=ggpmisc)
