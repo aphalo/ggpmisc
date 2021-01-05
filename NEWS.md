@@ -7,14 +7,15 @@ editor_options:
 # ggpmisc 0.3.8
 
 -   Add param `p.digits` to `stat_fit_tb()`.
--   New vignette explaining how the grammar of graphics is expanded to
-    support annotations.
+-   New vignette explaining how the grammar of graphics has been
+    expanded to better support annotations.
 -   Fix bug: `try_tibble.ts()` and `try_data_frame()` did not handle
     correctly the conversion of dates for some time series, which also
     could affect `ggplot.ts()`.
 -   Fix bug: `stat_peaks()` and `stat_valleys()` generated wrong labels
     if a `Date` object was mapped to *x*.
 -   **Move git repository from Bitbucket to Github.**
+-   Set up Github action for CRAN-checks on Windows, OS X and Ubuntu.
 
 # ggpmisc 0.3.7
 

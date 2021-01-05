@@ -6,6 +6,12 @@
 [![cran
 version](https://www.r-pkg.org/badges/version/ggpmisc)](https://cran.r-project.org/package=ggpmisc)
 
+<!-- badges: start -->
+
+[![R build
+status](https://github.com/aphalo/ggpmisc/workflows/R-CMD-check/badge.svg)](https://github.com/aphalo/ggpmisc/actions)
+<!-- badges: end -->
+
 ## Purpose
 
 Package ‘**ggpmisc**’ (Miscellaneous Extensions to ‘ggplot2’) is a set
