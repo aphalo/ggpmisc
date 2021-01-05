@@ -5,12 +5,8 @@
 
 [![cran
 version](https://www.r-pkg.org/badges/version/ggpmisc)](https://cran.r-project.org/package=ggpmisc)
-
-<!-- badges: start -->
-
 [![R build
 status](https://github.com/aphalo/ggpmisc/workflows/R-CMD-check/badge.svg)](https://github.com/aphalo/ggpmisc/actions)
-<!-- badges: end -->
 
 ## Purpose
 
@@ -218,13 +214,11 @@ ggplot(quadrant_example.df, aes(logFC.x, logFC.y)) +
   geom_point(alpha = 0.3) +
   geom_quadrant_lines() +
   stat_quadrant_counts() +
-  stat_dens2d_filter(color = "red", keep.fraction = 0.03) +
-  stat_dens2d_labels(aes(label = gene), keep.fraction = 0.03, 
+  stat_dens2d_filter(color = "red", keep.fraction = 0.02) +
+  stat_dens2d_labels(aes(label = gene), keep.fraction = 0.02, 
                      geom = "text_repel", size = 2, colour = "red") +
   scale_x_logFC(name = "Transcript abundance after A%unit") +
   scale_y_logFC(name = "Transcript abundance after B%unit")
-#> Warning: ggrepel: 2 unlabeled data points (too many overlaps). Consider
-#> increasing max.overlaps
 ```
 
 ![](man/figures/README-unnamed-chunk-1-1.png)<!-- -->
@@ -237,7 +231,7 @@ Installation of the most recent stable version from CRAN:
 install.packages("ggpmisc")
 ```
 
-Installation of the current unstable version from Bitbucket:
+Installation of the current unstable version from GitHub:
 
 ``` r
 # install.packages("devtools")
