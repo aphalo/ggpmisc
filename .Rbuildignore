@@ -9,3 +9,4 @@ data-raw
 ^pkgdown$
 ^README\.Rmd$
 ^build-binary-from-source.sh$
+^\.github$

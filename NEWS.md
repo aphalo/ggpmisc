@@ -1,7 +1,8 @@
 ---
-editor_options: 
-  markdown: 
+editor_options:
+  markdown:
     wrap: 72
+---usethis::use_github_action_check_standard()usethis::use_github_action_check_standard()
 ---
 
 # ggpmisc 0.3.8
