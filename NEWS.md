@@ -6,7 +6,9 @@ editor_options:
 
 # ggpmisc 0.3.8
 
--   Add param `p.digits` to `stat_fit_tb()`.
+-   Add formal parameter `p.digits` to `stat_fit_tb()`.
+-   Add two new position functions `position_nudge_center()` and
+    `position_nudge_line()`.
 -   New vignette explaining how the grammar of graphics has been
     expanded to better support annotations.
 -   Fix bug: `try_tibble.ts()` and `try_data_frame()` did not handle

@@ -3,7 +3,7 @@ knitr::opts_chunk$set(echo = TRUE,
                       fig.align = 'center', 
                       fig.show = 'hold', fig.width = 7, fig.height = 4)
 
-## -----------------------------------------------------------------------------
+## ---- message=FALSE-----------------------------------------------------------
 library(ggpmisc)
 theme_set(theme_bw() + theme(panel.grid = element_blank()))
 
@@ -53,7 +53,7 @@ ggplot(mtcars, aes(wt, mpg)) +
                                   label = LETTERS[seq_along(levels(factor(mtcars$cyl)))],
                                   x = 0.90,
                                   y = 0.95),
-                 mapping = aes(npcx = x, npcy = y, label = label),
+                mapping = aes(npcx = x, npcy = y, label = label),
                 size = 4) +
   facet_wrap(~factor(cyl), scales = "free") +
   theme(strip.background = element_blank(),
