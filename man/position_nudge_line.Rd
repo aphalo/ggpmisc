@@ -9,6 +9,7 @@ position_nudge_line(
   y = 0,
   abline = NULL,
   method = NULL,
+  formula = y ~ x,
   direction = NULL,
   line_nudge = 1
 )
@@ -19,7 +20,10 @@ vector of length 1, or of the same length as rows there are in `data`.}
 
 \item{abline}{a vector of length two giving the intercept and slope.}
 
-\item{method}{One of "spline" or "linear".}
+\item{method}{One of `"spline"` or `"linear"`.}
+
+\item{formula}{A model formula for [lm()] when `method = "linear"`. Ignored
+otherwise.}
 
 \item{direction}{One of "none", or "split".}
 
@@ -34,7 +38,7 @@ position as the start of the segments. The difference compared to
 curve fitted to the data points or supplied as coefficients. While
 [position_nudge_center()] is most useful for "round-shaped", vertically- or
 horizontally elongated clouds of points, [position_nudge_line()] is most
-suitable when observations have a linear or curvilinear relationship
+suitable when observations follow a linear or curvilinear relationship
 between _x_ and _y_ values.
 }
 \details{
@@ -45,8 +49,12 @@ When `direction = "split"` nudging is away from an implicit line or
   the observations fall roughly on a curve or straight line that is monotonic
   in `y`. By means of `line_nudge` one can increment nudging away from the
   line or curve compared to away from the points, which is useful for example
-  to keep labels outside of a confidence band. Direction defaults to `"split"`
-  when `line_nudge > 1`, and otherwise to `"none"`.
+  to keep labels outside of a confidence band. Direction defaults to
+  `"split"` when `line_nudge > 1`, and otherwise to `"none"`.
+}
+\note{
+Only model formulas that corresponding polynomials with no missing
+  terms are supported. Use of [poly()] is recomended.
 }
 \examples{
 

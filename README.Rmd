@@ -24,7 +24,10 @@ Package '**ggpmisc**' (Miscellaneous Extensions to 'ggplot2') is a set of
 extensions to R package 'ggplot2' (>= 3.0.0) with emphasis on annotations and
 highlighting related to fitted models and data summaries. Data summaries shown
 as text, tables or equations are implemented. New geoms support insets in
-ggplots. 
+ggplots. The grammar of graphics is extended to support native plot coordinates 
+(npc) so that annotations can be easily positioned using special geometries and
+scales. New position functions facilitate the labeling of observations by
+nudging data labels away or towards curves or a focal virtual center.
 
 ## Extended Grammar of graphics
 
@@ -109,6 +112,14 @@ observations.
 The statistics `stat_apply_panel()` and `stat_apply_group()` can be useful for
 applying arbitrary functions returning numeric vectors. They are specially
 useful with functions lime `cumsum()`, `cummax()` and `diff()`.
+
+## Positions
+
+Two enhanced versions of `position_nudge()` are provided,
+`position_nudge_center()` and `position_nudge_line()`. These functions make it
+possible to apply nudging that varies automatically according to the relative
+position of points with respect to arbitrary points or lines, or with respect to
+a polynomial or smoothing spline fitted on-the-fly to the the observations.
 
 ## ggplot methods
 

@@ -14,7 +14,11 @@ Package ‘**ggpmisc**’ (Miscellaneous Extensions to ‘ggplot2’) is a set
 of extensions to R package ‘ggplot2’ (&gt;= 3.0.0) with emphasis on
 annotations and highlighting related to fitted models and data
 summaries. Data summaries shown as text, tables or equations are
-implemented. New geoms support insets in ggplots.
+implemented. New geoms support insets in ggplots. The grammar of
+graphics is extended to support native plot coordinates (npc) so that
+annotations can be easily positioned using special geometries and
+scales. New position functions facilitate the labeling of observations
+by nudging data labels away or towards curves or a focal virtual center.
 
 ## Extended Grammar of graphics
 
@@ -106,6 +110,15 @@ The statistics `stat_apply_panel()` and `stat_apply_group()` can be
 useful for applying arbitrary functions returning numeric vectors. They
 are specially useful with functions lime `cumsum()`, `cummax()` and
 `diff()`.
+
+## Positions
+
+Two enhanced versions of `position_nudge()` are provided,
+`position_nudge_center()` and `position_nudge_line()`. These functions
+make it possible to apply nudging that varies automatically according to
+the relative position of points with respect to arbitrary points or
+lines, or with respect to a polynomial or smoothing spline fitted
+on-the-fly to the the observations.
 
 ## ggplot methods
 
@@ -262,7 +275,7 @@ citation("ggpmisc")
 #> 
 #> To cite package 'ggpmisc' in publications use:
 #> 
-#>   Pedro J. Aphalo (2020). ggpmisc: Miscellaneous Extensions to
+#>   Pedro J. Aphalo (2021). ggpmisc: Miscellaneous Extensions to
 #>   'ggplot2'. https://docs.r4photobiology.info/ggpmisc/,
 #>   https://github.com/aphalo/ggpmisc.
 #> 
@@ -271,7 +284,7 @@ citation("ggpmisc")
 #>   @Manual{,
 #>     title = {ggpmisc: Miscellaneous Extensions to 'ggplot2'},
 #>     author = {Pedro J. Aphalo},
-#>     year = {2020},
+#>     year = {2021},
 #>     note = {https://docs.r4photobiology.info/ggpmisc/,
 #> https://github.com/aphalo/ggpmisc},
 #>   }
@@ -279,6 +292,6 @@ citation("ggpmisc")
 
 ## License
 
-© 2016-2020 Pedro J. Aphalo (<pedro.aphalo@helsinki.fi>). Released under
+© 2016-2021 Pedro J. Aphalo (<pedro.aphalo@helsinki.fi>). Released under
 the GPL, version 2 or greater. This software carries no warranty of any
 kind.

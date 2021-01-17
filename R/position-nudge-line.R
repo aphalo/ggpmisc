@@ -7,14 +7,16 @@
 #' curve fitted to the data points or supplied as coefficients. While
 #' [position_nudge_center()] is most useful for "round-shaped", vertically- or
 #' horizontally elongated clouds of points, [position_nudge_line()] is most
-#' suitable when observations have a linear or curvilinear relationship
+#' suitable when observations follow a linear or curvilinear relationship
 #' between _x_ and _y_ values.
 #'
 #' @family position adjustments
 #' @param x,y Amount of vertical and horizontal distance to move. A numeric
 #'   vector of length 1, or of the same length as rows there are in `data`.
 #' @param abline a vector of length two giving the intercept and slope.
-#' @param method One of "spline" or "linear".
+#' @param method One of `"spline"` or `"linear"`.
+#' @param formula A model formula for [lm()] when `method = "linear"`. Ignored
+#'   otherwise.
 #' @param direction One of "none", or "split".
 #' @param line_nudge A positive multiplier >= 1, increasing nudging
 #'   away from the curve or line compared to nudging from points.
@@ -25,8 +27,11 @@
 #'   the observations fall roughly on a curve or straight line that is monotonic
 #'   in `y`. By means of `line_nudge` one can increment nudging away from the
 #'   line or curve compared to away from the points, which is useful for example
-#'   to keep labels outside of a confidence band. Direction defaults to `"split"`
-#'   when `line_nudge > 1`, and otherwise to `"none"`.
+#'   to keep labels outside of a confidence band. Direction defaults to
+#'   `"split"` when `line_nudge > 1`, and otherwise to `"none"`.
+#'
+#' @note Only model formulas that corresponding polynomials with no missing
+#'   terms are supported. Use of [poly()] is recomended.
 #'
 #' @export
 #'
@@ -137,6 +142,7 @@ position_nudge_line <- function(x = 0,
                                 y = 0,
                                 abline = NULL,
                                 method = NULL,
+                                formula = y ~ x,
                                 direction = NULL,
                                 line_nudge = 1) {
   # set defaults
@@ -161,6 +167,7 @@ position_nudge_line <- function(x = 0,
     y = y,
     abline = abline,
     method = method,
+    formula = formula,
     direction = direction,
     line_nudge = line_nudge
   )
@@ -175,6 +182,7 @@ PositionNudgeLine <- ggproto("PositionNudgeLine", Position,
   y = 0,
   abline = rep(NA_real_, 2),
   method = "spline",
+  formula = y ~ x,
   direction = "none",
   line_nudge = 1,
 
@@ -183,6 +191,7 @@ PositionNudgeLine <- ggproto("PositionNudgeLine", Position,
          y = self$y,
          abline = self$abline,
          method = self$method,
+         formula = self$formula,
          direction = self$direction,
          line_nudge = self$line_nudge
          )
@@ -205,9 +214,10 @@ PositionNudgeLine <- ggproto("PositionNudgeLine", Position,
         stop("'abline' should be a numeric vector of length 2")
       }
     } else if (nrow(data) < 4 || params$method == "linear") {
-      mf <- lm(y ~ x, data = data)
+      mf <- lm(formula = params$formula, data = data)
       curve <- predict(mf)
-      sm.deriv <- coef(mf)[2]
+      deriv.poly <- deriv(polynom::polynomial(coef(mf)))
+      sm.deriv <- predict(deriv.poly, data$x)
       if (params$method != "linear") {
         message("Fitting a linear regression as n < 4")
       }
