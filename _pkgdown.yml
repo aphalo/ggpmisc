@@ -99,10 +99,10 @@ navbar:
     articles:
       text: Articles
       menu:
-      - text: User Guide
-        href: articles/user-guide.html
-      - text: Annotations as a grammar extension
-        href: articles/annotations.html
+      - text: 'Extensions to the Grammar of Graphics'
+        href: articles/grammar-extensions.html
+      - text: 'Model-Based Plot Annotations'
+        href: articles/model-based-annotations.html
     tutorials:
       text: Resources
       menu:
