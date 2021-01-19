@@ -237,10 +237,11 @@ PositionNudgeLine <- ggproto("PositionNudgeLine", Position,
     }
 
     # compute x and y nudge for each point
-    # this code sort of gets the job sort of done, but feels too complex!!
-    angle <- atan2(sm.deriv, 1) + 0.5 * pi * sign(sm.deriv)
-    x_nudge <- params$x * cos(angle) * sign(angle)
-    y_nudge <- params$y * sin(angle) * sign(angle)
+    # By changing the sign we ensure consistent positions
+    angle.rotation <- ifelse(sm.deriv > 0, -0.5 * pi, +0.5 * pi)
+    angle <- atan2(sm.deriv, 1) + angle.rotation
+    x_nudge <- params$x * sin(angle) * ifelse(sm.deriv < 0, -1, +1)
+    y_nudge <- params$y * cos(angle) * ifelse(sm.deriv < 0, -1, +1)
 
     if (params$direction == "split") {
       x_nudge <- ifelse(data$y >= curve, x_nudge, -x_nudge)
