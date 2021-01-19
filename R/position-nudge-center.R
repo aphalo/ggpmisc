@@ -51,16 +51,15 @@
 #' @examples
 #' df <- data.frame(
 #'   x = c(1,3,2,5,4,2.5),
-#'   y = c("a","c","d","c","b","a")
+#'   y = c("abc","cd","d","c","bcd","a")
 #' )
 #'
 #' # Plain nudging, same as with ggplot2::position_nudge()
 #'
-#' ggplot(df, aes(x, y)) +
+#' ggplot(df, aes(x, y, label = y)) +
 #'   geom_point() +
-#'   geom_text(
-#'     aes(label = y),
-#'     position = position_nudge_center(x = 0.05, y = 0.07)
+#'   geom_text(hjust = 0, vjust = 0,
+#'             position = position_nudge_center(x = 0.05, y = 0.07)
 #'   )
 #'
 #' # "split" nudging
@@ -68,6 +67,7 @@
 #' ggplot(df, aes(x, y)) +
 #'   geom_point() +
 #'   geom_text(aes(label = y),
+#'             hjust = "outward", vjust = "outward",
 #'             position = position_nudge_center(x = 0.05,
 #'                                              y = 0.07,
 #'                                              direction = "split"))
@@ -75,18 +75,21 @@
 #' ggplot(df, aes(x, y)) +
 #'   geom_point() +
 #'   geom_text(aes(label = y),
+#'             hjust = "outward",
 #'             position = position_nudge_center(x = 0.08,
 #'                                              direction = "split"))
 #'
 #' ggplot(df, aes(x, y)) +
 #'   geom_point() +
 #'   geom_text(aes(label = y),
+#'             vjust = "outward",
 #'             position = position_nudge_center(y = 0.1,
 #'                                              direction = "split"))
 #'
 #' ggplot(df, aes(x, y)) +
 #'   geom_point() +
 #'   geom_text(aes(label = y),
+#'             vjust = "outward", hjust = "outward",
 #'             position = position_nudge_center(x = 0.06,
 #'                                              y = 0.08,
 #'                                              center_y = 2,
@@ -96,6 +99,7 @@
 #' ggplot(df, aes(x, y)) +
 #'   geom_point() +
 #'   geom_text(aes(label = y),
+#'             vjust = "outward", hjust = "outward",
 #'             position = position_nudge_center(x = 0.06,
 #'                                              y = 0.08,
 #'                                              center_y = 2))
@@ -103,14 +107,16 @@
 #' ggplot(df, aes(x, y)) +
 #'   geom_point() +
 #'   geom_text(aes(label = y),
+#'             vjust = "outward", hjust = "outward",
 #'             position = position_nudge_center(x = 0.1,
 #'                                              center_x = 2.5))
 #'
 #' ggplot(df, aes(x, y)) +
 #'   geom_point() +
 #'   geom_text(aes(label = y),
-#'             position = position_nudge_center(x = 0.07,
-#'                                              y = 0.10,
+#'             vjust = "outward", hjust = "outward",
+#'             position = position_nudge_center(x = 0.06,
+#'                                              y = 0.08,
 #'                                              center_x = median,
 #'                                              center_y = median,
 #'                                              direction = "split"))
@@ -120,13 +126,15 @@
 #' ggplot(df, aes(x, y)) +
 #'   geom_point() +
 #'   geom_text(aes(label = y),
+#'             vjust = "outward", hjust = "outward",
 #'             position = position_nudge_center(x = 0.1,
-#'                                              y = 0.1,
+#'                                              y = 0.2,
 #'                                              direction = "radial"))
 #'
 #' ggplot(df, aes(x, y)) +
 #'   geom_point() +
 #'   geom_text(aes(label = y),
+#'             vjust = "inward", hjust = "inward",
 #'             position = position_nudge_center(x = -0.1,
 #'                                              y = -0.1,
 #'                                              direction = "radial"))
@@ -141,8 +149,9 @@
 #'   geom_point() +
 #'   geom_line() +
 #'   geom_text(aes(label = y),
-#'             position = position_nudge_center(x = -0.8,
-#'                                              y = -3.5,
+#'             vjust = "inward", hjust = "inward",
+#'             position = position_nudge_center(x = -0.9,
+#'                                              y = -2.7,
 #'                                              center_x = mean,
 #'                                              center_y = max))
 #'
@@ -150,20 +159,22 @@
 #'   geom_point() +
 #'   geom_line() +
 #'   geom_text(aes(label = y),
+#'             vjust = "outward", hjust = "outward",
 #'             position = position_nudge_center(x = 0.9,
-#'                                              y = 3,
+#'                                              y = 2.7,
 #'                                              center_x = mean,
 #'                                              center_y = max))
 #'
-#' below_max <- function(x) {0.9 * max(x)}
+#' above_max <- function(x) {1.2 * max(x)}
 #' ggplot(df, aes(x, z)) +
 #'   geom_point() +
 #'   geom_line() +
 #'   geom_text(aes(label = y),
-#'             position = position_nudge_center(x = 1,
-#'                                              y = 3,
+#'             vjust = "inward", hjust = "inward",
+#'             position = position_nudge_center(x = -1.2,
+#'                                              y = -3,
 #'                                              center_x = mean,
-#'                                              center_y = below_max))
+#'                                              center_y = above_max))
 #'
 position_nudge_center <-
   function(x = 0,
@@ -242,11 +253,15 @@ PositionNudgeCenter <- ggproto("PositionNudgeCenter", Position,
       # compute x and y nudge for each point
       x_dist <- as.numeric(data$x - params$x_ctr)
       y_dist <- as.numeric(data$y - params$y_ctr)
-      angle <- ifelse(y_dist == 0 & x_dist == 0,
-                      atan2(params$y, params$x),
-                      atan2(y_dist, x_dist))
+      angle <- atan2(y_dist, x_dist) + pi / 2
+      if (params$x == 0) {
+        angle <- ifelse(cos(angle) == 0, 0, angle)
+      }
+      if (params$y == 0) {
+        angle <- ifelse(sin(angle) == 0, pi / 2, angle)
+      }
       x_nudge <- params$x * sin(angle)
-      y_nudge <- params$y * cos(angle)
+      y_nudge <- -params$y * cos(angle)
     } else if (params$direction == "split") {
       if (length(self$x) == 1L && length(self$y) == 1L) {
         # ensure horizontal and vertical segments have same length as others
