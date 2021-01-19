@@ -75,16 +75,15 @@ Some situations are handled as special cases. When `direction =
 \examples{
 df <- data.frame(
   x = c(1,3,2,5,4,2.5),
-  y = c("a","c","d","c","b","a")
+  y = c("abc","cd","d","c","bcd","a")
 )
 
 # Plain nudging, same as with ggplot2::position_nudge()
 
-ggplot(df, aes(x, y)) +
+ggplot(df, aes(x, y, label = y)) +
   geom_point() +
-  geom_text(
-    aes(label = y),
-    position = position_nudge_center(x = 0.05, y = 0.07)
+  geom_text(hjust = 0, vjust = 0,
+            position = position_nudge_center(x = 0.05, y = 0.07)
   )
 
 # "split" nudging
@@ -92,6 +91,7 @@ ggplot(df, aes(x, y)) +
 ggplot(df, aes(x, y)) +
   geom_point() +
   geom_text(aes(label = y),
+            hjust = "outward", vjust = "outward",
             position = position_nudge_center(x = 0.05,
                                              y = 0.07,
                                              direction = "split"))
@@ -99,18 +99,21 @@ ggplot(df, aes(x, y)) +
 ggplot(df, aes(x, y)) +
   geom_point() +
   geom_text(aes(label = y),
+            hjust = "outward",
             position = position_nudge_center(x = 0.08,
                                              direction = "split"))
 
 ggplot(df, aes(x, y)) +
   geom_point() +
   geom_text(aes(label = y),
+            vjust = "outward",
             position = position_nudge_center(y = 0.1,
                                              direction = "split"))
 
 ggplot(df, aes(x, y)) +
   geom_point() +
   geom_text(aes(label = y),
+            vjust = "outward", hjust = "outward",
             position = position_nudge_center(x = 0.06,
                                              y = 0.08,
                                              center_y = 2,
@@ -120,6 +123,7 @@ ggplot(df, aes(x, y)) +
 ggplot(df, aes(x, y)) +
   geom_point() +
   geom_text(aes(label = y),
+            vjust = "outward", hjust = "outward",
             position = position_nudge_center(x = 0.06,
                                              y = 0.08,
                                              center_y = 2))
@@ -127,14 +131,16 @@ ggplot(df, aes(x, y)) +
 ggplot(df, aes(x, y)) +
   geom_point() +
   geom_text(aes(label = y),
+            vjust = "outward", hjust = "outward",
             position = position_nudge_center(x = 0.1,
                                              center_x = 2.5))
 
 ggplot(df, aes(x, y)) +
   geom_point() +
   geom_text(aes(label = y),
-            position = position_nudge_center(x = 0.07,
-                                             y = 0.10,
+            vjust = "outward", hjust = "outward",
+            position = position_nudge_center(x = 0.06,
+                                             y = 0.08,
                                              center_x = median,
                                              center_y = median,
                                              direction = "split"))
@@ -144,13 +150,15 @@ ggplot(df, aes(x, y)) +
 ggplot(df, aes(x, y)) +
   geom_point() +
   geom_text(aes(label = y),
+            vjust = "outward", hjust = "outward",
             position = position_nudge_center(x = 0.1,
-                                             y = 0.1,
+                                             y = 0.2,
                                              direction = "radial"))
 
 ggplot(df, aes(x, y)) +
   geom_point() +
   geom_text(aes(label = y),
+            vjust = "inward", hjust = "inward",
             position = position_nudge_center(x = -0.1,
                                              y = -0.1,
                                              direction = "radial"))
@@ -165,8 +173,9 @@ ggplot(df, aes(x, z)) +
   geom_point() +
   geom_line() +
   geom_text(aes(label = y),
-            position = position_nudge_center(x = -0.8,
-                                             y = -3.5,
+            vjust = "inward", hjust = "inward",
+            position = position_nudge_center(x = -0.9,
+                                             y = -2.7,
                                              center_x = mean,
                                              center_y = max))
 
@@ -174,20 +183,22 @@ ggplot(df, aes(x, z)) +
   geom_point() +
   geom_line() +
   geom_text(aes(label = y),
+            vjust = "outward", hjust = "outward",
             position = position_nudge_center(x = 0.9,
-                                             y = 3,
+                                             y = 2.7,
                                              center_x = mean,
                                              center_y = max))
 
-below_max <- function(x) {0.9 * max(x)}
+above_max <- function(x) {1.2 * max(x)}
 ggplot(df, aes(x, z)) +
   geom_point() +
   geom_line() +
   geom_text(aes(label = y),
-            position = position_nudge_center(x = 1,
-                                             y = 3,
+            vjust = "inward", hjust = "inward",
+            position = position_nudge_center(x = -1.2,
+                                             y = -3,
                                              center_x = mean,
-                                             center_y = below_max))
+                                             center_y = above_max))
 
 }
 \seealso{

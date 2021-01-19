@@ -5,8 +5,9 @@
 \title{Nudge labels a variable distance from points}
 \usage{
 position_nudge_line(
-  x = 0,
-  y = 0,
+  x = NA_real_,
+  y = NA_real_,
+  rel_distance = 0.03,
   abline = NULL,
   method = NULL,
   formula = y ~ x,
@@ -17,6 +18,9 @@ position_nudge_line(
 \arguments{
 \item{x, y}{Amount of vertical and horizontal distance to move. A numeric
 vector of length 1, or of the same length as rows there are in `data`.}
+
+\item{rel_distance}{Nudge relative to _x_ and _y_ data expanse, ignored
+unless `x` and `y` are both `NA`s.}
 
 \item{abline}{a vector of length two giving the intercept and slope.}
 
@@ -69,85 +73,95 @@ df <- data.frame(
 
 # Point on a line or curve
 
-ggplot(df, aes(x, y)) +
+ggplot(df, aes(x, y, label = l)) +
   geom_point() +
-  geom_line() +
-  geom_text(aes(label = l),
-            position = position_nudge_line(x = 0.6, y = 4))
+  geom_line(linetype = "dotted") +
+  geom_text(position = position_nudge_line())
 
-ggplot(df, aes(x, y)) +
+ggplot(df, aes(x, y, label = l)) +
   geom_point() +
-  geom_line() +
-  geom_text(aes(label = l),
-            position = position_nudge_line(x = -0.6, y = -4))
+  geom_line(linetype = "dotted") +
+  geom_text(position = position_nudge_line(rel_distance = -0.04))
 
-ggplot(df, aes(x, -y)) +
+ggplot(df, aes(x, y, label = l)) +
   geom_point() +
-  geom_line() +
-  geom_text(aes(label = l),
-            position = position_nudge_line(x = 0.6, y = 4))
+  geom_line(linetype = "dotted") +
+  geom_text(position = position_nudge_line(x = 0.6, y = 4))
 
-ggplot(df, aes(x, y - 40)) +
+ggplot(df, aes(x, y, label = l)) +
   geom_point() +
-  geom_line() +
-  geom_text(aes(label = l),
-            position = position_nudge_line(x = 0.6, y = 4))
+  geom_line(linetype = "dotted") +
+  geom_text(position = position_nudge_line(x = -0.6, y = -4))
 
-ggplot(subset(df, x >= 0), aes(y, sqrt(y))) +
+ggplot(df, aes(x, -y, label = l)) +
   geom_point() +
-  geom_line() +
-  geom_text(aes(label = l),
-            position = position_nudge_line(x = 6, y = 0.4))
+  geom_line(linetype = "dotted") +
+  geom_text(position = position_nudge_line(x = 0.6, y = 4))
 
-ggplot(subset(df, x >= 0), aes(y, sqrt(y))) +
+ggplot(df, aes(x, y - 40, label = l)) +
   geom_point() +
-  geom_line() +
-  geom_text(aes(label = l),
-                  position = position_nudge_line(x = -8, y = -0.2))
+  geom_line(linetype = "dotted") +
+  geom_text(position = position_nudge_line(x = 0.6, y = 4))
 
-ggplot(df, aes(x, x * 2 + 5)) +
+ggplot(subset(df, x >= 0), aes(y, sqrt(y), label = l)) +
   geom_point() +
-  geom_line() +
-  geom_text(aes(label = l),
-            position = position_nudge_line(x = 0.5, y = 1,
+  geom_line(linetype = "dotted") +
+  geom_text(position = position_nudge_line(x = 3, y = 0.3))
+
+ggplot(subset(df, x >= 0), aes(y, sqrt(y), label = l)) +
+  geom_point() +
+  geom_line(linetype = "dotted") +
+  geom_text(position = position_nudge_line(x = -3, y = -0.5))
+
+ggplot(df, aes(x, x * 2 + 5, label = l)) +
+  geom_point() +
+  geom_abline(intercept = 5, slope = 2, linetype = "dotted") +
+  geom_text(position = position_nudge_line(x = 0.5, y = 1,
                                            abline = c(5, 2)))
 
 # Points scattered near a curve or line, we use 'direction = "split"'
 ggplot(df, aes(x)) +
   geom_point(aes(y = yy)) +
-  geom_line(aes(y = y)) +
+  geom_line(aes(y = y), linetype = "dotted") +
   geom_text(aes(y = yy, label = l),
-            position = position_nudge_line(x = 0.5, y = 4,
+            position = position_nudge_line(x = -0.5, y = -4,
                                            direction = "split"))
 
 ggplot(subset(df, x >= 0), aes(y, yy)) +
   geom_point() +
   stat_smooth(method = "lm", formula = y ~ x) +
   geom_text(aes(label = l),
-            position = position_nudge_line(x = 2, y = 3,
+            position = position_nudge_line(x = -3, y = -3,
+                                           direction = "split"))
+
+ggplot(subset(df, x >= 0), aes(y, yy)) +
+  geom_point() +
+  stat_smooth(method = "lm", formula = y ~ x) +
+  geom_text(aes(label = l),
+            position = position_nudge_line(x = -3, y = -3,
+                                           line_nudge = 2,
                                            direction = "split"))
 
 ggplot(subset(df, x >= 0), aes(x, yyy)) +
   geom_point() +
   stat_smooth(method = "lm", formula = y ~ x) +
   geom_text(aes(label = l),
-            position = position_nudge_line(x = 0.3, y = 0.6,
-                                           line_nudge = 1.1,
+            position = position_nudge_line(x = -0.4, y = -0.6,
                                            direction = "split"))
 
 ggplot(subset(df, x >= 0), aes(y, yy)) +
   geom_point() +
   stat_smooth(method = "lm", formula = y ~ x) +
   geom_text(aes(label = l),
-            position = position_nudge_line(x = 3, y = 3,
-                                           method = "linear",
+            position = position_nudge_line(x = -3, y = -3,
+                                           method = "lm",
                                            direction = "split"))
 
 ggplot(subset(df, x >= 0), aes(y, yy)) +
   geom_point() +
   stat_smooth(method = "lm", formula = y ~ x) +
   geom_text(aes(label = l),
-            position = position_nudge_line(x = 3, y = 3,
+            position = position_nudge_line(x = -3, y = -3,
                                            abline = c(0, 1),
                                            direction = "split"))
 
@@ -155,8 +169,8 @@ ggplot(subset(df, x >= 0), aes(y, -yy)) +
   geom_point() +
   stat_smooth(method = "lm", formula = y ~ x) +
   geom_text(aes(label = l),
-            position = position_nudge_line(x = 3, y = 3,
-                                           method = "linear",
+            position = position_nudge_line(x = -3, y = -3,
+                                           method = "lm",
                                            direction = "split"))
 
 }

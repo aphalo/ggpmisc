@@ -488,50 +488,51 @@ df <- data.frame(
 ## -----------------------------------------------------------------------------
 ggplot(df, aes(x, y, label = l)) +
   geom_point() +
-  geom_text(position = position_nudge_center(x = 0.08,
+  geom_text(position = position_nudge_center(x = 0.1,
                                              direction = "split"))
 
 ## -----------------------------------------------------------------------------
 ggplot(df, aes(x, y, label = l)) +
   geom_point() +
-  geom_text(position = position_nudge_center(x = 0.08,
+  geom_text(position = position_nudge_center(x = 0.1,
                                              center_x = 1,
                                              direction = "split"))
 
 ## -----------------------------------------------------------------------------
 ggplot(df, aes(x, y, label = l)) +
   geom_point() +
-  geom_text(position = position_nudge_center(y = 0.25,
+  geom_text(position = position_nudge_center(y = 0.35,
                                              direction = "split"))
 
 ## -----------------------------------------------------------------------------
 ggplot(df, aes(x, y, label = l)) +
   geom_point() +
-  geom_text(position = position_nudge_center(x = 0.07,
-                                             y = 0.22,
+  geom_text(position = position_nudge_center(x = 0.1,
+                                             y = 0.1,
                                              direction = "split"))
 
 ## -----------------------------------------------------------------------------
 ggplot(df, aes(x, y, label = l)) +
   geom_point() +
-  geom_text(position = position_nudge_center(x = 0.07,
-                                             y = 0.22,
+  geom_text(position = position_nudge_center(x = 0.1,
+                                             y = 0.1,
                                              center_y = 2.5,
                                              direction = "split"))
 
 ## -----------------------------------------------------------------------------
 ggplot(df, aes(x, y, label = l)) +
   geom_point() +
-  geom_text(position = position_nudge_center(x = 0.1,
-                                             y = 0.25,
+  geom_text(position = position_nudge_center(x = -0.1,
+                                             y = -0.3,
                                              direction = "radial"))
 
 ## -----------------------------------------------------------------------------
 ggplot(df, aes(x, y, label = l)) +
   geom_point() +
-  geom_text(position = position_nudge_center(x = 0.1,
-                                             y = 0.25,
-                                             center_y = 2.4,
+  geom_text(position = position_nudge_center(x = -0.12,
+                                             y = -0.4,
+                                             center_x = 0,
+                                             center_y = 2,
                                              direction = "radial"))
 
 ## -----------------------------------------------------------------------------
@@ -545,24 +546,75 @@ df <- data.frame(
 )
 
 ## -----------------------------------------------------------------------------
-ggplot(df, aes(x, y, label = l)) +
+ggplot(df, aes(x, 2 * x, label = l)) +
   geom_point() +
-  geom_line() +
-  geom_text(position = position_nudge_line(x = 0.6, y = 4))
+  geom_abline(intercept = 0, slope = 2, linetype = "dotted") +
+  geom_text(position = position_nudge_line(x = 1, y = 3))
+
+## -----------------------------------------------------------------------------
+ggplot(df, aes(x, -3 * x, label = l)) +
+  geom_point() +
+  geom_abline(intercept = 0, slope = -3, linetype = "dotted") +
+  geom_text(position = position_nudge_line(x = 1, y = 3))
+
+## -----------------------------------------------------------------------------
+ggplot(subset(df, x >= 0), aes(x, yyy)) +
+  geom_point() +
+  stat_smooth(method = "lm") +
+  geom_text(aes(label = l),
+            position = position_nudge_line(x = 0.25, 
+                                           y = 1,
+                                           method = "lm",
+                                           direction = "split"))
+
+## -----------------------------------------------------------------------------
+ggplot(subset(df, x >= 0), aes(y, yy)) +
+  geom_point() +
+  stat_smooth(method = "lm", formula = y ~ x) +
+  geom_text(aes(label = l),
+            position = position_nudge_line(x = 3, 
+                                           y = 3,
+                                           method = "lm",
+                                           line_nudge = 2.5,
+                                           direction = "split"))
+
+## -----------------------------------------------------------------------------
+ggplot(subset(df, x >= 0), aes(y, yy)) +
+  geom_point() +
+  geom_abline(intercept = 0, slope = 1, linetype = "dotted") +
+  geom_text(aes(label = l),
+            position = position_nudge_line(x = 3, y = 3,
+                                           abline = c(0, 1),
+                                           direction = "split"))
 
 ## -----------------------------------------------------------------------------
 ggplot(df, aes(x, y, label = l)) +
   geom_point() +
-  geom_line() +
-  geom_text(position = position_nudge_line(x = -0.6, y = -4))
+  geom_line(linetype = "dotted") +
+  geom_text(position = position_nudge_line(x = 0.6, y = 6))
+
+## -----------------------------------------------------------------------------
+ggplot(df, aes(x, y, label = l)) +
+  geom_point() +
+  geom_line(linetype = "dotted") +
+  geom_text(position = position_nudge_line(x = -0.6, y = -6))
+
+## -----------------------------------------------------------------------------
+ggplot(df, aes(x, yy, label = l)) +
+  geom_point() +
+  stat_smooth() +
+  geom_text(aes(y = yy, label = l),
+            position = position_nudge_line(x = 0.6, 
+                                           y = 6,
+                                           direction = "split"))
 
 ## -----------------------------------------------------------------------------
 ggplot(df, aes(x, yy, label = l)) +
   geom_point() +
   stat_smooth(method = "lm", formula = y ~ poly(x, 2)) +
   geom_text(aes(y = yy, label = l),
-            position = position_nudge_line(x = 0.5, 
-                                           y = 4,
+            position = position_nudge_line(x = 1, 
+                                           y = 6,
                                            method = "lm",
                                            formula = y ~ poly(x, 2),
                                            direction = "split"))
