@@ -49,11 +49,12 @@
 #' @export
 #'
 #' @examples
-#' # Plain nudging
 #' df <- data.frame(
-#'   x = c(1,3,2,5),
-#'   y = c("a","c","d","c")
+#'   x = c(1,3,2,5,4,2.5),
+#'   y = c("a","c","d","c","b","a")
 #' )
+#'
+#' # Plain nudging, same as with ggplot2::position_nudge()
 #'
 #' ggplot(df, aes(x, y)) +
 #'   geom_point() +
@@ -63,11 +64,6 @@
 #'   )
 #'
 #' # "split" nudging
-#'
-#' df <- data.frame(
-#'   x = c(1,3,2,5,4,2.5),
-#'   y = c("a","c","d","c","b","a")
-#' )
 #'
 #' ggplot(df, aes(x, y)) +
 #'   geom_point() +
@@ -175,36 +171,36 @@ position_nudge_center <-
            center_x = NULL,
            center_y = NULL,
            direction = NULL) {
+
     if (is.null(direction)) {
       # Set default for 'direction' based on other arguments
-      if (is.null(center_x) & is.null(center_y)) {
+      if (is.null(center_x) && is.null(center_y)) {
         direction <- "none"
       } else if (xor(is.null(center_x), is.null(center_y))) {
         direction <- "split"
-        if (is.null(center_x)) {
-          center_x <- mean
-        }
-        if (is.null(center_y)) {
-          center_y <- mean
-        }
       } else {
         direction <- "radial"
       }
-    } else if (direction %in% c("radial", "split") &&
-               is.null(center_x) && is.null(center_y)) {
-      # Set center if direction requires it and is missing
-      center_x <- mean
-      center_y <- mean
     }
 
-  ggproto(NULL, PositionNudgeCenter,
-    x = x,
-    y = y,
-    center_x = center_x,
-    center_y = center_y,
-    direction = direction
-  )
-}
+    if (direction != "none") {
+      # Set center if is missing and direction requires it
+      if (is.null(center_x)) {
+        center_x <- mean
+      }
+      if (is.null(center_y)) {
+        center_y <- mean
+      }
+    }
+
+    ggproto(NULL, PositionNudgeCenter,
+            x = x,
+            y = y,
+            center_x = center_x,
+            center_y = center_y,
+            direction = direction
+    )
+  }
 
 #' @rdname ggpmisc-ggproto
 #' @format NULL
@@ -249,8 +245,8 @@ PositionNudgeCenter <- ggproto("PositionNudgeCenter", Position,
       angle <- ifelse(y_dist == 0 & x_dist == 0,
                       atan2(params$y, params$x),
                       atan2(y_dist, x_dist))
-      x_nudge <- params$x * cos(angle)
-      y_nudge <- params$y * sin(angle)
+      x_nudge <- params$x * sin(angle)
+      y_nudge <- params$y * cos(angle)
     } else if (params$direction == "split") {
       if (length(self$x) == 1L && length(self$y) == 1L) {
         # ensure horizontal and vertical segments have same length as others

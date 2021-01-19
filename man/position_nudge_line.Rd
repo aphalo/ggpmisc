@@ -20,9 +20,9 @@ vector of length 1, or of the same length as rows there are in `data`.}
 
 \item{abline}{a vector of length two giving the intercept and slope.}
 
-\item{method}{One of `"spline"` or `"linear"`.}
+\item{method}{One of `"spline"`, `"lm"` or `"auto"`.}
 
-\item{formula}{A model formula for [lm()] when `method = "linear"`. Ignored
+\item{formula}{A model formula for [lm()] when `method = "lm"`. Ignored
 otherwise.}
 
 \item{direction}{One of "none", or "split".}
@@ -53,8 +53,8 @@ When `direction = "split"` nudging is away from an implicit line or
   `"split"` when `line_nudge > 1`, and otherwise to `"none"`.
 }
 \note{
-Only model formulas that corresponding polynomials with no missing
-  terms are supported. Use of [poly()] is recomended.
+Only model formulas corresponding to polynomials with no missing
+  terms are supported. Use of [poly()] is recommended.
 }
 \examples{
 

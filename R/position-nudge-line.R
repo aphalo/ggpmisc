@@ -14,8 +14,8 @@
 #' @param x,y Amount of vertical and horizontal distance to move. A numeric
 #'   vector of length 1, or of the same length as rows there are in `data`.
 #' @param abline a vector of length two giving the intercept and slope.
-#' @param method One of `"spline"` or `"linear"`.
-#' @param formula A model formula for [lm()] when `method = "linear"`. Ignored
+#' @param method One of `"spline"`, `"lm"` or `"auto"`.
+#' @param formula A model formula for [lm()] when `method = "lm"`. Ignored
 #'   otherwise.
 #' @param direction One of "none", or "split".
 #' @param line_nudge A positive multiplier >= 1, increasing nudging
@@ -30,8 +30,8 @@
 #'   to keep labels outside of a confidence band. Direction defaults to
 #'   `"split"` when `line_nudge > 1`, and otherwise to `"none"`.
 #'
-#' @note Only model formulas that corresponding polynomials with no missing
-#'   terms are supported. Use of [poly()] is recomended.
+#' @note Only model formulas corresponding to polynomials with no missing
+#'   terms are supported. Use of [poly()] is recommended.
 #'
 #' @export
 #'
@@ -151,9 +151,15 @@ position_nudge_line <- function(x = 0,
   } else {
     abline <- rep(NA_real_, 2) # to ensure that a list member is created
   }
+
   if (is.null(method)) {
-    method <- "automatic" # decided later based on nrow(data)
+    method <- "auto" # decided later based on nrow(data)
   }
+
+  if (method == "linear") {
+    method <- "lm"
+  }
+
   if (is.null(direction)) {
     if (line_nudge > 1) {
       direction <- "split"
@@ -198,9 +204,9 @@ PositionNudgeLine <- ggproto("PositionNudgeLine", Position,
   },
 
   compute_layer = function(self, data, params, layout) {
-    if (params$method == "automatic") {
+    if (params$method == "auto") {
       if (nrow(data) < 5) {
-        params$method <- "linear"
+        params$method <- "lm"
       } else {
         params$method <- "spline"
       }
@@ -209,16 +215,17 @@ PositionNudgeLine <- ggproto("PositionNudgeLine", Position,
     if (params$method == "abline") {
       if (is.numeric(params$abline) && length(params$abline) == 2) {
         curve <- params$abline[1] + params$abline[2] * data$x
-        sm.deriv <- params$abline[2]
+        # ensure same length in all cases
+        sm.deriv <- rep(params$abline[2], nrow(data))
       } else {
         stop("'abline' should be a numeric vector of length 2")
       }
-    } else if (nrow(data) < 4 || params$method == "linear") {
+    } else if (nrow(data) < 4 || params$method == "lm") {
       mf <- lm(formula = params$formula, data = data)
       curve <- predict(mf)
       deriv.poly <- deriv(polynom::polynomial(coef(mf)))
       sm.deriv <- predict(deriv.poly, data$x)
-      if (params$method != "linear") {
+      if (params$method != "lm") {
         message("Fitting a linear regression as n < 4")
       }
     } else if (params$method == "spline") {

@@ -73,11 +73,12 @@ Some situations are handled as special cases. When `direction =
   along vertical or horizontal lines or "divides".
 }
 \examples{
-# Plain nudging
 df <- data.frame(
-  x = c(1,3,2,5),
-  y = c("a","c","d","c")
+  x = c(1,3,2,5,4,2.5),
+  y = c("a","c","d","c","b","a")
 )
+
+# Plain nudging, same as with ggplot2::position_nudge()
 
 ggplot(df, aes(x, y)) +
   geom_point() +
@@ -87,11 +88,6 @@ ggplot(df, aes(x, y)) +
   )
 
 # "split" nudging
-
-df <- data.frame(
-  x = c(1,3,2,5,4,2.5),
-  y = c("a","c","d","c","b","a")
-)
 
 ggplot(df, aes(x, y)) +
   geom_point() +
