@@ -1,4 +1,4 @@
-#' Nudge labels a variable distance from points
+#' Nudge labels away from a line
 #'
 #' `position_nudge_line` is generally useful for adjusting the starting
 #' position of labels or text to be repelled while preserving the original
@@ -13,7 +13,7 @@
 #' @family position adjustments
 #' @param x,y Amount of vertical and horizontal distance to move. A numeric
 #'   vector of length 1, or of the same length as rows there are in `data`.
-#' @param rel_distance Nudge relative to _x_ and _y_ data expanse, ignored
+#' @param xy_relative Nudge relative to _x_ and _y_ data expanse, ignored
 #'   unless `x` and `y` are both `NA`s.
 #' @param abline a vector of length two giving the intercept and slope.
 #' @param method One of `"spline"`, `"lm"` or `"auto"`.
@@ -22,18 +22,32 @@
 #' @param direction One of "none", or "split".
 #' @param line_nudge A positive multiplier >= 1, increasing nudging
 #'   away from the curve or line compared to nudging from points.
-#' @details When `direction = "split"` nudging is away from an implicit line or
-#'   curve on either side. The line of curve can be smooth spline or linear
-#'   regression fitted on-the-fly to the data points, or a straight line defined
-#'   by its coefficients passed to `abline`. The fitting is well defined only if
-#'   the observations fall roughly on a curve or straight line that is monotonic
-#'   in `y`. By means of `line_nudge` one can increment nudging away from the
-#'   line or curve compared to away from the points, which is useful for example
-#'   to keep labels outside of a confidence band. Direction defaults to
-#'   `"split"` when `line_nudge > 1`, and otherwise to `"none"`.
+#' @details The default ammount of nudging is 3% of the spread of the data along
+#'   _x_ and _y_ axes, which in most cases is good. In most cases it is best to
+#'   apply nudging along a direction perpendicular to the line or curve, if this
+#'   is the aim, passing an argument to only one of `x`, `y` or `xy_relative`
+#'   will be enough. When `direction = "split"` nudging is away from an implicit
+#'   line or curve on either side with positive nudging. The line of curve can
+#'   be smooth spline or linear regression fitted on-the-fly to the data points,
+#'   or a straight line defined by its coefficients passed to `abline`. The
+#'   fitting is well defined only if the observations fall roughly on a curve or
+#'   straight line that is monotonic in `y`. By means of `line_nudge` one can
+#'   increment nudging away from the line or curve compared to away from the
+#'   points, which is useful for example to keep labels outside of a confidence
+#'   band. Direction defaults to `"split"` when `line_nudge > 1`, and otherwise
+#'   to `"none"`.
 #'
-#' @note Only model formulas corresponding to polynomials with no missing
-#'   terms are supported. Use of [poly()] is recommended.
+#' @note For `method = "lm"` only model formulas corresponding to polynomials
+#'   with no missing terms are supported. If using [poly()], `raw = TRUE` is
+#'   required.
+#'
+#'   In practice, `x` and `y` should have the same sign for nudging to work
+#'   correctly.
+#'
+#'   This position is most useful when labeling points conforming a cloud along
+#'   an arbitrary curve or line.
+#'
+#' @seealso [ggplot::position_nudge()], [ggrepel::position_nudge_repel()].
 #'
 #' @export
 #'
@@ -48,111 +62,124 @@
 #'   l = letters[1:21]
 #' )
 #'
-#' # Point on a line or curve
+#' # Setting the nudging distance
 #'
 #' ggplot(df, aes(x, y, label = l)) +
-#'   geom_point() +
 #'   geom_line(linetype = "dotted") +
+#'   geom_point() +
 #'   geom_text(position = position_nudge_line())
 #'
 #' ggplot(df, aes(x, y, label = l)) +
-#'   geom_point() +
 #'   geom_line(linetype = "dotted") +
-#'   geom_text(position = position_nudge_line(rel_distance = -0.04))
+#'   geom_point() +
+#'   geom_text(position = position_nudge_line(xy_relative = -0.03))
 #'
 #' ggplot(df, aes(x, y, label = l)) +
-#'   geom_point() +
 #'   geom_line(linetype = "dotted") +
-#'   geom_text(position = position_nudge_line(x = 0.6, y = 4))
+#'   geom_point() +
+#'   geom_text(position = position_nudge_line(x = 0.6))
 #'
 #' ggplot(df, aes(x, y, label = l)) +
-#'   geom_point() +
 #'   geom_line(linetype = "dotted") +
+#'   geom_point() +
+#'   geom_text(position = position_nudge_line(y = 3.2))
+#'
+#' ggplot(df, aes(x, y, label = l)) +
+#'   geom_line(linetype = "dotted") +
+#'   geom_point() +
+#'   geom_text(position = position_nudge_line(x = 0.6, y = 3.2))
+#'
+#' ggplot(df, aes(x, y, label = l)) +
+#'   geom_line(linetype = "dotted") +
+#'   geom_point() +
 #'   geom_text(position = position_nudge_line(x = -0.6, y = -4))
 #'
+#' # Other curves, using defaults
+#'
 #' ggplot(df, aes(x, -y, label = l)) +
-#'   geom_point() +
 #'   geom_line(linetype = "dotted") +
-#'   geom_text(position = position_nudge_line(x = 0.6, y = 4))
+#'   geom_point() +
+#'   geom_text(position = position_nudge_line())
 #'
 #' ggplot(df, aes(x, y - 40, label = l)) +
-#'   geom_point() +
 #'   geom_line(linetype = "dotted") +
-#'   geom_text(position = position_nudge_line(x = 0.6, y = 4))
+#'   geom_point() +
+#'   geom_text(position = position_nudge_line())
 #'
 #' ggplot(subset(df, x >= 0), aes(y, sqrt(y), label = l)) +
-#'   geom_point() +
 #'   geom_line(linetype = "dotted") +
-#'   geom_text(position = position_nudge_line(x = 3, y = 0.3))
+#'   geom_point() +
+#'   geom_text(position = position_nudge_line())
+#'
+#' # nudging outwards and downwards from a curve
 #'
 #' ggplot(subset(df, x >= 0), aes(y, sqrt(y), label = l)) +
-#'   geom_point() +
 #'   geom_line(linetype = "dotted") +
-#'   geom_text(position = position_nudge_line(x = -3, y = -0.5))
+#'   geom_point() +
+#'   geom_text(position = position_nudge_line(xy_relative = -0.03))
+#'
+#' # an arbitrary straight line
 #'
 #' ggplot(df, aes(x, x * 2 + 5, label = l)) +
-#'   geom_point() +
 #'   geom_abline(intercept = 5, slope = 2, linetype = "dotted") +
-#'   geom_text(position = position_nudge_line(x = 0.5, y = 1,
-#'                                            abline = c(5, 2)))
+#'   geom_point() +
+#'   geom_text(position = position_nudge_line(abline = c(5, 2)))
 #'
 #' # Points scattered near a curve or line, we use 'direction = "split"'
-#' ggplot(df, aes(x)) +
-#'   geom_point(aes(y = yy)) +
-#'   geom_line(aes(y = y), linetype = "dotted") +
-#'   geom_text(aes(y = yy, label = l),
-#'             position = position_nudge_line(x = -0.5, y = -4,
-#'                                            direction = "split"))
-#'
-#' ggplot(subset(df, x >= 0), aes(y, yy)) +
-#'   geom_point() +
-#'   stat_smooth(method = "lm", formula = y ~ x) +
-#'   geom_text(aes(label = l),
-#'             position = position_nudge_line(x = -3, y = -3,
-#'                                            direction = "split"))
-#'
-#' ggplot(subset(df, x >= 0), aes(y, yy)) +
-#'   geom_point() +
-#'   stat_smooth(method = "lm", formula = y ~ x) +
-#'   geom_text(aes(label = l),
-#'             position = position_nudge_line(x = -3, y = -3,
-#'                                            line_nudge = 2,
-#'                                            direction = "split"))
 #'
 #' ggplot(subset(df, x >= 0), aes(x, yyy)) +
-#'   geom_point() +
 #'   stat_smooth(method = "lm", formula = y ~ x) +
+#'   geom_point() +
 #'   geom_text(aes(label = l),
-#'             position = position_nudge_line(x = -0.4, y = -0.6,
-#'                                            direction = "split"))
+#'             position = position_nudge_line(direction = "split"))
+#'
+#' ggplot(df, aes(x)) +
+#'   geom_line(aes(y = y), linetype = "dotted") +
+#'   geom_point(aes(y = yy)) +
+#'   geom_text(aes(y = yy, label = l),
+#'             position = position_nudge_line(direction = "split"))
 #'
 #' ggplot(subset(df, x >= 0), aes(y, yy)) +
-#'   geom_point() +
 #'   stat_smooth(method = "lm", formula = y ~ x) +
+#'   geom_point() +
 #'   geom_text(aes(label = l),
-#'             position = position_nudge_line(x = -3, y = -3,
-#'                                            method = "lm",
-#'                                            direction = "split"))
+#'             position = position_nudge_line(direction = "split"))
+#'
+#' # increasing the nudging for labels near the line
 #'
 #' ggplot(subset(df, x >= 0), aes(y, yy)) +
-#'   geom_point() +
 #'   stat_smooth(method = "lm", formula = y ~ x) +
+#'   geom_point() +
 #'   geom_text(aes(label = l),
-#'             position = position_nudge_line(x = -3, y = -3,
-#'                                            abline = c(0, 1),
+#'             position = position_nudge_line(line_nudge = 2,
 #'                                            direction = "split"))
 #'
-#' ggplot(subset(df, x >= 0), aes(y, -yy)) +
-#'   geom_point() +
+#' # fitting a linear model instead of the default spline
+#'
+#' ggplot(subset(df, x >= 0), aes(y, yy)) +
 #'   stat_smooth(method = "lm", formula = y ~ x) +
+#'   geom_point() +
 #'   geom_text(aes(label = l),
-#'             position = position_nudge_line(x = -3, y = -3,
-#'                                            method = "lm",
+#'             position = position_nudge_line(method = "lm",
 #'                                            direction = "split"))
+#'
+#' ggplot(subset(df, x >= 0), aes(x, x^2)) +
+#'   stat_smooth(method = "lm", formula = y ~ poly(x, 2, raw = TRUE)) +
+#'   geom_point() +
+#'   geom_text(aes(label = l),
+#'             position = position_nudge_line(method = "lm",
+#'                                            formula = y ~ poly(x, 2, raw = TRUE)))
+#'
+#' ggplot(subset(df, x >= 0), aes(x, x^2)) +
+#'   stat_smooth(method = "lm", formula = y ~ x + I(x^2)) +
+#'   geom_point() +
+#'   geom_text(aes(label = l),
+#'             position = position_nudge_line(method = "lm",
+#'                                            formula = y ~ x + I(x^2)))
 #'
 position_nudge_line <- function(x = NA_real_,
                                 y = NA_real_,
-                                rel_distance = 0.03,
+                                xy_relative = 0.03,
                                 abline = NULL,
                                 method = NULL,
                                 formula = y ~ x,
@@ -184,7 +211,7 @@ position_nudge_line <- function(x = NA_real_,
   ggproto(NULL, PositionNudgeLine,
     x = x,
     y = y,
-    rel_distance = rel_distance,
+    xy_relative = xy_relative,
     abline = abline,
     method = method,
     formula = formula,
@@ -200,7 +227,7 @@ position_nudge_line <- function(x = NA_real_,
 PositionNudgeLine <- ggproto("PositionNudgeLine", Position,
   x = 0,
   y = 0,
-  rel_distance = 0.03,
+  xy_relative = 0.03,
   abline = rep(NA_real_, 2),
   method = "spline",
   formula = y ~ x,
@@ -210,7 +237,7 @@ PositionNudgeLine <- ggproto("PositionNudgeLine", Position,
   setup_params = function(self, data) {
     list(x = self$x,
          y = self$y,
-         rel_distance = self$rel_distance,
+         xy_relative = self$xy_relative,
          abline = self$abline,
          method = self$method,
          formula = self$formula,
@@ -225,8 +252,8 @@ PositionNudgeLine <- ggproto("PositionNudgeLine", Position,
     xy.range.ratio <- (max(data$x) - min(data$x)) / (max(data$y) - min(data$y))
 
     if (all(is.na(params$x)) & all(is.na(params$y))) {
-      params$x <- params$rel_distance * (max(data$x) - min(data$x))
-      params$y <- params$rel_distance * (max(data$y) - min(data$y))
+      params$x <- params$xy_relative * (max(data$x) - min(data$x))
+      params$y <- params$xy_relative * (max(data$y) - min(data$y))
     } else if (xor(all(is.na(params$x)), all(is.na(params$y)))) {
       if (is.na(params$x)) {
         params$x <- params$y * xy.range.ratio
@@ -255,7 +282,8 @@ PositionNudgeLine <- ggproto("PositionNudgeLine", Position,
     } else if (nrow(data) < 4 || params$method == "lm") {
       mf <- lm(formula = params$formula, data = data)
       curve <- predict(mf)
-      deriv.poly <- deriv(polynom::polynomial(coef(mf)))
+      coef.poly <- polynom::polynomial(coef(mf))
+      deriv.poly <- deriv(coef.poly)
       sm.deriv <- predict(deriv.poly, data$x)
       if (params$method != "lm") {
         message("Fitting a linear regression as n < 4")
@@ -269,12 +297,12 @@ PositionNudgeLine <- ggproto("PositionNudgeLine", Position,
     }
 
     # compute x and y nudge for each point
-    # By changing the sign we ensure consistent positions
+    # By changing the sign we ensure consistent positions in opposite slopes
     angle.rotation <- ifelse(sm.deriv > 0, -0.5 * pi, +0.5 * pi)
     # scaling is needed to conpute the angle on the plot
     angle <- atan2(sm.deriv * xy.range.ratio, 1) + angle.rotation
-    x_nudge <- params$x * cos(angle) * ifelse(sm.deriv < 0, -1, +1)
-    y_nudge <- params$y * sin(angle) * ifelse(sm.deriv < 0, -1, +1)
+    x_nudge <- params$x * cos(angle) * ifelse(sm.deriv > 0, -1, +1)
+    y_nudge <- params$y * sin(angle) * ifelse(sm.deriv > 0, -1, +1)
 
     if (params$direction == "split") {
       # sign depends on position relative to the line or curve
