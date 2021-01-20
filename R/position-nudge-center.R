@@ -282,25 +282,10 @@ PositionNudgeCenter <- ggproto("PositionNudgeCenter", Position,
       x_nudge <- params$x
       y_nudge <- params$y
     }
-    # transform only the dimensions for which non-zero nudging is requested
-    ## Does this speed up execution enough to be worthwhile avoiding + 0 operations??
-    if (any(x_nudge != 0)) {
-      if (any(y_nudge != 0)) {
-        ggplot2::transform_position(data,
-                                    trans_x = function(x) x + x_nudge,
-                                    trans_y = function(y) y + y_nudge)
-      } else {
-        ggplot2::transform_position(data,
-                                    trans_x = function(x) x + x_nudge,
-                                    trans_y = NULL)
-      }
-    } else if (any(y_nudge != 0)) {
-      ggplot2::transform_position(data,
-                                  trans_x = NULL,
-                                  trans_y = function(y) y + y_nudge)
-    } else {
-      data # all nudges are zero -> nothing to do
-    }
+    # transform the dimensions
+    ggplot2::transform_position(data,
+                                trans_x = function(x) x + x_nudge,
+                                trans_y = function(y) y + y_nudge)
   }
 )
 
