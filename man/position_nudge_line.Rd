@@ -198,6 +198,29 @@ ggplot(subset(df, x >= 0), aes(x, x^2)) +
             position = position_nudge_line(method = "lm",
                                            formula = y ~ x + I(x^2)))
 
+# grouping is supported
+
+df <- data.frame(x = rep(1:10, 2),
+                 y = c(1:10, 10:1),
+                 group = rep(c("a", "b"), c(10, 10)),
+                 l = "+")
+
+ggplot(df, aes(x, y, label = l, color = group)) +
+  geom_line(linetype = "dotted") +
+  geom_text() +
+  geom_text(position = position_nudge_line()) +
+  geom_text(position = position_nudge_line(xy_relative = -0.03))
+
+# one needs to ensure that grouping is in effect in the geoms with nudging
+
+ggplot(df, aes(x, y, label = l, color = group, group = group)) +
+  geom_line(linetype = "dotted") +
+  geom_text() +
+  geom_text(color = "red",
+            position = position_nudge_line()) +
+  geom_text(color = "blue",
+            position = position_nudge_line(xy_relative = -0.03))
+
 }
 \seealso{
 [ggplot::position_nudge()], [ggrepel::position_nudge_repel()].

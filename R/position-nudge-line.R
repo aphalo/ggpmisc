@@ -177,6 +177,29 @@
 #'             position = position_nudge_line(method = "lm",
 #'                                            formula = y ~ x + I(x^2)))
 #'
+#' # grouping is supported
+#'
+#' df <- data.frame(x = rep(1:10, 2),
+#'                  y = c(1:10, 10:1),
+#'                  group = rep(c("a", "b"), c(10, 10)),
+#'                  l = "+")
+#'
+#' ggplot(df, aes(x, y, label = l, color = group)) +
+#'   geom_line(linetype = "dotted") +
+#'   geom_text() +
+#'   geom_text(position = position_nudge_line()) +
+#'   geom_text(position = position_nudge_line(xy_relative = -0.03))
+#'
+#' # one needs to ensure that grouping is in effect in the geoms with nudging
+#'
+#' ggplot(df, aes(x, y, label = l, color = group, group = group)) +
+#'   geom_line(linetype = "dotted") +
+#'   geom_text() +
+#'   geom_text(color = "red",
+#'             position = position_nudge_line()) +
+#'   geom_text(color = "blue",
+#'             position = position_nudge_line(xy_relative = -0.03))
+#'
 position_nudge_line <- function(x = NA_real_,
                                 y = NA_real_,
                                 xy_relative = 0.03,
@@ -270,6 +293,7 @@ PositionNudgeLine <- ggproto("PositionNudgeLine", Position,
       }
     }
 
+    print(data)
     # compute lines or curves and their derivatives
     if (params$method == "abline") {
       if (is.numeric(params$abline) && length(params$abline) == 2) {
@@ -279,19 +303,26 @@ PositionNudgeLine <- ggproto("PositionNudgeLine", Position,
       } else {
         stop("'abline' should be a numeric vector of length 2")
       }
-    } else if (nrow(data) < 4 || params$method == "lm") {
-      mf <- lm(formula = params$formula, data = data)
-      curve <- predict(mf)
-      coef.poly <- polynom::polynomial(coef(mf))
-      deriv.poly <- deriv(coef.poly)
-      sm.deriv <- predict(deriv.poly, data$x)
-      if (params$method != "lm") {
-        message("Fitting a linear regression as n < 4")
+    } else if (params$method %in% c("lm", "spline")) {
+      # we need to handle grouping by ourselves as compute_group does not work
+      curve <- sm.deriv <- numeric(nrow(data))
+      for (group in unique(data$group)) {
+        in.grp <- data$group == group
+        if (nrow(data[in.grp, ]) < 4 || params$method == "lm") {
+          mf <- lm(formula = params$formula, data = data[in.grp, ])
+          curve[in.grp] <- predict(mf)
+          coef.poly <- polynom::polynomial(coef(mf))
+          deriv.poly <- deriv(coef.poly)
+          sm.deriv[in.grp] <- predict(deriv.poly, data[in.grp, "x"])
+          if (params$method != "lm") {
+            message("Fitting a linear regression as n < 4")
+          }
+        } else if (params$method == "spline") {
+          sm.spline <- smooth.spline(data[in.grp, "x"], data[in.grp, "y"])
+          curve[in.grp] <- predict(sm.spline, x = data[in.grp, "x"], deriv = 0)$y
+          sm.deriv[in.grp] <- predict(sm.spline, x = data[in.grp, "x"], deriv = 1)$y
+        }
       }
-    } else if (params$method == "spline") {
-      sm.spline <- smooth.spline(data$x, data$y)
-      curve <- predict(sm.spline, x = data$x, deriv = 0)$y
-      sm.deriv <- predict(sm.spline, x = data$x, deriv = 1)$y
     } else {
       stop("Method \"", params$method, "\"not recognized")
     }
