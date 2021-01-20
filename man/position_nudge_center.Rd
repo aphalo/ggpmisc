@@ -3,7 +3,7 @@
 \name{position_nudge_center}
 \alias{position_nudge_center}
 \alias{position_nudge_centre}
-\title{Nudge labels a fixed distance from points}
+\title{Nudge labels away from a central point}
 \usage{
 position_nudge_center(
   x = 0,
@@ -202,6 +202,8 @@ ggplot(df, aes(x, z)) +
 
 }
 \seealso{
+[ggplot::position_nudge()], [ggrepel::position_nudge_repel()].
+
 Other position adjustments: 
 \code{\link{position_nudge_line}()}
 }

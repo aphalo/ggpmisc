@@ -1,4 +1,4 @@
-#' Nudge labels a fixed distance from points
+#' Nudge labels away from a central point
 #'
 #' `position_nudge_center` is generally useful for adjusting the position of labels or
 #' text, both on a discrete or continuous scale. This version from package
@@ -45,6 +45,8 @@
 #'
 #'   This position is most useful when labeling points forming a cloud or
 #'   along vertical or horizontal lines or "divides".
+#'
+#' @seealso [ggplot::position_nudge()], [ggrepel::position_nudge_repel()].
 #'
 #' @export
 #'
