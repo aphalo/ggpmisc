@@ -61,6 +61,12 @@
 #' ggplot(df, aes(x, y, label = y)) +
 #'   geom_point() +
 #'   geom_text(hjust = 0, vjust = 0,
+#'             position = position_nudge(x = 0.05, y = 0.07)
+#'   )
+#'
+#' ggplot(df, aes(x, y, label = y)) +
+#'   geom_point() +
+#'   geom_text(hjust = 0, vjust = 0,
 #'             position = position_nudge_center(x = 0.05, y = 0.07)
 #'   )
 #'
@@ -227,60 +233,81 @@ PositionNudgeCenter <- ggproto("PositionNudgeCenter", Position,
   direction = "none",
 
   setup_params = function(self, data) {
-    if (is.function(self$center_x)) {
-      x_ctr <- self$center_x(data$x)
-    } else if(is.numeric(self$center_x)) {
-      x_ctr <- self$center_x[1]
-    } else {
-      x_ctr <- -Inf # ensure all observations are to the right
-    }
-    if (is.function(self$center_y)) {
-      y_ctr <- self$center_y(data$y)
-    } else if(is.numeric(self$center_y)) {
-      y_ctr <- self$center_y[1]
-    } else {
-      y_ctr <- -Inf # ensure all observations are above
-    }
 
     list(x = self$x,
          y = self$y,
-         x_ctr = x_ctr,
-         y_ctr = y_ctr,
+         center_x = self$center_x,
+         center_y = self$center_y,
          direction = self$direction)
   },
 
   compute_layer = function(self, data, params, layout) {
     # Based on the value of 'direction' we adjust the nudge for each point
-    if (params$direction == "radial") {
-      # compute x and y nudge for each point
-      x_dist <- as.numeric(data$x - params$x_ctr)
-      y_dist <- as.numeric(data$y - params$y_ctr)
-      angle <- atan2(y_dist, x_dist) + pi / 2
-      if (params$x == 0) {
-        angle <- ifelse(cos(angle) == 0, 0, angle)
-      }
-      if (params$y == 0) {
-        angle <- ifelse(sin(angle) == 0, pi / 2, angle)
-      }
-      x_nudge <- params$x * sin(angle)
-      y_nudge <- -params$y * cos(angle)
-    } else if (params$direction == "split") {
-      if (length(self$x) == 1L && length(self$y) == 1L) {
-        # ensure horizontal and vertical segments have same length as others
-        segment_length <- sqrt(self$x^2 + self$y^2)
-        xx <- rep(self$x, nrow(data))
-        xx <- ifelse(data$y == params$y_ctr, segment_length * sign(xx), xx)
-        yy <- rep(self$y, nrow(data))
-        yy <- ifelse(data$x == params$x_ctr, segment_length * sign(yy), yy)
-      }
-      x_nudge <- xx * sign(data$x - params$x_ctr)
-      y_nudge <- yy * sign(data$y - params$y_ctr)
+    # we handle grouping by ourselves as compute_group does not work
+    x_nudge <- y_nudge <- numeric(nrow(data))
+    if (inherits(data$x, "mapped_discrete") ||
+        inherits(data$y, "mapped_discrete")) {
+      # we ignore grouping as position_nudge() does
+      groups <- 1
+      grouping <- FALSE
     } else {
-      if (params$direction != "none") {
-        warning("Ignoring unrecognized direction \"", direction, "\".")
+      # we respect groups
+      groups <- unique(data$group)
+      grouping <- TRUE
+    }
+    for (group in groups) {
+      if (grouping) {
+        in.grp <- data$group == group
+      } else {
+        in.grp <- TRUE
       }
-      x_nudge <- params$x
-      y_nudge <- params$y
+      # compute focal center by group
+      if (is.function(params$center_x)) {
+        x_ctr <- params$center_x(as.numeric(data[in.grp, "x"]))
+      } else if(is.numeric(params$center_x)) {
+        x_ctr <- params$center_x[1]
+      } else {
+        x_ctr <- -Inf # ensure all observations are to the right
+      }
+      if (is.function(params$center_y)) {
+        y_ctr <- params$center_y(as.numeric(data[in.grp, "y"]))
+      } else if(is.numeric(params$center_y)) {
+        y_ctr <- params$center_y[1]
+      } else {
+        y_ctr <- -Inf # ensure all observations are above
+      }
+
+      if (params$direction == "radial") {
+        # compute x and y nudge for each point
+        x_dist <- as.numeric(data[in.grp, "x"]) - x_ctr
+        y_dist <- as.numeric(data[in.grp, "y"]) - y_ctr
+        angle <- atan2(y_dist, x_dist) + pi / 2
+        if (params$x == 0) {
+          angle <- ifelse(cos(angle) == 0, 0, angle)
+        }
+        if (params$y == 0) {
+          angle <- ifelse(sin(angle) == 0, pi / 2, angle)
+        }
+        x_nudge[in.grp] <- params$x * sin(angle)
+        y_nudge[in.grp] <- -params$y * cos(angle)
+      } else if (params$direction == "split") {
+        if (length(params$x) == 1L && length(params$y) == 1L) {
+          # ensure horizontal and vertical segments have same length as others
+          segment_length <- sqrt(params$x^2 + params$y^2)
+          xx <- rep(params$x, nrow(data[in.grp, ]))
+          xx <- ifelse(data[in.grp, "y"] == y_ctr, segment_length * sign(xx), xx)
+          yy <- rep(params$y, nrow(data[in.grp, ]))
+          yy <- ifelse(data[in.grp, "x"] == x_ctr, segment_length * sign(yy), yy)
+        }
+        x_nudge[in.grp] <- xx * sign(as.numeric(data[in.grp, "x"]) - x_ctr)
+        y_nudge[in.grp] <- yy * sign(as.numeric(data[in.grp, "y"]) - y_ctr)
+      } else {
+        if (params$direction != "none") {
+          warning("Ignoring unrecognized direction \"", direction, "\".")
+        }
+        x_nudge[in.grp] <- params$x
+        y_nudge[in.grp] <- params$y
+      }
     }
     # transform the dimensions
     ggplot2::transform_position(data,

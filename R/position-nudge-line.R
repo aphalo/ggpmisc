@@ -293,7 +293,6 @@ PositionNudgeLine <- ggproto("PositionNudgeLine", Position,
       }
     }
 
-    print(data)
     # compute lines or curves and their derivatives
     if (params$method == "abline") {
       if (is.numeric(params$abline) && length(params$abline) == 2) {
