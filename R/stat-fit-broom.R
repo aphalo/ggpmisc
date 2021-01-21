@@ -720,21 +720,24 @@ fit_tidy_compute_group_fun <- function(data,
   if (is.character(method)) method <- match.fun(method)
   mf <- do.call(method, method.args)
   mf.td <- broom::tidy(mf)
-  z.estimate <- as.data.frame(t(mf.td[["estimate"]]))
-  z.std.error <- as.data.frame(t(mf.td[["std.error"]]))
+  col.names <- colnames(mf.td)
   clean.term.names <- gsub("(Intercept)", "Intercept", mf.td[["term"]], fixed = TRUE)
-  names(z.estimate) <- paste(clean.term.names, "estimate", sep = "_")
-  names(z.std.error) <- paste(clean.term.names, "se", sep = "_")
-  z <- cbind(z.estimate, z.std.error)
+  z <- as.data.frame(t(mf.td[["estimate"]]))
+  names(z) <- paste(clean.term.names, "estimate", sep = "_")
+  if ("std.error" %in% col.names) {
+    z.std.error <- as.data.frame(t(mf.td[["std.error"]]))
+    names(z.std.error) <- paste(clean.term.names, "se", sep = "_")
+    z <- cbind(z, z.std.error)
+  }
   if (exists("statistic", mf.td, inherits = FALSE)) {
     z.statistic <- as.data.frame(t(mf.td[["statistic"]]))
     names(z.statistic) <- paste(clean.term.names, "stat", sep = "_")
     z <- cbind(z, z.statistic)
   }
-  if (exists("p.value", mf.td, inherits = FALSE)) {
-    z.p.value <- as.data.frame(t(mf.td[["p.value"]]))
-    names(z.p.value) <- paste(clean.term.names, "p.value", sep = "_")
-    z <- cbind(z, z.p.value)
+  for (col in setdiff(col.names, c("term", "estimate", "intercept", "std.error", "statistic"))) {
+    zz <- as.data.frame(t(mf.td[[col]]))
+    names(zz) <- paste(clean.term.names, col, sep = "_")
+    z <- cbind(z, zz)
   }
 
   if (npc.used) {
