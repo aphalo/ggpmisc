@@ -10,7 +10,8 @@ position_nudge_center(
   y = 0,
   center_x = NULL,
   center_y = NULL,
-  direction = NULL
+  direction = NULL,
+  obey_grouping = NULL
 )
 
 position_nudge_centre(
@@ -18,7 +19,8 @@ position_nudge_centre(
   y = 0,
   center_x = NULL,
   center_y = NULL,
-  direction = NULL
+  direction = NULL,
+  obey_grouping = NULL
 )
 }
 \arguments{
@@ -34,6 +36,11 @@ mapped to `x` or `y`, respectively.}
 \item{direction}{One of "none", "radial", or "split". A value of "none"
 replicates the behavior of [ggplot2::position_nudge]. Which of these three
 values is the default depends on the values passed to the other parameters.}
+
+\item{obey_grouping}{A logical flag indicating whether to obey or not groupings
+of the observations. By default, grouping is obeyed when both of the
+variables mapped to _x_ and _y_ are continuous numeric and ignored
+otherwise.}
 }
 \description{
 `position_nudge_center` is generally useful for adjusting the position of labels or
@@ -172,7 +179,8 @@ ggplot(df, aes(x, y)) +
 df <- data.frame(
   x = -10:10,
   z = (-10:10)^2,
-  y = letters[1:21]
+  y = letters[1:21],
+  group = rep(c("a", "b"), rep(c(11, 10)))
 )
 
 ggplot(df, aes(x, z)) +
@@ -205,6 +213,27 @@ ggplot(df, aes(x, z)) +
                                              y = -3,
                                              center_x = mean,
                                              center_y = above_max))
+
+ggplot(df, aes(x, z, color = group)) +
+  geom_point() +
+  geom_line(color = "black", linetype = "dotted") +
+  geom_text(aes(label = y),
+            vjust = "inward", hjust = "inward",
+            position = position_nudge_center(x = -0.9,
+                                             y = -2.7,
+                                             center_x = mean,
+                                             center_y = max))
+
+ggplot(df, aes(x, z, color = group)) +
+  geom_point() +
+  geom_line(color = "black", linetype = "dotted") +
+  geom_text(aes(label = y),
+            vjust = "inward", hjust = "inward",
+            position = position_nudge_center(x = -0.9,
+                                             y = -2.7,
+                                             center_x = mean,
+                                             center_y = max,
+                                             obey_grouping = FALSE))
 
 }
 \seealso{

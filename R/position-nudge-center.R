@@ -17,6 +17,10 @@
 #' @param direction One of "none", "radial", or "split". A value of "none"
 #'   replicates the behavior of [ggplot2::position_nudge]. Which of these three
 #'   values is the default depends on the values passed to the other parameters.
+#' @param obey_grouping A logical flag indicating whether to obey or not groupings
+#'   of the observations. By default, grouping is obeyed when both of the
+#'   variables mapped to _x_ and _y_ are continuous numeric and ignored
+#'   otherwise.
 #'
 #' @details Positive values as arguments to `x` and `y` are added to the
 #'   original position along either axis. If no arguments are passed to
@@ -150,7 +154,8 @@
 #' df <- data.frame(
 #'   x = -10:10,
 #'   z = (-10:10)^2,
-#'   y = letters[1:21]
+#'   y = letters[1:21],
+#'   group = rep(c("a", "b"), rep(c(11, 10)))
 #' )
 #'
 #' ggplot(df, aes(x, z)) +
@@ -184,12 +189,34 @@
 #'                                              center_x = mean,
 #'                                              center_y = above_max))
 #'
+#' ggplot(df, aes(x, z, color = group)) +
+#'   geom_point() +
+#'   geom_line(color = "black", linetype = "dotted") +
+#'   geom_text(aes(label = y),
+#'             vjust = "inward", hjust = "inward",
+#'             position = position_nudge_center(x = -0.9,
+#'                                              y = -2.7,
+#'                                              center_x = mean,
+#'                                              center_y = max))
+#'
+#' ggplot(df, aes(x, z, color = group)) +
+#'   geom_point() +
+#'   geom_line(color = "black", linetype = "dotted") +
+#'   geom_text(aes(label = y),
+#'             vjust = "inward", hjust = "inward",
+#'             position = position_nudge_center(x = -0.9,
+#'                                              y = -2.7,
+#'                                              center_x = mean,
+#'                                              center_y = max,
+#'                                              obey_grouping = FALSE))
+#'
 position_nudge_center <-
   function(x = 0,
            y = 0,
            center_x = NULL,
            center_y = NULL,
-           direction = NULL) {
+           direction = NULL,
+           obey_grouping = NULL) {
 
     if (is.null(direction)) {
       # Set default for 'direction' based on other arguments
@@ -212,12 +239,18 @@ position_nudge_center <-
       }
     }
 
+    if (is.null(obey_grouping)) {
+      # default needs to be set in panel_fucntion when we have access to data
+      obey_grouping <- NA
+    }
+
     ggproto(NULL, PositionNudgeCenter,
             x = x,
             y = y,
             center_x = center_x,
             center_y = center_y,
-            direction = direction
+            direction = direction,
+            obey_grouping = obey_grouping
     )
   }
 
@@ -231,6 +264,7 @@ PositionNudgeCenter <- ggproto("PositionNudgeCenter", Position,
   center_x = mean,
   center_y = mean,
   direction = "none",
+  obey_grouping = NA,
 
   setup_params = function(self, data) {
 
@@ -238,27 +272,40 @@ PositionNudgeCenter <- ggproto("PositionNudgeCenter", Position,
          y = self$y,
          center_x = self$center_x,
          center_y = self$center_y,
-         direction = self$direction)
+         direction = self$direction,
+         obey_grouping = self$obey_grouping)
   },
 
   compute_panel = function(data, params, scales) {
-    # Based on the value of 'direction' we adjust the nudge for each point
-    # we handle grouping by ourselves as compute_group does not work
-    x_nudge <- y_nudge <- numeric(nrow(data))
-    if (inherits(data$x, "mapped_discrete") ||
-        inherits(data$y, "mapped_discrete")) {
-      # we ignore grouping as position_nudge() does
-      groups <- 1
-      grouping <- FALSE
-    } else {
-      # we respect groups
-      groups <- unique(data$group)
-      grouping <- TRUE
+
+    # we handle grouping by ourselves
+    if (is.na(params$obey_grouping)) {
+      if (inherits(data$x, "mapped_discrete") ||
+          inherits(data$y, "mapped_discrete") ||
+          params$direction == "none") {
+        # we ignore grouping as position_nudge() does
+        params$obey_grouping <- FALSE
+      } else {
+        # we respect groups
+        params$obey_grouping <- TRUE
+      }
     }
+
+    if (params$obey_grouping) {
+      # one group at a time
+      groups <- unique(data$group)
+    } else {
+      # all at once
+      groups <- 1
+    }
+    # Based on the value of 'direction' we adjust the nudge for each point
+    x_nudge <- y_nudge <- numeric(nrow(data))
     for (group in groups) {
-      if (grouping) {
+      if (params$obey_grouping) {
+        # selector for rows in current group
         in.grp <- data$group == group
       } else {
+        # selector for all rows
         in.grp <- TRUE
       }
       # compute focal center by group
