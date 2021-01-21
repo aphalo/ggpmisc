@@ -7,7 +7,7 @@
 position_nudge_line(
   x = NA_real_,
   y = NA_real_,
-  xy_relative = 0.03,
+  xy_relative = c(0.03, 0.03),
   abline = NULL,
   method = NULL,
   formula = y ~ x,
@@ -219,16 +219,20 @@ ggplot(df, aes(x, y, label = l, color = group, group = group)) +
   geom_text(color = "red",
             position = position_nudge_line()) +
   geom_text(color = "blue",
-            position = position_nudge_line(xy_relative = -0.03))
+            position = position_nudge_line(xy_relative = -0.03)) +
+  coord_equal()
 
 # facets are also supported
 
 ggplot(df, aes(x, y, label = l)) +
   geom_line(linetype = "dotted") +
   geom_text() +
-  geom_text(position = position_nudge_line(), color = "red") +
-  geom_text(position = position_nudge_line(xy_relative = -0.03), color = "blue") +
-  facet_wrap(~group)
+  geom_text(position = position_nudge_line(xy_relative = c(0.06, 0.03)),
+            color = "red") +
+  geom_text(position = position_nudge_line(xy_relative = -c(0.06, 0.03)),
+            color = "blue") +
+  facet_wrap(~group) +
+  coord_equal(ratio = 1.5)
 
 }
 \seealso{

@@ -198,20 +198,24 @@
 #'   geom_text(color = "red",
 #'             position = position_nudge_line()) +
 #'   geom_text(color = "blue",
-#'             position = position_nudge_line(xy_relative = -0.03))
+#'             position = position_nudge_line(xy_relative = -0.03)) +
+#'   coord_equal()
 #'
 #' # facets are also supported
 #'
 #' ggplot(df, aes(x, y, label = l)) +
 #'   geom_line(linetype = "dotted") +
 #'   geom_text() +
-#'   geom_text(position = position_nudge_line(), color = "red") +
-#'   geom_text(position = position_nudge_line(xy_relative = -0.03), color = "blue") +
-#'   facet_wrap(~group)
+#'   geom_text(position = position_nudge_line(xy_relative = c(0.06, 0.03)),
+#'             color = "red") +
+#'   geom_text(position = position_nudge_line(xy_relative = -c(0.06, 0.03)),
+#'             color = "blue") +
+#'   facet_wrap(~group) +
+#'   coord_equal(ratio = 1.5)
 #'
 position_nudge_line <- function(x = NA_real_,
                                 y = NA_real_,
-                                xy_relative = 0.03,
+                                xy_relative = c(0.03, 0.03),
                                 abline = NULL,
                                 method = NULL,
                                 formula = y ~ x,
@@ -240,6 +244,12 @@ position_nudge_line <- function(x = NA_real_,
     }
   }
 
+  if (length(xy_relative) == 1) {
+    xy_relative <- rep(xy_relative, 2)
+  }
+
+  stopifnot(length(xy_relative) == 2)
+
   ggproto(NULL, PositionNudgeLine,
     x = x,
     y = y,
@@ -259,7 +269,7 @@ position_nudge_line <- function(x = NA_real_,
 PositionNudgeLine <- ggproto("PositionNudgeLine", Position,
   x = 0,
   y = 0,
-  xy_relative = 0.03,
+  xy_relative = c(0.03, 0.03),
   abline = rep(NA_real_, 2),
   method = "spline",
   formula = y ~ x,
@@ -280,12 +290,16 @@ PositionNudgeLine <- ggproto("PositionNudgeLine", Position,
 
   compute_panel = function(data, params, scales) {
 
-    # set parameter defaults that depend on data values
-    xy.range.ratio <- (max(data$x) - min(data$x)) / (max(data$y) - min(data$y))
+    # set parameter defaults that depend on the scale
+    x_range <- scales$x$dimension()
+    y_range <- scales$y$dimension()
+    x_spread <- x_range[2] - x_range[1]
+    y_spread <- y_range[2] - y_range[1]
+    xy.range.ratio <- x_spread / y_spread
 
     if (all(is.na(params$x)) & all(is.na(params$y))) {
-      params$x <- params$xy_relative * (max(data$x) - min(data$x))
-      params$y <- params$xy_relative * (max(data$y) - min(data$y))
+      params$x <- params$xy_relative[1] * x_spread
+      params$y <- params$xy_relative[2] * y_spread
     } else if (xor(all(is.na(params$x)), all(is.na(params$y)))) {
       if (is.na(params$x)) {
         params$x <- params$y * xy.range.ratio
