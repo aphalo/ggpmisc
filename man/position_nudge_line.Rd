@@ -221,6 +221,15 @@ ggplot(df, aes(x, y, label = l, color = group, group = group)) +
   geom_text(color = "blue",
             position = position_nudge_line(xy_relative = -0.03))
 
+# facets are also supported
+
+ggplot(df, aes(x, y, label = l)) +
+  geom_line(linetype = "dotted") +
+  geom_text() +
+  geom_text(position = position_nudge_line(), color = "red") +
+  geom_text(position = position_nudge_line(xy_relative = -0.03), color = "blue") +
+  facet_wrap(~group)
+
 }
 \seealso{
 [ggplot::position_nudge()], [ggrepel::position_nudge_repel()].

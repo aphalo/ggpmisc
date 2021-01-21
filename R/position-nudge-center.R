@@ -241,7 +241,7 @@ PositionNudgeCenter <- ggproto("PositionNudgeCenter", Position,
          direction = self$direction)
   },
 
-  compute_layer = function(self, data, params, layout) {
+  compute_panel = function(data, params, scales) {
     # Based on the value of 'direction' we adjust the nudge for each point
     # we handle grouping by ourselves as compute_group does not work
     x_nudge <- y_nudge <- numeric(nrow(data))

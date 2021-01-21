@@ -200,6 +200,15 @@
 #'   geom_text(color = "blue",
 #'             position = position_nudge_line(xy_relative = -0.03))
 #'
+#' # facets are also supported
+#'
+#' ggplot(df, aes(x, y, label = l)) +
+#'   geom_line(linetype = "dotted") +
+#'   geom_text() +
+#'   geom_text(position = position_nudge_line(), color = "red") +
+#'   geom_text(position = position_nudge_line(xy_relative = -0.03), color = "blue") +
+#'   facet_wrap(~group)
+#'
 position_nudge_line <- function(x = NA_real_,
                                 y = NA_real_,
                                 xy_relative = 0.03,
@@ -269,7 +278,7 @@ PositionNudgeLine <- ggproto("PositionNudgeLine", Position,
          )
   },
 
-  compute_layer = function(self, data, params, layout) {
+  compute_panel = function(data, params, scales) {
 
     # set parameter defaults that depend on data values
     xy.range.ratio <- (max(data$x) - min(data$x)) / (max(data$y) - min(data$y))

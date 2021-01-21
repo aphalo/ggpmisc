@@ -83,6 +83,12 @@ df <- data.frame(
 ggplot(df, aes(x, y, label = y)) +
   geom_point() +
   geom_text(hjust = 0, vjust = 0,
+            position = position_nudge(x = 0.05, y = 0.07)
+  )
+
+ggplot(df, aes(x, y, label = y)) +
+  geom_point() +
+  geom_text(hjust = 0, vjust = 0,
             position = position_nudge_center(x = 0.05, y = 0.07)
   )
 
