@@ -14,8 +14,13 @@ editor_options:
 -   Fix bug: `try_tibble.ts()` and `try_data_frame()` did not handle
     correctly the conversion of dates for some time series, which also
     could affect `ggplot.ts()`.
+-   Fix bug: `stat_fit_tidy()` would fail with `quantreg::rq()` and any
+    other fit methods that do not return standard error estimates for
+    parameter estimates (Thanks to Mark Neal for reporting the problem).
 -   Fix bug: `stat_peaks()` and `stat_valleys()` generated wrong labels
-    if a `Date` object was mapped to *x*.
+    if a `Date` object was mapped to *x (the bug did not affect POSIX or
+    datetime, and was obvious as it resulted in a shift in dates by
+    several decades)*.
 -   **Move git repository from Bitbucket to Github.**
 -   Set up Github action for CRAN-checks on Windows, OS X and Ubuntu.
 
