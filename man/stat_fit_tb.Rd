@@ -274,6 +274,7 @@ ggplot(my.df, aes(covariate, x)) +
 
 Other Statistics calling generic tidier methods.: 
 \code{\link{stat_fit_augment}()},
-\code{\link{stat_fit_glance}()}
+\code{\link{stat_fit_glance}()},
+\code{\link{stat_fit_tidy}()}
 }
 \concept{Statistics calling generic tidier methods.}

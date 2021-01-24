@@ -703,8 +703,7 @@ StatFitAugment <-
 #'   documentation for the version of [tidy()] corresponding to the `method`
 #'   used to fit the model.
 #'
-#' @family ggplot2 statistics calling generic tidier methods implemented in
-#'   packages 'broom', 'broom.mixed', or elsewhere.
+#' @family Statistics calling generic tidier methods.
 #'
 #' @seealso \code{\link[broom]{broom}} and \code{broom.mixed} for details on how
 #'   the tidying of the result of model fits is done.

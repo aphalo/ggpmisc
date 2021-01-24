@@ -189,6 +189,7 @@ ggplot(mtcars, aes(x = disp, y = mpg)) +
 
 Other Statistics calling generic tidier methods.: 
 \code{\link{stat_fit_glance}()},
-\code{\link{stat_fit_tb}()}
+\code{\link{stat_fit_tb}()},
+\code{\link{stat_fit_tidy}()}
 }
 \concept{Statistics calling generic tidier methods.}
