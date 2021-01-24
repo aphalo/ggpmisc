@@ -200,13 +200,8 @@ ggplot(mtcars, aes(x = disp, y = mpg)) +
 
 }
 \seealso{
-\code{\link[broom]{broom}}
-
-Other ggplot2 statistics calling generic tidier methods implemented in
-  packages 'broom', 'broom.mixed', or elsewhere.: 
-\code{\link{stat_fit_augment}()},
-\code{\link{stat_fit_glance}()},
-\code{\link{stat_fit_tb}()}
+\code{\link[broom]{broom}} and \code{broom.mixed} for details on how
+  the tidying of the result of model fits is done.
 }
 \concept{ggplot2 statistics calling generic tidier methods implemented in
   packages 'broom', 'broom.mixed', or elsewhere.}

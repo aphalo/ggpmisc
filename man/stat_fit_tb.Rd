@@ -267,16 +267,13 @@ ggplot(my.df, aes(covariate, x)) +
 }
 \seealso{
 \code{\link[broom]{broom}} and
-  \code{\link[broom.mixed]{broom.mixed}}for details on how the tidying of the
+  \code{broom.mixed} for details on how the tidying of the
   result of model fits is done. See \code{\link{geom_table}} for details on
   how inset tables respond to mapped aesthetics and table themes. For details
   on predefined table themes see \code{\link{ttheme_gtdefault}}.
 
-Other ggplot2 statistics calling generic tidier methods implemented in
-  packages 'broom', 'broom.mixed', or elsewhere.: 
+Other Statistics calling generic tidier methods.: 
 \code{\link{stat_fit_augment}()},
-\code{\link{stat_fit_glance}()},
-\code{\link{stat_fit_tidy}()}
+\code{\link{stat_fit_glance}()}
 }
-\concept{ggplot2 statistics calling generic tidier methods implemented in
-  packages 'broom', 'broom.mixed', or elsewhere.}
+\concept{Statistics calling generic tidier methods.}
