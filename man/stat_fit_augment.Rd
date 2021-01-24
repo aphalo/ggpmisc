@@ -59,8 +59,10 @@ can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 }
 \description{
-\code{stat_fit_augment} fits a model and returns the data
-  augmented with information from the fitted model, using package 'broom'.
+\code{stat_fit_augment} fits a model and returns a "tidy"
+  version of the model's data with prediction added, using '\code{augmnent()}
+  methods from packages 'broom', 'broom.mixed', or other sources. The
+  prediction can be added to the plot as a curve.
 }
 \details{
 \code{stat_fit_augment} together with \code{\link{stat_fit_glance}}
@@ -120,6 +122,7 @@ Although arguments passed to parameter \code{augment.args} will be
 }
 
 \examples{
+library(broom)
 library(gginnards)
 library(quantreg)
 
@@ -183,9 +186,11 @@ ggplot(mtcars, aes(x = disp, y = mpg)) +
 \seealso{
 \code{\link[broom]{broom}}
 
-Other ggplot2 statistics based on 'broom'.: 
+Other ggplot2 statistics calling generic tidier methods implemented in
+  packages 'broom', 'broom.mixed', or elsewhere.: 
 \code{\link{stat_fit_glance}()},
 \code{\link{stat_fit_tb}()},
 \code{\link{stat_fit_tidy}()}
 }
-\concept{ggplot2 statistics based on 'broom'.}
+\concept{ggplot2 statistics calling generic tidier methods implemented in
+  packages 'broom', 'broom.mixed', or elsewhere.}

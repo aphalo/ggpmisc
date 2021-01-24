@@ -66,8 +66,9 @@ can include aesthetics whose values you want to set, not map. See
 }
 \description{
 \code{stat_fit_tidy} fits a model and returns a "tidy" version
-  of the model's summary, using package 'broom'. To add the summary in
-  tabular form use \code{\link{stat_fit_tb}}. When using
+  of the model's summary, using '\code{tidy()} methods from packages 'broom',
+  'broom.mixed', or other sources.#' To add the summary in tabular form use
+  \code{\link{stat_fit_tb}} instead of this statistic. When using
   \code{stat_fit_tidy()} you will most likely want to change the default
   mapping for label.
 }
@@ -129,6 +130,7 @@ Although arguments passed to parameter \code{tidy.args} will be
 }
 
 \examples{
+library(broom)
 library(gginnards)
 library(quantreg)
 
@@ -200,9 +202,11 @@ ggplot(mtcars, aes(x = disp, y = mpg)) +
 \seealso{
 \code{\link[broom]{broom}}
 
-Other ggplot2 statistics based on 'broom'.: 
+Other ggplot2 statistics calling generic tidier methods implemented in
+  packages 'broom', 'broom.mixed', or elsewhere.: 
 \code{\link{stat_fit_augment}()},
 \code{\link{stat_fit_glance}()},
 \code{\link{stat_fit_tb}()}
 }
-\concept{ggplot2 statistics based on 'broom'.}
+\concept{ggplot2 statistics calling generic tidier methods implemented in
+  packages 'broom', 'broom.mixed', or elsewhere.}

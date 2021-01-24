@@ -102,8 +102,9 @@ can include aesthetics whose values you want to set, not map. See
 }
 \description{
 \code{stat_fit_tb} fits a model and returns a "tidy" version of
-  the model's summary or ANOVA table, using package 'broom'. The annotation
-  is added to the plots in tabular form.
+  the model's summary or ANOVA table, using '\code{tidy()} methods from
+  packages 'broom', 'broom.mixed', or other sources. The annotation is added
+  to the plots in tabular form.
 }
 \details{
 \code{stat_fit_tb} Applies a model fitting function per panel,
@@ -265,14 +266,17 @@ ggplot(my.df, aes(covariate, x)) +
 
 }
 \seealso{
-\code{\link[broom]{broom}} for details on how the tidying of the
-  result of model fits is done. See \code{\link{geom_table}} for details
-  on how inset tables respond to mapped aesthetics and table themes. For
-  details on predefined table themes see \code{\link{ttheme_gtdefault}}.
+\code{\link[broom]{broom}} and
+  \code{\link[broom.mixed]{broom.mixed}}for details on how the tidying of the
+  result of model fits is done. See \code{\link{geom_table}} for details on
+  how inset tables respond to mapped aesthetics and table themes. For details
+  on predefined table themes see \code{\link{ttheme_gtdefault}}.
 
-Other ggplot2 statistics based on 'broom'.: 
+Other ggplot2 statistics calling generic tidier methods implemented in
+  packages 'broom', 'broom.mixed', or elsewhere.: 
 \code{\link{stat_fit_augment}()},
 \code{\link{stat_fit_glance}()},
 \code{\link{stat_fit_tidy}()}
 }
-\concept{ggplot2 statistics based on 'broom'.}
+\concept{ggplot2 statistics calling generic tidier methods implemented in
+  packages 'broom', 'broom.mixed', or elsewhere.}

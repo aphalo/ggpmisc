@@ -6,12 +6,18 @@ editor_options:
 
 # ggpmisc 0.3.8
 
--   Add formal parameter `p.digits` to `stat_fit_tb()`.
+-   **CODE BREAKING:** functions `stat_fit_glance()` ,
+    `stat_fit_augment()` , `stat_fit_tidy()` and `stat_fit_tb()` now
+    import the *tidiers* from package 'generics' instead of from
+    'broom'. As a result, users must now explicitly load the package
+    where the methods to be used are defined, such as 'broom' or
+    'broom.mixed' or define them before calling these statistics.
 -   Add formal parameter `glance.args` to `stat_fit_glance()` ,
-    parameter `tidy.ars` to `stat_fit_tidy()`, and parameter
-    `augment.args` to `stat_fit_augment()` as some specializations of
-    `broom::glance()`, `broom::tidy()` and `stat_fit_augment()` accept
-    arguments specific to a given fitting method.
+    parameter `tidy.ars` to `stat_fit_tidy()` and `stat_fit_tb()` and
+    parameter `augment.args` to `stat_fit_augment()` as some
+    specializations of `broom::glance()`, `broom::tidy()` and
+    `stat_fit_augment()` accept arguments specific to a given fitting
+    method.
 -   Fix bug: `stat_fit_tidy()` would fail with `quantreg::rq()` and any
     other fit methods that do not return by default standard error
     estimates for parameter estimates (Thanks to Mark Neal for reporting
@@ -20,6 +26,7 @@ editor_options:
     `stat_fit_tidy()` to ensure compatibility with `cor.test()` and
     other functions that require an object rather than a quoted
     expression as argument for `data` .
+-   Add formal parameter `p.digits` to `stat_fit_tb()`.
 -   New vignette explaining how the grammar of graphics has been
     expanded to better support annotations.
 -   Fix bug: `try_tibble.ts()` and `try_data_frame()` did not handle

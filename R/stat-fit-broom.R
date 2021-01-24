@@ -149,7 +149,16 @@
 #'   stat_fit_glance(method = "cor.test",
 #'                   label.y = "bottom",
 #'                   method.args = list(formula = ~ x + y),
-#'                   mapping = aes(label = sprintf('r^2~"="~%.3f~~italic(P)~"="~%.2g',
+#'                   mapping = aes(label = sprintf('r[Pearson]~"="~%.3f~~italic(P)~"="~%.2g',
+#'                                 stat(estimate), stat(p.value))),
+#'                   parse = TRUE)
+#'
+#' ggplot(mtcars, aes(x = disp, y = mpg)) +
+#'   geom_point() +
+#'   stat_fit_glance(method = "cor.test",
+#'                   label.y = "bottom",
+#'                   method.args = list(formula = ~ x + y, method = "spearman", exact = FALSE),
+#'                   mapping = aes(label = sprintf('r[Spearman]~"="~%.3f~~italic(P)~"="~%.2g',
 #'                                 stat(estimate), stat(p.value))),
 #'                   parse = TRUE)
 #'

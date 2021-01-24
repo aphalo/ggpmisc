@@ -65,10 +65,9 @@ can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 }
 \description{
-\code{stat_fit_glance} fits a model and returns a summary
-  "glance" of the model's statistics, using package 'broom'. It will
-  succeed if and only if a `glance()` method exist and is visible in
-  the current environment.
+\code{stat_fit_glance} fits a model and returns a "tidy" version
+  of the model's fit, using '\code{glance()} methods from packages 'broom',
+  'broom.mixed', or other sources.
 }
 \details{
 \code{stat_fit_glance} together with \code{\link{stat_fit_tidy}}
@@ -135,6 +134,7 @@ Although arguments passed to parameter \code{glance.args} will be
 }
 
 \examples{
+library(broom)
 library(gginnards)
 library(quantreg)
 
@@ -185,7 +185,16 @@ ggplot(mtcars, aes(x = disp, y = mpg)) +
   stat_fit_glance(method = "cor.test",
                   label.y = "bottom",
                   method.args = list(formula = ~ x + y),
-                  mapping = aes(label = sprintf('r^2~"="~\%.3f~~italic(P)~"="~\%.2g',
+                  mapping = aes(label = sprintf('r[Pearson]~"="~\%.3f~~italic(P)~"="~\%.2g',
+                                stat(estimate), stat(p.value))),
+                  parse = TRUE)
+
+ggplot(mtcars, aes(x = disp, y = mpg)) +
+  geom_point() +
+  stat_fit_glance(method = "cor.test",
+                  label.y = "bottom",
+                  method.args = list(formula = ~ x + y, method = "spearman", exact = FALSE),
+                  mapping = aes(label = sprintf('r[Spearman]~"="~\%.3f~~italic(P)~"="~\%.2g',
                                 stat(estimate), stat(p.value))),
                   parse = TRUE)
 
@@ -203,9 +212,11 @@ ggplot(mtcars, aes(x = disp, y = mpg)) +
 \seealso{
 \code{\link[broom]{broom}}
 
-Other ggplot2 statistics based on 'broom'.: 
+Other ggplot2 statistics calling generic tidier methods implemented in
+  packages 'broom', 'broom.mixed', or elsewhere.: 
 \code{\link{stat_fit_augment}()},
 \code{\link{stat_fit_tb}()},
 \code{\link{stat_fit_tidy}()}
 }
-\concept{ggplot2 statistics based on 'broom'.}
+\concept{ggplot2 statistics calling generic tidier methods implemented in
+  packages 'broom', 'broom.mixed', or elsewhere.}
