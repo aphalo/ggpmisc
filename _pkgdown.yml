@@ -50,11 +50,6 @@ reference:
     - stat_quadrant_counts
     - stat_fmt_tb
     - stat_apply_group
-  - title: Position adjustment
-    desc: All layers have a position adjustment that resolves overlapping geoms. Override the default by using the position argument to the geom_ or stat_ function.
-    contents:
-    - position_nudge_center
-    - position_nudge_line
   - title: Plot creation
     desc: Additional ggplot methods
     contents:

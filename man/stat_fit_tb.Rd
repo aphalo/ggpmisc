@@ -10,6 +10,7 @@ stat_fit_tb(
   geom = "table_npc",
   method = "lm",
   method.args = list(formula = y ~ x),
+  tidy.args = list(),
   tb.type = "fit.summary",
   tb.vars = NULL,
   tb.params = NULL,
@@ -43,7 +44,8 @@ the plot defaults.}
 
 \item{method}{character.}
 
-\item{method.args}{list of arguments to pass to \code{method}.}
+\item{method.args, tidy.args}{lists of arguments to pass to \code{method}
+and to \code{tidy()}.}
 
 \item{tb.type}{character One of "fit.summary", "fit.anova" or "fit.coefs".}
 

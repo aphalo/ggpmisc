@@ -27,7 +27,8 @@
 #' @param na.rm	a logical indicating whether NA values should be stripped before
 #'   the computation proceeds.
 #' @param method character.
-#' @param method.args list of arguments to pass to \code{method}.
+#' @param method.args,tidy.args lists of arguments to pass to \code{method}
+#'   and to \code{tidy()}.
 #' @param tb.type character One of "fit.summary", "fit.anova" or "fit.coefs".
 #' @param digits integer indicating the number of significant digits
 #'   to be used for all numeric values in the table.
@@ -218,6 +219,7 @@
 stat_fit_tb <- function(mapping = NULL, data = NULL, geom = "table_npc",
                         method = "lm",
                         method.args = list(formula = y ~ x),
+                        tidy.args = list(),
                         tb.type = "fit.summary",
                         tb.vars = NULL,
                         tb.params = NULL,
@@ -248,6 +250,7 @@ stat_fit_tb <- function(mapping = NULL, data = NULL, geom = "table_npc",
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
     params = list(method = method,
                   method.args = method.args,
+                  tidy.args = tidy.args,
                   tb.type = tb.type,
                   tb.vars = tb.vars,
                   tb.params = tb.params,
@@ -277,6 +280,7 @@ fit_tb_compute_panel_fun <- function(data,
                                      scales,
                                      method,
                                      method.args,
+                                     tidy.args,
                                      tb.type,
                                      tb.vars,
                                      tb.params,
@@ -305,19 +309,38 @@ fit_tb_compute_panel_fun <- function(data,
     label.y <- label.y[1]
   }
 
-  method.args <- c(method.args, list(data = quote(data)))
   if (is.character(method)) method <- match.fun(method)
+  if ("data" %in% names(method.args)) {
+    message("External 'data' passed can be inconsistent with plot!\n",
+            "These data must be available at the time of printing!!!")
+  } else if (any(grepl("formula|fixed|random|model", names(method.args)))) {
+    #    method.args <- c(method.args, list(data = quote(data)))  works in most cases and avoids copying data
+    method.args <- c(method.args, list(data = data)) # cor.test() needs the actual data
+  } else {
+    message("Only the 'formula' interface of methods is well supported.")
+    if ("x" %in% names(method.args)) {
+      message("Passing data$x as 'x'.")
+      method.args[["x"]] <- data[["x"]]
+    }
+    if ("y" %in% names(method.args)) {
+      message("Passing data$y as 'y'.")
+      method.args[["y"]] <- data[["y"]]
+    }
+  }
   mf <- do.call(method, method.args)
 
   if (tolower(tb.type) %in% c("fit.anova", "anova")) {
-    mf_tb <- broom::tidy(stats::anova(mf))
+    tidy.args <- c(x = stats::anova(mf), tidy.args)
+    mf_tb <- do.call(broom::tidy, tidy.args)
   } else if (tolower(tb.type) %in% c("fit.summary", "summary")) {
-    mf_tb <- broom::tidy(mf)
+    tidy.args <- c(x = mf, tidy.args)
+    mf_tb <- do.call(broom::tidy, tidy.args)
   } else if (tolower(tb.type) %in% c("fit.coefs", "coefs")) {
-    mf_tb <- broom::tidy(mf)[c("term", "estimate")]
+    tidy.args <- c(x = mf, tidy.args)
+    mf_tb <- do.call(broom::tidy, tidy.args)[c("term", "estimate")]
   }
 
-  # reduce number of significant digits to all numeric columns
+  # reduce number of significant digits of all numeric columns
   num.cols <- sapply(mf_tb, is.numeric)
   mf_tb[num.cols] <- signif(mf_tb[num.cols], digits = digits)
   # treat p.value as a special case
