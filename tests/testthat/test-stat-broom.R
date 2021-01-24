@@ -107,7 +107,7 @@ test_that("glance_methods", {
    )
   options(old.options)
 
-  vdiffr::expect_doppelganger("glance_method_cortest",
+  vdiffr::expect_doppelganger("glance_method_cortest_xy",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
                                 stat_fit_glance(method = "cor.test",
@@ -118,7 +118,7 @@ test_that("glance_methods", {
                                                                       stat(p.value))))
   )
 
-  vdiffr::expect_doppelganger("glance_method_cortest",
+  vdiffr::expect_doppelganger("glance_method_cortest_formula",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
                                 stat_fit_glance(method = "cor.test",
@@ -128,7 +128,6 @@ test_that("glance_methods", {
                                                                       stat(estimate),
                                                                       stat(p.value))))
   )
-
 
 })
 
