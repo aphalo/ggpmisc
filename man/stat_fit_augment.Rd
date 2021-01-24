@@ -87,7 +87,7 @@ The statistic \code{stat_fit_augment} can be used only with
   not needed.
 
 Although arguments passed to parameter \code{augment.args} will be
-  passed to [broom::augment()] whether they are silently ignored or obeyed
+  passed to [generics::augment()] whether they are silently ignored or obeyed
   depends on each specialization of [augment()], so do carefully read the
   documentation for the version of [augment()] corresponding to the `method`
   used to fit the model.
@@ -111,7 +111,7 @@ Although arguments passed to parameter \code{augment.args} will be
  The output of \code{augment()} is
   returned as is, except for \code{y} which is set based on \code{y.out} and
   \code{y.observed} which preserves the \code{y} returned by the
-  \code{broom::augment} methods. This renaming is needed so that the geom
+  \code{generics::augment} methods. This renaming is needed so that the geom
   works as expected.
 
   To explore the values returned by this statistic, which vary depending

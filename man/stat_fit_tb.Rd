@@ -136,6 +136,8 @@ can include aesthetics whose values you want to set, not map. See
 }
 
 \examples{
+library(broom)
+
 # data for examples
 x <- c(44.4, 45.9, 41.9, 53.3, 44.7, 44.1, 50.7, 45.2, 60.1)
 covariate <- sqrt(x) + rnorm(9)

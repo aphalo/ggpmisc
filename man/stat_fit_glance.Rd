@@ -35,7 +35,7 @@ the plot defaults.}
 \item{method}{character or function.}
 
 \item{method.args, glance.args}{list of arguments to pass to \code{method}
-and to [broom::glance()], respectively.}
+and to [generics::glance()], respectively.}
 
 \item{label.x, label.y}{\code{numeric} with range 0..1 "normalized parent
 coordinates" (npc units) or character if using \code{geom_text_npc()} or
@@ -89,7 +89,7 @@ can include aesthetics whose values you want to set, not map. See
 }
 \note{
 Although arguments passed to parameter \code{glance.args} will be
-  passed to [broom::glance()] whether they are silently ignored or obeyed
+  passed to [generics::glance()] whether they are silently ignored or obeyed
   depends on each specialization of [glance()], so do carefully read the
   documentation for the version of [glance()] corresponding to the `method`
   used to fit the model.

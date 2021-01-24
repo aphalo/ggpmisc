@@ -1,10 +1,11 @@
-# broom::tidy as tibble -----------------------------------------------------
+# generics::tidy as tibble -----------------------------------------------------
 
 #' @title Model-fit summary or ANOVA
 #'
 #' @description \code{stat_fit_tb} fits a model and returns a "tidy" version of
-#'   the model's summary or ANOVA table, using package 'broom'. The annotation
-#'   is added to the plots in tabular form.
+#'   the model's summary or ANOVA table, using '\code{tidy()} methods from
+#'   packages 'broom', 'broom.mixed', or other sources. The annotation is added
+#'   to the plots in tabular form.
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs to be
@@ -81,16 +82,20 @@
 #'   on the model fitting function and model formula we suggest the use of
 #'   \code{\link[gginnards]{geom_debug}}. An example is shown below.
 #'
-#' @seealso \code{\link[broom]{broom}} for details on how the tidying of the
-#'   result of model fits is done. See \code{\link{geom_table}} for details
-#'   on how inset tables respond to mapped aesthetics and table themes. For
-#'   details on predefined table themes see \code{\link{ttheme_gtdefault}}.
+#' @seealso \code{\link[broom]{broom}} and
+#'   \code{\link[broom.mixed]{broom.mixed}}for details on how the tidying of the
+#'   result of model fits is done. See \code{\link{geom_table}} for details on
+#'   how inset tables respond to mapped aesthetics and table themes. For details
+#'   on predefined table themes see \code{\link{ttheme_gtdefault}}.
 #'
-#' @family ggplot2 statistics based on 'broom'.
+#' @family ggplot2 statistics calling generic tidier methods implemented in
+#'   packages 'broom', 'broom.mixed', or elsewhere.
 #'
 #' @export
 #'
 #' @examples
+#' library(broom)
+#'
 #' # data for examples
 #' x <- c(44.4, 45.9, 41.9, 53.3, 44.7, 44.1, 50.7, 45.2, 60.1)
 #' covariate <- sqrt(x) + rnorm(9)
@@ -330,14 +335,14 @@ fit_tb_compute_panel_fun <- function(data,
   mf <- do.call(method, method.args)
 
   if (tolower(tb.type) %in% c("fit.anova", "anova")) {
-    tidy.args <- c(x = stats::anova(mf), tidy.args)
-    mf_tb <- do.call(broom::tidy, tidy.args)
+    tidy.args <- c(x = quote(stats::anova(mf)), tidy.args)
+    mf_tb <- do.call(generics::tidy, tidy.args)
   } else if (tolower(tb.type) %in% c("fit.summary", "summary")) {
-    tidy.args <- c(x = mf, tidy.args)
-    mf_tb <- do.call(broom::tidy, tidy.args)
+    tidy.args <- c(x = quote(mf), tidy.args)
+    mf_tb <- do.call(generics::tidy, tidy.args)
   } else if (tolower(tb.type) %in% c("fit.coefs", "coefs")) {
-    tidy.args <- c(x = mf, tidy.args)
-    mf_tb <- do.call(broom::tidy, tidy.args)[c("term", "estimate")]
+    tidy.args <- c(x = quote(mf), tidy.args)
+    mf_tb <- do.call(generics::tidy, tidy.args)[c("term", "estimate")]
   }
 
   # reduce number of significant digits of all numeric columns

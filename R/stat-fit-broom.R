@@ -1,11 +1,10 @@
-# broom::glance -----------------------------------------------------------
+# generics::glance -----------------------------------------------------------
 
 #' @title One row summary data frame for a fitted model
 #'
-#' @description \code{stat_fit_glance} fits a model and returns a summary
-#'   "glance" of the model's statistics, using package 'broom'. It will
-#'   succeed if and only if a `glance()` method exist and is visible in
-#'   the current environment.
+#' @description \code{stat_fit_glance} fits a model and returns a "tidy" version
+#'   of the model's fit, using '\code{glance()} methods from packages 'broom',
+#'   'broom.mixed', or other sources.
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs
@@ -29,7 +28,7 @@
 #'   the computation proceeds.
 #' @param method character or function.
 #' @param method.args,glance.args list of arguments to pass to \code{method}
-#'   and to [broom::glance()], respectively.
+#'   and to [generics::glance()], respectively.
 #' @param label.x,label.y \code{numeric} with range 0..1 "normalized parent
 #'   coordinates" (npc units) or character if using \code{geom_text_npc()} or
 #'   \code{geom_label_npc()}. If using \code{geom_text()} or \code{geom_label()}
@@ -86,18 +85,20 @@
 #'   \code{\link[gginnards]{geom_debug}}. An example is shown below.
 #'
 #' @note Although arguments passed to parameter \code{glance.args} will be
-#'   passed to [broom::glance()] whether they are silently ignored or obeyed
+#'   passed to [generics::glance()] whether they are silently ignored or obeyed
 #'   depends on each specialization of [glance()], so do carefully read the
 #'   documentation for the version of [glance()] corresponding to the `method`
 #'   used to fit the model.
 #'
-#' @family ggplot2 statistics based on 'broom'.
+#' @family ggplot2 statistics calling generic tidier methods implemented in
+#'   packages 'broom', 'broom.mixed', or elsewhere.
 #'
 #' @seealso \code{\link[broom]{broom}}
 #'
 #' @export
 #'
 #' @examples
+#' library(broom)
 #' library(gginnards)
 #' library(quantreg)
 #'
@@ -257,7 +258,7 @@ fit_glance_compute_group_fun <- function(data,
   mf <- do.call(method, method.args)
 
   glance.args <- c(list(x = quote(mf), glance.args))
-  z <- do.call(broom::glance, glance.args)
+  z <- do.call(generics::glance, glance.args)
 
   n.labels <- nrow(z)
   if (length(label.x) != n.labels) {
@@ -349,12 +350,14 @@ StatFitGlance <-
                    required_aes = c("x", "y")
   )
 
-# broom::augment ----------------------------------------------------------
+# generics::augment ----------------------------------------------------------
 
 #' @title Augment data with fitted values and statistics
 #'
-#' @description \code{stat_fit_augment} fits a model and returns the data
-#'   augmented with information from the fitted model, using package 'broom'.
+#' @description \code{stat_fit_augment} fits a model and returns a "tidy"
+#'   version of the model's data with prediction added, using '\code{augmnent()}
+#'   methods from packages 'broom', 'broom.mixed', or other sources. The
+#'   prediction can be added to the plot as a curve.
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs
@@ -412,7 +415,7 @@ StatFitGlance <-
 #' @section Computed variables: The output of \code{augment()} is
 #'   returned as is, except for \code{y} which is set based on \code{y.out} and
 #'   \code{y.observed} which preserves the \code{y} returned by the
-#'   \code{broom::augment} methods. This renaming is needed so that the geom
+#'   \code{generics::augment} methods. This renaming is needed so that the geom
 #'   works as expected.
 #'
 #'   To explore the values returned by this statistic, which vary depending
@@ -426,18 +429,20 @@ StatFitGlance <-
 #'   not needed.
 #'
 #' @note Although arguments passed to parameter \code{augment.args} will be
-#'   passed to [broom::augment()] whether they are silently ignored or obeyed
+#'   passed to [generics::augment()] whether they are silently ignored or obeyed
 #'   depends on each specialization of [augment()], so do carefully read the
 #'   documentation for the version of [augment()] corresponding to the `method`
 #'   used to fit the model.
 #'
-#' @family ggplot2 statistics based on 'broom'.
+#' @family ggplot2 statistics calling generic tidier methods implemented in
+#'   packages 'broom', 'broom.mixed', or elsewhere.
 #'
 #' @seealso \code{\link[broom]{broom}}
 #'
 #' @export
 #'
 #' @examples
+#' library(broom)
 #' library(gginnards)
 #' library(quantreg)
 #'
@@ -568,7 +573,7 @@ fit_augment_compute_group_fun <- function(data,
   mf <- do.call(method, method.args)
 
   augment.args <- c(list(x = mf), augment.args)
-  z <- do.call(broom::augment, augment.args)
+  z <- do.call(generics::augment, augment.args)
 
   z <- plyr::colwise(unAsIs)(z)
   tibble::as_tibble(z)
@@ -599,13 +604,14 @@ StatFitAugment <-
                    required_aes = c("x", "y")
 )
 
-# broom::tidy -------------------------------------------------------------
+# generics::tidy -------------------------------------------------------------
 
 #' @title One row data frame with fitted parameter estimates
 #'
 #' @description \code{stat_fit_tidy} fits a model and returns a "tidy" version
-#'   of the model's summary, using package 'broom'. To add the summary in
-#'   tabular form use \code{\link{stat_fit_tb}}. When using
+#'   of the model's summary, using '\code{tidy()} methods from packages 'broom',
+#'   'broom.mixed', or other sources.#' To add the summary in tabular form use
+#'   \code{\link{stat_fit_tb}} instead of this statistic. When using
 #'   \code{stat_fit_tidy()} you will most likely want to change the default
 #'   mapping for label.
 #'
@@ -631,7 +637,7 @@ StatFitAugment <-
 #'   before the computation proceeds.
 #' @param method character or function.
 #' @param method.args,tidy.args list of arguments to pass to \code{method},
-#'   and to [broom::tidy], respectively.
+#'   and to [generics::tidy], respectively.
 #' @param label.x,label.y \code{numeric} with range 0..1 or character.
 #'   Coordinates to be used for positioning the output, expressed in "normalized
 #'   parent coordinates" or character string. If too short they will be
@@ -683,19 +689,20 @@ StatFitAugment <-
 #'   not needed.
 #'
 #' @note Although arguments passed to parameter \code{tidy.args} will be
-#'   passed to [broom::tidy()] whether they are silently ignored or obeyed
+#'   passed to [generics::tidy()] whether they are silently ignored or obeyed
 #'   depends on each specialization of [tidy()], so do carefully read the
 #'   documentation for the version of [tidy()] corresponding to the `method`
 #'   used to fit the model.
 #'
-#'
-#' @family ggplot2 statistics based on 'broom'.
+#' @family ggplot2 statistics calling generic tidier methods implemented in
+#'   packages 'broom', 'broom.mixed', or elsewhere.
 #'
 #' @seealso \code{\link[broom]{broom}}
 #'
 #' @export
 #'
 #' @examples
+#' library(broom)
 #' library(gginnards)
 #' library(quantreg)
 #'
@@ -859,7 +866,7 @@ fit_tidy_compute_group_fun <- function(data,
   }
   mf <- do.call(method, method.args)
   tidy.args <- c(list(x = quote(mf)), tidy.args)
-  mf.td <- do.call(broom::tidy, tidy.args)
+  mf.td <- do.call(generics::tidy, tidy.args)
   col.names <- colnames(mf.td)
   clean.term.names <- gsub("(Intercept)", "Intercept", mf.td[["term"]], fixed = TRUE)
   z <- as.data.frame(t(mf.td[["estimate"]]))

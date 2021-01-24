@@ -35,7 +35,7 @@ the plot defaults.}
 \item{method}{character or function.}
 
 \item{method.args, tidy.args}{list of arguments to pass to \code{method},
-and to [broom::tidy], respectively.}
+and to [generics::tidy], respectively.}
 
 \item{label.x, label.y}{\code{numeric} with range 0..1 or character.
 Coordinates to be used for positioning the output, expressed in "normalized
@@ -96,7 +96,7 @@ The statistic \code{stat_fit_tidy} can be used only with
   not needed.
 
 Although arguments passed to parameter \code{tidy.args} will be
-  passed to [broom::tidy()] whether they are silently ignored or obeyed
+  passed to [generics::tidy()] whether they are silently ignored or obeyed
   depends on each specialization of [tidy()], so do carefully read the
   documentation for the version of [tidy()] corresponding to the `method`
   used to fit the model.
