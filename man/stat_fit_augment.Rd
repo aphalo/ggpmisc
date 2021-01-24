@@ -30,11 +30,10 @@ the plot defaults.}
 
 \item{geom}{The geometric object to use display the data}
 
-\item{method}{character.}
+\item{method}{character or function.}
 
-\item{method.args}{list of arguments to pass to \code{method}.}
-
-\item{augment.args}{list of arguments to pass to \code{broom:augment}.}
+\item{method.args, augment.args}{list of arguments to pass to \code{method}
+and to to \code{broom:augment}.}
 
 \item{level}{numeric Level of confidence interval to use (0.95 by default)}
 
@@ -86,7 +85,19 @@ The statistic \code{stat_fit_augment} can be used only with
   \code{data} argument. Use \code{ggplot2::stat_smooth()} instead of
   \code{stat_fit_augment} in production code if the additional features are
   not needed.
+
+Although arguments passed to parameter \code{augment.args} will be
+  passed to [broom::augment()] whether they are silently ignored or obeyed
+  depends on each specialization of [augment()], so do carefully read the
+  documentation for the version of [augment()] corresponding to the `method`
+  used to fit the model.
 }
+\section{Warning!}{
+ Not all `glance()` methods are defined in package 'broom'.
+  `glance()` especializations for mixed models fits of classes `lme`, `nlme`,
+  `lme4`, and many others are defined in package 'broom.mixed'.
+}
+
 \section{Handling of grouping}{
  \code{stat_fit_augment} applies the function
   given by \code{method} separately to each group of observations; in ggplot2
@@ -110,6 +121,8 @@ The statistic \code{stat_fit_augment} can be used only with
 
 \examples{
 library(gginnards)
+library(quantreg)
+
 # Regression by panel, using geom_debug() to explore computed variables
 ggplot(mtcars, aes(x = disp, y = mpg)) +
   geom_point(aes(colour = factor(cyl))) +
@@ -159,6 +172,12 @@ ggplot(mtcars, aes(x = disp, y = mpg, weight = cyl)) +
                    method.args = list(formula = y ~ x,
                                  weights = quote(weight)),
                    y.out = ".resid")
+
+# Quantile regression
+ggplot(mtcars, aes(x = disp, y = mpg)) +
+  geom_point() +
+  stat_fit_augment(method = "rq",
+                  label.y = "bottom")
 
 }
 \seealso{

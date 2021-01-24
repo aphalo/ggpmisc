@@ -53,7 +53,8 @@ Suggests:
     nlme (>= 3.1-147),
     gginnards(>= 0.0.3),
     ggrepel (>= 0.9.1),
-    magick (>= 2.4.0)
+    magick (>= 2.4.0),
+    quantreg (>= 5.8.3)
 URL: https://docs.r4photobiology.info/ggpmisc/, 
      https://github.com/aphalo/ggpmisc
 BugReports: https://github.com/aphalo/ggpmisc/issues
