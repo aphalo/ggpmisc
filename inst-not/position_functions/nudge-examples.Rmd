@@ -27,16 +27,13 @@ options(warnPartialMatchArgs = FALSE,
 
 ## Preliminaries
 
-We load all the packages used in the examples.
+We load all the packages used in the examples. These examples were written using
+different names for the functions, so we assign them to these names.
 
-```{r, message=FALSE}
-library(ggpmisc)
+```{r}
 library(ggrepel)
-library(xts)
-library(lubridate)
-library(tibble)
-library(dplyr)
-library(nlme)
+position_nudge_center <- ggrepel::position_nudge_repel 
+position_nudge_line  <- ggrepel::position_nudge_repel_t
 ```
 
 As we will use text and labels on the plotting area we change the
@@ -77,6 +74,13 @@ df <- data.frame(
 )
 
 ```
+
+```{r}
+ggplot(df, aes(x, y, label = l)) +
+  geom_point() +
+  geom_text(position = position_nudge_center(x = 0.1))
+```
+By default, split based on `mean()`.
 
 ```{r}
 ggplot(df, aes(x, y, label = l)) +
@@ -148,11 +152,21 @@ along a line. One could, of course, have in this case passed suitable
 values as arguments to *x* and *y* using `position_nudge()` from package
 'ggplot2'.
 
+Default in 'ggplot2' is no nudging.
+
 ```{r}
 ggplot(df, aes(x, 2 * x, label = l)) +
   geom_point() +
   geom_abline(intercept = 0, slope = 2, linetype = "dotted") +
-  geom_text(position = position_nudge_line())
+  geom_text(position = position_nudge(x = 0.4, y = -0.7))
+```
+Same for `position_nudge_line()`.
+
+```{r}
+ggplot(df, aes(x, 2 * x, label = l)) +
+  geom_point() +
+  geom_abline(intercept = 0, slope = 2, linetype = "dotted") +
+  geom_text(position = position_nudge_line(x = -0.5, y = -0.8))
 ```
 
 However, `position_nudge_line()` will work without change irrespective
@@ -162,7 +176,7 @@ of the slope or intercept along which the observations fall.
 ggplot(df, aes(x, -3 * x, label = l)) +
   geom_point() +
   geom_abline(intercept = 0, slope = -3, linetype = "dotted") +
-  geom_text(position = position_nudge_line())
+  geom_text(position = position_nudge_line(x = -0.5, y = -0.8))
 ```
 
 With observations with high variation in *y*, a linear model fit may
@@ -188,6 +202,7 @@ ggplot(subset(df, x >= 0), aes(y, yy)) +
   stat_smooth(method = "lm", formula = y ~ x) +
   geom_text(aes(label = l),
             position = position_nudge_line(method = "lm",
+                                           x = 3, y = 3, 
                                            line_nudge = 2.5,
                                            direction = "split"))
 ```
@@ -202,16 +217,17 @@ ggplot(subset(df, x >= 0), aes(y, yy)) +
   geom_abline(intercept = 0, slope = 1, linetype = "dotted") +
   geom_text(aes(label = l),
             position = position_nudge_line(abline = c(0, 1),
+                                           x = 3, y = 3, 
                                            direction = "split"))
 ```
 
-With observations that follow exactly a simple curve the defaults work
-well to automate the nudging of individual data labels away from the
-implicit curve. Positive values as arguments to `x` and `y` correspond
-to above and inside the curve. One could, of course, pass also in this
-case passed suitable values as arguments to *x* and *y* using
-`position_nudge()` from package 'ggplot2', but would need to be vectors
-with different *nudge* values for each observation.
+With observations that follow exactly a simple curve the defaults work well to
+automate the nudging of individual data labels away from the implicit curve.
+Positive values as arguments to `x` and `y` correspond to above and inside the
+curve. One could, of course, pass also in this case suitable values as arguments
+to *x* and *y* using `position_nudge()` from package 'ggplot2', but these
+arguments would need to be vectors with different *nudge* values for each
+observation.
 
 ```{r}
 ggplot(df, aes(x, y, label = l)) +
@@ -247,7 +263,8 @@ ggplot(df, aes(x, yy, label = l)) +
 ```
 
 When fitting a polynomial, `"lm"` should be the argument passed to
-`method` and a model formula based on `poly()` as argument to `formula`.
+`method` and a model formula preferably based on `poly()`, setting `raw = TRUE`,
+as argument to `formula`.
 *Currently no other methods are implemented in* `position_nudge_line()`.
 
 ```{r}
@@ -256,7 +273,54 @@ ggplot(df, aes(x, yy, label = l)) +
   stat_smooth(method = "lm", formula = y ~ poly(x, 2, raw = TRUE)) +
   geom_text(aes(y = yy, label = l),
             position = position_nudge_line(method = "lm",
+                                           x = 0.6, 
+                                           y = 6,
                                            formula = y ~ poly(x, 2, raw = TRUE),
                                            direction = "split"))
+```
+
+Grouping is supported.
+
+```{r}
+df <- data.frame(x = rep(1:10, 2),
+                 y = c(1:10, 10:1),
+                 group = rep(c("a", "b"), c(10, 10)),
+                 l = "+")
+```
+
+```{r}
+ggplot(df, aes(x, y, label = l, color = group)) +
+  geom_line(linetype = "dotted") +
+  geom_text() +
+  geom_text(position = position_nudge_line(x = 0.25, y = 1)) +
+  geom_text(position = position_nudge_line(x = -0.25, y = -1)) +
+  coord_equal(ratio = 0.5)
+```
+
+One needs to ensure that grouping is in effect in the geoms with nudging.
+
+```{r}
+ggplot(df, aes(x, y, label = l, color = group, group = group)) +
+  geom_line(linetype = "dotted") +
+  geom_text() +
+  geom_text(color = "red",
+            position = position_nudge_line(x = 1, y = 1)) +
+  geom_text(color = "blue",
+            position = position_nudge_line(x = -1, y = -1)) +
+  coord_equal()
+```
+
+Facets are also supported.
+
+```{r}
+ggplot(df, aes(x, y, label = l)) +
+  geom_line(linetype = "dotted") +
+  geom_text() +
+  geom_text(position = position_nudge_line(x = 1, y = 1),
+            color = "red") +
+  geom_text(position = position_nudge_line(x = -1, y = -1),
+            color = "blue") +
+  facet_wrap(~group) +
+  coord_equal(ratio = 1)
 ```
 
