@@ -4,6 +4,12 @@ editor_options:
     wrap: 72
 ---
 
+# ggpmisc 0.3.8-1
+
+-   Fix bug: suggested package not loaded in vignette *Model-Based Plot
+    Annotations* resulting in "method not found" warning in some
+    examples*.*
+
 # ggpmisc 0.3.8
 
 -   **CODE BREAKING:** functions `stat_fit_glance()` ,

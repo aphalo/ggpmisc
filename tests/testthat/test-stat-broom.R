@@ -4,6 +4,8 @@ library(tibble)
 library(gginnards)
 library(nlme)
 library(quantreg)
+library(broom)
+library(broom.mixed)
 
 set.seed(4321)
 # generate artificial data

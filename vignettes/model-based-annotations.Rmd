@@ -34,6 +34,9 @@ library(lubridate)
 library(tibble)
 library(dplyr)
 library(nlme)
+library(quantreg)
+library(broom)
+library(broom.mixed)
 ```
 
 As we will use text and labels on the plotting area we change the default theme
@@ -538,6 +541,10 @@ to a plot. However, the user has to explicitly construct the labels within
 output of `tidy()` so that the values for a given group are in a single row in
 the returned `data`.
 
+As first example we fit a non-linear model, the Michaelis-Menten equation of
+reaction kinetics, using `nls()`. We use the self-starting function `SSmicmen()`
+available in R.
+
 ```{r}
 micmen.formula <- y ~ SSmicmen(x, Vm, K) 
 ggplot(Puromycin, aes(conc, rate, colour = state)) +
@@ -571,12 +578,99 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
                 size = 3,
                 label.x = "center",
                 label.y = "bottom",
-                vstep = 0.18,
+                vstep = 0.12,
                 aes(label = paste("V~`=`~frac(", signif(stat(Vm_estimate), digits = 2), "~C,",
                                   signif(stat(K_estimate), digits = 2), "+C)",
                                   sep = "")),
                 parse = TRUE) +
   labs(x = "C", y = "V")
+```
+
+What if we would need a more specific _statistic_, similar to `stat_poly_eq()`?
+We can use `stat_fit_tidy()` as the basis for its definition.
+
+```{r}
+stat_micmen_eq <- function(vstep = 0.12,
+                           size = 3,
+                           ...) {
+  stat_fit_tidy(method = "nls", 
+                method.args = list(formula = micmen.formula),
+                aes(label = paste("V~`=`~frac(", signif(stat(Vm_estimate), digits = 2), "~C,",
+                                  signif(stat(K_estimate), digits = 2), "+C)",
+                                  sep = "")),
+                parse = TRUE,
+                vstep = vstep,
+                size = size,
+                ...)
+}
+```
+
+The code for the figure is now simpler, and still produces the same figure (not shown).
+
+```{r, eval=FALSE}
+micmen.formula <- y ~ SSmicmen(x, Vm, K) 
+ggplot(Puromycin, aes(conc, rate, colour = state)) +
+  geom_point() +
+  geom_smooth(method = "nls", 
+              formula = micmen.formula,
+              se = FALSE) +
+  stat_micmen_eq(label.x = "center",
+                label.y = "bottom") +
+  labs(x = "C", y = "V")
+```
+
+As a second example we show a quantile regression fit using function `rq()` 
+from package 'quantreg'.
+
+```{r}
+my_formula <- y ~ x
+
+ggplot(mpg, aes(displ, 1 / hwy)) +
+  geom_point() +
+  geom_quantile(quantiles = 0.5, formula = my_formula) +
+  stat_fit_tidy(method = "rq",
+                method.args = list(formula = y ~ x, tau = 0.5), 
+                tidy.args = list(se.type = "nid"),
+                mapping = aes(label = sprintf('y~"="~%.3g+%.3g~x*", with "*italic(P)~"="~%.3f',
+                                              after_stat(Intercept_estimate), 
+                                              after_stat(x_estimate),
+                                              after_stat(x_p.value))),
+                parse = TRUE)
+```
+
+We can define a `stat_rq_eq()` if we need to add similar equations to
+several plots. In this example we retain the ability of the user to
+override most of the default default arguments.
+
+```{r}
+stat_rq_eqn <- 
+  function(formula = y ~ x, 
+           tau = 0.5,
+           method = "br",
+           mapping = aes(label = sprintf('y~"="~%.3g+%.3g~x*", with "*italic(P)~"="~%.3f',
+                                         after_stat(Intercept_estimate), 
+                                         after_stat(x_estimate),
+                                         after_stat(x_p.value))),
+           parse = TRUE,
+           ...) {
+    method.args <- list(formula = formula, tau = tau, method = method)
+    stat_fit_tidy(method = "rq",
+                  method.args = method.args, 
+                  tidy.args = list(se.type = "nid"),
+                  mapping = mapping,
+                  parse = parse,
+                  ...)
+  }
+```
+
+And the code of the figure now as simple as. Figure not shown, as is identical
+to the one above.
+
+```{r, eval=FALSE}
+ggplot(mpg, aes(displ, 1 / hwy)) +
+  geom_point() +
+  geom_quantile(quantiles = 0.5, formula = my_formula) +
+  stat_rq_eqn(tau = 0.5, formula = my_formula)
 ```
 
 ### stat_fit_tb
@@ -781,8 +875,9 @@ ggplot(mtcars, aes(wt, mpg)) +
                    y.out = ".resid")
 ```
 
-```{r, echo=FALSE, eval=FALSE}
-# augment no longer available for "nlme"
+The tidiers for mixed models have moved to package 'broom.mixed'!
+
+```{r}
 args <- list(model = y ~ SSlogis(x, Asym, xmid, scal),
              fixed = Asym + xmid + scal ~1,
              random = Asym ~1 | group,

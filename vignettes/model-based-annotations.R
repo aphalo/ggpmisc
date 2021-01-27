@@ -15,6 +15,9 @@ library(lubridate)
 library(tibble)
 library(dplyr)
 library(nlme)
+library(quantreg)
+library(broom)
+library(broom.mixed)
 
 ## -----------------------------------------------------------------------------
 old_theme <- theme_set(theme_bw())
@@ -318,12 +321,79 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
                 size = 3,
                 label.x = "center",
                 label.y = "bottom",
-                vstep = 0.18,
+                vstep = 0.12,
                 aes(label = paste("V~`=`~frac(", signif(stat(Vm_estimate), digits = 2), "~C,",
                                   signif(stat(K_estimate), digits = 2), "+C)",
                                   sep = "")),
                 parse = TRUE) +
   labs(x = "C", y = "V")
+
+## -----------------------------------------------------------------------------
+stat_micmen_eq <- function(vstep = 0.12,
+                           size = 3,
+                           ...) {
+  stat_fit_tidy(method = "nls", 
+                method.args = list(formula = micmen.formula),
+                aes(label = paste("V~`=`~frac(", signif(stat(Vm_estimate), digits = 2), "~C,",
+                                  signif(stat(K_estimate), digits = 2), "+C)",
+                                  sep = "")),
+                parse = TRUE,
+                vstep = vstep,
+                size = size,
+                ...)
+}
+
+## ---- eval=FALSE--------------------------------------------------------------
+#  micmen.formula <- y ~ SSmicmen(x, Vm, K)
+#  ggplot(Puromycin, aes(conc, rate, colour = state)) +
+#    geom_point() +
+#    geom_smooth(method = "nls",
+#                formula = micmen.formula,
+#                se = FALSE) +
+#    stat_micmen_eq(label.x = "center",
+#                  label.y = "bottom") +
+#    labs(x = "C", y = "V")
+
+## -----------------------------------------------------------------------------
+my_formula <- y ~ x
+
+ggplot(mpg, aes(displ, 1 / hwy)) +
+  geom_point() +
+  geom_quantile(quantiles = 0.5, formula = my_formula) +
+  stat_fit_tidy(method = "rq",
+                method.args = list(formula = y ~ x, tau = 0.5), 
+                tidy.args = list(se.type = "nid"),
+                mapping = aes(label = sprintf('y~"="~%.3g+%.3g~x*", with "*italic(P)~"="~%.3f',
+                                              after_stat(Intercept_estimate), 
+                                              after_stat(x_estimate),
+                                              after_stat(x_p.value))),
+                parse = TRUE)
+
+## -----------------------------------------------------------------------------
+stat_rq_eqn <- 
+  function(formula = y ~ x, 
+           tau = 0.5,
+           method = "br",
+           mapping = aes(label = sprintf('y~"="~%.3g+%.3g~x*", with "*italic(P)~"="~%.3f',
+                                         after_stat(Intercept_estimate), 
+                                         after_stat(x_estimate),
+                                         after_stat(x_p.value))),
+           parse = TRUE,
+           ...) {
+    method.args <- list(formula = formula, tau = tau, method = method)
+    stat_fit_tidy(method = "rq",
+                  method.args = method.args, 
+                  tidy.args = list(se.type = "nid"),
+                  mapping = mapping,
+                  parse = parse,
+                  ...)
+  }
+
+## ---- eval=FALSE--------------------------------------------------------------
+#  ggplot(mpg, aes(displ, 1 / hwy)) +
+#    geom_point() +
+#    geom_quantile(quantiles = 0.5, formula = my_formula) +
+#    stat_rq_eqn(tau = 0.5, formula = my_formula)
 
 ## -----------------------------------------------------------------------------
 formula <- y ~ x + I(x^2) + I(x^3)
@@ -462,17 +532,16 @@ ggplot(mtcars, aes(wt, mpg)) +
                    geom = "point",
                    y.out = ".resid")
 
-## ---- echo=FALSE, eval=FALSE--------------------------------------------------
-#  # augment no longer available for "nlme"
-#  args <- list(model = y ~ SSlogis(x, Asym, xmid, scal),
-#               fixed = Asym + xmid + scal ~1,
-#               random = Asym ~1 | group,
-#               start = c(Asym = 200, xmid = 725, scal = 350))
-#  ggplot(Orange, aes(age, circumference, colour = Tree)) +
-#    geom_point() +
-#    stat_fit_augment(method = "nlme",
-#                     method.args = args,
-#                     augment.args = list(data = quote(data)))
+## -----------------------------------------------------------------------------
+args <- list(model = y ~ SSlogis(x, Asym, xmid, scal),
+             fixed = Asym + xmid + scal ~1,
+             random = Asym ~1 | group,
+             start = c(Asym = 200, xmid = 725, scal = 350))
+ggplot(Orange, aes(age, circumference, colour = Tree)) +
+  geom_point() +
+  stat_fit_augment(method = "nlme",
+                   method.args = args,
+                   augment.args = list(data = quote(data)))
 
 ## -----------------------------------------------------------------------------
 head(volcano_example.df) 
