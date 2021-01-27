@@ -52,7 +52,7 @@ Suggests:
     rmarkdown (>= 2.3),
     broom (>= 0.7.3),
     broom.mixed (>= 0.2.6),
-    nlme (>= 3.1-151),
+    nlme (>= 3.1-148),
     gginnards(>= 0.0.3),
     ggrepel (>= 0.9.1),
     magick (>= 2.6.0),
