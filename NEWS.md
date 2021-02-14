@@ -4,6 +4,10 @@ editor_options:
     wrap: 72
 ---
 
+# ggpmisc 0.3.9
+
+-   Update the documentation of `geom_plot()`.
+
 # ggpmisc 0.3.8-1
 
 -   Fix bug: suggested package not loaded in vignette *Model-Based Plot

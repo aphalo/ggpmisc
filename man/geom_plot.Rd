@@ -104,11 +104,16 @@ These geoms work only with tibbles as \code{data}, as they expects a
   used to rotate the inset plots.
 }
 
-\section{Inset size}{
- You can modify inset plot size with the \code{vp.width}
-  and \code{vp.height} aesthetics. These can be a number between 0 (smallest
-  possible inset) and 1 (whole plotting area width or height). The default
-  value for for both of these aesthetics is 1/3.
+\section{Inset size and aspect}{
+ You can modify the size of the inset plot
+  with the \code{vp.width} and \code{vp.height} aesthetics. Arguments can be
+  a number between 0 (smallest possible inset) and 1 (whole plotting area
+  width or height). The default value for for both of these aesthetics is
+  1/3. If the coordinates are "free" the plot stretches to fill the viewport.
+  However, if the coordinates of the inset are "fixed" and the aspect ratio
+  of the viewport is different to that of the inset, the viewport will be
+  surrounded on either $x$ or $y$ margins by invisible space, which may look
+  as if the position of the inset is wrong.
 }
 
 \section{Known problem!}{
@@ -133,6 +138,12 @@ df <- tibble(x = 0.01, y = 0.01,
 p +
   expand_limits(x = 0, y = 0) +
   geom_plot_npc(data = df, aes(npcx = x, npcy = y, label = plot))
+
+p +
+  expand_limits(x = 0, y = 0) +
+  geom_plot_npc(data = df,
+                vp.width = 1/2, vp.height = 1/4,
+                aes(npcx = x, npcy = y, label = plot))
 
 }
 \references{
