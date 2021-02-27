@@ -2,7 +2,7 @@
 #'
 #' This method finds peaks (local maxima) in a spectrum, using a user selectable
 #' span and size threshold relative to the tallest peak (global maximum). This
-#' is a wrapper built on top of function peaks from package splus2R.
+#' is a wrapper built on top of function peaks from package 'splus2R'.
 #'
 #' @param x numeric array
 #' @param ignore_threshold numeric value between 0.0 and 1.0 indicating the size
@@ -23,6 +23,10 @@
 #'   \code{\link[splus2R]{peaks}} from \pkg{splus2R} and handles non-finite
 #'   (including NA) values differently than \code{peaks}, instead of giving an
 #'   error they are replaced with the smallest finite value in \code{x}.
+#'
+#' @note The default for parameter \code{strict} is \code{TRUE} in functions
+#'   \code{peaks()} and \code{find_peaks()}, while the default is \code{FALSE}
+#'   in \code{stat_peaks()} and in \code{stat_valleys()}.
 #'
 #' @seealso \code{\link[splus2R]{peaks}}
 #'
@@ -128,6 +132,10 @@ find_peaks <-
 #'   \code{geom_hline} and \code{geom_vline}. The formatting of the labels
 #'   returned can be controlled by the user.
 #'
+#'   The default for parameter \code{strict} is \code{TRUE} in functions
+#'   \code{splus2R::peaks()} and \code{find_peaks()}, while the default is \code{FALSE}
+#'   in \code{stat_peaks()} and in \code{stat_valleys()}.
+#'
 #' @note These stats check the scale of the \code{x} aesthetic and if it is Date
 #'   or Datetime they correctly generate the labels by transforming the numeric
 #'   \code{x} values to Date or POSIXct objects, respectively. In which case the
@@ -183,24 +191,38 @@ find_peaks <-
 #' @export
 #' @family peaks and valleys functions
 #'
-stat_peaks <- function(mapping = NULL, data = NULL, geom = "point",
-                       span = 5, ignore_threshold = 0, strict = FALSE,
+stat_peaks <- function(mapping = NULL,
+                       data = NULL,
+                       geom = "point",
+                       span = 5,
+                       ignore_threshold = 0,
+                       strict = FALSE,
                        label.fmt = NULL,
-                       x.label.fmt = NULL, y.label.fmt = NULL,
-                       position = "identity", na.rm = FALSE,
+                       x.label.fmt = NULL,
+                       y.label.fmt = NULL,
+                       position = "identity",
+                       na.rm = FALSE,
                        show.legend = FALSE,
-                       inherit.aes = TRUE, ...) {
+                       inherit.aes = TRUE,
+                       ...) {
   ggplot2::layer(
-    stat = StatPeaks, data = data, mapping = mapping, geom = geom,
-    position = position, show.legend = show.legend, inherit.aes = inherit.aes,
-    params = list(span = span,
-                  ignore_threshold = ignore_threshold,
-                  strict = strict,
-                  label.fmt = label.fmt,
-                  x.label.fmt = x.label.fmt,
-                  y.label.fmt = y.label.fmt,
-                  na.rm = na.rm,
-                  ...)
+    stat = StatPeaks,
+    data = data,
+    mapping = mapping,
+    geom = geom,
+    position = position,
+    show.legend = show.legend,
+    inherit.aes = inherit.aes,
+    params = list(
+      span = span,
+      ignore_threshold = ignore_threshold,
+      strict = strict,
+      label.fmt = label.fmt,
+      x.label.fmt = x.label.fmt,
+      y.label.fmt = y.label.fmt,
+      na.rm = na.rm,
+      ...
+    )
   )
 }
 
@@ -369,23 +391,38 @@ StatPeaks <-
 #'
 #' @export
 #'
-stat_valleys <- function(mapping = NULL, data = NULL, geom = "point",
-                         span = 5, ignore_threshold = 0, strict = FALSE,
+stat_valleys <- function(mapping = NULL,
+                         data = NULL,
+                         geom = "point",
+                         span = 5,
+                         ignore_threshold = 0,
+                         strict = FALSE,
                          label.fmt = NULL,
-                         x.label.fmt = NULL, y.label.fmt = NULL,
-                         position = "identity", na.rm = FALSE, show.legend = FALSE,
-                         inherit.aes = TRUE, ...) {
+                         x.label.fmt = NULL,
+                         y.label.fmt = NULL,
+                         position = "identity",
+                         na.rm = FALSE,
+                         show.legend = FALSE,
+                         inherit.aes = TRUE,
+                         ...) {
   ggplot2::layer(
-    stat = StatValleys, data = data, mapping = mapping, geom = geom,
-    position = position, show.legend = show.legend, inherit.aes = inherit.aes,
-    params = list(span = span,
-                  ignore_threshold = ignore_threshold,
-                  strict = strict,
-                  label.fmt = label.fmt,
-                  x.label.fmt = x.label.fmt,
-                  y.label.fmt = y.label.fmt,
-                  na.rm = na.rm,
-                  ...)
+    stat = StatValleys,
+    data = data,
+    mapping = mapping,
+    geom = geom,
+    position = position,
+    show.legend = show.legend,
+    inherit.aes = inherit.aes,
+    params = list(
+      span = span,
+      ignore_threshold = ignore_threshold,
+      strict = strict,
+      label.fmt = label.fmt,
+      x.label.fmt = x.label.fmt,
+      y.label.fmt = y.label.fmt,
+      na.rm = na.rm,
+      ...
+    )
   )
 }
 

@@ -107,6 +107,10 @@ These stats use \code{geom_point} by default as it is the geom most
   \code{geom_text}, \code{geom_label}, \code{geom_line}, \code{geom_rug},
   \code{geom_hline} and \code{geom_vline}. The formatting of the labels
   returned can be controlled by the user.
+
+  The default for parameter \code{strict} is \code{TRUE} in functions
+  \code{splus2R::peaks()} and \code{find_peaks()}, while the default is \code{FALSE}
+  in \code{stat_peaks()} and in \code{stat_valleys()}.
 }
 \note{
 These stats check the scale of the \code{x} aesthetic and if it is Date

@@ -36,15 +36,16 @@
 #' @param label.x,label.y \code{numeric} Coordinates (in npc units) to be used
 #'   for absolute positioning of the labels.
 #'
-#' @details This stat can be used to automatically count observations in each of
-#'   the four quadrants of a plot, and by default add these counts as text
-#'   labels. Values exactly equal to zero are counted as belonging to the
-#'   positve quadrant. An argument value of zero, passed to formal parameter
+#' @details This statistic can be used to automatically count observations in
+#'   each of the four quadrants of a plot, and by default add these counts as
+#'   text labels. Values exactly equal to \code{xintercept} or
+#'   \code{yintercept} are counted together with those larger than the
+#'   intercepts. An argument value of zero, passed to formal parameter
 #'   \code{quadrants} is interpreted as a request for the count of all
 #'   observations in each plot panel.
 #'
 #'   The default origin of quadrants is at \code{xintercept = 0},
-#'   \code{yintercept = 0}. Alsoby default, counts are computed for all
+#'   \code{yintercept = 0}. Also by default, counts are computed for all
 #'   quadrants within the $x$ and $y$ scale limits, but ignoring any marginal
 #'   scale expansion. The default positions of the labels is in the farthest
 #'   corner or edge of each quadrant using npc coordinates. Consequently, when

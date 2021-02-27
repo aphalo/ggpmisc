@@ -30,13 +30,18 @@ A vector of logical values. Values that are TRUE
 \description{
 This method finds peaks (local maxima) in a spectrum, using a user selectable
 span and size threshold relative to the tallest peak (global maximum). This
-is a wrapper built on top of function peaks from package splus2R.
+is a wrapper built on top of function peaks from package 'splus2R'.
 }
 \details{
 This function is a wrapper built on function
   \code{\link[splus2R]{peaks}} from \pkg{splus2R} and handles non-finite
   (including NA) values differently than \code{peaks}, instead of giving an
   error they are replaced with the smallest finite value in \code{x}.
+}
+\note{
+The default for parameter \code{strict} is \code{TRUE} in functions
+  \code{peaks()} and \code{find_peaks()}, while the default is \code{FALSE}
+  in \code{stat_peaks()} and in \code{stat_valleys()}.
 }
 \seealso{
 \code{\link[splus2R]{peaks}}
