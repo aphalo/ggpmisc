@@ -7,6 +7,8 @@ editor_options:
 # ggpmisc 0.3.9
 
 -   Update the documentation of `geom_plot()`.
+-   Revise handling of rounding for $R^2$ and $P$-value in
+    `stat_poly_eq()`.
 
 # ggpmisc 0.3.8-1
 

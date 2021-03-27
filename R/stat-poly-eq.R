@@ -31,8 +31,10 @@
 #' @param eq.x.rhs \code{character} this string will be used as replacement for
 #'   \code{"x"} in the model equation when generating the label before parsing
 #'   it.
-#' @param coef.digits,rr.digits,f.digits,p.digits integer Number of significant
-#'   digits to use for the fitted coefficients, R^2, F-value and P-value in labels.
+#' @param coef.digits,f.digits integer Number of significant digits to use for
+#'   the fitted coefficients and F-value.
+#' @param rr.digits,p.digits integer Number of digits after the decimal point to
+#'   use for R^2 and P-value in labels.
 #' @param label.x,label.y \code{numeric} with range 0..1 "normalized parent
 #'   coordinates" (npc units) or character if using \code{geom_text_npc()} or
 #'   \code{geom_label_npc()}. If using \code{geom_text()} or \code{geom_label()}
@@ -469,24 +471,31 @@ poly_eq_compute_group_fun <- function(data,
     if (p.digits < 2) {
       warning("'p.digits < 2' Likely information loss!")
     }
-    rr.char <- format(rr, digits = rr.digits)
-    adj.rr.char <- format(adj.rr, digits = rr.digits)
+    rr.char <- as.character(round(rr, digits = rr.digits))
+    adj.rr.char <- as.character(round(adj.rr, digits = rr.digits))
     AIC.char <- sprintf("%.4g", AIC)
     BIC.char <- sprintf("%.4g", BIC)
     f.value.char <- as.character(signif(f.value, digits = f.digits))
     f.df1.char <- as.character(f.df1)
     f.df2.char <- as.character(f.df2)
-    p.value.char <- as.character(signif(p.value, digits = p.digits))
+    p.value.char <- as.character(round(p.value, digits = p.digits))
 
     if (output.type == "expression") {
       z <- tibble::tibble(eq.label = gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
-                          rr.label = paste("italic(R)^2", rr.char, sep = "~`=`~"),
-                          adj.rr.label = paste("italic(R)[adj]^2",
-                                               adj.rr.char, sep = "~`=`~"),
+                          rr.label =
+                            # character(0) instead of "" avoids in paste() the insertion of sep for missing labels
+                            ifelse(is.na(rr), character(0L),
+                                   paste("italic(R)^2",
+                                         ifelse(rr < 10^(-rr.digits), as.character(10^(-rr.digits)), rr.char),
+                                         sep = ifelse(rr < 10^(-rr.digits), "~`<`~", "~`=`~"))),
+                          adj.rr.label =
+                            ifelse(is.na(adj.rr), character(0L),
+                                   paste("italic(R)[adj]^2",
+                                         ifelse(adj.rr < 10^(-rr.digits), as.character(10^(-rr.digits)), adj.rr.char),
+                                         sep = ifelse(adj.rr < 10^(-rr.digits), "~`<`~", "~`=`~"))),
                           AIC.label = paste("AIC", AIC.char, sep = "~`=`~"),
                           BIC.label = paste("BIC", BIC.char, sep = "~`=`~"),
                           f.value.label =
-                            # character(0) instead of "" avoids in paste() the insertion of sep missing labels
                             ifelse(is.na(f.value), character(0L),
                                    paste("italic(F)[", f.df1.char,
                                          "*\",\"*", f.df2.char,
@@ -494,8 +503,8 @@ poly_eq_compute_group_fun <- function(data,
                           p.value.label =
                             ifelse(is.na(p.value), character(0L),
                                    paste("italic(P)",
-                                         ifelse(p.value < 0.001, "0.001", p.value.char),
-                                         sep = ifelse(p.value < 0.001, "~`<=`~", "~`=`~"))),
+                                         ifelse(p.value < 10^(-p.digits), as.character(10^(-p.digits)), p.value.char),
+                                         sep = ifelse(p.value < 10^(-p.digits), "~`<`~", "~`=`~"))),
                           grp.label = grp.label)
     } else if (output.type %in% c("latex", "tex", "text", "tikz")) {
       z <- tibble::tibble(eq.label = gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
