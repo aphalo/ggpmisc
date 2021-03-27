@@ -507,10 +507,19 @@ poly_eq_compute_group_fun <- function(data,
                                          sep = ifelse(p.value < 10^(-p.digits), "~`<`~", "~`=`~"))),
                           grp.label = grp.label)
     } else if (output.type %in% c("latex", "tex", "text", "tikz")) {
-      z <- tibble::tibble(eq.label = gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
-                          rr.label = paste("R^2", rr.char, sep = " = "),
-                          adj.rr.label = paste("R_{adj}^2",
-                                               adj.rr.char, sep = " = "),
+      z <- tibble::tibble(eq.label =
+                            gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
+                          rr.label =
+                            # character(0) instead of "" avoids in paste() the insertion of sep for missing labels
+                            ifelse(is.na(rr), character(0L),
+                                   paste("R^2",
+                                         ifelse(rr < 10^(-rr.digits), as.character(10^(-rr.digits)), rr.char),
+                                         sep = ifelse(rr < 10^(-rr.digits), " < ", " = "))),
+                          adj.rr.label =
+                            ifelse(is.na(adj.rr), character(0L),
+                                   paste("R_{adj}^2",
+                                         ifelse(adj.rr < 10^(-rr.digits), as.character(10^(-rr.digits)), adj.rr.char),
+                                         sep = ifelse(adj.rr < 10^(-rr.digits), " < ", " = "))),
                           AIC.label = paste("AIC", AIC.char, sep = " = "),
                           BIC.label = paste("BIC", BIC.char, sep = " = "),
                           f.value.label =
@@ -519,14 +528,24 @@ poly_eq_compute_group_fun <- function(data,
                                          "} = ", f.value.char, sep = "")),
                           p.value.label =
                             ifelse(is.na(p.value), character(0L),
-                                   paste("P", p.value.char,
-                                         sep = ifelse(p.value < 0.001, " \\leq ", " = "))),
+                                   paste("P",
+                                         ifelse(p.value < 10^(-p.digits), as.character(10^(-p.digits)), p.value.char),
+                                         sep = ifelse(p.value < 10^(-p.digits), " < ", " = "))),
                           grp.label = grp.label)
     } else if (output.type == "markdown") {
-      z <- tibble::tibble(eq.label = gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
-                          rr.label = paste("_R_<sup>2</sup>", rr.char, sep = " = "),
-                          adj.rr.label = paste("_R_<sup>2</sup><sub>adj</sub>",
-                                               adj.rr.char, sep = " = "),
+      z <- tibble::tibble(eq.label =
+                            gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
+                          rr.label =
+                            # character(0) instead of "" avoids in paste() the insertion of sep for missing labels
+                            ifelse(is.na(rr), character(0L),
+                                   paste("_R_<sup>2</sup>",
+                                         ifelse(rr < 10^(-rr.digits), as.character(10^(-rr.digits)), rr.char),
+                                         sep = ifelse(rr < 10^(-rr.digits), " < ", " = "))),
+                          adj.rr.label =
+                            ifelse(is.na(adj.rr), character(0L),
+                                   paste("_R_<sup>2</sup><sub>adj</sub>",
+                                         ifelse(adj.rr < 10^(-rr.digits), as.character(10^(-rr.digits)), adj.rr.char),
+                                         sep = ifelse(adj.rr < 10^(-rr.digits), " < ", " = "))),
                           AIC.label = paste("AIC", AIC.char, sep = " = "),
                           BIC.label = paste("BIC", BIC.char, sep = " = "),
                           f.value.label =
@@ -535,8 +554,9 @@ poly_eq_compute_group_fun <- function(data,
                                          "</sub> = ", f.value.char, sep = "")),
                           p.value.label =
                             ifelse(is.na(p.value), character(0L),
-                                   paste("_P_", p.value.char,
-                                         sep = ifelse(p.value < 0.001, " &le; ", " = "))),
+                                   paste("_P_",
+                                         ifelse(p.value < 10^(-p.digits), as.character(10^(-p.digits)), p.value.char),
+                                         sep = ifelse(p.value < 10^(-p.digits), " < ", " = "))),
                           grp.label = grp.label)
     } else {
       warning("Unknown 'output.type' argument: ", output.type)

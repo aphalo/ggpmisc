@@ -12,7 +12,7 @@ my.data <- data.frame(x,
                       y2 = y * c(0.5,2),
                       block = c("a", "a", "b", "b"),
                       wt = sqrt(x))
-                      formula <- y ~ poly(x, 3, raw = TRUE)
+formula <- y ~ poly(x, 3, raw = TRUE)
 
 test_that("poly_formulas", {
   vdiffr::expect_doppelganger("stat_poly_eq_formula_1",
@@ -158,7 +158,7 @@ test_that("textual_positions", {
   )
 })
 
-test_that("numric_positions", {
+test_that("numeric_positions", {
   vdiffr::expect_doppelganger("stat_poly_eq_n1",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
@@ -224,3 +224,41 @@ test_that("numric_positions", {
                                              geom = "label")
   )
 })
+
+test_that("rounding_signif", {
+  vdiffr::expect_doppelganger("stat_poly_eq_formula_x_round",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_eq(formula = y ~ x,
+                                             parse = TRUE,
+                                             rr.digits = 3,
+                                             p.digits = 2,
+                                             f.digits = 2,
+                                             coef.digits = 6,
+                                             mapping =
+                                               aes(label = paste(stat(eq.label),
+                                                                 stat(adj.rr.label),
+                                                                 stat(f.value.label),
+                                                                 stat(p.value.label),
+                                                                 sep = "~~")))
+  )
+
+  vdiffr::expect_doppelganger("stat_poly_eq_formula_1_round",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_eq(formula = y ~ 1,
+                                             parse = TRUE,
+                                             rr.digits = 3,
+                                             p.digits = 2,
+                                             f.digits = 2,
+                                             coef.digits = 4,
+                                             mapping =
+                                               aes(label = paste(stat(eq.label),
+                                                                 stat(adj.rr.label),
+                                                                 stat(f.value.label),
+                                                                 stat(p.value.label),
+                                                                 sep = "~~")))
+  )
+
+})
+
