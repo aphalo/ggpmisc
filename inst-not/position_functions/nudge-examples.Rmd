@@ -1,6 +1,6 @@
 ---
 title: "Position functions"
-subtitle: "Repulsion supported"
+subtitle: "Advanced nudging"
 author: "Pedro J. Aphalo"
 date: "`r Sys.Date()`"
 output: 
@@ -27,19 +27,11 @@ options(warnPartialMatchArgs = FALSE,
 
 ## Preliminaries
 
-We load all the packages used in the examples. These examples were written using
-different names for the functions, so we assign them to these names.
-
-```{r}
-library(ggrepel)
-position_nudge_center <- ggrepel::position_nudge_repel 
-position_nudge_line  <- ggrepel::position_nudge_repel_t
-```
-
 As we will use text and labels on the plotting area we change the
 default theme to an uncluttered one.
 
 ```{r}
+library(ggpmisc)
 old_theme <- theme_set(theme_bw())
 ```
 
@@ -51,7 +43,7 @@ parameters `nudge_x` and `nudge_y`. In some cases, this means manually
 adjusting the nudge based on the plotted data.
 
 We can do better, by setting a point or line away from which the nudge
-should be applied. In the new funcitons this reference alters only the
+should be applied. In the new functions this reference alters only the
 direction (angle) along which nudge is applied but not the distance.
 
 ### position_nudge_center()

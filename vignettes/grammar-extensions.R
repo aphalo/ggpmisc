@@ -477,6 +477,160 @@ ggplot(data = d, aes(x, y, label = lab, colour = group)) +
   stat_dens1d_labels(geom = "text_repel", orientation = "y")
 
 ## -----------------------------------------------------------------------------
+set.seed(84532)
+df <- data.frame(
+  x = rnorm(20),
+  y = rnorm(20, 2, 2),
+  l = sample(letters[1:6], 20, replace = TRUE)
+)
+
+
+## -----------------------------------------------------------------------------
+ggplot(df, aes(x, y, label = l)) +
+  geom_point() +
+  geom_text(position = position_nudge_center(x = 0.1,
+                                             y = 0.15,
+                                             direction = "split"))
+
+## -----------------------------------------------------------------------------
+ggplot(df, aes(x, y, label = l)) +
+  geom_point() +
+  geom_text(position = position_nudge_center(x = 0.1,
+                                             direction = "split"))
+
+## -----------------------------------------------------------------------------
+ggplot(df, aes(x, y, label = l)) +
+  geom_point() +
+  geom_text(position = position_nudge_center(x = 0.1,
+                                             center_x = 1,
+                                             direction = "split"))
+
+## -----------------------------------------------------------------------------
+ggplot(df, aes(x, y, label = l)) +
+  geom_point() +
+  geom_text(position = position_nudge_center(x = 0.1,
+                                             center_x = median,
+                                             direction = "split"))
+
+## -----------------------------------------------------------------------------
+ggplot(df, aes(x, y, label = l)) +
+  geom_point() +
+  geom_text(position = position_nudge_center(x = 0.1,
+                                             y = 0.3,
+                                             direction = "radial"))
+
+## -----------------------------------------------------------------------------
+set.seed(16532)
+df <- data.frame(
+  x = -10:10,
+  y = (-10:10)^2,
+  yy = (-10:10)^2 + rnorm(21, 0, 4),
+  yyy = (-10:10) + rnorm(21, 0, 4),
+  l = letters[1:21]
+)
+
+## -----------------------------------------------------------------------------
+ggplot(df, aes(x, -3 * x, label = l)) +
+  geom_point() +
+  geom_abline(intercept = 0, slope = -3, linetype = "dotted") +
+  geom_text(position = position_nudge_line(x = -0.5, y = -0.8))
+
+## -----------------------------------------------------------------------------
+ggplot(subset(df, x >= 0), aes(x, yyy)) +
+  geom_point() +
+  stat_smooth(method = "lm", formula = y ~ x) +
+  geom_text(aes(label = l),
+            vjust = "center", hjust = "center",
+            position = position_nudge_line(x = 0, y = 1.2,
+                                           method = "lm", formula = y ~ x,
+                                           direction = "split"))
+
+## -----------------------------------------------------------------------------
+ggplot(subset(df, x >= 0), aes(y, yy)) +
+  geom_point() +
+  stat_smooth(method = "lm", formula = y ~ x) +
+  geom_text(aes(label = l),
+            position = position_nudge_line(method = "lm",
+                                           x = 3, y = 3, 
+                                           line_nudge = 2.8,
+                                           direction = "split"))
+
+## -----------------------------------------------------------------------------
+ggplot(subset(df, x >= 0), aes(y, yy)) +
+  geom_point() +
+  geom_abline(intercept = 0, slope = 1, linetype = "dotted") +
+  geom_text(aes(label = l),
+            position = position_nudge_line(abline = c(0, 1),
+                                           x = 3, y = 3, 
+                                           direction = "split"))
+
+## -----------------------------------------------------------------------------
+ggplot(df, aes(x, y, label = l)) +
+  geom_point() +
+  geom_line(linetype = "dotted") +
+  geom_text(position = position_nudge_line(x = 0.6, y = 6))
+
+## -----------------------------------------------------------------------------
+ggplot(df, aes(x, y, label = l)) +
+  geom_point() +
+  geom_line(linetype = "dotted") +
+  geom_text(position = position_nudge_line(x = -0.6, y = -6))
+
+## -----------------------------------------------------------------------------
+ggplot(df, aes(x, yy, label = l)) +
+  geom_point() +
+  stat_smooth() +
+  geom_text(aes(y = yy, label = l),
+            position = position_nudge_line(x = 0.6, 
+                                           y = 6,
+                                           direction = "split"))
+
+## -----------------------------------------------------------------------------
+ggplot(df, aes(x, yy, label = l)) +
+  geom_point() +
+  stat_smooth(method = "lm", formula = y ~ poly(x, 2, raw = TRUE)) +
+  geom_text(aes(y = yy, label = l),
+            position = position_nudge_line(method = "lm",
+                                           x = 0.6, 
+                                           y = 6,
+                                           formula = y ~ poly(x, 2, raw = TRUE),
+                                           direction = "split"))
+
+## -----------------------------------------------------------------------------
+df <- data.frame(x = rep(1:10, 2),
+                 y = c(1:10, 10:1),
+                 group = rep(c("a", "b"), c(10, 10)),
+                 l = "+")
+
+## -----------------------------------------------------------------------------
+ggplot(df, aes(x, y, label = l, color = group)) +
+  geom_line(linetype = "dotted") +
+  geom_point() +
+  geom_text(position = position_nudge_line(x = 0.25, y = 1)) +
+  coord_equal(ratio = 0.5)
+
+## -----------------------------------------------------------------------------
+ggplot(df, aes(x, y, label = l, color = group, group = group)) +
+  geom_line(linetype = "dotted") +
+  geom_text() +
+  geom_text(color = "red",
+            position = position_nudge_line(x = 1, y = 1)) +
+  geom_text(color = "blue",
+            position = position_nudge_line(x = -1, y = -1)) +
+  coord_equal()
+
+## -----------------------------------------------------------------------------
+ggplot(df, aes(x, y, label = l)) +
+  geom_line(linetype = "dotted") +
+  geom_point() +
+  geom_text(position = position_nudge_line(x = 1, y = 1),
+            color = "red") +
+  geom_text(position = position_nudge_line(x = -1, y = -1),
+            color = "blue") +
+  facet_wrap(~group) +
+  coord_equal(ratio = 1)
+
+## -----------------------------------------------------------------------------
 make_data_tbl <- function(nrow = 100, rfun = rnorm, ...) {
   if (nrow %% 2) {
     nrow <- nrow + 1

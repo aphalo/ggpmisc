@@ -244,13 +244,13 @@ position_nudge_center <-
       obey_grouping <- NA
     }
 
-    ggproto(NULL, PositionNudgeCenter,
-            x = x,
-            y = y,
-            center_x = center_x,
-            center_y = center_y,
-            direction = direction,
-            obey_grouping = obey_grouping
+    ggplot2::ggproto(NULL, PositionNudgeCenter,
+                     x = x,
+                     y = y,
+                     center_x = center_x,
+                     center_y = center_y,
+                     direction = direction,
+                     obey_grouping = obey_grouping
     )
   }
 
@@ -258,110 +258,123 @@ position_nudge_center <-
 #' @format NULL
 #' @usage NULL
 #' @export
-PositionNudgeCenter <- ggproto("PositionNudgeCenter", Position,
-  x = 0,
-  y = 0,
-  center_x = mean,
-  center_y = mean,
-  direction = "none",
-  obey_grouping = NA,
+PositionNudgeCenter <-
+  ggplot2::ggproto(
+    "PositionNudgeCenter",
+    Position,
+    x = 0,
+    y = 0,
+    center_x = mean,
+    center_y = mean,
+    direction = "none",
+    obey_grouping = NA,
 
-  setup_params = function(self, data) {
+    setup_params = function(self, data) {
 
-    list(x = self$x,
-         y = self$y,
-         center_x = self$center_x,
-         center_y = self$center_y,
-         direction = self$direction,
-         obey_grouping = self$obey_grouping)
-  },
+      list(x = self$x,
+           y = self$y,
+           center_x = self$center_x,
+           center_y = self$center_y,
+           direction = self$direction,
+           obey_grouping = self$obey_grouping)
+    },
 
-  compute_panel = function(data, params, scales) {
+    compute_panel = function(data, params, scales) {
 
-    # we handle grouping by ourselves
-    if (is.na(params$obey_grouping)) {
-      if (inherits(data$x, "mapped_discrete") ||
-          inherits(data$y, "mapped_discrete") ||
-          params$direction == "none") {
-        # we ignore grouping as position_nudge() does
-        params$obey_grouping <- FALSE
-      } else {
-        # we respect groups
-        params$obey_grouping <- TRUE
+      x_orig <- data$x
+      y_orig <- data$y
+      # we handle grouping by ourselves
+      if (is.na(params$obey_grouping)) {
+        if (inherits(data$x, "mapped_discrete") ||
+            inherits(data$y, "mapped_discrete") ||
+            params$direction == "none") {
+          # we ignore grouping as position_nudge() does
+          params$obey_grouping <- FALSE
+        } else {
+          # we respect groups
+          params$obey_grouping <- TRUE
+        }
       }
-    }
 
-    if (params$obey_grouping) {
-      # one group at a time
-      groups <- unique(data$group)
-    } else {
-      # all at once
-      groups <- 1
-    }
-    # Based on the value of 'direction' we adjust the nudge for each point
-    x_nudge <- y_nudge <- numeric(nrow(data))
-    for (group in groups) {
       if (params$obey_grouping) {
-        # selector for rows in current group
-        in.grp <- data$group == group
+        # one group at a time
+        groups <- unique(data$group)
       } else {
-        # selector for all rows
-        in.grp <- TRUE
+        # all at once
+        groups <- 1
       }
-      # compute focal center by group
-      if (is.function(params$center_x)) {
-        x_ctr <- params$center_x(as.numeric(data[in.grp, "x"]))
-      } else if(is.numeric(params$center_x)) {
-        x_ctr <- params$center_x[1]
-      } else {
-        x_ctr <- -Inf # ensure all observations are to the right
-      }
-      if (is.function(params$center_y)) {
-        y_ctr <- params$center_y(as.numeric(data[in.grp, "y"]))
-      } else if(is.numeric(params$center_y)) {
-        y_ctr <- params$center_y[1]
-      } else {
-        y_ctr <- -Inf # ensure all observations are above
-      }
+      # Based on the value of 'direction' we adjust the nudge for each point
+      x_nudge <- y_nudge <- numeric(nrow(data))
+      for (group in groups) {
+        if (params$obey_grouping) {
+          # selector for rows in current group
+          in.grp <- data$group == group
+        } else {
+          # selector for all rows
+          in.grp <- TRUE
+        }
+        # compute focal center by group
+        if (is.function(params$center_x)) {
+          x_ctr <- params$center_x(as.numeric(data[in.grp, "x"]))
+        } else if(is.numeric(params$center_x)) {
+          x_ctr <- params$center_x[1]
+        } else {
+          x_ctr <- -Inf # ensure all observations are to the right
+        }
+        if (is.function(params$center_y)) {
+          y_ctr <- params$center_y(as.numeric(data[in.grp, "y"]))
+        } else if(is.numeric(params$center_y)) {
+          y_ctr <- params$center_y[1]
+        } else {
+          y_ctr <- -Inf # ensure all observations are above
+        }
 
-      if (params$direction == "radial") {
-        # compute x and y nudge for each point
-        x_dist <- as.numeric(data[in.grp, "x"]) - x_ctr
-        y_dist <- as.numeric(data[in.grp, "y"]) - y_ctr
-        angle <- atan2(y_dist, x_dist) + pi / 2
-        if (params$x == 0) {
-          angle <- ifelse(cos(angle) == 0, 0, angle)
+        if (params$direction == "radial") {
+          # compute x and y nudge for each point
+          x_dist <- as.numeric(data[in.grp, "x"]) - x_ctr
+          y_dist <- as.numeric(data[in.grp, "y"]) - y_ctr
+          angle <- atan2(y_dist, x_dist) + pi / 2
+          if (params$x == 0) {
+            angle <- ifelse(cos(angle) == 0, 0, angle)
+          }
+          if (params$y == 0) {
+            angle <- ifelse(sin(angle) == 0, pi / 2, angle)
+          }
+          x_nudge[in.grp] <- params$x * sin(angle)
+          y_nudge[in.grp] <- -params$y * cos(angle)
+        } else if (params$direction == "split") {
+          if (length(params$x) == 1L && length(params$y) == 1L) {
+            # ensure horizontal and vertical segments have same length as others
+            segment_length <- sqrt(params$x^2 + params$y^2)
+            xx <- rep(params$x, nrow(data[in.grp, ]))
+            xx <- ifelse(data[in.grp, "y"] == y_ctr,
+                         segment_length * sign(xx),
+                         xx)
+            yy <- rep(params$y, nrow(data[in.grp, ]))
+            yy <- ifelse(data[in.grp, "x"] == x_ctr,
+                         segment_length * sign(yy),
+                         yy)
+          }
+          x_nudge[in.grp] <- xx * sign(as.numeric(data[in.grp, "x"]) - x_ctr)
+          y_nudge[in.grp] <- yy * sign(as.numeric(data[in.grp, "y"]) - y_ctr)
+        } else {
+          if (params$direction != "none") {
+            warning("Ignoring unrecognized direction \"",
+                    params$direction, "\".")
+          }
+          x_nudge[in.grp] <- params$x
+          y_nudge[in.grp] <- params$y
         }
-        if (params$y == 0) {
-          angle <- ifelse(sin(angle) == 0, pi / 2, angle)
-        }
-        x_nudge[in.grp] <- params$x * sin(angle)
-        y_nudge[in.grp] <- -params$y * cos(angle)
-      } else if (params$direction == "split") {
-        if (length(params$x) == 1L && length(params$y) == 1L) {
-          # ensure horizontal and vertical segments have same length as others
-          segment_length <- sqrt(params$x^2 + params$y^2)
-          xx <- rep(params$x, nrow(data[in.grp, ]))
-          xx <- ifelse(data[in.grp, "y"] == y_ctr, segment_length * sign(xx), xx)
-          yy <- rep(params$y, nrow(data[in.grp, ]))
-          yy <- ifelse(data[in.grp, "x"] == x_ctr, segment_length * sign(yy), yy)
-        }
-        x_nudge[in.grp] <- xx * sign(as.numeric(data[in.grp, "x"]) - x_ctr)
-        y_nudge[in.grp] <- yy * sign(as.numeric(data[in.grp, "y"]) - y_ctr)
-      } else {
-        if (params$direction != "none") {
-          warning("Ignoring unrecognized direction \"", direction, "\".")
-        }
-        x_nudge[in.grp] <- params$x
-        y_nudge[in.grp] <- params$y
       }
+      # transform the dimensions
+      ggplot2::transform_position(data,
+                                  trans_x = function(x) x + x_nudge,
+                                  trans_y = function(y) y + y_nudge)
+      data$x_orig <- x_orig
+      data$y_orig <- y_orig
+      data
     }
-    # transform the dimensions
-    ggplot2::transform_position(data,
-                                trans_x = function(x) x + x_nudge,
-                                trans_y = function(y) y + y_nudge)
-  }
-)
+  )
 
 #' @rdname position_nudge_center
 #'

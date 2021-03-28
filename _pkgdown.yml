@@ -50,6 +50,11 @@ reference:
     - stat_quadrant_counts
     - stat_fmt_tb
     - stat_apply_group
+  - title: Positions
+    desc: Advanced nudge functions
+    contents:
+    - position_nudge_center
+    - position_nudge_line
   - title: Plot creation
     desc: Additional ggplot methods
     contents:
