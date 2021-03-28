@@ -281,7 +281,7 @@ PositionNudgeCenter <-
            obey_grouping = self$obey_grouping)
     },
 
-    compute_panel = function(data, params, scales) {
+    compute_panel = function(self, data, params, scales) {
 
       x_orig <- data$x
       y_orig <- data$y
@@ -369,9 +369,11 @@ PositionNudgeCenter <-
         }
       }
       # transform the dimensions
-      ggplot2::transform_position(data,
-                                  trans_x = function(x) x + x_nudge,
-                                  trans_y = function(y) y + y_nudge)
+      data <-
+        ggplot2::transform_position(data,
+                                    trans_x = function(x) x + x_nudge,
+                                    trans_y = function(y) y + y_nudge)
+      # add original position
       data$x_orig <- x_orig
       data$y_orig <- y_orig
       data

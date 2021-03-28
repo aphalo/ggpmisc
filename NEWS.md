@@ -9,8 +9,11 @@ editor_options:
 -   Update the documentation of `geom_plot()`.
 -   Revise handling of rounding for $R^2$ and $P$-value in
     `stat_poly_eq()`.
--   Support advanced nudging: `position_nudge_centre()` and
+-   Advanced nudging: `position_nudge_centre()` and
     `position_nudge_line()` compute the direction of nudging.
+-   Link nudged text and labels to original position with a segment or
+    arrow: `geom_linked_text()` and `geom_linked_label()`. [Under
+    development!]
 
 # ggpmisc 0.3.8-1
 

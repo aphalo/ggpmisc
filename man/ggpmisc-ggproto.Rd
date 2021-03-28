@@ -16,6 +16,7 @@
 \alias{GeomGrobNpc}
 \alias{GeomLabelNpc}
 \alias{GeomLinkedText}
+\alias{GeomLinkedLabel}
 \alias{GeomXMarginArrow}
 \alias{GeomYMarginArrow}
 \alias{GeomXMarginGrob}

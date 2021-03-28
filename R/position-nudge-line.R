@@ -388,9 +388,10 @@ PositionNudgeLine <-
                           x_nudge)
       }
       # transform both dimensions
-      ggplot2::transform_position(data,
-                                  function(x) x + x_nudge,
-                                  function(y) y + y_nudge)
+      data <-
+        ggplot2::transform_position(data,
+                                    function(x) x + x_nudge,
+                                    function(y) y + y_nudge)
       data$x_orig <- x_orig
       data$y_orig <- y_orig
       data
