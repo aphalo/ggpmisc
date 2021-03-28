@@ -43,7 +43,9 @@ curve fitted to the data points or supplied as coefficients. While
 [position_nudge_center()] is most useful for "round-shaped", vertically- or
 horizontally elongated clouds of points, [position_nudge_line()] is most
 suitable when observations follow a linear or curvilinear relationship
-between _x_ and _y_ values.
+between _x_ and _y_ values. In contrast to [ggplot2::position_nudge],
+`position_nudge_line()` returns in `data` both the original
+coordinates and the nudged coordinates.
 }
 \details{
 The default ammount of nudging is 3% of the spread of the data along
