@@ -8,7 +8,9 @@
 #' [position_nudge_center()] is most useful for "round-shaped", vertically- or
 #' horizontally elongated clouds of points, [position_nudge_line()] is most
 #' suitable when observations follow a linear or curvilinear relationship
-#' between _x_ and _y_ values.
+#' between _x_ and _y_ values. In contrast to [ggplot2::position_nudge],
+#' `position_nudge_line()` returns in `data` both the original
+#' coordinates and the nudged coordinates.
 #'
 #' @family position adjustments
 #' @param x,y Amount of vertical and horizontal distance to move. A numeric
@@ -385,10 +387,16 @@ PositionNudgeLine <-
                           adj_x_nudge,
                           x_nudge)
       }
-      # transform both dimensions
-      ggplot2::transform_position(data,
-                                  function(x) x + x_nudge,
-                                  function(y) y + y_nudge)
+      # transform only the dimensions for which new coordinates exist
+      if (any(params$x != 0)) {
+        if (any(params$y != 0)) {
+          data <- transform_position(data, function(x) x + x_nudge, function(y) y + y_nudge)
+        } else {
+          data <- transform_position(data, function(x) x + x_nudge, NULL)
+        }
+      } else if (any(params$y != 0)) {
+        data <- transform_position(data, NULL, function(y) y + y_nudge)
+      }
       data$x_orig <- x_orig
       data$y_orig <- y_orig
       data

@@ -43,11 +43,13 @@ variables mapped to _x_ and _y_ are continuous numeric and ignored
 otherwise.}
 }
 \description{
-`position_nudge_center` is generally useful for adjusting the position of labels or
-text, both on a discrete or continuous scale. This version from package
-'ggpmisc' is backwards compatible with [ggplot2::position_nudge] but extends
-it by adding support for nudging that varies across the plotting region,
-either in opposite directions or radially from a virtual _center point_.
+`position_nudge_center()` is generally useful for adjusting the position of
+labels or text, both on a discrete or continuous scale. This version from
+package 'ggpmisc' is backwards compatible with [ggplot2::position_nudge] but
+extends it by adding support for nudging that varies across the plotting
+region, either in opposite directions or radially from a virtual _center
+point_. In contrast to [ggplot2::position_nudge], `position_nudge_center()`
+returns in `data` both the original coordinates and the nudged coordinates.
 }
 \details{
 Positive values as arguments to `x` and `y` are added to the
@@ -240,6 +242,7 @@ ggplot(df, aes(x, z, color = group)) +
 [ggplot::position_nudge()], [ggrepel::position_nudge_repel()].
 
 Other position adjustments: 
-\code{\link{position_nudge_line}()}
+\code{\link{position_nudge_line}()},
+\code{\link{position_nudge_to}()}
 }
 \concept{position adjustments}

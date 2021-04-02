@@ -1,10 +1,12 @@
 #' Nudge labels away from a central point
 #'
-#' `position_nudge_center` is generally useful for adjusting the position of labels or
-#' text, both on a discrete or continuous scale. This version from package
-#' 'ggpmisc' is backwards compatible with [ggplot2::position_nudge] but extends
-#' it by adding support for nudging that varies across the plotting region,
-#' either in opposite directions or radially from a virtual _center point_.
+#' `position_nudge_center()` is generally useful for adjusting the position of
+#' labels or text, both on a discrete or continuous scale. This version from
+#' package 'ggpmisc' is backwards compatible with [ggplot2::position_nudge] but
+#' extends it by adding support for nudging that varies across the plotting
+#' region, either in opposite directions or radially from a virtual _center
+#' point_. In contrast to [ggplot2::position_nudge], `position_nudge_center()`
+#' returns in `data` both the original coordinates and the nudged coordinates.
 #'
 #' @family position adjustments
 #' @param x,y Amount of vertical and horizontal distance to move. A numeric
@@ -279,7 +281,7 @@ PositionNudgeCenter <-
            obey_grouping = self$obey_grouping)
     },
 
-    compute_panel = function(data, params, scales) {
+    compute_panel = function(self, data, params, scales) {
 
       x_orig <- data$x
       y_orig <- data$y
@@ -366,10 +368,17 @@ PositionNudgeCenter <-
           y_nudge[in.grp] <- params$y
         }
       }
-      # transform the dimensions
-      ggplot2::transform_position(data,
-                                  trans_x = function(x) x + x_nudge,
-                                  trans_y = function(y) y + y_nudge)
+      # transform only the dimensions for which new coordinates exist
+      if (any(params$x != 0)) {
+        if (any(params$y != 0)) {
+          data <- transform_position(data, function(x) x + x_nudge, function(y) y + y_nudge)
+        } else {
+          data <- transform_position(data, function(x) x + x_nudge, NULL)
+        }
+      } else if (any(params$y != 0)) {
+        data <- transform_position(data, NULL, function(y) y + y_nudge)
+      }
+      # add original position
       data$x_orig <- x_orig
       data$y_orig <- y_orig
       data

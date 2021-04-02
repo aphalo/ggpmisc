@@ -248,6 +248,10 @@ requirement.
 |--------------------------------|--------------------|-----------------------------|
 | `ggplot2::geom_text()`         | `geom_text_npc()`  | `character` vector          |
 | `ggplot2::geom_label()`        | `geom_label_npc()` | `character` vector          |
+| `ggrepel::geom_text_repel()`   |                    | `character` vector          |
+| `ggrepel::geom_label_repel()`  |                    | `character` vector          |
+| `ggplot2::geom_label()`        | `geom_label_npc()` | `character` vector          |
+| `geom_linked_text()`           | _coming soon_      | `character` vector          |  
 | `geom_plot()`                  | `geom_plot_npc()`  | `list()` of `ggplot2::gg`   |
 | `geom_table()`                 | `geom_table_npc()` | `list()` of `data.frame`    |
 | `geom_grob()`                  | `geom_grob_npc()`  | `list()` of `grid::grob`    |
@@ -363,20 +367,20 @@ ggplot(lynx, as.numeric = FALSE) + geom_line()
 
 ## Geometries
 
-Three on the geometries described below allow the addition of plot
+Three of the geometries described below allow the addition of plot
 layers containing insets. Insets can be plots, tables, bitmaps, or grid
 objects. Insets can be also added as annotations. Using for `data` a
 tibble with a list column containing data frames or tibbles allows like
-any other geom, the use of grouping, multiples insets per panel,
-faceting with different tables, and different number of insets in each
+any other geom, the use of grouping, multiple insets per panel,
+faceting with different tables per panel, and different number of insets in each
 panel, i.e., individual tables added to a plot with `geom_table` behave
-similarly to individual character values added with `geom_text`.
+similarly to individual `character` values added with `geom_text`.
 
-Other geometries also described in this section support the use of
-native plot coordinates for positioning elements in the plotting area.
-Obviously these geometries are not meant to display data, but instead to
-be able to add annotations to plots consistently across data sets and
-varying scales used.
+Other geometries also described in this section support the use of native plot
+coordinates for positioning elements in the plotting area. Obviously these
+geometries are not meant to be used to display data, but instead they make it
+possible to add annotations to plots consistently across data sets and varying
+scales used.
 
 ### geom_table() and stat_fmt_table()
 
@@ -639,7 +643,7 @@ plot, so the combined plot can be scaled.
 Please see section **Normalised Parent Coordinates** below for a
 description of `geom_grob_npc()`.
 
-### geom_vhlines
+### geom_vhlines()
 
 This is a convenience geometry that adds both vertical and horizontal
 guide lines on the same plot layer, using the same syntax as
@@ -653,6 +657,39 @@ ggplot(mpg, aes(displ, hwy, colour = factor(cyl))) +
        colour = "Engine cylinders\n(number)") +
   theme_bw()
 
+```
+
+### geom_linked_text()
+
+With package 'ggrepel' we have become used to easily add text and labels linked
+to the labeled observations or points by a line segment or arrow. However,
+sometimes a plot has few text labels and repulsion is unnecessary. In such
+cases nudging or dodging may be enough, or even preferable so as to achieve
+consistency.
+
+We can achieve this with `geom_linked_text()` together with a suitable position
+function that retains the original _x_ and _y_ coordinates of the point. We
+currently provide two different, and flexible nudge functions described in
+a later section. One of them is used by default providing the same default
+behaviour as `geom_text()` from 'ggplot2' but drawing linking segments if
+nudging is set to a value different to the default of zero.
+
+**Please, be aware that this is a preliminary implementation, whose user interface
+and behavior are very likely to change in coming months.**
+
+```{r}
+my.cars <- mtcars[c(TRUE, FALSE, FALSE, FALSE), ]
+my.cars$name <- rownames(my.cars)
+my.cars <- my.cars[order(my.cars$wt), ]
+ggplot(my.cars, aes(wt, mpg, label = name)) +
+  geom_point() +
+  geom_linked_text(aes(colour = factor(cyl)),
+                   angle = 90,
+                   hjust = 1.04, nudge_y = -1, 
+                   nudge_x = c(0, 0, -0.05, +0.05, 0, 0 ,0, 0),
+                   arrow = arrow(length = grid::unit(1.5, "mm"))) +
+  scale_colour_discrete(l = 40) +
+  expand_limits(y = 0)
 ```
 
 ### Normalised Parent Coordinates
@@ -1246,23 +1283,58 @@ internally to `stats::density()` the examples given earlier for
 
 ## Position functions
 
-Function `position_nudge()` from package 'ggplot2' simply applies the
-nudge, or *x* and *y* shift based directly on the values passed to its
-parameters `nudge_x` and `nudge_y`.
+Function `position_nudge()` from package 'ggplot2' simply applies the nudge, or
+*x* and *y* shift based directly on the values passed to its parameters `x` and
+`y`. A new variation on simple nudge is provided by function
+`position_nudge_to()`.
 
-Two new position functions supporting advanced nudging are made available by package 'ggpmisc'. While `position_nudge()` implements shifts along $x$ and $y$ axes that are the same for every observation, the new functions compute the direction of the nudging specifically for each observation.
+Two new position functions supporting advanced nudging are made available by
+package 'ggpmisc'. While `position_nudge()` implements shifts along $x$ and $y$
+axes that are the same for every observation, the new functions compute the
+direction of the nudging specifically for each observation.
 
-One can think of this approach as nudging away from a focal point, a line or a curve. It is deterministic, while repulsion is aleatory. Advanced nudging works very well, but only for some patterns of observations, repulsion is more generally applicable.
+One can think of this approach as nudging away from a focal point, a line or a
+curve. It is deterministic, while repulsion is aleatory. Advanced nudging works
+very well, but only for some patterns of observations and may require manual
+adjustment of positions, repulsion is more generally applicable.
+
+All the new position functions save the original coordinates to allow linking
+the nudged objects, usually text labels, to be linked to the original
+position. This is currently only supported by `geom_linked_text()`, but they
+may be also supported by 'ggrepel' in the future.
+
+### position_nudge_to()
+
+Function `position_nudge_to()` differs from `ggplot2::position_nudge()` in that
+the coordinates of the new positions are supplied directly rather than as a
+displacement.
+
+```{r}
+set.seed(84532)
+df <- data.frame(
+  x = rnorm(8),
+  y = rnorm(8, 2, 2),
+  l = letters[1:8]
+)
+```
+
+We here the pass a vector of length one as argument for `y`, but `x` and `y`
+also accept vectors of the same length as rows has `data`. In other words, it
+allows manual positioning of text and labels. 
+ 
+```{r}
+ggplot(df, aes(x, y, label = l)) +
+  geom_point() +
+  geom_text(position = position_nudge_to(y = 6))
+```
 
 ### position_nudge_center()
 
-Function `position_nudge_center()` nudges radially away from a focal point if
-both *nudge_x* and *nudge_y* are passed as arguments, or towards opposite sides
-of a boundary line if only one of *nudge_x* or *nudge_y* is passed an argument.
+Function `position_nudge_center()` can nudge radially away from a focal point if
+both `x` and `y` are passed as arguments, or towards opposite sides
+of a boundary line if only one of `x` or `y` is passed an argument.
 By default, the "center" is the centroid computed using `mean()`, but other
-functions or numeric values can be passed to override it. When data are sparse,
-such nudging may be effective in avoiding label overlaps, and achieving a
-visually pleasing posiitoning.
+functions or numeric values can be passed to override it. 
 
 ```{r}
 set.seed(84532)
@@ -1271,10 +1343,15 @@ df <- data.frame(
   y = rnorm(20, 2, 2),
   l = sample(letters[1:6], 20, replace = TRUE)
 )
-
 ```
 
-By default a centroid computed with `mean()` is used as focal point. If the direction is `"split"` then only the sign of `x` and/or `y` are reversed to the left and below the focal point, respectively.
+With the default `direction = "none"`, `position_nudge_center()` behaves as
+`ggplot2::position_nudge()` but saves the original coordinates.
+
+When using one of the directions `"split"` or `"radial"` by default a centroid
+computed with `mean()` is used as focal point. If the direction is `"split"`
+then only the sign of `x` and/or `y` are reversed to the left and below the
+focal point, respectively.
 
 ```{r}
 ggplot(df, aes(x, y, label = l)) +
@@ -1293,7 +1370,8 @@ ggplot(df, aes(x, y, label = l)) +
                                              direction = "split"))
 ```
 
-We can override the default center coordinates by passing numeric values to `center_x` and/or `center_y`.
+We can override the default center coordinates by passing numeric values to
+`center_x` and/or `center_y`.
 
 ```{r}
 ggplot(df, aes(x, y, label = l)) +
@@ -1303,7 +1381,8 @@ ggplot(df, aes(x, y, label = l)) +
                                              direction = "split"))
 ```
 
-We can override the default center coordinates by a function.
+We can override the default center coordinates computed with `mean()` by passing
+as argument a different function.
 
 ```{r}
 ggplot(df, aes(x, y, label = l)) +
