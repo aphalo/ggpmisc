@@ -387,11 +387,16 @@ PositionNudgeLine <-
                           adj_x_nudge,
                           x_nudge)
       }
-      # transform both dimensions
-      data <-
-        ggplot2::transform_position(data,
-                                    function(x) x + x_nudge,
-                                    function(y) y + y_nudge)
+      # transform only the dimensions for which new coordinates exist
+      if (any(params$x != 0)) {
+        if (any(params$y != 0)) {
+          data <- transform_position(data, function(x) x + x_nudge, function(y) y + y_nudge)
+        } else {
+          data <- transform_position(data, function(x) x + x_nudge, NULL)
+        }
+      } else if (any(params$y != 0)) {
+        data <- transform_position(data, NULL, function(y) y + y_nudge)
+      }
       data$x_orig <- x_orig
       data$y_orig <- y_orig
       data

@@ -2,7 +2,6 @@
 % Please edit documentation in R/geom-linked-text.r
 \name{geom_linked_text}
 \alias{geom_linked_text}
-\alias{geom_linked_label}
 \title{Linked Text}
 \usage{
 geom_linked_text(
@@ -14,28 +13,7 @@ geom_linked_text(
   parse = FALSE,
   nudge_x = 0,
   nudge_y = 0,
-  min.segment.length = 0.5,
   arrow = NULL,
-  check_overlap = FALSE,
-  na.rm = FALSE,
-  show.legend = NA,
-  inherit.aes = TRUE
-)
-
-geom_linked_label(
-  mapping = NULL,
-  data = NULL,
-  stat = "identity",
-  position = "identity",
-  ...,
-  parse = FALSE,
-  nudge_x = 0,
-  nudge_y = 0,
-  min.segment.length = 0.5,
-  arrow = NULL,
-  label.padding = grid::unit(0.25, "lines"),
-  label.r = grid::unit(0.15, "lines"),
-  label.size = 0.25,
   check_overlap = FALSE,
   na.rm = FALSE,
   show.legend = NA,
@@ -73,10 +51,6 @@ displayed as described in \code{?plotmath}.}
 starting position of each text label. The units for \code{nudge_x} and
 \code{nudge_y} are the same as for the data units on the x-axis and y-axis.}
 
-\item{min.segment.length}{Skip drawing segments shorter than this, as unit or
-number. Defaults to 0.5. (Default unit is lines, but other units can be
-specified by passing \code{unit(x, "units")}).}
-
 \item{arrow}{specification for arrow heads, as created by
 \code{\link[grid]{arrow}}}
 
@@ -96,18 +70,11 @@ never includes, and \code{TRUE} always includes.}
 than combining with them. This is most useful for helper functions that
 define both data and aesthetics and shouldn't inherit behaviour from the
 default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
-
-\item{label.padding}{Amount of padding around label. Defaults to 0.25 lines.}
-
-\item{label.r}{Radius of rounded corners. Defaults to 0.15 lines.}
-
-\item{label.size}{Size of label border, in mm.}
 }
 \description{
-Text geoms are useful for labeling plots. `geom_linked_text()`
+Text geoms are useful for labelling plots. `geom_linked_text()`
   adds text to the plot and for nudged positions links the original location
-  to the nudeged text with a segment. `geom_linked_label()` draws a rectangle
-  behind the text, making it easier to read on a crowded background.
+  to the nudged text with a segment.
 }
 \details{
 Note that when you resize a plot, text labels stay the same size,
@@ -117,20 +84,21 @@ Note that when you resize a plot, text labels stay the same size,
   same reason, stacking and dodging text will not work by default, and axis
   limits are not automatically expanded to include all text.
 
-  `geom_linked_text()` and `geom_linked_label()` add labels for each row in
-  the data, even if coordinates x, y are set to single values in the call to
-  `geom_linked_label()` or `geom_linked_text()`.
-
-  By default these geoms use `position_nudge_center()` which is backwards
+  By default this geom uses `position_nudge_center()` which is backwards
   compatible with `position_nudge()` from 'ggplot2' but provides additional
   control on the direction of the nudging. In contrast to `position_nudge()`,
   `position_nudge_center()` and `position_nudge_line()` preserve the original
   coordinates.
 }
-\section{`geom_linked_label()`}{
- Currently `geom_linked_label()` does not support
-  the `angle` aesthetic and is considerably slower than `geom_linked_text()`. The
-  `fill` aesthetic controls the background colour of the label.
+\section{Under development}{
+
+  This is a very simple and preliminary version of a geom. I plan to add
+  features like padding around text and points. I aim to make use of the new
+  features of 'grid' in R >= 4.1.0 to keep the implementation as fast and
+  simple as possible. Currently this geom does all drawing using at most two
+  vectorized calls to 'grid' functions. As a temporary replacement of padding
+  around text one can use 'slightly out-of-range' numeric values for
+  justification as shown in the examples.
 }
 
 \section{Alignment}{
@@ -142,3 +110,88 @@ Note that when you resize a plot, text labels stay the same size,
   and outward aligns it away from the center.
 }
 
+\examples{
+
+my.cars <- mtcars[c(TRUE, FALSE, FALSE, FALSE), ]
+my.cars$name <- rownames(my.cars)
+p <- ggplot(my.cars, aes(wt, mpg, label = name))
+
+# default behavior is as for geon_text()
+p + geom_linked_text()
+# Avoid overlaps
+p + geom_linked_text(check_overlap = TRUE)
+# Change size of the label
+p + geom_linked_text(size = 2.5)
+
+# Use nudging
+p +
+  geom_point() +
+  geom_linked_text(hjust = -0.04, nudge_x = 0.12) +
+  expand_limits(x = 6.2)
+p +
+  geom_point() +
+  geom_linked_text(hjust = -0.04, nudge_x = 0.12,
+  arrow = arrow(length = grid::unit(1.5, "mm"))) +
+  expand_limits(x = 6.2)
+p +
+  geom_point() +
+  geom_linked_text(vjust = -0.5, nudge_y = 0.5)
+p +
+  geom_point() +
+  geom_linked_text(hjust = -0.02, nudge_x = 0.1,
+                   vjust = -0.2, nudge_y = 0.5)
+p +
+  geom_point() +
+  geom_linked_text(angle = 90,
+                   hjust = -0.04, nudge_y = 1,
+                   arrow = arrow(length = grid::unit(1.5, "mm"))) +
+  expand_limits(y = 40)
+
+# Add aesthetic mappings
+p +
+  geom_point() +
+  geom_linked_text(aes(colour = factor(cyl)),
+                   angle = 90,
+                   hjust = -0.04, nudge_y = 1,
+                   arrow = arrow(length = grid::unit(1.5, "mm"))) +
+  scale_colour_discrete(l = 40) +
+  expand_limits(y = 40)
+
+p + geom_linked_text(aes(size = wt)) +
+    expand_limits(x = c(2, 6))
+# Scale height of text, rather than sqrt(height)
+p +
+  geom_linked_text(aes(size = wt)) +
+  scale_radius(range = c(3,6)) +
+    expand_limits(x = c(2, 6))
+
+# You can display expressions by setting parse = TRUE.  The
+# details of the display are described in ?plotmath, but note that
+# geom_linked_text uses strings, not expressions.
+p +
+  geom_linked_text(
+    aes(label = paste(wt, "^(", cyl, ")", sep = "")),
+    parse = TRUE
+  )
+
+# Add a text annotation
+p +
+  geom_linked_text() +
+  annotate(
+    "linked_text", label = "plot mpg vs. wt",
+    x = 2, y = 15, size = 3, colour = "red"
+  )  +
+ expand_limits(x = c(1.5, 6))
+
+# Justification -------------------------------------------------------------
+df <- data.frame(
+  x = c(1, 1, 2, 2, 1.5),
+  y = c(1, 2, 1, 2, 1.5),
+  text = c("bottom-left", "bottom-right", "top-left", "top-right", "center")
+)
+ggplot(df, aes(x, y)) +
+  geom_linked_text(aes(label = text))
+ggplot(df, aes(x, y)) +
+  geom_linked_text(aes(label = text), vjust = "inward", hjust = "inward")
+
+}

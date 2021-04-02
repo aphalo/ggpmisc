@@ -3,11 +3,11 @@
 %   R/geom-linked-text.r, R/geom-margin-arrow.r, R/geom-margin-grob.r,
 %   R/geom-margin-point.r, R/geom-plot.R, R/geom-quadrant-lines.R,
 %   R/geom-table.R, R/geom-text-npc.r, R/position-nudge-center.R,
-%   R/position-nudge-line.R, R/stat-apply.R, R/stat-dens1d-filter.r,
-%   R/stat-dens1d-labels.r, R/stat-dens2d-filter.r, R/stat-dens2d-labels.r,
-%   R/stat-fit-broom-tb.R, R/stat-fit-broom.R, R/stat-fit-deviations.R,
-%   R/stat-fit-residuals.R, R/stat-fmt-tb.R, R/stat-peaks.R, R/stat-poly-eq.R,
-%   R/stat-quadrant-counts.R
+%   R/position-nudge-line.R, R/position-nudge-to.R, R/stat-apply.R,
+%   R/stat-dens1d-filter.r, R/stat-dens1d-labels.r, R/stat-dens2d-filter.r,
+%   R/stat-dens2d-labels.r, R/stat-fit-broom-tb.R, R/stat-fit-broom.R,
+%   R/stat-fit-deviations.R, R/stat-fit-residuals.R, R/stat-fmt-tb.R,
+%   R/stat-peaks.R, R/stat-poly-eq.R, R/stat-quadrant-counts.R
 \docType{data}
 \name{grob_draw_panel_fun}
 \alias{grob_draw_panel_fun}
@@ -16,7 +16,6 @@
 \alias{GeomGrobNpc}
 \alias{GeomLabelNpc}
 \alias{GeomLinkedText}
-\alias{GeomLinkedLabel}
 \alias{GeomXMarginArrow}
 \alias{GeomYMarginArrow}
 \alias{GeomXMarginGrob}
@@ -36,6 +35,7 @@
 \alias{GeomTextNpc}
 \alias{PositionNudgeCenter}
 \alias{PositionNudgeLine}
+\alias{PositionNudgeTo}
 \alias{stat_apply_fun}
 \alias{Stats}
 \alias{StatApplyGroup}

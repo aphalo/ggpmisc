@@ -219,6 +219,20 @@ ggplot(mpg, aes(displ, hwy, colour = factor(cyl))) +
 
 
 ## -----------------------------------------------------------------------------
+my.cars <- mtcars[c(TRUE, FALSE, FALSE, FALSE), ]
+my.cars$name <- rownames(my.cars)
+my.cars <- my.cars[order(my.cars$wt), ]
+ggplot(my.cars, aes(wt, mpg, label = name)) +
+  geom_point() +
+  geom_linked_text(aes(colour = factor(cyl)),
+                   angle = 90,
+                   hjust = 1.04, nudge_y = -1, 
+                   nudge_x = c(0, 0, -0.05, +0.05, 0, 0 ,0, 0),
+                   arrow = arrow(length = grid::unit(1.5, "mm"))) +
+  scale_colour_discrete(l = 40) +
+  expand_limits(y = 0)
+
+## -----------------------------------------------------------------------------
 file.name <- 
   system.file("extdata", "Robinin.png", 
               package = "ggpmisc", mustWork = TRUE)

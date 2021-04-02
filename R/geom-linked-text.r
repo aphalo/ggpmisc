@@ -1,9 +1,17 @@
 #' @title Linked Text
 #'
-#' @description Text geoms are useful for labeling plots. `geom_linked_text()`
+#' @description Text geoms are useful for labelling plots. `geom_linked_text()`
 #'   adds text to the plot and for nudged positions links the original location
-#'   to the nudeged text with a segment. `geom_linked_label()` draws a rectangle
-#'   behind the text, making it easier to read on a crowded background.
+#'   to the nudged text with a segment.
+#'
+#' @section Under development:
+#'   This is a very simple and preliminary version of a geom. I plan to add
+#'   features like padding around text and points. I aim to make use of the new
+#'   features of 'grid' in R >= 4.1.0 to keep the implementation as fast and
+#'   simple as possible. Currently this geom does all drawing using at most two
+#'   vectorized calls to 'grid' functions. As a temporary replacement of padding
+#'   around text one can use 'slightly out-of-range' numeric values for
+#'   justification as shown in the examples.
 #'
 #' @details Note that when you resize a plot, text labels stay the same size,
 #'   even though the size of the plot area changes. This happens because the
@@ -12,19 +20,11 @@
 #'   same reason, stacking and dodging text will not work by default, and axis
 #'   limits are not automatically expanded to include all text.
 #'
-#'   `geom_linked_text()` and `geom_linked_label()` add labels for each row in
-#'   the data, even if coordinates x, y are set to single values in the call to
-#'   `geom_linked_label()` or `geom_linked_text()`.
-#'
-#'   By default these geoms use `position_nudge_center()` which is backwards
+#'   By default this geom uses `position_nudge_center()` which is backwards
 #'   compatible with `position_nudge()` from 'ggplot2' but provides additional
 #'   control on the direction of the nudging. In contrast to `position_nudge()`,
 #'   `position_nudge_center()` and `position_nudge_line()` preserve the original
 #'   coordinates.
-#'
-#' @section `geom_linked_label()`: Currently `geom_linked_label()` does not support
-#'   the `angle` aesthetic and is considerably slower than `geom_linked_text()`. The
-#'   `fill` aesthetic controls the background colour of the label.
 #'
 #' @section Alignment: You can modify text alignment with the `vjust` and
 #'   `hjust` aesthetics. These can either be a number between 0 (right/bottom)
@@ -69,9 +69,6 @@
 #' @param nudge_x,nudge_y Horizontal and vertical adjustments to nudge the
 #'   starting position of each text label. The units for \code{nudge_x} and
 #'   \code{nudge_y} are the same as for the data units on the x-axis and y-axis.
-#' @param min.segment.length Skip drawing segments shorter than this, as unit or
-#'   number. Defaults to 0.5. (Default unit is lines, but other units can be
-#'   specified by passing \code{unit(x, "units")}).
 #' @param arrow specification for arrow heads, as created by
 #'   \code{\link[grid]{arrow}}
 #'
@@ -87,32 +84,30 @@
 #' p + geom_linked_text()
 #' # Avoid overlaps
 #' p + geom_linked_text(check_overlap = TRUE)
-#' # Labels with background
-#' p + geom_linked_label()
 #' # Change size of the label
 #' p + geom_linked_text(size = 2.5)
 #'
 #' # Use nudging
 #' p +
 #'   geom_point() +
-#'   geom_linked_text(hjust = 0, nudge_x = 0.12) +
+#'   geom_linked_text(hjust = -0.04, nudge_x = 0.12) +
 #'   expand_limits(x = 6.2)
 #' p +
 #'   geom_point() +
-#'   geom_linked_text(hjust = 0, nudge_x = 0.12,
+#'   geom_linked_text(hjust = -0.04, nudge_x = 0.12,
 #'   arrow = arrow(length = grid::unit(1.5, "mm"))) +
 #'   expand_limits(x = 6.2)
 #' p +
 #'   geom_point() +
-#'   geom_linked_text(vjust = 0, nudge_y = 0.5)
+#'   geom_linked_text(vjust = -0.5, nudge_y = 0.5)
 #' p +
 #'   geom_point() +
-#'   geom_linked_text(hjust = 0, nudge_x = 0.1,
-#'                    vjust = 0, nudge_y = 0.5)
+#'   geom_linked_text(hjust = -0.02, nudge_x = 0.1,
+#'                    vjust = -0.2, nudge_y = 0.5)
 #' p +
 #'   geom_point() +
 #'   geom_linked_text(angle = 90,
-#'                    hjust = 0, nudge_y = 1,
+#'                    hjust = -0.04, nudge_y = 1,
 #'                    arrow = arrow(length = grid::unit(1.5, "mm"))) +
 #'   expand_limits(y = 40)
 #'
@@ -121,15 +116,10 @@
 #'   geom_point() +
 #'   geom_linked_text(aes(colour = factor(cyl)),
 #'                    angle = 90,
-#'                    hjust = 0, nudge_y = 1,
+#'                    hjust = -0.04, nudge_y = 1,
 #'                    arrow = arrow(length = grid::unit(1.5, "mm"))) +
 #'   scale_colour_discrete(l = 40) +
 #'   expand_limits(y = 40)
-#'
-#' p + geom_linked_label(aes(fill = factor(cyl)),
-#'                       colour = "white",
-#'                       fontface = "bold") +
-#'     expand_limits(x = c(2, 6))
 #'
 #' p + geom_linked_text(aes(size = wt)) +
 #'     expand_limits(x = c(2, 6))
@@ -176,7 +166,6 @@ geom_linked_text <- function(mapping = NULL,
                              parse = FALSE,
                              nudge_x = 0,
                              nudge_y = 0,
-                             min.segment.length = 0.5,
                              arrow = NULL,
                              check_overlap = FALSE,
                              na.rm = FALSE,
@@ -201,7 +190,6 @@ geom_linked_text <- function(mapping = NULL,
     inherit.aes = inherit.aes,
     params = list(
       parse = parse,
-      min.segment.length = min.segment.length,
       arrow = arrow,
       nudge_x = nudge_x,
       nudge_y = nudge_y,
@@ -227,7 +215,6 @@ GeomLinkedText <-
 
                     draw_panel = function(data, panel_params, coord, parse = FALSE,
                                           na.rm = FALSE, check_overlap = FALSE,
-                                          min.segment.length = 0.5,
                                           arrow = NULL,
                                           nudge_x = 0,
                                           nudge_y = 0) {
@@ -266,7 +253,9 @@ GeomLinkedText <-
                                        x1 = data_orig$x,
                                        y1 = data_orig$y,
                                        arrow = arrow,
-                                       gp = grid::gpar(col = "black")),
+                                       gp = grid::gpar(col =
+                                                         alpha(data$colour,
+                                                               data$alpha))),
                           textGrob(
                             lab,
                             data$x, data$y, default.units = "native",
@@ -301,178 +290,3 @@ GeomLinkedText <-
 
                    draw_key = draw_key_text
   )
-
-#' @export
-#' @rdname geom_linked_text
-#' @param label.padding Amount of padding around label. Defaults to 0.25 lines.
-#' @param label.r Radius of rounded corners. Defaults to 0.15 lines.
-#' @param label.size Size of label border, in mm.
-#'
-geom_linked_label <- function(mapping = NULL, data = NULL,
-                       stat = "identity", position = "identity",
-                       ...,
-                       parse = FALSE,
-                       nudge_x = 0,
-                       nudge_y = 0,
-                       min.segment.length = 0.5,
-                       arrow = NULL,
-                       label.padding = grid::unit(0.25, "lines"),
-                       label.r = grid::unit(0.15, "lines"),
-                       label.size = 0.25,
-                       check_overlap = FALSE,
-                       na.rm = FALSE,
-                       show.legend = NA,
-                       inherit.aes = TRUE) {
-  if (!missing(nudge_x) || !missing(nudge_y)) {
-    if (!missing(position)) {
-      rlang::abort("You must specify either `position` or `nudge_x`/`nudge_y`.")
-    }
-
-    position <- position_nudge_center(nudge_x, nudge_y)
-  }
-
-  layer(
-    data = data,
-    mapping = mapping,
-    stat = stat,
-    geom = GeomLinkedLabel,
-    position = position,
-    show.legend = show.legend,
-    inherit.aes = inherit.aes,
-    params = list(
-      parse = parse,
-      min.segment.length = min.segment.length,
-      arrow = arrow,
-      label.padding = label.padding,
-      label.r = label.r,
-      label.size = label.size,
-      nudge_x = nudge_x,
-      nudge_y = nudge_y,
-      na.rm = na.rm,
-      ...
-    )
-  )
-}
-
-#' @rdname ggpmisc-ggproto
-#' @format NULL
-#' @usage NULL
-#' @export
-GeomLinkedLabel <-
-  ggplot2::ggproto("GeomLinkedLabel", Geom,
-                     required_aes = c("x", "y", "label"),
-
-                     default_aes = aes(
-                       colour = "black", fill = "white", size = 3.88, angle = 0,
-                       hjust = 0.5, vjust = 0.5, alpha = NA, family = "", fontface = 1,
-                       lineheight = 1.2
-                     ),
-
-                     draw_panel = function(self, data, panel_params, coord, parse = FALSE,
-                                           na.rm = FALSE,
-                                           label.padding = unit(0.25, "lines"),
-                                           label.r = unit(0.15, "lines"),
-                                           label.size = 0.25,
-                                           min.segment.length = 0.5,
-                                           arrow = NULL) {
-
-                       add.links <- all(c("x_orig", "y_orig") %in% colnames(data))
-
-                       data$label <- as.character(data$label)
-                       data <- subset(data, !is.na(label) & label != "")
-                       if (nrow(data) == 0L) {
-                         return(nullGrob())
-                       }
-
-                       lab <- data$label
-                       if (parse) {
-                         lab <- parse_safe(lab)
-                       }
-
-                       data <- coord$transform(data, panel_params)
-                       if (add.links) {
-                         data_orig <- data.frame(x = data$x_orig, y = data$y_orig)
-                         data_orig <- coord$transform(data_orig, panel_params)
-                       }
-
-                       if (is.character(data$vjust)) {
-                         data$vjust <- compute_just(data$vjust, data$y)
-                       }
-                       if (is.character(data$hjust)) {
-                         data$hjust <- compute_just(data$hjust, data$x)
-                       }
-
-                       grobs <- lapply(1:nrow(data), function(i) {
-                         row <- data[i, , drop = FALSE]
-                         labelGrob(lab[i],
-                                   x = unit(row$x, "native"),
-                                   y = unit(row$y, "native"),
-                                   just = c(row$hjust, row$vjust),
-                                   padding = label.padding,
-                                   r = label.r,
-                                   text.gp = gpar(
-                                     col = row$colour,
-                                     fontsize = row$size * .pt,
-                                     fontfamily = row$family,
-                                     fontface = row$fontface,
-                                     lineheight = row$lineheight
-                                   ),
-                                   rect.gp = gpar(
-                                     col = if (isTRUE(all.equal(label.size, 0))) NA else row$colour,
-                                     fill = alpha(row$fill, row$alpha),
-                                     lwd = label.size * .pt
-                                   )
-                         )
-                       })
-                       class(grobs) <- "gList"
-
-                       ggname("geom_linked_label", grobTree(children = grobs))
-                     },
-
-                     draw_key = draw_key_label
-)
-
-labelGrob <- function(label, x = grid::unit(0.5, "npc"), y = grid::unit(0.5, "npc"),
-                      just = "center", padding = grid::unit(0.25, "lines"),
-                      r = grid::unit(0.1, "snpc"),
-                      default.units = "npc", name = NULL,
-                      text.gp = grid::gpar(), rect.gp = grid::gpar(fill = "white"), vp = NULL) {
-
-  if (length(label) != 1) {
-    rlang::abort("label must be of length 1")
-  }
-
-  if (!grid::is.unit(x))
-    x <- grid::unit(x, default.units)
-  if (!grid::is.unit(y))
-    y <- grid::unit(y, default.units)
-
-  grid::gTree(label = label, x = x, y = y, just = just, padding = padding, r = r,
-        name = name, text.gp = text.gp, rect.gp = rect.gp, vp = vp, cl = "labelgrob")
-}
-
-#' @export
-makeContent.labelgrob <- function(x) {
-  hj <- grid::resolveHJust(x$just, NULL)
-  vj <- grid::resolveVJust(x$just, NULL)
-
-  t <- grid::textGrob(
-    x$label,
-    x$x + 2 * (0.5 - hj) * x$padding,
-    x$y + 2 * (0.5 - vj) * x$padding,
-    just = c(hj, vj),
-    gp = x$text.gp,
-    name = "text"
-  )
-
-  r <- grid::roundrectGrob(x$x, x$y, default.units = "native",
-                     width = grid::grobWidth(t) + 2 * x$padding,
-                     height = grid::grobHeight(t) + 2 * x$padding,
-                     just = c(hj, vj),
-                     r = x$r,
-                     gp = x$rect.gp,
-                     name = "box"
-  )
-
-  grid::setChildren(x, grid::gList(r, t))
-}

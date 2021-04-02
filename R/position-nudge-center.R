@@ -368,11 +368,16 @@ PositionNudgeCenter <-
           y_nudge[in.grp] <- params$y
         }
       }
-      # transform the dimensions
-      data <-
-        ggplot2::transform_position(data,
-                                    trans_x = function(x) x + x_nudge,
-                                    trans_y = function(y) y + y_nudge)
+      # transform only the dimensions for which new coordinates exist
+      if (any(params$x != 0)) {
+        if (any(params$y != 0)) {
+          data <- transform_position(data, function(x) x + x_nudge, function(y) y + y_nudge)
+        } else {
+          data <- transform_position(data, function(x) x + x_nudge, NULL)
+        }
+      } else if (any(params$y != 0)) {
+        data <- transform_position(data, NULL, function(y) y + y_nudge)
+      }
       # add original position
       data$x_orig <- x_orig
       data$y_orig <- y_orig

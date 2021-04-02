@@ -242,6 +242,7 @@ ggplot(df, aes(x, z, color = group)) +
 [ggplot::position_nudge()], [ggrepel::position_nudge_repel()].
 
 Other position adjustments: 
-\code{\link{position_nudge_line}()}
+\code{\link{position_nudge_line}()},
+\code{\link{position_nudge_to}()}
 }
 \concept{position adjustments}
