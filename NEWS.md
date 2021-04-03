@@ -9,13 +9,19 @@ editor_options:
 -   Update the documentation of `geom_plot()`.
 -   Revise handling of rounding for $R^2$ and $P$-value in
     `stat_poly_eq()`.
+-   Link repositioned text to its original position with a segment or
+    arrow: `geom_linked_text()`. [Under development!] Except for the
+    drawing of segments or arrows this new *geometry* behaves as
+    `ggplot2::geom_text()` . *Note:* Segments and arrows are drawn only
+    if the position function used returns both the repositioned and
+    original coordinates.
 -   Add support for advanced nudging: `position_nudge_centre()` and
-    `position_nudge_line()` compute the direction of nudging and save
-    original position.
--   Add support for simple nudging: `position_nudge_to()` nudge to new
-    user supplied position and save original position.
--   Link nudged text and labels to original position with a segment or
-    arrow: `geom_linked_text()`. [Under development!]
+    `position_nudge_line()` compute the direction of nudging and return
+    both the nudged and original positions.
+-   Add support for simple nudging: `position_nudge_to()` nudges to new
+    user-supplied position(s); `position_nudge_keep()` nudges to
+    position(s) based on user-supplies position shift. These functions
+    return both nudged and original position(s).
 
 # ggpmisc 0.3.8-1
 

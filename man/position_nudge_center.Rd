@@ -3,6 +3,7 @@
 \name{position_nudge_center}
 \alias{position_nudge_center}
 \alias{position_nudge_centre}
+\alias{position_nudge_keep}
 \title{Nudge labels away from a central point}
 \usage{
 position_nudge_center(
@@ -22,6 +23,8 @@ position_nudge_centre(
   direction = NULL,
   obey_grouping = NULL
 )
+
+position_nudge_keep(x = 0, y = 0)
 }
 \arguments{
 \item{x, y}{Amount of vertical and horizontal distance to move. A numeric
@@ -44,14 +47,21 @@ otherwise.}
 }
 \description{
 `position_nudge_center()` is generally useful for adjusting the position of
-labels or text, both on a discrete or continuous scale. This version from
-package 'ggpmisc' is backwards compatible with [ggplot2::position_nudge] but
-extends it by adding support for nudging that varies across the plotting
-region, either in opposite directions or radially from a virtual _center
-point_. In contrast to [ggplot2::position_nudge], `position_nudge_center()`
-returns in `data` both the original coordinates and the nudged coordinates.
+labels or text, both on a discrete or continuous scale. In contrast to
+[ggplot2::position_nudge], `position_nudge_center()` returns in `data` both
+the original coordinates and the nudged coordinates.
 }
 \details{
+This position function is backwards compatible with [ggplot2::position_nudge]
+but extends it by adding support for nudging that varies across the plotting
+region, either in opposite directions or radially from a virtual _center
+point_.
+
+The wrapper `position_nudge_keep()` with exactly the same signature and
+behaviour as [ggplot2::position_nudge] provides an easier to remember name
+when the desire is only to have access to both the original and nudged
+coordinates.
+
 Positive values as arguments to `x` and `y` are added to the
   original position along either axis. If no arguments are passed to
   `center_x`, `center_y` or `direction`, the nudging is applied as is, as is
@@ -239,9 +249,10 @@ ggplot(df, aes(x, z, color = group)) +
 
 }
 \seealso{
-[ggplot::position_nudge()], [ggrepel::position_nudge_repel()].
+[ggplot2::position_nudge()], [ggrepel::position_nudge_repel()].
 
 Other position adjustments: 
+\code{\link{position_dodge_keep}()},
 \code{\link{position_nudge_line}()},
 \code{\link{position_nudge_to}()}
 }

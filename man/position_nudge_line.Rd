@@ -241,6 +241,7 @@ ggplot(df, aes(x, y, label = l)) +
 [ggplot::position_nudge()], [ggrepel::position_nudge_repel()].
 
 Other position adjustments: 
+\code{\link{position_dodge_keep}()},
 \code{\link{position_nudge_center}()},
 \code{\link{position_nudge_to}()}
 }

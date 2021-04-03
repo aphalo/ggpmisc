@@ -1,14 +1,22 @@
 #' Nudge labels away from a central point
 #'
 #' `position_nudge_center()` is generally useful for adjusting the position of
-#' labels or text, both on a discrete or continuous scale. This version from
-#' package 'ggpmisc' is backwards compatible with [ggplot2::position_nudge] but
-#' extends it by adding support for nudging that varies across the plotting
+#' labels or text, both on a discrete or continuous scale. In contrast to
+#' [ggplot2::position_nudge], `position_nudge_center()` returns in `data` both
+#' the original coordinates and the nudged coordinates.
+#'
+#' This position function is backwards compatible with [ggplot2::position_nudge]
+#' but extends it by adding support for nudging that varies across the plotting
 #' region, either in opposite directions or radially from a virtual _center
-#' point_. In contrast to [ggplot2::position_nudge], `position_nudge_center()`
-#' returns in `data` both the original coordinates and the nudged coordinates.
+#' point_.
+#'
+#' The wrapper `position_nudge_keep()` with exactly the same signature and
+#' behaviour as [ggplot2::position_nudge] provides an easier to remember name
+#' when the desire is only to have access to both the original and nudged
+#' coordinates.
 #'
 #' @family position adjustments
+#'
 #' @param x,y Amount of vertical and horizontal distance to move. A numeric
 #'   vector of length 1, or of the same length as rows there are in `data`,
 #' @param center_x,center_y The coordinates of the virtual origin out from which
@@ -52,7 +60,7 @@
 #'   This position is most useful when labeling points forming a cloud or
 #'   along vertical or horizontal lines or "divides".
 #'
-#' @seealso [ggplot::position_nudge()], [ggrepel::position_nudge_repel()].
+#' @seealso [ggplot2::position_nudge()], [ggrepel::position_nudge_repel()].
 #'
 #' @export
 #'
@@ -390,3 +398,16 @@ PositionNudgeCenter <-
 #' @export
 #'
 position_nudge_centre <- position_nudge_center
+
+#' @rdname position_nudge_center
+#'
+#' @export
+#'
+position_nudge_keep <- function(x = 0, y = 0) {
+  position_nudge_center(x = x,
+                        y = y,
+                        center_x = NULL,
+                        center_y = NULL,
+                        direction = NULL,
+                        obey_grouping = NULL)
+}
