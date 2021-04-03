@@ -20,6 +20,7 @@ options(warnPartialMatchArgs = FALSE,
         tibble.print.max = 4,
         tibble.print.min = 4,
         dplyr.summarise.inform = FALSE)
+eval_flag <- FALSE # evaluate all code chunks
 ```
 
 ## Preliminaries
@@ -208,7 +209,7 @@ ggplot(my.data, aes(x, y)) +
 It is also possible to format the text using `plain()`, `italic()`, `bold()` or
 `bolditalic()` as described in `plotmath`.
 
-```{r}
+```{r, eval=eval_flag}
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
@@ -223,7 +224,7 @@ As these are expressions, to include two lines of text, we need either to add
 the labels (as shown above) or use (as shown here) `atop()` within the
 expression to create a single label with two lines of text.
 
-```{r}
+```{r, eval=eval_flag}
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
@@ -235,7 +236,7 @@ ggplot(my.data, aes(x, y)) +
 
 Next, one example of how to remove the left hand side (_lhs_).
 
-```{r}
+```{r, eval=eval_flag}
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
@@ -247,7 +248,7 @@ ggplot(my.data, aes(x, y)) +
 
 Replacing the _lhs_.
 
-```{r}
+```{r, eval=eval_flag}
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
@@ -278,7 +279,7 @@ formula or applied to the data. In addition, in the next example we insert white
 space in between the parameter estimates and the variable symbol in the
 equation.
 
-```{r}
+```{r, eval=eval_flag}
 formula <- y ~ poly(x, 2, raw = TRUE)
 ggplot(my.data, aes(x, log10(y + 1e6))) +
   geom_point() +
@@ -293,7 +294,8 @@ ggplot(my.data, aes(x, log10(y + 1e6))) +
 A couple of additional examples of polynomials of different orders, and
 specified in different ways.
 
-Higher order polynomial.
+Higher order polynomial. When using function `poly()` it is necessary to
+set `raw = TRUE`.
 
 ```{r}
 formula <- y ~ poly(x, 5, raw = TRUE)
@@ -305,7 +307,7 @@ ggplot(my.data, aes(x, y)) +
 
 Intercept forced to zero.
 
-```{r}
+```{r, eval=eval_flag}
 formula <- y ~ x + I(x^2) + I(x^3) - 1
 ggplot(my.data, aes(x, y)) +
   geom_point() +
@@ -330,7 +332,7 @@ ggplot(my.data, aes(x, y2)) +
   facet_wrap(~group)
 ```
 
-```{r}
+```{r, eval=eval_flag}
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2)) +
   geom_point() +
@@ -340,7 +342,7 @@ ggplot(my.data, aes(x, y2)) +
   facet_wrap(~group, scales = "free_y")
 ```
 
-Grouping, in this example using the color aesthetic also works as expected. We
+Grouping, in this example using the colour aesthetic also works as expected. We
 can use justification and supply an absolute location for the equation, but the
 default frequently works well as in the example below.
 
@@ -357,7 +359,7 @@ named `grp.label`. (Equation labelling uses a "back door" in 'ggplot2' that may
 be closed in future versions, meaning that this approach to labelling may stop
 working in the future.)
 
-```{r}
+```{r, eval=eval_flag}
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2, colour = group, grp.label = group)) +
   geom_point() +
@@ -384,7 +386,7 @@ Label positions relative to the ranges of the _x_ and _y_ scales are also
 supported, both through string constants and numeric values in the range
 0 to 1, when using the default `geom_text_npc()`.
 
-```{r}
+```{r, eval=eval_flag}
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2, colour = group)) +
   geom_point() +
@@ -415,7 +417,7 @@ the positions for each individual group. In the plot below the simultaneous
 mapping to both color and fill aesthetics creates four groups, two with data in
 panel A and the other two in panel B.
 
-```{r}
+```{r, eval=eval_flag}
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2, colour = group, fill = block)) +
   geom_point(shape = 21, size = 3) +
@@ -473,7 +475,7 @@ ggplot(my.data, aes(x, y)) +
 The geometry used by default is `geom_segment()` to which additional aesthetics
 can be mapped. Here we add arrowheads.
 
-```{r}
+```{r, eval=eval_flag}
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_smooth(method = "lm", formula = formula) +
@@ -607,7 +609,7 @@ stat_micmen_eq <- function(vstep = 0.12,
 
 The code for the figure is now simpler, and still produces the same figure (not shown).
 
-```{r, eval=FALSE}
+```{r, eval=eval_flag}
 micmen.formula <- y ~ SSmicmen(x, Vm, K) 
 ggplot(Puromycin, aes(conc, rate, colour = state)) +
   geom_point() +
@@ -666,7 +668,7 @@ stat_rq_eqn <-
 And the code of the figure now as simple as. Figure not shown, as is identical
 to the one above.
 
-```{r, eval=FALSE}
+```{r, eval=eval_flag}
 ggplot(mpg, aes(displ, 1 / hwy)) +
   geom_point() +
   geom_quantile(quantiles = 0.5, formula = my_formula) +
@@ -787,7 +789,7 @@ ggplot(chickwts, aes(factor(feed), weight)) +
 It is also possible to rotate the table using `angle`. Here we also show how to
 replace the column headers with strings to be parsed into R expressions.
 
-```{r}
+```{r, eval=eval_flag}
 ggplot(chickwts, aes(factor(feed), weight)) +
   stat_summary(fun.data = "mean_se") +
   stat_fit_tb(tb.type = "fit.anova",
@@ -836,7 +838,7 @@ We can override the variable returned as `y` to be any of the variables in
 the data frame returned by `broom::augment` while still preserving the original
 `y` values.
 
-```{r}
+```{r, eval=eval_flag}
 formula <- y ~ x + I(x^2) + I(x^3)
 ggplot(my.data, aes(x, y)) +
   stat_fit_augment(method = "lm",
@@ -856,7 +858,7 @@ ggplot(my.data, aes(x, y, colour = group)) +
 
 We can use any model fitting method for which `augment` is implemented.
 
-```{r}
+```{r, eval=eval_flag}
 args <- list(formula = y ~ k * e ^ x,
              start = list(k = 1, e = 2))
 ggplot(mtcars, aes(wt, mpg)) +
@@ -865,7 +867,7 @@ ggplot(mtcars, aes(wt, mpg)) +
                    method.args = args)
 ```
 
-```{r}
+```{r, eval=eval_flag}
 args <- list(formula = y ~ k * e ^ x,
              start = list(k = 1, e = 2))
 ggplot(mtcars, aes(wt, mpg)) +
@@ -875,7 +877,7 @@ ggplot(mtcars, aes(wt, mpg)) +
                    y.out = ".resid")
 ```
 
-The tidiers for mixed models have moved to package 'broom.mixed'!
+**Note:** The tidiers for mixed models have moved to package 'broom.mixed'!
 
 ```{r}
 args <- list(model = y ~ SSlogis(x, Asym, xmid, scal),
