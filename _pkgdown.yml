@@ -22,7 +22,8 @@ reference:
     desc: Geoms, short for geometric objects, describe the type of plot you will produce.
     contents:
     - annotate
-    - geom_label_npc
+    - geom_text_npc
+    - geom_linked_text
     - geom_x_margin_point
     - geom_x_margin_arrow
     - geom_x_margin_grob
@@ -53,6 +54,7 @@ reference:
   - title: Positions
     desc: Advanced nudge functions
     contents:
+    - position_nudge_to
     - position_nudge_center
     - position_nudge_line
   - title: Plot creation
