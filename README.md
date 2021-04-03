@@ -80,6 +80,9 @@ and `geom_y_margin_point()` make it possible to add marks along the *x*
 and *y* axes. `geom_vhlines()` and `geom_quadrant_lines()` draw vertical
 and horizontal reference lines within a single layer.
 
+Geometry `geom_linked_text()` connects text drawn at a nudged position
+to the original position, usually that of a point being labelled.
+
 ## Statistics
 
 Statistic `stat_fmt_tb()` helps with the formatting of tables to be
@@ -111,14 +114,17 @@ useful for applying arbitrary functions returning numeric vectors. They
 are specially useful with functions lime `cumsum()`, `cummax()` and
 `diff()`.
 
-## Positions
+## Position functions
 
-Two enhanced versions of `position_nudge()` are provided,
-`position_nudge_center()` and `position_nudge_line()`. These functions
-make it possible to apply nudging that varies automatically according to
-the relative position of points with respect to arbitrary points or
-lines, or with respect to a polynomial or smoothing spline fitted
-on-the-fly to the the observations.
+New position functions implementing different flavours of nudging are
+provided: `position_nudge_keep()`, `position_nudge_to()`,
+`position_nudge_center()` and `position_nudge_line()`. These last two
+functions make it possible to apply nudging that varies automatically
+according to the relative position of points with respect to arbitrary
+points or lines, or with respect to a polynomial or smoothing spline
+fitted on-the-fly to the the observations. In contrast to
+`ggplot2::position_nudge()` all these functions return the repositioned
+and original *x* and *y* coordinates.
 
 ## ggplot methods
 
@@ -198,7 +204,8 @@ ggplot(cars, aes(speed, dist)) +
               label.y.npc = "top", label.x.npc = "left",
               size = 2.5,
               parse = TRUE)
-#> Dropping params/terms (rows) from table!
+#> Warning: Computation failed in `stat_fit_tb()`:
+#> no applicable method for 'tidy' applied to an object of class "c('anova', 'data.frame')"
 ```
 
 ![](man/figures/README-readme-05-1.png)<!-- -->

@@ -9,9 +9,9 @@ editor_options:
 -   Update the documentation of `geom_plot()`.
 -   Revise handling of rounding for $R^2$ and $P$-value in
     `stat_poly_eq()`.
--   Link repositioned text to its original position with a segment or
-    arrow: `geom_linked_text()`. [Under development!] Except for the
-    drawing of segments or arrows this new *geometry* behaves as
+-   [**Under development!**] Link repositioned text to its original
+    position with a segment or arrow: `geom_linked_text()`. Except for
+    the drawing of segments or arrows this new *geometry* behaves as
     `ggplot2::geom_text()` . *Note:* Segments and arrows are drawn only
     if the position function used returns both the repositioned and
     original coordinates.
