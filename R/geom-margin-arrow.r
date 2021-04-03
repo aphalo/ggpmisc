@@ -64,11 +64,11 @@ geom_x_margin_arrow <- function(mapping = NULL, data = NULL,
   # Act like an annotation
   if (!missing(xintercept)) {
     data <- as.data.frame(list(xintercept = xintercept))
-    mapping <- aes(xintercept = xintercept)
+    mapping <- ggplot2::aes(xintercept = xintercept)
     show.legend <- FALSE
   }
 
-  layer(
+  ggplot2::layer(
     data = data,
     mapping = mapping,
     stat = stat,
@@ -90,11 +90,11 @@ geom_x_margin_arrow <- function(mapping = NULL, data = NULL,
 #' @usage NULL
 #' @export
 GeomXMarginArrow <-
-  ggproto("GeomXMarginArrow", Geom,
+  ggplot2::ggproto("GeomXMarginArrow", ggplot2::Geom,
           required_aes = c("xintercept"),
           non_missing_aes = c("size", "shape", "colour"),
-          default_aes = aes(colour = "red", size = 1,
-                            fill = "red", alpha = NA),
+          default_aes = ggplot2::aes(colour = "red", size = 1,
+                                     fill = "red", alpha = NA),
 
   draw_panel = function(data, panel_params, coord, sides = "b",
                         arrow.length = 0.03, na.rm = FALSE) {
@@ -116,18 +116,21 @@ GeomXMarginArrow <-
     gp <- gpar(col = alpha(data$colour, data$alpha), lty = data$linetype, lwd = data$size * .pt)
     if (!flipped && !is.null(data$xintercept)) {
       if (grepl("b", sides)) {
-        rugarrows$x_b <- segmentsGrob(
-          x0 = unit(data$xintercept, "native"), x1 = unit(data$xintercept, "native"),
-          y0 = unit(0, "npc"), y1 = unit(arrow.length, "npc"),
+        rugarrows$x_b <- grid::segmentsGrob(
+          x0 = grid::unit(data$xintercept, "native"),
+          x1 = grid::unit(data$xintercept, "native"),
+          y0 = grid::unit(0, "npc"),
+          y1 = grid::unit(arrow.length, "npc"),
           arrow = arrow,
           gp = gp
         )
       }
 
       if (grepl("t", sides)) {
-        rugarrows$x_t <- segmentsGrob(
-          x0 = unit(data$xintercept, "native"), x1 = unit(data$xintercept, "native"),
-          y0 = unit(1, "npc"), y1 = unit(1 - arrow.length, "npc"),
+        rugarrows$x_t <- grid::segmentsGrob(
+          x0 = grid::unit(data$xintercept, "native"),
+          x1 = grid::unit(data$xintercept, "native"),
+          y0 = grid::unit(1, "npc"), y1 = unit(1 - arrow.length, "npc"),
           arrow = arrow,
           gp = gp
         )
@@ -178,11 +181,11 @@ geom_y_margin_arrow <- function(mapping = NULL, data = NULL,
   # Act like an annotation
   if (!missing(yintercept)) {
     data <- as.data.frame(list(yintercept = yintercept))
-    mapping <- aes(yintercept = yintercept)
+    mapping <- ggplot2::aes(yintercept = yintercept)
     show.legend <- FALSE
   }
 
-  layer(
+  ggplot2::layer(
     data = data,
     mapping = mapping,
     stat = stat,

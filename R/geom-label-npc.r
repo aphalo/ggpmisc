@@ -9,8 +9,8 @@ geom_label_npc <- function(mapping = NULL, data = NULL,
                       parse = FALSE,
                       nudge_x = 0,
                       nudge_y = 0,
-                      label.padding = unit(0.25, "lines"),
-                      label.r = unit(0.15, "lines"),
+                      label.padding = grid::unit(0.25, "lines"),
+                      label.r = grid::unit(0.15, "lines"),
                       label.size = 0.25,
                       na.rm = FALSE,
                       show.legend = FALSE,
@@ -21,10 +21,10 @@ geom_label_npc <- function(mapping = NULL, data = NULL,
       stop("You must specify either `position` or `nudge_x`/`nudge_y`.",
            call. = FALSE)
     }
-    position <- position_nudge(nudge_x, nudge_y)
+    position <- ggplot2::position_nudge(nudge_x, nudge_y)
   }
 
-  layer(
+  ggplot2::layer(
     data = data,
     mapping = mapping,
     stat = stat,
@@ -47,18 +47,18 @@ geom_label_npc <- function(mapping = NULL, data = NULL,
 #' @format NULL
 #' @usage NULL
 #' @export
-GeomLabelNpc <- ggproto("GeomLabelNpc", Geom,
+GeomLabelNpc <- ggplot2::ggproto("GeomLabelNpc", ggplot2::Geom,
   required_aes = c("npcx", "npcy", "label"),
 
-  default_aes = aes(
+  default_aes = ggplot2::aes(
     colour = "black", fill = "white", size = 3.88, angle = 0, hjust = "inward",
     vjust = "inward", alpha = NA, family = "", fontface = 1, lineheight = 1.2
   ),
 
   draw_panel = function(data, panel_params, coord, parse = FALSE,
                         na.rm = FALSE,
-                        label.padding = unit(0.25, "lines"),
-                        label.r = unit(0.15, "lines"),
+                        label.padding = grid::unit(0.25, "lines"),
+                        label.r = grid::unit(0.15, "lines"),
                         label.size = 0.25) {
 
     data$npcx <- compute_npcx(data$npcx)

@@ -70,6 +70,7 @@
 #'
 #' @seealso \code{\link[ggplot2]{geom_text}}
 #'
+#' @rdname geom_text_npc
 #' @export
 #' @examples
 #'
@@ -115,10 +116,10 @@ geom_text_npc <- function(mapping = NULL, data = NULL,
       stop("You must specify either `position` or `nudge_x`/`nudge_y`.", call. = FALSE)
     }
 
-    position <- position_nudge(nudge_x, nudge_y)
+    position <- ggplot2::position_nudge(nudge_x, nudge_y)
   }
 
-  layer(
+  ggplot2::layer(
     data = data,
     mapping = mapping,
     stat = stat,
@@ -139,10 +140,10 @@ geom_text_npc <- function(mapping = NULL, data = NULL,
 #' @format NULL
 #' @usage NULL
 #' @export
-GeomTextNpc <- ggproto("GeomTextNpc", Geom,
+GeomTextNpc <- ggplot2::ggproto("GeomTextNpc", ggplot2::Geom,
   required_aes = c("npcx", "npcy", "label"),
 
-  default_aes = aes(
+  default_aes = ggplot2::aes(
     colour = "black", size = 3.88, angle = 0, hjust = "inward",
     vjust = "inward", alpha = NA, family = "", fontface = 1, lineheight = 1.2
   ),

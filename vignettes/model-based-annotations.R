@@ -6,7 +6,7 @@ options(warnPartialMatchArgs = FALSE,
         tibble.print.max = 4,
         tibble.print.min = 4,
         dplyr.summarise.inform = FALSE)
-eval_flag <- FALSE
+eval_flag <- FALSE # evaluate all code chunks
 
 ## ---- message=FALSE-----------------------------------------------------------
 library(ggpmisc)

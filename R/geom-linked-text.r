@@ -180,7 +180,7 @@ geom_linked_text <- function(mapping = NULL,
     position <- position_nudge_center(nudge_x, nudge_y)
   }
 
-  layer(
+  ggplot2::layer(
     data = data,
     mapping = mapping,
     stat = stat,
@@ -205,10 +205,10 @@ geom_linked_text <- function(mapping = NULL,
 #' @usage NULL
 #' @export
 GeomLinkedText <-
-  ggplot2::ggproto("GeomLinkedText", Geom,
+  ggplot2::ggproto("GeomLinkedText", ggplot2::Geom,
                     required_aes = c("x", "y", "label"),
 
-                    default_aes = aes(
+                    default_aes = ggplot2::aes(
                       colour = "black", size = 3.88, angle = 0, hjust = 0.5,
                       vjust = 0.5, alpha = NA, family = "", fontface = 1, lineheight = 1.2
                     ),
@@ -247,16 +247,17 @@ GeomLinkedText <-
 
                       if(add.links) {
                         # create the grobs
-                        grobTree(
-                          segmentsGrob(x0 = data$x,
-                                       y0 = data$y,
-                                       x1 = data_orig$x,
-                                       y1 = data_orig$y,
-                                       arrow = arrow,
-                                       gp = grid::gpar(col =
-                                                         alpha(data$colour,
-                                                               data$alpha))),
-                          textGrob(
+                        grid::grobTree(
+                          grid::segmentsGrob(
+                            x0 = data$x,
+                            y0 = data$y,
+                            x1 = data_orig$x,
+                            y1 = data_orig$y,
+                            arrow = arrow,
+                            gp = grid::gpar(col =
+                                              alpha(data$colour,
+                                                    data$alpha))),
+                          grid::textGrob(
                             lab,
                             data$x, data$y, default.units = "native",
                             hjust = data$hjust, vjust = data$vjust,
@@ -271,7 +272,7 @@ GeomLinkedText <-
                             check.overlap = check_overlap
                           ))
                       } else {
-                        textGrob(
+                        grid::textGrob(
                           lab,
                           data$x, data$y, default.units = "native",
                           hjust = data$hjust, vjust = data$vjust,

@@ -88,7 +88,7 @@ geom_grob <- function(mapping = NULL, data = NULL,
                       na.rm = FALSE,
                       show.legend = FALSE,
                       inherit.aes = FALSE) {
-  layer(
+  ggplot2::layer(
     data = data,
     mapping = mapping,
     stat = stat,
@@ -136,10 +136,10 @@ grob_draw_panel_fun <-
       userGrob <- data$label[[row.idx]]
 
       userGrob$vp <-
-        grid::viewport(x = unit(data$x[row.idx], "native"),
-                       y = unit(data$y[row.idx], "native"),
-                       width = unit(data$vp.width[row.idx], "npc"),
-                       height = unit(data$vp.height[row.idx], "npc"),
+        grid::viewport(x = grid::unit(data$x[row.idx], "native"),
+                       y = grid::unit(data$y[row.idx], "native"),
+                       width = grid::unit(data$vp.width[row.idx], "npc"),
+                       height = grid::unit(data$vp.height[row.idx], "npc"),
                        just = c(data$hjust[row.idx], data$vjust[row.idx]),
                        angle = data$angle[row.idx],
                        name = paste("geom_grob.panel", data$PANEL[row.idx],
@@ -162,10 +162,10 @@ grob_draw_panel_fun <-
 #' @usage NULL
 #' @export
 GeomGrob <-
-  ggproto("GeomGrob", Geom,
+  ggplot2::ggproto("GeomGrob", ggplot2::Geom,
           required_aes = c("x", "y", "label"),
 
-          default_aes = aes(
+          default_aes = ggplot2::aes(
             colour = "black", angle = 0, hjust = 0.5,
             vjust = 0.5, alpha = NA, family = "", fontface = 1,
             vp.width = 1/5, vp.height = 1/5
@@ -214,7 +214,7 @@ grobnpc_draw_panel_fun <-
       return(grid::nullGrob())
     }
 
-    if (!is.grob(data$label[[1]])) {
+    if (!grid::is.grob(data$label[[1]])) {
       warning("Skipping as object mapped to 'label' is not a list of \"grob\".")
       return(grid::nullGrob())
     }
@@ -235,10 +235,10 @@ grobnpc_draw_panel_fun <-
       userGrob <- data$label[[row.idx]]
 
       userGrob$vp <-
-        grid::viewport(x = unit(data$npcx[row.idx], "npc"),
-                       y = unit(data$npcy[row.idx], "npc"),
-                       width = unit(data$vp.width[row.idx], "npc"),
-                       height = unit(data$vp.height[row.idx], "npc"),
+        grid::viewport(x = grid::unit(data$npcx[row.idx], "npc"),
+                       y = grid::unit(data$npcy[row.idx], "npc"),
+                       width = grid::unit(data$vp.width[row.idx], "npc"),
+                       height = grid::unit(data$vp.height[row.idx], "npc"),
                        just = c(data$hjust[row.idx], data$vjust[row.idx]),
                        angle = data$angle[row.idx],
                        name = paste("geom_grob.panel", data$PANEL[row.idx],
@@ -261,10 +261,10 @@ grobnpc_draw_panel_fun <-
 #' @usage NULL
 #' @export
 GeomGrobNpc <-
-  ggproto("GeomGrobNpc", Geom,
+  ggplot2::ggproto("GeomGrobNpc", ggplot2::Geom,
           required_aes = c("npcx", "npcy", "label"),
 
-          default_aes = aes(
+          default_aes = ggplot2::aes(
             colour = "black", angle = 0, hjust = "inward",
             vjust = "inward", alpha = NA, family = "", fontface = 1,
             vp.width = 1/5, vp.height = 1/5

@@ -271,7 +271,7 @@ position_nudge_center <-
 PositionNudgeCenter <-
   ggplot2::ggproto(
     "PositionNudgeCenter",
-    Position,
+    ggplot2::Position,
     x = 0,
     y = 0,
     center_x = mean,
