@@ -239,10 +239,62 @@ GeomLinkedText <-
                       }
 
                       if (is.character(data$vjust)) {
-                        data$vjust <- compute_just(data$vjust, data$y)
+                        zero_selector <- data$vjust %in% c("outward_zero", "inward_zero")
+                        if (any(zero_selector)) {
+
+                        vjust_center <- 0.5
+                        reference_data <- data$y
+                        if (exists("angle", data) &&
+                            any(grepl("inward|outward", data$vjust))) {
+                          angle_selector <- abs(data$angle) > 45 & abs(data$angle) < 135
+                          reference_data[angle_selector] <- data$x[angle_selector]
+                        }
+                        # zero_selector <- grepl("zero", data$vjust)
+                        # if (any(zero_selector)) {
+                        #   # we compute data range, but we need scale range
+                        #   x_limits <- range(data$x)
+                        #   x_zero <-
+                        #   y_limits <- range(data$y)
+                        #   x_target <- 0
+                        #   y_target <-
+                        #   data$vjust[!angle_selector] <-
+                        #   ifelse(data$vjust == "inward_zero" & y_limits[1] > 0,
+                        #          "left", data$vjust)[!angle_selector]
+                        # data$vjust[!angle_selector] <-
+                        #   ifelse(data$vjust == "outward_zero" & y_limits[2] < 0,
+                        #          "right", data$vjust)[!angle_selector]
+                        #   data$vjust[!angle_selector] <-
+                        #     ifelse(data$vjust == "inward_zero" & y_limits[1] > 0,
+                        #            "left", data$vjust)[!angle_selector]
+                        #   data$vjust[!angle_selector] <-
+                        #     ifelse(data$vjust == "outward_zero" & y_limits[2] < 0,
+                        #            "right", data$vjust)[!angle_selector]
+                        }
+                        data$vjust <- compute_just(data$vjust,
+                                                   reference_data,
+                                                   vjust_center)
                       }
+
                       if (is.character(data$hjust)) {
-                        data$hjust <- compute_just(data$hjust, data$x)
+                        hjust_center <- 0.5
+                        # zero_selector <- data$vjust %in% c("outward_zero", "inward_zero")
+                        # if (any(zero_selector)) {
+                        #   hjust_center_df <- data.frame(x = 0, y = data$x[zero_selector])
+                        #   hjust_center_df <- coord$transform(hjust_center_df, panel_params)
+                        #   hjust_center[zero_selector] <- hjust_center_df$y
+                        #   data$hjust[zero_selector] <- gsub("_zero", "", data$hjust[zero_selector])
+                        # }
+                        # test for angle not in ggplot2::geom_text()
+                        #  we take into account the angle of each text label
+                        reference_data <- data$x
+                        if (exists("angle", data) &&
+                            any(grepl("inward|outward", data$hjust))) {
+                          selector <- abs(data$angle) > 45 & abs(data$angle) < 135
+                          reference_data[selector] <- data$y[selector]
+                        }
+                        data$hjust <- compute_just(data$hjust,
+                                                   reference_data,
+                                                   hjust_center)
                       }
 
                       if(add.links) {
@@ -291,3 +343,23 @@ GeomLinkedText <-
 
                    draw_key = draw_key_text
   )
+
+# modified from geom-text.r from 'ggplot2' 3.1.0
+compute_just <- function(just, x, middle_x = 0.5) {
+  inward <- just == "inward"
+  just[inward] <- c("left", "middle", "right")[just_dir(x[inward])]
+  outward <- just == "outward"
+  just[outward] <- c("right", "middle", "left")[just_dir(x[outward])]
+
+  unname(c(left = 0, center = 0.5, right = 1,
+           bottom = 0, middle = 0.5, top = 1)[just])
+}
+
+# modified from geom-text.r from 'ggplot2' 3.1.0
+just_dir <- function(x, tol = 0.001, middle_x = 0.5) {
+  out <- rep(2L, length(x))
+  out[x < middle_x - tol] <- 1L
+  out[x > middle_x + tol] <- 3L
+  out
+}
+

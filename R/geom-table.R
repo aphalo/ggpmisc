@@ -904,22 +904,3 @@ ttheme_set <- function(table.theme = NULL) {
               is.list(table.theme))
   invisible(options(ggpmisc.ttheme.default = table.theme)[[1]])
 }
-
-# copied from geom-text.r from 'ggplot2' 3.1.0
-compute_just <- function(just, x) {
-  inward <- just == "inward"
-  just[inward] <- c("left", "middle", "right")[just_dir(x[inward])]
-  outward <- just == "outward"
-  just[outward] <- c("right", "middle", "left")[just_dir(x[outward])]
-
-  unname(c(left = 0, center = 0.5, right = 1,
-           bottom = 0, middle = 0.5, top = 1)[just])
-}
-
-# copied from geom-text.r from 'ggplot2' 3.1.0
-just_dir <- function(x, tol = 0.001) {
-  out <- rep(2L, length(x))
-  out[x < 0.5 - tol] <- 1L
-  out[x > 0.5 + tol] <- 3L
-  out
-}

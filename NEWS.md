@@ -4,6 +4,19 @@ editor_options:
     wrap: 72
 ---
 
+# ggpmisc 0.3.10
+
+**Under development!** New justification styles are being implemented to
+complement `position_nudge_center()` and `position_nudge_line()`.
+
+-   Implement justifications `"outward_zero"` and `"inward_zero"` in
+    `geom_linked_text()` so that outward and inward are with respect to
+    the origin instead of to the middle of the $x$ or $y$ scales.
+-   TODO: Implement justifications `"outward_centroid"` and
+    `"inward_centroid"` in `geom_linked_text()` so that outward and
+    inward are with respect to the centroid of the data instead of to
+    the middle of the $x$ or $y$ scales.
+
 # ggpmisc 0.3.9
 
 -   Update the documentation of `geom_plot()`.
