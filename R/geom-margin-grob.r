@@ -107,10 +107,20 @@ GeomXMarginGrob <-
 
             data <- coord$transform(data, panel_params)
             if (is.character(data$vjust)) {
-              data$vjust <- compute_just(data$vjust, data$y)
+              data$vjust <-
+                compute_just2d(data = data,
+                               panel_params = panel_params,
+                               coord = coord,
+                               hjust = NULL,
+                               vjust = data$vjust)
             }
             if (is.character(data$hjust)) {
-              data$hjust <- compute_just(data$hjust, data$x)
+              data$hjust <-
+                compute_just2d(data = data,
+                               panel_params = panel_params,
+                               coord = coord,
+                               hjust = data$hjust,
+                               vjust = NULL)
             }
 
             user.grobs <- grid::gList()

@@ -177,6 +177,10 @@
 #' ggplot(df, aes(x - 1.5, y - 1.5)) +
 #'   geom_linked_text(aes(label = text), vjust = "inward_zero", hjust = "inward_zero")
 #' ggplot(df, aes(x, y)) +
+#'   geom_linked_text(aes(label = text), vjust = "inward_1.5", hjust = "inward_1.5")
+#' ggplot(df, aes(x - 1.5, y - 1.5)) +
+#'   geom_linked_text(aes(label = text), vjust = "inward_0.0", hjust = "inward_0.0")
+#' ggplot(df, aes(x, y)) +
 #'   geom_linked_text(aes(label = text), vjust = "inward_mean", hjust = "inward_mean")
 #' ggplot(df, aes(x - 1.5, y - 1.5)) +
 #'   geom_linked_text(aes(label = text), vjust = "inward_mean", hjust = "inward_mean")
@@ -372,7 +376,7 @@ compute_just1d <- function(data,
                inward_mean = mean,
                outward_median = stats::median,
                inward_median = stats::median,
-               NA
+               as.numeric(gsub("outward_|inward_", "", unique(just)))
         )
     }
     split_at <- compute_split(data = data,
@@ -426,7 +430,7 @@ compute_just2d <- function(data,
                inward_mean = mean,
                outward_median = stats::median,
                inward_median = stats::median,
-               NA
+               as.numeric(gsub("outward_|inward_", "", unique(just)))
         )
     }
     if (!is.null(hjust)) {

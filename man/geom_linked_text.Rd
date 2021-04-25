@@ -213,6 +213,10 @@ ggplot(df, aes(x, y)) +
 ggplot(df, aes(x - 1.5, y - 1.5)) +
   geom_linked_text(aes(label = text), vjust = "inward_zero", hjust = "inward_zero")
 ggplot(df, aes(x, y)) +
+  geom_linked_text(aes(label = text), vjust = "inward_1.5", hjust = "inward_1.5")
+ggplot(df, aes(x - 1.5, y - 1.5)) +
+  geom_linked_text(aes(label = text), vjust = "inward_0.0", hjust = "inward_0.0")
+ggplot(df, aes(x, y)) +
   geom_linked_text(aes(label = text), vjust = "inward_mean", hjust = "inward_mean")
 ggplot(df, aes(x - 1.5, y - 1.5)) +
   geom_linked_text(aes(label = text), vjust = "inward_mean", hjust = "inward_mean")
