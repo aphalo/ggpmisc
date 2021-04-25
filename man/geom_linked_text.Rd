@@ -105,9 +105,12 @@ Note that when you resize a plot, text labels stay the same size,
  You can modify text alignment with the `vjust` and
   `hjust` aesthetics. These can either be a number between 0 (right/bottom)
   and 1 (top/left) or a character (`"left"`, `"middle"`, `"right"`,
-  `"bottom"`, `"center"`, `"top"`). There are two special alignments:
-  `"inward"` and `"outward"`. Inward always aligns text towards the center,
-  and outward aligns it away from the center.
+  `"bottom"`, `"center"`, `"top"`). There seevral two special alignments:
+  `"inward"` and `"outward"`. Inward always aligns text towards the center
+  of the plotting area, and outward aligns it away from the center of the
+  plotting area. It tagged with `_zero`, `_mean` or `_median`, zero in the
+  user data coordinates, or the mean or median of the data in the panel
+  along the corresponding axis is used as center.
 }
 
 \examples{
@@ -193,5 +196,42 @@ ggplot(df, aes(x, y)) +
   geom_linked_text(aes(label = text))
 ggplot(df, aes(x, y)) +
   geom_linked_text(aes(label = text), vjust = "inward", hjust = "inward")
+ggplot(df, aes(x, y)) +
+  geom_linked_text(aes(label = text), hjust = "inward", angle = 33)
+ggplot(df, aes(x, y)) +
+  geom_linked_text(aes(label = text), hjust = "inward", angle = 66)
+ggplot(df, aes(x, y)) +
+  geom_linked_text(aes(label = text), hjust = "inward", angle = 90)
+ggplot(df, aes(x, y)) +
+  geom_linked_text(aes(label = text), vjust = "inward", hjust = "inward", angle = 33)
+ggplot(df, aes(x, y)) +
+  geom_linked_text(aes(label = text), vjust = "inward", hjust = "inward", angle = 66)
+ggplot(df, aes(x, y)) +
+  geom_linked_text(aes(label = text), vjust = "inward", hjust = "inward", angle = 90)
+ggplot(df, aes(x, y)) +
+  geom_linked_text(aes(label = text), vjust = "inward_zero", hjust = "inward_zero")
+ggplot(df, aes(x - 1.5, y - 1.5)) +
+  geom_linked_text(aes(label = text), vjust = "inward_zero", hjust = "inward_zero")
+ggplot(df, aes(x, y)) +
+  geom_linked_text(aes(label = text), vjust = "inward_mean", hjust = "inward_mean")
+ggplot(df, aes(x - 1.5, y - 1.5)) +
+  geom_linked_text(aes(label = text), vjust = "inward_mean", hjust = "inward_mean")
+ggplot(df, aes(x, y)) +
+  geom_linked_text(aes(label = text), vjust = "inward_median", hjust = "inward_median")
+
+ggplot(df, aes(x, y)) +
+  geom_linked_text(aes(label = text), vjust = "outward", hjust = "outward")
+ggplot(df, aes(x, y)) +
+  geom_linked_text(aes(label = text), vjust = "outward_zero", hjust = "outward_zero")
+ggplot(df, aes(x - 1.5, y - 1.5)) +
+  geom_linked_text(aes(label = text), vjust = "outward_zero", hjust = "outward_zero")
+ggplot(df, aes(x, y)) +
+  geom_linked_text(aes(label = text), vjust = "outward_mean", hjust = "outward_mean")
+ggplot(df, aes(x - 1.5, y - 1.5)) +
+  geom_linked_text(aes(label = text), vjust = "outward_mean", hjust = "outward_mean")
+ggplot(df, aes(x, y)) +
+  geom_linked_text(aes(label = text), vjust = "outward_median", hjust = "outward_median")
+ggplot(df, aes(x - 1.5, y - 1.5)) +
+  geom_linked_text(aes(label = text), vjust = "outward_median", hjust = "outward_median")
 
 }

@@ -11,11 +11,24 @@ complement `position_nudge_center()` and `position_nudge_line()`.
 
 -   Implement justifications `"outward_zero"` and `"inward_zero"` in
     `geom_linked_text()` so that outward and inward are with respect to
-    the origin instead of to the middle of the $x$ or $y$ scales.
--   TODO: Implement justifications `"outward_centroid"` and
-    `"inward_centroid"` in `geom_linked_text()` so that outward and
-    inward are with respect to the centroid of the data instead of to
-    the middle of the $x$ or $y$ scales.
+    the origin instead of to the middle of the $x$ or $y$ scales as for
+    `"outward"` and `"inward"`. This should be useful for biplots used
+    for PCA and similar cases with arrows radiating out of the origin.
+-   Implement justifications `"outward_mean"` , `"inward_mean"` ,
+    `"outward_median"` and `"inward_median"` in `geom_linked_text()` so
+    that outward and inward are with respect to the centroid of the data
+    instead of to the middle of the $x$ or $y$ scales. This should be
+    useful in combination with `position_nudge_center()`.
+-   Fix problem related to `"outward"` and `"inward"` justification of
+    text labels in `geom_linked_text()` when `angle` aesthetic takes
+    values \< -45 or \> 45 degrees. This will can change how old plots
+    are rendered.
+-   [TODO] Implement these new types justification in all *geoms* that
+    support justification.
+-   [ggplot2, ggrepel] The problem with angle is a "feature" in
+    'ggplot2' and 'ggrepel'. A pull request for `ggplot2::geom_text()`
+    has been submitted. This will can change how old plots are rendered,
+    so it is possible that it will be rejected.
 
 # ggpmisc 0.3.9
 
@@ -33,8 +46,9 @@ complement `position_nudge_center()` and `position_nudge_line()`.
     both the nudged and original positions.
 -   Add support for simple nudging: `position_nudge_to()` nudges to new
     user-supplied position(s); `position_nudge_keep()` nudges to
-    position(s) based on user-supplies position shift. These functions
-    return both nudged and original position(s).
+    position(s) based on user-supplied position shift. These functions
+    return both nudged and original position(s), which makes possible to
+    draw connecting segments from text labels to the original position.
 
 # ggpmisc 0.3.8-1
 

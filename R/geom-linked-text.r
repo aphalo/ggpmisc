@@ -29,9 +29,12 @@
 #' @section Alignment: You can modify text alignment with the `vjust` and
 #'   `hjust` aesthetics. These can either be a number between 0 (right/bottom)
 #'   and 1 (top/left) or a character (`"left"`, `"middle"`, `"right"`,
-#'   `"bottom"`, `"center"`, `"top"`). There are two special alignments:
-#'   `"inward"` and `"outward"`. Inward always aligns text towards the center,
-#'   and outward aligns it away from the center.
+#'   `"bottom"`, `"center"`, `"top"`). There seevral two special alignments:
+#'   `"inward"` and `"outward"`. Inward always aligns text towards the center
+#'   of the plotting area, and outward aligns it away from the center of the
+#'   plotting area. It tagged with `_zero`, `_mean` or `_median`, zero in the
+#'   user data coordinates, or the mean or median of the data in the panel
+#'   along the corresponding axis is used as center.
 #'
 #' @param mapping Set of aesthetic mappings created by
 #'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. If specified and
@@ -157,6 +160,43 @@
 #'   geom_linked_text(aes(label = text))
 #' ggplot(df, aes(x, y)) +
 #'   geom_linked_text(aes(label = text), vjust = "inward", hjust = "inward")
+#' ggplot(df, aes(x, y)) +
+#'   geom_linked_text(aes(label = text), hjust = "inward", angle = 33)
+#' ggplot(df, aes(x, y)) +
+#'   geom_linked_text(aes(label = text), hjust = "inward", angle = 66)
+#' ggplot(df, aes(x, y)) +
+#'   geom_linked_text(aes(label = text), hjust = "inward", angle = 90)
+#' ggplot(df, aes(x, y)) +
+#'   geom_linked_text(aes(label = text), vjust = "inward", hjust = "inward", angle = 33)
+#' ggplot(df, aes(x, y)) +
+#'   geom_linked_text(aes(label = text), vjust = "inward", hjust = "inward", angle = 66)
+#' ggplot(df, aes(x, y)) +
+#'   geom_linked_text(aes(label = text), vjust = "inward", hjust = "inward", angle = 90)
+#' ggplot(df, aes(x, y)) +
+#'   geom_linked_text(aes(label = text), vjust = "inward_zero", hjust = "inward_zero")
+#' ggplot(df, aes(x - 1.5, y - 1.5)) +
+#'   geom_linked_text(aes(label = text), vjust = "inward_zero", hjust = "inward_zero")
+#' ggplot(df, aes(x, y)) +
+#'   geom_linked_text(aes(label = text), vjust = "inward_mean", hjust = "inward_mean")
+#' ggplot(df, aes(x - 1.5, y - 1.5)) +
+#'   geom_linked_text(aes(label = text), vjust = "inward_mean", hjust = "inward_mean")
+#' ggplot(df, aes(x, y)) +
+#'   geom_linked_text(aes(label = text), vjust = "inward_median", hjust = "inward_median")
+#'
+#' ggplot(df, aes(x, y)) +
+#'   geom_linked_text(aes(label = text), vjust = "outward", hjust = "outward")
+#' ggplot(df, aes(x, y)) +
+#'   geom_linked_text(aes(label = text), vjust = "outward_zero", hjust = "outward_zero")
+#' ggplot(df, aes(x - 1.5, y - 1.5)) +
+#'   geom_linked_text(aes(label = text), vjust = "outward_zero", hjust = "outward_zero")
+#' ggplot(df, aes(x, y)) +
+#'   geom_linked_text(aes(label = text), vjust = "outward_mean", hjust = "outward_mean")
+#' ggplot(df, aes(x - 1.5, y - 1.5)) +
+#'   geom_linked_text(aes(label = text), vjust = "outward_mean", hjust = "outward_mean")
+#' ggplot(df, aes(x, y)) +
+#'   geom_linked_text(aes(label = text), vjust = "outward_median", hjust = "outward_median")
+#' ggplot(df, aes(x - 1.5, y - 1.5)) +
+#'   geom_linked_text(aes(label = text), vjust = "outward_median", hjust = "outward_median")
 #'
 geom_linked_text <- function(mapping = NULL,
                              data = NULL,
@@ -213,7 +253,8 @@ GeomLinkedText <-
                       vjust = 0.5, alpha = NA, family = "", fontface = 1, lineheight = 1.2
                     ),
 
-                    draw_panel = function(data, panel_params, coord, parse = FALSE,
+                    draw_panel = function(data, panel_params, coord, #panel_scales,
+                                          parse = FALSE,
                                           na.rm = FALSE, check_overlap = FALSE,
                                           arrow = NULL,
                                           nudge_x = 0,
@@ -239,62 +280,20 @@ GeomLinkedText <-
                       }
 
                       if (is.character(data$vjust)) {
-                        zero_selector <- data$vjust %in% c("outward_zero", "inward_zero")
-                        if (any(zero_selector)) {
-
-                        vjust_center <- 0.5
-                        reference_data <- data$y
-                        if (exists("angle", data) &&
-                            any(grepl("inward|outward", data$vjust))) {
-                          angle_selector <- abs(data$angle) > 45 & abs(data$angle) < 135
-                          reference_data[angle_selector] <- data$x[angle_selector]
-                        }
-                        # zero_selector <- grepl("zero", data$vjust)
-                        # if (any(zero_selector)) {
-                        #   # we compute data range, but we need scale range
-                        #   x_limits <- range(data$x)
-                        #   x_zero <-
-                        #   y_limits <- range(data$y)
-                        #   x_target <- 0
-                        #   y_target <-
-                        #   data$vjust[!angle_selector] <-
-                        #   ifelse(data$vjust == "inward_zero" & y_limits[1] > 0,
-                        #          "left", data$vjust)[!angle_selector]
-                        # data$vjust[!angle_selector] <-
-                        #   ifelse(data$vjust == "outward_zero" & y_limits[2] < 0,
-                        #          "right", data$vjust)[!angle_selector]
-                        #   data$vjust[!angle_selector] <-
-                        #     ifelse(data$vjust == "inward_zero" & y_limits[1] > 0,
-                        #            "left", data$vjust)[!angle_selector]
-                        #   data$vjust[!angle_selector] <-
-                        #     ifelse(data$vjust == "outward_zero" & y_limits[2] < 0,
-                        #            "right", data$vjust)[!angle_selector]
-                        }
-                        data$vjust <- compute_just(data$vjust,
-                                                   reference_data,
-                                                   vjust_center)
+                        data$vjust <-
+                          compute_just2d(data = data,
+                                         panel_params = panel_params,
+                                         coord = coord,
+                                         hjust = NULL,
+                                         vjust = data$vjust)
                       }
-
                       if (is.character(data$hjust)) {
-                        hjust_center <- 0.5
-                        # zero_selector <- data$vjust %in% c("outward_zero", "inward_zero")
-                        # if (any(zero_selector)) {
-                        #   hjust_center_df <- data.frame(x = 0, y = data$x[zero_selector])
-                        #   hjust_center_df <- coord$transform(hjust_center_df, panel_params)
-                        #   hjust_center[zero_selector] <- hjust_center_df$y
-                        #   data$hjust[zero_selector] <- gsub("_zero", "", data$hjust[zero_selector])
-                        # }
-                        # test for angle not in ggplot2::geom_text()
-                        #  we take into account the angle of each text label
-                        reference_data <- data$x
-                        if (exists("angle", data) &&
-                            any(grepl("inward|outward", data$hjust))) {
-                          selector <- abs(data$angle) > 45 & abs(data$angle) < 135
-                          reference_data[selector] <- data$y[selector]
-                        }
-                        data$hjust <- compute_just(data$hjust,
-                                                   reference_data,
-                                                   hjust_center)
+                        data$hjust <-
+                          compute_just2d(data = data,
+                                         panel_params = panel_params,
+                                         coord = coord,
+                                         hjust = data$hjust,
+                                         vjust = NULL)
                       }
 
                       if(add.links) {
@@ -344,8 +343,208 @@ GeomLinkedText <-
                    draw_key = draw_key_text
   )
 
-# modified from geom-text.r from 'ggplot2' 3.1.0
-compute_just <- function(just, x, middle_x = 0.5) {
+# heavily modified from geom-text.r from 'ggplot2' 3.1.0
+# does not support angle
+compute_just1d <- function(data,
+                           panel_params,
+                           coord,
+                           hjust = NULL,
+                           vjust = NULL) {
+  stopifnot(xor(is.null(hjust), is.null(vjust)))
+  just <- c(hjust, vjust)
+  if (any(grepl("outward|inward", just))) {
+    if (!is.null(hjust)) {
+      obs <- data$x
+    } else {
+      obs <- data$y
+    }
+    if (!length(unique(just)) == 1L) {
+      warning("Use of mixed computed justification not supported")
+      middle <- "scale"
+    } else {
+      middle <-
+        switch(unique(just),
+               outward = "scale",
+               inward = "scale",
+               outward_zero = 0,
+               inward_zero = 0,
+               outward_mean = mean,
+               inward_mean = mean,
+               outward_median = stats::median,
+               inward_median = stats::median,
+               NA
+        )
+    }
+    split_at <- compute_split(data = data,
+                              panel_params = panel_params,
+                              coord = coord,
+                              hjust = hjust,
+                              vjust = vjust,
+                              middle = middle)
+
+    just <- gsub("_.*$", "", just)
+
+    inward <- just == "inward"
+    just[inward] <- c("left", "middle", "right")[just_dir(obs[inward],
+                                                          split_at = split_at)]
+    outward <- just == "outward"
+    just[outward] <- c("right", "middle", "left")[just_dir(obs[outward],
+                                                           split_at = split_at)]
+  }
+
+  unname(c(left = 0, center = 0.5, right = 1,
+           bottom = 0, middle = 0.5, top = 1)[just])
+}
+
+# heavily modified from geom-text.r from 'ggplot2' 3.1.0
+# when just is "outward" or "inward" or one of its variants and the geom
+# supports the angle aesthetics we need to take into account that justification
+# is relative to the text, rather than the plot axes. By using compute_split()
+# we add support for definitions of of "inward" and "outward" relative to
+# arbitrary positions along the axis.
+# this function can handle either hjust or vjust, but only one at a time.
+compute_just2d <- function(data,
+                           panel_params,
+                           coord,
+                           hjust = NULL,
+                           vjust = NULL) {
+  stopifnot(xor(is.null(hjust), is.null(vjust)))
+  just <- c(hjust, vjust)
+  if (any(grepl("outward|inward", just))) {
+    if ((!length(unique(just)) == 1L) &&
+        any(grepl("_zero|_mean_|median"))) {
+      warning("Use of mixed computed justification not supported")
+      middle <- "scale"
+    } else {
+      middle <-
+        switch(unique(just),
+               outward = "scale",
+               inward = "scale",
+               outward_zero = 0,
+               inward_zero = 0,
+               outward_mean = mean,
+               inward_mean = mean,
+               outward_median = stats::median,
+               inward_median = stats::median,
+               NA
+        )
+    }
+    if (!is.null(hjust)) {
+      i <- "x"
+      j <- "y"
+    } else {
+      i <- "y"
+      j <- "x"
+    }
+    if (exists("angle", data) &&
+        any(grepl("inward|outward", just))) {
+      selector <- abs(data$angle) > 45 & abs(data$angle) < 135
+    } else {
+      selector <- rep(FALSE, nrow(data))
+    }
+    if (all(selector)) {
+      split_at <- compute_split(data = data,
+                                panel_params = panel_params,
+                                coord = coord,
+                                hjust = vjust,
+                                vjust = hjust,
+                                middle = middle)
+      just <- gsub("_.*$", "", just)
+      obs <- data[[j]]
+    } else {
+      split_at <- compute_split(data = data,
+                                coord = coord,
+                                panel_params = panel_params,
+                                hjust = hjust,
+                                vjust = vjust,
+                                middle = middle)
+      just <- gsub("_.*$", "", just)
+      obs <- data[[i]]
+      if (any(selector)) {
+        split_at_crossed <- compute_split(data = data,
+                                          panel_params = panel_params,
+                                          coord = coord,
+                                          hjust = vjust,
+                                          vjust = hjust,
+                                          middle = middle)
+        split_at[selector] <- split_at_crossed[selector]
+        obs[selector] <- data[[i]][selector]
+      }
+    }
+    inward <- just == "inward"
+    just[inward] <- c("left", "middle", "right")[just_dir(obs[inward],
+                                                          split_at = split_at)]
+    outward <- just == "outward"
+    just[outward] <- c("right", "middle", "left")[just_dir(obs[outward],
+                                                           split_at = split_at)]
+  }
+
+  unname(c(left = 0, center = 0.5, right = 1,
+           bottom = 0, middle = 0.5, top = 1)[just])
+}
+
+# modified from geom-text.r from 'ggplot2' 3.1.0 to support arbitrary split
+just_dir <- function(x, tol = 0.001, split_at = 0.5) {
+  out <- rep(2L, length(x))
+  out[x < split_at - tol] <- 1L
+  out[x > split_at + tol] <- 3L
+  out
+}
+
+# When just is a variant of "outward" or "inward" we need to compute a reference
+# point instead of using the scale middle point of 0.5 as for "outward" or
+# "inward". This function can handle either of x or y axis, only one at a time.
+compute_split <- function(data,
+                          panel_params,
+                          coord,
+                          hjust = NULL,
+                          vjust = NULL,
+                          middle = "scale") {
+  stopifnot(xor(is.null(hjust), is.null(vjust)))
+  if (!is.null(hjust)) {
+    main_axis <- "y"
+    scale_range <- panel_params$y$scale$range$range
+    reference_data <- data$y
+  } else {
+    main_axis <- "x"
+    scale_range <- panel_params$x$scale$range$range
+    reference_data <- data$x
+  }
+  if (is.character(middle)) {
+    if (middle == "scale") {
+      split_at = 0.5  # as in GeomText
+    } else {
+      stop("bad argument for 'middle'")
+    }
+  }
+  # computed middle point in data
+  if (is.function(middle)) {
+    middle <- middle(reference_data, na.rm = TRUE)
+    # reference_data are already transformed
+    middle <- min(scale_range) + middle * (max(scale_range) - min(scale_range))
+  }
+  # constant value in data
+  if (is.numeric(middle)) {
+    if (min(scale_range) >= middle) {
+      split_at <- rep(-0.01, length(reference_data))
+    } else if (max(scale_range) <= middle){
+      split_at <- rep(1.01, length(reference_data))
+    } else {
+      if (main_axis == "x") {
+        tmp.df <- data.frame(x = middle, y = data$y)
+        split_at <- coord$transform(tmp.df, panel_params)$x
+      } else {
+        tmp.df <- data.frame(x = middle, y = data$y)
+        split_at <- coord$transform(tmp.df, panel_params)$x
+      }
+    }
+  }
+  split_at
+}
+
+####
+## original compute_just function as used in other geoms
+compute_just <- function(just, x) {
   inward <- just == "inward"
   just[inward] <- c("left", "middle", "right")[just_dir(x[inward])]
   outward <- just == "outward"
@@ -354,12 +553,3 @@ compute_just <- function(just, x, middle_x = 0.5) {
   unname(c(left = 0, center = 0.5, right = 1,
            bottom = 0, middle = 0.5, top = 1)[just])
 }
-
-# modified from geom-text.r from 'ggplot2' 3.1.0
-just_dir <- function(x, tol = 0.001, middle_x = 0.5) {
-  out <- rep(2L, length(x))
-  out[x < middle_x - tol] <- 1L
-  out[x > middle_x + tol] <- 3L
-  out
-}
-
