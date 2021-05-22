@@ -41,12 +41,10 @@ xy_thresholds2factor(c(-1, 0, 0, 0.1, -5), c(0, 2, 0, 1, -1))
 \seealso{
 Other Functions for quadrant and volcano plots: 
 \code{\link{FC_format}()},
-\code{\link{geom_quadrant_lines}()},
 \code{\link{outcome2factor}()},
 \code{\link{scale_colour_outcome}()},
 \code{\link{scale_shape_outcome}()},
-\code{\link{scale_y_Pvalue}()},
-\code{\link{stat_quadrant_counts}()}
+\code{\link{scale_y_Pvalue}()}
 
 Other scales for omics data: 
 \code{\link{outcome2factor}()},

@@ -50,11 +50,9 @@ threshold2factor(c(-0.1, -2, 0, +5), threshold = c(-1, 1))
 \seealso{
 Other Functions for quadrant and volcano plots: 
 \code{\link{FC_format}()},
-\code{\link{geom_quadrant_lines}()},
 \code{\link{scale_colour_outcome}()},
 \code{\link{scale_shape_outcome}()},
 \code{\link{scale_y_Pvalue}()},
-\code{\link{stat_quadrant_counts}()},
 \code{\link{xy_outcomes2factor}()}
 
 Other scales for omics data: 
