@@ -30,20 +30,18 @@ optionally applying a different log transformation or no transformation.
 }
 \examples{
 
-FC_format(2, 10)(1:10)
-FC_format(2, FALSE)(c(1/4, 1/2, 1,2,4,8))
-FC_format(10, FALSE)(c(1, 10, 100, 1000))
-FC_format(FALSE, 10)(c(-1, 1, 2, 3))
+FC_format(2, 10)(1:5)
+FC_format(0, 2)(c(1/4, 1/2, 1,2,4,8))
+FC_format(10, 0)(-1:3)
+FC_format(0, 10)(c(0.1, 1, 10, 100, 100))
 
 }
 \seealso{
 Other Functions for quadrant and volcano plots: 
-\code{\link{geom_quadrant_lines}()},
 \code{\link{outcome2factor}()},
 \code{\link{scale_colour_outcome}()},
 \code{\link{scale_shape_outcome}()},
 \code{\link{scale_y_Pvalue}()},
-\code{\link{stat_quadrant_counts}()},
 \code{\link{xy_outcomes2factor}()}
 }
 \concept{Functions for quadrant and volcano plots}

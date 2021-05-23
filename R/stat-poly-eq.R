@@ -342,11 +342,6 @@ poly_eq_compute_group_fun <- function(data,
                                       output.type,
                                       na.rm) {
   force(data)
-  if (length(unique(data$x)) < 2) {
-    # Not enough data to perform fit
-    return(tibble::new_tibble())
-  }
-
   output.type <- if (!length(output.type)) {
     "expression"
   } else {
@@ -390,6 +385,13 @@ poly_eq_compute_group_fun <- function(data,
     label.y <- label.y[group.idx]
   } else if (length(label.y) > 0) {
     label.y <- label.y[1]
+  }
+
+  if (length(unique(data$x)) < 2) {
+    warning("Not enough data to perform fit for group ",
+            group.idx, "; computing mean instead.",
+            call. = FALSE)
+    formula = y ~ 1
   }
 
   lm.args <- list(quote(formula), data = quote(data), weights = quote(weight))
@@ -486,13 +488,21 @@ poly_eq_compute_group_fun <- function(data,
                             # character(0) instead of "" avoids in paste() the insertion of sep for missing labels
                             ifelse(is.na(rr), character(0L),
                                    paste("italic(R)^2",
-                                         ifelse(rr < 10^(-rr.digits), as.character(10^(-rr.digits)), rr.char),
-                                         sep = ifelse(rr < 10^(-rr.digits), "~`<`~", "~`=`~"))),
+                                         ifelse(rr < 10^(-rr.digits) & rr != 0,
+                                                as.character(10^(-rr.digits)),
+                                                rr.char),
+                                         sep = ifelse(rr < 10^(-rr.digits) & rr != 0,
+                                                      "~`<`~",
+                                                      "~`=`~"))),
                           adj.rr.label =
                             ifelse(is.na(adj.rr), character(0L),
                                    paste("italic(R)[adj]^2",
-                                         ifelse(adj.rr < 10^(-rr.digits), as.character(10^(-rr.digits)), adj.rr.char),
-                                         sep = ifelse(adj.rr < 10^(-rr.digits), "~`<`~", "~`=`~"))),
+                                         ifelse(adj.rr < 10^(-rr.digits) & adj.rr != 0,
+                                                as.character(10^(-rr.digits)),
+                                                adj.rr.char),
+                                         sep = ifelse(adj.rr < 10^(-rr.digits) & adj.rr != 0,
+                                                      "~`<`~",
+                                                      "~`=`~"))),
                           AIC.label = paste("AIC", AIC.char, sep = "~`=`~"),
                           BIC.label = paste("BIC", BIC.char, sep = "~`=`~"),
                           f.value.label =
@@ -503,8 +513,12 @@ poly_eq_compute_group_fun <- function(data,
                           p.value.label =
                             ifelse(is.na(p.value), character(0L),
                                    paste("italic(P)",
-                                         ifelse(p.value < 10^(-p.digits), as.character(10^(-p.digits)), p.value.char),
-                                         sep = ifelse(p.value < 10^(-p.digits), "~`<`~", "~`=`~"))),
+                                         ifelse(p.value < 10^(-p.digits),
+                                                as.character(10^(-p.digits)),
+                                                p.value.char),
+                                         sep = ifelse(p.value < 10^(-p.digits),
+                                                      "~`<`~",
+                                                      "~`=`~"))),
                           grp.label = grp.label)
     } else if (output.type %in% c("latex", "tex", "text", "tikz")) {
       z <- tibble::tibble(eq.label =

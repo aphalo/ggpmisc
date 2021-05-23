@@ -92,11 +92,9 @@ ggplot(my.df, aes(x, y, fill = outcome3)) +
 \seealso{
 Other Functions for quadrant and volcano plots: 
 \code{\link{FC_format}()},
-\code{\link{geom_quadrant_lines}()},
 \code{\link{outcome2factor}()},
 \code{\link{scale_shape_outcome}()},
 \code{\link{scale_y_Pvalue}()},
-\code{\link{stat_quadrant_counts}()},
 \code{\link{xy_outcomes2factor}()}
 }
 \concept{Functions for quadrant and volcano plots}

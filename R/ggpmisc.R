@@ -44,8 +44,7 @@
 #' \url{https://ggplot2.tidyverse.org/}\cr Package 'ggplot2' source code at
 #' \url{https://github.com/tidyverse/ggplot2}
 #'
-#' @import scales grid ggplot2
-#' @importFrom ggplot2 ggplot
+#' @import scales grid ggpp
 #' @importFrom magrittr %>%
 #' @importFrom rlang .data
 #'

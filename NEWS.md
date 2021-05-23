@@ -4,44 +4,17 @@ editor_options:
     wrap: 72
 ---
 
-# ggpmisc 0.3.10
+# ggpmisc 0.4.0
 
-New justification styles have being implemented to complement
-`position_nudge_center()` . They are supported in `geom_text_linked()`,
-`geom_plot()`, `geom_table()`, `geom_grob()` and `geom_marging_grob()`.
-In the current implementation all rows in `data` should contain the same
-`hjust` or `vjust` value when using the new types of justification
-described here, this seems reasonable as they compute the individual
-justification values from the data. All other justification values,
-either `numeric` or `character` do not have this restriction and can be
-used as in *geoms* from 'ggplot2'. *These new features may change in the
-near future*.
-
--   Implement justifications `"outward_mean"` , `"inward_mean"` ,
-    `"outward_median"` and `"inward_median"` so that outward and inward
-    are with respect to the centroid of the data instead of to the
-    middle of the $x$ or $y$ scales. This should be useful in
-    combination with `position_nudge_center()`.
--   Implement justifications `"outward_zero"` and `"inward_zero"` so
-    that outward and inward are with respect to the origin instead of to
-    the middle of the $x$ or $y$ scales as for `"outward"` and
-    `"inward"`. This should be useful for biplots used for PCA and
-    similar cases with arrows radiating out of the origin.
--   Implement justifications `"outward_nnn"` and `"inward_nnn"` so that
-    outward and inward are with respect to the number resulting from
-    applying `as.numeric()` to the characters that replace `nnn`. For
-    example strings like `"outward_0.5"` , `"inward_3e5"` or
-    `"outward_-3e-2"` are supported. This should be useful when manual
-    tweaking is desired.
--   Fix problem related to `"outward"` and `"inward"` justification of
-    text labels when `angle` aesthetic takes values \< -45 or \> 45
-    degrees. This code change alters how old plots are rendered if text
-    labels have been rotated by more than 45 degrees.
--   [ggplot2, ggrepel] The problem with angle is a "feature" in
-    'ggplot2' also present in 'ggrepel'. A pull request for
-    `ggplot2::geom_text()` has been submitted. As this code change
-    alters how old plots are rendered, it is possible that it will not
-    be accepted by the maintainers.
+Package 'ggpmisc' has been plit into two packages: 'ggpp' containing
+extensions to the grammar of graphics and 'ggpmisc' containing
+extensions to 'ggplot2' related to plot decorations based on model fits,
+statistical summaries and other descriptors of the data being plotted.
+Package 'ggpmisc' depends on 'ggpp' with no visible changes for
+users. Package can be loaded instead of 'ggpmisc' when only the
+extensions it contains are needed. Package 'gginnards' containing tools
+for editing ggplot objects as well as tools for inspecting them is an
+earlier spin-off from 'gpmisc'.
 
 # ggpmisc 0.3.9
 

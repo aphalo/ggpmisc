@@ -20,10 +20,10 @@
 #'
 #' @examples
 #'
-#' FC_format(2, 10)(1:10)
-#' FC_format(2, FALSE)(c(1/4, 1/2, 1,2,4,8))
-#' FC_format(10, FALSE)(c(1, 10, 100, 1000))
-#' FC_format(FALSE, 10)(c(-1, 1, 2, 3))
+#' FC_format(2, 10)(1:5)
+#' FC_format(0, 2)(c(1/4, 1/2, 1,2,4,8))
+#' FC_format(10, 0)(-1:3)
+#' FC_format(0, 10)(c(0.1, 1, 10, 100, 100))
 #'
 FC_format <- function(log.base.data = 2, log.base.labels = 10, digits = 3, ...) {
   function(x) FC_plain(x,
@@ -50,12 +50,14 @@ FC_plain <- function(x, log.base.data = 2, log.base.labels = 10, digits = 3, ...
     }
   }
   if (log.base.labels) { # log fold change
-    x <- signif(x, digits)
+    x <- signif(x, max(digits, 1))
     format(x, trim = TRUE, scientific = FALSE, ...)
   } else { # fold change
-    ifelse(x < 1,
-           paste("1/", format(1 / x, trim = TRUE, scientific = FALSE, digits = 0, ...), sep = ""),
-           format(x, trim = TRUE, scientific = FALSE, digits = 0, ...))
+    as.character(
+      ifelse(x < 1,
+             paste("1/", signif(1 / x, max(digits, 1)), sep = ""),
+             signif(x, max(digits, 1)))
+    )
   }
 }
 
@@ -95,9 +97,9 @@ FC_name <- function(name = "Abundance%unit",
   stopifnot(log.base %in% c(0L, 2L, 10L))
   if (tolower(format) == "latex") {
     if (!log.base) {
-      paste(name, "(fold change)", sep = "")
+      paste(name, " (fold change)", sep = "")
     } else {
-      paste(name, "($log_", log.base, "$ fold change)", sep = "")
+      paste(name, " ($log_", log.base, "$ fold change)", sep = "")
     }
   } else if (format %in% c("R.expression")) {
     if (!log.base) {
@@ -187,6 +189,8 @@ symmetric_limits <- function(x) {
 #'   the transformation already applied to the data (log2 by default) and
 #'   apossibly different log transformation (default is fold-change with no
 #'   transformation).
+#'
+#' @importFrom ggplot2 expansion
 #'
 #' @export
 #'
