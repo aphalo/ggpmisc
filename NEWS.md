@@ -10,17 +10,22 @@ Package 'ggpmisc' has been plit into two packages: 'ggpp' containing
 extensions to the grammar of graphics and 'ggpmisc' containing
 extensions to 'ggplot2' related to plot decorations based on model fits,
 statistical summaries and other descriptors of the data being plotted.
-Package 'ggpmisc' depends on 'ggpp' with no visible changes for
-users. Package can be loaded instead of 'ggpmisc' when only the
-extensions it contains are needed. Package 'gginnards' containing tools
-for editing ggplot objects as well as tools for inspecting them is an
-earlier spin-off from 'gpmisc'.
+Package 'ggpmisc' depends on 'ggpp' with no visible changes for users.
+Package can be loaded instead of 'ggpmisc' when only the extensions it
+contains are needed. Package 'gginnards' containing tools for editing
+ggplot objects as well as tools for inspecting them is an earlier
+spin-off from 'gpmisc'.
 
 # ggpmisc 0.3.9
 
 -   Update the documentation of `geom_plot()`.
 -   Revise handling of rounding for $R^2$ and $P$-value in
     `stat_poly_eq()`.
+-   Fix bug in `stat_poly_eq()` that resulted in no labels being
+    displayed for any group when one group has too few distinct
+    *x*-values to fit the polynomial (reported by
+    [ganidat](https://stackoverflow.com/users/5432156/ganidat) in
+    StackOverflow).
 -   [**Under development!**] Link repositioned text to its original
     position with a segment or arrow: `geom_linked_text()`. Except for
     the drawing of segments or arrows this new *geometry* behaves as
