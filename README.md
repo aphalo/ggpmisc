@@ -15,7 +15,7 @@ of extensions to R package ‘ggplot2’ (&gt;= 3.0.0) with emphasis on
 annotations and highlighting related to fitted models and data
 summaries. Data summaries shown as text, tables or equations are
 implemented. Package ‘**ggpmisc**’ continues to give access to
-extensions moved to package ‘**ggpextra**’. New geoms support insets in
+extensions moved to package ‘**ggpp**’. New geoms support insets in
 ggplots. The grammar of graphics is extended to support native plot
 coordinates (npc) so that annotations can be easily positioned using
 special geometries and scales. New position functions facilitate the
@@ -24,7 +24,7 @@ or a focal virtual center.
 
 ## Extended Grammar of graphics
 
-Please, see also the documentation of package ‘**ggpextra**’.
+Please, see also the documentation of package ‘**ggpp**’.
 
 ## Aesthetics and scales
 
@@ -56,10 +56,10 @@ Statistics that help with reporting the results of model fits are
 ## MIGRATED
 
 Several extensions formerly included in package ‘ggpmisc’ before version
-0.4.0 were migrated to package ‘ggpextra’. They are still available when
+0.4.0 were migrated to package ‘ggpp’. They are still available when
 ‘ggpmisc’ is loaded, but the documentation needs now resides in the new
 package. [![cran
-version](https://www.r-pkg.org/badges/version/ggpextra)](https://cran.r-project.org/package=ggpextra)
+version](https://www.r-pkg.org/badges/version/ggpp)](https://cran.r-project.org/package=ggpp)
 
 Functions for the manipulation of layers in ggplot objects, together
 with statistics and geometries useful for debugging extensions to

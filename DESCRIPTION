@@ -24,7 +24,7 @@ LazyLoad: TRUE
 ByteCompile: TRUE
 Depends:
     R (>= 3.6.0),
-    ggpextra
+    ggpp (>= 0.4.0)
 Imports:
     grid,
     ggplot2 (>= 3.3.1),
