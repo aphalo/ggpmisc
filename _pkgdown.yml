@@ -38,6 +38,7 @@ reference:
     contents:
     - stat_peaks
     - stat_poly_eq
+    - stat_quant_eq
     - stat_fit_tb
     - stat_fit_tidy
     - stat_fit_glance
