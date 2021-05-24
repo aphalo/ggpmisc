@@ -145,10 +145,24 @@
 #'   geom_quantile(method = "rq", formula = formula) +
 #'   stat_quant_eq(formula = formula, parse = TRUE)
 #'
+#' ggplot(my.data, aes(x, y, color = group)) +
+#'   geom_point() +
+#'   geom_quantile(method = "rq", formula = formula) +
+#'   stat_quant_eq(formula = formula, parse = TRUE)
+#'
+#' ggplot(my.data, aes(x, y,  shape = group, linetype = group,
+#'        grp.label = group)) +
+#'   geom_point() +
+#'   geom_quantile(method = "rq", formula = formula, color = "black") +
+#'   stat_quant_eq(aes(label = paste(stat(grp.label), stat(eq.label), sep = "*\": \"*")),
+#'                 formula = formula, parse = TRUE) +
+#'   theme_classic()
+#'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   geom_quantile(method = "rq", formula = formula) +
-#'   stat_quant_eq(formula = formula, parse = TRUE, quantiles = c(0.25, 0.5, 0.75))
+#'   stat_quant_eq(formula = formula, parse = TRUE,
+#'                quantiles = c(0.25, 0.5, 0.75))
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
@@ -165,23 +179,23 @@
 #' # using weights
 #' ggplot(my.data, aes(x, y, weight = w)) +
 #'   geom_point() +
-#'   geom_smooth(method = "lm", formula = formula) +
+#'   geom_quantile(method = "rq", formula = formula) +
 #'   stat_quant_eq(formula = formula, parse = TRUE)
 #'
 #' # no weights, quantiles
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   geom_quantile(method = "rq", formula = formula) +
-#'   stat_quant_eq(formula = formula, quantiles = 0.9, parse = TRUE)
+#'   geom_quantile(method = "rq", formula = formula, quantiles = 1) +
+#'   stat_quant_eq(formula = formula, quantiles = 1, parse = TRUE)
 #'
 #' # user specified label
-#' ggplot(my.data, aes(x, y)) +
+#' ggplot(my.data, aes(x, y, color = group, , grp.label = group)) +
 #'   geom_point() +
-#'   geom_quantile(method = "rq", formula = formula) +
+#'   geom_quantile(method = "rq", formula = formula,
+#'                 quantiles = c(0.05, 0.5, 0.95)) +
 #'   stat_quant_eq(aes(label = paste(stat(grp.label), "*\": \"*",
-#'                                    stat(eq.label), "*\", \"*",
-#'                                   stat(AIC.label), sep = "")),
-#'                 quantiles = c(0.25, 0.5, 0.75),
+#'                                    stat(eq.label), sep = "")),
+#'                 quantiles = c(0.05, 0.5, 0.95),
 #'                 formula = formula, parse = TRUE)
 #'
 #' # geom = "text"
@@ -281,8 +295,8 @@ stat_quant_eq <- function(mapping = NULL, data = NULL,
                   hstep = hstep,
                   vstep = ifelse(is.null(vstep),
                                  ifelse(grepl("label", geom),
-                                        0.125,
-                                        0.075),
+                                        0.10,
+                                        0.05),
                                  vstep),
                   npc.used = grepl("_npc", geom),
                   output.type = output.type,
@@ -455,8 +469,12 @@ quant_eq_compute_group_fun <- function(data,
     if (output.type == "expression") {
       z <- tibble::tibble(eq.label = gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
                           AIC.label = paste("AIC", AIC.char, sep = "~`=`~"),
-                          grp.label = paste(grp.label,
-                                            sprintf("italic(q)~`=`~%.2f", quantiles)),
+                          grp.label = if (any(grp.label != ""))
+                                         paste(grp.label,
+                                            sprintf("italic(q)~`=`~%.2f", quantiles),
+                                            sep = "*\", \"*")
+                                      else
+                                        sprintf("italic(q)~`=`~%.2f", quantiles),
                           quantiles = quantiles)
     } else if (output.type %in% c("latex", "tex", "text", "tikz")) {
       z <- tibble::tibble(eq.label =
@@ -525,11 +543,12 @@ StatQuantEq <-
   ggplot2::ggproto("StatQuantEq", ggplot2::Stat,
                    compute_group = quant_eq_compute_group_fun,
                    default_aes =
-                     ggplot2::aes(npcx = stat(npcx),
-                                  npcy = stat(npcy),
-                                  label = stat(eq.label),
-                                  hjust = "inward", vjust = "inward",
+                     ggplot2::aes(npcx = after_stat(npcx),
+                                  npcy = after_stat(npcy),
+                                  label = after_stat(eq.label),
+                                  hjust = "inward",
+                                  vjust = "inward",
                                   weight = 1,
-                                  quantiles = stat(quantiles)),
+                                  quantiles = after_stat(quantiles)),
                    required_aes = c("x", "y")
   )

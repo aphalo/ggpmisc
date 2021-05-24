@@ -184,10 +184,24 @@ ggplot(my.data, aes(x, y)) +
   geom_quantile(method = "rq", formula = formula) +
   stat_quant_eq(formula = formula, parse = TRUE)
 
+ggplot(my.data, aes(x, y, color = group)) +
+  geom_point() +
+  geom_quantile(method = "rq", formula = formula) +
+  stat_quant_eq(formula = formula, parse = TRUE)
+
+ggplot(my.data, aes(x, y,  shape = group, linetype = group,
+       grp.label = group)) +
+  geom_point() +
+  geom_quantile(method = "rq", formula = formula, color = "black") +
+  stat_quant_eq(aes(label = paste(stat(grp.label), stat(eq.label), sep = "*\": \"*")),
+                formula = formula, parse = TRUE) +
+  theme_classic()
+
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_quantile(method = "rq", formula = formula) +
-  stat_quant_eq(formula = formula, parse = TRUE, quantiles = c(0.25, 0.5, 0.75))
+  stat_quant_eq(formula = formula, parse = TRUE,
+               quantiles = c(0.25, 0.5, 0.75))
 
 ggplot(my.data, aes(x, y)) +
   geom_point() +
@@ -204,23 +218,23 @@ ggplot(my.data, aes(x, y)) +
 # using weights
 ggplot(my.data, aes(x, y, weight = w)) +
   geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
+  geom_quantile(method = "rq", formula = formula) +
   stat_quant_eq(formula = formula, parse = TRUE)
 
 # no weights, quantiles
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  geom_quantile(method = "rq", formula = formula) +
-  stat_quant_eq(formula = formula, quantiles = 0.9, parse = TRUE)
+  geom_quantile(method = "rq", formula = formula, quantiles = 1) +
+  stat_quant_eq(formula = formula, quantiles = 1, parse = TRUE)
 
 # user specified label
-ggplot(my.data, aes(x, y)) +
+ggplot(my.data, aes(x, y, color = group, , grp.label = group)) +
   geom_point() +
-  geom_quantile(method = "rq", formula = formula) +
+  geom_quantile(method = "rq", formula = formula,
+                quantiles = c(0.05, 0.5, 0.95)) +
   stat_quant_eq(aes(label = paste(stat(grp.label), "*\": \"*",
-                                   stat(eq.label), "*\", \"*",
-                                  stat(AIC.label), sep = "")),
-                quantiles = c(0.25, 0.5, 0.75),
+                                   stat(eq.label), sep = "")),
+                quantiles = c(0.05, 0.5, 0.95),
                 formula = formula, parse = TRUE)
 
 # geom = "text"
