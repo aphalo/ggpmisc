@@ -91,7 +91,6 @@
 #' \describe{
 #'   \item{x,npcx}{x position}
 #'   \item{y,npcy}{y position}
-#'   \item{coef.ls, r.squared, adj.r.squared, AIC, BIC}{as numric values extracted from fit object}
 #'   \item{eq.label}{equation for the fitted polynomial as a character string to be parsed}
 #'   \item{rr.label}{\eqn{R^2} of the fitted model as a character string to be parsed}
 #'   \item{adj.rr.label}{Adjusted \eqn{R^2} of the fitted model as a character string to be parsed}
@@ -99,18 +98,19 @@
 #'   \item{p.value..label}{P-value for the F-value above.}
 #'   \item{AIC.label}{AIC for the fitted model.}
 #'   \item{BIC.label}{BIC for the fitted model.}
-#'   \item{hjust, vjust}{Set to "inward" to override the default of the "text" geom.}}
+#'   \item{grp.label}{Set according to mapping in \code{aes}.}
+#'   \item{r.squared, adj.r.squared, p.value}{numeric values, from the model fit object}}
 #'
 #' If output.type is \code{"numeric"} the returned tibble contains columns:
 #' \describe{
 #'   \item{x,npcx}{x position}
 #'   \item{y,npcy}{y position}
 #'   \item{coef.ls}{list containing the "coefficients" matrix from the summary of the fit object}
-#'   \item{r.squared, adj.r.squared, f.value, f.df1, f.df2, p.value, AIC, BIC}{numeric values extracted or computed from fit object}
-#'   \item{hjust, vjust}{Set to "inward" to override the default of the "text" geom.}}
+#'   \item{r.squared, adj.r.squared, f.value, f.df1, f.df2, p.value, AIC, BIC}{numeric values, from the model fit object}
+#'   \item{grp.label}{Set according to mapping in \code{aes}.}}
 #'
 #' To explore the computed values returned for a given input we suggest the use
-#' of \code{\link[gginnards]{geom_debug}} as shown in the example below.
+#' of \code{\link[gginnards]{geom_debug}} as shown in the last examples below.
 #'
 #' @section Parsing may be required: if using the computed labels with
 #'   \code{output.type = "expression"}, then \code{parse = TRUE} is needed,
@@ -519,7 +519,10 @@ poly_eq_compute_group_fun <- function(data,
                                          sep = ifelse(p.value < 10^(-p.digits),
                                                       "~`<`~",
                                                       "~`=`~"))),
-                          grp.label = grp.label)
+                          grp.label = grp.label,
+                          r.squared = rr,
+                          adj.r.squared = adj.rr,
+                          p.value = p.value)
     } else if (output.type %in% c("latex", "tex", "text", "tikz")) {
       z <- tibble::tibble(eq.label =
                             gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
@@ -545,7 +548,10 @@ poly_eq_compute_group_fun <- function(data,
                                    paste("P",
                                          ifelse(p.value < 10^(-p.digits), as.character(10^(-p.digits)), p.value.char),
                                          sep = ifelse(p.value < 10^(-p.digits), " < ", " = "))),
-                          grp.label = grp.label)
+                          grp.label = grp.label,
+                          r.squared = rr,
+                          adj.r.squared = adj.rr,
+                          p.value = p.value)
     } else if (output.type == "markdown") {
       z <- tibble::tibble(eq.label =
                             gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
@@ -571,7 +577,10 @@ poly_eq_compute_group_fun <- function(data,
                                    paste("_P_",
                                          ifelse(p.value < 10^(-p.digits), as.character(10^(-p.digits)), p.value.char),
                                          sep = ifelse(p.value < 10^(-p.digits), " < ", " = "))),
-                          grp.label = grp.label)
+                          grp.label = grp.label,
+                          r.squared = rr,
+                          adj.r.squared = adj.rr,
+                          p.value = p.value)
     } else {
       warning("Unknown 'output.type' argument: ", output.type)
     }
