@@ -354,6 +354,7 @@ ggplot(my.data, aes(x, y2, colour = group)) +
   stat_poly_eq(aes(label = stat(eq.label)),
                formula = formula, parse = TRUE)
 ```
+
 To add a label to the equation for each group, we map it to a pseudo-aesthetic
 named `grp.label`. (Equation labelling uses a "back door" in 'ggplot2' that may
 be closed in future versions, meaning that this approach to labelling may stop
