@@ -1,8 +1,8 @@
 #' Equation, p-value, R^2, AIC or BIC of fitted polynomial
 #'
-#' \code{stat_poly_eq} fits a polynomial and generates several labels including
-#' the equation, p-value, coefficient of determination (R^2), 'AIC' and
-#' 'BIC'.
+#' \code{stat_poly_eq} fits a polynomial as a linear model and generates several
+#' labels including the equation, p-value, coefficient of determination (R^2),
+#' 'AIC' and 'BIC'.
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs to be
@@ -307,8 +307,8 @@ stat_poly_eq <- function(mapping = NULL, data = NULL,
                   hstep = hstep,
                   vstep = ifelse(is.null(vstep),
                                  ifelse(grepl("label", geom),
-                                        0.125,
-                                        0.075),
+                                        0.10,
+                                        0.05),
                                  vstep),
                   npc.used = grepl("_npc", geom),
                   output.type = output.type,
@@ -465,7 +465,7 @@ poly_eq_compute_group_fun <- function(data,
     if (rr.digits < 2) {
       warning("'rr.digits < 2' Likely information loss!")
     }
-    stopifnot(p.digits > 0)
+    stopifnot(f.digits > 0)
     if (f.digits < 2) {
       warning("'f.digits < 2' Likely information loss!")
     }

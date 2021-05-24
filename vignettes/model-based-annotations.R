@@ -181,8 +181,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2, colour = group)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = stat(eq.label)),
-               formula = formula, parse = TRUE)
+  stat_poly_eq(aes(label = stat(eq.label)), formula = formula, parse = TRUE, vstep = 0.06)
 
 ## ---- eval=eval_flag----------------------------------------------------------
 #  formula <- y ~ poly(x, 3, raw = TRUE)
@@ -239,6 +238,28 @@ ggplot(my.data, aes(x, y2, colour = group)) +
   stat_poly_eq(geom = "text", aes(label = stat(eq.label)),
                label.x = c(100, 90), label.y = c(-1e4, 2.1e6), hjust = "inward",
                formula = formula, parse = TRUE)
+
+## -----------------------------------------------------------------------------
+ggplot(my.data, aes(x, y, color = group)) +
+  geom_point() +
+  geom_quantile(method = "rq", formula = formula,
+                quantiles = c(0.05, 0.5, 0.95)) +
+  stat_quant_eq(aes(label = paste(stat(grp.label), "*\": \"*",
+                                  stat(eq.label), sep = "")),
+                quantiles = c(0.05, 0.5, 0.95),
+                formula = formula, parse = TRUE)
+
+## -----------------------------------------------------------------------------
+ggplot(my.data, aes(x, y, group = group, linetype = group, 
+                    shape = group, grp.label = group)) +
+  geom_point() +
+  geom_quantile(method = "rq", formula = formula,
+                quantiles = c(0.05, 0.5, 0.95), color = "black") +
+  stat_quant_eq(aes(label = paste(stat(grp.label), "*\": \"*",
+                                  stat(eq.label), sep = "")),
+                quantiles = c(0.05, 0.5, 0.95),
+                formula = formula, parse = TRUE, size = 3) +
+  theme_classic()
 
 ## -----------------------------------------------------------------------------
 formula <- y ~ poly(x, 3, raw = TRUE)

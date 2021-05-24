@@ -18,53 +18,18 @@ reference:
     - outcome2factor
     - xy_outcomes2factor
     - symmetric_limits
-  - title: Geoms
-    desc: Geoms, short for geometric objects, describe the type of plot you will produce.
-    contents:
-    - annotate
-    - geom_text_npc
-    - geom_linked_text
-    - geom_x_margin_point
-    - geom_x_margin_arrow
-    - geom_x_margin_grob
-    - geom_quadrant_lines
-    - geom_plot
-    - geom_grob
-    - geom_table
-    - ttheme_gtdefault
-    - ttheme_set
   - title: Statistics
     desc: It is often useful to summarize data before plotting, and that is what these transformations do.
     contents:
     - stat_peaks
     - stat_poly_eq
+    - stat_quant_eq
     - stat_fit_tb
     - stat_fit_tidy
     - stat_fit_glance
     - stat_fit_augment
     - stat_fit_deviations
     - stat_fit_residuals
-    - stat_dens1d_filter
-    - stat_dens1d_labels
-    - stat_dens2d_filter
-    - stat_dens2d_labels
-    - stat_quadrant_counts
-    - stat_fmt_tb
-    - stat_apply_group
-  - title: Positions
-    desc: Advanced nudge functions
-    contents:
-    - position_nudge_to
-    - position_nudge_center
-    - position_nudge_line
-  - title: Plot creation
-    desc: Additional ggplot methods
-    contents:
-    - ggplot
-  - title: Fortify or Try
-    desc: Convert R objects containing observations in other formats into 'tibble' objects suitable for plotting.
-    contents:
-    - try_data_frame
   - title: Example data
     desc: Data sets as R objects. The data are used for examples in the documentation.
     contents:
@@ -101,8 +66,6 @@ navbar:
     articles:
       text: Articles
       menu:
-      - text: 'Extensions to the Grammar of Graphics'
-        href: articles/grammar-extensions.html
       - text: 'Model-Based Plot Annotations'
         href: articles/model-based-annotations.html
     tutorials:
@@ -110,6 +73,8 @@ navbar:
       menu:
       - text: Blog on R by Pedro J. Aphalo
         href: https://www.r4photobiology.info/
+      - text: Package 'ggpp'
+        href: https://docs.r4photobiology.info/ggpp/
       - text: Package 'gginnards'
         href: https://docs.r4photobiology.info/gginnards/
       - text: Resources about 'ggplot2'

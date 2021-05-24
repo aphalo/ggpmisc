@@ -1,8 +1,8 @@
 Package: ggpmisc
 Type: Package
 Title: Miscellaneous Extensions to 'ggplot2'
-Version: 0.3.9.9000
-Date: 2021-04-25
+Version: 0.4.0
+Date: 2021-05-24
 Authors@R:
     c(
     person("Pedro J.", "Aphalo", email = "pedro.aphalo@helsinki.fi", role = c("aut", "cre"), comment = c(ORCID = "0000-0003-3385-972X")),
@@ -24,7 +24,7 @@ LazyLoad: TRUE
 ByteCompile: TRUE
 Depends:
     R (>= 3.6.0),
-    ggpp (>= 0.4.0)
+    ggpp (> 0.4.0)
 Imports:
     grid,
     ggplot2 (>= 3.3.1),
@@ -36,6 +36,7 @@ Imports:
     scales (>= 1.1.1),
     MASS (>= 7.3-51.6),
     polynom (>= 1.4-0),
+    quantreg (>= 5.85),
     splus2R (>= 1.2-2),
     tibble (>= 3.0.3),
     plyr (>= 1.8.6),
@@ -52,8 +53,7 @@ Suggests:
     nlme (>= 3.1-148),
     gginnards(>= 0.0.3),
     ggrepel (>= 0.9.1),
-    magick (>= 2.6.0),
-    quantreg (>= 5.8.3)
+    magick (>= 2.6.0)
 URL: https://docs.r4photobiology.info/ggpmisc/, 
      https://github.com/aphalo/ggpmisc
 BugReports: https://github.com/aphalo/ggpmisc/issues
