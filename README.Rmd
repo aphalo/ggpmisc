@@ -64,13 +64,15 @@ Statistics that help with reporting the results of model fits are
 
 Several extensions formerly included in package 'ggpmisc' before version 0.4.0
 were migrated to package 'ggpp'. They are still available when 'ggpmisc' is
-loaded, but the documentation needs now resides in the new package. [![cran
-version](https://www.r-pkg.org/badges/version/ggpp)](https://cran.r-project.org/package=ggpp)
+loaded, but the documentation needs now resides in the new package '**ggpp**'. 
+[![cran version](https://www.r-pkg.org/badges/version/ggpp)](https://cran.r-project.org/package=ggpp)
+<a href="https://docs.r4photobiology.info/ggpp/"><img src="https://img.shields.io/badge/documentation-ggpp-informational.svg" alt="" /></a>
 
 Functions for the manipulation of layers in ggplot objects, together with statistics and
 geometries useful for debugging extensions to package 'ggplot2', included in
 pacakge 'ggpmisc' before version 0.3.0 are now in package '**gginnards**'.
 [![cran version](https://www.r-pkg.org/badges/version/gginnards)](https://cran.r-project.org/package=gginnards) 
+<a href="https://docs.r4photobiology.info/gginnards/"><img src="https://img.shields.io/badge/documentation-gginnards-informational.svg" alt="" /></a>
 
 ## Examples
 

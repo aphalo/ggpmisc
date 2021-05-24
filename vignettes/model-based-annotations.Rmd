@@ -351,8 +351,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2, colour = group)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = stat(eq.label)),
-               formula = formula, parse = TRUE)
+  stat_poly_eq(aes(label = stat(eq.label)), formula = formula, parse = TRUE, vstep = 0.06)
 ```
 
 To add a label to the equation for each group, we map it to a pseudo-aesthetic
@@ -447,6 +446,47 @@ ggplot(my.data, aes(x, y2, colour = group)) +
 **Note:** Automatic positioning using `geom_text()` and `geom_label()` is not
 supported when faceting uses free scales. In this case `geom_text_npc()` and/or 
 `geom_label_npc()` must be used.
+
+### stat_quant_eq()
+
+A frequently used annotation in plots showing fitted lines is the display of the
+parameters estimates from the model fit in an equation. `stat_quant_eq`
+automates this for quantile regression of _y_ on _x_ fitted with function
+`quantreg::rq`. This _statistic_ behaves similarly as `ggplot2::stat_quantiles`
+with `method = "rq"`.
+
+Please, see the section on `stat_poly_eq()` for applicable examples, as here
+we highlight only the differences between these two statistics. Like
+`stat_quantiles()`, `stat_quant_eq()` supports a `numeric` vector of quantiles
+as argument and outputs as many equations per group and as the length of 
+this vector. The computed string `grp.label` contains by default a character
+string indicating the value of the quantile.
+
+```{r}
+ggplot(my.data, aes(x, y, color = group)) +
+  geom_point() +
+  geom_quantile(method = "rq", formula = formula,
+                quantiles = c(0.05, 0.5, 0.95)) +
+  stat_quant_eq(aes(label = paste(stat(grp.label), "*\": \"*",
+                                  stat(eq.label), sep = "")),
+                quantiles = c(0.05, 0.5, 0.95),
+                formula = formula, parse = TRUE)
+```
+
+This can be combined with a group label.
+
+```{r}
+ggplot(my.data, aes(x, y, group = group, linetype = group, 
+                    shape = group, grp.label = group)) +
+  geom_point() +
+  geom_quantile(method = "rq", formula = formula,
+                quantiles = c(0.05, 0.5, 0.95), color = "black") +
+  stat_quant_eq(aes(label = paste(stat(grp.label), "*\": \"*",
+                                  stat(eq.label), sep = "")),
+                quantiles = c(0.05, 0.5, 0.95),
+                formula = formula, parse = TRUE, size = 3) +
+  theme_classic()
+```
 
 ### stat_fit_residuals
 

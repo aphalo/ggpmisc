@@ -339,8 +339,8 @@ quant_eq_compute_group_fun <- function(data,
   stopifnot(output.type %in%
               c("expression", "text", "markdown", "numeric", "latex", "tex", "tikz"))
 
-  if (is.null(data$weight)) {
-    data$weight <- 1
+  if (is.null(data[["weight"]])) {
+    data[["weight"]] <- 1
   }
 
   if (exists("grp.label", data)) {
@@ -364,7 +364,7 @@ quant_eq_compute_group_fun <- function(data,
     }
   }
 
-  group.idx <- abs(data$group[1])
+  group.idx <- abs(data[["group"]][1])
   if (length(label.x) >= group.idx) {
     label.x <- label.x[group.idx]
   } else if (length(label.x) > 0) {
@@ -376,7 +376,7 @@ quant_eq_compute_group_fun <- function(data,
     label.y <- label.y[1]
   }
 
-  if (length(unique(data$x)) < 2) {
+  if (length(unique(data[["x"]])) < 2) {
     warning("Not enough data to perform fit for group ",
             group.idx, "; computing mean instead.",
             call. = FALSE)
@@ -388,9 +388,10 @@ quant_eq_compute_group_fun <- function(data,
                   data = quote(data),
                   weights = quote(weight))
 
+  # quantreg contains code with partial matching
   mf <- do.call(quantreg::rq, rq.args)
-
   mf.summary <- summary(mf)
+
   if (class(mf.summary)[1L] == "summary.rq") {
     mf.summary <- list(mf.summary)
   }
@@ -505,8 +506,8 @@ quant_eq_compute_group_fun <- function(data,
     label.x <- compute_npcx(x = label.x, group = group.idx, h.step = hstep,
                             margin.npc = margin.npc, each.len = num.quantiles)
     if (!npc.used) {
-      x.expanse <- abs(diff(range(data$x)))
-      x.min <- min(data$x)
+      x.expanse <- abs(diff(range(data[["x"]])))
+      x.min <- min(data[["x"]])
       label.x <- label.x * x.expanse + x.min
     }
   }
@@ -514,22 +515,22 @@ quant_eq_compute_group_fun <- function(data,
     label.y <- compute_npcy(y = label.y, group = group.idx, v.step = vstep,
                             margin.npc = margin.npc, each.len = num.quantiles)
     if (!npc.used) {
-      y.expanse <- abs(diff(range(data$y)))
-      y.min <- min(data$y)
+      y.expanse <- abs(diff(range(data[["y"]])))
+      y.min <- min(data[["y"]])
       label.y <- label.y * y.expanse + y.min
     }
   }
 
   if (npc.used) {
-    z$npcx <- label.x
-    z$x <- NA_real_
-    z$npcy <- label.y
-    z$y <- NA_real_
+    z[["npcx"]] <- label.x
+    z[["x"]] <- NA_real_
+    z[["npcy"]] <- label.y
+    z[["y"]] <- NA_real_
   } else {
-    z$x <- label.x
-    z$npcx <- NA_real_
-    z$y <- label.y
-    z$npcy <- NA_real_
+    z[["x"]] <- label.x
+    z[["npcx"]] <- NA_real_
+    z[["y"]] <- label.y
+    z[["npcy"]] <- NA_real_
   }
 
   z
