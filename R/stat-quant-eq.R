@@ -450,7 +450,8 @@ quant_eq_compute_group_fun <- function(data,
 
     eq.char <- AIC.char <- rho.char <- character(num.quantiles)
     for (q in seq_along(quantiles)) {
-      eq.char[q] <- as.character(signif(polynom::as.polynomial(coefs.ls[[q]]), coef.digits))
+      eq.char[q] <- as.character(signif(polynom::as.polynomial(coefs.ls[[q]]),
+                                        coef.digits))
       eq.char[q] <-
         gsub("+ x",
              paste("+ 1.", stringr::str_dup("0", coef.digits - 1L), "*x",
@@ -470,26 +471,32 @@ quant_eq_compute_group_fun <- function(data,
     if (output.type == "expression") {
       z <- tibble::tibble(eq.label = gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
                           AIC.label = paste("AIC", AIC.char, sep = "~`=`~"),
+                          rho.label = paste("rho", AIC.char, sep = "~`=`~"),
                           grp.label = if (any(grp.label != ""))
                                          paste(grp.label,
                                             sprintf("italic(q)~`=`~%.2f", quantiles),
                                             sep = "*\", \"*")
                                       else
                                         sprintf("italic(q)~`=`~%.2f", quantiles),
+                          rq.method = rq.method,
                           quantiles = quantiles)
     } else if (output.type %in% c("latex", "tex", "text", "tikz")) {
       z <- tibble::tibble(eq.label =
                             gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
                           AIC.label = paste("AIC", AIC.char, sep = " = "),
+                          rho.label = paste("rho", AIC.char, sep = " = "),
                           grp.label = paste(grp.label,
                                             sprintf("q = %.2f", quantiles)),
+                          rq.method = rq.method,
                           quantiles = quantiles)
     } else if (output.type == "markdown") {
       z <- tibble::tibble(eq.label =
                             gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
                           AIC.label = paste("AIC", AIC.char, sep = " = "),
+                          rho.label = paste("rho", AIC.char, sep = " = "),
                           grp.label = paste(grp.label,
                                             sprintf("q = %.2f", quantiles)),
+                          rq.method = rq.method,
                           quantiles = quantiles)
     } else {
       warning("Unknown 'output.type' argument: ", output.type)

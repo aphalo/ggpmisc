@@ -45,7 +45,6 @@
 #' \url{https://github.com/tidyverse/ggplot2}
 #'
 #' @import scales grid ggpp
-#' @importFrom magrittr %>%
 #' @importFrom rlang .data
 #'
 #' @note The signatures of \code{stat_peaks()} and \code{stat_valleys()} are

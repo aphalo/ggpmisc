@@ -24,12 +24,11 @@ LazyLoad: TRUE
 ByteCompile: TRUE
 Depends:
     R (>= 3.6.0),
-    ggpp (> 0.4.0)
+    ggpp (>= 0.4.0)
 Imports:
     grid,
     ggplot2 (>= 3.3.1),
     rlang (>= 0.4.7),
-    magrittr (>= 1.5),
     generics (>= 0.1.0),
     glue (>= 1.4.2),
     gridExtra (>= 2.3),
