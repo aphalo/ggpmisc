@@ -186,6 +186,14 @@ ggplot(my.data, aes(x, y)) +
   geom_smooth(method = "lm", formula = formula) +
   stat_poly_eq(formula = formula, parse = TRUE)
 
+# rotation
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_eq(formula = formula, parse = TRUE, angle = 90,
+               hjust = 1)
+
+# label location
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +

@@ -145,6 +145,14 @@
 #'   geom_smooth(method = "lm", formula = formula) +
 #'   stat_poly_eq(formula = formula, parse = TRUE)
 #'
+#' # rotation
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   geom_smooth(method = "lm", formula = formula) +
+#'   stat_poly_eq(formula = formula, parse = TRUE, angle = 90,
+#'                hjust = 1)
+#'
+#' # label location
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   geom_smooth(method = "lm", formula = formula) +
@@ -588,13 +596,13 @@ poly_eq_compute_group_fun <- function(data,
     }
   }
 
-  if (npc.used) {
-    margin.npc <- 0.05
-  } else {
-    # margin set by scale
-    margin.npc <- 0
-  }
   if (is.character(label.x)) {
+    if (npc.used) {
+      margin.npc <- 0.05
+    } else {
+      # margin set by scale
+      margin.npc <- 0
+    }
     label.x <- compute_npcx(x = label.x, group = group.idx, h.step = hstep,
                             margin.npc = margin.npc)
     if (!npc.used) {
@@ -604,6 +612,12 @@ poly_eq_compute_group_fun <- function(data,
     }
   }
   if (is.character(label.y)) {
+    if (npc.used) {
+      margin.npc <- 0.05
+    } else {
+      # margin set by scale
+      margin.npc <- 0
+    }
     label.y <- compute_npcy(y = label.y, group = group.idx, v.step = vstep,
                             margin.npc = margin.npc)
     if (!npc.used) {

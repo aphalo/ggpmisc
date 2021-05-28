@@ -122,6 +122,10 @@
 #'   construction of character strings from numeric values and their mapping to
 #'   aesthetic \code{label} needs to be explicitly supplied in the call.
 #'
+#' @note Support for the \code{angle} aesthetic is not automatic and requires
+#'   that the user passes as argument suitable numeric values to override the
+#'   defaults.
+#'
 #' @family statistics for linear model fits
 #'
 #' @import quantreg
@@ -142,54 +146,87 @@
 #' # no weights
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   geom_quantile(method = "rq", formula = formula) +
+#'   geom_quantile(formula = formula) +
+#'   stat_quant_eq(formula = formula, parse = TRUE)
+#'
+#' # angle
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   geom_quantile(formula = formula) +
+#'   stat_quant_eq(formula = formula, parse = TRUE, angle = 90,
+#'                 hstep = 0.05, vstep = 0, hjust = 0,
+#'                 label.y = 0.5)
+#'
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   geom_quantile(formula = formula) +
+#'   stat_quant_eq(formula = formula, parse = TRUE, angle = 90,
+#'                 hstep = 0.05, vstep = 0, hjust = 0,
+#'                 label.y = 0.5)
+#'
+#' # user set quantiles
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   geom_quantile(formula = formula, quantiles = 0.5) +
+#'   stat_quant_eq(formula = formula, quantiles = 0.5, parse = TRUE)
+#'
+#' # grouping
+#' ggplot(my.data, aes(x, y, color = group)) +
+#'   geom_point() +
+#'   geom_quantile(formula = formula) +
 #'   stat_quant_eq(formula = formula, parse = TRUE)
 #'
 #' ggplot(my.data, aes(x, y, color = group)) +
 #'   geom_point() +
-#'   geom_quantile(method = "rq", formula = formula) +
-#'   stat_quant_eq(formula = formula, parse = TRUE)
+#'   geom_quantile(formula = formula) +
+#'   stat_quant_eq(formula = formula, parse = TRUE, angle = 90,
+#'                 hstep = 0.05, vstep = 0, hjust = 0,
+#'                 label.y = 0.5)
 #'
+#' # labelling equations
 #' ggplot(my.data, aes(x, y,  shape = group, linetype = group,
 #'        grp.label = group)) +
 #'   geom_point() +
-#'   geom_quantile(method = "rq", formula = formula, color = "black") +
+#'   geom_quantile(formula = formula, color = "black") +
 #'   stat_quant_eq(aes(label = paste(stat(grp.label), stat(eq.label), sep = "*\": \"*")),
 #'                 formula = formula, parse = TRUE) +
 #'   theme_classic()
 #'
+#' # setting non-default quantiles
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   geom_quantile(method = "rq", formula = formula) +
+#'   geom_quantile(formula = formula,
+#'                 quantiles = c(0.1, 0.5, 0.9)) +
 #'   stat_quant_eq(formula = formula, parse = TRUE,
-#'                quantiles = c(0.25, 0.5, 0.75))
+#'                quantiles = c(0.1, 0.5, 0.9))
 #'
+#' # Location of equations
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   geom_quantile(method = "rq", formula = formula) +
+#'   geom_quantile(formula = formula) +
 #'   stat_quant_eq(formula = formula, parse = TRUE,
 #'                label.y = "bottom", label.x = "right")
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   geom_quantile(method = "rq", formula = formula) +
+#'   geom_quantile(formula = formula) +
 #'   stat_quant_eq(formula = formula, parse = TRUE,
-#'                label.y = 0.1, label.x = 0.9)
+#'                label.y = 0.03, label.x = 0.95, vstep = 0.04)
 #'
 #' # using weights
 #' ggplot(my.data, aes(x, y, weight = w)) +
 #'   geom_point() +
-#'   geom_quantile(method = "rq", formula = formula) +
+#'   geom_quantile(formula = formula) +
 #'   stat_quant_eq(formula = formula, parse = TRUE)
 #'
-#' # no weights, quantiles
+#' # no weights, quantile set to upper boundary
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   geom_quantile(method = "rq", formula = formula, quantiles = 1) +
+#'   geom_quantile(formula = formula, quantiles = 1) +
 #'   stat_quant_eq(formula = formula, quantiles = 1, parse = TRUE)
 #'
 #' # user specified label
-#' ggplot(my.data, aes(x, y, color = group, , grp.label = group)) +
+#' ggplot(my.data, aes(x, y, color = group, grp.label = group)) +
 #'   geom_point() +
 #'   geom_quantile(method = "rq", formula = formula,
 #'                 quantiles = c(0.05, 0.5, 0.95)) +
@@ -202,8 +239,8 @@
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   geom_quantile(method = "rq", formula = formula, quantiles = 0.5) +
-#'   stat_quant_eq(geom = "text", label.x = 100, label.y = 0, hjust = 1,
-#'                formula = formula, parse = TRUE)
+#'   stat_quant_eq(label.x = "left", label.y = "top",
+#'                 formula = formula, parse = TRUE)
 #'
 #' # Examples using geom_debug() to show computed values
 #' #
@@ -254,7 +291,7 @@ stat_quant_eq <- function(mapping = NULL, data = NULL,
                          position = "identity",
                          ...,
                          formula = NULL,
-                         quantiles = 0.5,
+                         quantiles = c(0.25, 0.5, 0.75),
                          eq.with.lhs = TRUE,
                          eq.x.rhs = NULL,
                          coef.digits = 3,
@@ -503,28 +540,86 @@ quant_eq_compute_group_fun <- function(data,
     }
   }
 
-  if (npc.used) {
-    margin.npc <- 0.05
-  } else {
-    # margin set by scale
-    margin.npc <- 0
-  }
   if (is.character(label.x)) {
-    label.x <- compute_npcx(x = label.x, group = group.idx, h.step = hstep,
-                            margin.npc = margin.npc, each.len = num.quantiles)
+    if (npc.used) {
+      margin.npc <- 0.05
+    } else {
+      # margin set by scale
+      margin.npc <- 0
+    }
+    label.x <-
+      ggpp::compute_npcx(x = label.x, group = group.idx, h.step = hstep,
+                         margin.npc = margin.npc, each.len = num.quantiles)
     if (!npc.used) {
       x.expanse <- abs(diff(range(data[["x"]])))
       x.min <- min(data[["x"]])
       label.x <- label.x * x.expanse + x.min
     }
+  } else if (is.numeric(label.x) && length(label.x == 1L)) {
+    if (!npc.used) {
+      x.expanse <- abs(diff(range(data[["x"]])))
+      x.min <- min(data[["x"]])
+      x <- (label.x - x.min) / x.expanse
+    } else {
+      x <- label.x
+    }
+    group <- abs(group.idx)
+    expanded.group <- integer()
+    for (i in seq_along(group)) {
+      temp <- seq(from = 1, by = 1, length.out = num.quantiles) +
+        (group[i] - 1) * num.quantiles
+      expanded.group <- c(expanded.group, temp)
+    }
+    if (any(expanded.group > 0L) && hstep != 0) {
+      x <- x + (expanded.group - 1) * hstep * ifelse(x < 0.5, 1, -1)
+    }
+    x <- ifelse(x > 1, 1, x)
+    x <- ifelse(x < 0, 0, x)
+    if (!npc.used) {
+      label.x <- x * x.expanse + x.min
+    } else {
+      label.x <- x
+    }
   }
   if (is.character(label.y)) {
-    label.y <- compute_npcy(y = label.y, group = group.idx, v.step = vstep,
-                            margin.npc = margin.npc, each.len = num.quantiles)
+    if (npc.used) {
+      margin.npc <- 0.05
+    } else {
+      # margin set by scale
+      margin.npc <- 0
+    }
+    label.y <-
+      ggpp::compute_npcy(y = label.y, group = group.idx, v.step = vstep,
+                         margin.npc = margin.npc, each.len = num.quantiles)
     if (!npc.used) {
       y.expanse <- abs(diff(range(data[["y"]])))
       y.min <- min(data[["y"]])
       label.y <- label.y * y.expanse + y.min
+    }
+  } else if (is.numeric(label.y) && length(label.y == 1L)) {
+    if (!npc.used) {
+      y.expanse <- abs(diff(range(data[["y"]])))
+      y.min <- min(data[["y"]])
+      y <- (label.y - y.min) / y.expanse
+    } else {
+      y <- label.y
+    }
+    group <- abs(group.idx)
+    expanded.group <- integer()
+    for (i in seq_along(group)) {
+      temp <- seq(from = 1, by = 1, length.out = num.quantiles) +
+        (group[i] - 1) * num.quantiles
+      expanded.group <- c(expanded.group, temp)
+    }
+    if (any(expanded.group > 0L) && vstep != 0) {
+      y <- y + (expanded.group - 1) * vstep * ifelse(y < 0.5, 1, -1)
+    }
+    y <- ifelse(y > 1, 1, y)
+    y <- ifelse(y < 0, 0, y)
+    if (!npc.used) {
+      label.y <- y * y.expanse + y.min
+    } else {
+      label.y <- y
     }
   }
 
@@ -560,3 +655,4 @@ StatQuantEq <-
                                   quantiles = after_stat(quantiles)),
                    required_aes = c("x", "y")
   )
+

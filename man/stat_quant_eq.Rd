@@ -11,7 +11,7 @@ stat_quant_eq(
   position = "identity",
   ...,
   formula = NULL,
-  quantiles = 0.5,
+  quantiles = c(0.25, 0.5, 0.75),
   eq.with.lhs = TRUE,
   eq.x.rhs = NULL,
   coef.digits = 3,
@@ -121,6 +121,10 @@ For backward compatibility a logical is accepted as argument for
   character value. By default "x" is retained as independent variable as this
   is the name of the aesthetic. However, it can be substituted by providing a
   suitable replacement character string through \code{eq.x.rhs}.
+
+Support for the \code{angle} aesthetic is not automatic and requires
+  that the user passes as argument suitable numeric values to override the
+  defaults.
 }
 \section{Aesthetics}{
  \code{stat_quant_eq} understands \code{x} and \code{y},
@@ -181,54 +185,87 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 # no weights
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  geom_quantile(method = "rq", formula = formula) +
+  geom_quantile(formula = formula) +
+  stat_quant_eq(formula = formula, parse = TRUE)
+
+# angle
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_quantile(formula = formula) +
+  stat_quant_eq(formula = formula, parse = TRUE, angle = 90,
+                hstep = 0.05, vstep = 0, hjust = 0,
+                label.y = 0.5)
+
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_quantile(formula = formula) +
+  stat_quant_eq(formula = formula, parse = TRUE, angle = 90,
+                hstep = 0.05, vstep = 0, hjust = 0,
+                label.y = 0.5)
+
+# user set quantiles
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_quantile(formula = formula, quantiles = 0.5) +
+  stat_quant_eq(formula = formula, quantiles = 0.5, parse = TRUE)
+
+# grouping
+ggplot(my.data, aes(x, y, color = group)) +
+  geom_point() +
+  geom_quantile(formula = formula) +
   stat_quant_eq(formula = formula, parse = TRUE)
 
 ggplot(my.data, aes(x, y, color = group)) +
   geom_point() +
-  geom_quantile(method = "rq", formula = formula) +
-  stat_quant_eq(formula = formula, parse = TRUE)
+  geom_quantile(formula = formula) +
+  stat_quant_eq(formula = formula, parse = TRUE, angle = 90,
+                hstep = 0.05, vstep = 0, hjust = 0,
+                label.y = 0.5)
 
+# labelling equations
 ggplot(my.data, aes(x, y,  shape = group, linetype = group,
        grp.label = group)) +
   geom_point() +
-  geom_quantile(method = "rq", formula = formula, color = "black") +
+  geom_quantile(formula = formula, color = "black") +
   stat_quant_eq(aes(label = paste(stat(grp.label), stat(eq.label), sep = "*\": \"*")),
                 formula = formula, parse = TRUE) +
   theme_classic()
 
+# setting non-default quantiles
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  geom_quantile(method = "rq", formula = formula) +
+  geom_quantile(formula = formula,
+                quantiles = c(0.1, 0.5, 0.9)) +
   stat_quant_eq(formula = formula, parse = TRUE,
-               quantiles = c(0.25, 0.5, 0.75))
+               quantiles = c(0.1, 0.5, 0.9))
 
+# Location of equations
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  geom_quantile(method = "rq", formula = formula) +
+  geom_quantile(formula = formula) +
   stat_quant_eq(formula = formula, parse = TRUE,
                label.y = "bottom", label.x = "right")
 
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  geom_quantile(method = "rq", formula = formula) +
+  geom_quantile(formula = formula) +
   stat_quant_eq(formula = formula, parse = TRUE,
-               label.y = 0.1, label.x = 0.9)
+               label.y = 0.03, label.x = 0.95, vstep = 0.04)
 
 # using weights
 ggplot(my.data, aes(x, y, weight = w)) +
   geom_point() +
-  geom_quantile(method = "rq", formula = formula) +
+  geom_quantile(formula = formula) +
   stat_quant_eq(formula = formula, parse = TRUE)
 
-# no weights, quantiles
+# no weights, quantile set to upper boundary
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  geom_quantile(method = "rq", formula = formula, quantiles = 1) +
+  geom_quantile(formula = formula, quantiles = 1) +
   stat_quant_eq(formula = formula, quantiles = 1, parse = TRUE)
 
 # user specified label
-ggplot(my.data, aes(x, y, color = group, , grp.label = group)) +
+ggplot(my.data, aes(x, y, color = group, grp.label = group)) +
   geom_point() +
   geom_quantile(method = "rq", formula = formula,
                 quantiles = c(0.05, 0.5, 0.95)) +
@@ -241,8 +278,8 @@ ggplot(my.data, aes(x, y, color = group, , grp.label = group)) +
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_quantile(method = "rq", formula = formula, quantiles = 0.5) +
-  stat_quant_eq(geom = "text", label.x = 100, label.y = 0, hjust = 1,
-               formula = formula, parse = TRUE)
+  stat_quant_eq(label.x = "left", label.y = "top",
+                formula = formula, parse = TRUE)
 
 # Examples using geom_debug() to show computed values
 #
