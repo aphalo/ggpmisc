@@ -186,6 +186,12 @@ ggplot(my.data, aes(x, y)) +
   geom_smooth(method = "lm", formula = formula) +
   stat_poly_eq(formula = formula, parse = TRUE)
 
+# grouping
+ggplot(my.data, aes(x, y, color = group)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_eq(formula = formula, parse = TRUE)
+
 # rotation
 ggplot(my.data, aes(x, y)) +
   geom_point() +
@@ -230,7 +236,8 @@ ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
   stat_poly_eq(aes(label =  paste(stat(f.value.label),
-                                  stat(p.value.label), sep = "*\", \"*")),
+                                  stat(p.value.label),
+                                  sep = "*\", \"*")),
                formula = formula, parse = TRUE)
 
 # user specified label and digits
@@ -238,8 +245,22 @@ ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
   stat_poly_eq(aes(label =  paste(stat(eq.label),
-                                  stat(adj.rr.label), sep = "*\", \"*")),
+                                  stat(adj.rr.label),
+                                  sep = "*\", \"*")),
                formula = formula, rr.digits = 3, coef.digits = 4,
+               parse = TRUE)
+
+# conditional user specified label
+ggplot(my.data, aes(x, y, color = group)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_eq(aes(label =  ifelse(stat(adj.r.squared) > 0.96,
+                                   paste(stat(adj.rr.label),
+                                         stat(eq.label),
+                                         sep = "*\", \"*"),
+                                   stat(adj.rr.label))),
+               rr.digits = 3,
+               formula = formula,
                parse = TRUE)
 
 # geom = "text"

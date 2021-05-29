@@ -425,7 +425,7 @@ quant_eq_compute_group_fun <- function(data,
                   data = quote(data),
                   weights = quote(weight))
 
-  # quantreg contains code with partial matching
+  # quantreg contains code with partial matching of names!
   mf <- do.call(quantreg::rq, rq.args)
   mf.summary <- summary(mf)
 

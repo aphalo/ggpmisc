@@ -4,20 +4,24 @@ editor_options:
     wrap: 72
 ---
 
+# ggpmisc 0.4.1
+
+-   
+
 # ggpmisc 0.4.0
 
-Package 'ggpmisc' has been plit into two packages: 'ggpp' containing
+Package 'ggpmisc' has been split into two packages: 'ggpp' containing
 extensions to the grammar of graphics and 'ggpmisc' containing
-extensions to 'ggplot2' related to plot decorations based on model fits,
-statistical summaries and other descriptors of the data being plotted.
-Package 'ggpmisc' depends on 'ggpp' with no visible changes for users.
-Package 'ggpp' can be loaded instead of 'ggpmisc' when only the
-extensions it contains are needed. Package 'gginnards' containing tools
-for editing ggplot objects as well as tools for inspecting them is an
-earlier spin-off from 'gpmisc'.
+extensions related to plot decorations based on model fits, statistical
+summaries and other descriptors of the data being plotted. Package
+'ggpmisc' depends on 'ggpp' with no visible changes for users. Package
+'ggpp' can be loaded instead of 'ggpmisc' when only the extensions it
+contains are needed. Package 'gginnards' containing tools for editing
+ggplot objects as well as tools for inspecting them is an earlier
+spin-off from 'gpmisc'.
 
 -   Add `stat_quant_eq()` based on quantile regression as implemented in
-    package 'quantreg'.
+    package 'quantreg'. (enhancement suggested by markbneal)
 
 # ggpmisc 0.3.9
 
