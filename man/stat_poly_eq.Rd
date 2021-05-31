@@ -146,6 +146,7 @@ columns:
   \item{p.value..label}{P-value for the F-value above.}
   \item{AIC.label}{AIC for the fitted model.}
   \item{BIC.label}{BIC for the fitted model.}
+  \item{n.label}{Number of observations.}
   \item{grp.label}{Set according to mapping in \code{aes}.}
   \item{r.squared, adj.r.squared, p.value}{numeric values, from the model fit object}}
 
@@ -154,7 +155,7 @@ If output.type is \code{"numeric"} the returned tibble contains columns:
   \item{x,npcx}{x position}
   \item{y,npcy}{y position}
   \item{coef.ls}{list containing the "coefficients" matrix from the summary of the fit object}
-  \item{r.squared, adj.r.squared, f.value, f.df1, f.df2, p.value, AIC, BIC}{numeric values, from the model fit object}
+  \item{r.squared, adj.r.squared, f.value, f.df1, f.df2, p.value, AIC, BIC, n}{numeric values, from the model fit object}
   \item{grp.label}{Set according to mapping in \code{aes}.}}
 
 To explore the computed values returned for a given input we suggest the use
@@ -225,6 +226,13 @@ ggplot(my.data, aes(x, y)) +
   stat_poly_eq(formula = formula, rr.digits = 4, parse = TRUE)
 
 # user specified label
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_eq(aes(label =  paste(stat(rr.label),
+                                  stat(n.label), sep = "*\", \"*")),
+               formula = formula, parse = TRUE)
+
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +

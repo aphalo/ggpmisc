@@ -98,6 +98,7 @@
 #'   \item{p.value..label}{P-value for the F-value above.}
 #'   \item{AIC.label}{AIC for the fitted model.}
 #'   \item{BIC.label}{BIC for the fitted model.}
+#'   \item{n.label}{Number of observations.}
 #'   \item{grp.label}{Set according to mapping in \code{aes}.}
 #'   \item{r.squared, adj.r.squared, p.value}{numeric values, from the model fit object}}
 #'
@@ -106,7 +107,7 @@
 #'   \item{x,npcx}{x position}
 #'   \item{y,npcy}{y position}
 #'   \item{coef.ls}{list containing the "coefficients" matrix from the summary of the fit object}
-#'   \item{r.squared, adj.r.squared, f.value, f.df1, f.df2, p.value, AIC, BIC}{numeric values, from the model fit object}
+#'   \item{r.squared, adj.r.squared, f.value, f.df1, f.df2, p.value, AIC, BIC, n}{numeric values, from the model fit object}
 #'   \item{grp.label}{Set according to mapping in \code{aes}.}}
 #'
 #' To explore the computed values returned for a given input we suggest the use
@@ -184,6 +185,13 @@
 #'   stat_poly_eq(formula = formula, rr.digits = 4, parse = TRUE)
 #'
 #' # user specified label
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   geom_smooth(method = "lm", formula = formula) +
+#'   stat_poly_eq(aes(label =  paste(stat(rr.label),
+#'                                   stat(n.label), sep = "*\", \"*")),
+#'                formula = formula, parse = TRUE)
+#'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   geom_smooth(method = "lm", formula = formula) +
@@ -433,6 +441,7 @@ poly_eq_compute_group_fun <- function(data,
   adj.rr <- mf.summary$adj.r.squared
   AIC <- AIC(mf)
   BIC <- BIC(mf)
+  n <- length(mf.summary$residuals)
   if ("fstatistic" %in% names(mf.summary)) {
     f.value <- mf.summary$fstatistic["value"]
     f.df1 <- mf.summary$fstatistic["numdf"]
@@ -453,6 +462,7 @@ poly_eq_compute_group_fun <- function(data,
                         p.value = p.value,
                         AIC = AIC,
                         BIC = BIC,
+                        n = n,
                         rr.label = "") # needed for default 'label' mapping
   } else {
     coefs <- stats::coef(mf)
@@ -512,7 +522,6 @@ poly_eq_compute_group_fun <- function(data,
     f.df1.char <- as.character(f.df1)
     f.df2.char <- as.character(f.df2)
     p.value.char <- as.character(round(p.value, digits = p.digits))
-
     if (output.type == "expression") {
       z <- tibble::tibble(eq.label = gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
                           rr.label =
@@ -550,10 +559,12 @@ poly_eq_compute_group_fun <- function(data,
                                          sep = ifelse(p.value < 10^(-p.digits),
                                                       "~`<`~",
                                                       "~`=`~"))),
+                          n.label = paste("italic(n)~`=`~", n, sep = ""),
                           grp.label = grp.label,
                           r.squared = rr,
                           adj.r.squared = adj.rr,
-                          p.value = p.value)
+                          p.value = p.value,
+                          n = n)
     } else if (output.type %in% c("latex", "tex", "text", "tikz")) {
       z <- tibble::tibble(eq.label =
                             gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
@@ -579,10 +590,12 @@ poly_eq_compute_group_fun <- function(data,
                                    paste("P",
                                          ifelse(p.value < 10^(-p.digits), as.character(10^(-p.digits)), p.value.char),
                                          sep = ifelse(p.value < 10^(-p.digits), " < ", " = "))),
+                          n.label = paste("n = ", n, sep = ""),
                           grp.label = grp.label,
                           r.squared = rr,
                           adj.r.squared = adj.rr,
-                          p.value = p.value)
+                          p.value = p.value,
+                          n = n)
     } else if (output.type == "markdown") {
       z <- tibble::tibble(eq.label =
                             gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
@@ -608,10 +621,12 @@ poly_eq_compute_group_fun <- function(data,
                                    paste("_P_",
                                          ifelse(p.value < 10^(-p.digits), as.character(10^(-p.digits)), p.value.char),
                                          sep = ifelse(p.value < 10^(-p.digits), " < ", " = "))),
+                          n.label = paste("_n_ = ", n, sep = ""),
                           grp.label = grp.label,
                           r.squared = rr,
                           adj.r.squared = adj.rr,
-                          p.value = p.value)
+                          p.value = p.value,
+                          n = n)
     } else {
       warning("Unknown 'output.type' argument: ", output.type)
     }
