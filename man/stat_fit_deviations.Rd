@@ -9,6 +9,7 @@ stat_fit_deviations(
   data = NULL,
   geom = "segment",
   method = "lm",
+  method.args = list(),
   formula = NULL,
   position = "identity",
   na.rm = FALSE,
@@ -27,7 +28,11 @@ the plot defaults.}
 
 \item{geom}{The geometric object to use display the data}
 
-\item{method}{character Currently only "lm" is implemented.}
+\item{method}{function or character If character, "lm", "rlm", "lqs" and "rq"
+are implemented. If a function, it must support parameters \code{formula}
+and \code{data}.}
+
+\item{method.args}{named list with additional arguments.}
 
 \item{formula}{a "formula" object. Using aesthetic names instead of
 original variable names.}
@@ -57,8 +62,7 @@ residuals ready to be plotted as segments.
 }
 \details{
 This stat can be used to automatically highlight residuals as
-  segments in a plot of a fitted model equation. At the moment it supports
-  only linear models fitted with function \code{lm()}. This stat only
+  segments in a plot of a fitted model equation. This stat only
   generates the residuals, the predicted values need to be separately added
   to the plot, so to make sure that the same model formula is used in all
   steps it is best to save the formula as an object and supply this object as
@@ -67,13 +71,14 @@ This stat can be used to automatically highlight residuals as
   A ggplot statistic receives as data a data frame that is not the one passed
   as argument by the user, but instead a data frame with the variables mapped
   to aesthetics. In other words, it respects the grammar of graphics and
-  consequently within the model \code{formula} names of
-  aesthetics like $x$ and $y$ should be used intead of the original variable
-  names, while data is automatically passed the data frame. This helps ensure
-  that the model is fitted to the same data as plotted in other layers.
+  consequently within the model \code{formula} names of aesthetics like $x$
+  and $y$ should be used instead of the original variable names. This helps
+  ensure that the model is fitted to the same data as plotted in other
+  layers.
 }
 \note{
-For linear models \code{x1} is equal to \code{x2}.
+In the case of \code{method = "rq"} quantiles is fixed at \code{tau = 0.5}
+  unless \code{method.args} has length > 0.
 }
 \section{Computed variables}{
  Data frame with same \code{nrow} as \code{data}
@@ -90,6 +95,8 @@ For linear models \code{x1} is equal to \code{x2}.
 
 \examples{
 library(gginnards) # needed for geom_debug()
+library(MASS)
+
 # generate artificial data
 set.seed(4321)
 x <- 1:100
@@ -99,13 +106,42 @@ my.data <- data.frame(x, y, group = c("A", "B"), y2 = y * c(0.5,2))
 # give a name to a formula
 my.formula <- y ~ poly(x, 3, raw = TRUE)
 
-# plot
+# plot linear regression
 ggplot(my.data, aes(x, y)) +
   geom_smooth(method = "lm", formula = my.formula) +
   stat_fit_deviations(formula = my.formula, colour = "red") +
   geom_point()
 
-# plot, using geom_debug()
+ggplot(my.data, aes(x, y)) +
+  geom_smooth(method = "lm", formula = my.formula) +
+  stat_fit_deviations(formula = my.formula, method = stats::lm, colour = "red") +
+  geom_point()
+
+# plot robust regression
+ggplot(my.data, aes(x, y)) +
+  stat_smooth(method = "rlm", formula = my.formula) +
+  stat_fit_deviations(formula = my.formula, method = "rlm", colour = "red") +
+  geom_point()
+
+# plot resistant regression
+ggplot(my.data, aes(x, y)) +
+  stat_fit_deviations(formula = my.formula, method = "lqs", colour = "red") +
+  geom_point()
+
+# plot quantile regression (= median regression)
+ggplot(my.data, aes(x, y)) +
+  stat_quantile(formula = my.formula, quantiles = 0.5) +
+  stat_fit_deviations(formula = my.formula, method = "rq", colour = "red") +
+  geom_point()
+
+# plot quantile regression (= "quartile" regression)
+ggplot(my.data, aes(x, y)) +
+  stat_quantile(formula = my.formula, quantiles = 0.75) +
+  stat_fit_deviations(formula = my.formula, colour = "red",
+                      method = "rq", method.args = list(tau = 0.75)) +
+  geom_point()
+
+# plot, using geom_debug() to explore the after_stat data
 ggplot(my.data, aes(x, y)) +
   geom_smooth(method = "lm", formula = my.formula) +
   stat_fit_deviations(formula = my.formula, colour = "red",

@@ -23,13 +23,15 @@
 #'   \code{\link[ggplot2]{layer}} for more details.
 #' @param na.rm	a logical indicating whether NA values should be stripped
 #'   before the computation proceeds.
-#' @param method character Currently only "lm" is implemented.
+#' @param method function or character If character, "lm", "rlm", "lqs" and "rq"
+#'   are implemented. If a function, it must support parameters \code{formula}
+#'   and \code{data}.
+#' @param method.args named list with additional arguments.
 #' @param formula a "formula" object. Using aesthetic names instead of
 #'   original variable names.
 #'
 #' @details This stat can be used to automatically highlight residuals as
-#'   segments in a plot of a fitted model equation. At the moment it supports
-#'   only linear models fitted with function \code{lm()}. This stat only
+#'   segments in a plot of a fitted model equation. This stat only
 #'   generates the residuals, the predicted values need to be separately added
 #'   to the plot, so to make sure that the same model formula is used in all
 #'   steps it is best to save the formula as an object and supply this object as
@@ -38,12 +40,13 @@
 #'   A ggplot statistic receives as data a data frame that is not the one passed
 #'   as argument by the user, but instead a data frame with the variables mapped
 #'   to aesthetics. In other words, it respects the grammar of graphics and
-#'   consequently within the model \code{formula} names of
-#'   aesthetics like $x$ and $y$ should be used intead of the original variable
-#'   names, while data is automatically passed the data frame. This helps ensure
-#'   that the model is fitted to the same data as plotted in other layers.
+#'   consequently within the model \code{formula} names of aesthetics like $x$
+#'   and $y$ should be used instead of the original variable names. This helps
+#'   ensure that the model is fitted to the same data as plotted in other
+#'   layers.
 #'
-#' @note For linear models \code{x1} is equal to \code{x2}.
+#' @note In the case of \code{method = "rq"} quantiles is fixed at \code{tau = 0.5}
+#'   unless \code{method.args} has length > 0.
 #'
 #' @section Computed variables: Data frame with same \code{nrow} as \code{data}
 #'   as subset for each group containing five numeric variables. \describe{
@@ -60,6 +63,8 @@
 #'
 #' @examples
 #' library(gginnards) # needed for geom_debug()
+#' library(MASS)
+#'
 #' # generate artificial data
 #' set.seed(4321)
 #' x <- 1:100
@@ -69,13 +74,42 @@
 #' # give a name to a formula
 #' my.formula <- y ~ poly(x, 3, raw = TRUE)
 #'
-#' # plot
+#' # plot linear regression
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_smooth(method = "lm", formula = my.formula) +
 #'   stat_fit_deviations(formula = my.formula, colour = "red") +
 #'   geom_point()
 #'
-#' # plot, using geom_debug()
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_smooth(method = "lm", formula = my.formula) +
+#'   stat_fit_deviations(formula = my.formula, method = stats::lm, colour = "red") +
+#'   geom_point()
+#'
+#' # plot robust regression
+#' ggplot(my.data, aes(x, y)) +
+#'   stat_smooth(method = "rlm", formula = my.formula) +
+#'   stat_fit_deviations(formula = my.formula, method = "rlm", colour = "red") +
+#'   geom_point()
+#'
+#' # plot resistant regression
+#' ggplot(my.data, aes(x, y)) +
+#'   stat_fit_deviations(formula = my.formula, method = "lqs", colour = "red") +
+#'   geom_point()
+#'
+#' # plot quantile regression (= median regression)
+#' ggplot(my.data, aes(x, y)) +
+#'   stat_quantile(formula = my.formula, quantiles = 0.5) +
+#'   stat_fit_deviations(formula = my.formula, method = "rq", colour = "red") +
+#'   geom_point()
+#'
+#' # plot quantile regression (= "quartile" regression)
+#' ggplot(my.data, aes(x, y)) +
+#'   stat_quantile(formula = my.formula, quantiles = 0.75) +
+#'   stat_fit_deviations(formula = my.formula, colour = "red",
+#'                       method = "rq", method.args = list(tau = 0.75)) +
+#'   geom_point()
+#'
+#' # plot, using geom_debug() to explore the after_stat data
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_smooth(method = "lm", formula = my.formula) +
 #'   stat_fit_deviations(formula = my.formula, colour = "red",
@@ -86,6 +120,7 @@
 #'
 stat_fit_deviations <- function(mapping = NULL, data = NULL, geom = "segment",
                                method = "lm",
+                               method.args = list(),
                                formula = NULL,
                                position = "identity",
                                na.rm = FALSE, show.legend = FALSE,
@@ -94,6 +129,7 @@ stat_fit_deviations <- function(mapping = NULL, data = NULL, geom = "segment",
     stat = StatFitDeviations, data = data, mapping = mapping, geom = geom,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
     params = list(method = method,
+                  method.args = method.args,
                   formula = formula,
                   na.rm = na.rm,
                   ...)
@@ -109,12 +145,28 @@ StatFitDeviations <-
                    compute_group = function(data,
                                             scales,
                                             method,
+                                            method.args,
                                             formula) {
-                     if (method == "lm") {
-                       mf <- stats::lm(formula, data)
+                     stopifnot(!any(c("formula", "data") %in% names(method.args)))
+                     if (is.function(method)) {
+                       fun <- method
+                     } else if (is.character(method)) {
+                       if (method == "rq" && length(method.args) == 0) {
+                         method.args <- list(tau = 0.5)
+                       }
+                       fun <- switch(method,
+                                     lm = stats::lm,
+                                     rlm = MASS::rlm,
+                                     lqs = MASS::lqs,
+                                     rq = quantreg::rq,
+                                     stop("Method '", method, "' not yet implemented.")
+                       )
                      } else {
                        stop("Method '", method, "' not yet implemented.")
                      }
+                     mf <- do.call(fun,
+                                   args = c(list(formula = formula, data = data),
+                                            method.args))
                      fitted.vals <- fitted(mf)
                      data.frame(x = data$x,
                                 y = data$y,

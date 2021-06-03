@@ -39,6 +39,10 @@ Many thanks!
     data contains too few observations to fit the model. (reported by
     *ganidat*)
 
+-   Add support for quantile regression `rq`, robust regression `rlm`,
+    and resistant regression `lqs` and `function` objects to
+    `stat_fit_deviations()`.
+
 # ggpmisc 0.3.9
 
 -   Update the documentation of `geom_plot()`.
