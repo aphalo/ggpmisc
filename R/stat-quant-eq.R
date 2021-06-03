@@ -426,8 +426,15 @@ quant_eq_compute_group_fun <- function(data,
                   weights = quote(weight))
 
   # quantreg contains code with partial matching of names!
-  mf <- do.call(quantreg::rq, rq.args)
-  mf.summary <- summary(mf)
+  # so we silence selectively only these warnings
+  withCallingHandlers({
+    mf <- do.call(quantreg::rq, rq.args)
+    mf.summary <- summary(mf)
+  }, warning = function(w) {
+    if (startsWith(conditionMessage(w), "partial match of 'coef'") ||
+        startsWith(conditionMessage(w), "partial argument match of 'contrasts'"))
+      invokeRestart("muffleWarning")
+  })
 
   if (class(mf.summary)[1L] == "summary.rq") {
     mf.summary <- list(mf.summary)
