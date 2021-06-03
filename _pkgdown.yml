@@ -8,7 +8,6 @@ reference:
   - title: Scales
     desc: Scales control de mapping of data to aesthetics.
     contents:
-    - scale_continuous_npc
     - scale_x_logFC
     - FC_format
     - FC_name

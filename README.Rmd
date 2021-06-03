@@ -31,9 +31,9 @@ geometries and scales. New position functions facilitate the labeling of
 observations by nudging data labels away or towards curves or a focal virtual
 center.
 
-## Extended Grammar of graphics
+## Extended Grammar of Graphics
 
-Please, see also the documentation of package '**ggpp**'.
+Please, see the documentation of package '**ggpp**'.
 
 ## Aesthetics and scales
 
