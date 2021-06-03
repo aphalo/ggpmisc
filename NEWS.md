@@ -16,6 +16,9 @@ contains are needed. Package 'gginnards' containing tools for editing
 ggplot objects as well as tools for inspecting them is an earlier
 spin-off from 'gpmisc'.
 
+The changes in this version stem for users' questions and suggestions.
+Many thanks!
+
 -   Add `stat_quant_eq()` based on quantile regression as implemented in
     package 'quantreg'. (enhancement suggested by *Mark Neal*)
 
@@ -25,12 +28,16 @@ spin-off from 'gpmisc'.
     (enhancement suggested by a question from *ganidat*)
 
 -   Add `r.squared`, `adj.r.squared`, `p.value` and `n` as `numeric`
-    values returned in addition to the corresponding labels as
-    `character` when `stat_poly_eq()` is called with `output.type` other
-    than `numeric`. Similarly for `n` and `rho` in the case of
+    values returned in addition to the corresponding `character` labels
+    when `stat_poly_eq()` is called with `output.type` other than
+    `numeric`. Similarly for `n` and `rho` in the case of
     `stat_quant_eq()`.
 
     (enhancement suggested by a question from *Tiptop*)
+
+-   Fix bug in `stat_poly_eq()` leading to empty returned value when
+    data contains too few observations to fit the model. (reported by
+    *ganidat*)
 
 # ggpmisc 0.3.9
 

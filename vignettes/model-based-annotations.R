@@ -239,7 +239,7 @@ ggplot(my.data, aes(x, y2, colour = group)) +
                label.x = c(100, 90), label.y = c(-1e4, 2.1e6), hjust = "inward",
                formula = formula, parse = TRUE)
 
-## -----------------------------------------------------------------------------
+## ---- warning=FALSE-----------------------------------------------------------
 ggplot(my.data, aes(x, y, color = group)) +
   geom_point() +
   geom_quantile(method = "rq", formula = formula,
@@ -249,7 +249,7 @@ ggplot(my.data, aes(x, y, color = group)) +
                 quantiles = c(0.05, 0.5, 0.95),
                 formula = formula, parse = TRUE)
 
-## -----------------------------------------------------------------------------
+## ---- warning=FALSE-----------------------------------------------------------
 ggplot(my.data, aes(x, y, group = group, linetype = group, 
                     shape = group, grp.label = group)) +
   geom_point() +

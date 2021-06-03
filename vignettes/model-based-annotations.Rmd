@@ -458,11 +458,11 @@ with `method = "rq"`.
 Please, see the section on `stat_poly_eq()` for applicable examples, as here
 we highlight only the differences between these two statistics. Like
 `stat_quantiles()`, `stat_quant_eq()` supports a `numeric` vector of quantiles
-as argument and outputs as many equations per group and as the length of 
+as argument and outputs as many equations per group as values are passed in 
 this vector. The computed string `grp.label` contains by default a character
 string indicating the value of the quantile.
 
-```{r}
+```{r, warning=FALSE}
 ggplot(my.data, aes(x, y, color = group)) +
   geom_point() +
   geom_quantile(method = "rq", formula = formula,
@@ -473,9 +473,10 @@ ggplot(my.data, aes(x, y, color = group)) +
                 formula = formula, parse = TRUE)
 ```
 
-This can be combined with a group label.
+This can be combined with a group label by mapping in `aes()` a character 
+variable to `grp.label`.
 
-```{r}
+```{r, warning=FALSE}
 ggplot(my.data, aes(x, y, group = group, linetype = group, 
                     shape = group, grp.label = group)) +
   geom_point() +

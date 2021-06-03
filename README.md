@@ -57,14 +57,14 @@ Statistics that help with reporting the results of model fits are
 
 Several extensions formerly included in package ‘ggpmisc’ before version
 0.4.0 were migrated to package ‘ggpp’. They are still available when
-‘ggpmisc’ is loaded, but the documentation needs now resides in the new
+‘ggpmisc’ is loaded, but the documentation now resides in the new
 package ‘**ggpp**’. [![cran
 version](https://www.r-pkg.org/badges/version/ggpp)](https://cran.r-project.org/package=ggpp)
 <a href="https://docs.r4photobiology.info/ggpp/"><img src="https://img.shields.io/badge/documentation-ggpp-informational.svg" alt="" /></a>
 
 Functions for the manipulation of layers in ggplot objects, together
 with statistics and geometries useful for debugging extensions to
-package ‘ggplot2’, included in pacakge ‘ggpmisc’ before version 0.3.0
+package ‘ggplot2’, included in package ‘ggpmisc’ before version 0.3.0
 are now in package ‘**gginnards**’. [![cran
 version](https://www.r-pkg.org/badges/version/gginnards)](https://cran.r-project.org/package=gginnards)
 <a href="https://docs.r4photobiology.info/gginnards/"><img src="https://img.shields.io/badge/documentation-gginnards-informational.svg" alt="" /></a>
@@ -74,6 +74,7 @@ version](https://www.r-pkg.org/badges/version/gginnards)](https://cran.r-project
 ``` r
 library(ggpmisc)
 library(ggrepel)
+library(broom)
 ```
 
 In the first example we plot a time series using the specialized version
@@ -130,11 +131,24 @@ ggplot(cars, aes(speed, dist)) +
               label.y.npc = "top", label.x.npc = "left",
               size = 2.5,
               parse = TRUE)
-#> Warning: Computation failed in `stat_fit_tb()`:
-#> no applicable method for 'tidy' applied to an object of class "c('anova', 'data.frame')"
+#> Dropping params/terms (rows) from table!
 ```
 
 ![](man/figures/README-readme-05-1.png)<!-- -->
+
+The same figure as in the second example but this time using quantile
+regression.
+
+``` r
+formula <- y ~ x + I(x^2)
+ggplot(cars, aes(speed, dist)) +
+  geom_point() +
+  geom_quantile(formula = formula, quantiles = 0.5) +
+  stat_quant_eq(aes(label = paste(stat(grp.label), stat(eq.label), sep = "*\": \"*")),
+               formula = formula, quantiles = 0.5, parse = TRUE)
+```
+
+![](man/figures/README-readme-04b-1.png)<!-- -->
 
 A quadrant plot with counts and labels, using `geom_text_repel()` from
 package ‘ggrepel’.
