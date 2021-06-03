@@ -1,6 +1,6 @@
 ---
 name: Support question
-about: Report a problem but you are unsure it is a bug or not
+about: Report a problem that you are unsure if it is caused by a bug or not
 title: ''
 labels: question
 assignees: aphalo
