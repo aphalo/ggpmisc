@@ -4,10 +4,6 @@ editor_options:
     wrap: 72
 ---
 
-# ggpmisc 0.4.1
-
--   
-
 # ggpmisc 0.4.0
 
 Package 'ggpmisc' has been split into two packages: 'ggpp' containing
@@ -21,7 +17,20 @@ ggplot objects as well as tools for inspecting them is an earlier
 spin-off from 'gpmisc'.
 
 -   Add `stat_quant_eq()` based on quantile regression as implemented in
-    package 'quantreg'. (enhancement suggested by markbneal)
+    package 'quantreg'. (enhancement suggested by *Mark Neal*)
+
+-   Add `n.label` and `n` to the values returned by `stat_poly_eq()`and
+    `stat_quant_eq()`.
+
+    (enhancement suggested by a question from *ganidat*)
+
+-   Add `r.squared`, `adj.r.squared`, `p.value` and `n` as `numeric`
+    values returned in addition to the corresponding labels as
+    `character` when `stat_poly_eq()` is called with `output.type` other
+    than `numeric`. Similarly for `n` and `rho` in the case of
+    `stat_quant_eq()`.
+
+    (enhancement suggested by a question from *Tiptop*)
 
 # ggpmisc 0.3.9
 
