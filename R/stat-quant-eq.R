@@ -91,12 +91,11 @@
 #'   \item{y,npcy}{y position}
 #'   \item{coef.ls, r.squared, adj.r.squared, AIC, BIC}{as numric values extracted from fit object}
 #'   \item{eq.label}{equation for the fitted polynomial as a character string to be parsed}
-#'   \item{rr.label}{\eqn{R^2} of the fitted model as a character string to be parsed}
-#'   \item{adj.rr.label}{Adjusted \eqn{R^2} of the fitted model as a character string to be parsed}
-#'   \item{f.value.label}{F value and degrees of freedom for the fitted model as a whole.}
-#'   \item{p.value..label}{P-value for the F-value above.}
+#'   \item{rho.label}{\eqn{rho} of the fitted model as a character string to be parsed}
 #'   \item{AIC.label}{AIC for the fitted model.}
-#'   \item{BIC.label}{BIC for the fitted model.}
+#'   \item{n.label}{Number of observations used in the fit.}
+#'   \item{rq.method}{character, method used.}
+#'   \item{rho, n}{numeric values extracted or computed from fit object.}
 #'   \item{hjust, vjust}{Set to "inward" to override the default of the "text" geom.}}
 #'
 #' If output.type is \code{"numeric"} the returned tibble contains columns:
@@ -104,7 +103,8 @@
 #'   \item{x,npcx}{x position}
 #'   \item{y,npcy}{y position}
 #'   \item{coef.ls}{list containing the "coefficients" matrix from the summary of the fit object}
-#'   \item{r.squared, adj.r.squared, f.value, f.df1, f.df2, p.value, AIC, BIC}{numeric values extracted or computed from fit object}
+#'   \item{rho, AIC, n}{numeric values extracted or computed from fit object}
+#'   \item{rq.method}{character, method used.}
 #'   \item{hjust, vjust}{Set to "inward" to override the default of the "text" geom.}}
 #'
 #' To explore the computed values returned for a given input we suggest the use
@@ -435,6 +435,7 @@ quant_eq_compute_group_fun <- function(data,
   names(mf.summary) <- as.character(quantiles)
 
   AIC <- AIC(mf)
+  n <- length(mf.summary[[1]][["residuals"]])
   rho <- mf[["rho"]]
   rq.method <- mf[["method"]]
   coefs <- mf[["coefficients"]]
@@ -463,6 +464,7 @@ quant_eq_compute_group_fun <- function(data,
                         rq.method = rq.method,
                         AIC = AIC,
                         rho = rho,
+                        n = n,
                         eq.label = "") # needed for default 'label' mapping
   } else {
     stopifnot(coef.digits > 0)
@@ -509,6 +511,7 @@ quant_eq_compute_group_fun <- function(data,
       z <- tibble::tibble(eq.label = gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
                           AIC.label = paste("AIC", AIC.char, sep = "~`=`~"),
                           rho.label = paste("rho", AIC.char, sep = "~`=`~"),
+                          n.label = paste("italic(n)~`=`~", n, sep = ""),
                           grp.label = if (any(grp.label != ""))
                                          paste(grp.label,
                                             sprintf("italic(q)~`=`~%.2f", quantiles),
@@ -516,25 +519,30 @@ quant_eq_compute_group_fun <- function(data,
                                       else
                                         sprintf("italic(q)~`=`~%.2f", quantiles),
                           rq.method = rq.method,
-                          quantiles = quantiles)
+                          quantiles = quantiles,
+                          n = n)
     } else if (output.type %in% c("latex", "tex", "text", "tikz")) {
       z <- tibble::tibble(eq.label =
                             gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
                           AIC.label = paste("AIC", AIC.char, sep = " = "),
                           rho.label = paste("rho", AIC.char, sep = " = "),
+                          n.label = paste("n = ", n, sep = ""),
                           grp.label = paste(grp.label,
                                             sprintf("q = %.2f", quantiles)),
                           rq.method = rq.method,
-                          quantiles = quantiles)
+                          quantiles = quantiles,
+                          n = n)
     } else if (output.type == "markdown") {
       z <- tibble::tibble(eq.label =
                             gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
                           AIC.label = paste("AIC", AIC.char, sep = " = "),
                           rho.label = paste("rho", AIC.char, sep = " = "),
+                          n.label = paste("_n_ = ", n, sep = ""),
                           grp.label = paste(grp.label,
                                             sprintf("q = %.2f", quantiles)),
                           rq.method = rq.method,
-                          quantiles = quantiles)
+                          quantiles = quantiles,
+                          n = n)
     } else {
       warning("Unknown 'output.type' argument: ", output.type)
     }

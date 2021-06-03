@@ -146,9 +146,9 @@ columns:
   \item{p.value..label}{P-value for the F-value above.}
   \item{AIC.label}{AIC for the fitted model.}
   \item{BIC.label}{BIC for the fitted model.}
-  \item{n.label}{Number of observations.}
+  \item{n.label}{Number of observations used in the fit.}
   \item{grp.label}{Set according to mapping in \code{aes}.}
-  \item{r.squared, adj.r.squared, p.value}{numeric values, from the model fit object}}
+  \item{r.squared, adj.r.squared, p.value, n}{numeric values, from the model fit object}}
 
 If output.type is \code{"numeric"} the returned tibble contains columns:
 \describe{

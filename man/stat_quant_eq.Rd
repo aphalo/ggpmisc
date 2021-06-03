@@ -143,12 +143,11 @@ columns:
   \item{y,npcy}{y position}
   \item{coef.ls, r.squared, adj.r.squared, AIC, BIC}{as numric values extracted from fit object}
   \item{eq.label}{equation for the fitted polynomial as a character string to be parsed}
-  \item{rr.label}{\eqn{R^2} of the fitted model as a character string to be parsed}
-  \item{adj.rr.label}{Adjusted \eqn{R^2} of the fitted model as a character string to be parsed}
-  \item{f.value.label}{F value and degrees of freedom for the fitted model as a whole.}
-  \item{p.value..label}{P-value for the F-value above.}
+  \item{rho.label}{\eqn{rho} of the fitted model as a character string to be parsed}
   \item{AIC.label}{AIC for the fitted model.}
-  \item{BIC.label}{BIC for the fitted model.}
+  \item{n.label}{Number of observations used in the fit.}
+  \item{rq.method}{character, method used.}
+  \item{rho, n}{numeric values extracted or computed from fit object.}
   \item{hjust, vjust}{Set to "inward" to override the default of the "text" geom.}}
 
 If output.type is \code{"numeric"} the returned tibble contains columns:
@@ -156,7 +155,8 @@ If output.type is \code{"numeric"} the returned tibble contains columns:
   \item{x,npcx}{x position}
   \item{y,npcy}{y position}
   \item{coef.ls}{list containing the "coefficients" matrix from the summary of the fit object}
-  \item{r.squared, adj.r.squared, f.value, f.df1, f.df2, p.value, AIC, BIC}{numeric values extracted or computed from fit object}
+  \item{rho, AIC, n}{numeric values extracted or computed from fit object}
+  \item{rq.method}{character, method used.}
   \item{hjust, vjust}{Set to "inward" to override the default of the "text" geom.}}
 
 To explore the computed values returned for a given input we suggest the use
