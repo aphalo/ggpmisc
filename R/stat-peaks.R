@@ -226,7 +226,7 @@ stat_peaks <- function(mapping = NULL,
   )
 }
 
-# Define here to avoid a note in check as the import from 'dplyr' is not seen
+# Define here to avoid a note in check as the imports are not seen by checks
 # when the function is defined in-line in the ggproto object.
 #' @rdname ggpmisc-ggproto
 #'
@@ -293,7 +293,7 @@ peaks_compute_group_fun <- function(data,
   peaks.df
 }
 
-# Define here to avoid a note in check as the import from 'dplyr' is not seen
+# Define here to avoid a note in check as the imports are not seen by checks
 # when the function is defined in-line in the ggproto object.
 #' @rdname ggpmisc-ggproto
 #'

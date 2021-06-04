@@ -62,14 +62,11 @@
 #' @family statistics for linear model fits
 #'
 #' @examples
-#' library(gginnards) # needed for geom_debug()
-#' library(MASS)
-#'
 #' # generate artificial data
 #' set.seed(4321)
 #' x <- 1:100
 #' y <- (x + x^2 + x^3) + rnorm(length(x), mean = 0, sd = mean(x^3) / 4)
-#' my.data <- data.frame(x, y, group = c("A", "B"), y2 = y * c(0.5,2))
+#' my.data <- data.frame(x, y)
 #'
 #' # give a name to a formula
 #' my.formula <- y ~ poly(x, 3, raw = TRUE)
@@ -109,6 +106,8 @@
 #'                       method = "rq", method.args = list(tau = 0.75)) +
 #'   geom_point()
 #'
+#' library(gginnards) # needed for geom_debug()
+#'
 #' # plot, using geom_debug() to explore the after_stat data
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_smooth(method = "lm", formula = my.formula) +
@@ -136,44 +135,53 @@ stat_fit_deviations <- function(mapping = NULL, data = NULL, geom = "segment",
   )
 }
 
+# Define here to avoid a note in check as the imports are not seen by checks
+# when the function is defined in-line in the ggproto object.
+#' @rdname ggpmisc-ggproto
+#'
+#' @format NULL
+#' @usage NULL
+#'
+deviations_compute_group_fun <- function(data,
+                                         scales,
+                                         method,
+                                         method.args,
+                                         formula) {
+  stopifnot(!any(c("formula", "data") %in% names(method.args)))
+  if (is.function(method)) {
+    fun <- method
+  } else if (is.character(method)) {
+    if (method == "rq" && length(method.args) == 0) {
+      method.args <- list(tau = 0.5)
+    }
+    fun <- switch(method,
+                  lm = stats::lm,
+                  rlm = MASS::rlm,
+                  lqs = MASS::lqs,
+                  rq = quantreg::rq,
+                  stop("Method '", method, "' not yet implemented.")
+    )
+  } else {
+    stop("Method '", method, "' not yet implemented.")
+  }
+  mf <- do.call(fun,
+                args = c(list(formula = formula, data = data),
+                         method.args))
+  fitted.vals <- stats::fitted(mf)
+  data.frame(x = data$x,
+             y = data$y,
+             x.fitted = data$x,
+             y.fitted = fitted.vals,
+             hjust = 0)
+}
+
 #' @rdname ggpmisc-ggproto
 #' @format NULL
 #' @usage NULL
 #' @export
 StatFitDeviations <-
   ggplot2::ggproto("StatFitDeviations", ggplot2::Stat,
-                   compute_group = function(data,
-                                            scales,
-                                            method,
-                                            method.args,
-                                            formula) {
-                     stopifnot(!any(c("formula", "data") %in% names(method.args)))
-                     if (is.function(method)) {
-                       fun <- method
-                     } else if (is.character(method)) {
-                       if (method == "rq" && length(method.args) == 0) {
-                         method.args <- list(tau = 0.5)
-                       }
-                       fun <- switch(method,
-                                     lm = stats::lm,
-                                     rlm = MASS::rlm,
-                                     lqs = MASS::lqs,
-                                     rq = quantreg::rq,
-                                     stop("Method '", method, "' not yet implemented.")
-                       )
-                     } else {
-                       stop("Method '", method, "' not yet implemented.")
-                     }
-                     mf <- do.call(fun,
-                                   args = c(list(formula = formula, data = data),
-                                            method.args))
-                     fitted.vals <- fitted(mf)
-                     data.frame(x = data$x,
-                                y = data$y,
-                                x.fitted = data$x,
-                                y.fitted = fitted.vals,
-                                hjust = 0)
-                   },
+                   compute_group = deviations_compute_group_fun,
                    default_aes =
                      ggplot2::aes(xend = stat(x.fitted),
                                   yend = stat(y.fitted)),

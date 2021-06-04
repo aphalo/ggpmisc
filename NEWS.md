@@ -4,6 +4,12 @@ editor_options:
     wrap: 72
 ---
 
+# ggpmisc 0.4.1
+
+-   Add support for quantile regression `rq`, robust regression `rlm`,
+    and resistant regression `lqs` and `function` objects to
+    `stat_fit_residuals()`.
+
 # ggpmisc 0.4.0
 
 Package 'ggpmisc' has been split into two packages: 'ggpp' containing

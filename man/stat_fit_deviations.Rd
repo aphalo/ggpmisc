@@ -94,14 +94,11 @@ In the case of \code{method = "rq"} quantiles is fixed at \code{tau = 0.5}
 }
 
 \examples{
-library(gginnards) # needed for geom_debug()
-library(MASS)
-
 # generate artificial data
 set.seed(4321)
 x <- 1:100
 y <- (x + x^2 + x^3) + rnorm(length(x), mean = 0, sd = mean(x^3) / 4)
-my.data <- data.frame(x, y, group = c("A", "B"), y2 = y * c(0.5,2))
+my.data <- data.frame(x, y)
 
 # give a name to a formula
 my.formula <- y ~ poly(x, 3, raw = TRUE)
@@ -140,6 +137,8 @@ ggplot(my.data, aes(x, y)) +
   stat_fit_deviations(formula = my.formula, colour = "red",
                       method = "rq", method.args = list(tau = 0.75)) +
   geom_point()
+
+library(gginnards) # needed for geom_debug()
 
 # plot, using geom_debug() to explore the after_stat data
 ggplot(my.data, aes(x, y)) +

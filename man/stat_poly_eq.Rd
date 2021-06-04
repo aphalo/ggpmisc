@@ -143,7 +143,7 @@ columns:
   \item{rr.label}{\eqn{R^2} of the fitted model as a character string to be parsed}
   \item{adj.rr.label}{Adjusted \eqn{R^2} of the fitted model as a character string to be parsed}
   \item{f.value.label}{F value and degrees of freedom for the fitted model as a whole.}
-  \item{p.value..label}{P-value for the F-value above.}
+  \item{p.value.label}{P-value for the F-value above.}
   \item{AIC.label}{AIC for the fitted model.}
   \item{BIC.label}{BIC for the fitted model.}
   \item{n.label}{Number of observations used in the fit.}
