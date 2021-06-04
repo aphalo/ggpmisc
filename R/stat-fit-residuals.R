@@ -23,7 +23,10 @@
 #'   \code{\link[ggplot2]{layer}} for more details.
 #' @param na.rm	a logical indicating whether NA values should be stripped
 #'   before the computation proceeds.
-#' @param method character Currently only "lm" is implemented.
+#' @param method function or character If character, "lm", "rlm", "lqs" and "rq"
+#'   are implemented. If a function, it must support parameters \code{formula}
+#'   and \code{data}.
+#' @param method.args named list with additional arguments.
 #' @param formula a "formula" object. Using aesthetic names instead of
 #'   original variable names.
 #' @param resid.type character passed to \code{residuals()} as argument for
@@ -55,16 +58,43 @@
 #' set.seed(4321)
 #' x <- 1:100
 #' y <- (x + x^2 + x^3) + rnorm(length(x), mean = 0, sd = mean(x^3) / 4)
-#' my.data <- data.frame(x, y, group = c("A", "B"), y2 = y * c(0.5,2))
+#' my.data <- data.frame(x, y)
 #'
 #' # give a name to a formula
 #' my.formula <- y ~ poly(x, 3, raw = TRUE)
 #'
-#' # plot
+#' # plot residuals from linear model
 #' ggplot(my.data, aes(x, y)) +
-#'   stat_fit_residuals(formula = my.formula, resid.type = "working")
+#'   geom_hline(yintercept = 0, linetype = "dashed") +
+#'   stat_fit_residuals(formula = my.formula)
+#'
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_hline(yintercept = 0, linetype = "dashed") +
+#'   stat_fit_residuals(formula = my.formula, resid.type = "response")
+#'
+#' # plot residuals from robust regression
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_hline(yintercept = 0, linetype = "dashed") +
+#'   stat_fit_residuals(formula = my.formula, method = "rlm")
+#'
+#' # plot residuals from resistent regression
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_hline(yintercept = 0, linetype = "dashed") +
+#'   stat_fit_residuals(formula = my.formula, method = "lqs")
+#'
+#' # plot residuals from quantile regression (median)
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_hline(yintercept = 0, linetype = "dashed") +
+#'   stat_fit_residuals(formula = my.formula, method = "rq")
+#'
+#' # plot residuals from quantile regression (upper quartile)
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_hline(yintercept = 0, linetype = "dashed") +
+#'   stat_fit_residuals(formula = my.formula, method = "rq",
+#'   method.args = list(tau = 0.75))
 #'
 #' library(gginnards) # needed for geom_debug()
+#'
 #' # print to the console the returned data
 #' ggplot(my.data, aes(x, y)) +
 #'   stat_fit_residuals(formula = my.formula, resid.type = "working",
@@ -74,6 +104,7 @@
 #'
 stat_fit_residuals <- function(mapping = NULL, data = NULL, geom = "point",
                                method = "lm",
+                               method.args = list(),
                                formula = NULL,
                                resid.type = NULL,
                                position = "identity",
@@ -83,6 +114,7 @@ stat_fit_residuals <- function(mapping = NULL, data = NULL, geom = "point",
     stat = StatFitResiduals, data = data, mapping = mapping, geom = geom,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
     params = list(method = method,
+                  method.args = method.args,
                   formula = formula,
                   resid.type = resid.type,
                   na.rm = na.rm,
@@ -96,26 +128,46 @@ stat_fit_residuals <- function(mapping = NULL, data = NULL, geom = "point",
 #' @usage NULL
 #'
 residuals_compute_group_fun <- function(data,
-                                        scales,
-                                        method,
-                                        formula,
-                                        resid.type) {
-  force(data)
-  if (method == "lm") {
-    if (is.null(resid.type)) {
-      fit.residuals <- stats::residuals(stats::lm(formula, data = data))
-    } else {
-      fit.residuals <- stats::residuals(stats::lm(formula, data = data),
-                                        type = resid.type)
+                                         scales,
+                                         method,
+                                         method.args,
+                                         formula,
+                                         resid.type) {
+  stopifnot(!any(c("formula", "data") %in% names(method.args)))
+  if (is.function(method)) {
+    fun <- method
+  } else if (is.character(method)) {
+    if (method == "rq" && length(method.args) == 0) {
+      method.args <- list(tau = 0.5)
     }
+    fun <- switch(method,
+                  lm = stats::lm,
+                  rlm = MASS::rlm,
+                  lqs = MASS::lqs,
+                  rq = quantreg::rq,
+                  stop("Method '", method, "' not yet implemented.")
+    )
   } else {
     stop("Method '", method, "' not yet implemented.")
   }
+
+  mf <- do.call(fun,
+                args = c(list(formula = formula, data = data),
+                         method.args))
+
+  if (!is.null(resid.type)) {
+    resid.args <- list(object = mf, type = resid.type)
+  } else {
+    resid.args <- list(object = mf)
+  }
+  fit.residuals <- do.call(stats::residuals,
+                           args = resid.args)
   data.frame(x = data$x,
              y = fit.residuals,
              y.resid = fit.residuals,
              y.resid.abs = abs(fit.residuals))
 }
+
 
 #' @rdname ggpmisc-ggproto
 #' @format NULL

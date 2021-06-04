@@ -9,6 +9,7 @@ stat_fit_residuals(
   data = NULL,
   geom = "point",
   method = "lm",
+  method.args = list(),
   formula = NULL,
   resid.type = NULL,
   position = "identity",
@@ -28,7 +29,11 @@ the plot defaults.}
 
 \item{geom}{The geometric object to use display the data}
 
-\item{method}{character Currently only "lm" is implemented.}
+\item{method}{function or character If character, "lm", "rlm", "lqs" and "rq"
+are implemented. If a function, it must support parameters \code{formula}
+and \code{data}.}
+
+\item{method.args}{named list with additional arguments.}
 
 \item{formula}{a "formula" object. Using aesthetic names instead of
 original variable names.}
@@ -86,16 +91,43 @@ This stat can be used to automatically plot residuals as points in a
 set.seed(4321)
 x <- 1:100
 y <- (x + x^2 + x^3) + rnorm(length(x), mean = 0, sd = mean(x^3) / 4)
-my.data <- data.frame(x, y, group = c("A", "B"), y2 = y * c(0.5,2))
+my.data <- data.frame(x, y)
 
 # give a name to a formula
 my.formula <- y ~ poly(x, 3, raw = TRUE)
 
-# plot
+# plot residuals from linear model
 ggplot(my.data, aes(x, y)) +
-  stat_fit_residuals(formula = my.formula, resid.type = "working")
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  stat_fit_residuals(formula = my.formula)
+
+ggplot(my.data, aes(x, y)) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  stat_fit_residuals(formula = my.formula, resid.type = "response")
+
+# plot residuals from robust regression
+ggplot(my.data, aes(x, y)) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  stat_fit_residuals(formula = my.formula, method = "rlm")
+
+# plot residuals from resistent regression
+ggplot(my.data, aes(x, y)) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  stat_fit_residuals(formula = my.formula, method = "lqs")
+
+# plot residuals from quantile regression (median)
+ggplot(my.data, aes(x, y)) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  stat_fit_residuals(formula = my.formula, method = "rq")
+
+# plot residuals from quantile regression (upper quartile)
+ggplot(my.data, aes(x, y)) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  stat_fit_residuals(formula = my.formula, method = "rq",
+  method.args = list(tau = 0.75))
 
 library(gginnards) # needed for geom_debug()
+
 # print to the console the returned data
 ggplot(my.data, aes(x, y)) +
   stat_fit_residuals(formula = my.formula, resid.type = "working",
