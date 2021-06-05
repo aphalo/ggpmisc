@@ -102,7 +102,9 @@
 #'
 #' @export
 #'
-stat_fit_residuals <- function(mapping = NULL, data = NULL, geom = "point",
+stat_fit_residuals <- function(mapping = NULL,
+                               data = NULL,
+                               geom = "point",
                                method = "lm",
                                method.args = list(),
                                formula = NULL,

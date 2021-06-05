@@ -1,8 +1,9 @@
 #' Equation, p-value, R^2, AIC or BIC of fitted polynomial
 #'
-#' \code{stat_poly_eq} fits a polynomial as a linear model and generates several
-#' labels including the equation, p-value, coefficient of determination (R^2),
-#' 'AIC' and 'BIC'.
+#' \code{stat_poly_eq} fits a polynomial by default with \code{stats::lm()} but
+#' alternatively using robust or quantile regression. From the fitted model it
+#' generates several labels including the equation, p-value, F-value,
+#' coefficient of determination (R^2), 'AIC', 'BIC', and number of observations.
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs to be
@@ -24,8 +25,14 @@
 #'   \code{\link[ggplot2]{layer}} for more details.
 #' @param na.rm	a logical indicating whether NA values should be stripped before
 #'   the computation proceeds.
-#' @param formula a formula object. Using aesthetic names instead of
-#'   original variable names.
+#' @param formula a formula object. Using aesthetic names \code{x} and \code{y}
+#'   instead of original variable names.
+#' @param method function or character If character, "lm", "rlm" and
+#'   "rq" are accepted. If a function, it must have formal parameters
+#'   \code{formula} and \code{data} and return a model fit object for which
+#'   \code{summary()} and \code{coefficients()} are consistent with those for
+#'   \code{lm} fits.
+#' @param method.args named list with additional arguments.
 #' @param eq.with.lhs If \code{character} the string is pasted to the front of
 #'   the equation label before parsing or a \code{logical} (see note).
 #' @param eq.x.rhs \code{character} this string will be used as replacement for
@@ -54,36 +61,41 @@
 #'   suitable replacement character string through \code{eq.x.rhs}.
 #'
 #' @details This stat can be used to automatically annotate a plot with R^2,
-#'   adjusted R^2 or the fitted model equation. It supports only linear models
-#'   fitted with function \code{lm()}. The R^2 and adjusted R^2 annotations can
-#'   be used with any linear model formula. The fitted equation label is
-#'   correctly generated for polynomials or quasi-polynomials through the
-#'   origin. Model formulas can use \code{poly()} or be defined algebraically
-#'   with terms of powers of increasing magnitude with no missing intermediate
-#'   terms, except possibly for the intercept indicated by "- 1" or "-1" in the
-#'   formula. The validity of the \code{formula} is not checked in the current
-#'   implementation, and for this reason the default aesthetics sets R^2 as
-#'   label for the annotation. This stat only generates labels, the predicted
-#'   values need to be separately added to the plot, so to make sure that the
-#'   same model formula is used in all steps it is best to save the formula as
-#'   an object and supply this object as argument to the different statistics.
+#'   adjusted R^2 or the fitted model equation. It supports linear regression,
+#'   robust linear regression and median regression fitted with functions
+#'   \code{lm()}, \code{MASS::rlm()} or \code{quanreg::rq()}. The R^2 and
+#'   adjusted R^2 annotations can be used with any linear model formula. The
+#'   fitted equation label is correctly generated for polynomials or
+#'   quasi-polynomials through the origin. Model formulas can use \code{poly()}
+#'   or be defined algebraically with terms of powers of increasing magnitude
+#'   with no missing intermediate terms, except possibly for the intercept
+#'   indicated by "- 1" or "-1" in the formula. The validity of the
+#'   \code{formula} is not checked in the current implementation, and for this
+#'   reason the default aesthetics sets R^2 as label for the annotation. This
+#'   stat generates labels as R expressions by default (set \code{parse = TRUE})
+#'   but LaTeX (use TikZ device) and markdown (use package 'ggtext')
+#'   are also supported, as well as numeric values for user-generated text
+#'   labels. The predicted values need to be separately added to the plot with
+#'   \code{stat_smooth()} or \code{stat_quantile()}, so to make sure that the
+#'   same model formula is used in both plot layers it is best to save the
+#'   formula as an object and supply this object as argument to the different
+#'   statistics.
 #'
-#'   A ggplot statistic receives as data a data frame that is not the one passed
-#'   as argument by the user, but instead a data frame with the variables mapped
-#'   to aesthetics. stat_poly_eq() mimics how stat_smooth() works, except that
-#'   only polynomials can be fitted. In other words, it respects the grammar of
-#'   graphics. This helps ensure that the model is fitted to the same data as
-#'   plotted in other layers.
+#'   A ggplot statistic receives as \code{data} a data frame that is not the one
+#'   passed as argument by the user, but instead a data frame with the variables
+#'   mapped to aesthetics. \code{stat_poly_eq()} mimics how \code{stat_smooth()}
+#'   works, except that only polynomials can be fitted. Similarly to these
+#'   statistics the model fits respect grouping, so the scales used for \code{x}
+#'   and \code{y} should both be continuous scales rather than discrete.
 #'
 #' @references Written as an answer to a question at Stackoverflow.
 #'   \url{https://stackoverflow.com/questions/7549694/adding-regression-line-equation-and-r2-on-graph}
 #'
-#'
 #' @section Aesthetics: \code{stat_poly_eq} understands \code{x} and \code{y},
 #'   to be referenced in the \code{formula} and \code{weight} passed as argument
-#'   to parameter \code{weights} of \code{lm()}. All three must be mapped to
-#'   \code{numeric} variables. In addition, the aesthetics undertood by the geom
-#'   used (\code{"text"} by default) are understood and grouping respected.
+#'   to parameter \code{weights}. All three must be mapped to
+#'   \code{numeric} variables. In addition, the aesthetics understood by the geom
+#'   (\code{"text"} is the default) are understood and grouping respected.
 #'
 #' @section Computed variables:
 #' If output.type different from \code{"numeric"} the returned tibble contains
@@ -300,6 +312,8 @@ stat_poly_eq <- function(mapping = NULL, data = NULL,
                          geom = "text_npc",
                          position = "identity",
                          ...,
+                         method = "lm",
+                         method.args = list(),
                          formula = NULL,
                          eq.with.lhs = TRUE,
                          eq.x.rhs = NULL,
@@ -334,7 +348,9 @@ stat_poly_eq <- function(mapping = NULL, data = NULL,
     position = position,
     show.legend = show.legend,
     inherit.aes = inherit.aes,
-    params = list(formula = formula,
+    params = list(method = method,
+                  method.args = method.args,
+                  formula = formula,
                   eq.with.lhs = eq.with.lhs,
                   eq.x.rhs = eq.x.rhs,
                   coef.digits = coef.digits,
@@ -365,6 +381,8 @@ stat_poly_eq <- function(mapping = NULL, data = NULL,
 #'
 poly_eq_compute_group_fun <- function(data,
                                       scales,
+                                      method,
+                                      method.args,
                                       formula,
                                       weight,
                                       eq.with.lhs,
@@ -433,19 +451,53 @@ poly_eq_compute_group_fun <- function(data,
     formula = y ~ 1
   }
 
-  lm.args <- list(quote(formula), data = quote(data), weights = quote(weight))
-  mf <- do.call(stats::lm, lm.args)
+  stopifnot(!any(c("formula", "data") %in% names(method.args)))
+  if (is.function(method)) {
+    fun <- method
+  } else if (is.character(method)) {
+    if (method == "rq" && length(method.args) == 0) {
+      method.args <- list(tau = 0.5)
+    }
+    fun <- switch(method,
+                  lm = stats::lm,
+                  rlm = MASS::rlm,
+                  rq = quantreg::rq,
+                  stop("Method '", method, "' not yet implemented.")
+    )
+  } else {
+    stop("Method '", method, "' not yet implemented.")
+  }
 
-  mf.summary <- summary(mf)
-  rr <- mf.summary$r.squared
-  adj.rr <- mf.summary$adj.r.squared
+  # quantreg contains code with partial matching of names!
+  # so we silence selectively only these warnings
+  withCallingHandlers({
+    mf <- do.call(fun,
+                  args = c(list(formula = formula, data = data, weights = quote(weight)),
+                           method.args))
+    mf.summary <- summary(mf)
+  }, warning = function(w) {
+    if (startsWith(conditionMessage(w), "partial match of 'coef'") ||
+        startsWith(conditionMessage(w), "partial argument match of 'contrasts'"))
+      invokeRestart("muffleWarning")
+  })
+
+  if ("r.squared" %in% names(mf.summary)) {
+    rr <- mf.summary[["r.squared"]]
+  } else {
+    rr <- NA_real_
+  }
+  if ("adj.r.squared" %in% names(mf.summary)) {
+    adj.rr <- mf.summary[["adj.r.squared"]]
+  } else {
+    adj.rr <- NA_real_
+  }
   AIC <- AIC(mf)
   BIC <- BIC(mf)
   n <- length(mf.summary[["residuals"]])
   if ("fstatistic" %in% names(mf.summary)) {
-    f.value <- mf.summary$fstatistic["value"]
-    f.df1 <- mf.summary$fstatistic["numdf"]
-    f.df2 <- mf.summary$fstatistic["dendf"]
+    f.value <- mf.summary[["fstatistic"]]["value"]
+    f.df1 <- mf.summary[["fstatistic"]]["numdf"]
+    f.df2 <- mf.summary[["fstatistic"]]["dendf"]
     p.value <- 1 - stats::pf(q = f.value, f.df1, f.df2)
   } else {
     f.value <- f.df1 <- f.df2 <- p.value <- NA_real_
@@ -543,8 +595,12 @@ poly_eq_compute_group_fun <- function(data,
                                          sep = ifelse(adj.rr < 10^(-rr.digits) & adj.rr != 0,
                                                       "~`<`~",
                                                       "~`=`~"))),
-                          AIC.label = paste("AIC", AIC.char, sep = "~`=`~"),
-                          BIC.label = paste("BIC", BIC.char, sep = "~`=`~"),
+                          AIC.label =
+                            ifelse(is.na(AIC), character(0L),
+                                   paste("AIC", AIC.char, sep = "~`=`~")),
+                          BIC.label =
+                            ifelse(is.na(BIC), character(0L),
+                                   paste("BIC", BIC.char, sep = "~`=`~")),
                           f.value.label =
                             ifelse(is.na(f.value), character(0L),
                                    paste("italic(F)[", f.df1.char,
@@ -579,8 +635,12 @@ poly_eq_compute_group_fun <- function(data,
                                    paste("R_{adj}^2",
                                          ifelse(adj.rr < 10^(-rr.digits), as.character(10^(-rr.digits)), adj.rr.char),
                                          sep = ifelse(adj.rr < 10^(-rr.digits), " < ", " = "))),
-                          AIC.label = paste("AIC", AIC.char, sep = " = "),
-                          BIC.label = paste("BIC", BIC.char, sep = " = "),
+                          AIC.label =
+                            ifelse(is.na(AIC), character(0L),
+                                   paste("AIC", AIC.char, sep = " = ")),
+                          BIC.label =
+                            ifelse(is.na(BIC), character(0L),
+                                   paste("BIC", BIC.char, sep = " = ")),
                           f.value.label =
                             ifelse(is.na(f.value), character(0L),
                                    paste("F_{", f.df1.char, ",", f.df2.char,
@@ -610,8 +670,12 @@ poly_eq_compute_group_fun <- function(data,
                                    paste("_R_<sup>2</sup><sub>adj</sub>",
                                          ifelse(adj.rr < 10^(-rr.digits), as.character(10^(-rr.digits)), adj.rr.char),
                                          sep = ifelse(adj.rr < 10^(-rr.digits), " < ", " = "))),
-                          AIC.label = paste("AIC", AIC.char, sep = " = "),
-                          BIC.label = paste("BIC", BIC.char, sep = " = "),
+                          AIC.label =
+                            ifelse(is.na(AIC), character(0L),
+                                   paste("AIC", AIC.char, sep = " = ")),
+                          BIC.label =
+                            ifelse(is.na(BIC), character(0L),
+                                   paste("BIC", BIC.char, sep = " = ")),
                           f.value.label =
                             ifelse(is.na(f.value), character(0L),
                                    paste("_F_<sub>", f.df1.char, ",", f.df2.char,

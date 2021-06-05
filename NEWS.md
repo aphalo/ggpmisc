@@ -9,6 +9,8 @@ editor_options:
 -   Add support for quantile regression `rq`, robust regression `rlm`,
     and resistant regression `lqs` and `function` objects to
     `stat_fit_residuals()`.
+-   Add support for quantile regression `rq`, robust regression `rlm`
+    and `function` objects to `stat_poly_eq()`.
 
 # ggpmisc 0.4.0
 
