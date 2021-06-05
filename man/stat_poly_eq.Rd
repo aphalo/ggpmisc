@@ -358,17 +358,21 @@ Written as an answer to a question at Stackoverflow.
   \url{https://stackoverflow.com/questions/7549694/adding-regression-line-equation-and-r2-on-graph}
 }
 \seealso{
-This \code{stat_poly_eq} statistic can return ready formatted labels
-  depending on the argument passed to \code{output.type}. This is possible
-  because only polynomial models are supported. For other types of models,
-  statistics \code{\link{stat_fit_glance}},  \code{\link{stat_fit_tidy}} and
-  \code{\link{stat_fit_glance}} should be used instead and the code for
+This \code{stat_poly_eq/()} statistic can return ready formatted
+  labels depending on the argument passed to \code{output.type}. This is
+  possible because only polynomial models are supported. For other types of
+  models, statistics \code{\link{stat_fit_glance}} and
+  \code{\link{stat_fit_tidy}} should be used instead and the code for
   construction of character strings from numeric values and their mapping to
   aesthetic \code{label} needs to be explicitly supplied in the call.
 
-Other statistics for linear model fits: 
+Other ggplot statistics for model fits: 
+\code{\link{stat_fit_augment}()},
 \code{\link{stat_fit_deviations}()},
+\code{\link{stat_fit_glance}()},
 \code{\link{stat_fit_residuals}()},
+\code{\link{stat_fit_tb}()},
+\code{\link{stat_fit_tidy}()},
 \code{\link{stat_quant_eq}()}
 }
-\concept{statistics for linear model fits}
+\concept{ggplot statistics for model fits}

@@ -99,7 +99,8 @@
 #'
 #' @section Computed variables:
 #' If output.type different from \code{"numeric"} the returned tibble contains
-#' columns:
+#' columns listed below. If the model fit function used does not return a value,
+#' the label is set to \code{character(0L)}.
 #' \describe{
 #'   \item{x,npcx}{x position}
 #'   \item{y,npcy}{y position}
@@ -114,7 +115,9 @@
 #'   \item{grp.label}{Set according to mapping in \code{aes}.}
 #'   \item{r.squared, adj.r.squared, p.value, n}{numeric values, from the model fit object}}
 #'
-#' If output.type is \code{"numeric"} the returned tibble contains columns:
+#' If output.type is \code{"numeric"} the returned tibble contains columns
+#' listed below. If the model fit function used does not return a value,
+#' the variable is set to \code{NA_real_}.
 #' \describe{
 #'   \item{x,npcx}{x position}
 #'   \item{y,npcy}{y position}
@@ -131,13 +134,15 @@
 #'
 #' @seealso This \code{stat_poly_eq} statistic can return ready formatted labels
 #'   depending on the argument passed to \code{output.type}. This is possible
-#'   because only polynomial models are supported. For other types of models,
-#'   statistics \code{\link{stat_fit_glance}},  \code{\link{stat_fit_tidy}} and
-#'   \code{\link{stat_fit_glance}} should be used instead and the code for
-#'   construction of character strings from numeric values and their mapping to
-#'   aesthetic \code{label} needs to be explicitly supplied in the call.
+#'   because only polynomial models are supported. If multiple quantiles are
+#'   desired, then \code{\link{stat_quant_eq}} should be used instead of
+#'   \code{stat_poly_eq}. For other types of models such as non-linear models,
+#'   statistics \code{\link{stat_fit_glance}} and \code{\link{stat_fit_tidy}}
+#'   should be used instead and the code for construction of character strings
+#'   from numeric values and their mapping to aesthetic \code{label} needs to be
+#'   explicitly supplied in the call.
 #'
-#' @family statistics for linear model fits
+#' @family ggplot statistics for model fits
 #'
 #' @examples
 #' # generate artificial data

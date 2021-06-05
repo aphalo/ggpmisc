@@ -90,7 +90,7 @@
 #'   documentation for the version of [glance()] corresponding to the `method`
 #'   used to fit the model.
 #'
-#' @family Statistics calling generic tidier methods.
+#' @family ggplot statistics for model fits
 #'
 #' @seealso \code{\link[broom]{broom}} and \code{broom.mixed} for details on how
 #'   the tidying of the result of model fits is done.
@@ -443,7 +443,7 @@ StatFitGlance <-
 #'   documentation for the version of [augment()] corresponding to the `method`
 #'   used to fit the model.
 #'
-#' @family Statistics calling generic tidier methods.
+#' @family ggplot statistics for model fits
 #'
 #' @seealso \code{\link[broom]{broom}} and \code{broom.mixed} for details on how
 #'   the tidying of the result of model fits is done.
@@ -703,7 +703,7 @@ StatFitAugment <-
 #'   documentation for the version of [tidy()] corresponding to the `method`
 #'   used to fit the model.
 #'
-#' @family Statistics calling generic tidier methods.
+#' @family ggplot statistics for model fits
 #'
 #' @seealso \code{\link[broom]{broom}} and \code{broom.mixed} for details on how
 #'   the tidying of the result of model fits is done.

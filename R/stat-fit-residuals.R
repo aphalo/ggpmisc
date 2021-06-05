@@ -51,7 +51,7 @@
 #'
 #'   By default \code{stat(y.resid)} is mapped to the \code{y} aesthetic.
 #'
-#' @family statistics for linear model fits
+#' @family ggplot statistics for model fits
 #'
 #' @examples
 #' # generate artificial data

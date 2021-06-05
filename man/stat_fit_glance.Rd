@@ -213,9 +213,13 @@ ggplot(mtcars, aes(x = disp, y = mpg)) +
 \code{\link[broom]{broom}} and \code{broom.mixed} for details on how
   the tidying of the result of model fits is done.
 
-Other Statistics calling generic tidier methods.: 
+Other ggplot statistics for model fits: 
 \code{\link{stat_fit_augment}()},
+\code{\link{stat_fit_deviations}()},
+\code{\link{stat_fit_residuals}()},
 \code{\link{stat_fit_tb}()},
-\code{\link{stat_fit_tidy}()}
+\code{\link{stat_fit_tidy}()},
+\code{\link{stat_poly_eq}()},
+\code{\link{stat_quant_eq}()}
 }
-\concept{Statistics calling generic tidier methods.}
+\concept{ggplot statistics for model fits}

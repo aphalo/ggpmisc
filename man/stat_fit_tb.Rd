@@ -272,9 +272,13 @@ ggplot(my.df, aes(covariate, x)) +
   how inset tables respond to mapped aesthetics and table themes. For details
   on predefined table themes see \code{\link{ttheme_gtdefault}}.
 
-Other Statistics calling generic tidier methods.: 
+Other ggplot statistics for model fits: 
 \code{\link{stat_fit_augment}()},
+\code{\link{stat_fit_deviations}()},
 \code{\link{stat_fit_glance}()},
-\code{\link{stat_fit_tidy}()}
+\code{\link{stat_fit_residuals}()},
+\code{\link{stat_fit_tidy}()},
+\code{\link{stat_poly_eq}()},
+\code{\link{stat_quant_eq}()}
 }
-\concept{Statistics calling generic tidier methods.}
+\concept{ggplot statistics for model fits}

@@ -59,7 +59,7 @@
 #'   can also see in addition to the computed values the default mapping of the
 #'   fitted values to aesthetics \code{xend} and \code{yend}.
 #'
-#' @family statistics for linear model fits
+#' @family ggplot statistics for model fits
 #'
 #' @examples
 #' # generate artificial data

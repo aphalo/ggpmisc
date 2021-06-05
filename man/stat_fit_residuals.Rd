@@ -135,9 +135,13 @@ ggplot(my.data, aes(x, y)) +
 
 }
 \seealso{
-Other statistics for linear model fits: 
+Other ggplot statistics for model fits: 
+\code{\link{stat_fit_augment}()},
 \code{\link{stat_fit_deviations}()},
+\code{\link{stat_fit_glance}()},
+\code{\link{stat_fit_tb}()},
+\code{\link{stat_fit_tidy}()},
 \code{\link{stat_poly_eq}()},
 \code{\link{stat_quant_eq}()}
 }
-\concept{statistics for linear model fits}
+\concept{ggplot statistics for model fits}

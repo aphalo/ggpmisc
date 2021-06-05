@@ -126,7 +126,7 @@
 #'   that the user passes as argument suitable numeric values to override the
 #'   defaults.
 #'
-#' @family statistics for linear model fits
+#' @family ggplot statistics for model fits
 #'
 #' @import quantreg
 #'

@@ -337,9 +337,13 @@ This \code{stat_quant_eq} statistic can return ready formatted labels
   construction of character strings from numeric values and their mapping to
   aesthetic \code{label} needs to be explicitly supplied in the call.
 
-Other statistics for linear model fits: 
+Other ggplot statistics for model fits: 
+\code{\link{stat_fit_augment}()},
 \code{\link{stat_fit_deviations}()},
+\code{\link{stat_fit_glance}()},
 \code{\link{stat_fit_residuals}()},
+\code{\link{stat_fit_tb}()},
+\code{\link{stat_fit_tidy}()},
 \code{\link{stat_poly_eq}()}
 }
-\concept{statistics for linear model fits}
+\concept{ggplot statistics for model fits}

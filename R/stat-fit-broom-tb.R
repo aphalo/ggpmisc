@@ -88,7 +88,7 @@
 #'   how inset tables respond to mapped aesthetics and table themes. For details
 #'   on predefined table themes see \code{\link{ttheme_gtdefault}}.
 #'
-#' @family Statistics calling generic tidier methods.
+#' @family ggplot statistics for model fits
 #'
 #' @export
 #'
