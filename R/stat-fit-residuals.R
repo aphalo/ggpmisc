@@ -100,6 +100,10 @@
 #'   stat_fit_residuals(formula = my.formula, resid.type = "working",
 #'                      geom = "debug")
 #'
+#' ggplot(my.data, aes(x, y)) +
+#'   stat_fit_residuals(formula = my.formula, method = "rlm",
+#'                      geom = "debug")
+#'
 #' @export
 #'
 stat_fit_residuals <- function(mapping = NULL,
@@ -136,6 +140,10 @@ residuals_compute_group_fun <- function(data,
                                          formula,
                                          resid.type) {
   stopifnot(!any(c("formula", "data") %in% names(method.args)))
+  if (is.null(data$weight)) {
+    data$weight <- 1
+  }
+
   if (is.function(method)) {
     fun <- method
   } else if (is.character(method)) {
@@ -154,7 +162,8 @@ residuals_compute_group_fun <- function(data,
   }
 
   mf <- do.call(fun,
-                args = c(list(formula = formula, data = data),
+                args = c(list(formula = formula, data = data,
+                              weights = quote(weight)),
                          method.args))
 
   if (!is.null(resid.type)) {
@@ -162,12 +171,20 @@ residuals_compute_group_fun <- function(data,
   } else {
     resid.args <- list(object = mf)
   }
-  fit.residuals <- do.call(stats::residuals,
-                           args = resid.args)
+  fit.residuals <- do.call(stats::residuals, args = resid.args)
+
+  if (exists("w", mf)) {
+    weight.vals <- mf[["w"]]
+  } else {
+    weight.vals <- stats::weights(mf)
+    weight.vals <- ifelse(length(weight.vals) == length(fit.residuals),
+                          weight.vals,
+                          rep_len(NA_real_, length(fit.residuals)))
+  }
   data.frame(x = data$x,
              y = fit.residuals,
              y.resid = fit.residuals,
-             y.resid.abs = abs(fit.residuals))
+             weights = weight.vals)
 }
 
 

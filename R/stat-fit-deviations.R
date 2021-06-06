@@ -63,6 +63,8 @@
 #'
 #' @examples
 #' # generate artificial data
+#' library(MASS)
+#'
 #' set.seed(4321)
 #' x <- 1:100
 #' y <- (x + x^2 + x^3) + rnorm(length(x), mean = 0, sd = mean(x^3) / 4)
@@ -88,9 +90,15 @@
 #'   stat_fit_deviations(formula = my.formula, method = "rlm", colour = "red") +
 #'   geom_point()
 #'
-#' # plot resistant regression
-#' ggplot(my.data, aes(x, y)) +
-#'   stat_fit_deviations(formula = my.formula, method = "lqs", colour = "red") +
+#' # plot robust regression with weights indicated by colour
+#' my.data.outlier <- my.data
+#' my.data.outlier[6, "y"] <- my.data.outlier[6, "y"] * 10
+#' ggplot(my.data.outlier, aes(x, y)) +
+#'   stat_smooth(method = MASS::rlm, formula = my.formula) +
+#'   stat_fit_deviations(formula = my.formula, method = "rlm",
+#'                       mapping = aes(colour = after_stat(weights))) +
+#'   scale_color_gradient(low = "red", high = "blue", limits = c(0, 1),
+#'                        guide = "colourbar") +
 #'   geom_point()
 #'
 #' # plot quantile regression (= median regression)
@@ -111,8 +119,12 @@
 #' # plot, using geom_debug() to explore the after_stat data
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_smooth(method = "lm", formula = my.formula) +
-#'   stat_fit_deviations(formula = my.formula, colour = "red",
-#'   geom = "debug") +
+#'   stat_fit_deviations(formula = my.formula, geom = "debug") +
+#'   geom_point()
+#'
+#' ggplot(my.data.outlier, aes(x, y)) +
+#'   stat_smooth(method = MASS::rlm, formula = my.formula) +
+#'   stat_fit_deviations(formula = my.formula, method = "rlm", geom = "debug") +
 #'   geom_point()
 #'
 #' @export
@@ -148,6 +160,10 @@ deviations_compute_group_fun <- function(data,
                                          method.args,
                                          formula) {
   stopifnot(!any(c("formula", "data") %in% names(method.args)))
+  if (is.null(data$weight)) {
+    data$weight <- 1
+  }
+
   if (is.function(method)) {
     fun <- method
   } else if (is.character(method)) {
@@ -165,13 +181,23 @@ deviations_compute_group_fun <- function(data,
     stop("Method '", method, "' not yet implemented.")
   }
   mf <- do.call(fun,
-                args = c(list(formula = formula, data = data),
+                args = c(list(formula = formula, data = data,
+                              weights = quote(weight)),
                          method.args))
   fitted.vals <- stats::fitted(mf)
+  if (exists("w", mf)) {
+    weight.vals <- mf[["w"]]
+  } else {
+    weight.vals <- stats::weights(mf)
+    weight.vals <- ifelse(length(weight.vals) == length(fitted.vals),
+                          weight.vals,
+                          rep_len(NA_real_, length(fitted.vals)))
+  }
   data.frame(x = data$x,
              y = data$y,
              x.fitted = data$x,
              y.fitted = fitted.vals,
+             weights = weight.vals,
              hjust = 0)
 }
 

@@ -95,6 +95,8 @@ In the case of \code{method = "rq"} quantiles is fixed at \code{tau = 0.5}
 
 \examples{
 # generate artificial data
+library(MASS)
+
 set.seed(4321)
 x <- 1:100
 y <- (x + x^2 + x^3) + rnorm(length(x), mean = 0, sd = mean(x^3) / 4)
@@ -120,9 +122,15 @@ ggplot(my.data, aes(x, y)) +
   stat_fit_deviations(formula = my.formula, method = "rlm", colour = "red") +
   geom_point()
 
-# plot resistant regression
-ggplot(my.data, aes(x, y)) +
-  stat_fit_deviations(formula = my.formula, method = "lqs", colour = "red") +
+# plot robust regression with weights indicated by colour
+my.data.outlier <- my.data
+my.data.outlier[6, "y"] <- my.data.outlier[6, "y"] * 10
+ggplot(my.data.outlier, aes(x, y)) +
+  stat_smooth(method = MASS::rlm, formula = my.formula) +
+  stat_fit_deviations(formula = my.formula, method = "rlm",
+                      mapping = aes(colour = after_stat(weights))) +
+  scale_color_gradient(low = "red", high = "blue", limits = c(0, 1),
+                       guide = "colourbar") +
   geom_point()
 
 # plot quantile regression (= median regression)
@@ -143,8 +151,12 @@ library(gginnards) # needed for geom_debug()
 # plot, using geom_debug() to explore the after_stat data
 ggplot(my.data, aes(x, y)) +
   geom_smooth(method = "lm", formula = my.formula) +
-  stat_fit_deviations(formula = my.formula, colour = "red",
-  geom = "debug") +
+  stat_fit_deviations(formula = my.formula, geom = "debug") +
+  geom_point()
+
+ggplot(my.data.outlier, aes(x, y)) +
+  stat_smooth(method = MASS::rlm, formula = my.formula) +
+  stat_fit_deviations(formula = my.formula, method = "rlm", geom = "debug") +
   geom_point()
 
 }

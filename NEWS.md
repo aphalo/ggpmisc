@@ -11,6 +11,9 @@ editor_options:
     `stat_fit_residuals()`.
 -   Add support for quantile regression `rq`, robust regression `rlm`
     and `function` objects to `stat_poly_eq()`.
+-   Add `weights` to returned values by `stat_fit_residuals()` and
+    `stat_fit_deviations()` and support for the `weight` aesthetic as
+    their input for parameter `weights` of the model fit functions.
 
 # ggpmisc 0.4.0
 
