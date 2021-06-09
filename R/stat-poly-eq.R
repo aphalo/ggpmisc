@@ -53,12 +53,17 @@
 #'   used between labels for different groups.
 #' @param output.type character One of "expression", "LaTeX", "text",
 #'   "markdown" or "numeric".
+#' @param orientation character Either "x" or "y" controlling the default for
+#'   \code{formula}.
 #'
 #' @note For backward compatibility a logical is accepted as argument for
-#'   \code{eq.with.lhs}, giving the same output than the current default
-#'   character value. By default "x" is retained as independent variable as this
-#'   is the name of the aesthetic. However, it can be substituted by providing a
+#'   \code{eq.with.lhs}. If \code{TRUE}, the default is used, either
+#'   \code{"x"} or \code{"y"}, depending on the argument passed to \code{formula}.
+#'   However, \code{"x"} or \code{"y"} can be substituted by providing a
 #'   suitable replacement character string through \code{eq.x.rhs}.
+#'   Parameter \code{orientation} is redundant as it only affects the default
+#'   for \code{formula} but is included for consistency with
+#'   \code{ggplot2::stat_smooth()}.
 #'
 #' @details This stat can be used to automatically annotate a plot with R^2,
 #'   adjusted R^2 or the fitted model equation. It supports linear regression,
@@ -227,11 +232,12 @@
 #' # user specified label and digits
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   geom_smooth(method = "lm", formula = formula) +
+#'   geom_smooth(method = "lm", formula = formula, orientation = "y") +
 #'   stat_poly_eq(aes(label =  paste(stat(eq.label),
 #'                                   stat(adj.rr.label),
 #'                                   sep = "*\", \"*")),
-#'                formula = formula, rr.digits = 3, coef.digits = 4,
+#'                formula = x ~ poly(y, 3, raw = TRUE),
+#'                rr.digits = 3, coef.digits = 4,
 #'                parse = TRUE)
 #'
 #' # conditional user specified label
@@ -334,6 +340,7 @@ stat_poly_eq <- function(mapping = NULL, data = NULL,
                          vstep = NULL,
                          output.type = "expression",
                          na.rm = FALSE,
+                         orientation = NA,
                          show.legend = FALSE,
                          inherit.aes = TRUE) {
   # backwards compatibility
@@ -373,6 +380,7 @@ stat_poly_eq <- function(mapping = NULL, data = NULL,
                   npc.used = grepl("_npc", geom),
                   output.type = output.type,
                   na.rm = na.rm,
+                  orientation = orientation,
                   ...)
   )
 }
@@ -402,8 +410,24 @@ poly_eq_compute_group_fun <- function(data,
                                       vstep,
                                       npc.used,
                                       output.type,
-                                      na.rm) {
+                                      na.rm,
+                                      orientation) {
   force(data)
+
+  stopifnot(!any(c("formula", "data") %in% names(method.args)))
+  # we guess formula from orientation
+  if (is.null(formula)) {
+    if (is.na(orientation) || orientation == "x") {
+      formula = y ~ x
+    } else if (orientation == "y") {
+      formula = x ~ y
+    }
+  }
+  # we guess orientation from formula
+  if (is.na(orientation)) {
+    orientation <- unname(c(x = "y", y = "x")[as.character(formula)[2]])
+  }
+
   output.type <- if (!length(output.type)) {
     "expression"
   } else {
@@ -427,16 +451,6 @@ poly_eq_compute_group_fun <- function(data,
     grp.label <- ""
   }
 
-  if (is.null(eq.x.rhs)) {
-    if (output.type == "expression") {
-      eq.x.rhs <- "~italic(x)"
-    } else if (output.type == "markdown") {
-      eq.x.rhs <- "_x_"
-    } else{
-      eq.x.rhs <- " x"
-    }
-  }
-
   group.idx <- abs(data$group[1])
   if (length(label.x) >= group.idx) {
     label.x <- label.x[group.idx]
@@ -449,14 +463,22 @@ poly_eq_compute_group_fun <- function(data,
     label.y <- label.y[1]
   }
 
-  if (length(unique(data$x)) < 2) {
-    warning("Not enough data to perform fit for group ",
-            group.idx, "; computing mean instead.",
-            call. = FALSE)
-    formula = y ~ 1
+  if (orientation == "x") {
+    if (length(unique(data$x)) < 2) {
+      warning("Not enough data to perform fit for group ",
+              group.idx, "; computing mean instead.",
+              call. = FALSE)
+      formula = y ~ 1
+    }
+  } else if (orientation == "y") {
+    if (length(unique(data$y)) < 2) {
+      warning("Not enough data to perform fit for group ",
+              group.idx, "; computing mean instead.",
+              call. = FALSE)
+      formula = x ~ 1
+    }
   }
 
-  stopifnot(!any(c("formula", "data") %in% names(method.args)))
   if (is.function(method)) {
     fun <- method
   } else if (is.character(method)) {
@@ -522,7 +544,53 @@ poly_eq_compute_group_fun <- function(data,
                         n = n,
                         rr.label = "") # needed for default 'label' mapping
   } else {
-    coefs <- stats::coef(mf)
+    # set defaults needed to assemble the equation as a character string
+    if (is.null(eq.x.rhs)) {
+      if (orientation == "x") {
+        if (output.type == "expression") {
+          eq.x.rhs <- "~italic(x)"
+        } else if (output.type == "markdown") {
+          eq.x.rhs <- "_x_"
+        } else{
+          eq.x.rhs <- " x"
+        }
+      } else if (orientation == "y") {
+        if (output.type == "expression") {
+          eq.x.rhs <- "~italic(y)"
+        } else if (output.type == "markdown") {
+          eq.x.rhs <- "_y_"
+        } else{
+          eq.x.rhs <- " y"
+        }
+      }
+    }
+
+    if (is.character(eq.with.lhs)) {
+      lhs <- eq.with.lhs
+      eq.with.lhs <- TRUE
+    } else if (eq.with.lhs) {
+      if (orientation == "x") {
+        if (output.type == "expression") {
+          lhs <- "italic(y)~`=`~"
+        } else if (output.type %in% c("latex", "tex", "tikz", "text")) {
+          lhs <- "y = "
+        } else if (output.type == "markdown") {
+          lhs <- "_y_ = "
+        }
+      } else if (orientation == "y") {
+        if (output.type == "expression") {
+          lhs <- "italic(x)~`=`~"
+        } else if (output.type %in% c("latex", "tex", "tikz", "text")) {
+          lhs <- "x = "
+        } else if (output.type == "markdown") {
+          lhs <- "_x_ = "
+        }
+      }
+    }
+
+    # build equation as a character string from the coefficient estimates
+    coefs <- stats::coefficients(mf)
+
     formula.rhs.chr <- as.character(formula)[3]
     if (grepl("-1", formula.rhs.chr) || grepl("- 1", formula.rhs.chr)) {
       coefs <- c(0, coefs)
@@ -543,22 +611,13 @@ poly_eq_compute_group_fun <- function(data,
     if (output.type %in% c("latex", "tex", "tikz", "markdown")) {
       eq.char <- gsub("*", " ", eq.char, fixed = TRUE)
     }
-    if (is.character(eq.with.lhs)) {
-      lhs <- eq.with.lhs
-      eq.with.lhs <- TRUE
-    } else if (eq.with.lhs) {
-      if (output.type == "expression") {
-        lhs <- "italic(y)~`=`~"
-      } else if (output.type %in% c("latex", "tex", "tikz", "text")) {
-        lhs <- "y = "
-      } else if (output.type == "markdown") {
-        lhs <- "_y_ = "
-      }
-    }
+
+    eq.char <- gsub("x", eq.x.rhs, eq.char, fixed = TRUE)
     if (eq.with.lhs) {
       eq.char <- paste(lhs, eq.char, sep = "")
     }
 
+    # build the other character strings
     stopifnot(rr.digits > 0)
     if (rr.digits < 2) {
       warning("'rr.digits < 2' Likely information loss!")
@@ -579,8 +638,10 @@ poly_eq_compute_group_fun <- function(data,
     f.df1.char <- as.character(f.df1)
     f.df2.char <- as.character(f.df2)
     p.value.char <- as.character(round(p.value, digits = p.digits))
+
+    # build the data frames to return
     if (output.type == "expression") {
-      z <- tibble::tibble(eq.label = gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
+      z <- tibble::tibble(eq.label = eq.char,
                           rr.label =
                             # character(0) instead of "" avoids in paste() the insertion of sep for missing labels
                             ifelse(is.na(rr), character(0L),
@@ -627,8 +688,7 @@ poly_eq_compute_group_fun <- function(data,
                           p.value = p.value,
                           n = n)
     } else if (output.type %in% c("latex", "tex", "text", "tikz")) {
-      z <- tibble::tibble(eq.label =
-                            gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
+      z <- tibble::tibble(eq.label = eq.char,
                           rr.label =
                             # character(0) instead of "" avoids in paste() the insertion of sep for missing labels
                             ifelse(is.na(rr), character(0L),
@@ -662,8 +722,7 @@ poly_eq_compute_group_fun <- function(data,
                           p.value = p.value,
                           n = n)
     } else if (output.type == "markdown") {
-      z <- tibble::tibble(eq.label =
-                            gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
+      z <- tibble::tibble(eq.label = eq.char,
                           rr.label =
                             # character(0) instead of "" avoids in paste() the insertion of sep for missing labels
                             ifelse(is.na(rr), character(0L),
@@ -701,6 +760,7 @@ poly_eq_compute_group_fun <- function(data,
     }
   }
 
+  # Compute label positions
   if (is.character(label.x)) {
     if (npc.used) {
       margin.npc <- 0.05
