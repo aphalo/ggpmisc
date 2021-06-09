@@ -11,11 +11,12 @@ editor_options:
     `stat_fit_residuals()`.
 -   Add support for quantile regression `rq`, robust regression `rlm`
     and `function` objects to `stat_poly_eq()`.
--   Make it easier to use `stat_poly_eq()` with `formula = x ~ y` and
-    other models in which the explanatory variable is `y` rather than
-    `x` (this was already supported but the defaults for `eq.with.lhs`
-    and `eq.x.rhs` were hard coded needing manual override while they
-    are now set dynamically depending on the `formula`).
+-   Make it easier to use `stat_poly_eq()` and `stat_quant_eq()` with
+    `formula = x ~ y` and other models in which the explanatory variable
+    is `y` rather than `x` (this was already supported but the defaults
+    for `eq.with.lhs` and `eq.x.rhs` were hard coded needing manual
+    override while they are now set dynamically depending on the
+    `formula`).
 -   Add `weights` to returned values by `stat_fit_residuals()` and
     `stat_fit_deviations()` and support for the `weight` aesthetic as
     their input for parameter `weights` of the model fit functions.

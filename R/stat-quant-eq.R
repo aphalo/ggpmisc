@@ -45,12 +45,17 @@
 #'   used between labels for different groups.
 #' @param output.type character One of "expression", "LaTeX", "text",
 #'   "markdown" or "numeric".
+#' @param orientation character Either "x" or "y" controlling the default for
+#'   \code{formula}.
 #'
 #' @note For backward compatibility a logical is accepted as argument for
-#'   \code{eq.with.lhs}, giving the same output than the current default
-#'   character value. By default "x" is retained as independent variable as this
-#'   is the name of the aesthetic. However, it can be substituted by providing a
+#'   \code{eq.with.lhs}. If \code{TRUE}, the default is used, either
+#'   \code{"x"} or \code{"y"}, depending on the argument passed to \code{formula}.
+#'   However, \code{"x"} or \code{"y"} can be substituted by providing a
 #'   suitable replacement character string through \code{eq.x.rhs}.
+#'   Parameter \code{orientation} is redundant as it only affects the default
+#'   for \code{formula} but is included for consistency with
+#'   \code{ggplot2::stat_smooth()}.
 #'
 #' @details This stat can be used to automatically annotate a plot with R^2,
 #'   adjusted R^2 or the fitted model equation. It supports only linear models
@@ -302,6 +307,7 @@ stat_quant_eq <- function(mapping = NULL, data = NULL,
                          vstep = NULL,
                          output.type = "expression",
                          na.rm = FALSE,
+                         orientation = NA,
                          show.legend = FALSE,
                          inherit.aes = TRUE) {
   # backwards compatibility
@@ -338,6 +344,7 @@ stat_quant_eq <- function(mapping = NULL, data = NULL,
                   npc.used = grepl("_npc", geom),
                   output.type = output.type,
                   na.rm = na.rm,
+                  orientation = orientation,
                   ...)
   )
 }
@@ -364,9 +371,22 @@ quant_eq_compute_group_fun <- function(data,
                                        vstep,
                                        npc.used,
                                        output.type,
-                                       na.rm) {
+                                       na.rm,
+                                       orientation) {
   force(data)
   num.quantiles <- length(quantiles)
+  # we guess formula from orientation
+  if (is.null(formula)) {
+    if (is.na(orientation) || orientation == "x") {
+      formula = y ~ x
+    } else if (orientation == "y") {
+      formula = x ~ y
+    }
+  }
+  # we guess orientation from formula
+  if (is.na(orientation)) {
+    orientation <- unname(c(x = "y", y = "x")[as.character(formula)[2]])
+  }
 
   output.type <- if (!length(output.type)) {
     "expression"
@@ -391,16 +411,6 @@ quant_eq_compute_group_fun <- function(data,
     grp.label <- ""
   }
 
-  if (is.null(eq.x.rhs)) {
-    if (output.type == "expression") {
-      eq.x.rhs <- "~italic(x)"
-    } else if (output.type == "markdown") {
-      eq.x.rhs <- "_x_"
-    } else{
-      eq.x.rhs <- " x"
-    }
-  }
-
   group.idx <- abs(data[["group"]][1])
   if (length(label.x) >= group.idx) {
     label.x <- label.x[group.idx]
@@ -413,11 +423,20 @@ quant_eq_compute_group_fun <- function(data,
     label.y <- label.y[1]
   }
 
-  if (length(unique(data[["x"]])) < 2) {
-    warning("Not enough data to perform fit for group ",
-            group.idx, "; computing mean instead.",
-            call. = FALSE)
-    formula = y ~ 1
+  if (orientation == "x") {
+    if (length(unique(data$x)) < 2) {
+      warning("Not enough data to perform fit for group ",
+              group.idx, "; computing mean instead.",
+              call. = FALSE)
+      formula = y ~ 1
+    }
+  } else if (orientation == "y") {
+    if (length(unique(data$y)) < 2) {
+      warning("Not enough data to perform fit for group ",
+              group.idx, "; computing mean instead.",
+              call. = FALSE)
+      formula = x ~ 1
+    }
   }
 
   rq.args <- list(quote(formula),
@@ -474,22 +493,54 @@ quant_eq_compute_group_fun <- function(data,
                         n = n,
                         eq.label = "") # needed for default 'label' mapping
   } else {
-    stopifnot(coef.digits > 0)
-    if (coef.digits < 3) {
-      warning("'coef.digits < 3' Likely information loss!")
+    # set defaults needed to assemble the equation as a character string
+    if (is.null(eq.x.rhs)) {
+      if (orientation == "x") {
+        if (output.type == "expression") {
+          eq.x.rhs <- "~italic(x)"
+        } else if (output.type == "markdown") {
+          eq.x.rhs <- "_x_"
+        } else{
+          eq.x.rhs <- " x"
+        }
+      } else if (orientation == "y") {
+        if (output.type == "expression") {
+          eq.x.rhs <- "~italic(y)"
+        } else if (output.type == "markdown") {
+          eq.x.rhs <- "_y_"
+        } else{
+          eq.x.rhs <- " y"
+        }
+      }
     }
 
     if (is.character(eq.with.lhs)) {
       lhs <- eq.with.lhs
       eq.with.lhs <- TRUE
     } else if (eq.with.lhs) {
-      if (output.type == "expression") {
-        lhs <- "italic(y)~`=`~"
-      } else if (output.type %in% c("latex", "tex", "tikz", "text")) {
-        lhs <- "y = "
-      } else if (output.type == "markdown") {
-        lhs <- "_y_ = "
+      if (orientation == "x") {
+        if (output.type == "expression") {
+          lhs <- "italic(y)~`=`~"
+        } else if (output.type %in% c("latex", "tex", "tikz", "text")) {
+          lhs <- "y = "
+        } else if (output.type == "markdown") {
+          lhs <- "_y_ = "
+        }
+      } else if (orientation == "y") {
+        if (output.type == "expression") {
+          lhs <- "italic(x)~`=`~"
+        } else if (output.type %in% c("latex", "tex", "tikz", "text")) {
+          lhs <- "x = "
+        } else if (output.type == "markdown") {
+          lhs <- "_x_ = "
+        }
       }
+    }
+
+    # build labels
+    stopifnot(coef.digits > 0)
+    if (coef.digits < 3) {
+      warning("'coef.digits < 3' Likely information loss!")
     }
 
     polys.ls <- polynom::polylist(signif(coefs, coef.digits))
@@ -514,6 +565,7 @@ quant_eq_compute_group_fun <- function(data,
       rho.char[q] <- sprintf("%.3g", rho[q])
     }
 
+    # build data frames to return
     if (output.type == "expression") {
       z <- tibble::tibble(eq.label = gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
                           AIC.label = paste("AIC", AIC.char, sep = "~`=`~"),
@@ -555,6 +607,7 @@ quant_eq_compute_group_fun <- function(data,
     }
   }
 
+  # Compute label positions
   if (is.character(label.x)) {
     if (npc.used) {
       margin.npc <- 0.05

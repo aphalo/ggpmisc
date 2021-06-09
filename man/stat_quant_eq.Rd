@@ -24,6 +24,7 @@ stat_quant_eq(
   vstep = NULL,
   output.type = "expression",
   na.rm = FALSE,
+  orientation = NA,
   show.legend = FALSE,
   inherit.aes = TRUE
 )
@@ -78,6 +79,9 @@ used between labels for different groups.}
 \item{na.rm}{a logical indicating whether NA values should be stripped before
 the computation proceeds.}
 
+\item{orientation}{character Either "x" or "y" controlling the default for
+\code{formula}.}
+
 \item{show.legend}{logical. Should this layer be included in the legends?
 \code{NA}, the default, includes if any aesthetics are mapped. \code{FALSE}
 never includes, and \code{TRUE} always includes.}
@@ -117,10 +121,13 @@ This stat can be used to automatically annotate a plot with R^2,
 }
 \note{
 For backward compatibility a logical is accepted as argument for
-  \code{eq.with.lhs}, giving the same output than the current default
-  character value. By default "x" is retained as independent variable as this
-  is the name of the aesthetic. However, it can be substituted by providing a
+  \code{eq.with.lhs}. If \code{TRUE}, the default is used, either
+  \code{"x"} or \code{"y"}, depending on the argument passed to \code{formula}.
+  However, \code{"x"} or \code{"y"} can be substituted by providing a
   suitable replacement character string through \code{eq.x.rhs}.
+  Parameter \code{orientation} is redundant as it only affects the default
+  for \code{formula} but is included for consistency with
+  \code{ggplot2::stat_smooth()}.
 
 Support for the \code{angle} aesthetic is not automatic and requires
   that the user passes as argument suitable numeric values to override the
