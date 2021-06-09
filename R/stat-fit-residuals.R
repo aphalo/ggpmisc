@@ -31,6 +31,8 @@
 #'   original variable names.
 #' @param resid.type character passed to \code{residuals()} as argument for
 #'   \code{type}.
+#' @param orientation character Either "x" or "y" controlling the default for
+#'   \code{formula}.
 #'
 #' @details This stat can be used to automatically plot residuals as points in a
 #'   plot. At the moment it supports only linear models fitted with function
@@ -43,6 +45,10 @@
 #'   aesthetics like $x$ and $y$ should be used intead of the original variable
 #'   names, while data is automatically passed the data frame. This helps ensure
 #'   that the model is fitted to the same data as plotted in other layers.
+#'
+#' @note Parameter \code{orientation} is redundant as it only affects the default
+#'   for \code{formula} but is included for consistency with
+#'   \code{ggplot2}.
 #'
 #' @section Computed variables: Data frame with same \code{nrow} as \code{data}
 #'   as subset for each group containing five numeric variables. \describe{
@@ -60,13 +66,25 @@
 #' y <- (x + x^2 + x^3) + rnorm(length(x), mean = 0, sd = mean(x^3) / 4)
 #' my.data <- data.frame(x, y)
 #'
+#' # plot residuals from linear model
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_hline(yintercept = 0, linetype = "dashed") +
+#'   stat_fit_residuals(formula = y ~ x)
+#'
+#' # plot residuals from linear model with y as explanatory variable
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_vline(xintercept = 0, linetype = "dashed") +
+#'   stat_fit_residuals(formula = x ~ y) +
+#'   coord_flip()
+#'
 #' # give a name to a formula
 #' my.formula <- y ~ poly(x, 3, raw = TRUE)
 #'
 #' # plot residuals from linear model
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_hline(yintercept = 0, linetype = "dashed") +
-#'   stat_fit_residuals(formula = my.formula)
+#'   stat_fit_residuals(formula = my.formula) +
+#'   coord_flip()
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_hline(yintercept = 0, linetype = "dashed") +
@@ -114,7 +132,9 @@ stat_fit_residuals <- function(mapping = NULL,
                                formula = NULL,
                                resid.type = NULL,
                                position = "identity",
-                               na.rm = FALSE, show.legend = FALSE,
+                               na.rm = FALSE,
+                               orientation = NA,
+                               show.legend = FALSE,
                                inherit.aes = TRUE, ...) {
   ggplot2::layer(
     stat = StatFitResiduals, data = data, mapping = mapping, geom = geom,
@@ -124,6 +144,7 @@ stat_fit_residuals <- function(mapping = NULL,
                   formula = formula,
                   resid.type = resid.type,
                   na.rm = na.rm,
+                  orientation = orientation,
                   ...)
   )
 }
@@ -134,14 +155,28 @@ stat_fit_residuals <- function(mapping = NULL,
 #' @usage NULL
 #'
 residuals_compute_group_fun <- function(data,
-                                         scales,
-                                         method,
-                                         method.args,
-                                         formula,
-                                         resid.type) {
+                                        scales,
+                                        method,
+                                        method.args,
+                                        formula,
+                                        resid.type,
+                                        orientation) {
   stopifnot(!any(c("formula", "data") %in% names(method.args)))
   if (is.null(data$weight)) {
     data$weight <- 1
+  }
+
+  # we guess formula from orientation
+  if (is.null(formula)) {
+    if (is.na(orientation) || orientation == "x") {
+      formula = y ~ x
+    } else if (orientation == "y") {
+      formula = x ~ y
+    }
+  }
+  # we guess orientation from formula
+  if (is.na(orientation)) {
+    orientation <- unname(c(x = "y", y = "x")[as.character(formula)[2]])
   }
 
   if (is.function(method)) {
@@ -181,10 +216,20 @@ residuals_compute_group_fun <- function(data,
                           weight.vals,
                           rep_len(NA_real_, length(fit.residuals)))
   }
-  data.frame(x = data$x,
-             y = fit.residuals,
-             y.resid = fit.residuals,
-             weights = weight.vals)
+
+  if (orientation == "y") {
+    data.frame(y = data$y,
+               x = fit.residuals,
+               x.resid = fit.residuals,
+               y.resid = NA_real_,
+               weights = weight.vals)
+  } else {
+    data.frame(x = data$x,
+               y = fit.residuals,
+               y.resid = fit.residuals,
+               x.resid = NA_real_,
+               weights = weight.vals)
+  }
 }
 
 

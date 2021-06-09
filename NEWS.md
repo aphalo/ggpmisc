@@ -2,6 +2,7 @@
 editor_options:
   markdown:
     wrap: 72
+---^8
 ---
 
 # ggpmisc 0.4.1
@@ -17,6 +18,9 @@ editor_options:
     for `eq.with.lhs` and `eq.x.rhs` were hard coded needing manual
     override while they are now set dynamically depending on the
     `formula`).
+-   Make it possible to use `stat_fit_residuals()` with
+    `formula = x ~ y` and other models in which the explanatory variable
+    is `y` rather than `x` .
 -   Add `weights` to returned values by `stat_fit_residuals()` and
     `stat_fit_deviations()` and support for the `weight` aesthetic as
     their input for parameter `weights` of the model fit functions.
