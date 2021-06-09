@@ -14,6 +14,7 @@ stat_fit_residuals(
   resid.type = NULL,
   position = "identity",
   na.rm = FALSE,
+  orientation = NA,
   show.legend = FALSE,
   inherit.aes = TRUE,
   ...
@@ -47,6 +48,9 @@ layer}
 \item{na.rm}{a logical indicating whether NA values should be stripped
 before the computation proceeds.}
 
+\item{orientation}{character Either "x" or "y" controlling the default for
+\code{formula}.}
+
 \item{show.legend}{logical. Should this layer be included in the legends?
 \code{NA}, the default, includes if any aesthetics are mapped. \code{FALSE}
 never includes, and \code{TRUE} always includes.}
@@ -76,6 +80,11 @@ This stat can be used to automatically plot residuals as points in a
   aesthetics like $x$ and $y$ should be used intead of the original variable
   names, while data is automatically passed the data frame. This helps ensure
   that the model is fitted to the same data as plotted in other layers.
+}
+\note{
+Parameter \code{orientation} is redundant as it only affects the default
+  for \code{formula} but is included for consistency with
+  \code{ggplot2}.
 }
 \section{Computed variables}{
  Data frame with same \code{nrow} as \code{data}
