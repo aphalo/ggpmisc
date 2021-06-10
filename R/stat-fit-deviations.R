@@ -29,6 +29,8 @@
 #' @param method.args named list with additional arguments.
 #' @param formula a "formula" object. Using aesthetic names instead of
 #'   original variable names.
+#' @param orientation character Either "x" or "y" controlling the default for
+#'   \code{formula}.
 #'
 #' @details This stat can be used to automatically highlight residuals as
 #'   segments in a plot of a fitted model equation. This stat only
@@ -45,8 +47,10 @@
 #'   ensure that the model is fitted to the same data as plotted in other
 #'   layers.
 #'
-#' @note In the case of \code{method = "rq"} quantiles is fixed at \code{tau = 0.5}
-#'   unless \code{method.args} has length > 0.
+#' @note In the case of \code{method = "rq"} quantiles are fixed at \code{tau =
+#'   0.5} unless \code{method.args} has length > 0. Parameter \code{orientation}
+#'   is redundant as it only affects the default for \code{formula} but is
+#'   included for consistency with \code{ggplot2}.
 #'
 #' @section Computed variables: Data frame with same \code{nrow} as \code{data}
 #'   as subset for each group containing five numeric variables. \describe{
@@ -69,6 +73,24 @@
 #' x <- 1:100
 #' y <- (x + x^2 + x^3) + rnorm(length(x), mean = 0, sd = mean(x^3) / 4)
 #' my.data <- data.frame(x, y)
+#'
+#' # plot residuals from linear model
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_smooth(method = "lm", formula = y ~ x) +
+#'   stat_fit_deviations(method = "lm", formula = y ~ x, colour = "red") +
+#'   geom_point()
+#'
+#' # plot residuals from linear model with y as explanatory variable
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_smooth(method = "lm", formula = y ~ x, orientation = "y") +
+#'   stat_fit_deviations(method = "lm", formula = x ~ y, colour = "red") +
+#'   geom_point()
+#'
+#' # as above using orientation
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_smooth(method = "lm", orientation = "y") +
+#'   stat_fit_deviations(orientation = "y", colour = "red") +
+#'   geom_point()
 #'
 #' # give a name to a formula
 #' my.formula <- y ~ poly(x, 3, raw = TRUE)
@@ -134,7 +156,9 @@ stat_fit_deviations <- function(mapping = NULL, data = NULL, geom = "segment",
                                method.args = list(),
                                formula = NULL,
                                position = "identity",
-                               na.rm = FALSE, show.legend = FALSE,
+                               na.rm = FALSE,
+                               orientation = NA,
+                               show.legend = FALSE,
                                inherit.aes = TRUE, ...) {
   ggplot2::layer(
     stat = StatFitDeviations, data = data, mapping = mapping, geom = geom,
@@ -143,6 +167,7 @@ stat_fit_deviations <- function(mapping = NULL, data = NULL, geom = "segment",
                   method.args = method.args,
                   formula = formula,
                   na.rm = na.rm,
+                  orientation = orientation,
                   ...)
   )
 }
@@ -158,10 +183,24 @@ deviations_compute_group_fun <- function(data,
                                          scales,
                                          method,
                                          method.args,
-                                         formula) {
+                                         formula,
+                                         orientation) {
   stopifnot(!any(c("formula", "data") %in% names(method.args)))
   if (is.null(data$weight)) {
     data$weight <- 1
+  }
+
+  # we guess formula from orientation
+  if (is.null(formula)) {
+    if (is.na(orientation) || orientation == "x") {
+      formula = y ~ x
+    } else if (orientation == "y") {
+      formula = x ~ y
+    }
+  }
+  # we guess orientation from formula
+  if (is.na(orientation)) {
+    orientation <- unname(c(x = "y", y = "x")[as.character(formula)[2]])
   }
 
   if (is.function(method)) {
@@ -193,12 +232,21 @@ deviations_compute_group_fun <- function(data,
                           weight.vals,
                           rep_len(NA_real_, length(fitted.vals)))
   }
-  data.frame(x = data$x,
-             y = data$y,
-             x.fitted = data$x,
-             y.fitted = fitted.vals,
-             weights = weight.vals,
-             hjust = 0)
+  if (orientation == "y") {
+    data.frame(x = data$x,
+               y = data$y,
+               x.fitted = fitted.vals,
+               y.fitted = data$y,
+               weights = weight.vals,
+               hjust = 0)
+  } else {
+    data.frame(x = data$x,
+               y = data$y,
+               x.fitted = data$x,
+               y.fitted = fitted.vals,
+               weights = weight.vals,
+               hjust = 0)
+  }
 }
 
 #' @rdname ggpmisc-ggproto

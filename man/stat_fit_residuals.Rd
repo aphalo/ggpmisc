@@ -102,13 +102,25 @@ x <- 1:100
 y <- (x + x^2 + x^3) + rnorm(length(x), mean = 0, sd = mean(x^3) / 4)
 my.data <- data.frame(x, y)
 
+# plot residuals from linear model
+ggplot(my.data, aes(x, y)) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  stat_fit_residuals(formula = y ~ x)
+
+# plot residuals from linear model with y as explanatory variable
+ggplot(my.data, aes(x, y)) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  stat_fit_residuals(formula = x ~ y) +
+  coord_flip()
+
 # give a name to a formula
 my.formula <- y ~ poly(x, 3, raw = TRUE)
 
 # plot residuals from linear model
 ggplot(my.data, aes(x, y)) +
   geom_hline(yintercept = 0, linetype = "dashed") +
-  stat_fit_residuals(formula = my.formula)
+  stat_fit_residuals(formula = my.formula) +
+  coord_flip()
 
 ggplot(my.data, aes(x, y)) +
   geom_hline(yintercept = 0, linetype = "dashed") +

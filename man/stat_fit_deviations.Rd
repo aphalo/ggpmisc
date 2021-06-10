@@ -13,6 +13,7 @@ stat_fit_deviations(
   formula = NULL,
   position = "identity",
   na.rm = FALSE,
+  orientation = NA,
   show.legend = FALSE,
   inherit.aes = TRUE,
   ...
@@ -42,6 +43,9 @@ layer}
 
 \item{na.rm}{a logical indicating whether NA values should be stripped
 before the computation proceeds.}
+
+\item{orientation}{character Either "x" or "y" controlling the default for
+\code{formula}.}
 
 \item{show.legend}{logical. Should this layer be included in the legends?
 \code{NA}, the default, includes if any aesthetics are mapped. \code{FALSE}
@@ -77,8 +81,10 @@ This stat can be used to automatically highlight residuals as
   layers.
 }
 \note{
-In the case of \code{method = "rq"} quantiles is fixed at \code{tau = 0.5}
-  unless \code{method.args} has length > 0.
+In the case of \code{method = "rq"} quantiles are fixed at \code{tau =
+  0.5} unless \code{method.args} has length > 0. Parameter \code{orientation}
+  is redundant as it only affects the default for \code{formula} but is
+  included for consistency with \code{ggplot2}.
 }
 \section{Computed variables}{
  Data frame with same \code{nrow} as \code{data}
@@ -101,6 +107,15 @@ set.seed(4321)
 x <- 1:100
 y <- (x + x^2 + x^3) + rnorm(length(x), mean = 0, sd = mean(x^3) / 4)
 my.data <- data.frame(x, y)
+
+# plot residuals from linear model
+ggplot(my.data, aes(x, y)) +
+  geom_smooth(method = "lm", formula = y ~ x) +
+  stat_fit_residuals(method = "lm", formula = y ~ x)
+
+# plot residuals from linear model with y as explanatory variable
+ggplot(my.data, aes(x, y)) +
+  stat_fit_residuals(formula = x ~ y)
 
 # give a name to a formula
 my.formula <- y ~ poly(x, 3, raw = TRUE)
