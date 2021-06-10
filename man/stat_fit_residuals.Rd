@@ -30,7 +30,7 @@ the plot defaults.}
 
 \item{geom}{The geometric object to use display the data}
 
-\item{method}{function or character If character, "lm", "rlm", "lqs" and "rq"
+\item{method}{function or character If character, "lm", "rlm", and "rq"
 are implemented. If a function, it must support parameters \code{formula}
 and \code{data}.}
 
@@ -130,11 +130,6 @@ ggplot(my.data, aes(x, y)) +
 ggplot(my.data, aes(x, y)) +
   geom_hline(yintercept = 0, linetype = "dashed") +
   stat_fit_residuals(formula = my.formula, method = "rlm")
-
-# plot residuals from resistent regression
-ggplot(my.data, aes(x, y)) +
-  geom_hline(yintercept = 0, linetype = "dashed") +
-  stat_fit_residuals(formula = my.formula, method = "lqs")
 
 # plot residuals from quantile regression (median)
 ggplot(my.data, aes(x, y)) +

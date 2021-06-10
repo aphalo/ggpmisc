@@ -275,7 +275,7 @@ ggplot(my.data, aes(x, y)) +
                                   sep = "*\", \"*")),
                formula = formula, parse = TRUE)
 
-# user specified label and digits
+# x on y regression
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula, orientation = "y") +

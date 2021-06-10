@@ -23,7 +23,7 @@
 #'   \code{\link[ggplot2]{layer}} for more details.
 #' @param na.rm	a logical indicating whether NA values should be stripped
 #'   before the computation proceeds.
-#' @param method function or character If character, "lm", "rlm", "lqs" and "rq"
+#' @param method function or character If character, "lm", "rlm", and "rq"
 #'   are implemented. If a function, it must support parameters \code{formula}
 #'   and \code{data}.
 #' @param method.args named list with additional arguments.
@@ -94,11 +94,6 @@
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_hline(yintercept = 0, linetype = "dashed") +
 #'   stat_fit_residuals(formula = my.formula, method = "rlm")
-#'
-#' # plot residuals from resistent regression
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_hline(yintercept = 0, linetype = "dashed") +
-#'   stat_fit_residuals(formula = my.formula, method = "lqs")
 #'
 #' # plot residuals from quantile regression (median)
 #' ggplot(my.data, aes(x, y)) +
@@ -188,7 +183,7 @@ residuals_compute_group_fun <- function(data,
     fun <- switch(method,
                   lm = stats::lm,
                   rlm = MASS::rlm,
-                  lqs = MASS::lqs,
+#                  lqs = MASS::lqs,
                   rq = quantreg::rq,
                   stop("Method '", method, "' not yet implemented.")
     )
