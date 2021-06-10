@@ -160,6 +160,18 @@ ggplot(my.data, aes(x, y)) +
 
 ## -----------------------------------------------------------------------------
 formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_eq(aes(label =  ifelse(stat(adj.r.squared > 0.3),
+                                   paste(stat(eq.label), stat(adj.rr.label), 
+                                         sep = "*\", \"*"),
+                                   stat(adj.rr.label))),
+               formula = formula, parse = TRUE) +
+  labs(x = expression(italic(x)), y = expression(italic(y)))
+
+## -----------------------------------------------------------------------------
+formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2)) +
   geom_point() +
   geom_smooth(method = "lm", formula = formula) +
@@ -239,25 +251,40 @@ ggplot(my.data, aes(x, y2, colour = group)) +
                label.x = c(100, 90), label.y = c(-1e4, 2.1e6), hjust = "inward",
                formula = formula, parse = TRUE)
 
+## -----------------------------------------------------------------------------
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = y ~ x, color = "blue") +
+  stat_poly_eq(aes(label = stat(eq.label)), color = "blue", parse = TRUE) +
+  geom_smooth(method = "lm", formula = y ~ x, color = "red", orientation = "y") +
+  stat_poly_eq(aes(label = stat(eq.label)), color = "red", orientation = "y",
+               label.y = 0.9, parse = TRUE)
+
+## ---- warning=FALSE-----------------------------------------------------------
+ggplot(my.data, aes(x, y, color = group)) +
+  geom_point() +
+  geom_quantile(method = "rq", formula = formula) +
+  stat_quant_eq(aes(label = paste(stat(grp.label), "*\": \"*",
+                                  stat(eq.label), sep = "")),
+               formula = formula, parse = TRUE)
+
 ## ---- warning=FALSE-----------------------------------------------------------
 ggplot(my.data, aes(x, y, color = group)) +
   geom_point() +
   geom_quantile(method = "rq", formula = formula,
-                quantiles = c(0.05, 0.5, 0.95)) +
+                quantiles = c(0.05, 0.95)) +
   stat_quant_eq(aes(label = paste(stat(grp.label), "*\": \"*",
                                   stat(eq.label), sep = "")),
-                quantiles = c(0.05, 0.5, 0.95),
+                quantiles = c(0.05, 0.95),
                 formula = formula, parse = TRUE)
 
 ## ---- warning=FALSE-----------------------------------------------------------
 ggplot(my.data, aes(x, y, group = group, linetype = group, 
                     shape = group, grp.label = group)) +
   geom_point() +
-  geom_quantile(method = "rq", formula = formula,
-                quantiles = c(0.05, 0.5, 0.95), color = "black") +
+  geom_quantile(method = "rq", formula = formula, color = "black") +
   stat_quant_eq(aes(label = paste(stat(grp.label), "*\": \"*",
                                   stat(eq.label), sep = "")),
-                quantiles = c(0.05, 0.5, 0.95),
                 formula = formula, parse = TRUE, size = 3) +
   theme_classic()
 
@@ -282,6 +309,17 @@ ggplot(my.data, aes(x, y)) +
 #    stat_fit_deviations(formula = formula, colour = "red",
 #                        arrow = arrow(length = unit(0.015, "npc"),
 #                                     ends = "both"))
+
+## -----------------------------------------------------------------------------
+my.data.outlier <- my.data
+my.data.outlier[6, "y"] <- my.data.outlier[6, "y"] * 5
+ggplot(my.data.outlier, aes(x, y)) +
+  stat_smooth(method = MASS::rlm, formula = formula) +
+  stat_fit_deviations(formula = formula, method = "rlm",
+                      mapping = aes(colour = after_stat(weights)),
+                      show.legend = TRUE) +
+  scale_color_gradient(low = "red", high = "blue", limits = c(0, 1)) +
+  geom_point()
 
 ## -----------------------------------------------------------------------------
 # formula <- y ~ poly(x, 3, raw = TRUE)

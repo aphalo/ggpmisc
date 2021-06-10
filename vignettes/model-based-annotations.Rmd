@@ -94,17 +94,21 @@ quadrant and other plots as used for genomics, metabolomics and similar data.
 ### stat_poly_eq()
 
 A frequently used annotation in plots showing fitted lines is the display of the
-parameters estimates from the model fit in an equation. `stat_poly_eq` automates
-this for linear model of _y_ on _x_ fitted with function `lm`. This _statistic_
-behaves similarly as `ggplot2::stat_smooth` with `method = "lm"`. Other
-_statistics_ described in later sections allow various annotations based on
-different model fit methods but require additional effort from the user. The
-default behaviour is to generate labels as character strings using _expression_
-syntax. This stat can also output equations using different markup languages, 
-including $\LaTeX$ and Markdown, selected by the argument passed to parameter 
-`output.type`. Nevertheless, all examples below use expression syntax.
+parameters estimates from the model fit as an equation. `stat_poly_eq` automates
+this for models of _y_ on _x_ or _x_ on _y_ fitted with function `lm`,
+`MASS:rlm`, `quantreg::rq` (only median regression) or a user-supplied model
+fitting function and arguments. By defaul this _statistic_ behaves similarly as
+`ggplot2::stat_smooth` with `method = "lm"`. Its default behaviour is to
+generate labels as character strings using R's _expression_ syntax. This stat
+can also output equations using different markup languages, including $\LaTeX$
+and Markdown, or just numeric values selected by the argument passed to
+parameter `output.type`. Nevertheless, all examples below use expression syntax.
 
-We generate a set of artificial data suitable for the next examples.
+Other _statistics_ described in later sections of this vignette are even more
+flexible allowing various annotations for model fit functions supported by
+package 'broom' or 'broom.mixed'.
+
+We first generate a set of artificial data suitable for the plotting examples.
 
 ```{r}
 set.seed(4321)
@@ -146,11 +150,11 @@ ggplot(my.data, aes(x, y)) +
 
 `stat_poly_eq()` makes available several character strings in the returned data
 frame in separate columns: `eq.label`, `rr.label`, `adj.rr.label`, `AIC.label`,
-`BIC.label`, `f.value.label` and `p.value.label`. One of these, `rr.label`, is
-used by default, but `aes()` can be used to map a different one to the `label`
-aesthetic. Here we show the adjusted coefficient of determination and AIC. We
-call `stat_poly_eq()` twice to be able to separately control the position and
-size of each label.
+`BIC.label`, `f.value.label`, `p.value.label` and `n`. One of these, `rr.label`,
+is used by default, but `aes()` can be used to map a different one to the
+`label` aesthetic. Here we show the adjusted coefficient of determination and
+AIC. We call `stat_poly_eq()` twice to be able to separately control the
+position and size of each label.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -315,6 +319,22 @@ ggplot(my.data, aes(x, y)) +
   stat_poly_eq(aes(label = stat(eq.label)), formula = formula, 
                parse = TRUE)
 ```
+Even when labels are returned, numeric values are also returned for `r.square`,
+`p.value` and `n`. This can be used in `aes()` for example to show the equation
+only if a certain condition like a minimum value for `r.square` has been reached.
+
+```{r}
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_eq(aes(label =  ifelse(stat(adj.r.squared > 0.3),
+                                   paste(stat(eq.label), stat(adj.rr.label), 
+                                         sep = "*\", \"*"),
+                                   stat(adj.rr.label))),
+               formula = formula, parse = TRUE) +
+  labs(x = expression(italic(x)), y = expression(italic(y)))
+```
 
 We give below several examples to demonstrate how other components of the
 `ggplot` object affect the behaviour of this statistic.
@@ -382,9 +402,9 @@ ggplot(my.data, aes(x, y2, linetype = group, grp.label = group)) +
                formula = formula, parse = TRUE)
 ```
 
-Label positions relative to the ranges of the _x_ and _y_ scales are also
-supported, both through string constants and numeric values in the range
-0 to 1, when using the default `geom_text_npc()`.
+User supplied label positions relative to the ranges of the _x_ and _y_ scales
+are also supported, both through string constants and numeric values in the
+range 0 to 1, when using the default `geom_text_npc()`.
 
 ```{r, eval=eval_flag}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -447,29 +467,57 @@ ggplot(my.data, aes(x, y2, colour = group)) +
 supported when faceting uses free scales. In this case `geom_text_npc()` and/or 
 `geom_label_npc()` must be used.
 
+Occasionally, possibly as a demonstration in teaching, we may want to
+compare a fit of _x_ on _y_ and one of _y_ on _x_ in the same plot. As is the
+case for model fitting functions themselves this is simply indicated by the
+model passed as argument to `formula`, or consistently with `stat_smooth()`
+through parameter `orientation`.
+
+```{r}
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = y ~ x, color = "blue") +
+  stat_poly_eq(aes(label = stat(eq.label)), color = "blue", parse = TRUE) +
+  geom_smooth(method = "lm", formula = y ~ x, color = "red", orientation = "y") +
+  stat_poly_eq(aes(label = stat(eq.label)), color = "red", orientation = "y",
+               label.y = 0.9, parse = TRUE)
+```
+
 ### stat_quant_eq()
 
-A frequently used annotation in plots showing fitted lines is the display of the
-parameters estimates from the model fit in an equation. `stat_quant_eq`
-automates this for quantile regression of _y_ on _x_ fitted with function
-`quantreg::rq`. This _statistic_ behaves similarly as `ggplot2::stat_quantiles`
-with `method = "rq"`.
+In the case of quantile regression it is frequently the case that multiple
+quantile regressions are fitted. This case in not supported by `stat_poly_eq()`
+and we need to use `stat_quant_eq()`. This statistics is very similar to
+`stat_poly_eq()` both in behavior and parameters. It supports quantile
+regression of _y_ on _x_ or _x_ on _y_ fitted with function `quantreg::rq`. This
+_statistic_ behaves similarly to `ggplot2::stat_quantiles` with `method = "rq"`.
 
 Please, see the section on `stat_poly_eq()` for applicable examples, as here
 we highlight only the differences between these two statistics. Like
 `stat_quantiles()`, `stat_quant_eq()` supports a `numeric` vector of quantiles
 as argument and outputs as many equations per group as values are passed in 
 this vector. The computed string `grp.label` contains by default a character
-string indicating the value of the quantile.
+string indicating the value of the quantile. Here we use the default value
+for quantiles, equivalent to those used for the box of box plots.
+
+```{r, warning=FALSE}
+ggplot(my.data, aes(x, y, color = group)) +
+  geom_point() +
+  geom_quantile(method = "rq", formula = formula) +
+  stat_quant_eq(aes(label = paste(stat(grp.label), "*\": \"*",
+                                  stat(eq.label), sep = "")),
+               formula = formula, parse = TRUE)
+```
+Overriding the values for `quantiles` we find a possible boundary containing 90% of the observations.
 
 ```{r, warning=FALSE}
 ggplot(my.data, aes(x, y, color = group)) +
   geom_point() +
   geom_quantile(method = "rq", formula = formula,
-                quantiles = c(0.05, 0.5, 0.95)) +
+                quantiles = c(0.05, 0.95)) +
   stat_quant_eq(aes(label = paste(stat(grp.label), "*\": \"*",
                                   stat(eq.label), sep = "")),
-                quantiles = c(0.05, 0.5, 0.95),
+                quantiles = c(0.05, 0.95),
                 formula = formula, parse = TRUE)
 ```
 
@@ -480,19 +528,25 @@ variable to `grp.label`.
 ggplot(my.data, aes(x, y, group = group, linetype = group, 
                     shape = group, grp.label = group)) +
   geom_point() +
-  geom_quantile(method = "rq", formula = formula,
-                quantiles = c(0.05, 0.5, 0.95), color = "black") +
+  geom_quantile(method = "rq", formula = formula, color = "black") +
   stat_quant_eq(aes(label = paste(stat(grp.label), "*\": \"*",
                                   stat(eq.label), sep = "")),
-                quantiles = c(0.05, 0.5, 0.95),
                 formula = formula, parse = TRUE, size = 3) +
   theme_classic()
 ```
 
 ### stat_fit_residuals
 
-I had the need to quickly plot residuals matching fits plotted with
+Sometimes we need to quickly plot residuals matching fits plotted with
 `geom_smooth()` using grouping and facets, so a new (simple) statistic was born.
+In teaching it is specially important to avoid distractions and plots residuals
+from different types of models consistently.
+
+`stat_fit_residuals()` can be used to plot the residuals form models of _y_ on
+_x_ or _x_ on _y_ fitted with function `lm`, `MASS:rlm`, `quantreg::rq` (only
+median regression) or a user-supplied model fitting function and arguments. By
+defaul this _statistic_ behaves similarly as `ggplot2::stat_smooth` with `method
+= "lm"`
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -503,9 +557,12 @@ ggplot(my.data, aes(x, y, colour = group)) +
 
 ### stat_fit_deviations
 
-As needed to highlight residuals in slides and notes to be used in
-teaching, statistic `stat_fit_deviations` was born. It makes it easy to
-highlight the deviations of the fitted model from the individual observations.
+When teaching we may need to highlight residuals in plots used in slides and notes.
+Statistic `stat_fit_deviations` makes it easy to
+achieve this for the residuals from models of _y_ on
+_x_ or _x_ on _y_ fitted with function `lm`, `MASS:rlm`, `quantreg::rq` (only
+median regression) or a user-supplied model fitting function and arguments. This
+_statistic_ behaves similarly to `ggplot2::stat_smooth` and can be used together.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -525,6 +582,21 @@ ggplot(my.data, aes(x, y)) +
   stat_fit_deviations(formula = formula, colour = "red",
                       arrow = arrow(length = unit(0.015, "npc"), 
                                    ends = "both"))
+```
+When weights are used, either suplier by the user, or automatically computed 
+they are returned. So this allows encoding the weights using colour. We here
+use a robust regression fit will `MASS::rlm`.
+
+```{r}
+my.data.outlier <- my.data
+my.data.outlier[6, "y"] <- my.data.outlier[6, "y"] * 5
+ggplot(my.data.outlier, aes(x, y)) +
+  stat_smooth(method = MASS::rlm, formula = formula) +
+  stat_fit_deviations(formula = formula, method = "rlm",
+                      mapping = aes(colour = after_stat(weights)),
+                      show.legend = TRUE) +
+  scale_color_gradient(low = "red", high = "blue", limits = c(0, 1)) +
+  geom_point()
 ```
 
 ### stat_fit_glance

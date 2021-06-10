@@ -126,7 +126,8 @@
 #' ggplot(my.data.outlier, aes(x, y)) +
 #'   stat_smooth(method = MASS::rlm, formula = my.formula) +
 #'   stat_fit_deviations(formula = my.formula, method = "rlm",
-#'                       mapping = aes(colour = after_stat(weights))) +
+#'                       mapping = aes(colour = after_stat(weights)),
+#'                       show.legend = TRUE) +
 #'   scale_color_gradient(low = "red", high = "blue", limits = c(0, 1),
 #'                        guide = "colourbar") +
 #'   geom_point()

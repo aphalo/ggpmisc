@@ -126,6 +126,14 @@ ggplot(my.data, aes(x, y)) +
   stat_fit_deviations(orientation = "y", colour = "red") +
   geom_point()
 
+# both regressions and their deviations
+ggplot(my.data, aes(x, y)) +
+  geom_smooth(method = "lm") +
+  stat_fit_deviations(colour = "blue") +
+  geom_smooth(method = "lm", orientation = "y", colour = "red") +
+  stat_fit_deviations(orientation = "y", colour = "red") +
+  geom_point()
+
 # give a name to a formula
 my.formula <- y ~ poly(x, 3, raw = TRUE)
 
@@ -152,7 +160,8 @@ my.data.outlier[6, "y"] <- my.data.outlier[6, "y"] * 10
 ggplot(my.data.outlier, aes(x, y)) +
   stat_smooth(method = MASS::rlm, formula = my.formula) +
   stat_fit_deviations(formula = my.formula, method = "rlm",
-                      mapping = aes(colour = after_stat(weights))) +
+                      mapping = aes(colour = after_stat(weights)),
+                      show.legend = TRUE) +
   scale_color_gradient(low = "red", high = "blue", limits = c(0, 1),
                        guide = "colourbar") +
   geom_point()
