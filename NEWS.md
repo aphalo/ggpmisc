@@ -2,14 +2,13 @@
 editor_options:
   markdown:
     wrap: 72
----^8
 ---
 
 # ggpmisc 0.4.1
 
 -   Add support for quantile regression `rq`, robust regression `rlm`,
     and resistant regression `lqs` and `function` objects to
-    `stat_fit_residuals()`.
+    `stat_fit_residuals()` and `stat_fit_deviations()` .
 -   Add support for quantile regression `rq`, robust regression `rlm`
     and `function` objects to `stat_poly_eq()`.
 -   Make it easier to use `stat_poly_eq()` and `stat_quant_eq()` with
@@ -18,12 +17,12 @@ editor_options:
     for `eq.with.lhs` and `eq.x.rhs` were hard coded needing manual
     override while they are now set dynamically depending on the
     `formula`).
--   Make it possible to use `stat_fit_residuals()` with
-    `formula = x ~ y` and other models in which the explanatory variable
-    is `y` rather than `x` .
+-   Make it possible to use `stat_fit_residuals()` and
+    `stat_fit_deviations()` with `formula = x ~ y` and other models in
+    which the explanatory variable is `y` rather than `x` .
 -   Add `weights` to returned values by `stat_fit_residuals()` and
-    `stat_fit_deviations()` and support for the `weight` aesthetic as
-    their input for parameter `weights` of the model fit functions.
+    `stat_fit_deviations()` and add support for the `weight` aesthetic
+    as their input for parameter `weights` of the model fit functions.
 
 # ggpmisc 0.4.0
 

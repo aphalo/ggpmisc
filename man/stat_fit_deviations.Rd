@@ -111,11 +111,20 @@ my.data <- data.frame(x, y)
 # plot residuals from linear model
 ggplot(my.data, aes(x, y)) +
   geom_smooth(method = "lm", formula = y ~ x) +
-  stat_fit_residuals(method = "lm", formula = y ~ x)
+  stat_fit_deviations(method = "lm", formula = y ~ x, colour = "red") +
+  geom_point()
 
 # plot residuals from linear model with y as explanatory variable
 ggplot(my.data, aes(x, y)) +
-  stat_fit_residuals(formula = x ~ y)
+  geom_smooth(method = "lm", formula = y ~ x, orientation = "y") +
+  stat_fit_deviations(method = "lm", formula = x ~ y, colour = "red") +
+  geom_point()
+
+# as above using orientation
+ggplot(my.data, aes(x, y)) +
+  geom_smooth(method = "lm", orientation = "y") +
+  stat_fit_deviations(orientation = "y", colour = "red") +
+  geom_point()
 
 # give a name to a formula
 my.formula <- y ~ poly(x, 3, raw = TRUE)
