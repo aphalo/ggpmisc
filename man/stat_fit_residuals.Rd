@@ -131,6 +131,26 @@ ggplot(my.data, aes(x, y)) +
   geom_hline(yintercept = 0, linetype = "dashed") +
   stat_fit_residuals(formula = my.formula, method = "rlm")
 
+# plot residuals with weights indicated by colour
+my.data.outlier <- my.data
+my.data.outlier[6, "y"] <- my.data.outlier[6, "y"] * 10
+ggplot(my.data.outlier, aes(x, y)) +
+  stat_fit_residuals(formula = my.formula, method = "rlm",
+                      mapping = aes(colour = after_stat(weights)),
+                      show.legend = TRUE) +
+  scale_color_gradient(low = "red", high = "blue", limits = c(0, 1),
+                       guide = "colourbar")
+
+# plot weighted residuals with weights indicated by colour
+ggplot(my.data.outlier) +
+  stat_fit_residuals(formula = my.formula, method = "rlm",
+                     mapping = aes(x = x,
+                                   y = stage(start = y, after_stat = y * weights),
+                                  colour = after_stat(weights)),
+                     show.legend = TRUE) +
+  scale_color_gradient(low = "red", high = "blue", limits = c(0, 1),
+                       guide = "colourbar")
+
 # plot residuals from quantile regression (median)
 ggplot(my.data, aes(x, y)) +
   geom_hline(yintercept = 0, linetype = "dashed") +
