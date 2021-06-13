@@ -23,6 +23,9 @@ editor_options:
 -   Add `weights` to returned values by `stat_fit_residuals()` and
     `stat_fit_deviations()` and add support for the `weight` aesthetic
     as their input for parameter `weights` of the model fit functions.
+-   Fix bug in `stat_poly_eq()` and `stat_quant_eq()` resulting in
+    mishandling of formulas using the `+ 0` notation to exclude the
+    intercept (reported by *orgadish*).
 
 # ggpmisc 0.4.0
 
