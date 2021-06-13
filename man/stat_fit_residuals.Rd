@@ -146,7 +146,7 @@ ggplot(my.data.outlier) +
   stat_fit_residuals(formula = my.formula, method = "rlm",
                      mapping = aes(x = x,
                                    y = stage(start = y, after_stat = y * weights),
-                                  colour = after_stat(weights)),
+                                   colour = after_stat(weights)),
                      show.legend = TRUE) +
   scale_color_gradient(low = "red", high = "blue", limits = c(0, 1),
                        guide = "colourbar")
