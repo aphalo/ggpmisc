@@ -60,6 +60,61 @@ test_that("quant_formulas", {
                                                                     sep = "~~")))
     )
 
+    vdiffr::expect_doppelganger("stat_quant_eq_formula_xminus1a",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_quant_eq(formula = y ~ x -1, parse = TRUE,
+                                                mapping =
+                                                  aes(label = paste(stat(eq.label),
+                                                                    stat(rho.label),
+                                                                    stat(AIC.label),
+                                                                    sep = "~~")))
+    )
+
+    vdiffr::expect_doppelganger("stat_quant_eq_formula_xminus1b",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_quant_eq(formula = y ~ x -  1, parse = TRUE,
+                                                mapping =
+                                                  aes(label = paste(stat(eq.label),
+                                                                    stat(rho.label),
+                                                                    stat(AIC.label),
+                                                                    sep = "~~")))
+    )
+
+    vdiffr::expect_doppelganger("stat_quant_eq_formula_xplus0",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_quant_eq(formula = y ~ x + 0, parse = TRUE,
+                                                mapping =
+                                                  aes(label = paste(stat(eq.label),
+                                                                    stat(rho.label),
+                                                                    stat(AIC.label),
+                                                                    sep = "~~")))
+    )
+
+    vdiffr::expect_doppelganger("stat_quant_eq_formula_xplus0a",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_quant_eq(formula = y ~ x +0, parse = TRUE,
+                                                mapping =
+                                                  aes(label = paste(stat(eq.label),
+                                                                    stat(rho.label),
+                                                                    stat(AIC.label),
+                                                                    sep = "~~")))
+    )
+
+    vdiffr::expect_doppelganger("stat_quant_eq_formula_xplus0b",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_quant_eq(formula = y ~ x +  0, parse = TRUE,
+                                                mapping =
+                                                  aes(label = paste(stat(eq.label),
+                                                                    stat(rho.label),
+                                                                    stat(AIC.label),
+                                                                    sep = "~~")))
+    )
+
     vdiffr::expect_doppelganger("stat_quant_eq_formula_poly1",
                                 ggplot(my.data, aes(x, y)) +
                                   geom_point() +

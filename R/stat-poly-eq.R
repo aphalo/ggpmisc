@@ -592,7 +592,7 @@ poly_eq_compute_group_fun <- function(data,
     coefs <- stats::coefficients(mf)
 
     formula.rhs.chr <- as.character(formula)[3]
-    if (grepl("-1", formula.rhs.chr) || grepl("- 1", formula.rhs.chr)) {
+    if (grepl("-[[:space:]]*1|+[[:space:]]*0", formula.rhs.chr)) {
       coefs <- c(0, coefs)
     }
 

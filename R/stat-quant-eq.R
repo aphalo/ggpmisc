@@ -472,8 +472,7 @@ quant_eq_compute_group_fun <- function(data,
   }
 
   formula.rhs.chr <- as.character(formula)[3]
-  if (grepl("-1", formula.rhs.chr) ||
-      grepl("- 1", formula.rhs.chr)) {
+  if (grepl("-[[:space:]]*1|+[[:space:]]*0", formula.rhs.chr)) {
     coefs <- rbind(rep(0, ncol(coefs)), coefs)
   }
 
