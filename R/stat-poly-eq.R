@@ -55,6 +55,10 @@
 #'   "markdown" or "numeric".
 #' @param orientation character Either "x" or "y" controlling the default for
 #'   \code{formula}.
+#' @param parse logical Passed to the geom. If \code{TRUE}, the labels will be
+#'   parsed into expressions and displayed as described in \code{?plotmath}.
+#'   Default is \code{TRUE} if \code{output.type = "expression"} and
+#'   \code{FALSE} otherwise.
 #'
 #' @note For backward compatibility a logical is accepted as argument for
 #'   \code{eq.with.lhs}. If \code{TRUE}, the default is used, either
@@ -77,12 +81,14 @@
 #'   indicated by "- 1" or "-1" in the formula. The validity of the
 #'   \code{formula} is not checked in the current implementation, and for this
 #'   reason the default aesthetics sets R^2 as label for the annotation. This
-#'   stat generates labels as R expressions by default (set \code{parse = TRUE})
-#'   but LaTeX (use TikZ device) and markdown (use package 'ggtext')
-#'   are also supported, as well as numeric values for user-generated text
-#'   labels. The predicted values need to be separately added to the plot with
-#'   \code{stat_smooth()} or \code{stat_quantile()}, so to make sure that the
-#'   same model formula is used in both plot layers it is best to save the
+#'   stat generates labels as R expressions by default but LaTeX (use TikZ
+#'   device) and markdown (use package 'ggtext') are also supported, as well as
+#'   numeric values for user-generated text labels. The value of \code{parse} is
+#'   set automatically based on \code{output-type}, but if you assemble labels
+#'   that need parsing from \code{numeric} output, the default needs to be
+#'   overriden.   The predicted values need to be separately added to the plot
+#'   with \code{stat_smooth()} or \code{stat_quantile()}, so to make sure that
+#'   the same model formula is used in both plot layers it is best to save the
 #'   formula as an object and supply this object as argument to the different
 #'   statistics.
 #'
@@ -133,10 +139,6 @@
 #' To explore the computed values returned for a given input we suggest the use
 #' of \code{\link[gginnards]{geom_debug}} as shown in the last examples below.
 #'
-#' @section Parsing may be required: if using the computed labels with
-#'   \code{output.type = "expression"}, then \code{parse = TRUE} is needed,
-#'   while if using \code{output.type = "LaTeX"} \code{parse = FALSE} is needed.
-#'
 #' @seealso This \code{stat_poly_eq} statistic can return ready formatted labels
 #'   depending on the argument passed to \code{output.type}. This is possible
 #'   because only polynomial models are supported. If multiple quantiles are
@@ -166,45 +168,42 @@
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(formula = formula, parse = TRUE)
+#'   stat_poly_eq(formula = formula)
 #'
 #' # grouping
 #' ggplot(my.data, aes(x, y, color = group)) +
 #'   geom_point() +
 #'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(formula = formula, parse = TRUE)
+#'   stat_poly_eq(formula = formula)
 #'
 #' # rotation
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(formula = formula, parse = TRUE, angle = 90,
-#'                hjust = 1)
+#'   stat_poly_eq(formula = formula, angle = 90, hjust = 1)
 #'
 #' # label location
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(formula = formula, parse = TRUE,
-#'                label.y = "bottom", label.x = "right")
+#'   stat_poly_eq(formula = formula, label.y = "bottom", label.x = "right")
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(formula = formula, parse = TRUE,
-#'                label.y = 0.1, label.x = 0.9)
+#'   stat_poly_eq(formula = formula, label.y = 0.1, label.x = 0.9)
 #'
 #' # using weights
 #' ggplot(my.data, aes(x, y, weight = w)) +
 #'   geom_point() +
 #'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(formula = formula, parse = TRUE)
+#'   stat_poly_eq(formula = formula)
 #'
 #' # no weights, digits for R square
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(formula = formula, rr.digits = 4, parse = TRUE)
+#'   stat_poly_eq(formula = formula, rr.digits = 4)
 #'
 #' # user specified label
 #' ggplot(my.data, aes(x, y)) +
@@ -212,14 +211,14 @@
 #'   geom_smooth(method = "lm", formula = formula) +
 #'   stat_poly_eq(aes(label =  paste(stat(rr.label),
 #'                                   stat(n.label), sep = "*\", \"*")),
-#'                formula = formula, parse = TRUE)
+#'                formula = formula)
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   geom_smooth(method = "lm", formula = formula) +
 #'   stat_poly_eq(aes(label =  paste(stat(eq.label),
 #'                                   stat(adj.rr.label), sep = "*\", \"*")),
-#'                formula = formula, parse = TRUE)
+#'                formula = formula)
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
@@ -227,7 +226,7 @@
 #'   stat_poly_eq(aes(label =  paste(stat(f.value.label),
 #'                                   stat(p.value.label),
 #'                                   sep = "*\", \"*")),
-#'                formula = formula, parse = TRUE)
+#'                formula = formula)
 #'
 #' # x on y regression
 #' ggplot(my.data, aes(x, y)) +
@@ -237,8 +236,7 @@
 #'                                   stat(adj.rr.label),
 #'                                   sep = "*\", \"*")),
 #'                formula = x ~ poly(y, 3, raw = TRUE),
-#'                rr.digits = 3, coef.digits = 4,
-#'                parse = TRUE)
+#'                rr.digits = 3, coef.digits = 4)
 #'
 #' # conditional user specified label
 #' ggplot(my.data, aes(x, y, color = group)) +
@@ -250,15 +248,14 @@
 #'                                          sep = "*\", \"*"),
 #'                                    stat(adj.rr.label))),
 #'                rr.digits = 3,
-#'                formula = formula,
-#'                parse = TRUE)
+#'                formula = formula)
 #'
 #' # geom = "text"
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   geom_smooth(method = "lm", formula = formula) +
 #'   stat_poly_eq(geom = "text", label.x = 100, label.y = 0, hjust = 1,
-#'                formula = formula, parse = TRUE)
+#'                formula = formula)
 #'
 #' # using numeric values
 #' # Here we use column "Estimate" from the matrix.
@@ -341,6 +338,7 @@ stat_poly_eq <- function(mapping = NULL, data = NULL,
                          output.type = "expression",
                          na.rm = FALSE,
                          orientation = NA,
+                         parse = NULL,
                          show.legend = FALSE,
                          inherit.aes = TRUE) {
   # backwards compatibility
@@ -351,6 +349,9 @@ stat_poly_eq <- function(mapping = NULL, data = NULL,
   if (!is.null(label.y.npc)) {
     stopifnot(grepl("_npc", geom))
     label.y <- label.y.npc
+  }
+  if (is.null(parse)) {
+    parse <- output.type == "expression"
   }
   ggplot2::layer(
     data = data,
@@ -381,6 +382,7 @@ stat_poly_eq <- function(mapping = NULL, data = NULL,
                   output.type = output.type,
                   na.rm = na.rm,
                   orientation = orientation,
+                  parse = parse,
                   ...)
   )
 }
@@ -813,6 +815,7 @@ poly_eq_compute_group_fun <- function(data,
 #' @export
 StatPolyEq <-
   ggplot2::ggproto("StatPolyEq", ggplot2::Stat,
+                   extra_params = c("na.rm", "parse"),
                    compute_group = poly_eq_compute_group_fun,
                    default_aes =
                      ggplot2::aes(npcx = stat(npcx),

@@ -47,6 +47,10 @@
 #'   "markdown" or "numeric".
 #' @param orientation character Either "x" or "y" controlling the default for
 #'   \code{formula}.
+#' @param parse logical Passed to the geom. If \code{TRUE}, the labels will be
+#'   parsed into expressions and displayed as described in \code{?plotmath}.
+#'   Default is \code{TRUE} if \code{output.type = "expression"} and
+#'   \code{FALSE} otherwise.
 #'
 #' @note For backward compatibility a logical is accepted as argument for
 #'   \code{eq.with.lhs}. If \code{TRUE}, the default is used, either
@@ -67,10 +71,16 @@
 #'   terms, except possibly for the intercept indicated by "- 1" or "-1" in the
 #'   formula. The validity of the \code{formula} is not checked in the current
 #'   implementation, and for this reason the default aesthetics sets R^2 as
-#'   label for the annotation. This stat only generates labels, the predicted
-#'   values need to be separately added to the plot, so to make sure that the
-#'   same model formula is used in all steps it is best to save the formula as
-#'   an object and supply this object as argument to the different statistics.
+#'   label for the annotation.  This stat generates labels as R expressions by
+#'   default but LaTeX (use TikZ device) and markdown (use package 'ggtext') are
+#'   also supported, as well as numeric values for user-generated text labels.
+#'   The value of \code{parse} is set automatically based on \code{output-type},
+#'   but if you assemble labels that need parsing from \code{numeric} output,
+#'   the default needs to be overriden. This stat only generates labels, the
+#'   predicted values need to be separately added to the plot, so to make sure
+#'   that the same model formula is used in all steps it is best to save the
+#'   formula as an object and supply this object as argument to the different
+#'   statistics.
 #'
 #'   A ggplot statistic receives as data a data frame that is not the one passed
 #'   as argument by the user, but instead a data frame with the variables mapped
@@ -115,10 +125,6 @@
 #' To explore the computed values returned for a given input we suggest the use
 #' of \code{\link[gginnards]{geom_debug}} as shown in the example below.
 #'
-#' @section Parsing may be required: if using the computed labels with
-#'   \code{output.type = "expression"}, then \code{parse = TRUE} is needed,
-#'   while if using \code{output.type = "LaTeX"} \code{parse = FALSE} is needed.
-#'
 #' @seealso This \code{stat_quant_eq} statistic can return ready formatted labels
 #'   depending on the argument passed to \code{output.type}. This is possible
 #'   because only polynomial models are supported. For other types of models,
@@ -152,20 +158,19 @@
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   geom_quantile(formula = formula) +
-#'   stat_quant_eq(formula = formula, parse = TRUE)
+#'   stat_quant_eq(formula = formula)
 #'
 #' # angle
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   geom_quantile(formula = formula) +
-#'   stat_quant_eq(formula = formula, parse = TRUE, angle = 90,
-#'                 hstep = 0.05, vstep = 0, hjust = 0,
-#'                 label.y = 0.5)
+#'   stat_quant_eq(formula = formula, angle = 90, hstep = 0.05, vstep = 0,
+#'                 label.y = 0.9, hjust = 1)
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   geom_quantile(formula = formula) +
-#'   stat_quant_eq(formula = formula, parse = TRUE, angle = 90,
+#'   stat_quant_eq(formula = formula, angle = 90,
 #'                 hstep = 0.05, vstep = 0, hjust = 0,
 #'                 label.y = 0.5)
 #'
@@ -173,18 +178,18 @@
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   geom_quantile(formula = formula, quantiles = 0.5) +
-#'   stat_quant_eq(formula = formula, quantiles = 0.5, parse = TRUE)
+#'   stat_quant_eq(formula = formula, quantiles = 0.5)
 #'
 #' # grouping
 #' ggplot(my.data, aes(x, y, color = group)) +
 #'   geom_point() +
 #'   geom_quantile(formula = formula) +
-#'   stat_quant_eq(formula = formula, parse = TRUE)
+#'   stat_quant_eq(formula = formula)
 #'
 #' ggplot(my.data, aes(x, y, color = group)) +
 #'   geom_point() +
 #'   geom_quantile(formula = formula) +
-#'   stat_quant_eq(formula = formula, parse = TRUE, angle = 90,
+#'   stat_quant_eq(formula = formula, angle = 90,
 #'                 hstep = 0.05, vstep = 0, hjust = 0,
 #'                 label.y = 0.5)
 #'
@@ -194,7 +199,7 @@
 #'   geom_point() +
 #'   geom_quantile(formula = formula, color = "black") +
 #'   stat_quant_eq(aes(label = paste(stat(grp.label), stat(eq.label), sep = "*\": \"*")),
-#'                 formula = formula, parse = TRUE) +
+#'                 formula = formula) +
 #'   theme_classic()
 #'
 #' # setting non-default quantiles
@@ -209,26 +214,24 @@
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   geom_quantile(formula = formula) +
-#'   stat_quant_eq(formula = formula, parse = TRUE,
-#'                label.y = "bottom", label.x = "right")
+#'   stat_quant_eq(formula = formula, label.y = "bottom", label.x = "right")
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   geom_quantile(formula = formula) +
-#'   stat_quant_eq(formula = formula, parse = TRUE,
-#'                label.y = 0.03, label.x = 0.95, vstep = 0.04)
+#'   stat_quant_eq(formula = formula, label.y = 0.03, label.x = 0.95, vstep = 0.04)
 #'
 #' # using weights
 #' ggplot(my.data, aes(x, y, weight = w)) +
 #'   geom_point() +
 #'   geom_quantile(formula = formula) +
-#'   stat_quant_eq(formula = formula, parse = TRUE)
+#'   stat_quant_eq(formula = formula)
 #'
 #' # no weights, quantile set to upper boundary
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   geom_quantile(formula = formula, quantiles = 1) +
-#'   stat_quant_eq(formula = formula, quantiles = 1, parse = TRUE)
+#'   stat_quant_eq(formula = formula, quantiles = 1)
 #'
 #' # user specified label
 #' ggplot(my.data, aes(x, y, color = group, grp.label = group)) +
@@ -238,14 +241,14 @@
 #'   stat_quant_eq(aes(label = paste(stat(grp.label), "*\": \"*",
 #'                                    stat(eq.label), sep = "")),
 #'                 quantiles = c(0.05, 0.5, 0.95),
-#'                 formula = formula, parse = TRUE)
+#'                 formula = formula)
 #'
 #' # geom = "text"
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   geom_quantile(method = "rq", formula = formula, quantiles = 0.5) +
 #'   stat_quant_eq(label.x = "left", label.y = "top",
-#'                 formula = formula, parse = TRUE)
+#'                 formula = formula)
 #'
 #' # Examples using geom_debug() to show computed values
 #' #
@@ -308,6 +311,7 @@ stat_quant_eq <- function(mapping = NULL, data = NULL,
                          output.type = "expression",
                          na.rm = FALSE,
                          orientation = NA,
+                         parse = NULL,
                          show.legend = FALSE,
                          inherit.aes = TRUE) {
   # backwards compatibility
@@ -318,6 +322,9 @@ stat_quant_eq <- function(mapping = NULL, data = NULL,
   if (!is.null(label.y.npc)) {
     stopifnot(grepl("_npc", geom))
     label.y <- label.y.npc
+  }
+  if (is.null(parse)) {
+    parse <- output.type == "expression"
   }
   ggplot2::layer(
     data = data,
@@ -345,6 +352,7 @@ stat_quant_eq <- function(mapping = NULL, data = NULL,
                   output.type = output.type,
                   na.rm = na.rm,
                   orientation = orientation,
+                  parse = parse,
                   ...)
   )
 }
@@ -711,6 +719,7 @@ quant_eq_compute_group_fun <- function(data,
 #' @export
 StatQuantEq <-
   ggplot2::ggproto("StatQuantEq", ggplot2::Stat,
+                   extra_params = c("na.rm", "parse"),
                    compute_group = quant_eq_compute_group_fun,
                    default_aes =
                      ggplot2::aes(npcx = after_stat(npcx),
