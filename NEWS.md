@@ -6,6 +6,13 @@ editor_options:
 
 # ggpmisc 0.4.1
 
+The suggestion from *Mark Neal* of adding support for quantile
+regression partly addressed in ggpmisc 0.4.0 has lead to additional
+enhancements in this version. Other suggestions from Mark and other
+users have lead to bug fixes as well to an interface that with better
+defaults for arguments saves typing and complexity. Some other
+enhancements are based on my own needs or ideas.
+
 -   Add support for quantile regression `rq`, robust regression `rlm`,
     and resistant regression `lqs` and `function` objects to
     `stat_fit_residuals()` and `stat_fit_deviations()` .
@@ -31,6 +38,9 @@ editor_options:
     and other models in which the explanatory variable is `y` rather
     than `x` . `stat_poly_line()` has `"lm"` as default for `method`
     irrespective of the number of observations.
+-   Revise `stat_poly_eq()` and `stat_quant_eq()` so that they pass to
+    the geom by default a suitable value as argument to `parse`
+    (enhancement suggested by *Mark Neal*).
 
 # ggpmisc 0.4.0
 
@@ -51,9 +61,8 @@ Many thanks!
     package 'quantreg'. (enhancement suggested by *Mark Neal*)
 
 -   Add `n.label` and `n` to the values returned by `stat_poly_eq()`and
-    `stat_quant_eq()`.
-
-    (enhancement suggested by a question from *ganidat*)
+    `stat_quant_eq()`.(enhancement suggested by a question from
+    *ganidat*)
 
 -   Add `r.squared`, `adj.r.squared`, `p.value` and `n` as `numeric`
     values returned in addition to the corresponding `character` labels
