@@ -26,6 +26,11 @@ editor_options:
 -   Fix bug in `stat_poly_eq()` and `stat_quant_eq()` resulting in
     mishandling of formulas using the `+ 0` notation to exclude the
     intercept (reported by *orgadish*).
+-   Add `stat_poly_line()` and `stat_smooth_xy()` , which are new
+    interfaces to `ggplot2::stat_smooth()` accepting `formula = x ~ y`
+    and other models in which the explanatory variable is `y` rather
+    than `x` . `stat_poly_line()` has `"lm"` as default for `method`
+    irrespective of the number of observations.
 
 # ggpmisc 0.4.0
 
