@@ -97,12 +97,14 @@ A frequently used annotation in plots showing fitted lines is the display of the
 parameters estimates from the model fit as an equation. `stat_poly_eq` automates
 this for models of _y_ on _x_ or _x_ on _y_ fitted with function `lm`,
 `MASS:rlm`, `quantreg::rq` (only median regression) or a user-supplied model
-fitting function and arguments. By defaul this _statistic_ behaves similarly as
-`ggplot2::stat_smooth` with `method = "lm"`. Its default behaviour is to
-generate labels as character strings using R's _expression_ syntax. This stat
-can also output equations using different markup languages, including $\LaTeX$
-and Markdown, or just numeric values selected by the argument passed to
-parameter `output.type`. Nevertheless, all examples below use expression syntax.
+fitting function and arguments. By default this _statistic_ behaves similarly as
+`ggplot2::stat_smooth` with `method = "lm"` for _y_ on _x_ fits but adds support
+for model formulas of _x_ on _y_ (in addition to the use of `orientation =
+"y"`). Its default behaviour is to generate labels as character strings using
+R's _expression_ syntax. This stat can also output equations using different
+mark-up languages, including $\LaTeX$ and Markdown, or just numeric values
+selected by the argument passed to parameter `output.type`. Nevertheless, all
+examples below use expression syntax.
 
 Other _statistics_ described in later sections of this vignette are even more
 flexible allowing various annotations for model fit functions supported by
@@ -486,11 +488,12 @@ ggplot(my.data, aes(x, y)) +
 ### stat_quant_eq()
 
 In the case of quantile regression it is frequently the case that multiple
-quantile regressions are fitted. This case in not supported by `stat_poly_eq()`
+quantile regressions are fitted. This case is not supported by `stat_poly_eq()`
 and we need to use `stat_quant_eq()`. This statistics is very similar to
-`stat_poly_eq()` both in behavior and parameters. It supports quantile
+`stat_poly_eq()` both in behaviour and parameters. It supports quantile
 regression of _y_ on _x_ or _x_ on _y_ fitted with function `quantreg::rq`. This
-_statistic_ behaves similarly to `ggplot2::stat_quantiles` with `method = "rq"`.
+_statistic_ behaves similarly to `ggplot2::stat_quantiles` with `method = "rq"`
+for _y_ on _x_ fits but adds support for _x_ on _y_ fits.
 
 Please, see the section on `stat_poly_eq()` for applicable examples, as here
 we highlight only the differences between these two statistics. Like
@@ -544,9 +547,9 @@ from different types of models consistently.
 
 `stat_fit_residuals()` can be used to plot the residuals form models of _y_ on
 _x_ or _x_ on _y_ fitted with function `lm`, `MASS:rlm`, `quantreg::rq` (only
-median regression) or a user-supplied model fitting function and arguments. By
-defaul this _statistic_ behaves similarly as `ggplot2::stat_smooth` with `method
-= "lm"`
+median regression) or a user-supplied model fitting function and arguments. In 
+the returned values the response variable is replaced by the residuals from
+the fit. The default geom is `"point"`.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -561,8 +564,10 @@ When teaching we may need to highlight residuals in plots used in slides and not
 Statistic `stat_fit_deviations` makes it easy to
 achieve this for the residuals from models of _y_ on
 _x_ or _x_ on _y_ fitted with function `lm`, `MASS:rlm`, `quantreg::rq` (only
-median regression) or a user-supplied model fitting function and arguments. This
-_statistic_ behaves similarly to `ggplot2::stat_smooth` and can be used together.
+median regression) or a user-supplied model fitting function and arguments. The
+default geom is `"segment"` and the values of the the observations and the
+fitted values are mapped to aesthetics so that each deviation is displayed as
+a segment.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -571,8 +576,9 @@ ggplot(my.data, aes(x, y)) +
   stat_fit_deviations(formula = formula, colour = "red") +
   geom_point()
 ```
-The geometry used by default is `geom_segment()` to which additional aesthetics
-can be mapped. Here we add arrowheads.
+
+As the geometry used by default is `geom_segment()`, additional aesthetics
+can be mapped or set to constant values. Here we add arrowheads.
 
 ```{r, eval=eval_flag}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -583,9 +589,10 @@ ggplot(my.data, aes(x, y)) +
                       arrow = arrow(length = unit(0.015, "npc"), 
                                    ends = "both"))
 ```
-When weights are used, either suplier by the user, or automatically computed 
-they are returned. So this allows encoding the weights using colour. We here
-use a robust regression fit will `MASS::rlm`.
+
+When weights are available, either suplied by the user, or computed as part of
+the fit, they are returned in `data`. Having weights available allows encoding
+them using colour. We here use a robust regression fit with `MASS::rlm`.
 
 ```{r}
 my.data.outlier <- my.data
@@ -601,10 +608,10 @@ ggplot(my.data.outlier, aes(x, y)) +
 
 ### stat_fit_glance
 
-Package 'broom' provides consistently formatted output from different model fitting
-functions. These made it possible to write a model-annotation statistic that is 
-very flexible but that requires additional input from the user to generate the 
-character strings to be mapped to the `label` aesthetic.
+Package 'broom' provides consistently formatted output from different model
+fitting functions. These made it possible to write a model-annotation statistic
+that is very flexible but that requires additional input from the user to
+generate the character strings to be mapped to the `label` aesthetic.
 
 As we have above given some simple examples, we here exemplify this statistic
 in a plot with grouping, and assemble a label for the _P_-value using a string
@@ -679,6 +686,7 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
                                   sep = "")),
                 parse = TRUE)
 ```
+
 Using paste we can build a string that can be parsed into an R expression, in
 this case for a non-linear equation.
 
@@ -928,7 +936,7 @@ Use `ggplot2::stat_smooth` instead of `stat_fit_augment` if possible.
 For a single panel and no grouping, there is little advantage in using this
 statistic compared to the examples in the documentation of package 'broom'. With
 grouping and faceting `stat_fit_augment` may occasionally be more convenient
-than `ggplot2::stat_smooth` because of its flexibility.
+than `ggplot2::stat_smooth` because of its additional flexibility.
 
 ```{r}
 # formula <- y ~ poly(x, 3, raw = TRUE)
@@ -1008,8 +1016,13 @@ ggplot(Orange, aes(age, circumference, colour = Tree)) +
 
 ## Scales
 
-Volcano and quadrant plots are scatter plots with some peculiarities. 
-Creating these plots from scratch using 'ggplot2' can be time consuming, but allows flexibility in design. Rather than providing a 'canned' function to produce volcano plots, package 'ggpmisc' provides several building blocks that facilitate the production of volcano and quadrant plots as wrappers on _scales_ with suitable defaults plus helper functions to create factors from numeric outcomes.
+Volcano and quadrant plots are scatter plots with some peculiarities. Creating
+these plots from scratch using 'ggplot2' can be time consuming, but allows
+flexibility in design. Rather than providing a 'canned' function to produce
+volcano plots, package 'ggpmisc' provides several building blocks that
+facilitate the production of volcano and quadrant plots. These are wrappers on
+_scales_ from packages 'scales' and 'ggplot2' with suitable defaults plus helper
+functions to create factors from numeric outcomes.
 
 ### scale_color_outcome, scale_fill_outcome
 

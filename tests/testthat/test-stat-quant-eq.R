@@ -136,6 +136,64 @@ test_that("quant_formulas", {
                                                                     stat(AIC.label),
                                                                     sep = "~~")))
     )
+
+    ###
+
+    vdiffr::expect_doppelganger("stat_quant_eq_formula_x1",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_quant_eq(formula = x ~ 1, parse = TRUE,
+                                                mapping =
+                                                  aes(label = paste(stat(eq.label),
+                                                                    stat(rho.label),
+                                                                    stat(AIC.label),
+                                                                    sep = "~~")))
+    )
+
+    vdiffr::expect_doppelganger("stat_quant_eq_formula_y",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_quant_eq(formula = x ~ y, parse = TRUE,
+                                                mapping =
+                                                  aes(label = paste(stat(eq.label),
+                                                                    stat(rho.label),
+                                                                    stat(AIC.label),
+                                                                    sep = "~~")))
+    )
+
+    vdiffr::expect_doppelganger("stat_quant_eq_formula_yminus1",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_quant_eq(formula = x ~ y - 1, parse = TRUE,
+                                                mapping =
+                                                  aes(label = paste(stat(eq.label),
+                                                                    stat(rho.label),
+                                                                    stat(AIC.label),
+                                                                    sep = "~~")))
+    )
+
+    vdiffr::expect_doppelganger("stat_quant_eq_formula_yplus0",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_quant_eq(formula = x ~ y + 0, parse = TRUE,
+                                                mapping =
+                                                  aes(label = paste(stat(eq.label),
+                                                                    stat(rho.label),
+                                                                    stat(AIC.label),
+                                                                    sep = "~~")))
+    )
+
+    vdiffr::expect_doppelganger("stat_quant_eq_formula_ypoly1",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_quant_eq(formula = x ~ poly(y, 1, raw = TRUE), parse = TRUE,
+                                                mapping =
+                                                  aes(label = paste(stat(eq.label),
+                                                                    stat(rho.label),
+                                                                    stat(AIC.label),
+                                                                    sep = "~~")))
+    )
+
   }, warning=function(w) {
     if (startsWith(conditionMessage(w), "Solution may be nonunique"))
       invokeRestart("muffleWarning")

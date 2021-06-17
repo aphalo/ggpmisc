@@ -192,6 +192,24 @@ my.data <- data.frame(x = x, y = y,
                       y2 = y * c(0.5,2),
                       w = sqrt(x))
 
+# using defaults
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_quantile() +
+  stat_quant_eq()
+
+# same formula as default
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_quantile(formula = y ~ x) +
+  stat_quant_eq(formula = y ~ x)
+
+# explicit formula "x explained by y"
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+#   geom_quantile() +
+  stat_quant_eq(formula = x ~ y)
+
 # give a name to a formula
 formula <- y ~ poly(x, 3, raw = TRUE)
 

@@ -151,6 +151,24 @@
 #'                       y2 = y * c(0.5,2),
 #'                       w = sqrt(x))
 #'
+#' # using defaults
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   geom_quantile() +
+#'   stat_quant_eq()
+#'
+#' # same formula as default
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   geom_quantile(formula = y ~ x) +
+#'   stat_quant_eq(formula = y ~ x)
+#'
+#' # explicit formula "x explained by y"
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#' #   geom_quantile() +
+#'   stat_quant_eq(formula = x ~ y)
+#'
 #' # give a name to a formula
 #' formula <- y ~ poly(x, 3, raw = TRUE)
 #'
@@ -565,16 +583,19 @@ quant_eq_compute_group_fun <- function(data,
       if (output.type %in% c("latex", "tex", "tikz", "markdown")) {
         eq.char[q] <- gsub("*", " ", eq.char[q], fixed = TRUE)
       }
+
+      eq.char[q] <- gsub("x", eq.x.rhs, eq.char[q], fixed = TRUE)
       if (eq.with.lhs) {
         eq.char[q] <- paste(lhs, eq.char[q], sep = "")
       }
+
       AIC.char[q] <- sprintf("%.4g", AIC[q])
       rho.char[q] <- sprintf("%.3g", rho[q])
     }
 
     # build data frames to return
     if (output.type == "expression") {
-      z <- tibble::tibble(eq.label = gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
+      z <- tibble::tibble(eq.label = eq.char,
                           AIC.label = paste("AIC", AIC.char, sep = "~`=`~"),
                           rho.label = paste("rho", AIC.char, sep = "~`=`~"),
                           n.label = paste("italic(n)~`=`~", n, sep = ""),
@@ -588,8 +609,7 @@ quant_eq_compute_group_fun <- function(data,
                           quantiles = quantiles,
                           n = n)
     } else if (output.type %in% c("latex", "tex", "text", "tikz")) {
-      z <- tibble::tibble(eq.label =
-                            gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
+      z <- tibble::tibble(eq.label = eq.char,
                           AIC.label = paste("AIC", AIC.char, sep = " = "),
                           rho.label = paste("rho", AIC.char, sep = " = "),
                           n.label = paste("n = ", n, sep = ""),
@@ -599,8 +619,7 @@ quant_eq_compute_group_fun <- function(data,
                           quantiles = quantiles,
                           n = n)
     } else if (output.type == "markdown") {
-      z <- tibble::tibble(eq.label =
-                            gsub("x", eq.x.rhs, eq.char, fixed = TRUE),
+      z <- tibble::tibble(eq.label = eq.char,
                           AIC.label = paste("AIC", AIC.char, sep = " = "),
                           rho.label = paste("rho", AIC.char, sep = " = "),
                           n.label = paste("_n_ = ", n, sep = ""),
