@@ -103,6 +103,16 @@ generates several labels including the equation, p-value, coefficient of
 determination (R^2), 'AIC' and 'BIC'.
 }
 \details{
+This statistic interprets the argument passed to \code{formula} differently
+than \code{\link[ggplot2]{stat_quantile}} accepting \code{y} as well as
+\code{x} as explanatory variable, matching \code{stat_poly_quant()}.
+
+When two variables are subject to mutual constrains, it is useful to consider
+both of them as explanatory and interpret the relationship based on them. So,
+from version 0.4.1 'ggpmisc' makes it possible to easily implement the
+approach described by Cardoso (2019) under the name of "Double quantile
+regression".
+
 This stat can be used to automatically annotate a plot with R^2,
   adjusted R^2 or the fitted model equation. It supports only linear models
   fitted with function \code{lm()}. The R^2 and adjusted R^2 annotations can
@@ -143,7 +153,7 @@ For backward compatibility a logical is accepted as argument for
 
 Support for the \code{angle} aesthetic is not automatic and requires
   that the user passes as argument suitable numeric values to override the
-  defaults.
+  defaults for label positions.
 }
 \section{Aesthetics}{
  \code{stat_quant_eq} understands \code{x} and \code{y},

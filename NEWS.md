@@ -9,9 +9,9 @@ editor_options:
 The suggestion from *Mark Neal* of adding support for quantile
 regression partly addressed in ggpmisc 0.4.0 has lead to additional
 enhancements in this version. Other suggestions from Mark and other
-users have lead to bug fixes as well to an interface that with better
-defaults for arguments saves typing and complexity. Some other
-enhancements are based on my own needs or ideas.
+users have lead to bug fixes as well to an interface with better
+defaults for arguments . Some other enhancements are based on my own
+needs or ideas.
 
 -   Add support for quantile regression `rq`, robust regression `rlm`,
     and resistant regression `lqs` and `function` objects to
@@ -37,7 +37,15 @@ enhancements are based on my own needs or ideas.
     interfaces to `ggplot2::stat_smooth()` accepting `formula = x ~ y`
     and other models in which the explanatory variable is `y` rather
     than `x` . `stat_poly_line()` has `"lm"` as default for `method`
-    irrespective of the number of observations.
+    irrespective of the number of observations. This makes it possible
+    to add to the same plot a *double linear model fit*.
+-   Add [`stat_quant_line()` and] `stat_quantile_xy()` , which are
+    modified versions of `ggplot2::stat_smooth()` and
+    `ggplot2::stat_quantile()` accepting `formula = x ~ y` and other
+    models in which the explanatory variable is `y` rather than `x` .
+    These stat makes it possible to add to the same plot a *double
+    quantile regression*. `stat_quant_line()` [will] supports plotting
+    of confidence bands for quantile regression.
 -   Revise `stat_poly_eq()` and `stat_quant_eq()` so that they pass to
     the geom by default a suitable value as argument to `parse`
     (enhancement suggested by *Mark Neal*).

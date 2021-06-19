@@ -4,6 +4,16 @@
 #' generates several labels including the equation, p-value, coefficient of
 #' determination (R^2), 'AIC' and 'BIC'.
 #'
+#' This statistic interprets the argument passed to \code{formula} differently
+#' than \code{\link[ggplot2]{stat_quantile}} accepting \code{y} as well as
+#' \code{x} as explanatory variable, matching \code{stat_poly_quant()}.
+#'
+#' When two variables are subject to mutual constrains, it is useful to consider
+#' both of them as explanatory and interpret the relationship based on them. So,
+#' from version 0.4.1 'ggpmisc' makes it possible to easily implement the
+#' approach described by Cardoso (2019) under the name of "Double quantile
+#' regression".
+#'
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs to be
 #'   set at the layer level if you are overriding the plot defaults.
@@ -135,7 +145,7 @@
 #'
 #' @note Support for the \code{angle} aesthetic is not automatic and requires
 #'   that the user passes as argument suitable numeric values to override the
-#'   defaults.
+#'   defaults for label positions.
 #'
 #' @family ggplot statistics for model fits
 #'

@@ -1,8 +1,8 @@
 Package: ggpmisc
 Type: Package
 Title: Miscellaneous Extensions to 'ggplot2'
-Version: 0.4.0.9001
-Date: 2021-06-14
+Version: 0.4.0.9002
+Date: 2021-06-19
 Authors@R:
     c(
     person("Pedro J.", "Aphalo", email = "pedro.aphalo@helsinki.fi", role = c("aut", "cre"), comment = c(ORCID = "0000-0003-3385-972X")),
@@ -29,6 +29,7 @@ Imports:
     grid,
     stats,
     ggplot2 (>= 3.3.1),
+    vctrs (>= 0.3.8),
     rlang (>= 0.4.7),
     generics (>= 0.1.0),
     scales (>= 1.1.1),
