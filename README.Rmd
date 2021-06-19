@@ -104,10 +104,10 @@ the fitted curve, deviations and confidence band. We use `stat_poly_eq()`.
 formula <- y ~ x + I(x^2)
 ggplot(cars, aes(speed, dist)) +
   geom_point() +
-  stat_fit_deviations(method = "lm", formula = formula, colour = "red") +
-  geom_smooth(method = "lm", formula = formula) +
+  stat_fit_deviations(formula = formula, colour = "red") +
+  stat_poly_line(formula = formula) +
   stat_poly_eq(aes(label =  paste(stat(eq.label), stat(adj.rr.label), sep = "*\", \"*")),
-               formula = formula, parse = TRUE)
+               formula = formula)
 ```
 
 The same figure as in the second example but this time annotated with the
@@ -141,7 +141,7 @@ ggplot(cars, aes(speed, dist)) +
   geom_point() +
   geom_quantile(formula = formula, quantiles = 0.5) +
   stat_quant_eq(aes(label = paste(stat(grp.label), stat(eq.label), sep = "*\": \"*")),
-               formula = formula, quantiles = 0.5, parse = TRUE)
+               formula = formula, quantiles = 0.5)
 ```
 
 A quadrant plot with counts and labels, using `geom_text_repel()` from package

@@ -22,9 +22,9 @@ special geometries and scales. New position functions facilitate the
 labeling of observations by nudging data labels away or towards curves
 or a focal virtual center.
 
-## Extended Grammar of graphics
+## Extended Grammar of Graphics
 
-Please, see also the documentation of package ‘**ggpp**’.
+Please, see the documentation of package ‘**ggpp**’.
 
 ## Aesthetics and scales
 
@@ -102,10 +102,10 @@ use `stat_poly_eq()`.
 formula <- y ~ x + I(x^2)
 ggplot(cars, aes(speed, dist)) +
   geom_point() +
-  stat_fit_deviations(method = "lm", formula = formula, colour = "red") +
-  geom_smooth(method = "lm", formula = formula) +
+  stat_fit_deviations(formula = formula, colour = "red") +
+  stat_poly_line(formula = formula) +
   stat_poly_eq(aes(label =  paste(stat(eq.label), stat(adj.rr.label), sep = "*\", \"*")),
-               formula = formula, parse = TRUE)
+               formula = formula)
 ```
 
 ![](man/figures/README-readme-04-1.png)<!-- -->
@@ -145,7 +145,7 @@ ggplot(cars, aes(speed, dist)) +
   geom_point() +
   geom_quantile(formula = formula, quantiles = 0.5) +
   stat_quant_eq(aes(label = paste(stat(grp.label), stat(eq.label), sep = "*\": \"*")),
-               formula = formula, quantiles = 0.5, parse = TRUE)
+               formula = formula, quantiles = 0.5)
 ```
 
 ![](man/figures/README-readme-04b-1.png)<!-- -->
