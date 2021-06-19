@@ -39,122 +39,118 @@ my.data <- data.frame(x,
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  stat_smooth(method = "lm", formula = formula) +
+  stat_poly_line(formula = formula) +
   stat_poly_eq(formula = formula, parse = TRUE)
 
 ## -----------------------------------------------------------------------------
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = stat(eq.label)), formula = formula, 
-               parse = TRUE)
+  stat_poly_line(formula = formula) +
+  stat_poly_eq(aes(label = stat(eq.label)), formula = formula)
 
 ## -----------------------------------------------------------------------------
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = stat(adj.rr.label)), formula = formula, 
-               parse = TRUE) +
+  stat_poly_line(formula = formula) +
+  stat_poly_eq(aes(label = stat(adj.rr.label)), formula = formula) +
   stat_poly_eq(aes(label = stat(AIC.label)),
                label.x = "right", label.y = "bottom", size = 3,     
-               formula = formula, 
-               parse = TRUE)
+               formula = formula)
 
 
 ## -----------------------------------------------------------------------------
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_line(formula = formula) +
   stat_poly_eq(aes(label =  paste(stat(eq.label), stat(adj.rr.label), 
                                   sep = "*\", \"*")),
-               formula = formula, parse = TRUE) +
+               formula = formula) +
   labs(x = expression(italic(x)), y = expression(italic(y)))
 
 ## -----------------------------------------------------------------------------
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_line(formula = formula) +
   stat_poly_eq(aes(label =  paste(stat(eq.label), "*\" with \"*", 
                                   stat(rr.label), "*\", \"*", 
                                   stat(f.value.label), "*\", and \"*",
                                   stat(p.value.label), "*\".\"",
                                   sep = "")),
-               formula = formula, parse = TRUE, size = 3)
+               formula = formula, size = 3)
 
 ## ---- eval=eval_flag----------------------------------------------------------
 #  formula <- y ~ poly(x, 3, raw = TRUE)
 #  ggplot(my.data, aes(x, y)) +
 #    geom_point() +
-#    geom_smooth(method = "lm", formula = formula) +
+#    stat_poly_line(formula = formula) +
 #    stat_poly_eq(aes(label =  paste(stat(eq.label), stat(adj.rr.label),
 #                                    sep = "~~italic(\"with\")~~")),
-#                 formula = formula, parse = TRUE)
+#                 formula = formula)
 
 ## ---- eval=eval_flag----------------------------------------------------------
 #  formula <- y ~ poly(x, 3, raw = TRUE)
 #  ggplot(my.data, aes(x, y)) +
 #    geom_point() +
-#    geom_smooth(method = "lm", formula = formula) +
+#    stat_poly_line(formula = formula) +
 #    stat_poly_eq(aes(label = paste("atop(", stat(AIC.label), ",", stat(BIC.label), ")", sep = "")),
-#                 formula = formula,
-#                 parse = TRUE)
+#                 formula = formula)
 
 ## ---- eval=eval_flag----------------------------------------------------------
 #  formula <- y ~ poly(x, 3, raw = TRUE)
 #  ggplot(my.data, aes(x, y)) +
 #    geom_point() +
-#    geom_smooth(method = "lm", formula = formula) +
+#    stat_poly_line(formula = formula) +
 #    stat_poly_eq(aes(label = stat(eq.label)),
 #                 eq.with.lhs = FALSE,
-#                 formula = formula, parse = TRUE)
+#                 formula = formula)
 
 ## ---- eval=eval_flag----------------------------------------------------------
 #  formula <- y ~ poly(x, 3, raw = TRUE)
 #  ggplot(my.data, aes(x, y)) +
 #    geom_point() +
-#    geom_smooth(method = "lm", formula = formula) +
+#    stat_poly_line(formula = formula) +
 #    stat_poly_eq(aes(label = stat(eq.label)),
 #                 eq.with.lhs = "italic(hat(y))~`=`~",
-#                 formula = formula, parse = TRUE)
+#                 formula = formula)
 
 ## -----------------------------------------------------------------------------
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
-  labs(x = expression(italic(z)), y = expression(italic(h)) ) + 
+  stat_poly_line(formula = formula) +
   stat_poly_eq(aes(label = stat(eq.label)),
                eq.with.lhs = "italic(h)~`=`~",
                eq.x.rhs = "~italic(z)",
-               formula = formula, parse = TRUE)
+               formula = formula) +
+  labs(x = expression(italic(z)), y = expression(italic(h)))
 
 ## ---- eval=eval_flag----------------------------------------------------------
 #  formula <- y ~ poly(x, 2, raw = TRUE)
 #  ggplot(my.data, aes(x, log10(y + 1e6))) +
 #    geom_point() +
-#    geom_smooth(method = "lm", formula = formula) +
+#    stat_poly_line(formula = formula) +
 #    stat_poly_eq(aes(label = stat(eq.label)),
 #                 eq.with.lhs = "plain(log)[10](italic(delta)+10^6)~`=`~",
 #                 eq.x.rhs = "~Omega",
-#                 formula = formula, parse = TRUE) +
+#                 formula = formula) +
 #    labs(y = expression(plain(log)[10](italic(delta)+10^6)), x = expression(Omega))
 
 ## -----------------------------------------------------------------------------
 formula <- y ~ poly(x, 5, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = stat(eq.label)), formula = formula, parse = TRUE)
+  stat_poly_line(formula = formula) +
+  stat_poly_eq(aes(label = stat(eq.label)), formula = formula)
 
 ## ---- eval=eval_flag----------------------------------------------------------
 #  formula <- y ~ x + I(x^2) + I(x^3) - 1
 #  ggplot(my.data, aes(x, y)) +
 #    geom_point() +
-#    geom_smooth(method = "lm", formula = formula) +
+#    stat_poly_line(formula = formula) +
 #    stat_poly_eq(aes(label = stat(eq.label)), formula = formula,
 #                 parse = TRUE)
 
@@ -162,131 +158,139 @@ ggplot(my.data, aes(x, y)) +
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_line(formula = formula) +
   stat_poly_eq(aes(label =  ifelse(stat(adj.r.squared > 0.3),
                                    paste(stat(eq.label), stat(adj.rr.label), 
                                          sep = "*\", \"*"),
                                    stat(adj.rr.label))),
-               formula = formula, parse = TRUE) +
+               formula = formula) +
   labs(x = expression(italic(x)), y = expression(italic(y)))
 
 ## -----------------------------------------------------------------------------
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2)) +
   geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_line(formula = formula) +
   stat_poly_eq(aes(label = stat(eq.label)), size = 3,
-               formula = formula, parse = TRUE) +
+               formula = formula) +
   facet_wrap(~group)
 
 ## ---- eval=eval_flag----------------------------------------------------------
 #  formula <- y ~ poly(x, 3, raw = TRUE)
 #  ggplot(my.data, aes(x, y2)) +
 #    geom_point() +
-#    geom_smooth(method = "lm", formula = formula) +
+#    stat_poly_line(formula = formula) +
 #    stat_poly_eq(aes(label = stat(eq.label)), size = 3,
-#                 formula = formula, parse = TRUE) +
+#                 formula = formula) +
 #    facet_wrap(~group, scales = "free_y")
 
 ## -----------------------------------------------------------------------------
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2, colour = group)) +
   geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = stat(eq.label)), formula = formula, parse = TRUE, vstep = 0.06)
+  stat_poly_line(formula = formula) +
+  stat_poly_eq(aes(label = stat(eq.label)), formula = formula, vstep = 0.06)
 
 ## ---- eval=eval_flag----------------------------------------------------------
 #  formula <- y ~ poly(x, 3, raw = TRUE)
 #  ggplot(my.data, aes(x, y2, colour = group, grp.label = group)) +
 #    geom_point() +
-#    geom_smooth(method = "lm", formula = formula) +
+#    stat_poly_line(formula = formula) +
 #    stat_poly_eq(aes(label = stat(paste("bold(", grp.label, "*\":\")~~",
 #                                        eq.label, sep = ""))),
-#                 formula = formula, parse = TRUE)
+#                 formula = formula)
 
 ## -----------------------------------------------------------------------------
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2, linetype = group, grp.label = group)) +
   geom_point() +
-  geom_smooth(method = "lm", formula = formula, color = "black") +
+  stat_poly_line(formula = formula, color = "black") +
   stat_poly_eq(aes(label = stat(paste("bold(", grp.label, "*':')~~~", 
                                       eq.label, sep = ""))),
-               formula = formula, parse = TRUE)
+               formula = formula)
 
 ## ---- eval=eval_flag----------------------------------------------------------
 #  formula <- y ~ poly(x, 3, raw = TRUE)
 #  ggplot(my.data, aes(x, y2, colour = group)) +
 #    geom_point() +
-#    geom_smooth(method = "lm", formula = formula) +
+#    stat_poly_line(formula = formula) +
 #    stat_poly_eq(aes(label = stat(eq.label)),
-#                 formula = formula, parse = TRUE,
+#                 formula = formula,
 #                 label.x = "centre")
 
 ## -----------------------------------------------------------------------------
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2, fill = block)) +
   geom_point(shape = 21, size = 3) +
-  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_line(formula = formula) +
   stat_poly_eq(aes(label = stat(rr.label)), size = 3,
                geom = "label_npc", alpha = 0.33,
-               formula = formula, parse = TRUE) +
+               formula = formula) +
   facet_wrap(~group, scales = "free_y")
 
 ## ---- eval=eval_flag----------------------------------------------------------
 #  formula <- y ~ poly(x, 3, raw = TRUE)
 #  ggplot(my.data, aes(x, y2, colour = group, fill = block)) +
 #    geom_point(shape = 21, size = 3) +
-#    geom_smooth(method = "lm", formula = formula) +
+#    stat_poly_line(formula = formula) +
 #    stat_poly_eq(aes(label = stat(rr.label)), size = 3, alpha = 0.2,
 #                 geom = "label_npc", label.y = c(0.95, 0.85, 0.95, 0.85),
-#                 formula = formula, parse = TRUE) +
+#                 formula = formula) +
 #    facet_wrap(~group, scales = "free_y")
 
 ## -----------------------------------------------------------------------------
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2, colour = group)) +
   geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_line(formula = formula) +
   stat_poly_eq(geom = "text", aes(label = stat(eq.label)),
                label.x = c(100, 90), label.y = c(-1e4, 2.1e6), hjust = "inward",
-               formula = formula, parse = TRUE)
+               formula = formula)
 
 ## -----------------------------------------------------------------------------
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  geom_smooth(method = "lm", formula = y ~ x, color = "blue") +
-  stat_poly_eq(aes(label = stat(eq.label)), color = "blue", parse = TRUE) +
-  geom_smooth(method = "lm", formula = y ~ x, color = "red", orientation = "y") +
+  stat_poly_line(formula = y ~ x, color = "blue") +
+  stat_poly_eq(aes(label = stat(eq.label)), color = "blue") +
+  stat_poly_line(formula = y ~ x, color = "red", orientation = "y") +
   stat_poly_eq(aes(label = stat(eq.label)), color = "red", orientation = "y",
-               label.y = 0.9, parse = TRUE)
+               label.y = 0.9)
 
 ## ---- warning=FALSE-----------------------------------------------------------
 ggplot(my.data, aes(x, y, color = group)) +
   geom_point() +
-  geom_quantile(method = "rq", formula = formula) +
+  stat_quantile(formula = formula) +
   stat_quant_eq(aes(label = paste(stat(grp.label), "*\": \"*",
                                   stat(eq.label), sep = "")),
-               formula = formula, parse = TRUE)
+               formula = formula)
 
 ## ---- warning=FALSE-----------------------------------------------------------
 ggplot(my.data, aes(x, y, color = group)) +
   geom_point() +
-  geom_quantile(method = "rq", formula = formula,
-                quantiles = c(0.05, 0.95)) +
+  stat_quantile(formula = formula, quantiles = c(0.05, 0.95)) +
   stat_quant_eq(aes(label = paste(stat(grp.label), "*\": \"*",
                                   stat(eq.label), sep = "")),
-                quantiles = c(0.05, 0.95),
-                formula = formula, parse = TRUE)
+                formula = formula, quantiles = c(0.05, 0.95))
 
 ## ---- warning=FALSE-----------------------------------------------------------
 ggplot(my.data, aes(x, y, group = group, linetype = group, 
                     shape = group, grp.label = group)) +
   geom_point() +
-  geom_quantile(method = "rq", formula = formula, color = "black") +
+  stat_quantile(formula = formula, color = "black") +
   stat_quant_eq(aes(label = paste(stat(grp.label), "*\": \"*",
                                   stat(eq.label), sep = "")),
-                formula = formula, parse = TRUE, size = 3) +
+                formula = formula, size = 3) +
   theme_classic()
+
+## -----------------------------------------------------------------------------
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_quantile_xy(formula = y ~ x, color = "blue", quantiles = 0.05) +
+  stat_quant_eq(aes(label = stat(eq.label)), formula = y ~ x, color = "blue",
+                quantiles = 0.05) +
+  stat_quantile_xy(formula = x ~ y, color = "red", quantiles = 0.95) +
+  stat_quant_eq(aes(label = stat(eq.label)), formula = x ~ y, color = "red", 
+                quantiles = 0.95, label.y = 0.9)
 
 ## -----------------------------------------------------------------------------
 formula <- y ~ poly(x, 3, raw = TRUE)
