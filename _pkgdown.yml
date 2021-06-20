@@ -21,7 +21,9 @@ reference:
     desc: It is often useful to summarize data before plotting, and that is what these transformations do.
     contents:
     - stat_peaks
+    - stat_smooth_xy
     - stat_poly_eq
+    - stat_quantile_xy
     - stat_quant_eq
     - stat_fit_tb
     - stat_fit_tidy
@@ -34,6 +36,10 @@ reference:
     contents:
     - volcano_example.df
     - quadrant_example.df
+  - title: Utilities
+    desc: Low level functions that can be useful to developers of other ggplot2 extensions.
+    contents:
+    - swap_xy
   - title: Changes
     desc: Geometries, statistics and functions moved to package 'gginnards'.
     contents:
