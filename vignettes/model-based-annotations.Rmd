@@ -91,7 +91,7 @@ quadrant and other plots as used for genomics, metabolomics and similar data.
 
 ## Statistics
 
-### stat_poly_eq(), stat_poly_line() and stat_smooth_xy()
+### stat_poly_eq() and stat_poly_line()
 
 A frequently used annotation in plots showing fitted lines is the display of the
 parameters estimates from the model fit as an equation. `stat_poly_eq()`
@@ -108,9 +108,7 @@ Nevertheless, all examples below use expression syntax.
 
 The statistic `stat_poly_line()` adds a layer identical to that from
 `ggplot2::stat_smooth()` but has the same user interface and default arguments
-as `stat_poly_eq()` while `stat_smooth_xy()` supports both _x_ and _y_ as
-explanatory variable in `formula` but has the same dynamic behaviour for
-default `method` as `ggplot2::stat_smooth()`.
+as `stat_poly_eq()`.
 
 Other _statistics_ described in later sections of this vignette are even more
 flexible allowing various annotations for model fit functions supported by
@@ -488,7 +486,7 @@ ggplot(my.data, aes(x, y)) +
                label.y = 0.9)
 ```
 
-### stat_quant_eq() and stat_quantile_xy()
+### stat_quant_eq() and stat_quant_line()
 
 In the case of quantile regression it is frequently the case that multiple
 quantile regressions are fitted. This case is not supported by `stat_poly_eq()`
@@ -500,9 +498,8 @@ for _y_ on _x_ fits but adds support for _x_ on _y_ fits.
 
 The statistic `stat_quant_line()` adds a layer similar to that created by
 `ggplot2::stat_smooth()` including confidence bands for quantile regression, but
-has the same user interface and default arguments as `stat_quant_eq()` while
-`stat_quantile_xy()` supports both _x_ and _y_ as explanatory variable in
-`formula` but as `ggplot2::stat_quantile()` only adds a line for each quantile.
+has the same user interface and default arguments as `stat_quant_eq()` supports 
+both _x_ and _y_ as explanatory variable in formula` and also `orientation`.
 
 Please, see the section on `stat_poly_eq()` for applicable examples, as here
 we highlight only the differences between these two statistics. Like
@@ -555,10 +552,10 @@ argument to `formula`, or consistently with `stat_smooth()` through parameter
 ```{r}
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  stat_quantile_xy(formula = y ~ x, color = "blue", quantiles = 0.05) +
+  stat_quant_line(formula = y ~ x, color = "blue", quantiles = 0.05) +
   stat_quant_eq(aes(label = stat(eq.label)), formula = y ~ x, color = "blue",
                 quantiles = 0.05) +
-  stat_quantile_xy(formula = x ~ y, color = "red", quantiles = 0.95) +
+  stat_quant_line(formula = x ~ y, color = "red", quantiles = 0.95) +
   stat_quant_eq(aes(label = stat(eq.label)), formula = x ~ y, color = "red", 
                 quantiles = 0.95, label.y = 0.9)
 ```

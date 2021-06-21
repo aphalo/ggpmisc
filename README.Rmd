@@ -139,7 +139,7 @@ The same figure as in the second example but this time using quantile regression
 formula <- y ~ x + I(x^2)
 ggplot(cars, aes(speed, dist)) +
   geom_point() +
-  geom_quantile(formula = formula, quantiles = 0.5) +
+  geom_quant_line(formula = formula, quantiles = 0.5) +
   stat_quant_eq(aes(label = paste(stat(grp.label), stat(eq.label), sep = "*\": \"*")),
                formula = formula, quantiles = 0.5)
 ```

@@ -55,6 +55,11 @@
 #' @param n Number of points at which to evaluate smoother.
 #' @param orientation character Either "x" or "y" controlling the default for
 #'   \code{formula}.
+#' @param se logical Passed to \code{quantreg::predict.rq()}.
+#' @param level numeric in range [0..1] Passed to \code{quantreg::predict.rq()}.
+#' @param type character Passed to \code{quantreg::predict.rq()}.
+#' @param interval character Passed to \code{quantreg::predict.rq()}.
+#'
 #'
 #' @return The value returned by the statistic is a data frame, that will have
 #'   \code{n} rows of predicted values and and their confidence limits.
@@ -82,32 +87,20 @@
 #' @examples
 #' ggplot(mpg, aes(displ, hwy)) +
 #'   geom_point() +
-#'   stat_quantile_xy()
-#'
-#' ggplot(mpg, aes(displ, hwy)) +
-#'   geom_point() +
 #'   stat_quant_line()
 #'
 #' ggplot(mpg, aes(displ, hwy)) +
 #'   geom_point() +
-#'   stat_quant_line(se = FALSE)
+#'   stat_quant_line(se = TRUE)
 #'
 #' # If you need the fitting to be done along the y-axis set the orientation
-#' ggplot(mpg, aes(displ, hwy)) +
-#'   geom_point() +
-#'   stat_quantile_xy(orientation = "y")
-#'
 #' ggplot(mpg, aes(displ, hwy)) +
 #'   geom_point() +
 #'   stat_quant_line(orientation = "y")
 #'
 #' ggplot(mpg, aes(displ, hwy)) +
 #'   geom_point() +
-#'   stat_quant_line(orientation = "y", se = FALSE)
-#'
-#' ggplot(mpg, aes(displ, hwy)) +
-#'   geom_point() +
-#'   stat_quantile_xy(formula = y ~ x)
+#'   stat_quant_line(orientation = "y", se = TRUE)
 #'
 #' ggplot(mpg, aes(displ, hwy)) +
 #'   geom_point() +
@@ -115,162 +108,32 @@
 #'
 #' ggplot(mpg, aes(displ, hwy)) +
 #'   geom_point() +
-#'   stat_quantile_xy(formula = x ~ y)
-#'
-#' ggplot(mpg, aes(displ, hwy)) +
-#'   geom_point() +
 #'   stat_quant_line(formula = x ~ y)
 #'
 #' ggplot(mpg, aes(displ, hwy)) +
 #'   geom_point() +
-#'   stat_quantile_xy(formula = y ~ poly(x, 3))
+#'   stat_quant_line(formula = y ~ poly(x, 3))
 #'
 #' ggplot(mpg, aes(displ, hwy)) +
 #'   geom_point() +
-#'   stat_quantile_xy(formula = x ~ poly(y, 3))
+#'   stat_quant_line(formula = x ~ poly(y, 3))
 #'
 #' # Instead of a loess smooth, you can use any other modelling function:
 #' ggplot(mpg, aes(displ, hwy)) +
 #'   geom_point() +
-#'   stat_quantile_xy(method = "rqss", se = FALSE)
+#'   stat_quant_line(method = "rqss")
 #'
 #' # Smooths are automatically fit to each group (defined by categorical
 #' # aesthetics or the group aesthetic) and for each facet.
 #'
 #' ggplot(mpg, aes(displ, hwy, colour = class)) +
 #'   geom_point() +
-#'   stat_quantile_xy(formula = y ~ x)
+#'   stat_quant_line(formula = y ~ x, quantiles = 0.5)
 #'
 #' ggplot(mpg, aes(displ, hwy)) +
 #'   geom_point() +
-#'   stat_quantile_xy(formula = y ~ x) +
+#'   stat_quant_line(formula = y ~ poly(x, 2)) +
 #'   facet_wrap(~drv)
-#'
-#' @export
-#'
-stat_quantile_xy <- function(mapping = NULL,
-                             data = NULL,
-                             geom = "quantile",
-                             position = "identity",
-                             ...,
-                             quantiles = c(0.25, 0.5, 0.75),
-                             formula = NULL,
-                             n = 80,
-                             method = "rq",
-                             method.args = list(),
-                             na.rm = FALSE,
-                             orientation = NA,
-                             show.legend = NA,
-                             inherit.aes = TRUE) {
-  ggplot2::layer(
-    data = data,
-    mapping = mapping,
-    stat = StatQuantileXY,
-    geom = geom,
-    position = position,
-    show.legend = show.legend,
-    inherit.aes = inherit.aes,
-    params = list(
-      quantiles = quantiles,
-      formula = formula,
-      n = n,
-      method = method,
-      method.args = method.args,
-      na.rm = na.rm,
-      orientation = orientation,
-      ...
-    )
-  )
-}
-
-# Defined here to avoid a note in check --as-cran as the import from 'polynom'
-# is not seen when the function is defined in-line in the ggproto object.
-#' @rdname ggpmisc-ggproto
-#'
-#' @format NULL
-#' @usage NULL
-#'
-quantile_xy_compute_group_fun <- function(data,
-                                          scales,
-                                          quantiles = c(0.25, 0.5, 0.75),
-                                          formula = NULL,
-                                          n = 80,
-                                          method = "rq",
-                                          method.args = list(),
-                                          lambda = 1,
-                                          se = TRUE,
-                                          na.rm = FALSE,
-                                          orientation = NA) {
-  rlang::check_installed("quantreg", reason = "for `stat_quantile()`")
-
-  force(data)
-  stopifnot(!any(c("formula", "data") %in% names(method.args)))
-  # we guess formula from orientation
-  if (is.null(formula)) {
-    if (is.na(orientation) || orientation == "x") {
-      formula = y ~ x
-    } else if (orientation == "y") {
-      formula = x ~ y
-    }
-  }
-  # we guess orientation from formula
-  if (is.na(orientation)) {
-    orientation <- unname(c(x = "y", y = "x")[as.character(formula)[2]])
-  }
-
-  if (is.null(data[["weight"]])) {
-    data[["weight"]] <- 1
-  }
-
-  min.indep <- min(data[[orientation]], na.rm = TRUE)
-  max.indep <- max(data[[orientation]], na.rm = TRUE)
-  seq.indep <- seq(min.indep, max.indep, length.out = n)
-
-  grid <- data.frame(seq.indep)
-  names(grid) <- orientation
-
-  # if method was specified as a character string, replace with
-  # the corresponding function
-  if (is.character(method)) {
-    if (identical(method, "rq")) {
-      method <- quantreg::rq
-    } else if (identical(method, "rqss")) {
-      method <- quantreg::rqss
-    } else {
-      method <- match.fun(method) # allow users to supply their own methods
-    }
-  } else {
-    stopifnot(is.function(method))
-  }
-
-  dplyr::bind_rows(
-    lapply(quantiles, quant_pred, data = data, method = method,
-           formula = formula, weight = data$weight, grid = grid,
-           method.args = method.args, orientation = orientation)
-  )
-}
-
-#' @rdname ggpmisc-ggproto
-#' @format NULL
-#' @usage NULL
-#' @export
-StatQuantileXY <- ggplot2::ggproto("StatQuantileXY", ggplot2::Stat,
-                                   extra_params = c("na.rm", "orientation"),
-                                   compute_group = quantile_xy_compute_group_fun,
-                                   default_aes =
-                                     ggplot2::aes(group = stat(group),
-                                                  weight = 1),
-                                   required_aes = c("x", "y")
-)
-
-#####
-
-#' @rdname stat_quantile_xy
-#'
-#' @param se logical Passed to \code{quantreg::predict.rq()}.
-#' @param level numeric in range [0..1] Passed to \code{quantreg::predict.rq()}.
-#' @param type character Passed to \code{quantreg::predict.rq()}.
-#' @param interval character Passed to \code{quantreg::predict.rq()}.
 #'
 #' @export
 #'
@@ -281,7 +144,7 @@ stat_quant_line <- function(mapping = NULL,
                             ...,
                             quantiles = c(0.25, 0.5, 0.75),
                             formula = NULL,
-                            se = TRUE,
+                            se = FALSE,
                             n = 80,
                             method = "rq",
                             method.args = list(),
@@ -422,7 +285,6 @@ StatQuantLine <-
                                               weight = 1),
                    required_aes = c("x", "y")
   )
-
 
 quant_pred <- function(quantile, data, method, formula, weight, grid,
                        method.args = method.args, orientation = "x",

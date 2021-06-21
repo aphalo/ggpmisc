@@ -8,47 +8,47 @@ editor_options:
 
 The suggestion from *Mark Neal* of adding support for quantile
 regression partly addressed in ggpmisc 0.4.0 has lead to additional
-enhancements in this version. Other suggestions from Mark and other
-users have lead to bug fixes as well to an interface with better
-defaults for arguments . Some other enhancements are based on my own
-needs or ideas.
+enhancements in this version. The idea of supporting confidence bands
+for quantile regression came from *Samer Mouksassi*. Additional
+suggestions from Mark and other users have lead to bug fixes as well to
+an interface with better defaults for arguments . Some other
+enhancements are based on my own needs or ideas.
 
--   Add support for quantile regression `rq`, robust regression `rlm`,
-    and resistant regression `lqs` and `function` objects to
-    `stat_fit_residuals()` and `stat_fit_deviations()` .
--   Add support for quantile regression `rq`, robust regression `rlm`
-    and `function` objects to `stat_poly_eq()`.
+-   Add support for median regression using `rq`, robust regression
+    using `rlm` and other `function` objects in `stat_poly_eq()`.
 -   Make it easier to use `stat_poly_eq()` and `stat_quant_eq()` with
     `formula = x ~ y` and other models in which the explanatory variable
     is `y` rather than `x` (this was already supported but the defaults
     for `eq.with.lhs` and `eq.x.rhs` were hard coded needing manual
     override while they are now set dynamically depending on the
     `formula`).
+-   Revise `stat_poly_eq()` and `stat_quant_eq()` so that they pass to
+    the geom by default a suitable value as argument to `parse`
+    (enhancement suggested by *Mark Neal*).
+-   Fix bug in `stat_poly_eq()` and `stat_quant_eq()` resulting in
+    mishandling of formulas using the `+ 0` notation to exclude the
+    intercept (reported by *orgadish*).
+-   Add `stat_poly_line()`, which is a new interface to
+    `ggplot2::stat_smooth()` accepting `formula = x ~ y` and other
+    models in which the explanatory variable is `y` rather than `x` or
+    setting `orientation = "y"`. `stat_poly_line()` has `"lm"` as
+    default for `method` irrespective of the number of observations.
+-   Add `stat_quant_line()` which is a merge of `ggplot2::stat_smooth()`
+    and `ggplot2::stat_quantile()` accepting `formula = x ~ y` and other
+    models in which the explanatory variable is `y` rather than `x` or
+    setting `orientation = "y"`. This statistic makes it possible to add
+    to a plot a *double quantile regression*. `stat_quant_line()`
+    supports plotting of confidence bands for quantile regression using
+    `ggplot2::geom_smooth()` to create the plot layer.
+-   Add support for quantile regression `rq`, robust regression `rlm`,
+    and resistant regression `lqs` and `function` objects to
+    `stat_fit_residuals()` and `stat_fit_deviations()` .
 -   Make it possible to use `stat_fit_residuals()` and
     `stat_fit_deviations()` with `formula = x ~ y` and other models in
     which the explanatory variable is `y` rather than `x` .
 -   Add `weights` to returned values by `stat_fit_residuals()` and
     `stat_fit_deviations()` and add support for the `weight` aesthetic
     as their input for parameter `weights` of the model fit functions.
--   Fix bug in `stat_poly_eq()` and `stat_quant_eq()` resulting in
-    mishandling of formulas using the `+ 0` notation to exclude the
-    intercept (reported by *orgadish*).
--   Add `stat_poly_line()` and `stat_smooth_xy()` , which are new
-    interfaces to `ggplot2::stat_smooth()` accepting `formula = x ~ y`
-    and other models in which the explanatory variable is `y` rather
-    than `x` . `stat_poly_line()` has `"lm"` as default for `method`
-    irrespective of the number of observations. This makes it possible
-    to add to the same plot a *double linear model fit*.
--   Add [`stat_quant_line()` and] `stat_quantile_xy()` , which are
-    modified versions of `ggplot2::stat_smooth()` and
-    `ggplot2::stat_quantile()` accepting `formula = x ~ y` and other
-    models in which the explanatory variable is `y` rather than `x` .
-    These stat makes it possible to add to the same plot a *double
-    quantile regression*. `stat_quant_line()` [will] supports plotting
-    of confidence bands for quantile regression.
--   Revise `stat_poly_eq()` and `stat_quant_eq()` so that they pass to
-    the geom by default a suitable value as argument to `parse`
-    (enhancement suggested by *Mark Neal*).
 
 # ggpmisc 0.4.0
 

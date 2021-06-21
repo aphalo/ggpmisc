@@ -285,10 +285,10 @@ ggplot(my.data, aes(x, y, group = group, linetype = group,
 ## -----------------------------------------------------------------------------
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  stat_quantile_xy(formula = y ~ x, color = "blue", quantiles = 0.05) +
+  stat_quant_line(formula = y ~ x, color = "blue", quantiles = 0.05) +
   stat_quant_eq(aes(label = stat(eq.label)), formula = y ~ x, color = "blue",
                 quantiles = 0.05) +
-  stat_quantile_xy(formula = x ~ y, color = "red", quantiles = 0.95) +
+  stat_quant_line(formula = x ~ y, color = "red", quantiles = 0.95) +
   stat_quant_eq(aes(label = stat(eq.label)), formula = x ~ y, color = "red", 
                 quantiles = 0.95, label.y = 0.9)
 

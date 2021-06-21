@@ -25,8 +25,6 @@
 \alias{StatPolyEq}
 \alias{quant_eq_compute_group_fun}
 \alias{StatQuantEq}
-\alias{quantile_xy_compute_group_fun}
-\alias{StatQuantileXY}
 \alias{quant_line_compute_group_fun}
 \alias{StatQuantLine}
 \title{\code{Stat*} Objects}
