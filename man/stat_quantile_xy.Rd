@@ -2,7 +2,8 @@
 % Please edit documentation in R/stat-quant-line.r
 \name{stat_quantile_xy}
 \alias{stat_quantile_xy}
-\title{Compute predicted line from model fit}
+\alias{stat_quant_line}
+\title{Compute predicted line from quantile regression fit}
 \usage{
 stat_quantile_xy(
   mapping = NULL,
@@ -15,6 +16,27 @@ stat_quantile_xy(
   n = 80,
   method = "rq",
   method.args = list(),
+  na.rm = FALSE,
+  orientation = NA,
+  show.legend = NA,
+  inherit.aes = TRUE
+)
+
+stat_quant_line(
+  mapping = NULL,
+  data = NULL,
+  geom = "smooth",
+  position = "identity",
+  ...,
+  quantiles = c(0.25, 0.5, 0.75),
+  formula = NULL,
+  se = TRUE,
+  n = 80,
+  method = "rq",
+  method.args = list(),
+  level = 0.95,
+  type = "direct",
+  interval = "confidence",
   na.rm = FALSE,
   orientation = NA,
   show.legend = NA,
@@ -67,6 +89,14 @@ never includes, and \code{TRUE} always includes.}
 than combining with them. This is most useful for helper functions that
 define both data and aesthetics and shouldn't inherit behaviour from the
 default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
+
+\item{se}{logical Passed to \code{quantreg::predict.rq()}.}
+
+\item{level}{numeric in range [0..1] Passed to \code{quantreg::predict.rq()}.}
+
+\item{type}{character Passed to \code{quantreg::predict.rq()}.}
+
+\item{interval}{character Passed to \code{quantreg::predict.rq()}.}
 }
 \value{
 The value returned by the statistic is a data frame, that will have
@@ -119,6 +149,14 @@ ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
   stat_quantile_xy()
 
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  stat_quant_line()
+
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  stat_quant_line(se = FALSE)
+
 # If you need the fitting to be done along the y-axis set the orientation
 ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
@@ -126,11 +164,27 @@ ggplot(mpg, aes(displ, hwy)) +
 
 ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
+  stat_quant_line(orientation = "y")
+
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  stat_quant_line(orientation = "y", se = FALSE)
+
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
   stat_quantile_xy(formula = y ~ x)
 
 ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
+  stat_quant_line(formula = y ~ x)
+
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
   stat_quantile_xy(formula = x ~ y)
+
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  stat_quant_line(formula = x ~ y)
 
 ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
