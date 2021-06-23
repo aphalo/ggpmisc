@@ -137,18 +137,30 @@ ggplot(cars, aes(speed, dist)) +
 ![](man/figures/README-readme-05-1.png)<!-- -->
 
 The same figure as in the second example but this time using quantile
-regression.
+regression, median in this example.
 
 ``` r
 formula <- y ~ x + I(x^2)
 ggplot(cars, aes(speed, dist)) +
   geom_point() +
-  geom_quantile(formula = formula, quantiles = 0.5) +
+  stat_quant_line(formula = formula, quantiles = 0.5) +
   stat_quant_eq(aes(label = paste(stat(grp.label), stat(eq.label), sep = "*\": \"*")),
                formula = formula, quantiles = 0.5)
 ```
 
 ![](man/figures/README-readme-04b-1.png)<!-- -->
+
+Band highlighting the region between both quartile regressions and a
+line for the median regression.
+
+``` r
+formula <- y ~ x + I(x^2)
+ggplot(cars, aes(speed, dist)) +
+  geom_point() +
+  stat_quant_band(formula = formula)
+```
+
+![](man/figures/README-readme-04c-1.png)<!-- -->
 
 A quadrant plot with counts and labels, using `geom_text_repel()` from
 package ‘ggrepel’.

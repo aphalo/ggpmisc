@@ -21,9 +21,10 @@ reference:
     desc: It is often useful to summarize data before plotting, and that is what these transformations do.
     contents:
     - stat_peaks
-    - stat_smooth_xy
+    - stat_poly_line
     - stat_poly_eq
-    - stat_quantile_xy
+    - stat_quant_line
+    - stat_quant_band
     - stat_quant_eq
     - stat_fit_tb
     - stat_fit_tidy
