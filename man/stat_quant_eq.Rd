@@ -383,5 +383,10 @@ Other ggplot statistics for model fits:
 \code{\link{stat_fit_tb}()},
 \code{\link{stat_fit_tidy}()},
 \code{\link{stat_poly_eq}()}
+
+Other quantile regression functions.: 
+\code{\link{stat_quant_band}()},
+\code{\link{stat_quant_line}()}
 }
 \concept{ggplot statistics for model fits}
+\concept{quantile regression functions.}

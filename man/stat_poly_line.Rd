@@ -184,3 +184,8 @@ ggplot(mpg, aes(displ, hwy)) +
   facet_wrap(~drv)
 
 }
+\seealso{
+Other polynomial regression functions.: 
+\code{\link{stat_poly_eq}()}
+}
+\concept{polynomial regression functions.}

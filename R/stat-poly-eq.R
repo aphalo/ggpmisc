@@ -314,6 +314,8 @@
 #'   stat_poly_eq(formula = formula, geom = "debug", output.type = "numeric",
 #'                summary.fun = function(x) {x[["coef.ls"]][[1]]})
 #'
+#' @family polynomial regression functions.
+#'
 #' @export
 #'
 stat_poly_eq <- function(mapping = NULL, data = NULL,

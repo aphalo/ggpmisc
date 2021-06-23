@@ -138,6 +138,8 @@
 #'   stat_poly_line(method = "auto", span = 0.8) +
 #'   facet_wrap(~drv)
 #'
+#' @family polynomial regression functions.
+#'
 #' @export
 #'
 stat_poly_line <- function(mapping = NULL, data = NULL,

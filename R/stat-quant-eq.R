@@ -320,6 +320,8 @@
 #'   stat_quant_eq(formula = formula, geom = "debug", output.type = "numeric",
 #'                summary.fun = function(x) {x[["coef.ls"]][[1]]})
 #'
+#' @family quantile regression functions.
+#'
 #' @export
 #'
 stat_quant_eq <- function(mapping = NULL, data = NULL,

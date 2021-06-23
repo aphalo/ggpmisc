@@ -1,41 +1,31 @@
 #' Compute predicted line from quantile regression fit
 #'
-#' Predicted values are computed and, by default, plotted. Depending on the
-#' fit method, a confidence band can be computed and plotted. The confidence
-#' band can be interpreted similarly as that produced by \code{stat_smooth()}
-#' and \code{stat_poly_line()}.
+#' Predicted values are computed and, by default, plotted as a band plus an
+#' optional line within. \code{stat_quant_band()} supports the use of both
+#' \code{x} and \code{y} as explanatory variable in the model formula.
+#'
+#' This statistic is similar to \code{\link{stat_quant_line}} but plots the
+#' quantiles differently with the band representing a region between two
+#' quantiles, while in \code{stat_quant_line()} the bands plotted whe
+#' \code{se = TRUE} represent confidence intervals for the fitted quantile
+#' lines.
 #'
 #' @details
-#' \code{stat_quant_line()} behaves similarly to \code{stat_smooth()} and
-#' \code{stat_poly_line()} but supports fitting regressions for multiple
-#' quantiles in the same plot layer. This statistic interprets the argument
-#' passed to \code{formula} accepting \code{y} as well as \code{x} as
-#' explanatory variable, matching \code{stat_quant_eq()}.
-#'
 #' \code{\link[ggplot2]{geom_smooth}}, which is used by default, treats each
-#' axis different and thus is dependent on orientation. If no argument is passed
-#' to \code{formula}, it defaults to \code{y ~ x}. Formulas with \code{y} as
-#' explanatory variable are treated as if \code{x} was the explanatory variable
-#' and \code{orientation = "y"}.
-#'
-#' Package 'ggpmisc' does not define a new geometry matching this statistic
-#' as it is enough for the statistic to return suitable \code{x}, \code{y},
-#' \code{ymin}, \code{ymax} and \code{group} values.
-#'
-#' There are multiple uses for double regression on x and y. For example, when
-#' two variables are subject to mutual constrains, it is useful to consider both
-#' of them as explanatory and interpret the relationship based on them. So, from
-#' version 0.4.1 'ggpmisc' makes it possible to easily implement the approach
-#' described by Cardoso (2019) under the name of "Double quantile regression".
+#' axis differently and thus is dependent on orientation. If no argument is
+#' passed to \code{formula}, it defaults to \code{y ~ x} but \code{x ~y} is also
+#' accepted, and equivalent to \code{y ~ x} plus \code{orientation = "y"}.
+#' Package 'ggpmisc' does not define a new geometry matching this statistic as
+#' it is enough for the statistic to return suitable `x` and `y` values.
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs to be
 #'   set at the layer level if you are overriding the plot defaults.
 #' @param data A layer specific dataset, only needed if you want to override
 #'   the plot defaults.
-#' @param geom The geometric object to use display the data
+#' @param geom The geometric object to use display the data.
 #' @param position The position adjustment to use for overlapping points on this
-#'   layer
+#'   layer.
 #' @param show.legend logical. Should this layer be included in the legends?
 #'   \code{NA}, the default, includes if any aesthetics are mapped. \code{FALSE}
 #'   never includes, and \code{TRUE} always includes.
@@ -50,7 +40,8 @@
 #'   the computation proceeds.
 #' @param formula a formula object. Using aesthetic names \code{x} and \code{y}
 #'   instead of original variable names.
-#' @param quantiles numeric vector Values in 0..1 indicating the quantiles.
+#' @param quantiles numeric vector Two or three values in 0..1 indicating the
+#'   quantiles at the  edges of the band and optionally a line within the band.
 #' @param method function or character If character, "lm", "rlm" and
 #'   "rq" are accepted. If a function, it must have formal parameters
 #'   \code{formula} and \code{data} and return a model fit object for which
@@ -60,27 +51,20 @@
 #' @param n Number of points at which to evaluate smoother.
 #' @param orientation character Either "x" or "y" controlling the default for
 #'   \code{formula}.
-#' @param se logical Passed to \code{quantreg::predict.rq()}.
-#' @param level numeric in range [0..1] Passed to \code{quantreg::predict.rq()}.
-#' @param type character Passed to \code{quantreg::predict.rq()}.
-#' @param interval character Passed to \code{quantreg::predict.rq()}.
-#'
 #'
 #' @return The value returned by the statistic is a data frame, that will have
-#'   \code{n} rows of predicted values and and their confidence limits for each
-#'   quantile, with each quantile in a group.
+#'   \code{n} rows of predicted values for three quantiles as \code{y},
+#'   \code{ymin} and \code{ymax}, plus \code{x}.
 #'
-#' @section Aesthetics: \code{stat_quant_line} understands \code{x} and \code{y},
+#' @section Computed variables: \code{stat_quant_band()} provides the following
+#'   variables,
+#'
+#' @section Aesthetics: \code{stat_poly_eq} understands \code{x} and \code{y},
 #'   to be referenced in the \code{formula} and \code{weight} passed as argument
 #'   to parameter \code{weights}. All three must be mapped to \code{numeric}
 #'   variables. In addition, the aesthetics understood by the geom
 #'   (\code{"geom_smooth"} is the default) are understood and grouping
 #'   respected.
-#'
-#' @references
-#' Cardoso, G. C. (2019) Double quantile regression accurately assesses
-#'   distance to boundary trade‐off. Methods in ecology and evolution, 2019-08,
-#'   10 (8), pp. 1322-1331.
 #'
 #' @family quantile regression functions.
 #'
@@ -89,70 +73,70 @@
 #' @examples
 #' ggplot(mpg, aes(displ, hwy)) +
 #'   geom_point() +
-#'   stat_quant_line()
-#'
-#' ggplot(mpg, aes(displ, hwy)) +
-#'   geom_point() +
-#'   stat_quant_line(se = TRUE)
+#'   stat_quant_band()
 #'
 #' # If you need the fitting to be done along the y-axis set the orientation
 #' ggplot(mpg, aes(displ, hwy)) +
 #'   geom_point() +
-#'   stat_quant_line(orientation = "y")
+#'   stat_quant_band(orientation = "y")
 #'
 #' ggplot(mpg, aes(displ, hwy)) +
 #'   geom_point() +
-#'   stat_quant_line(orientation = "y", se = TRUE)
+#'   stat_quant_band(formula = y ~ x)
 #'
 #' ggplot(mpg, aes(displ, hwy)) +
 #'   geom_point() +
-#'   stat_quant_line(formula = y ~ x)
+#'   stat_quant_band(formula = x ~ y)
 #'
 #' ggplot(mpg, aes(displ, hwy)) +
 #'   geom_point() +
-#'   stat_quant_line(formula = x ~ y)
+#'   stat_quant_band(formula = y ~ poly(x, 3))
 #'
 #' ggplot(mpg, aes(displ, hwy)) +
 #'   geom_point() +
-#'   stat_quant_line(formula = y ~ poly(x, 3))
-#'
-#' ggplot(mpg, aes(displ, hwy)) +
-#'   geom_point() +
-#'   stat_quant_line(formula = x ~ poly(y, 3))
+#'   stat_quant_band(formula = x ~ poly(y, 3))
 #'
 #' # Instead of a loess smooth, you can use any other modelling function:
 #' ggplot(mpg, aes(displ, hwy)) +
 #'   geom_point() +
-#'   stat_quant_line(method = "rqss")
+#'   stat_quant_band(method = "rqss")
 #'
 #' # Smooths are automatically fit to each group (defined by categorical
 #' # aesthetics or the group aesthetic) and for each facet.
 #'
 #' ggplot(mpg, aes(displ, hwy, colour = class)) +
 #'   geom_point() +
-#'   stat_quant_line(formula = y ~ x, quantiles = 0.5)
+#'   stat_quant_band(formula = y ~ x)
 #'
 #' ggplot(mpg, aes(displ, hwy)) +
 #'   geom_point() +
-#'   stat_quant_line(formula = y ~ poly(x, 2)) +
+#'   stat_quant_band(formula = y ~ poly(x, 2)) +
 #'   facet_wrap(~drv)
+#'
+#' ggplot(mpg, aes(displ, hwy)) +
+#'   geom_point() +
+#'   stat_quant_band(fill = "skyblue", linetype = "dashed")
+#'
+#' ggplot(mpg, aes(displ, hwy)) +
+#'   stat_quant_band(color = NA, alpha = 1) +
+#'   geom_point()
+#'
+#' ggplot(mpg, aes(displ, hwy)) +
+#'   stat_quant_band(quantiles = c(0, 0.1, 0.2)) +
+#'   geom_point()
 #'
 #' @export
 #'
-stat_quant_line <- function(mapping = NULL,
+stat_quant_band <- function(mapping = NULL,
                             data = NULL,
                             geom = "smooth",
                             position = "identity",
                             ...,
                             quantiles = c(0.25, 0.5, 0.75),
                             formula = NULL,
-                            se = FALSE,
                             n = 80,
                             method = "rq",
                             method.args = list(),
-                            level = 0.95,
-                            type = "direct",
-                            interval = "confidence",
                             na.rm = FALSE,
                             orientation = NA,
                             show.legend = NA,
@@ -181,7 +165,7 @@ stat_quant_line <- function(mapping = NULL,
   ggplot2::layer(
     data = data,
     mapping = mapping,
-    stat = StatQuantLine,
+    stat = StatQuantBand,
     geom = geom,
     position = position,
     show.legend = show.legend,
@@ -189,15 +173,12 @@ stat_quant_line <- function(mapping = NULL,
     params = list(
       quantiles = quantiles,
       formula = formula,
-      se = se,
       n = n,
       method = method,
       method.args = method.args,
       na.rm = na.rm,
       orientation = orientation,
-      level = level,
-      type = type,
-      interval = interval,
+      se = TRUE, # passed to geom_smooth
       ...
     )
   )
@@ -210,7 +191,7 @@ stat_quant_line <- function(mapping = NULL,
 #' @format NULL
 #' @usage NULL
 #'
-quant_line_compute_group_fun <- function(data,
+quant_band_compute_group_fun <- function(data,
                                          scales,
                                          quantiles = c(0.25, 0.5, 0.75),
                                          formula = NULL,
@@ -218,10 +199,6 @@ quant_line_compute_group_fun <- function(data,
                                          method = "rq",
                                          method.args = list(),
                                          lambda = 1,
-                                         level = 0.95,
-                                         type = "none",
-                                         interval = "none",
-                                         se = TRUE,
                                          na.rm = FALSE,
                                          flipped_aes = NA) {
   rlang::check_installed("quantreg", reason = "for `stat_quantile()`")
@@ -252,19 +229,15 @@ quant_line_compute_group_fun <- function(data,
     stopifnot(is.function(method))
   }
 
-  z <- dplyr::bind_rows(
-    lapply(quantiles, quant_pred, data = data, method = method,
-           formula = formula, weight = data$weight, grid = grid,
-           method.args = method.args, orientation = "x",
-           level = level, type = type, interval = interval)
-  )
-  if (is.matrix(z[["y"]])) {
-    z[["ymin"]] <- z[["y"]][ , 2L]
-    z[["ymax"]] <- z[["y"]][ , 3L]
-    z[["y"]] <- z[["y"]][ , 1L]
-  } else {
-    z[["ymin"]] <- z[["ymax"]] <- NA_real_
-  }
+  z.ls <- lapply(sort(quantiles), quant_pred, data = data, method = method,
+                 formula = formula, weight = data$weight, grid = grid,
+                 method.args = method.args, orientation = "x",
+                 make.groups = FALSE)
+  z <- z.ls[[2]]
+  z[["ymin"]] <- z.ls[[1]][["y"]]
+  z[["quantile.ymin"]] <- z.ls[[1]][["quantile"]]
+  z[["ymax"]] <- z.ls[[3]][["y"]]
+  z[["quantile.ymax"]] <- z.ls[[3]][["quantile"]]
 
   z[["flipped_aes"]] <- flipped_aes
   ggplot2::flip_data(z, flipped_aes)
@@ -274,51 +247,17 @@ quant_line_compute_group_fun <- function(data,
 #' @format NULL
 #' @usage NULL
 #' @export
-StatQuantLine <-
-  ggplot2::ggproto("StatQuantLine", ggplot2::Stat,
+StatQuantBand <-
+  ggplot2::ggproto("StatQuantBand", ggplot2::Stat,
                    setup_params = function(data, params) {
                      params$flipped_aes <-
                        ggplot2::has_flipped_aes(data, params, ambiguous = TRUE)
                      params
                    },
                    extra_params = c("na.rm", "orientation"),
-                   compute_group = quant_line_compute_group_fun,
-                   default_aes = ggplot2::aes(group = stat(group),
+                   compute_group = quant_band_compute_group_fun,
+                   default_aes = ggplot2::aes(group = after_stat(group),
                                               weight = 1),
                    required_aes = c("x", "y")
   )
-
-quant_pred <- function(quantile, data, method, formula, weight, grid,
-                       method.args = method.args, orientation = "x",
-                       level = 0.95, type = "none", interval = "none",
-                       make.groups = TRUE) {
-  args <- c(list(quote(formula), data = quote(data), tau = quote(quantile),
-    weights = quote(weight)), method.args)
-  # quantreg contains code with partial matching of names!
-  # so we silence selectively only these warnings
-  withCallingHandlers({
-    model <- do.call(method, args)
-  }, warning = function(w) {
-    if (startsWith(conditionMessage(w), "partial match of") ||
-        startsWith(conditionMessage(w), "partial argument match of")) {
-      invokeRestart("muffleWarning")
-    }
-  })
-
-  if (orientation == "x") {
-    grid$y <- stats::predict(model, newdata = grid, level = level,
-                             type = type, interval = interval)
-  } else {
-    grid$x <- stats::predict(model, newdata = grid, level = level,
-                             type = type, interval = interval)
-  }
-  grid$quantile <- quantile
-  if (make.groups) {
-    grid$group <- paste(data$group[1], quantile, sep = "-")
-  } else {
-    grid$group <- data$group[1]
-  }
-
-  grid
-}
 

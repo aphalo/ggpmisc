@@ -384,5 +384,9 @@ Other ggplot statistics for model fits:
 \code{\link{stat_fit_tb}()},
 \code{\link{stat_fit_tidy}()},
 \code{\link{stat_quant_eq}()}
+
+Other polynomial regression functions.: 
+\code{\link{stat_poly_line}()}
 }
 \concept{ggplot statistics for model fits}
+\concept{polynomial regression functions.}
