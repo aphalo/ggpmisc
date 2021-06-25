@@ -20,7 +20,7 @@ options(warnPartialMatchArgs = FALSE,
         tibble.print.max = 4,
         tibble.print.min = 4,
         dplyr.summarise.inform = FALSE)
-eval_flag <- FALSE # evaluate all code chunks
+eval_flag <- TRUE # evaluate all code chunks
 ```
 
 ## Preliminaries
@@ -486,7 +486,7 @@ ggplot(my.data, aes(x, y)) +
                label.y = 0.9)
 ```
 
-### stat_quant_eq() and stat_quant_line()
+### stat_quant_eq(), stat_quant_line() and stat_quant_band()
 
 In the case of quantile regression it is frequently the case that multiple
 quantile regressions are fitted. This case is not supported by `stat_poly_eq()`
@@ -497,9 +497,17 @@ _statistic_ behaves similarly to `ggplot2::stat_quantiles` with `method = "rq"`
 for _y_ on _x_ fits but adds support for _x_ on _y_ fits.
 
 The statistic `stat_quant_line()` adds a layer similar to that created by
-`ggplot2::stat_smooth()` including confidence bands for quantile regression, but
-has the same user interface and default arguments as `stat_quant_eq()` supports 
-both _x_ and _y_ as explanatory variable in formula` and also `orientation`.
+`ggplot2::stat_smooth()` including confidence bands for quantile regression, by
+default for _p_ = 0.95. However, it has the same user interface and default
+arguments as `stat_quant_eq()`, and supports both _x_ and _y_ as explanatory
+variable in formula` and also `orientation`.
+
+The statistic `stst_quant_band()` creates a line plus band plot that is, by
+default equivalent for quantile regressio of the box of a box plot showing
+quartiles plus a line for the median median regression. Which three quantiles
+are fitted can be set through paramater `quantiles` but in contrasts to
+`stat_quant_line()` and `stat_quant_eq()` only a vector of three quantiles is
+accepted.
 
 Please, see the section on `stat_poly_eq()` for applicable examples, as here
 we highlight only the differences between these two statistics. Like
@@ -539,6 +547,17 @@ ggplot(my.data, aes(x, y, group = group, linetype = group,
   stat_quant_eq(aes(label = paste(stat(grp.label), "*\": \"*",
                                   stat(eq.label), sep = "")),
                 formula = formula, size = 3) +
+  theme_classic()
+```
+
+
+```{r, warning=FALSE}
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_quant_band(formula = formula, color = "black") +
+  stat_quant_eq(aes(label = paste(stat(grp.label), "*\": \"*",
+                                  stat(eq.label), sep = "")),
+                formula = formula) +
   theme_classic()
 ```
 
