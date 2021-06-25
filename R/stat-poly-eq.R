@@ -40,6 +40,8 @@
 #'   it.
 #' @param coef.digits,f.digits integer Number of significant digits to use for
 #'   the fitted coefficients and F-value.
+#' @param coef.keep.zeros logical Keep or drop trailing zeros when formatting
+#'   the fitted coefficients and F-value.
 #' @param rr.digits,p.digits integer Number of digits after the decimal point to
 #'   use for R^2 and P-value in labels.
 #' @param label.x,label.y \code{numeric} with range 0..1 "normalized parent
@@ -235,8 +237,7 @@
 #'   stat_poly_eq(aes(label =  paste(stat(eq.label),
 #'                                   stat(adj.rr.label),
 #'                                   sep = "*\", \"*")),
-#'                formula = x ~ poly(y, 3, raw = TRUE),
-#'                rr.digits = 3, coef.digits = 4)
+#'                formula = x ~ poly(y, 3, raw = TRUE))
 #'
 #' # conditional user specified label
 #' ggplot(my.data, aes(x, y, color = group)) +
@@ -328,6 +329,7 @@ stat_poly_eq <- function(mapping = NULL, data = NULL,
                          eq.with.lhs = TRUE,
                          eq.x.rhs = NULL,
                          coef.digits = 3,
+                         coef.keep.zeros = TRUE,
                          rr.digits = 2,
                          f.digits = 3,
                          p.digits = 3,
@@ -369,6 +371,7 @@ stat_poly_eq <- function(mapping = NULL, data = NULL,
                   eq.with.lhs = eq.with.lhs,
                   eq.x.rhs = eq.x.rhs,
                   coef.digits = coef.digits,
+                  coef.keep.zeros = coef.keep.zeros,
                   rr.digits = rr.digits,
                   f.digits = f.digits,
                   p.digits = p.digits,
@@ -405,6 +408,7 @@ poly_eq_compute_group_fun <- function(data,
                                       eq.with.lhs,
                                       eq.x.rhs,
                                       coef.digits,
+                                      coef.keep.zeros,
                                       rr.digits,
                                       f.digits,
                                       p.digits,
@@ -604,13 +608,9 @@ poly_eq_compute_group_fun <- function(data,
     if (coef.digits < 3) {
       warning("'coef.digits < 3' Likely information loss!")
     }
-    eq.char <- as.character(signif(polynom::as.polynomial(coefs), coef.digits))
-    # as character drops 1
-    eq.char <-
-      gsub("+ x",
-           paste("+ 1.", stringr::str_dup("0", coef.digits - 1L), "*x",
-                 sep = ""),
-           eq.char, fixed = TRUE)
+    eq.char <- as.character(polynom::as.polynomial(coefs),
+                            digits = coef.digits,
+                            keep.zeros = coef.keep.zeros)
     eq.char <- gsub("e([+-]?[0-9]*)", "%*%10^{\\1}", eq.char)
     if (output.type %in% c("latex", "tex", "tikz", "markdown")) {
       eq.char <- gsub("*", " ", eq.char, fixed = TRUE)
@@ -636,9 +636,10 @@ poly_eq_compute_group_fun <- function(data,
     }
     rr.char <- as.character(round(rr, digits = rr.digits))
     adj.rr.char <- as.character(round(adj.rr, digits = rr.digits))
-    AIC.char <- sprintf("%.4g", AIC)
-    BIC.char <- sprintf("%.4g", BIC)
-    f.value.char <- as.character(signif(f.value, digits = f.digits))
+    AIC.char <- sprintf("%.4#g", AIC)
+    BIC.char <- sprintf("%.4#g", BIC)
+#   f.value.char <- as.character(signif(f.value, digits = f.digits))
+    f.value.char <- sprintf(paste("%.", f.digits, "#g", sep = ""), f.value)
     f.df1.char <- as.character(f.df1)
     f.df2.char <- as.character(f.df2)
     p.value.char <- as.character(round(p.value, digits = p.digits))

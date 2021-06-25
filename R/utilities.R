@@ -94,3 +94,37 @@ polynomial2character <- function (x, decreasing = FALSE, digits = 2, nsmall = 2)
   stars[p == "" | pow == ""] <- ""
   paste0(signs, p, stars, pow, collapse = " ")
 }
+
+# based on idea in answer by slamballais to Stackoverflow question
+# at https://stackoverflow.com/questions/67942485/
+#
+# This is an edit of the code in package 'polynom'
+#
+as.character.polynomial <- function (x,
+                                     decreasing = FALSE,
+                                     digits = 3,
+                                     keep.zeros = TRUE) {
+  if (keep.zeros) {
+    p <- sprintf("%.*#g", digits, x)
+  } else {
+    p <- sprintf("%.*g", digits, x)
+  }
+  lp <- length(p) - 1
+  names(p) <- 0:lp
+  p <- p[as.numeric(p) != 0]
+  if (length(p) == 0)
+    return("0")
+  if (decreasing)
+    p <- rev(p)
+  signs <- ifelse(as.numeric(p) < 0, "- ", "+ ")
+  signs[1] <- if (signs[1] == "- ") "-" else ""
+  np <- names(p)
+  pow <- paste("x^", np, sep = "")
+  pow[np == "0"] <- ""
+  pow[np == "1"] <- "x"
+  stars <- rep.int("*", length(p))
+  stars[p == "" | pow == ""] <- ""
+  p <- gsub("^-", "", p)
+  paste0(signs, p, stars, pow, collapse = " ")
+}
+

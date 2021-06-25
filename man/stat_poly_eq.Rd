@@ -16,6 +16,7 @@ stat_poly_eq(
   eq.with.lhs = TRUE,
   eq.x.rhs = NULL,
   coef.digits = 3,
+  coef.keep.zeros = TRUE,
   rr.digits = 2,
   f.digits = 3,
   p.digits = 3,
@@ -69,6 +70,9 @@ the equation label before parsing or a \code{logical} (see note).}
 it.}
 
 \item{coef.digits, f.digits}{integer Number of significant digits to use for
+the fitted coefficients and F-value.}
+
+\item{coef.keep.zeros}{logical Keep or drop trailing zeros when formatting
 the fitted coefficients and F-value.}
 
 \item{rr.digits, p.digits}{integer Number of digits after the decimal point to
@@ -281,8 +285,7 @@ ggplot(my.data, aes(x, y)) +
   stat_poly_eq(aes(label =  paste(stat(eq.label),
                                   stat(adj.rr.label),
                                   sep = "*\", \"*")),
-               formula = x ~ poly(y, 3, raw = TRUE),
-               rr.digits = 3, coef.digits = 4)
+               formula = x ~ poly(y, 3, raw = TRUE))
 
 # conditional user specified label
 ggplot(my.data, aes(x, y, color = group)) +

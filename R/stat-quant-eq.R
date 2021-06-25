@@ -44,6 +44,8 @@
 #'   it.
 #' @param coef.digits,rho.digits integer Number of significant digits to use for
 #'   the fitted coefficients and rho in labels.
+#' @param coef.keep.zeros logical Keep or drop trailing zeros when formatting
+#'   the fitted coefficients and F-value.
 #' @param label.x,label.y \code{numeric} with range 0..1 "normalized parent
 #'   coordinates" (npc units) or character if using \code{geom_text_npc()} or
 #'   \code{geom_label_npc()}. If using \code{geom_text()} or \code{geom_label()}
@@ -333,6 +335,7 @@ stat_quant_eq <- function(mapping = NULL, data = NULL,
                          eq.with.lhs = TRUE,
                          eq.x.rhs = NULL,
                          coef.digits = 3,
+                         coef.keep.zeros = TRUE,
                          rho.digits = 2,
                          label.x = "left", label.y = "top",
                          label.x.npc = NULL, label.y.npc = NULL,
@@ -369,6 +372,7 @@ stat_quant_eq <- function(mapping = NULL, data = NULL,
                   eq.with.lhs = eq.with.lhs,
                   eq.x.rhs = eq.x.rhs,
                   coef.digits = coef.digits,
+                  coef.keep.zeros = coef.keep.zeros,
                   rho.digits = rho.digits,
                   label.x = label.x,
                   label.y = label.y,
@@ -402,6 +406,7 @@ quant_eq_compute_group_fun <- function(data,
                                        eq.with.lhs,
                                        eq.x.rhs,
                                        coef.digits,
+                                       coef.keep.zeros,
                                        rho.digits,
                                        label.x,
                                        label.y,
@@ -584,13 +589,9 @@ quant_eq_compute_group_fun <- function(data,
 
     eq.char <- AIC.char <- rho.char <- character(num.quantiles)
     for (q in seq_along(quantiles)) {
-      eq.char[q] <- as.character(signif(polynom::as.polynomial(coefs.ls[[q]]),
-                                        coef.digits))
-      eq.char[q] <-
-        gsub("+ x",
-             paste("+ 1.", stringr::str_dup("0", coef.digits - 1L), "*x",
-                   sep = ""),
-             eq.char[q], fixed = TRUE)
+      eq.char[q] <- as.character(polynom::as.polynomial(coefs.ls[[q]]),
+                                 digits = coef.digits,
+                                 keep.zeros = coef.keep.zeros)
       eq.char[q] <- gsub("e([+-]?[0-9]*)", "%*%10^{\\1}", eq.char[q])
       if (output.type %in% c("latex", "tex", "tikz", "markdown")) {
         eq.char[q] <- gsub("*", " ", eq.char[q], fixed = TRUE)
@@ -601,8 +602,8 @@ quant_eq_compute_group_fun <- function(data,
         eq.char[q] <- paste(lhs, eq.char[q], sep = "")
       }
 
-      AIC.char[q] <- sprintf("%.4g", AIC[q])
-      rho.char[q] <- sprintf("%.3g", rho[q])
+      AIC.char[q] <- sprintf("%.4#g", AIC[q])
+      rho.char[q] <- sprintf("%.3#g", rho[q])
     }
 
     # build data frames to return

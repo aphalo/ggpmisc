@@ -9,10 +9,11 @@ editor_options:
 The suggestion from *Mark Neal* of adding support for quantile
 regression partly addressed in ggpmisc 0.4.0 has lead to additional
 enhancements in this version. The idea of supporting confidence bands
-for quantile regression came from *Samer Mouksassi*. Additional
-suggestions from Mark and other users have lead to bug fixes as well to
-an interface with better defaults for arguments . Some other
-enhancements are based on my own needs or ideas.
+for quantile regression came from *Samer Mouksassi* who also provided
+code examples. Additional suggestions from *Mark Neal, Carl* and other
+users have lead to bug fixes as well as to an interface with better
+defaults for arguments . Some other enhancements are based on my own
+needs or ideas.
 
 -   Add support for median regression using `rq`, robust regression
     using `rlm` and other `function` objects in `stat_poly_eq()`.
@@ -56,6 +57,16 @@ enhancements are based on my own needs or ideas.
 -   Add `weights` to returned values by `stat_fit_residuals()` and
     `stat_fit_deviations()` and add support for the `weight` aesthetic
     as their input for parameter `weights` of the model fit functions.
+-   Revise `stat_poly_eq()` and `stat_quant_eq()` so that they by
+    default keep trailing zeros according to the numbers of significant
+    digits given by `coef.digits`. A new parameter `keep.zeros` can be
+    set to `FALSE` to restore the deletion of trailing zeros. Be aware
+    that even if the character labels returned contain trailing zeros,
+    if they are parsed into R expressions (as they are by default) the
+    trailing zeros will be dropped at this stage. They will be rendered
+    to the plot only if `output.type` is other than `"expression"`.
+    Equations may in all cases be rendered slightly differently than in
+    previous versions as now `sprintf()` is used.
 
 # ggpmisc 0.4.0
 

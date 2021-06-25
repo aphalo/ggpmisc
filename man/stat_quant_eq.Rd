@@ -15,6 +15,7 @@ stat_quant_eq(
   eq.with.lhs = TRUE,
   eq.x.rhs = NULL,
   coef.digits = 3,
+  coef.keep.zeros = TRUE,
   rho.digits = 2,
   label.x = "left",
   label.y = "top",
@@ -61,6 +62,9 @@ it.}
 
 \item{coef.digits, rho.digits}{integer Number of significant digits to use for
 the fitted coefficients and rho in labels.}
+
+\item{coef.keep.zeros}{logical Keep or drop trailing zeros when formatting
+the fitted coefficients and F-value.}
 
 \item{label.x, label.y}{\code{numeric} with range 0..1 "normalized parent
 coordinates" (npc units) or character if using \code{geom_text_npc()} or
