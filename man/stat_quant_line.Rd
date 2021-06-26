@@ -83,7 +83,12 @@ default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
 \value{
 The value returned by the statistic is a data frame, that will have
   \code{n} rows of predicted values and and their confidence limits for each
-  quantile, with each quantile in a group.
+  quantile, with each quantile in a group. The variables are \code{x} and
+  \code{y} with \code{y} containing predicted values. In addition,
+  \code{quantile} and \code{quantile.f} indicate the quantile used and
+  and edited \code{group} preserves the original grouping adding a new
+  "level" for each quantile. Is \code{se = TRUE}, a confidence band is
+  computed and values for it returned in \code{ymax} and \code{ymin}.
 }
 \description{
 Predicted values are computed and, by default, plotted. Depending on the

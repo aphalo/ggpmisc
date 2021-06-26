@@ -167,33 +167,12 @@ Support for the \code{angle} aesthetic is not automatic and requires
   used (\code{"text"} by default) are understood and grouping respected.
 }
 
-\section{Computed variables}{
-
-If output.type different from \code{"numeric"} the returned tibble contains
-columns:
-\describe{
-  \item{x,npcx}{x position}
-  \item{y,npcy}{y position}
-  \item{coef.ls, r.squared, adj.r.squared, AIC, BIC}{as numric values extracted from fit object}
-  \item{eq.label}{equation for the fitted polynomial as a character string to be parsed}
-  \item{rho.label}{\eqn{rho} of the fitted model as a character string to be parsed}
-  \item{AIC.label}{AIC for the fitted model.}
-  \item{n.label}{Number of observations used in the fit.}
-  \item{rq.method}{character, method used.}
-  \item{rho, n}{numeric values extracted or computed from fit object.}
-  \item{hjust, vjust}{Set to "inward" to override the default of the "text" geom.}}
-
-If output.type is \code{"numeric"} the returned tibble contains columns:
-\describe{
-  \item{x,npcx}{x position}
-  \item{y,npcy}{y position}
-  \item{coef.ls}{list containing the "coefficients" matrix from the summary of the fit object}
-  \item{rho, AIC, n}{numeric values extracted or computed from fit object}
-  \item{rq.method}{character, method used.}
-  \item{hjust, vjust}{Set to "inward" to override the default of the "text" geom.}}
-
-To explore the computed values returned for a given input we suggest the use
-of \code{\link[gginnards]{geom_debug}} as shown in the example below.
+\section{NA}{
+ \code{stat_quant_eq} understands \code{x} and \code{y},
+  to be referenced in the \code{formula} and \code{weight} passed as argument
+  to parameter \code{weights} of \code{lm()}. All three must be mapped to
+  \code{numeric} variables. In addition, the aesthetics undertood by the geom
+  used (\code{"text"} by default) are understood and grouping respected.
 }
 
 \examples{
@@ -209,20 +188,35 @@ my.data <- data.frame(x = x, y = y,
 # using defaults
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  geom_quantile() +
+  stat_quant_line() +
   stat_quant_eq()
 
 # same formula as default
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  geom_quantile(formula = y ~ x) +
+  stat_quant_line(formula = y ~ x) +
   stat_quant_eq(formula = y ~ x)
 
 # explicit formula "x explained by y"
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-#   geom_quantile() +
+  stat_quant_line(formula = x ~ y) +
   stat_quant_eq(formula = x ~ y)
+
+# using color
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_quant_line(aes(color = after_stat(quantile.f))) +
+  stat_quant_eq(aes(color = after_stat(quantile.f))) +
+  labs(color = "Quantiles")
+
+# location and colour
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_quant_line(aes(color = after_stat(quantile.f))) +
+  stat_quant_eq(aes(color = after_stat(quantile.f)),
+                label.y = "bottom", label.x = "right") +
+  labs(color = "Quantiles")
 
 # give a name to a formula
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -230,19 +224,19 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 # no weights
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  geom_quantile(formula = formula) +
+  stat_quant_line(formula = formula) +
   stat_quant_eq(formula = formula)
 
 # angle
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  geom_quantile(formula = formula) +
+  stat_quant_line(formula = formula) +
   stat_quant_eq(formula = formula, angle = 90, hstep = 0.05, vstep = 0,
-                label.y = 0.9, hjust = 1)
+                label.y = 0.98, hjust = 1)
 
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  geom_quantile(formula = formula) +
+  stat_quant_line(formula = formula) +
   stat_quant_eq(formula = formula, angle = 90,
                 hstep = 0.05, vstep = 0, hjust = 0,
                 label.y = 0.5)
@@ -250,27 +244,27 @@ ggplot(my.data, aes(x, y)) +
 # user set quantiles
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  geom_quantile(formula = formula, quantiles = 0.5) +
+  stat_quant_line(formula = formula, quantiles = 0.5) +
   stat_quant_eq(formula = formula, quantiles = 0.5)
 
 # grouping
 ggplot(my.data, aes(x, y, color = group)) +
   geom_point() +
-  geom_quantile(formula = formula) +
+  stat_quant_line(formula = formula) +
   stat_quant_eq(formula = formula)
 
 ggplot(my.data, aes(x, y, color = group)) +
   geom_point() +
-  geom_quantile(formula = formula) +
+  stat_quant_line(formula = formula) +
   stat_quant_eq(formula = formula, angle = 90,
                 hstep = 0.05, vstep = 0, hjust = 0,
-                label.y = 0.5)
+                label.y = 0.3)
 
 # labelling equations
 ggplot(my.data, aes(x, y,  shape = group, linetype = group,
        grp.label = group)) +
   geom_point() +
-  geom_quantile(formula = formula, color = "black") +
+  stat_quant_line(formula = formula, color = "black") +
   stat_quant_eq(aes(label = paste(stat(grp.label), stat(eq.label), sep = "*\": \"*")),
                 formula = formula) +
   theme_classic()
@@ -278,7 +272,7 @@ ggplot(my.data, aes(x, y,  shape = group, linetype = group,
 # setting non-default quantiles
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  geom_quantile(formula = formula,
+  stat_quant_line(formula = formula,
                 quantiles = c(0.1, 0.5, 0.9)) +
   stat_quant_eq(formula = formula, parse = TRUE,
                quantiles = c(0.1, 0.5, 0.9))
@@ -286,30 +280,30 @@ ggplot(my.data, aes(x, y)) +
 # Location of equations
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  geom_quantile(formula = formula) +
+  stat_quant_line(formula = formula) +
   stat_quant_eq(formula = formula, label.y = "bottom", label.x = "right")
 
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  geom_quantile(formula = formula) +
+  stat_quant_line(formula = formula) +
   stat_quant_eq(formula = formula, label.y = 0.03, label.x = 0.95, vstep = 0.04)
 
 # using weights
 ggplot(my.data, aes(x, y, weight = w)) +
   geom_point() +
-  geom_quantile(formula = formula) +
+  stat_quant_line(formula = formula) +
   stat_quant_eq(formula = formula)
 
 # no weights, quantile set to upper boundary
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  geom_quantile(formula = formula, quantiles = 1) +
+  stat_quant_line(formula = formula, quantiles = 1) +
   stat_quant_eq(formula = formula, quantiles = 1)
 
 # user specified label
 ggplot(my.data, aes(x, y, color = group, grp.label = group)) +
   geom_point() +
-  geom_quantile(method = "rq", formula = formula,
+  stat_quant_line(method = "rq", formula = formula,
                 quantiles = c(0.05, 0.5, 0.95)) +
   stat_quant_eq(aes(label = paste(stat(grp.label), "*\": \"*",
                                    stat(eq.label), sep = "")),
@@ -319,7 +313,7 @@ ggplot(my.data, aes(x, y, color = group, grp.label = group)) +
 # geom = "text"
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  geom_quantile(method = "rq", formula = formula, quantiles = 0.5) +
+  stat_quant_line(method = "rq", formula = formula, quantiles = 0.5) +
   stat_quant_eq(label.x = "left", label.y = "top",
                 formula = formula)
 

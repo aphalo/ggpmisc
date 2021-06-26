@@ -124,7 +124,9 @@
 #'   \item{rq.method}{character, method used.}
 #'   \item{rho, n}{numeric values extracted or computed from fit object.}
 #'   \item{hjust, vjust}{Set to "inward" to override the default of the "text" geom.}
-#'   \item{quantile}{Indicating the quantile used for the fit}}
+#'   \item{quantile}{Numeric value of the quantile used for the fit}
+#'   \item{quantile.f}{Factor with a level for each quantile},
+#'   }
 #'
 #' If output.type is \code{"numeric"} the returned tibble contains columns
 #'  in addition to a modified version of the original \code{group}:
@@ -136,6 +138,7 @@
 #'   \item{rq.method}{character, method used.}
 #'   \item{hjust, vjust}{Set to "inward" to override the default of the "text" geom.}}
 #'   \item{quantile}{Indicating the quantile  used for the fit}}
+#'   \item{quantile.f}{Factor with a level for each quantile},
 #'
 #' To explore the computed values returned for a given input we suggest the use
 #' of \code{\link[gginnards]{geom_debug}} as shown in the example below.
@@ -184,17 +187,20 @@
 #'   stat_quant_line(formula = x ~ y) +
 #'   stat_quant_eq(formula = x ~ y)
 #'
-#' # location
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_point() +
-#'   stat_quant_line(formula = y ~ x) +
-#'   stat_quant_eq(formula = y ~ x, label.y = "bottom", label = "right")
-#'
 #' # using color
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   stat_quant_line(aes(color = after_stat(factor(quantile)))) +
-#'   stat_quant_eq(aes(color = after_stat(factor(quantile))))
+#'   stat_quant_line(aes(color = after_stat(quantile.f))) +
+#'   stat_quant_eq(aes(color = after_stat(quantile.f))) +
+#'   labs(color = "Quantiles")
+#'
+#' # location and colour
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   stat_quant_line(aes(color = after_stat(quantile.f))) +
+#'   stat_quant_eq(aes(color = after_stat(quantile.f)),
+#'                 label.y = "bottom", label.x = "right") +
+#'   labs(color = "Quantiles")
 #'
 #' # give a name to a formula
 #' formula <- y ~ poly(x, 3, raw = TRUE)
@@ -433,6 +439,13 @@ quant_eq_compute_group_fun <- function(data,
                                        orientation) {
   force(data)
   num.quantiles <- length(quantiles)
+  quantiles <- sort(quantiles)
+  quant.digits <- ifelse(min(quantiles) < 0.01 || max(quantiles) > 0.99, 3, 2)
+  quant.levels <- sort(unique(quantiles), decreasing = TRUE)
+  quant.labels <- sprintf("%.*#f", quant.digits, quant.levels)
+  quantiles.f <- factor(quantiles,
+                        levels = quant.levels,
+                        labels = quant.labels)
   # we guess formula from orientation
   if (is.null(formula)) {
     if (is.na(orientation) || orientation == "x") {
@@ -540,6 +553,7 @@ quant_eq_compute_group_fun <- function(data,
   if (output.type == "numeric") {
     z <- tibble::tibble(coef.ls = coefs.ls,
                         quantile = quantiles,
+                        quantile.f = quantiles.f,
                         rq.method = rq.method,
                         AIC = AIC,
                         rho = rho,
@@ -631,6 +645,7 @@ quant_eq_compute_group_fun <- function(data,
                                         sprintf("italic(q)~`=`~%.2f", quantiles),
                           rq.method = rq.method,
                           quantile = quantiles,
+                          quantile.f = quantiles.f,
                           n = n)
     } else if (output.type %in% c("latex", "tex", "text", "tikz")) {
       z <- tibble::tibble(eq.label = eq.char,
@@ -641,6 +656,7 @@ quant_eq_compute_group_fun <- function(data,
                                             sprintf("q = %.2f", quantiles)),
                           rq.method = rq.method,
                           quantile = quantiles,
+                          quantile.f = quantiles.f,
                           n = n)
     } else if (output.type == "markdown") {
       z <- tibble::tibble(eq.label = eq.char,
@@ -651,6 +667,7 @@ quant_eq_compute_group_fun <- function(data,
                                             sprintf("q = %.2f", quantiles)),
                           rq.method = rq.method,
                           quantile = quantiles,
+                          quantile.f = quantiles.f,
                           n = n)
     } else {
       warning("Unknown 'output.type' argument: ", output.type)
@@ -699,7 +716,9 @@ quant_eq_compute_group_fun <- function(data,
       label.x <- x
     }
   }
+
   if (is.character(label.y)) {
+    rev.y.pos <- length(label.y) == 1L && label.y != "bottom"
     if (npc.used) {
       margin.npc <- 0.05
     } else {
@@ -715,6 +734,7 @@ quant_eq_compute_group_fun <- function(data,
       label.y <- label.y * y.expanse + y.min
     }
   } else if (is.numeric(label.y) && length(label.y == 1L)) {
+    rev.y.pos <- length(label.y) == 1L && label.y >= 0.5
     if (!npc.used) {
       y.expanse <- abs(diff(range(data[["y"]])))
       y.min <- min(data[["y"]])
@@ -744,12 +764,12 @@ quant_eq_compute_group_fun <- function(data,
   if (npc.used) {
     z[["npcx"]] <- label.x
     z[["x"]] <- NA_real_
-    z[["npcy"]] <- label.y
+    z[["npcy"]] <- if (rev.y.pos) rev(label.y) else label.y
     z[["y"]] <- NA_real_
   } else {
     z[["x"]] <- label.x
     z[["npcx"]] <- NA_real_
-    z[["y"]] <- label.y
+    z[["y"]] <- if (rev.y.pos) rev(label.y) else label.y
     z[["npcy"]] <- NA_real_
   }
 

@@ -65,10 +65,14 @@
 #' @param type character Passed to \code{quantreg::predict.rq()}.
 #' @param interval character Passed to \code{quantreg::predict.rq()}.
 #'
-#'
 #' @return The value returned by the statistic is a data frame, that will have
 #'   \code{n} rows of predicted values and and their confidence limits for each
-#'   quantile, with each quantile in a group.
+#'   quantile, with each quantile in a group. The variables are \code{x} and
+#'   \code{y} with \code{y} containing predicted values. In addition,
+#'   \code{quantile} and \code{quantile.f} indicate the quantile used and
+#'   and edited \code{group} preserves the original grouping adding a new
+#'   "level" for each quantile. Is \code{se = TRUE}, a confidence band is
+#'   computed and values for it returned in \code{ymax} and \code{ymin}.
 #'
 #' @section Aesthetics: \code{stat_quant_line} understands \code{x} and \code{y},
 #'   to be referenced in the \code{formula} and \code{weight} passed as argument
@@ -226,6 +230,8 @@ quant_line_compute_group_fun <- function(data,
                                          flipped_aes = NA) {
   rlang::check_installed("quantreg", reason = "for `stat_quantile()`")
 
+  quantiles <- sort(quantiles)
+
   data <- ggplot2::flip_data(data, flipped_aes)
 
   if (is.null(data[["weight"]])) {
@@ -265,6 +271,13 @@ quant_line_compute_group_fun <- function(data,
   } else {
     z[["ymin"]] <- z[["ymax"]] <- NA_real_
   }
+
+  quant.digits <- ifelse(min(z[["quantile"]]) < 0.01 || max(z[["quantile"]]) > 0.99,
+                         3, 2)
+  quant.levels <- sort(unique(z[["quantile"]]), decreasing = TRUE)
+  quant.labels <- sprintf("%.*#f", quant.digits, quant.levels)
+  z[["quantile.f"]] <-
+    factor(z[["quantile"]], levels = quant.levels, labels = quant.labels)
 
   z[["flipped_aes"]] <- flipped_aes
   ggplot2::flip_data(z, flipped_aes)
