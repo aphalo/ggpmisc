@@ -230,8 +230,6 @@ quant_line_compute_group_fun <- function(data,
                                          flipped_aes = NA) {
   rlang::check_installed("quantreg", reason = "for `stat_quantile()`")
 
-  quantiles <- sort(quantiles)
-
   data <- ggplot2::flip_data(data, flipped_aes)
 
   if (is.null(data[["weight"]])) {
@@ -260,7 +258,7 @@ quant_line_compute_group_fun <- function(data,
 
   z <- dplyr::bind_rows(
     lapply(quantiles, quant_pred, data = data, method = method,
-           formula = formula, weight = data$weight, grid = grid,
+           formula = formula, weight = data[["weight"]], grid = grid,
            method.args = method.args, orientation = "x",
            level = level, type = type, interval = interval)
   )
@@ -272,6 +270,7 @@ quant_line_compute_group_fun <- function(data,
     z[["ymin"]] <- z[["ymax"]] <- NA_real_
   }
 
+  # a factor with nicely formatted labels for levels is helpful
   quant.digits <- ifelse(min(z[["quantile"]]) < 0.01 || max(z[["quantile"]]) > 0.99,
                          3, 2)
   quant.levels <- sort(unique(z[["quantile"]]), decreasing = TRUE)
@@ -290,7 +289,7 @@ quant_line_compute_group_fun <- function(data,
 StatQuantLine <-
   ggplot2::ggproto("StatQuantLine", ggplot2::Stat,
                    setup_params = function(data, params) {
-                     params$flipped_aes <-
+                     params[["flipped_aes"]] <-
                        ggplot2::has_flipped_aes(data, params, ambiguous = TRUE)
                      params
                    },
@@ -301,6 +300,7 @@ StatQuantLine <-
                    required_aes = c("x", "y")
   )
 
+# modified from 'ggplot2'
 quant_pred <- function(quantile, data, method, formula, weight, grid,
                        method.args = method.args, orientation = "x",
                        level = 0.95, type = "none", interval = "none",
@@ -319,17 +319,17 @@ quant_pred <- function(quantile, data, method, formula, weight, grid,
   })
 
   if (orientation == "x") {
-    grid$y <- stats::predict(model, newdata = grid, level = level,
-                             type = type, interval = interval)
+    grid[["y"]] <- stats::predict(model, newdata = grid, level = level,
+                                  type = type, interval = interval)
   } else {
-    grid$x <- stats::predict(model, newdata = grid, level = level,
-                             type = type, interval = interval)
+    grid[["x"]] <- stats::predict(model, newdata = grid, level = level,
+                                  type = type, interval = interval)
   }
-  grid$quantile <- quantile
+  grid[["quantile"]] <- quantile
   if (make.groups) {
-    grid$group <- paste(data$group[1], quantile, sep = "-")
+    grid[["group"]] <- paste(data[["group"]][1], quantile, sep = "-")
   } else {
-    grid$group <- data$group[1]
+    grid[["group"]] <- data[["group"]][1]
   }
 
   grid

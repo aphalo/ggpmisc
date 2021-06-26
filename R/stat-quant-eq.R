@@ -439,13 +439,18 @@ quant_eq_compute_group_fun <- function(data,
                                        orientation) {
   force(data)
   num.quantiles <- length(quantiles)
+
+  # make sure quantiles are ordered
   quantiles <- sort(quantiles)
+
+  # factor with nicely formatted labels
   quant.digits <- ifelse(min(quantiles) < 0.01 || max(quantiles) > 0.99, 3, 2)
   quant.levels <- sort(unique(quantiles), decreasing = TRUE)
   quant.labels <- sprintf("%.*#f", quant.digits, quant.levels)
   quantiles.f <- factor(quantiles,
                         levels = quant.levels,
                         labels = quant.labels)
+
   # we guess formula from orientation
   if (is.null(formula)) {
     if (is.na(orientation) || orientation == "x") {
@@ -495,14 +500,14 @@ quant_eq_compute_group_fun <- function(data,
   }
 
   if (orientation == "x") {
-    if (length(unique(data$x)) < 2) {
+    if (length(unique(data[["x"]])) < 2) {
       warning("Not enough data to perform fit for group ",
               group.idx, "; computing mean instead.",
               call. = FALSE)
       formula = y ~ 1
     }
   } else if (orientation == "y") {
-    if (length(unique(data$y)) < 2) {
+    if (length(unique(data[["y"]])) < 2) {
       warning("Not enough data to perform fit for group ",
               group.idx, "; computing mean instead.",
               call. = FALSE)
