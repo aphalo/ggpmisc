@@ -59,13 +59,14 @@ needs or ideas.
     as their input for parameter `weights` of the model fit functions.
 -   Revise `stat_poly_eq()` and `stat_quant_eq()` so that they by
     default keep trailing zeros according to the numbers of significant
-    digits given by `coef.digits`. A new parameter `keep.zeros` can be
-    set to `FALSE` to restore the deletion of trailing zeros. Be aware
-    that even if the character labels returned contain trailing zeros,
-    if they are parsed into R expressions (as they are by default) the
-    trailing zeros will be dropped at this stage. They will be rendered
-    to the plot only if `output.type` is other than `"expression"`.
-    Equations may in all cases be rendered slightly differently than in
+    digits given by `coef.digits`. A new parameter `coef.keep.zeros` can
+    be set to `FALSE` to restore the deletion of trailing zeros. Be
+    aware that even if the character label for the equation contains
+    trailing zeros, if it is parsed into R expressions (as it is by
+    default) the trailing zeros will be dropped at this stage. *Trailing
+    zeros in the equation will be rendered to the plot only if
+    `output.type` is other than `"expression"`.* Equations and other
+    labels may in all cases be rendered slightly differently than in
     previous versions as now `sprintf()` is used.
 
 # ggpmisc 0.4.0

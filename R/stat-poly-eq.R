@@ -634,15 +634,26 @@ poly_eq_compute_group_fun <- function(data,
     if (p.digits < 2) {
       warning("'p.digits < 2' Likely information loss!")
     }
-    rr.char <- as.character(round(rr, digits = rr.digits))
-    adj.rr.char <- as.character(round(adj.rr, digits = rr.digits))
-    AIC.char <- sprintf("%.4#g", AIC)
-    BIC.char <- sprintf("%.4#g", BIC)
-#   f.value.char <- as.character(signif(f.value, digits = f.digits))
-    f.value.char <- sprintf(paste("%.", f.digits, "#g", sep = ""), f.value)
-    f.df1.char <- as.character(f.df1)
-    f.df2.char <- as.character(f.df2)
-    p.value.char <- as.character(round(p.value, digits = p.digits))
+
+    if (output.type == "expression" && coef.keep.zeros) {
+      rr.char <- sprintf("\"%.*#f\"", rr.digits, rr)
+      adj.rr.char <- sprintf("\"%.*#f\"", rr.digits, adj.rr)
+      AIC.char <- sprintf("\"%.4g\"", AIC)
+      BIC.char <- sprintf("\"%.4g\"", BIC)
+      f.value.char <- sprintf("\"%.*#g\"", f.digits, f.value)
+      f.df1.char <- as.character(f.df1)
+      f.df2.char <- as.character(f.df2)
+      p.value.char <- sprintf("\"%.*#g\"", p.digits, p.value)
+    } else {
+      rr.char <- sprintf("%.*#f", rr.digits, rr)
+      adj.rr.char <- sprintf("%.*#f", rr.digits, adj.rr)
+      AIC.char <- sprintf("%.4g", AIC)
+      BIC.char <- sprintf("%.4g", BIC)
+      f.value.char <- sprintf("%.*#g", f.digits, f.value)
+      f.df1.char <- as.character(f.df1)
+      f.df2.char <- as.character(f.df2)
+      p.value.char <- sprintf("%.*#g", p.digits, p.value)
+    }
 
     # build the data frames to return
     if (output.type == "expression") {
@@ -652,7 +663,7 @@ poly_eq_compute_group_fun <- function(data,
                             ifelse(is.na(rr), character(0L),
                                    paste("italic(R)^2",
                                          ifelse(rr < 10^(-rr.digits) & rr != 0,
-                                                as.character(10^(-rr.digits)),
+                                                sprintf("\"%.*f\"", rr.digits, 10^(-rr.digits)),
                                                 rr.char),
                                          sep = ifelse(rr < 10^(-rr.digits) & rr != 0,
                                                       "~`<`~",
@@ -661,7 +672,7 @@ poly_eq_compute_group_fun <- function(data,
                             ifelse(is.na(adj.rr), character(0L),
                                    paste("italic(R)[adj]^2",
                                          ifelse(adj.rr < 10^(-rr.digits) & adj.rr != 0,
-                                                as.character(10^(-rr.digits)),
+                                                sprintf("\"%.*f\"", rr.digits, 10^(-rr.digits)),
                                                 adj.rr.char),
                                          sep = ifelse(adj.rr < 10^(-rr.digits) & adj.rr != 0,
                                                       "~`<`~",
@@ -681,12 +692,12 @@ poly_eq_compute_group_fun <- function(data,
                             ifelse(is.na(p.value), character(0L),
                                    paste("italic(P)",
                                          ifelse(p.value < 10^(-p.digits),
-                                                as.character(10^(-p.digits)),
+                                                sprintf("\"%.*f\"", p.digits, 10^(-p.digits)),
                                                 p.value.char),
                                          sep = ifelse(p.value < 10^(-p.digits),
                                                       "~`<`~",
                                                       "~`=`~"))),
-                          n.label = paste("italic(n)~`=`~", n, sep = ""),
+                          n.label = paste("italic(n)~`=`~\"", n, "\"", sep = ""),
                           grp.label = grp.label,
                           r.squared = rr,
                           adj.r.squared = adj.rr,

@@ -110,7 +110,7 @@
 #'   \code{numeric} variables. In addition, the aesthetics undertood by the geom
 #'   used (\code{"text"} by default) are understood and grouping respected.
 #'
-#' @section Computed variables accessible with \code{after_stat()} wihtin \code{aes()}:
+#' @section Computed variables:
 #' If output.type different from \code{"numeric"} the returned tibble contains
 #' columns below in addition to a modified version of the original \code{group}:
 #' \describe{
@@ -125,7 +125,7 @@
 #'   \item{rho, n}{numeric values extracted or computed from fit object.}
 #'   \item{hjust, vjust}{Set to "inward" to override the default of the "text" geom.}
 #'   \item{quantile}{Numeric value of the quantile used for the fit}
-#'   \item{quantile.f}{Factor with a level for each quantile},
+#'   \item{quantile.f}{Factor with a level for each quantile}
 #'   }
 #'
 #' If output.type is \code{"numeric"} the returned tibble contains columns
@@ -136,9 +136,10 @@
 #'   \item{coef.ls}{list containing the "coefficients" matrix from the summary of the fit object}
 #'   \item{rho, AIC, n}{numeric values extracted or computed from fit object}
 #'   \item{rq.method}{character, method used.}
-#'   \item{hjust, vjust}{Set to "inward" to override the default of the "text" geom.}}
-#'   \item{quantile}{Indicating the quantile  used for the fit}}
-#'   \item{quantile.f}{Factor with a level for each quantile},
+#'   \item{hjust, vjust}{Set to "inward" to override the default of the "text" geom.}
+#'   \item{quantile}{Indicating the quantile  used for the fit}
+#'   \item{quantile.f}{Factor with a level for each quantile}
+#'   }
 #'
 #' To explore the computed values returned for a given input we suggest the use
 #' of \code{\link[gginnards]{geom_debug}} as shown in the example below.
@@ -632,8 +633,13 @@ quant_eq_compute_group_fun <- function(data,
         eq.char[q] <- paste(lhs, eq.char[q], sep = "")
       }
 
-      AIC.char[q] <- sprintf("%.4#g", AIC[q])
-      rho.char[q] <- sprintf("%.3#g", rho[q])
+      if (output.type == "expression" && coef.keep.zeros) {
+        AIC.char[q] <- sprintf("\"%.4g\"", AIC[q])
+        rho.char[q] <- sprintf("\"%.3#g\"", rho[q])
+      } else {
+        AIC.char[q] <- sprintf("%.4g", AIC[q])
+        rho.char[q] <- sprintf("%.3#g", rho[q])
+      }
     }
 
     # build data frames to return

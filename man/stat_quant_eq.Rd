@@ -167,12 +167,40 @@ Support for the \code{angle} aesthetic is not automatic and requires
   used (\code{"text"} by default) are understood and grouping respected.
 }
 
-\section{NA}{
- \code{stat_quant_eq} understands \code{x} and \code{y},
-  to be referenced in the \code{formula} and \code{weight} passed as argument
-  to parameter \code{weights} of \code{lm()}. All three must be mapped to
-  \code{numeric} variables. In addition, the aesthetics undertood by the geom
-  used (\code{"text"} by default) are understood and grouping respected.
+\section{Computed variables}{
+
+If output.type different from \code{"numeric"} the returned tibble contains
+columns below in addition to a modified version of the original \code{group}:
+\describe{
+  \item{x,npcx}{x position}
+  \item{y,npcy}{y position}
+  \item{coef.ls, r.squared, adj.r.squared, AIC, BIC}{as numric values extracted from fit object}
+  \item{eq.label}{equation for the fitted polynomial as a character string to be parsed}
+  \item{rho.label}{\eqn{rho} of the fitted model as a character string to be parsed}
+  \item{AIC.label}{AIC for the fitted model.}
+  \item{n.label}{Number of observations used in the fit.}
+  \item{rq.method}{character, method used.}
+  \item{rho, n}{numeric values extracted or computed from fit object.}
+  \item{hjust, vjust}{Set to "inward" to override the default of the "text" geom.}
+  \item{quantile}{Numeric value of the quantile used for the fit}
+  \item{quantile.f}{Factor with a level for each quantile}
+  }
+
+If output.type is \code{"numeric"} the returned tibble contains columns
+ in addition to a modified version of the original \code{group}:
+\describe{
+  \item{x,npcx}{x position}
+  \item{y,npcy}{y position}
+  \item{coef.ls}{list containing the "coefficients" matrix from the summary of the fit object}
+  \item{rho, AIC, n}{numeric values extracted or computed from fit object}
+  \item{rq.method}{character, method used.}
+  \item{hjust, vjust}{Set to "inward" to override the default of the "text" geom.}
+  \item{quantile}{Indicating the quantile  used for the fit}
+  \item{quantile.f}{Factor with a level for each quantile}
+  }
+
+To explore the computed values returned for a given input we suggest the use
+of \code{\link[gginnards]{geom_debug}} as shown in the example below.
 }
 
 \examples{
