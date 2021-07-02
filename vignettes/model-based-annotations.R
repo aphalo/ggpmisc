@@ -40,7 +40,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(formula = formula, parse = TRUE)
+  stat_poly_eq(formula = formula)
 
 ## -----------------------------------------------------------------------------
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -151,8 +151,7 @@ formula <- y ~ x + I(x^2) + I(x^3) - 1
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label = stat(eq.label)), formula = formula, 
-               parse = TRUE)
+  stat_poly_eq(aes(label = stat(eq.label)), formula = formula)
 
 ## -----------------------------------------------------------------------------
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -506,7 +505,7 @@ ggplot(my.data, aes(x, y)) +
   geom_smooth(method = "lm", formula = formula) +
   stat_fit_tb(method = "lm",
               method.args = list(formula = formula),
-              tb.type = "fit.coefs",
+              tb.type = "fit.coefs", parse = TRUE,
               label.y = "center", label.x = "left")
 
 ## -----------------------------------------------------------------------------

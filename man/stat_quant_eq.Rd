@@ -78,14 +78,16 @@ using npcx and npcy aesthetics.}
 \item{hstep, vstep}{numeric in npc units, the horizontal and vertical step
 used between labels for different groups.}
 
-\item{output.type}{character One of "expression", "LaTeX", "text",
-"markdown" or "numeric".}
+\item{output.type}{character One of \code{"expression"}, \code{"LaTeX"},
+\code{"text"}, \code{"markdown"} or \code{"numeric"}. In most cases,
+instead of using this statistics to obtain numeric values, it is better to
+use \code{stat_fit_tidy()}.}
 
 \item{na.rm}{a logical indicating whether NA values should be stripped before
 the computation proceeds.}
 
-\item{orientation}{character Either "x" or "y" controlling the default for
-\code{formula}.}
+\item{orientation}{character Either \code{"x"} or \code{"y"} controlling the
+default for \code{formula}.}
 
 \item{parse}{logical Passed to the geom. If \code{TRUE}, the labels will be
 parsed into expressions and displayed as described in \code{?plotmath}.
@@ -124,19 +126,21 @@ This stat can be used to automatically annotate a plot with R^2,
   correctly generated for polynomials or quasi-polynomials through the
   origin. Model formulas can use \code{poly()} or be defined algebraically
   with terms of powers of increasing magnitude with no missing intermediate
-  terms, except possibly for the intercept indicated by "- 1" or "-1" in the
-  formula. The validity of the \code{formula} is not checked in the current
-  implementation, and for this reason the default aesthetics sets R^2 as
-  label for the annotation.  This stat generates labels as R expressions by
-  default but LaTeX (use TikZ device) and markdown (use package 'ggtext') are
-  also supported, as well as numeric values for user-generated text labels.
-  The value of \code{parse} is set automatically based on \code{output-type},
-  but if you assemble labels that need parsing from \code{numeric} output,
-  the default needs to be overriden. This stat only generates labels, the
-  predicted values need to be separately added to the plot, so to make sure
-  that the same model formula is used in all steps it is best to save the
-  formula as an object and supply this object as argument to the different
-  statistics.
+  terms, except possibly for the intercept indicated by \code{"- 1"} or
+  \code{"-1"} or \code{"+ 0"} in the formula. The validity of the
+  \code{formula} is not checked in the current implementation, and for this
+  reason the default aesthetics sets R^2 as label for the annotation.  This
+  stat generates labels as R expressions by default but LaTeX (use TikZ
+  device), markdown (use package 'ggtext') and plain text are also supported,
+  as well as numeric values for user-generated text labels. The value of
+  \code{parse} is set automatically based on \code{output-type}, but if you
+  assemble labels that need parsing from \code{numeric} output, the default
+  needs to be overriden. This stat only generates annotation labels, the
+  predicted values/line need to be added to the plot as a separate layer
+  using \code{\link{stat_quant_line}} or
+  \code{\link[ggplot2]{stat_quantile}}, so to make sure that the same model
+  formula is used in all steps it is best to save the formula as an object
+  and supply this object as argument to the different statistics.
 
   A ggplot statistic receives as data a data frame that is not the one passed
   as argument by the user, but instead a data frame with the variables mapped
@@ -301,9 +305,9 @@ ggplot(my.data, aes(x, y,  shape = group, linetype = group,
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_quant_line(formula = formula,
-                quantiles = c(0.1, 0.5, 0.9)) +
+                  quantiles = c(0.1, 0.5, 0.9)) +
   stat_quant_eq(formula = formula, parse = TRUE,
-               quantiles = c(0.1, 0.5, 0.9))
+                quantiles = c(0.1, 0.5, 0.9))
 
 # Location of equations
 ggplot(my.data, aes(x, y)) +
@@ -380,12 +384,6 @@ ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_quant_eq(formula = formula, quantiles = c(0.25, 0.5, 0.75),
                 geom = "debug", output.type = "numeric")
-
-# show the content of a list column
-ggplot(my.data, aes(x, y)) +
-  geom_point() +
-  stat_quant_eq(formula = formula, geom = "debug", output.type = "numeric",
-               summary.fun = function(x) {x[["coef.ls"]][[1]]})
 
 }
 \references{

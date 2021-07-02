@@ -64,6 +64,17 @@ default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
 can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 }
+\value{
+The output of the \code{glance()} methods is returned almost as is in
+  the \code{data} object, as a data frame. The names of the columns in the
+  returned data are consistent with those returned by method \code{glance()}
+  from package 'broom', that will frequently differ from the name of values
+  returned by the print methods corresponding to the fit or test function
+  used. To explore the values returned by this statistic including the name
+  of variables/columns, which vary depending on the model fitting function
+  and model formula we suggest the use of
+  \code{\link[gginnards]{geom_debug}}. An example is shown below.
+}
 \description{
 \code{stat_fit_glance} fits a model and returns a "tidy" version
   of the model's fit, using '\code{glance()} methods from packages 'broom',
@@ -119,18 +130,6 @@ Although arguments passed to parameter \code{glance.args} will be
   data embedded in the \code{"ggplot"} object cannot be automatically passed
   as argument for the \code{data} parameter of the test or model fit
   function.
-}
-
-\section{Computed variables}{
- The output of \code{glance()} is
-  returned almost as is in the \code{data} object.
-  The names of the columns in the returned data are consitent with those
-  returned by method \code{glance()} from package 'broom', that will
-  frequently differ from the name of values returned by the print methods
-  corresponding to the fit or test function used. To explore the values
-  returned by this statistic, which vary depending on the model fitting
-  function and model formula we suggest the use of
-  \code{\link[gginnards]{geom_debug}}. An example is shown below.
 }
 
 \examples{

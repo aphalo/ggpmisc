@@ -80,19 +80,20 @@
 #'   quasi-polynomials through the origin. Model formulas can use \code{poly()}
 #'   or be defined algebraically with terms of powers of increasing magnitude
 #'   with no missing intermediate terms, except possibly for the intercept
-#'   indicated by "- 1" or "-1" in the formula. The validity of the
-#'   \code{formula} is not checked in the current implementation, and for this
-#'   reason the default aesthetics sets R^2 as label for the annotation. This
-#'   stat generates labels as R expressions by default but LaTeX (use TikZ
-#'   device) and markdown (use package 'ggtext') are also supported, as well as
-#'   numeric values for user-generated text labels. The value of \code{parse} is
-#'   set automatically based on \code{output-type}, but if you assemble labels
-#'   that need parsing from \code{numeric} output, the default needs to be
-#'   overriden.   The predicted values need to be separately added to the plot
-#'   with \code{stat_smooth()} or \code{stat_quantile()}, so to make sure that
-#'   the same model formula is used in both plot layers it is best to save the
-#'   formula as an object and supply this object as argument to the different
-#'   statistics.
+#'   indicated by "- 1" or "-1" or \code{"+ 0"} in the formula. The validity of
+#'   the \code{formula} is not checked in the current implementation, and for
+#'   this reason the default aesthetics sets R^2 as label for the annotation.
+#'   This stat generates labels as R expressions by default but LaTeX (use TikZ
+#'   device), markdown (use package 'ggtext') and plain text are also supported,
+#'   as well as numeric values for user-generated text labels. The value of
+#'   \code{parse} is set automatically based on \code{output-type}, but if you
+#'   assemble labels that need parsing from \code{numeric} output, the default
+#'   needs to be overriden. This stat only generates annotation labels, the
+#'   predicted values/line need to be added to the plot as a separate layer
+#'   using \code{\link{stat_poly_line}} or \code{\link[ggplot2]{stat_smooth}},
+#'   so to make sure that the same model formula is used in all steps it is best
+#'   to save the formula as an object and supply this object as argument to the
+#'   different statistics.
 #'
 #'   A ggplot statistic receives as \code{data} a data frame that is not the one
 #'   passed as argument by the user, but instead a data frame with the variables
@@ -261,6 +262,10 @@
 #' # using numeric values
 #' # Here we use column "Estimate" from the matrix.
 #' # Other available columns are "Std. Error", "t value" and "Pr(>|t|)".
+#' #
+#' # This example does not work with facets as list columns in data are not well
+#' # supported by 'ggplot2'. Please, with facets use `stat_fit_tidy()` instead
+#' # of `stat_poly_eq()`.
 #' my.format <-
 #'   "b[0]~`=`~%.3g*\", \"*b[1]~`=`~%.3g*\", \"*b[2]~`=`~%.3g*\", \"*b[3]~`=`~%.3g"
 #' ggplot(my.data, aes(x, y)) +

@@ -74,14 +74,14 @@
 #'   as argument for the \code{data} parameter of the test or model fit
 #'   function.
 #'
-#' @section Computed variables: The output of \code{glance()} is
-#'   returned almost as is in the \code{data} object.
-#'   The names of the columns in the returned data are consitent with those
-#'   returned by method \code{glance()} from package 'broom', that will
-#'   frequently differ from the name of values returned by the print methods
-#'   corresponding to the fit or test function used. To explore the values
-#'   returned by this statistic, which vary depending on the model fitting
-#'   function and model formula we suggest the use of
+#' @return The output of the \code{glance()} methods is returned almost as is in
+#'   the \code{data} object, as a data frame. The names of the columns in the
+#'   returned data are consistent with those returned by method \code{glance()}
+#'   from package 'broom', that will frequently differ from the name of values
+#'   returned by the print methods corresponding to the fit or test function
+#'   used. To explore the values returned by this statistic including the name
+#'   of variables/columns, which vary depending on the model fitting function
+#'   and model formula we suggest the use of
 #'   \code{\link[gginnards]{geom_debug}}. An example is shown below.
 #'
 #' @note Although arguments passed to parameter \code{glance.args} will be
@@ -619,7 +619,7 @@ StatFitAugment <-
 #'
 #' @description \code{stat_fit_tidy} fits a model and returns a "tidy" version
 #'   of the model's summary, using '\code{tidy()} methods from packages 'broom',
-#'   'broom.mixed', or other sources.#' To add the summary in tabular form use
+#'   'broom.mixed', or other sources. To add the summary in tabular form use
 #'   \code{\link{stat_fit_tb}} instead of this statistic. When using
 #'   \code{stat_fit_tidy()} you will most likely want to change the default
 #'   mapping for label.
@@ -653,11 +653,13 @@ StatFitAugment <-
 #'   recycled.
 #' @param hstep,vstep numeric in npc units, the horizontal and vertical step
 #'   used between labels for different groups.
+#' @param sanitize.names logical If true sanitize column names in the returned
+#'   \code{data} with R's \code{make.names()} function.
 #'
 #' @details \code{stat_fit_tidy} together with \code{\link{stat_fit_glance}}
 #'   and \code{\link{stat_fit_augment}}, based on package 'broom' can be used
 #'   with a broad range of model fitting functions as supported at any given
-#'   time by 'broom'. In contrast to \code{\link{stat_poly_eq}} wich can
+#'   time by 'broom'. In contrast to \code{\link{stat_poly_eq}} which can
 #'   generate text or expression labels automatically, for these functions the
 #'   mapping of aesthetic \code{label} needs to be explicitly supplied in the
 #'   call, and labels built on the fly.
@@ -666,12 +668,12 @@ StatFitAugment <-
 #'   as argument by the user, but instead a data frame with the variables mapped
 #'   to aesthetics. In other words, it respects the grammar of graphics and
 #'   consequently within arguments passed through \code{method.args} names of
-#'   aesthetics like $x$ and $y$ should be used intead of the original variable
+#'   aesthetics like $x$ and $y$ should be used instead of the original variable
 #'   names, while data is automatically passed the data frame. This helps ensure
 #'   that the model is fitted to the same data as plotted in other layers.
 #'
 #' @section Warning!: Not all `glance()` methods are defined in package 'broom'.
-#'   `glance()` especializations for mixed models fits of classes `lme`, `nlme`,
+#'   `glance()` specializations for mixed models fits of classes `lme`, `nlme`,
 #'   `lme4`, and many others are defined in package 'broom.mixed'.
 #'
 #' @section Handling of grouping: \code{stat_fit_tidy} applies the function
@@ -681,14 +683,25 @@ StatFitAugment <-
 #'   with results from \code{t.test()} or ANOVA or ANCOVA. In such cases use
 #'   instead \code{stat_fit_tb()} which applies the model fitting per panel.
 #'
-#' @section Computed variables: The output of \code{tidy()} is returned after
-#'   reshaping it into a single row. Grouping is respected, and the model fit
-#'   separatately to each group of data. The returned \code{data} object has one
-#'   row for each group within a panel. To use the intercept, note that output
-#'   of \code{tidy()} is renamed from \code{(Intercept)} to \code{Intercept}.
+#' @return The output of \code{tidy()} is returned after reshaping it into a
+#'   single row. Grouping is respected, and the model fitted separately to each
+#'   group of data. The returned \code{data} object has one row for each group
+#'   within a panel. To use the intercept, note that output of \code{tidy()} is
+#'   renamed from \code{(Intercept)} to \code{Intercept}. Otherwise, the names
+#'   of the columns in the returned data are based on those returned by the
+#'   \code{tidy()} method for the model fit class returned by the fit function.
+#'   These will frequently differ from the name of values returned by the print
+#'   methods corresponding to the fit or test function used. To explore the
+#'   values returned by this statistic including the name of variables/columns,
+#'   which vary depending on the model fitting function and model formula, we
+#'   suggest the use of \code{\link[gginnards]{geom_debug}}. An example is shown
+#'   below. Names of columns as returned by default are not always syntactically
+#'   valid R names making it necessary to use back ticks to access them.
+#'   Syntactically valid names are guaranteed if \code{sanitize.names = TRUE} is
+#'   added to the call.
 #'
-#'   To explore the values returned by this statistic, which vary depending
-#'   on the model fitting function and model formula we suggest the use of
+#'   To explore the values returned by this statistic, which vary depending on
+#'   the model fitting function and model formula we suggest the use of
 #'   \code{\link[gginnards]{geom_debug}}. An example is shown below.
 #'
 #' @note The statistic \code{stat_fit_tidy} can be used only with
@@ -716,12 +729,22 @@ StatFitAugment <-
 #' library(quantreg)
 #'
 #' # Regression by panel, exploring computed variables with geom_debug()
+#' # default column names
 #' ggplot(mtcars, aes(x = disp, y = mpg)) +
-#'   stat_smooth(method = "lm") +
+#'   stat_smooth(method = "lm", formula = y ~ x + I(x^2)) +
 #'   geom_point(aes(colour = factor(cyl))) +
 #'   stat_fit_tidy(method = "lm",
-#'                 method.args = list(formula = y ~ x),
+#'                 method.args = list(formula = y ~ x + I(x^2)),
 #'                 geom = "debug")
+#'
+#' # Regression by panel, exploring computed variables with geom_debug()
+#' # sanitized column names
+#' ggplot(mtcars, aes(x = disp, y = mpg)) +
+#'   stat_smooth(method = "lm", formula = y ~ x + I(x^2)) +
+#'   geom_point(aes(colour = factor(cyl))) +
+#'   stat_fit_tidy(method = "lm",
+#'                 method.args = list(formula = y ~ x + I(x^2)),
+#'                 geom = "debug", sanitize.names = TRUE)
 #'
 #' # Regression by panel example
 #' ggplot(mtcars, aes(x = disp, y = mpg)) +
@@ -786,6 +809,7 @@ stat_fit_tidy <- function(mapping = NULL, data = NULL, geom = "text_npc",
                           label.x = "left", label.y = "top",
                           hstep = 0,
                           vstep = NULL,
+                          sanitize.names = FALSE,
                           position = "identity",
                           na.rm = FALSE, show.legend = FALSE,
                           inherit.aes = TRUE, ...) {
@@ -803,6 +827,7 @@ stat_fit_tidy <- function(mapping = NULL, data = NULL, geom = "text_npc",
                                         0.125,
                                         0.075),
                                  vstep),
+                  sanitize.names = sanitize.names,
                   npc.used = grepl("_npc", geom),
                   na.rm = na.rm,
                   ...)
@@ -825,6 +850,7 @@ fit_tidy_compute_group_fun <- function(data,
                                        label.y,
                                        hstep,
                                        vstep,
+                                       sanitize.names,
                                        npc.used) {
   force(data)
   if (length(unique(data$x)) < 2) {
@@ -944,6 +970,10 @@ fit_tidy_compute_group_fun <- function(data,
     z$npcx <- NA_real_
     z$y <- label.y
     z$npcy <- NA_real_
+  }
+
+  if (sanitize.names) {
+    names(z) <- make.names(names(z), unique = TRUE)
   }
 
   z
