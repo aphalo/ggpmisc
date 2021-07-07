@@ -308,12 +308,9 @@ ggplot(my.data, aes(x, y)) +
                formula = formula)
 
 # using numeric values
-# Here we use column "Estimate" from the matrix.
+# Here we use columns b_0 ... b_3
 # Other available columns are "Std. Error", "t value" and "Pr(>|t|)".
 #
-# This example does not work with facets as list columns in data are not well
-# supported by 'ggplot2'. Please, with facets use `stat_fit_tidy()` instead
-# of `stat_poly_eq()`.
 my.format <-
   "b[0]~`=`~\%.3g*\", \"*b[1]~`=`~\%.3g*\", \"*b[2]~`=`~\%.3g*\", \"*b[3]~`=`~\%.3g"
 ggplot(my.data, aes(x, y)) +
@@ -324,12 +321,8 @@ ggplot(my.data, aes(x, y)) +
                parse = TRUE,
                mapping =
                 aes(label = sprintf(my.format,
-                                    stat(coef.ls)[[1]][[1, "Estimate"]],
-                                    stat(coef.ls)[[1]][[2, "Estimate"]],
-                                    stat(coef.ls)[[1]][[3, "Estimate"]],
-                                    stat(coef.ls)[[1]][[4, "Estimate"]])
-                                    )
-                   )
+                                    after_stat(b_0), after_stat(b_1),
+                                    after_stat(b_2), after_stat(b_3))))
 
 # Examples using geom_debug() to show computed values
 #

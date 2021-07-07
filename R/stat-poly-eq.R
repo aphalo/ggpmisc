@@ -260,12 +260,9 @@
 #'                formula = formula)
 #'
 #' # using numeric values
-#' # Here we use column "Estimate" from the matrix.
+#' # Here we use columns b_0 ... b_3
 #' # Other available columns are "Std. Error", "t value" and "Pr(>|t|)".
 #' #
-#' # This example does not work with facets as list columns in data are not well
-#' # supported by 'ggplot2'. Please, with facets use `stat_fit_tidy()` instead
-#' # of `stat_poly_eq()`.
 #' my.format <-
 #'   "b[0]~`=`~%.3g*\", \"*b[1]~`=`~%.3g*\", \"*b[2]~`=`~%.3g*\", \"*b[3]~`=`~%.3g"
 #' ggplot(my.data, aes(x, y)) +
@@ -276,12 +273,8 @@
 #'                parse = TRUE,
 #'                mapping =
 #'                 aes(label = sprintf(my.format,
-#'                                     stat(coef.ls)[[1]][[1, "Estimate"]],
-#'                                     stat(coef.ls)[[1]][[2, "Estimate"]],
-#'                                     stat(coef.ls)[[1]][[3, "Estimate"]],
-#'                                     stat(coef.ls)[[1]][[4, "Estimate"]])
-#'                                     )
-#'                    )
+#'                                     after_stat(b_0), after_stat(b_1),
+#'                                     after_stat(b_2), after_stat(b_3))))
 #'
 #' # Examples using geom_debug() to show computed values
 #' #
@@ -542,10 +535,16 @@ poly_eq_compute_group_fun <- function(data,
   } else {
     f.value <- f.df1 <- f.df2 <- p.value <- NA_real_
   }
+  coefs <- stats::coefficients(mf)
+
+  formula.rhs.chr <- as.character(formula)[3]
+  if (grepl("-[[:space:]]*1|+[[:space:]]*0", formula.rhs.chr)) {
+    coefs <- c(0, coefs)
+  }
+  names(coefs) <- paste("b", (1:length(coefs)) - 1, sep = "_")
 
   if (output.type == "numeric") {
     z <- tibble::tibble(coef.ls = list(summary(mf)[["coefficients"]]),
-                        coefs = list(stats::coefficients(mf)),
                         r.squared = rr,
                         adj.r.squared = adj.rr,
                         f.value = f.value,
@@ -556,6 +555,7 @@ poly_eq_compute_group_fun <- function(data,
                         BIC = BIC,
                         n = n,
                         rr.label = "") # needed for default 'label' mapping
+    z <- cbind(z, tibble::as_tibble_row(coefs))
   } else {
     # set defaults needed to assemble the equation as a character string
     if (is.null(eq.x.rhs)) {
@@ -602,13 +602,6 @@ poly_eq_compute_group_fun <- function(data,
     }
 
     # build equation as a character string from the coefficient estimates
-    coefs <- stats::coefficients(mf)
-
-    formula.rhs.chr <- as.character(formula)[3]
-    if (grepl("-[[:space:]]*1|+[[:space:]]*0", formula.rhs.chr)) {
-      coefs <- c(0, coefs)
-    }
-
     stopifnot(coef.digits > 0)
     if (coef.digits < 3) {
       warning("'coef.digits < 3' Likely information loss!")
