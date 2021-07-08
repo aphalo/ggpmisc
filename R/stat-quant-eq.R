@@ -228,7 +228,7 @@
 #'   stat_quant_line(formula = formula) +
 #'   stat_quant_eq(formula = formula, angle = 90,
 #'                 hstep = 0.05, vstep = 0, hjust = 0,
-#'                 label.y = 0.5)
+#'                 label.y = 0.25)
 #'
 #' # user set quantiles
 #' ggplot(my.data, aes(x, y)) +
@@ -247,7 +247,7 @@
 #'   stat_quant_line(formula = formula) +
 #'   stat_quant_eq(formula = formula, angle = 90,
 #'                 hstep = 0.05, vstep = 0, hjust = 0,
-#'                 label.y = 0.3)
+#'                 size = 3, label.y = 0.3)
 #'
 #' # labelling equations
 #' ggplot(my.data, aes(x, y,  shape = group, linetype = group,
@@ -286,8 +286,8 @@
 #' # no weights, quantile set to upper boundary
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   stat_quant_line(formula = formula, quantiles = 1) +
-#'   stat_quant_eq(formula = formula, quantiles = 1)
+#'   stat_quant_line(formula = formula, quantiles = 0.95) +
+#'   stat_quant_eq(formula = formula, quantiles = 0.95)
 #'
 #' # user specified label
 #' ggplot(my.data, aes(x, y, color = group, grp.label = group)) +
@@ -297,7 +297,7 @@
 #'   stat_quant_eq(aes(label = paste(stat(grp.label), "*\": \"*",
 #'                                    stat(eq.label), sep = "")),
 #'                 quantiles = c(0.05, 0.5, 0.95),
-#'                 formula = formula)
+#'                 formula = formula, size = 3)
 #'
 #' # geom = "text"
 #' ggplot(my.data, aes(x, y)) +
@@ -539,19 +539,19 @@ quant_eq_compute_group_fun <- function(data,
   n <- length(mf.summary[[1]][["residuals"]])
   rho <- mf[["rho"]]
   rq.method <- mf[["method"]]
-  coefs <- mf[["coefficients"]]
-  # ensure that coefs is consistent
-  if (is.vector(coefs)) {
-    coefs <- as.matrix(coefs)
-    colnames(coefs) <- paste("tau=", mf[["tau"]])
+  coefs.mt <- mf[["coefficients"]] # a matrix if length(quantiles) > 1
+  # ensure that coefs.mt is consistent
+  if (is.vector(coefs.mt)) {
+    coefs.mt <- as.matrix(coefs.mt)
+    colnames(coefs.mt) <- paste("tau=", mf[["tau"]], sep = "")
   }
-
   formula.rhs.chr <- as.character(formula)[3]
   if (grepl("-[[:space:]]*1|+[[:space:]]*0", formula.rhs.chr)) {
-    coefs <- rbind(rep(0, ncol(coefs)), coefs)
+    coefs.mt <- rbind(rep(0, ncol(coefs.mt)), coefs.mt)
   }
-
-  coefs.ls <- asplit(coefs, 2)
+  coefs.ls <- asplit(coefs.mt, 2)
+  # located here so that names in coef.ls remain the same as in version 0.4.0
+  rownames(coefs.mt) <-paste("b", (1:nrow(coefs.mt)) - 1, sep = "_")
 
   z <- tibble::tibble()
   if (output.type == "numeric") {
@@ -563,6 +563,7 @@ quant_eq_compute_group_fun <- function(data,
                         rho = rho,
                         n = n,
                         eq.label = "") # needed for default 'label' mapping
+    z <- cbind(z, tibble::as_tibble(t(coefs.mt)))
   } else {
     # set defaults needed to assemble the equation as a character string
     if (is.null(eq.x.rhs)) {
@@ -614,7 +615,7 @@ quant_eq_compute_group_fun <- function(data,
       warning("'coef.digits < 3' Likely information loss!")
     }
 
-    polys.ls <- polynom::polylist(signif(coefs, coef.digits))
+    polys.ls <- polynom::polylist(signif(coefs.mt, coef.digits))
 
     eq.char <- AIC.char <- rho.char <- character(num.quantiles)
     for (q in seq_along(quantiles)) {
