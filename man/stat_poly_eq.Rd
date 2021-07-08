@@ -308,9 +308,7 @@ ggplot(my.data, aes(x, y)) +
                formula = formula)
 
 # using numeric values
-# Here we use columns b_0 ... b_3
-# Other available columns are "Std. Error", "t value" and "Pr(>|t|)".
-#
+# Here we use columns b_0 ... b_3 for the coefficient estimates
 my.format <-
   "b[0]~`=`~\%.3g*\", \"*b[1]~`=`~\%.3g*\", \"*b[2]~`=`~\%.3g*\", \"*b[3]~`=`~\%.3g"
 ggplot(my.data, aes(x, y)) +
