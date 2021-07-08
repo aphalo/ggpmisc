@@ -196,7 +196,9 @@ the variable is set to \code{NA_real_}.
   \item{y,npcy}{y position}
   \item{coef.ls}{list containing the "coefficients" matrix from the summary of the fit object}
   \item{r.squared, adj.r.squared, f.value, f.df1, f.df2, p.value, AIC, BIC, n}{numeric values, from the model fit object}
-  \item{grp.label}{Set according to mapping in \code{aes}.}}
+  \item{grp.label}{Set according to mapping in \code{aes}.}
+  \item{b_0.constant}{TRUE is polynomial is forced through the origin}
+  \item{b_i}{One or columns with the coefficient estimates}}
 
 To explore the computed values returned for a given input we suggest the use
 of \code{\link[gginnards]{geom_debug}} as shown in the last examples below.

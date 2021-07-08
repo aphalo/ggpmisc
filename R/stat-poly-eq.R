@@ -137,7 +137,9 @@
 #'   \item{y,npcy}{y position}
 #'   \item{coef.ls}{list containing the "coefficients" matrix from the summary of the fit object}
 #'   \item{r.squared, adj.r.squared, f.value, f.df1, f.df2, p.value, AIC, BIC, n}{numeric values, from the model fit object}
-#'   \item{grp.label}{Set according to mapping in \code{aes}.}}
+#'   \item{grp.label}{Set according to mapping in \code{aes}.}
+#'   \item{b_0.constant}{TRUE is polynomial is forced through the origin}
+#'   \item{b_i}{One or columns with the coefficient estimates}}
 #'
 #' To explore the computed values returned for a given input we suggest the use
 #' of \code{\link[gginnards]{geom_debug}} as shown in the last examples below.
@@ -536,8 +538,9 @@ poly_eq_compute_group_fun <- function(data,
   coefs <- stats::coefficients(mf)
 
   formula.rhs.chr <- as.character(formula)[3]
-  if (grepl("-[[:space:]]*1|+[[:space:]]*0", formula.rhs.chr)) {
-    coefs <- c(0, coefs)
+  forced.origin <- grepl("-[[:space:]]*1|+[[:space:]]*0", formula.rhs.chr)
+  if (forced.origin) {
+      coefs <- c(0, coefs)
   }
   names(coefs) <- paste("b", (1:length(coefs)) - 1, sep = "_")
 
@@ -552,7 +555,8 @@ poly_eq_compute_group_fun <- function(data,
                         AIC = AIC,
                         BIC = BIC,
                         n = n,
-                        rr.label = "") # needed for default 'label' mapping
+                        rr.label = "",  # needed for default 'label' mapping
+                        b_0.constant = forced.origin)
     z <- cbind(z, tibble::as_tibble_row(coefs))
   } else {
     # set defaults needed to assemble the equation as a character string

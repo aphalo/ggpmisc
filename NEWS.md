@@ -12,8 +12,8 @@ enhancements in this version. The idea of supporting confidence bands
 for quantile regression came from *Samer Mouksassi* who also provided
 code examples. Additional suggestions from *Mark Neal, Carl* and other
 users have lead to bug fixes as well as to an interface with better
-defaults for arguments . Some other enhancements are based on my own
-needs or ideas.
+defaults for arguments (see issue \#1). Some other enhancements are
+based on my own needs or ideas.
 
 -   Add support for median regression using `rq`, robust regression
     using `rlm` and other `function` objects in `stat_poly_eq()`.
@@ -25,10 +25,15 @@ needs or ideas.
     now set dynamically depending on the `formula`).
 -   Revise `stat_poly_eq()` and `stat_quant_eq()` so that they pass to
     the geom by default a suitable value as argument to `parse`
-    (enhancement suggested by *Mark Neal*).
+    depending on `output.type` (enhancement suggested by *Mark Neal* in
+    issue \#11).
+-   Revise `stat_poly_eq()` and `stat_quant_eq()` so that when
+    `output.type = "numeric"` they return the coefficient estimates as
+    `numeric` columns in `data` (problem with `coefs.ls` column in data
+    when using facets reported by cgnolte in issue \#12).
 -   Fix bug in `stat_poly_eq()` and `stat_quant_eq()` resulting in
     mishandling of formulas using the `+ 0` notation to exclude the
-    intercept (reported by *orgadish*).
+    intercept (reported by *orgadish* in issue \#10).
 -   Add `stat_poly_line()`, which is a new interface to
     `ggplot2::stat_smooth()` accepting `formula = x ~ y` and other
     models in which the explanatory variable is `y` rather than `x` or
@@ -170,7 +175,9 @@ Many thanks!
     if a `Date` object was mapped to *x (the bug did not affect POSIX or
     datetime, and was obvious as it resulted in a shift in dates by
     several decades)*.
--   **Move git repository from Bitbucket to Github.**
+-   **Move git repository from Bitbucket to Github.** Numbering of
+    issues restarts from \#1, but all old commits were transferred as
+    is.
 -   Set up Github action for CRAN-checks on Windows, OS X and Ubuntu.
 
 # ggpmisc 0.3.7

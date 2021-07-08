@@ -143,7 +143,8 @@
 #'   \item{hjust, vjust}{Set to "inward" to override the default of the "text" geom.}
 #'   \item{quantile}{Indicating the quantile  used for the fit}
 #'   \item{quantile.f}{Factor with a level for each quantile}
-#'   }
+#'   \item{b_0.constant}{TRUE is polynomial is forced through the origin}
+#'   \item{b_i}{One or columns with the coefficient estimates}}
 #'
 #' To explore the computed values returned for a given input we suggest the use
 #' of \code{\link[gginnards]{geom_debug}} as shown in the example below.
@@ -546,7 +547,8 @@ quant_eq_compute_group_fun <- function(data,
     colnames(coefs.mt) <- paste("tau=", mf[["tau"]], sep = "")
   }
   formula.rhs.chr <- as.character(formula)[3]
-  if (grepl("-[[:space:]]*1|+[[:space:]]*0", formula.rhs.chr)) {
+  forced.origin <- grepl("-[[:space:]]*1|+[[:space:]]*0", formula.rhs.chr)
+  if (forced.origin) {
     coefs.mt <- rbind(rep(0, ncol(coefs.mt)), coefs.mt)
   }
   coefs.ls <- asplit(coefs.mt, 2)
@@ -562,7 +564,8 @@ quant_eq_compute_group_fun <- function(data,
                         AIC = AIC,
                         rho = rho,
                         n = n,
-                        eq.label = "") # needed for default 'label' mapping
+                        eq.label = "", # needed for default 'label' mapping
+                        b_0.constant = forced.origin)
     z <- cbind(z, tibble::as_tibble(t(coefs.mt)))
   } else {
     # set defaults needed to assemble the equation as a character string

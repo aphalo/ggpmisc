@@ -201,7 +201,8 @@ If output.type is \code{"numeric"} the returned tibble contains columns
   \item{hjust, vjust}{Set to "inward" to override the default of the "text" geom.}
   \item{quantile}{Indicating the quantile  used for the fit}
   \item{quantile.f}{Factor with a level for each quantile}
-  }
+  \item{b_0.constant}{TRUE is polynomial is forced through the origin}
+  \item{b_i}{One or columns with the coefficient estimates}}
 
 To explore the computed values returned for a given input we suggest the use
 of \code{\link[gginnards]{geom_debug}} as shown in the example below.
@@ -271,7 +272,7 @@ ggplot(my.data, aes(x, y)) +
   stat_quant_line(formula = formula) +
   stat_quant_eq(formula = formula, angle = 90,
                 hstep = 0.05, vstep = 0, hjust = 0,
-                label.y = 0.5)
+                label.y = 0.25)
 
 # user set quantiles
 ggplot(my.data, aes(x, y)) +
@@ -290,7 +291,7 @@ ggplot(my.data, aes(x, y, color = group)) +
   stat_quant_line(formula = formula) +
   stat_quant_eq(formula = formula, angle = 90,
                 hstep = 0.05, vstep = 0, hjust = 0,
-                label.y = 0.3)
+                size = 3, label.y = 0.3)
 
 # labelling equations
 ggplot(my.data, aes(x, y,  shape = group, linetype = group,
@@ -329,8 +330,8 @@ ggplot(my.data, aes(x, y, weight = w)) +
 # no weights, quantile set to upper boundary
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  stat_quant_line(formula = formula, quantiles = 1) +
-  stat_quant_eq(formula = formula, quantiles = 1)
+  stat_quant_line(formula = formula, quantiles = 0.95) +
+  stat_quant_eq(formula = formula, quantiles = 0.95)
 
 # user specified label
 ggplot(my.data, aes(x, y, color = group, grp.label = group)) +
@@ -340,7 +341,7 @@ ggplot(my.data, aes(x, y, color = group, grp.label = group)) +
   stat_quant_eq(aes(label = paste(stat(grp.label), "*\": \"*",
                                    stat(eq.label), sep = "")),
                 quantiles = c(0.05, 0.5, 0.95),
-                formula = formula)
+                formula = formula, size = 3)
 
 # geom = "text"
 ggplot(my.data, aes(x, y)) +
