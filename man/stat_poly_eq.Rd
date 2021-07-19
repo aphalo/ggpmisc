@@ -15,6 +15,8 @@ stat_poly_eq(
   formula = NULL,
   eq.with.lhs = TRUE,
   eq.x.rhs = NULL,
+  small.r = FALSE,
+  small.p = FALSE,
   coef.digits = 3,
   coef.keep.zeros = TRUE,
   rr.digits = 2,
@@ -26,7 +28,7 @@ stat_poly_eq(
   label.y.npc = NULL,
   hstep = 0,
   vstep = NULL,
-  output.type = "expression",
+  output.type = NULL,
   na.rm = FALSE,
   orientation = NA,
   parse = NULL,
@@ -68,6 +70,9 @@ the equation label before parsing or a \code{logical} (see note).}
 \item{eq.x.rhs}{\code{character} this string will be used as replacement for
 \code{"x"} in the model equation when generating the label before parsing
 it.}
+
+\item{small.r, small.p}{logical Flags to switch use of lower case r and p for
+coefficient of determination and p-value.}
 
 \item{coef.digits, f.digits}{integer Number of significant digits to use for
 the fitted coefficients and F-value.}

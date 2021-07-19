@@ -38,6 +38,8 @@
 #' @param eq.x.rhs \code{character} this string will be used as replacement for
 #'   \code{"x"} in the model equation when generating the label before parsing
 #'   it.
+#' @param small.r,small.p logical Flags to switch use of lower case r and p for
+#'   coefficient of determination and p-value.
 #' @param coef.digits,f.digits integer Number of significant digits to use for
 #'   the fitted coefficients and F-value.
 #' @param coef.keep.zeros logical Keep or drop trailing zeros when formatting
@@ -326,6 +328,8 @@ stat_poly_eq <- function(mapping = NULL, data = NULL,
                          formula = NULL,
                          eq.with.lhs = TRUE,
                          eq.x.rhs = NULL,
+                         small.r = FALSE,
+                         small.p = FALSE,
                          coef.digits = 3,
                          coef.keep.zeros = TRUE,
                          rr.digits = 2,
@@ -337,7 +341,7 @@ stat_poly_eq <- function(mapping = NULL, data = NULL,
                          label.y.npc = NULL,
                          hstep = 0,
                          vstep = NULL,
-                         output.type = "expression",
+                         output.type = NULL,
                          na.rm = FALSE,
                          orientation = NA,
                          parse = NULL,
@@ -351,6 +355,13 @@ stat_poly_eq <- function(mapping = NULL, data = NULL,
   if (!is.null(label.y.npc)) {
     stopifnot(grepl("_npc", geom))
     label.y <- label.y.npc
+  }
+  if (is.null(output.type)) {
+    if (geom %in% c("richtext", "textbox")) {
+      output.type <- "markdown"
+    } else {
+      output.type <- "expression"
+    }
   }
   if (is.null(parse)) {
     parse <- output.type == "expression"
@@ -368,6 +379,8 @@ stat_poly_eq <- function(mapping = NULL, data = NULL,
                   formula = formula,
                   eq.with.lhs = eq.with.lhs,
                   eq.x.rhs = eq.x.rhs,
+                  small.r = small.r,
+                  small.p = small.p,
                   coef.digits = coef.digits,
                   coef.keep.zeros = coef.keep.zeros,
                   rr.digits = rr.digits,
@@ -405,6 +418,8 @@ poly_eq_compute_group_fun <- function(data,
                                       weight,
                                       eq.with.lhs,
                                       eq.x.rhs,
+                                      small.r,
+                                      small.p,
                                       coef.digits,
                                       coef.keep.zeros,
                                       rr.digits,
@@ -661,7 +676,7 @@ poly_eq_compute_group_fun <- function(data,
                           rr.label =
                             # character(0) instead of "" avoids in paste() the insertion of sep for missing labels
                             ifelse(is.na(rr), character(0L),
-                                   paste("italic(R)^2",
+                                   paste(ifelse(small.r, "italic(r)^2", "italic(R)^2"),
                                          ifelse(rr < 10^(-rr.digits) & rr != 0,
                                                 sprintf("\"%.*f\"", rr.digits, 10^(-rr.digits)),
                                                 rr.char),
@@ -670,7 +685,7 @@ poly_eq_compute_group_fun <- function(data,
                                                       "~`=`~"))),
                           adj.rr.label =
                             ifelse(is.na(adj.rr), character(0L),
-                                   paste("italic(R)[adj]^2",
+                                   paste(ifelse(small.r, "italic(r)[adj]^2", "italic(R)[adj]^2"),
                                          ifelse(adj.rr < 10^(-rr.digits) & adj.rr != 0,
                                                 sprintf("\"%.*f\"", rr.digits, 10^(-rr.digits)),
                                                 adj.rr.char),
@@ -690,7 +705,7 @@ poly_eq_compute_group_fun <- function(data,
                                          "]~`=`~", f.value.char, sep = "")),
                           p.value.label =
                             ifelse(is.na(p.value), character(0L),
-                                   paste("italic(P)",
+                                   paste(ifelse(small.p, "italic(p)",  "italic(P)"),
                                          ifelse(p.value < 10^(-p.digits),
                                                 sprintf("\"%.*f\"", p.digits, 10^(-p.digits)),
                                                 p.value.char),
@@ -708,12 +723,12 @@ poly_eq_compute_group_fun <- function(data,
                           rr.label =
                             # character(0) instead of "" avoids in paste() the insertion of sep for missing labels
                             ifelse(is.na(rr), character(0L),
-                                   paste("R^2",
+                                   paste(ifelse(small.r, "r^2", "R^2"),
                                          ifelse(rr < 10^(-rr.digits), as.character(10^(-rr.digits)), rr.char),
                                          sep = ifelse(rr < 10^(-rr.digits), " < ", " = "))),
                           adj.rr.label =
                             ifelse(is.na(adj.rr), character(0L),
-                                   paste("R_{adj}^2",
+                                   paste(ifelse(small.r, "r_{adj}^2", "R_{adj}^2"),
                                          ifelse(adj.rr < 10^(-rr.digits), as.character(10^(-rr.digits)), adj.rr.char),
                                          sep = ifelse(adj.rr < 10^(-rr.digits), " < ", " = "))),
                           AIC.label =
@@ -728,7 +743,7 @@ poly_eq_compute_group_fun <- function(data,
                                          "} = ", f.value.char, sep = "")),
                           p.value.label =
                             ifelse(is.na(p.value), character(0L),
-                                   paste("P",
+                                   paste(ifelse(small.p, "p",  "P"),
                                          ifelse(p.value < 10^(-p.digits), as.character(10^(-p.digits)), p.value.char),
                                          sep = ifelse(p.value < 10^(-p.digits), " < ", " = "))),
                           n.label = paste("n = ", n, sep = ""),
@@ -742,12 +757,12 @@ poly_eq_compute_group_fun <- function(data,
                           rr.label =
                             # character(0) instead of "" avoids in paste() the insertion of sep for missing labels
                             ifelse(is.na(rr), character(0L),
-                                   paste("_R_<sup>2</sup>",
+                                   paste(ifelse(small.r, "_r_<sup>2</sup>", "_R_<sup>2</sup>"),
                                          ifelse(rr < 10^(-rr.digits), as.character(10^(-rr.digits)), rr.char),
                                          sep = ifelse(rr < 10^(-rr.digits), " < ", " = "))),
                           adj.rr.label =
                             ifelse(is.na(adj.rr), character(0L),
-                                   paste("_R_<sup>2</sup><sub>adj</sub>",
+                                   paste(ifelse(small.r, "_r_<sup>2</sup><sub>adj</sub>", "_R_<sup>2</sup><sub>adj</sub>"),
                                          ifelse(adj.rr < 10^(-rr.digits), as.character(10^(-rr.digits)), adj.rr.char),
                                          sep = ifelse(adj.rr < 10^(-rr.digits), " < ", " = "))),
                           AIC.label =
@@ -762,7 +777,7 @@ poly_eq_compute_group_fun <- function(data,
                                          "</sub> = ", f.value.char, sep = "")),
                           p.value.label =
                             ifelse(is.na(p.value), character(0L),
-                                   paste("_P_",
+                                   paste(ifelse(small.p, "_p_", "_P_"),
                                          ifelse(p.value < 10^(-p.digits), as.character(10^(-p.digits)), p.value.char),
                                          sep = ifelse(p.value < 10^(-p.digits), " < ", " = "))),
                           n.label = paste("_n_ = ", n, sep = ""),

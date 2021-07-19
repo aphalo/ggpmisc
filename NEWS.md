@@ -26,19 +26,24 @@ based on my own needs or ideas.
 -   Revise `stat_poly_eq()` and `stat_quant_eq()` so that they pass to
     the geom by default a suitable value as argument to `parse`
     depending on `output.type` (enhancement suggested by *Mark Neal* in
-    issue \#11).
+    issue \#11) and so that the default `output.type` is `"markdown"` if
+    the argument passed to `geom` is one of `"richtext"` or `"textbox"`,
+    improving compatibility with package 'ggtext'.
 -   Revise `stat_poly_eq()` and `stat_quant_eq()` so that when
     `output.type = "numeric"` they return the coefficient estimates as
     `numeric` columns in `data` (problem with `coefs.ls` column in data
     when using facets reported by cgnolte in issue \#12).
+-   Revise `stat_poly_eq()` adding support for optional use of lower
+    case *r* and *p* for $R^2$ and $P$-value, respectively.
 -   Fix bug in `stat_poly_eq()` and `stat_quant_eq()` resulting in
     mishandling of formulas using the `+ 0` notation to exclude the
     intercept (reported by *orgadish* in issue \#10).
 -   Add `stat_poly_line()`, which is a new interface to
     `ggplot2::stat_smooth()` accepting `formula = x ~ y` and other
     models in which the explanatory variable is `y` rather than `x` or
-    setting `orientation = "y"`. `stat_poly_line()` has `"lm"` as
-    default for `method` irrespective of the number of observations.
+    setting `orientation = "y"`. In contrast to
+    `ggplot2::stat_smooth(),` `stat_poly_line()` has `"lm"` as default
+    for `method` irrespective of the number of observations.
 -   Add `stat_quant_line()` which is a merge of `ggplot2::stat_smooth()`
     and `ggplot2::stat_quantile()` accepting `formula = x ~ y` and other
     models in which the explanatory variable is `y` rather than `x` or
