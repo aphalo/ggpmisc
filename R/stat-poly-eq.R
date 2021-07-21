@@ -278,13 +278,15 @@
 #'                                     after_stat(b_0), after_stat(b_1),
 #'                                     after_stat(b_2), after_stat(b_3))))
 #'
-#' # Examples using geom_debug() to show computed values
+#' # Examples using geom_debug() to inspect the computed values
 #' #
 #' # This provides a quick way of finding out which variables are available for
 #' # use in mapping of aesthetics when using other geoms as in the examples
 #' # above.
 #'
 #' library(gginnards)
+#'
+#' # the whole of data
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
@@ -294,19 +296,47 @@
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   geom_smooth(method = "lm", formula = formula) +
+#'   stat_poly_eq(formula = formula, geom = "debug", output.type = "numeric")
+#'
+#' # names of the variables
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   geom_smooth(method = "lm", formula = formula) +
+#'   stat_poly_eq(formula = formula, geom = "debug",
+#'                summary.fun = colnames)
+#'
+#' # only data$eq.label
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   geom_smooth(method = "lm", formula = formula) +
+#'   stat_poly_eq(formula = formula, geom = "debug",
+#'                output.type = "expression",
+#'                summary.fun = function(x) {x[["eq.label"]]})
+#'
+#' # only data$eq.label
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   geom_smooth(method = "lm", formula = formula) +
 #'   stat_poly_eq(aes(label = stat(eq.label)),
 #'                formula = formula, geom = "debug",
-#'                output.type = "markdown")
+#'                output.type = "markdown",
+#'                summary.fun = function(x) {x[["eq.label"]]})
 #'
+#' # only data$eq.label
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(formula = formula, geom = "debug", output.type = "text")
+#'   stat_poly_eq(formula = formula, geom = "debug",
+#'                output.type = "latex",
+#'                summary.fun = function(x) {x[["eq.label"]]})
 #'
+#' # only data$eq.label
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(formula = formula, geom = "debug", output.type = "numeric")
+#'   stat_poly_eq(formula = formula, geom = "debug",
+#'                output.type = "text",
+#'                summary.fun = function(x) {x[["eq.label"]]})
 #'
 #' # show the content of a list column
 #' ggplot(my.data, aes(x, y)) +
@@ -627,8 +657,16 @@ poly_eq_compute_group_fun <- function(data,
                             digits = coef.digits,
                             keep.zeros = coef.keep.zeros)
     eq.char <- gsub("e([+-]?[0-9]*)", "%*%10^{\\1}", eq.char)
-    if (output.type %in% c("latex", "tex", "tikz", "markdown")) {
-      eq.char <- gsub("*", " ", eq.char, fixed = TRUE)
+    # muliplication symbol
+    if (output.type %in% c("latex", "tikz")) {
+      eq.char <- gsub("%*%", "\\times{}", eq.char, fixed = TRUE)
+      eq.char <- gsub("*", "", eq.char, fixed = TRUE)
+    } else if (output.type == "markdown") {
+      eq.char <- gsub("%*%", "&times;", eq.char, fixed = TRUE)
+      eq.char <- gsub("*", "&nbsp;", eq.char, fixed = TRUE)
+    }else if (output.type == "text") {
+      eq.char <- gsub("[*][:space:]", " ", eq.char, fixed = TRUE)
+      eq.char <- gsub("%*%", " * ", eq.char, fixed = TRUE)
     }
 
     eq.char <- gsub("x", eq.x.rhs, eq.char, fixed = TRUE)

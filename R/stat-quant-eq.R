@@ -618,7 +618,7 @@ quant_eq_compute_group_fun <- function(data,
       warning("'coef.digits < 3' Likely information loss!")
     }
 
-    polys.ls <- polynom::polylist(signif(coefs.mt, coef.digits))
+#    polys.ls <- polynom::polylist(signif(coefs.mt, coef.digits))
 
     eq.char <- AIC.char <- rho.char <- character(num.quantiles)
     for (q in seq_along(quantiles)) {
@@ -626,8 +626,16 @@ quant_eq_compute_group_fun <- function(data,
                                  digits = coef.digits,
                                  keep.zeros = coef.keep.zeros)
       eq.char[q] <- gsub("e([+-]?[0-9]*)", "%*%10^{\\1}", eq.char[q])
-      if (output.type %in% c("latex", "tex", "tikz", "markdown")) {
-        eq.char[q] <- gsub("*", " ", eq.char[q], fixed = TRUE)
+      # muliplication symbol
+      if (output.type %in% c("latex", "tikz")) {
+        eq.char <- gsub("%*%", "\\times{}", eq.char, fixed = TRUE)
+        eq.char <- gsub("*", "", eq.char, fixed = TRUE)
+      } else if (output.type == "markdown") {
+        eq.char <- gsub("%*%", "&times;", eq.char, fixed = TRUE)
+        eq.char <- gsub("*", "&nbsp;", eq.char, fixed = TRUE)
+      }else if (output.type == "text") {
+        eq.char <- gsub("[*][:space:]", " ", eq.char, fixed = TRUE)
+        eq.char <- gsub("%*%", " * ", eq.char, fixed = TRUE)
       }
 
       eq.char[q] <- gsub("x", eq.x.rhs, eq.char[q], fixed = TRUE)
