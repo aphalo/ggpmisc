@@ -570,46 +570,18 @@ quant_eq_compute_group_fun <- function(data,
   } else {
     # set defaults needed to assemble the equation as a character string
     if (is.null(eq.x.rhs)) {
-      if (orientation == "x") {
-        if (output.type == "expression") {
-          eq.x.rhs <- "~italic(x)"
-        } else if (output.type == "markdown") {
-          eq.x.rhs <- "_x_"
-        } else{
-          eq.x.rhs <- " x"
-        }
-      } else if (orientation == "y") {
-        if (output.type == "expression") {
-          eq.x.rhs <- "~italic(y)"
-        } else if (output.type == "markdown") {
-          eq.x.rhs <- "_y_"
-        } else{
-          eq.x.rhs <- " y"
-        }
-      }
+      eq.x.rhs <- build_eq.x.rhs(output.type = output.type,
+                                 orientation = orientation)
     }
 
     if (is.character(eq.with.lhs)) {
       lhs <- eq.with.lhs
       eq.with.lhs <- TRUE
     } else if (eq.with.lhs) {
-      if (orientation == "x") {
-        if (output.type == "expression") {
-          lhs <- "italic(y)~`=`~"
-        } else if (output.type %in% c("latex", "tex", "tikz", "text")) {
-          lhs <- "y = "
-        } else if (output.type == "markdown") {
-          lhs <- "_y_ = "
-        }
-      } else if (orientation == "y") {
-        if (output.type == "expression") {
-          lhs <- "italic(x)~`=`~"
-        } else if (output.type %in% c("latex", "tex", "tikz", "text")) {
-          lhs <- "x = "
-        } else if (output.type == "markdown") {
-          lhs <- "_x_ = "
-        }
-      }
+      lhs <- build_lhs(output.type = output.type,
+                       orientation = orientation)
+    } else {
+      lhs <- character(0)
     }
 
     # build labels
@@ -618,30 +590,15 @@ quant_eq_compute_group_fun <- function(data,
       warning("'coef.digits < 3' Likely information loss!")
     }
 
-#    polys.ls <- polynom::polylist(signif(coefs.mt, coef.digits))
-
     eq.char <- AIC.char <- rho.char <- character(num.quantiles)
     for (q in seq_along(quantiles)) {
-      eq.char[q] <- as.character(polynom::as.polynomial(coefs.ls[[q]]),
-                                 digits = coef.digits,
-                                 keep.zeros = coef.keep.zeros)
-      eq.char[q] <- gsub("e([+-]?[0-9]*)", "%*%10^{\\1}", eq.char[q])
-      # muliplication symbol
-      if (output.type %in% c("latex", "tikz")) {
-        eq.char <- gsub("%*%", "\\times{}", eq.char, fixed = TRUE)
-        eq.char <- gsub("*", "", eq.char, fixed = TRUE)
-      } else if (output.type == "markdown") {
-        eq.char <- gsub("%*%", "&times;", eq.char, fixed = TRUE)
-        eq.char <- gsub("*", "&nbsp;", eq.char, fixed = TRUE)
-      }else if (output.type == "text") {
-        eq.char <- gsub("[*][:space:]", " ", eq.char, fixed = TRUE)
-        eq.char <- gsub("%*%", " * ", eq.char, fixed = TRUE)
-      }
-
-      eq.char[q] <- gsub("x", eq.x.rhs, eq.char[q], fixed = TRUE)
-      if (eq.with.lhs) {
-        eq.char[q] <- paste(lhs, eq.char[q], sep = "")
-      }
+      # build equation as a character string from the coefficient estimates
+      eq.char[q] <- coefs2poly_eq(coefs = coefs.ls[[q]],
+                                  coef.digits = coef.digits,
+                                  coef.keep.zeros = coef.keep.zeros,
+                                  eq.x.rhs = eq.x.rhs,
+                                  lhs = lhs,
+                                  output.type = output.type)
 
       if (output.type == "expression" && coef.keep.zeros) {
         AIC.char[q] <- sprintf("\"%.4g\"", AIC[q])

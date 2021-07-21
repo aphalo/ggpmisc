@@ -215,7 +215,7 @@ Many thanks!
 -   Override `ggplot2::annotate()` adding support for aesthetics `npcx`
     and `npcy`.
 -   Add `stat_summary_xy()` and `stat_centroid()`.
--   Revise `stat_poly_eq()` to support labeling of equations according
+-   Revise `stat_poly_eq()` to support labelling of equations according
     to group.
 -   Implement `output.type` `"markdown"` in `stat_poly_eq()` usable with
     `geom_richtext()` from package 'ggtext'.
