@@ -67,17 +67,20 @@ based on my own needs or ideas.
 -   Add `weights` to returned values by `stat_fit_residuals()` and
     `stat_fit_deviations()` and add support for the `weight` aesthetic
     as their input for parameter `weights` of the model fit functions.
--   Revise `stat_poly_eq()` and `stat_quant_eq()` so that they by
-    default keep trailing zeros according to the numbers of significant
-    digits given by `coef.digits`. A new parameter `coef.keep.zeros` can
-    be set to `FALSE` to restore the deletion of trailing zeros. Be
-    aware that even if the character label for the equation contains
-    trailing zeros, if it is parsed into R expressions (as it is by
-    default) the trailing zeros will be dropped at this stage. *Trailing
-    zeros in the equation will be rendered to the plot only if
-    `output.type` is other than `"expression"`.* Equations and other
-    labels may in all cases be rendered slightly differently than in
-    previous versions as now `sprintf()` is used.
+-   Revise `stat_poly_eq()` and `stat_quant_eq()` so that by default
+    keep trailing zeros according to the numbers of significant digits
+    given by `coef.digits`. A new parameter `coef.keep.zeros` can be set
+    to `FALSE` to restore the deletion of trailing zeros. Be aware that
+    even if the character label for the equation contains trailing
+    zeros, if it is parsed into R expressions (as it is by default) the
+    trailing zeros will be dropped at this later stage. *Trailing zeros
+    in the equation will be rendered to the plot only if `output.type`
+    is other than `"expression"`.* Equations and other labels may render
+    slightly differently than in previous versions as now `sprintf()` is
+    used for all labels.
+-   Fix bug in `stat_poly_eq()` and `stat_quant_eq()` that resulted in
+    bad/non-syntactical character strings for `eq.label` when
+    `output.type` was different from its default of `"expression"`.
 
 # ggpmisc 0.4.0
 
