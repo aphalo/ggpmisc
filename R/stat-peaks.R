@@ -163,10 +163,12 @@ find_peaks <-
 #'   geom_line() +
 #'   stat_peaks(colour = "red") +
 #'   stat_valleys(colour = "blue")
+#'
 #' ggplot(lynx_num.df, aes(year, lynx)) +
 #'   geom_line() +
 #'   stat_peaks(colour = "red") +
 #'   stat_peaks(colour = "red", geom = "rug")
+#'
 #' ggplot(lynx_num.df, aes(year, lynx)) +
 #'   geom_line() +
 #'   stat_peaks(colour = "red") +
@@ -175,10 +177,12 @@ find_peaks <-
 #' lynx_datetime.df <-
 #'    try_tibble(lynx,
 #'               col.names = c("year", "lynx")) # years -> POSIXct
+#'
 #' ggplot(lynx_datetime.df, aes(year, lynx)) +
 #'   geom_line() +
 #'   stat_peaks(colour = "red") +
 #'   stat_valleys(colour = "blue")
+#'
 #' ggplot(lynx_datetime.df, aes(year, lynx)) +
 #'   geom_line() +
 #'   stat_peaks(colour = "red") +
@@ -187,6 +191,28 @@ find_peaks <-
 #'              hjust = -0.1,
 #'              x.label.fmt = "%Y",
 #'              angle = 33)
+#'
+#' ggplot(lynx_datetime.df, aes(year, lynx)) +
+#'   geom_line() +
+#'   stat_peaks(colour = "red") +
+#'   stat_peaks(colour = "red",
+#'              geom = "text_linked",
+#'              position = position_nudge_keep(x = 0, y = 200),
+#'              hjust = -0.1,
+#'              x.label.fmt = "%Y",
+#'              angle = 90) +
+#'   expand_limits(y = 8000)
+#'
+#' ggplot(lynx_datetime.df, aes(year, lynx)) +
+#'   geom_line() +
+#'   stat_peaks(colour = "red",
+#'              geom = "text_linked",
+#'              position = position_nudge_to(y = 7200),
+#'              arrow = arrow(length = grid::unit(1.5, "mm")),
+#'              hjust = -0.1,
+#'              x.label.fmt = "%Y",
+#'              angle = 90) +
+#'   expand_limits(y = 8000)
 #'
 #' @export
 #' @family peaks and valleys functions
@@ -381,9 +407,9 @@ valleys_compute_group_fun <- function(data,
 StatPeaks <-
   ggplot2::ggproto("StatPeaks", ggplot2::Stat,
                    compute_group = peaks_compute_group_fun,
-                   default_aes = ggplot2::aes(label = stat(x.label),
-                                              xintercept = stat(x),
-                                              yintercept = stat(y)),
+                   default_aes = ggplot2::aes(label = after_stat(x.label),
+                                              xintercept = after_stat(x),
+                                              yintercept = after_stat(y)),
                    required_aes = c("x", "y")
   )
 
@@ -435,8 +461,8 @@ stat_valleys <- function(mapping = NULL,
 StatValleys <-
   ggplot2::ggproto("StatValleys", ggplot2::Stat,
                    compute_group = valleys_compute_group_fun,
-                   default_aes = ggplot2::aes(label = stat(x.label),
-                                              xintercept = stat(x),
-                                              yintercept = stat(y)),
+                   default_aes = ggplot2::aes(label = after_stat(x.label),
+                                              xintercept = after_stat(x),
+                                              yintercept = after_stat(y)),
                    required_aes = c("x", "y")
   )

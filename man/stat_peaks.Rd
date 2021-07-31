@@ -150,10 +150,12 @@ ggplot(lynx_num.df, aes(year, lynx)) +
   geom_line() +
   stat_peaks(colour = "red") +
   stat_valleys(colour = "blue")
+
 ggplot(lynx_num.df, aes(year, lynx)) +
   geom_line() +
   stat_peaks(colour = "red") +
   stat_peaks(colour = "red", geom = "rug")
+
 ggplot(lynx_num.df, aes(year, lynx)) +
   geom_line() +
   stat_peaks(colour = "red") +
@@ -162,10 +164,12 @@ ggplot(lynx_num.df, aes(year, lynx)) +
 lynx_datetime.df <-
    try_tibble(lynx,
               col.names = c("year", "lynx")) # years -> POSIXct
+
 ggplot(lynx_datetime.df, aes(year, lynx)) +
   geom_line() +
   stat_peaks(colour = "red") +
   stat_valleys(colour = "blue")
+
 ggplot(lynx_datetime.df, aes(year, lynx)) +
   geom_line() +
   stat_peaks(colour = "red") +
@@ -174,6 +178,28 @@ ggplot(lynx_datetime.df, aes(year, lynx)) +
              hjust = -0.1,
              x.label.fmt = "\%Y",
              angle = 33)
+
+ggplot(lynx_datetime.df, aes(year, lynx)) +
+  geom_line() +
+  stat_peaks(colour = "red") +
+  stat_peaks(colour = "red",
+             geom = "text_linked",
+             position = position_nudge_keep(x = 0, y = 200),
+             hjust = -0.1,
+             x.label.fmt = "\%Y",
+             angle = 90) +
+  expand_limits(y = 8000)
+
+ggplot(lynx_datetime.df, aes(year, lynx)) +
+  geom_line() +
+  stat_peaks(colour = "red",
+             geom = "text_linked",
+             position = position_nudge_to(y = 7200),
+             arrow = arrow(length = grid::unit(1.5, "mm")),
+             hjust = -0.1,
+             x.label.fmt = "\%Y",
+             angle = 90) +
+  expand_limits(y = 8000)
 
 }
 \seealso{
