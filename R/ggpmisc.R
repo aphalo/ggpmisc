@@ -68,7 +68,7 @@
 #' ggplot(cars, aes(speed, dist)) +
 #'   geom_point() +
 #'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(aes(label = stat(eq.label)),
+#'   stat_poly_eq(aes(label = after_stat(eq.label)),
 #'                formula = formula,
 #'                parse = TRUE) +
 #'   labs(x = expression("Speed, "*x~("mph")),

@@ -207,8 +207,8 @@ StatFitTb <-
   ggplot2::ggproto("StatFitTb", ggplot2::Stat,
                    compute_panel = fit_tb_compute_panel_fun,
                    default_aes =
-                     ggplot2::aes(hjust = stat(hjust.., vjust = ..vjust),
-                                  label = stat(mf_tb)),
+                     ggplot2::aes(hjust = after_stat(hjust.., vjust = ..vjust),
+                                  label = after_stat(mf_tb)),
                    required_aes = c("x", "y")
   )
 

@@ -295,7 +295,7 @@ StatQuantLine <-
                    },
                    extra_params = c("na.rm", "orientation"),
                    compute_group = quant_line_compute_group_fun,
-                   default_aes = ggplot2::aes(group = stat(group),
+                   default_aes = ggplot2::aes(group = after_stat(group),
                                               weight = 1),
                    required_aes = c("x", "y")
   )

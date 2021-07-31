@@ -21,9 +21,9 @@ test_that("quant_formulas", {
                                   geom_point() +
                                   stat_quant_eq(formula = y ~ 1, parse = TRUE,
                                                 mapping =
-                                                  aes(label = paste(stat(eq.label),
-                                                                    stat(rho.label),
-                                                                    stat(AIC.label),
+                                                  aes(label = paste(after_stat(eq.label),
+                                                                    after_stat(rho.label),
+                                                                    after_stat(AIC.label),
                                                                     sep = "~~")))
     )
 
@@ -32,9 +32,9 @@ test_that("quant_formulas", {
                                   geom_point() +
                                   stat_quant_eq(formula = y ~ 1, parse = TRUE,
                                                 mapping =
-                                                  aes(label = paste(stat(eq.label),
-                                                                    stat(rho.label),
-                                                                    stat(AIC.label),
+                                                  aes(label = paste(after_stat(eq.label),
+                                                                    after_stat(rho.label),
+                                                                    after_stat(AIC.label),
                                                                     sep = "~~")))
     )
 
@@ -43,9 +43,9 @@ test_that("quant_formulas", {
                                   geom_point() +
                                   stat_quant_eq(formula = y ~ x, parse = TRUE,
                                                 mapping =
-                                                  aes(label = paste(stat(eq.label),
-                                                                    stat(rho.label),
-                                                                    stat(AIC.label),
+                                                  aes(label = paste(after_stat(eq.label),
+                                                                    after_stat(rho.label),
+                                                                    after_stat(AIC.label),
                                                                     sep = "~~")))
     )
 
@@ -54,9 +54,9 @@ test_that("quant_formulas", {
                                   geom_point() +
                                   stat_quant_eq(formula = y ~ x - 1, parse = TRUE,
                                                 mapping =
-                                                  aes(label = paste(stat(eq.label),
-                                                                    stat(rho.label),
-                                                                    stat(AIC.label),
+                                                  aes(label = paste(after_stat(eq.label),
+                                                                    after_stat(rho.label),
+                                                                    after_stat(AIC.label),
                                                                     sep = "~~")))
     )
 
@@ -65,9 +65,9 @@ test_that("quant_formulas", {
                                   geom_point() +
                                   stat_quant_eq(formula = y ~ x -1, parse = TRUE,
                                                 mapping =
-                                                  aes(label = paste(stat(eq.label),
-                                                                    stat(rho.label),
-                                                                    stat(AIC.label),
+                                                  aes(label = paste(after_stat(eq.label),
+                                                                    after_stat(rho.label),
+                                                                    after_stat(AIC.label),
                                                                     sep = "~~")))
     )
 
@@ -76,9 +76,9 @@ test_that("quant_formulas", {
                                   geom_point() +
                                   stat_quant_eq(formula = y ~ x -  1, parse = TRUE,
                                                 mapping =
-                                                  aes(label = paste(stat(eq.label),
-                                                                    stat(rho.label),
-                                                                    stat(AIC.label),
+                                                  aes(label = paste(after_stat(eq.label),
+                                                                    after_stat(rho.label),
+                                                                    after_stat(AIC.label),
                                                                     sep = "~~")))
     )
 
@@ -87,9 +87,9 @@ test_that("quant_formulas", {
                                   geom_point() +
                                   stat_quant_eq(formula = y ~ x + 0, parse = TRUE,
                                                 mapping =
-                                                  aes(label = paste(stat(eq.label),
-                                                                    stat(rho.label),
-                                                                    stat(AIC.label),
+                                                  aes(label = paste(after_stat(eq.label),
+                                                                    after_stat(rho.label),
+                                                                    after_stat(AIC.label),
                                                                     sep = "~~")))
     )
 
@@ -98,9 +98,9 @@ test_that("quant_formulas", {
                                   geom_point() +
                                   stat_quant_eq(formula = y ~ x +0, parse = TRUE,
                                                 mapping =
-                                                  aes(label = paste(stat(eq.label),
-                                                                    stat(rho.label),
-                                                                    stat(AIC.label),
+                                                  aes(label = paste(after_stat(eq.label),
+                                                                    after_stat(rho.label),
+                                                                    after_stat(AIC.label),
                                                                     sep = "~~")))
     )
 
@@ -109,9 +109,9 @@ test_that("quant_formulas", {
                                   geom_point() +
                                   stat_quant_eq(formula = y ~ x +  0, parse = TRUE,
                                                 mapping =
-                                                  aes(label = paste(stat(eq.label),
-                                                                    stat(rho.label),
-                                                                    stat(AIC.label),
+                                                  aes(label = paste(after_stat(eq.label),
+                                                                    after_stat(rho.label),
+                                                                    after_stat(AIC.label),
                                                                     sep = "~~")))
     )
 
@@ -120,9 +120,9 @@ test_that("quant_formulas", {
                                   geom_point() +
                                   stat_quant_eq(formula = y ~ poly(x, 1, raw = TRUE), parse = TRUE,
                                                 mapping =
-                                                  aes(label = paste(stat(eq.label),
-                                                                    stat(rho.label),
-                                                                    stat(AIC.label),
+                                                  aes(label = paste(after_stat(eq.label),
+                                                                    after_stat(rho.label),
+                                                                    after_stat(AIC.label),
                                                                     sep = "~~")))
     )
 
@@ -131,9 +131,9 @@ test_that("quant_formulas", {
                                   geom_point() +
                                   stat_quant_eq(formula = y ~ poly(x, 3, raw = TRUE), parse = TRUE,
                                                 mapping =
-                                                  aes(label = paste(stat(eq.label),
-                                                                    stat(rho.label),
-                                                                    stat(AIC.label),
+                                                  aes(label = paste(after_stat(eq.label),
+                                                                    after_stat(rho.label),
+                                                                    after_stat(AIC.label),
                                                                     sep = "~~")))
     )
 
@@ -144,9 +144,9 @@ test_that("quant_formulas", {
                                   geom_point() +
                                   stat_quant_eq(formula = x ~ 1, parse = TRUE,
                                                 mapping =
-                                                  aes(label = paste(stat(eq.label),
-                                                                    stat(rho.label),
-                                                                    stat(AIC.label),
+                                                  aes(label = paste(after_stat(eq.label),
+                                                                    after_stat(rho.label),
+                                                                    after_stat(AIC.label),
                                                                     sep = "~~")))
     )
 
@@ -155,9 +155,9 @@ test_that("quant_formulas", {
                                   geom_point() +
                                   stat_quant_eq(formula = x ~ y, parse = TRUE,
                                                 mapping =
-                                                  aes(label = paste(stat(eq.label),
-                                                                    stat(rho.label),
-                                                                    stat(AIC.label),
+                                                  aes(label = paste(after_stat(eq.label),
+                                                                    after_stat(rho.label),
+                                                                    after_stat(AIC.label),
                                                                     sep = "~~")))
     )
 
@@ -166,9 +166,9 @@ test_that("quant_formulas", {
                                   geom_point() +
                                   stat_quant_eq(formula = x ~ y - 1, parse = TRUE,
                                                 mapping =
-                                                  aes(label = paste(stat(eq.label),
-                                                                    stat(rho.label),
-                                                                    stat(AIC.label),
+                                                  aes(label = paste(after_stat(eq.label),
+                                                                    after_stat(rho.label),
+                                                                    after_stat(AIC.label),
                                                                     sep = "~~")))
     )
 
@@ -177,9 +177,9 @@ test_that("quant_formulas", {
                                   geom_point() +
                                   stat_quant_eq(formula = x ~ y + 0, parse = TRUE,
                                                 mapping =
-                                                  aes(label = paste(stat(eq.label),
-                                                                    stat(rho.label),
-                                                                    stat(AIC.label),
+                                                  aes(label = paste(after_stat(eq.label),
+                                                                    after_stat(rho.label),
+                                                                    after_stat(AIC.label),
                                                                     sep = "~~")))
     )
 
@@ -188,9 +188,9 @@ test_that("quant_formulas", {
                                   geom_point() +
                                   stat_quant_eq(formula = x ~ poly(y, 1, raw = TRUE), parse = TRUE,
                                                 mapping =
-                                                  aes(label = paste(stat(eq.label),
-                                                                    stat(rho.label),
-                                                                    stat(AIC.label),
+                                                  aes(label = paste(after_stat(eq.label),
+                                                                    after_stat(rho.label),
+                                                                    after_stat(AIC.label),
                                                                     sep = "~~")))
     )
 
@@ -360,9 +360,9 @@ test_that("rounding_signif", {
                                                 rho.digits = 3,
                                                 coef.digits = 6,
                                                 mapping =
-                                                  aes(label = paste(stat(eq.label),
-                                                                    stat(rho.label),
-                                                                    stat(AIC.label),
+                                                  aes(label = paste(after_stat(eq.label),
+                                                                    after_stat(rho.label),
+                                                                    after_stat(AIC.label),
                                                                     sep = "~~")))
     )
 
@@ -374,9 +374,9 @@ test_that("rounding_signif", {
                                                 rho.digits = 2,
                                                 coef.digits = 4,
                                                 mapping =
-                                                  aes(label = paste(stat(eq.label),
-                                                                    stat(rho.label),
-                                                                    stat(AIC.label),
+                                                  aes(label = paste(after_stat(eq.label),
+                                                                    after_stat(rho.label),
+                                                                    after_stat(AIC.label),
                                                                     sep = "~~")))
     )
   }, warning=function(w) {

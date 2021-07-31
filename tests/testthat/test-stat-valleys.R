@@ -46,7 +46,7 @@ test_that("numbers_tb", {
                               ggplot(data = make_data_tbl(30), aes(x, y)) +
                                 geom_point() +
                                 geom_line() +
-                                stat_valleys(mapping = aes(label = stat(y.label)),
+                                stat_valleys(mapping = aes(label = after_stat(y.label)),
                                            geom = "text", hjust = 1.1,
                                            y.label.fmt = "lambda~`=`~%.2f",
                                            angle = 90,
@@ -105,7 +105,7 @@ test_that("dates_tb", {
                               ggplot(data = make_data_tbl(30), aes(x, y)) +
                                 geom_point() +
                                 geom_line() +
-                                stat_valleys(mapping = aes(label = stat(y.label)),
+                                stat_valleys(mapping = aes(label = after_stat(y.label)),
                                            geom = "text", hjust = 1.1,
                                            y.label.fmt = "lambda~`=`~%.2f",
                                            angle = 90,
@@ -164,7 +164,7 @@ test_that("datetimes_tb", {
                               ggplot(data = make_data_tbl(30), aes(x, y)) +
                                 geom_point() +
                                 geom_line() +
-                                stat_valleys(mapping = aes(label = stat(y.label)),
+                                stat_valleys(mapping = aes(label = after_stat(y.label)),
                                            geom = "text", hjust = 1.1,
                                            y.label.fmt = "lambda~`=`~%.2f",
                                            angle = 90,

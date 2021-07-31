@@ -123,16 +123,20 @@ Although arguments passed to parameter \code{augment.args} will be
 
 \examples{
 library(broom)
-library(gginnards)
 library(quantreg)
 
-# Regression by panel, using geom_debug() to explore computed variables
-ggplot(mtcars, aes(x = disp, y = mpg)) +
-  geom_point(aes(colour = factor(cyl))) +
-  stat_fit_augment(method = "lm",
-                   method.args = list(formula = y ~ x),
-                   geom = "debug",
-                   summary.fun = colnames)
+# Inspecting the returned data using geom_debug()
+if (requireNamespace("gginnards", quietly = TRUE)) {
+  library(gginnards)
+
+# Regression by panel
+  ggplot(mtcars, aes(x = disp, y = mpg)) +
+    geom_point(aes(colour = factor(cyl))) +
+    stat_fit_augment(method = "lm",
+                     method.args = list(formula = y ~ x),
+                     geom = "debug",
+                     summary.fun = colnames)
+}
 
 # Regression by panel example
 ggplot(mtcars, aes(x = disp, y = mpg)) +

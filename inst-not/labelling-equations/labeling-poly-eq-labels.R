@@ -17,7 +17,7 @@ p <- ggplot(df_mtcars, aes(x = wt, y = mpg, group = factor_cyl, colour = factor_
                aes(label = paste("bold(\"", c("4", "6", "8")[stat(group)],
                                  " cylinders:  \")*",
                                  "italic(hat(y))~`=`~",
-                                 stat(eq.label),
+                                 after_stat(eq.label),
                                  sep = "")),
                label.x.npc = "right",
                parse = TRUE) +

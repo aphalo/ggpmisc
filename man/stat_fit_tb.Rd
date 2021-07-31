@@ -133,7 +133,7 @@ can include aesthetics whose values you want to set, not map. See
 
   To explore the values returned by this statistic, which vary depending
   on the model fitting function and model formula we suggest the use of
-  \code{\link[gginnards]{geom_debug}}. An example is shown below.
+  \code{\link[gginnards]{geom_debug}}.
 }
 
 \examples{

@@ -145,26 +145,33 @@ Although arguments passed to parameter \code{tidy.args} will be
 
 \examples{
 library(broom)
-library(gginnards)
 library(quantreg)
 
-# Regression by panel, exploring computed variables with geom_debug()
-# default column names
-ggplot(mtcars, aes(x = disp, y = mpg)) +
-  stat_smooth(method = "lm", formula = y ~ x + I(x^2)) +
-  geom_point(aes(colour = factor(cyl))) +
-  stat_fit_tidy(method = "lm",
-                method.args = list(formula = y ~ x + I(x^2)),
-                geom = "debug")
+# Inspecting the returned data using geom_debug()
+if (requireNamespace("gginnards", quietly = TRUE)) {
+  library(gginnards)
 
-# Regression by panel, exploring computed variables with geom_debug()
-# sanitized column names
-ggplot(mtcars, aes(x = disp, y = mpg)) +
-  stat_smooth(method = "lm", formula = y ~ x + I(x^2)) +
-  geom_point(aes(colour = factor(cyl))) +
-  stat_fit_tidy(method = "lm",
-                method.args = list(formula = y ~ x + I(x^2)),
-                geom = "debug", sanitize.names = TRUE)
+# This provides a quick way of finding out the names of the variables that
+# are available for mapping to aesthetics. This is specially important for
+# this stat as these names depend on the specific tidy() method used, which
+# depends on the method used, such as lm(), used to fit the model.
+
+# Regression by panel, default column names
+  ggplot(mtcars, aes(x = disp, y = mpg)) +
+    stat_smooth(method = "lm", formula = y ~ x + I(x^2)) +
+    geom_point(aes(colour = factor(cyl))) +
+    stat_fit_tidy(method = "lm",
+                  method.args = list(formula = y ~ x + I(x^2)),
+                  geom = "debug")
+
+# Regression by panel, sanitized column names
+  ggplot(mtcars, aes(x = disp, y = mpg)) +
+    stat_smooth(method = "lm", formula = y ~ x + I(x^2)) +
+    geom_point(aes(colour = factor(cyl))) +
+    stat_fit_tidy(method = "lm",
+                  method.args = list(formula = y ~ x + I(x^2)),
+                  geom = "debug", sanitize.names = TRUE)
+}
 
 # Regression by panel example
 ggplot(mtcars, aes(x = disp, y = mpg)) +
@@ -174,8 +181,8 @@ ggplot(mtcars, aes(x = disp, y = mpg)) +
                 label.x = "right",
                 method.args = list(formula = y ~ x),
                 mapping = aes(label = sprintf("Slope = \%.3g\np-value = \%.3g",
-                                              stat(x_estimate),
-                                              stat(x_p.value))))
+                                              after_stat(x_estimate),
+                                              after_stat(x_p.value))))
 
 # Regression by group example
 ggplot(mtcars, aes(x = disp, y = mpg, colour = factor(cyl))) +
@@ -185,8 +192,8 @@ ggplot(mtcars, aes(x = disp, y = mpg, colour = factor(cyl))) +
                 label.x = "right",
                 method.args = list(formula = y ~ x),
                 mapping = aes(label = sprintf("Slope = \%.3g, p-value = \%.3g",
-                                              stat(x_estimate),
-                                              stat(x_p.value))))
+                                              after_stat(x_estimate),
+                                              after_stat(x_p.value))))
 
 # Weighted regression example
 ggplot(mtcars, aes(x = disp, y = mpg, weight = cyl)) +
@@ -196,8 +203,8 @@ ggplot(mtcars, aes(x = disp, y = mpg, weight = cyl)) +
                 label.x = "right",
                 method.args = list(formula = y ~ x, weights = quote(weight)),
                 mapping = aes(label = sprintf("Slope = \%.3g\np-value = \%.3g",
-                                              stat(x_estimate),
-                                              stat(x_p.value))))
+                                              after_stat(x_estimate),
+                                              after_stat(x_p.value))))
 
 # Correlation test
 ggplot(mtcars, aes(x = disp, y = mpg)) +
@@ -207,8 +214,8 @@ ggplot(mtcars, aes(x = disp, y = mpg)) +
                 label.y = "bottom",
                 method.args = list(formula = ~ x + y),
                 mapping = aes(label = sprintf("R = \%.3g\np-value = \%.3g",
-                                              stat(`_estimate`),
-                                              stat(`_p.value`))))
+                                              after_stat(`_estimate`),
+                                              after_stat(`_p.value`))))
 
 # Quantile regression
 ggplot(mtcars, aes(x = disp, y = mpg)) +
@@ -219,8 +226,8 @@ ggplot(mtcars, aes(x = disp, y = mpg)) +
                 method.args = list(formula = y ~ x),
                 tidy.args = list(se.type = "nid"),
                 mapping = aes(label = sprintf("Slope = \%.3g\np-value = \%.3g",
-                                              stat(x_estimate),
-                                              stat(x_p.value))))
+                                              after_stat(x_estimate),
+                                              after_stat(x_p.value))))
 
 }
 \seealso{

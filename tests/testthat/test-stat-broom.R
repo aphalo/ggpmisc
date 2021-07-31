@@ -42,12 +42,12 @@ test_that("glance_methods", {
                                 geom_point() +
                                 stat_fit_glance(mapping =
                                   aes(label = sprintf("%.3g, %.3f, %.3f, %.3g, %.3g, %.3g",
-                                                    stat(p.value),
-                                                    stat(r.squared),
-                                                    stat(adj.r.squared),
-                                                    stat(AIC),
-                                                    stat(BIC),
-                                                    stat(df.residual))))
+                                                    after_stat(p.value),
+                                                    after_stat(r.squared),
+                                                    after_stat(adj.r.squared),
+                                                    after_stat(AIC),
+                                                    after_stat(BIC),
+                                                    after_stat(df.residual))))
   )
 
   vdiffr::expect_doppelganger("glance_method_lm_fun",
@@ -56,12 +56,12 @@ test_that("glance_methods", {
                                 stat_fit_glance(method = "lm",
                                                 mapping =
                                                   aes(label = sprintf("%.3g, %.3f, %.3f, %.3g, %.3g, %.3g",
-                                                                      stat(p.value),
-                                                                      stat(r.squared),
-                                                                      stat(adj.r.squared),
-                                                                      stat(AIC),
-                                                                      stat(BIC),
-                                                                      stat(df.residual))))
+                                                                      after_stat(p.value),
+                                                                      after_stat(r.squared),
+                                                                      after_stat(adj.r.squared),
+                                                                      after_stat(AIC),
+                                                                      after_stat(BIC),
+                                                                      after_stat(df.residual))))
   )
 
   vdiffr::expect_doppelganger("glance_method_lm_char",
@@ -70,12 +70,12 @@ test_that("glance_methods", {
                                 stat_fit_glance(method = "lm",
                                                 mapping =
                                                   aes(label = sprintf("%.3g, %.3f, %.3f, %.3g, %.3g, %.3g",
-                                                                      stat(p.value),
-                                                                      stat(r.squared),
-                                                                      stat(adj.r.squared),
-                                                                      stat(AIC),
-                                                                      stat(BIC),
-                                                                      stat(df.residual))))
+                                                                      after_stat(p.value),
+                                                                      after_stat(r.squared),
+                                                                      after_stat(adj.r.squared),
+                                                                      after_stat(AIC),
+                                                                      after_stat(BIC),
+                                                                      after_stat(df.residual))))
   )
 
   vdiffr::expect_doppelganger("glance_method_args",
@@ -85,12 +85,12 @@ test_that("glance_methods", {
                                                 method.args = list(formula = y ~ x + I(x^2)),
                                                 mapping =
                                                   aes(label = sprintf("%.3g, %.3f, %.3f, %.3g, %.3g, %.3g",
-                                                                      stat(p.value),
-                                                                      stat(r.squared),
-                                                                      stat(adj.r.squared),
-                                                                      stat(AIC),
-                                                                      stat(BIC),
-                                                                      stat(df.residual))))
+                                                                      after_stat(p.value),
+                                                                      after_stat(r.squared),
+                                                                      after_stat(adj.r.squared),
+                                                                      after_stat(AIC),
+                                                                      after_stat(BIC),
+                                                                      after_stat(df.residual))))
   )
 
   old.options <- options(warn = -1)
@@ -101,11 +101,11 @@ test_that("glance_methods", {
                                                 method.args = list(formula = y ~ x + I(x^2)),
                                                 mapping =
                                                   aes(label = sprintf("%.3g, %.3g, %.3g, %.3g, %.3g",
-                                                                      stat(tau),
-                                                                      stat(logLik),
-                                                                      stat(AIC),
-                                                                      stat(BIC),
-                                                                      stat(df.residual))))
+                                                                      after_stat(tau),
+                                                                      after_stat(logLik),
+                                                                      after_stat(AIC),
+                                                                      after_stat(BIC),
+                                                                      after_stat(df.residual))))
    )
   options(old.options)
 
@@ -116,8 +116,8 @@ test_that("glance_methods", {
                                                 method.args = list(x = "x", y = "y"),
                                                 mapping =
                                                   aes(label = sprintf("%.3g, %.3g",
-                                                                      stat(estimate),
-                                                                      stat(p.value))))
+                                                                      after_stat(estimate),
+                                                                      after_stat(p.value))))
   )
 
   vdiffr::expect_doppelganger("glance_method_cortest_formula",
@@ -127,8 +127,8 @@ test_that("glance_methods", {
                                                 method.args = list(formula = ~ x + y),
                                                 mapping =
                                                   aes(label = sprintf("%.3g, %.3g",
-                                                                      stat(estimate),
-                                                                      stat(p.value))))
+                                                                      after_stat(estimate),
+                                                                      after_stat(p.value))))
   )
 
 })
@@ -151,14 +151,14 @@ test_that("tidy_methods", {
                                 geom_point() +
                                 stat_fit_tidy(mapping =
                                                   aes(label = sprintf("%.3g, %.3g, %.3g, %.3g\n%.3g, %.3g, %.3g, %.3g",
-                                                                      stat(Intercept_estimate),
-                                                                      stat(Intercept_p.value),
-                                                                      stat(Intercept_stat),
-                                                                      stat(Intercept_se),
-                                                                      stat(x_estimate),
-                                                                      stat(x_p.value),
-                                                                      stat(x_stat),
-                                                                      stat(x_se))))
+                                                                      after_stat(Intercept_estimate),
+                                                                      after_stat(Intercept_p.value),
+                                                                      after_stat(Intercept_stat),
+                                                                      after_stat(Intercept_se),
+                                                                      after_stat(x_estimate),
+                                                                      after_stat(x_p.value),
+                                                                      after_stat(x_stat),
+                                                                      after_stat(x_se))))
   )
 
   vdiffr::expect_doppelganger("tidy_method_lm_fun",
@@ -167,14 +167,14 @@ test_that("tidy_methods", {
                                 stat_fit_tidy(method = lm,
                                               mapping =
                                                 aes(label = sprintf("%.3g, %.3g, %.3g, %.3g\n%.3g, %.3g, %.3g, %.3g",
-                                                                    stat(Intercept_estimate),
-                                                                    stat(Intercept_p.value),
-                                                                    stat(Intercept_stat),
-                                                                    stat(Intercept_se),
-                                                                    stat(x_estimate),
-                                                                    stat(x_p.value),
-                                                                    stat(x_stat),
-                                                                    stat(x_se))))
+                                                                    after_stat(Intercept_estimate),
+                                                                    after_stat(Intercept_p.value),
+                                                                    after_stat(Intercept_stat),
+                                                                    after_stat(Intercept_se),
+                                                                    after_stat(x_estimate),
+                                                                    after_stat(x_p.value),
+                                                                    after_stat(x_stat),
+                                                                    after_stat(x_se))))
   )
 
   vdiffr::expect_doppelganger("tidy_method_lm_char",
@@ -183,14 +183,14 @@ test_that("tidy_methods", {
                                 stat_fit_tidy(method = "lm",
                                               mapping =
                                                 aes(label = sprintf("%.3g, %.3g, %.3g, %.3g\n%.3g, %.3g, %.3g, %.3g",
-                                                                    stat(Intercept_estimate),
-                                                                    stat(Intercept_p.value),
-                                                                    stat(Intercept_stat),
-                                                                    stat(Intercept_se),
-                                                                    stat(x_estimate),
-                                                                    stat(x_p.value),
-                                                                    stat(x_stat),
-                                                                    stat(x_se))))
+                                                                    after_stat(Intercept_estimate),
+                                                                    after_stat(Intercept_p.value),
+                                                                    after_stat(Intercept_stat),
+                                                                    after_stat(Intercept_se),
+                                                                    after_stat(x_estimate),
+                                                                    after_stat(x_p.value),
+                                                                    after_stat(x_stat),
+                                                                    after_stat(x_se))))
   )
 
   vdiffr::expect_doppelganger("tidy_method_args",
@@ -200,14 +200,14 @@ test_that("tidy_methods", {
                                               method.args = list(formula = y ~ x + I(x^2)),
                                               mapping =
                                                 aes(label = sprintf("%.3g, %.3g, %.3g, %.3g\n%.3g, %.3g, %.3g, %.3g",
-                                                                    stat(Intercept_estimate),
-                                                                    stat(Intercept_p.value),
-                                                                    stat(Intercept_stat),
-                                                                    stat(Intercept_se),
-                                                                    stat(x_estimate),
-                                                                    stat(x_p.value),
-                                                                    stat(x_stat),
-                                                                    stat(x_se))))
+                                                                    after_stat(Intercept_estimate),
+                                                                    after_stat(Intercept_p.value),
+                                                                    after_stat(Intercept_stat),
+                                                                    after_stat(Intercept_se),
+                                                                    after_stat(x_estimate),
+                                                                    after_stat(x_p.value),
+                                                                    after_stat(x_stat),
+                                                                    after_stat(x_se))))
   )
 
   old.options <- options(warn = -1)
@@ -218,14 +218,14 @@ test_that("tidy_methods", {
                                               tidy.args = list(se.type = "nid"),
                                               mapping =
                                                 aes(label = sprintf("%.3g, %.3g, %.3g, %.3g\n%.3g, %.3g, %.3g, %.3g",
-                                                                    stat(Intercept_estimate),
-                                                                    stat(Intercept_p.value),
-                                                                    stat(Intercept_stat),
-                                                                    stat(Intercept_se),
-                                                                    stat(x_estimate),
-                                                                    stat(x_p.value),
-                                                                    stat(x_stat),
-                                                                    stat(x_se))))
+                                                                    after_stat(Intercept_estimate),
+                                                                    after_stat(Intercept_p.value),
+                                                                    after_stat(Intercept_stat),
+                                                                    after_stat(Intercept_se),
+                                                                    after_stat(x_estimate),
+                                                                    after_stat(x_p.value),
+                                                                    after_stat(x_stat),
+                                                                    after_stat(x_se))))
   )
 
   vdiffr::expect_doppelganger("tidy_method_rq",
@@ -234,14 +234,14 @@ test_that("tidy_methods", {
                                 stat_fit_tidy(method = "rq",
                                               mapping =
                                                 aes(label = sprintf("%.3g, %.3g, %.3g, %.3g\n%.3g, %.3g, %.3g, %.3g",
-                                                                    stat(Intercept_estimate),
-                                                                    stat(Intercept_conf.low),
-                                                                    stat(Intercept_conf.high),
-                                                                    stat(Intercept_tau),
-                                                                    stat(x_estimate),
-                                                                    stat(x_conf.low),
-                                                                    stat(x_conf.high),
-                                                                    stat(x_tau))))
+                                                                    after_stat(Intercept_estimate),
+                                                                    after_stat(Intercept_conf.low),
+                                                                    after_stat(Intercept_conf.high),
+                                                                    after_stat(Intercept_tau),
+                                                                    after_stat(x_estimate),
+                                                                    after_stat(x_conf.low),
+                                                                    after_stat(x_conf.high),
+                                                                    after_stat(x_tau))))
   )
   options(old.options)
 

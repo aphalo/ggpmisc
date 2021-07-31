@@ -216,22 +216,22 @@
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(aes(label =  paste(stat(rr.label),
-#'                                   stat(n.label), sep = "*\", \"*")),
+#'   stat_poly_eq(aes(label =  paste(after_stat(rr.label),
+#'                                   after_stat(n.label), sep = "*\", \"*")),
 #'                formula = formula)
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(aes(label =  paste(stat(eq.label),
-#'                                   stat(adj.rr.label), sep = "*\", \"*")),
+#'   stat_poly_eq(aes(label =  paste(after_stat(eq.label),
+#'                                   after_stat(adj.rr.label), sep = "*\", \"*")),
 #'                formula = formula)
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(aes(label =  paste(stat(f.value.label),
-#'                                   stat(p.value.label),
+#'   stat_poly_eq(aes(label =  paste(after_stat(f.value.label),
+#'                                   after_stat(p.value.label),
 #'                                   sep = "*\", \"*")),
 #'                formula = formula)
 #'
@@ -239,8 +239,8 @@
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   geom_smooth(method = "lm", formula = formula, orientation = "y") +
-#'   stat_poly_eq(aes(label =  paste(stat(eq.label),
-#'                                   stat(adj.rr.label),
+#'   stat_poly_eq(aes(label =  paste(after_stat(eq.label),
+#'                                   after_stat(adj.rr.label),
 #'                                   sep = "*\", \"*")),
 #'                formula = x ~ poly(y, 3, raw = TRUE))
 #'
@@ -248,11 +248,11 @@
 #' ggplot(my.data, aes(x, y, color = group)) +
 #'   geom_point() +
 #'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(aes(label =  ifelse(stat(adj.r.squared) > 0.96,
-#'                                    paste(stat(adj.rr.label),
-#'                                          stat(eq.label),
+#'   stat_poly_eq(aes(label =  ifelse(after_stat(adj.r.squared) > 0.96,
+#'                                    paste(after_stat(adj.rr.label),
+#'                                          after_stat(eq.label),
 #'                                          sep = "*\", \"*"),
-#'                                    stat(adj.rr.label))),
+#'                                    after_stat(adj.rr.label))),
 #'                rr.digits = 3,
 #'                formula = formula)
 #'
@@ -278,72 +278,71 @@
 #'                                     after_stat(b_0), after_stat(b_1),
 #'                                     after_stat(b_2), after_stat(b_3))))
 #'
-#' # Examples using geom_debug() to inspect the computed values
-#' #
-#' # This provides a quick way of finding out which variables are available for
-#' # use in mapping of aesthetics when using other geoms as in the examples
-#' # above.
+#' # Inspecting the returned data using geom_debug()
+#' if (requireNamespace("gginnards", quietly = TRUE)) {
+#'   library(gginnards)
 #'
-#' library(gginnards)
+#' # This provides a quick way of finding out the names of the variables that
+#' # are available for mapping to aesthetics.
 #'
 #' # the whole of data
+#'   ggplot(my.data, aes(x, y)) +
+#'     geom_point() +
+#'     geom_smooth(method = "lm", formula = formula) +
+#'     stat_poly_eq(formula = formula, geom = "debug")
 #'
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_point() +
-#'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(formula = formula, geom = "debug")
-#'
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_point() +
-#'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(formula = formula, geom = "debug", output.type = "numeric")
+#'   ggplot(my.data, aes(x, y)) +
+#'     geom_point() +
+#'     geom_smooth(method = "lm", formula = formula) +
+#'     stat_poly_eq(formula = formula, geom = "debug", output.type = "numeric")
 #'
 #' # names of the variables
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_point() +
-#'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(formula = formula, geom = "debug",
-#'                summary.fun = colnames)
+#'   ggplot(my.data, aes(x, y)) +
+#'     geom_point() +
+#'     geom_smooth(method = "lm", formula = formula) +
+#'     stat_poly_eq(formula = formula, geom = "debug",
+#'                  summary.fun = colnames)
 #'
 #' # only data$eq.label
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_point() +
-#'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(formula = formula, geom = "debug",
-#'                output.type = "expression",
-#'                summary.fun = function(x) {x[["eq.label"]]})
+#'   ggplot(my.data, aes(x, y)) +
+#'     geom_point() +
+#'     geom_smooth(method = "lm", formula = formula) +
+#'     stat_poly_eq(formula = formula, geom = "debug",
+#'                  output.type = "expression",
+#'                  summary.fun = function(x) {x[["eq.label"]]})
 #'
 #' # only data$eq.label
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_point() +
-#'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(aes(label = stat(eq.label)),
-#'                formula = formula, geom = "debug",
-#'                output.type = "markdown",
-#'                summary.fun = function(x) {x[["eq.label"]]})
+#'   ggplot(my.data, aes(x, y)) +
+#'     geom_point() +
+#'     geom_smooth(method = "lm", formula = formula) +
+#'     stat_poly_eq(aes(label = after_stat(eq.label)),
+#'                  formula = formula, geom = "debug",
+#'                  output.type = "markdown",
+#'                  summary.fun = function(x) {x[["eq.label"]]})
 #'
 #' # only data$eq.label
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_point() +
-#'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(formula = formula, geom = "debug",
-#'                output.type = "latex",
-#'                summary.fun = function(x) {x[["eq.label"]]})
+#'   ggplot(my.data, aes(x, y)) +
+#'     geom_point() +
+#'     geom_smooth(method = "lm", formula = formula) +
+#'     stat_poly_eq(formula = formula, geom = "debug",
+#'                  output.type = "latex",
+#'                  summary.fun = function(x) {x[["eq.label"]]})
 #'
 #' # only data$eq.label
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_point() +
-#'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(formula = formula, geom = "debug",
-#'                output.type = "text",
-#'                summary.fun = function(x) {x[["eq.label"]]})
+#'   ggplot(my.data, aes(x, y)) +
+#'     geom_point() +
+#'     geom_smooth(method = "lm", formula = formula) +
+#'     stat_poly_eq(formula = formula, geom = "debug",
+#'                  output.type = "text",
+#'                  summary.fun = function(x) {x[["eq.label"]]})
 #'
 #' # show the content of a list column
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_point() +
-#'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(formula = formula, geom = "debug", output.type = "numeric",
-#'                summary.fun = function(x) {x[["coef.ls"]][[1]]})
+#'   ggplot(my.data, aes(x, y)) +
+#'     geom_point() +
+#'     geom_smooth(method = "lm", formula = formula) +
+#'     stat_poly_eq(formula = formula, geom = "debug", output.type = "numeric",
+#'                  summary.fun = function(x) {x[["coef.ls"]][[1]]})
+#' }
 #'
 #' @family polynomial regression functions.
 #'
@@ -839,9 +838,9 @@ StatPolyEq <-
                    extra_params = c("na.rm", "parse"),
                    compute_group = poly_eq_compute_group_fun,
                    default_aes =
-                     ggplot2::aes(npcx = stat(npcx),
-                                  npcy = stat(npcy),
-                                  label = stat(rr.label),
+                     ggplot2::aes(npcx = after_stat(npcx),
+                                  npcy = after_stat(npcy),
+                                  label = after_stat(rr.label),
                                   hjust = "inward", vjust = "inward",
                                   weight = 1),
                    required_aes = c("x", "y")

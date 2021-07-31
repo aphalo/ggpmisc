@@ -229,7 +229,7 @@ StatFitParameters <-
                    default_aes =
                      ggplot2::aes(hjust = "inward",
                                   vjust = "inward",
-                                  label = stat(mf_tb)),
+                                  label = after_stat(mf_tb)),
                    required_aes = c("x", "y")
   )
 

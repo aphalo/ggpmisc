@@ -134,16 +134,19 @@ Although arguments passed to parameter \code{glance.args} will be
 
 \examples{
 library(broom)
-library(gginnards)
 library(quantreg)
 
-# Regression by panel example, using geom_debug.
-ggplot(mtcars, aes(x = disp, y = mpg)) +
-  stat_smooth(method = "lm") +
-  geom_point(aes(colour = factor(cyl))) +
-  stat_fit_glance(method = "lm",
-                  method.args = list(formula = y ~ x),
-                  geom = "debug")
+# Inspecting the returned data using geom_debug()
+if (requireNamespace("gginnards", quietly = TRUE)) {
+  library(gginnards)
+
+  ggplot(mtcars, aes(x = disp, y = mpg)) +
+    stat_smooth(method = "lm") +
+    geom_point(aes(colour = factor(cyl))) +
+    stat_fit_glance(method = "lm",
+                    method.args = list(formula = y ~ x),
+                    geom = "debug")
+}
 
 # Regression by panel example
 ggplot(mtcars, aes(x = disp, y = mpg)) +
@@ -153,7 +156,7 @@ ggplot(mtcars, aes(x = disp, y = mpg)) +
                   label.y = "bottom",
                   method.args = list(formula = y ~ x),
                   mapping = aes(label = sprintf('r^2~"="~\%.3f~~italic(P)~"="~\%.2g',
-                                stat(r.squared), stat(p.value))),
+                                after_stat(r.squared), after_stat(p.value))),
                   parse = TRUE)
 
 # Regression by group example
@@ -164,7 +167,7 @@ ggplot(mtcars, aes(x = disp, y = mpg, colour = factor(cyl))) +
                   label.y = "bottom",
                   method.args = list(formula = y ~ x),
                   mapping = aes(label = sprintf('r^2~"="~\%.3f~~italic(P)~"="~\%.2g',
-                                stat(r.squared), stat(p.value))),
+                                after_stat(r.squared), after_stat(p.value))),
                   parse = TRUE)
 
 # Weighted regression example
@@ -175,7 +178,7 @@ ggplot(mtcars, aes(x = disp, y = mpg, weight = cyl)) +
                   label.y = "bottom",
                   method.args = list(formula = y ~ x, weights = quote(weight)),
                   mapping = aes(label = sprintf('r^2~"="~\%.3f~~italic(P)~"="~\%.2g',
-                                stat(r.squared), stat(p.value))),
+                                after_stat(r.squared), after_stat(p.value))),
                   parse = TRUE)
 
 # correlation test
@@ -185,7 +188,7 @@ ggplot(mtcars, aes(x = disp, y = mpg)) +
                   label.y = "bottom",
                   method.args = list(formula = ~ x + y),
                   mapping = aes(label = sprintf('r[Pearson]~"="~\%.3f~~italic(P)~"="~\%.2g',
-                                stat(estimate), stat(p.value))),
+                                after_stat(estimate), after_stat(p.value))),
                   parse = TRUE)
 
 ggplot(mtcars, aes(x = disp, y = mpg)) +
@@ -194,7 +197,7 @@ ggplot(mtcars, aes(x = disp, y = mpg)) +
                   label.y = "bottom",
                   method.args = list(formula = ~ x + y, method = "spearman", exact = FALSE),
                   mapping = aes(label = sprintf('r[Spearman]~"="~\%.3f~~italic(P)~"="~\%.2g',
-                                stat(estimate), stat(p.value))),
+                                after_stat(estimate), after_stat(p.value))),
                   parse = TRUE)
 
 # Quantile regression by group example
@@ -205,7 +208,7 @@ ggplot(mtcars, aes(x = disp, y = mpg)) +
                   label.y = "bottom",
                   method.args = list(formula = y ~ x),
                   mapping = aes(label = sprintf('AIC = \%.3g, BIC = \%.3g',
-                                stat(AIC), stat(BIC))))
+                                after_stat(AIC), after_stat(BIC))))
 
 }
 \seealso{

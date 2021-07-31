@@ -99,16 +99,19 @@
 #'
 #' @examples
 #' library(broom)
-#' library(gginnards)
 #' library(quantreg)
 #'
-#' # Regression by panel example, using geom_debug.
-#' ggplot(mtcars, aes(x = disp, y = mpg)) +
-#'   stat_smooth(method = "lm") +
-#'   geom_point(aes(colour = factor(cyl))) +
-#'   stat_fit_glance(method = "lm",
-#'                   method.args = list(formula = y ~ x),
-#'                   geom = "debug")
+#' # Inspecting the returned data using geom_debug()
+#' if (requireNamespace("gginnards", quietly = TRUE)) {
+#'   library(gginnards)
+#'
+#'   ggplot(mtcars, aes(x = disp, y = mpg)) +
+#'     stat_smooth(method = "lm") +
+#'     geom_point(aes(colour = factor(cyl))) +
+#'     stat_fit_glance(method = "lm",
+#'                     method.args = list(formula = y ~ x),
+#'                     geom = "debug")
+#' }
 #'
 #' # Regression by panel example
 #' ggplot(mtcars, aes(x = disp, y = mpg)) +
@@ -118,7 +121,7 @@
 #'                   label.y = "bottom",
 #'                   method.args = list(formula = y ~ x),
 #'                   mapping = aes(label = sprintf('r^2~"="~%.3f~~italic(P)~"="~%.2g',
-#'                                 stat(r.squared), stat(p.value))),
+#'                                 after_stat(r.squared), after_stat(p.value))),
 #'                   parse = TRUE)
 #'
 #' # Regression by group example
@@ -129,7 +132,7 @@
 #'                   label.y = "bottom",
 #'                   method.args = list(formula = y ~ x),
 #'                   mapping = aes(label = sprintf('r^2~"="~%.3f~~italic(P)~"="~%.2g',
-#'                                 stat(r.squared), stat(p.value))),
+#'                                 after_stat(r.squared), after_stat(p.value))),
 #'                   parse = TRUE)
 #'
 #' # Weighted regression example
@@ -140,7 +143,7 @@
 #'                   label.y = "bottom",
 #'                   method.args = list(formula = y ~ x, weights = quote(weight)),
 #'                   mapping = aes(label = sprintf('r^2~"="~%.3f~~italic(P)~"="~%.2g',
-#'                                 stat(r.squared), stat(p.value))),
+#'                                 after_stat(r.squared), after_stat(p.value))),
 #'                   parse = TRUE)
 #'
 #' # correlation test
@@ -150,7 +153,7 @@
 #'                   label.y = "bottom",
 #'                   method.args = list(formula = ~ x + y),
 #'                   mapping = aes(label = sprintf('r[Pearson]~"="~%.3f~~italic(P)~"="~%.2g',
-#'                                 stat(estimate), stat(p.value))),
+#'                                 after_stat(estimate), after_stat(p.value))),
 #'                   parse = TRUE)
 #'
 #' ggplot(mtcars, aes(x = disp, y = mpg)) +
@@ -159,7 +162,7 @@
 #'                   label.y = "bottom",
 #'                   method.args = list(formula = ~ x + y, method = "spearman", exact = FALSE),
 #'                   mapping = aes(label = sprintf('r[Spearman]~"="~%.3f~~italic(P)~"="~%.2g',
-#'                                 stat(estimate), stat(p.value))),
+#'                                 after_stat(estimate), after_stat(p.value))),
 #'                   parse = TRUE)
 #'
 #' # Quantile regression by group example
@@ -170,7 +173,7 @@
 #'                   label.y = "bottom",
 #'                   method.args = list(formula = y ~ x),
 #'                   mapping = aes(label = sprintf('AIC = %.3g, BIC = %.3g',
-#'                                 stat(AIC), stat(BIC))))
+#'                                 after_stat(AIC), after_stat(BIC))))
 #'
 stat_fit_glance <- function(mapping = NULL, data = NULL, geom = "text_npc",
                             method = "lm",
@@ -352,8 +355,8 @@ StatFitGlance <-
   ggplot2::ggproto("StatFitGlance", ggplot2::Stat,
                    compute_group = fit_glance_compute_group_fun,
                    default_aes =
-                     ggplot2::aes(npcx = stat(npcx),
-                                  npcy = stat(npcy),
+                     ggplot2::aes(npcx = after_stat(npcx),
+                                  npcy = after_stat(npcy),
                                   hjust = "inward",
                                   vjust = "inward"),
                    required_aes = c("x", "y")
@@ -452,16 +455,20 @@ StatFitGlance <-
 #'
 #' @examples
 #' library(broom)
-#' library(gginnards)
 #' library(quantreg)
 #'
-#' # Regression by panel, using geom_debug() to explore computed variables
-#' ggplot(mtcars, aes(x = disp, y = mpg)) +
-#'   geom_point(aes(colour = factor(cyl))) +
-#'   stat_fit_augment(method = "lm",
-#'                    method.args = list(formula = y ~ x),
-#'                    geom = "debug",
-#'                    summary.fun = colnames)
+#' # Inspecting the returned data using geom_debug()
+#' if (requireNamespace("gginnards", quietly = TRUE)) {
+#'   library(gginnards)
+#'
+#' # Regression by panel
+#'   ggplot(mtcars, aes(x = disp, y = mpg)) +
+#'     geom_point(aes(colour = factor(cyl))) +
+#'     stat_fit_augment(method = "lm",
+#'                      method.args = list(formula = y ~ x),
+#'                      geom = "debug",
+#'                      summary.fun = colnames)
+#' }
 #'
 #' # Regression by panel example
 #' ggplot(mtcars, aes(x = disp, y = mpg)) +
@@ -608,8 +615,8 @@ StatFitAugment <-
                    ggplot2::Stat,
                    compute_group = fit_augment_compute_group_fun,
                    default_aes =
-                     ggplot2::aes(ymax = stat(y + .se.fit * t.value),
-                                  ymin = stat(y - .se.fit * t.value)),
+                     ggplot2::aes(ymax = after_stat(y + .se.fit * t.value),
+                                  ymin = after_stat(y - .se.fit * t.value)),
                    required_aes = c("x", "y")
 )
 
@@ -725,26 +732,33 @@ StatFitAugment <-
 #'
 #' @examples
 #' library(broom)
-#' library(gginnards)
 #' library(quantreg)
 #'
-#' # Regression by panel, exploring computed variables with geom_debug()
-#' # default column names
-#' ggplot(mtcars, aes(x = disp, y = mpg)) +
-#'   stat_smooth(method = "lm", formula = y ~ x + I(x^2)) +
-#'   geom_point(aes(colour = factor(cyl))) +
-#'   stat_fit_tidy(method = "lm",
-#'                 method.args = list(formula = y ~ x + I(x^2)),
-#'                 geom = "debug")
+#' # Inspecting the returned data using geom_debug()
+#' if (requireNamespace("gginnards", quietly = TRUE)) {
+#'   library(gginnards)
 #'
-#' # Regression by panel, exploring computed variables with geom_debug()
-#' # sanitized column names
-#' ggplot(mtcars, aes(x = disp, y = mpg)) +
-#'   stat_smooth(method = "lm", formula = y ~ x + I(x^2)) +
-#'   geom_point(aes(colour = factor(cyl))) +
-#'   stat_fit_tidy(method = "lm",
-#'                 method.args = list(formula = y ~ x + I(x^2)),
-#'                 geom = "debug", sanitize.names = TRUE)
+#' # This provides a quick way of finding out the names of the variables that
+#' # are available for mapping to aesthetics. This is specially important for
+#' # this stat as these names depend on the specific tidy() method used, which
+#' # depends on the method used, such as lm(), used to fit the model.
+#'
+#' # Regression by panel, default column names
+#'   ggplot(mtcars, aes(x = disp, y = mpg)) +
+#'     stat_smooth(method = "lm", formula = y ~ x + I(x^2)) +
+#'     geom_point(aes(colour = factor(cyl))) +
+#'     stat_fit_tidy(method = "lm",
+#'                   method.args = list(formula = y ~ x + I(x^2)),
+#'                   geom = "debug")
+#'
+#' # Regression by panel, sanitized column names
+#'   ggplot(mtcars, aes(x = disp, y = mpg)) +
+#'     stat_smooth(method = "lm", formula = y ~ x + I(x^2)) +
+#'     geom_point(aes(colour = factor(cyl))) +
+#'     stat_fit_tidy(method = "lm",
+#'                   method.args = list(formula = y ~ x + I(x^2)),
+#'                   geom = "debug", sanitize.names = TRUE)
+#' }
 #'
 #' # Regression by panel example
 #' ggplot(mtcars, aes(x = disp, y = mpg)) +
@@ -754,8 +768,8 @@ StatFitAugment <-
 #'                 label.x = "right",
 #'                 method.args = list(formula = y ~ x),
 #'                 mapping = aes(label = sprintf("Slope = %.3g\np-value = %.3g",
-#'                                               stat(x_estimate),
-#'                                               stat(x_p.value))))
+#'                                               after_stat(x_estimate),
+#'                                               after_stat(x_p.value))))
 #'
 #' # Regression by group example
 #' ggplot(mtcars, aes(x = disp, y = mpg, colour = factor(cyl))) +
@@ -765,8 +779,8 @@ StatFitAugment <-
 #'                 label.x = "right",
 #'                 method.args = list(formula = y ~ x),
 #'                 mapping = aes(label = sprintf("Slope = %.3g, p-value = %.3g",
-#'                                               stat(x_estimate),
-#'                                               stat(x_p.value))))
+#'                                               after_stat(x_estimate),
+#'                                               after_stat(x_p.value))))
 #'
 #' # Weighted regression example
 #' ggplot(mtcars, aes(x = disp, y = mpg, weight = cyl)) +
@@ -776,8 +790,8 @@ StatFitAugment <-
 #'                 label.x = "right",
 #'                 method.args = list(formula = y ~ x, weights = quote(weight)),
 #'                 mapping = aes(label = sprintf("Slope = %.3g\np-value = %.3g",
-#'                                               stat(x_estimate),
-#'                                               stat(x_p.value))))
+#'                                               after_stat(x_estimate),
+#'                                               after_stat(x_p.value))))
 #'
 #' # Correlation test
 #' ggplot(mtcars, aes(x = disp, y = mpg)) +
@@ -787,8 +801,8 @@ StatFitAugment <-
 #'                 label.y = "bottom",
 #'                 method.args = list(formula = ~ x + y),
 #'                 mapping = aes(label = sprintf("R = %.3g\np-value = %.3g",
-#'                                               stat(`_estimate`),
-#'                                               stat(`_p.value`))))
+#'                                               after_stat(`_estimate`),
+#'                                               after_stat(`_p.value`))))
 #'
 #' # Quantile regression
 #' ggplot(mtcars, aes(x = disp, y = mpg)) +
@@ -799,8 +813,8 @@ StatFitAugment <-
 #'                 method.args = list(formula = y ~ x),
 #'                 tidy.args = list(se.type = "nid"),
 #'                 mapping = aes(label = sprintf("Slope = %.3g\np-value = %.3g",
-#'                                               stat(x_estimate),
-#'                                               stat(x_p.value))))
+#'                                               after_stat(x_estimate),
+#'                                               after_stat(x_p.value))))
 #'
 stat_fit_tidy <- function(mapping = NULL, data = NULL, geom = "text_npc",
                           method = "lm",
@@ -987,8 +1001,8 @@ StatFitTidy <-
   ggplot2::ggproto("StatFitTidy", ggplot2::Stat,
                    compute_group = fit_tidy_compute_group_fun,
                    default_aes =
-                     ggplot2::aes(npcx = stat(npcx),
-                                  npcy = stat(npcy),
+                     ggplot2::aes(npcx = after_stat(npcx),
+                                  npcy = after_stat(npcy),
                                   hjust = "inward",
                                   vjust = "inward"),
                    required_aes = c("x", "y")

@@ -179,18 +179,21 @@ ggplot(my.data, aes(x, y)) +
                       method = "rq", method.args = list(tau = 0.75)) +
   geom_point()
 
-library(gginnards) # needed for geom_debug()
+# inspecting the returned data
+if (requireNamespace("gginnards", quietly = TRUE)) {
+  library(gginnards)
 
 # plot, using geom_debug() to explore the after_stat data
-ggplot(my.data, aes(x, y)) +
-  geom_smooth(method = "lm", formula = my.formula) +
-  stat_fit_deviations(formula = my.formula, geom = "debug") +
-  geom_point()
+  ggplot(my.data, aes(x, y)) +
+    geom_smooth(method = "lm", formula = my.formula) +
+    stat_fit_deviations(formula = my.formula, geom = "debug") +
+    geom_point()
 
-ggplot(my.data.outlier, aes(x, y)) +
-  stat_smooth(method = MASS::rlm, formula = my.formula) +
-  stat_fit_deviations(formula = my.formula, method = "rlm", geom = "debug") +
-  geom_point()
+  ggplot(my.data.outlier, aes(x, y)) +
+    stat_smooth(method = MASS::rlm, formula = my.formula) +
+    stat_fit_deviations(formula = my.formula, method = "rlm", geom = "debug") +
+    geom_point()
+}
 
 }
 \seealso{

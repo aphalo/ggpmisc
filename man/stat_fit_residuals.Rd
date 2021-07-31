@@ -162,16 +162,18 @@ ggplot(my.data, aes(x, y)) +
   stat_fit_residuals(formula = my.formula, method = "rq",
   method.args = list(tau = 0.75))
 
-library(gginnards) # needed for geom_debug()
+# inspecting the returned data
+if (requireNamespace("gginnards", quietly = TRUE)) {
+  library(gginnards)
 
-# print to the console the returned data
-ggplot(my.data, aes(x, y)) +
-  stat_fit_residuals(formula = my.formula, resid.type = "working",
-                     geom = "debug")
+  ggplot(my.data, aes(x, y)) +
+   stat_fit_residuals(formula = my.formula, resid.type = "working",
+                      geom = "debug")
 
-ggplot(my.data, aes(x, y)) +
-  stat_fit_residuals(formula = my.formula, method = "rlm",
-                     geom = "debug")
+  ggplot(my.data, aes(x, y)) +
+    stat_fit_residuals(formula = my.formula, method = "rlm",
+                       geom = "debug")
+}
 
 }
 \seealso{

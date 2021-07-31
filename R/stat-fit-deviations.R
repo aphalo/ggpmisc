@@ -145,18 +145,21 @@
 #'                       method = "rq", method.args = list(tau = 0.75)) +
 #'   geom_point()
 #'
-#' library(gginnards) # needed for geom_debug()
+#' # inspecting the returned data
+#' if (requireNamespace("gginnards", quietly = TRUE)) {
+#'   library(gginnards)
 #'
 #' # plot, using geom_debug() to explore the after_stat data
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_smooth(method = "lm", formula = my.formula) +
-#'   stat_fit_deviations(formula = my.formula, geom = "debug") +
-#'   geom_point()
+#'   ggplot(my.data, aes(x, y)) +
+#'     geom_smooth(method = "lm", formula = my.formula) +
+#'     stat_fit_deviations(formula = my.formula, geom = "debug") +
+#'     geom_point()
 #'
-#' ggplot(my.data.outlier, aes(x, y)) +
-#'   stat_smooth(method = MASS::rlm, formula = my.formula) +
-#'   stat_fit_deviations(formula = my.formula, method = "rlm", geom = "debug") +
-#'   geom_point()
+#'   ggplot(my.data.outlier, aes(x, y)) +
+#'     stat_smooth(method = MASS::rlm, formula = my.formula) +
+#'     stat_fit_deviations(formula = my.formula, method = "rlm", geom = "debug") +
+#'     geom_point()
+#' }
 #'
 #' @export
 #'
@@ -266,7 +269,7 @@ StatFitDeviations <-
   ggplot2::ggproto("StatFitDeviations", ggplot2::Stat,
                    compute_group = deviations_compute_group_fun,
                    default_aes =
-                     ggplot2::aes(xend = stat(x.fitted),
-                                  yend = stat(y.fitted)),
+                     ggplot2::aes(xend = after_stat(x.fitted),
+                                  yend = after_stat(y.fitted)),
                    required_aes = c("x", "y")
   )

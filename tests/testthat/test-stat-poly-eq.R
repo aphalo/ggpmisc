@@ -20,10 +20,10 @@ test_that("poly_formulas", {
                                 geom_point() +
                                 stat_poly_eq(formula = y ~ 1, parse = TRUE,
                                              mapping =
-                                  aes(label = paste(stat(eq.label),
-                                                    stat(adj.rr.label),
-                                                    stat(AIC.label),
-                                                    stat(BIC.label),
+                                  aes(label = paste(after_stat(eq.label),
+                                                    after_stat(adj.rr.label),
+                                                    after_stat(AIC.label),
+                                                    after_stat(BIC.label),
                                                     sep = "~~")))
   )
 
@@ -32,10 +32,10 @@ test_that("poly_formulas", {
                                 geom_point() +
                                 stat_poly_eq(formula = y ~ 1, parse = TRUE,
                                              mapping =
-                                               aes(label = paste(stat(eq.label),
-                                                                 stat(adj.rr.label),
-                                                                 stat(f.value.label),
-                                                                 stat(p.value.label),
+                                               aes(label = paste(after_stat(eq.label),
+                                                                 after_stat(adj.rr.label),
+                                                                 after_stat(f.value.label),
+                                                                 after_stat(p.value.label),
                                                                  sep = "~~")))
   )
 
@@ -44,10 +44,10 @@ test_that("poly_formulas", {
                                 geom_point() +
                                 stat_poly_eq(formula = y ~ x, parse = TRUE,
                                              mapping =
-                                               aes(label = paste(stat(eq.label),
-                                                                 stat(adj.rr.label),
-                                                                 stat(f.value.label),
-                                                                 stat(p.value.label),
+                                               aes(label = paste(after_stat(eq.label),
+                                                                 after_stat(adj.rr.label),
+                                                                 after_stat(f.value.label),
+                                                                 after_stat(p.value.label),
                                                                  sep = "~~")))
   )
 
@@ -56,10 +56,10 @@ test_that("poly_formulas", {
                                 geom_point() +
                                 stat_poly_eq(formula = y ~ x - 1, parse = TRUE,
                                              mapping =
-                                               aes(label = paste(stat(eq.label),
-                                                                 stat(adj.rr.label),
-                                                                 stat(f.value.label),
-                                                                 stat(p.value.label),
+                                               aes(label = paste(after_stat(eq.label),
+                                                                 after_stat(adj.rr.label),
+                                                                 after_stat(f.value.label),
+                                                                 after_stat(p.value.label),
                                                                  sep = "~~")))
   )
 
@@ -68,10 +68,10 @@ test_that("poly_formulas", {
                                 geom_point() +
                                 stat_poly_eq(formula = y ~ x -1, parse = TRUE,
                                              mapping =
-                                               aes(label = paste(stat(eq.label),
-                                                                 stat(adj.rr.label),
-                                                                 stat(f.value.label),
-                                                                 stat(p.value.label),
+                                               aes(label = paste(after_stat(eq.label),
+                                                                 after_stat(adj.rr.label),
+                                                                 after_stat(f.value.label),
+                                                                 after_stat(p.value.label),
                                                                  sep = "~~")))
   )
 
@@ -80,10 +80,10 @@ test_that("poly_formulas", {
                                 geom_point() +
                                 stat_poly_eq(formula = y ~ x -  1, parse = TRUE,
                                              mapping =
-                                               aes(label = paste(stat(eq.label),
-                                                                 stat(adj.rr.label),
-                                                                 stat(f.value.label),
-                                                                 stat(p.value.label),
+                                               aes(label = paste(after_stat(eq.label),
+                                                                 after_stat(adj.rr.label),
+                                                                 after_stat(f.value.label),
+                                                                 after_stat(p.value.label),
                                                                  sep = "~~")))
   )
 
@@ -92,10 +92,10 @@ test_that("poly_formulas", {
                                 geom_point() +
                                 stat_poly_eq(formula = y ~ x + 0, parse = TRUE,
                                              mapping =
-                                               aes(label = paste(stat(eq.label),
-                                                                 stat(adj.rr.label),
-                                                                 stat(f.value.label),
-                                                                 stat(p.value.label),
+                                               aes(label = paste(after_stat(eq.label),
+                                                                 after_stat(adj.rr.label),
+                                                                 after_stat(f.value.label),
+                                                                 after_stat(p.value.label),
                                                                  sep = "~~")))
   )
 
@@ -104,10 +104,10 @@ test_that("poly_formulas", {
                                 geom_point() +
                                 stat_poly_eq(formula = y ~ x +0, parse = TRUE,
                                              mapping =
-                                               aes(label = paste(stat(eq.label),
-                                                                 stat(adj.rr.label),
-                                                                 stat(f.value.label),
-                                                                 stat(p.value.label),
+                                               aes(label = paste(after_stat(eq.label),
+                                                                 after_stat(adj.rr.label),
+                                                                 after_stat(f.value.label),
+                                                                 after_stat(p.value.label),
                                                                  sep = "~~")))
   )
 
@@ -116,10 +116,10 @@ test_that("poly_formulas", {
                                 geom_point() +
                                 stat_poly_eq(formula = y ~ x +  0, parse = TRUE,
                                              mapping =
-                                               aes(label = paste(stat(eq.label),
-                                                                 stat(adj.rr.label),
-                                                                 stat(f.value.label),
-                                                                 stat(p.value.label),
+                                               aes(label = paste(after_stat(eq.label),
+                                                                 after_stat(adj.rr.label),
+                                                                 after_stat(f.value.label),
+                                                                 after_stat(p.value.label),
                                                                  sep = "~~")))
   )
 
@@ -128,10 +128,10 @@ test_that("poly_formulas", {
                                 geom_point() +
                                 stat_poly_eq(formula = y ~ poly(x, 1), parse = TRUE,
                                              mapping =
-                                               aes(label = paste(stat(eq.label),
-                                                                 stat(adj.rr.label),
-                                                                 stat(f.value.label),
-                                                                 stat(p.value.label),
+                                               aes(label = paste(after_stat(eq.label),
+                                                                 after_stat(adj.rr.label),
+                                                                 after_stat(f.value.label),
+                                                                 after_stat(p.value.label),
                                                                  sep = "~~")))
   )
 
@@ -140,10 +140,10 @@ test_that("poly_formulas", {
                                 geom_point() +
                                 stat_poly_eq(formula = y ~ poly(x, 3), parse = TRUE,
                                              mapping =
-                                               aes(label = paste(stat(eq.label),
-                                                                 stat(adj.rr.label),
-                                                                 stat(f.value.label),
-                                                                 stat(p.value.label),
+                                               aes(label = paste(after_stat(eq.label),
+                                                                 after_stat(adj.rr.label),
+                                                                 after_stat(f.value.label),
+                                                                 after_stat(p.value.label),
                                                                  sep = "~~")))
   )
 
@@ -152,10 +152,10 @@ test_that("poly_formulas", {
                                 geom_point() +
                                 stat_poly_eq(formula = x ~ 1, parse = TRUE,
                                              mapping =
-                                               aes(label = paste(stat(eq.label),
-                                                                 stat(adj.rr.label),
-                                                                 stat(AIC.label),
-                                                                 stat(BIC.label),
+                                               aes(label = paste(after_stat(eq.label),
+                                                                 after_stat(adj.rr.label),
+                                                                 after_stat(AIC.label),
+                                                                 after_stat(BIC.label),
                                                                  sep = "~~")))
   )
 
@@ -164,10 +164,10 @@ test_that("poly_formulas", {
                                 geom_point() +
                                 stat_poly_eq(formula = x ~ y, parse = TRUE,
                                              mapping =
-                                               aes(label = paste(stat(eq.label),
-                                                                 stat(adj.rr.label),
-                                                                 stat(f.value.label),
-                                                                 stat(p.value.label),
+                                               aes(label = paste(after_stat(eq.label),
+                                                                 after_stat(adj.rr.label),
+                                                                 after_stat(f.value.label),
+                                                                 after_stat(p.value.label),
                                                                  sep = "~~")))
   )
 
@@ -176,10 +176,10 @@ test_that("poly_formulas", {
                                 geom_point() +
                                 stat_poly_eq(formula = x ~ y - 1, parse = TRUE,
                                              mapping =
-                                               aes(label = paste(stat(eq.label),
-                                                                 stat(adj.rr.label),
-                                                                 stat(f.value.label),
-                                                                 stat(p.value.label),
+                                               aes(label = paste(after_stat(eq.label),
+                                                                 after_stat(adj.rr.label),
+                                                                 after_stat(f.value.label),
+                                                                 after_stat(p.value.label),
                                                                  sep = "~~")))
   )
 
@@ -188,10 +188,10 @@ test_that("poly_formulas", {
                                 geom_point() +
                                 stat_poly_eq(formula = x ~ y + 0, parse = TRUE,
                                              mapping =
-                                               aes(label = paste(stat(eq.label),
-                                                                 stat(adj.rr.label),
-                                                                 stat(f.value.label),
-                                                                 stat(p.value.label),
+                                               aes(label = paste(after_stat(eq.label),
+                                                                 after_stat(adj.rr.label),
+                                                                 after_stat(f.value.label),
+                                                                 after_stat(p.value.label),
                                                                  sep = "~~")))
   )
 
@@ -200,10 +200,10 @@ test_that("poly_formulas", {
                                 geom_point() +
                                 stat_poly_eq(formula = x ~ poly(y, 1), parse = TRUE,
                                              mapping =
-                                               aes(label = paste(stat(eq.label),
-                                                                 stat(adj.rr.label),
-                                                                 stat(f.value.label),
-                                                                 stat(p.value.label),
+                                               aes(label = paste(after_stat(eq.label),
+                                                                 after_stat(adj.rr.label),
+                                                                 after_stat(f.value.label),
+                                                                 after_stat(p.value.label),
                                                                  sep = "~~")))
   )
 
@@ -216,14 +216,14 @@ test_that("poly_methods", {
                                 stat_poly_eq(formula = y ~ x, parse = TRUE,
                                              method = "lm",
                                              mapping =
-                                               aes(label = paste(stat(eq.label),
-                                                                 stat(rr.label),
-                                                                 stat(adj.rr.label),
-                                                                 stat(f.value.label),
-                                                                 stat(p.value.label),
-                                                                 stat(n.label),
-                                                                 stat(AIC.label),
-                                                                 stat(BIC.label),
+                                               aes(label = paste(after_stat(eq.label),
+                                                                 after_stat(rr.label),
+                                                                 after_stat(adj.rr.label),
+                                                                 after_stat(f.value.label),
+                                                                 after_stat(p.value.label),
+                                                                 after_stat(n.label),
+                                                                 after_stat(AIC.label),
+                                                                 after_stat(BIC.label),
                                                                  sep = "~~")))
   )
 
@@ -233,14 +233,14 @@ test_that("poly_methods", {
                                 stat_poly_eq(formula = y ~ x, parse = TRUE,
                                              method = lm,
                                              mapping =
-                                               aes(label = paste(stat(eq.label),
-                                                                 stat(rr.label),
-                                                                 stat(adj.rr.label),
-                                                                 stat(f.value.label),
-                                                                 stat(p.value.label),
-                                                                 stat(n.label),
-                                                                 stat(AIC.label),
-                                                                 stat(BIC.label),
+                                               aes(label = paste(after_stat(eq.label),
+                                                                 after_stat(rr.label),
+                                                                 after_stat(adj.rr.label),
+                                                                 after_stat(f.value.label),
+                                                                 after_stat(p.value.label),
+                                                                 after_stat(n.label),
+                                                                 after_stat(AIC.label),
+                                                                 after_stat(BIC.label),
                                                                  sep = "~~")))
   )
 
@@ -250,14 +250,14 @@ test_that("poly_methods", {
                                 stat_poly_eq(formula = y ~ x, parse = TRUE,
                                              method = "rlm",
                                              mapping =
-                                               aes(label = paste(stat(eq.label),
-                                                                 stat(rr.label),
-                                                                 stat(adj.rr.label),
-                                                                 stat(f.value.label),
-                                                                 stat(p.value.label),
-                                                                 stat(n.label),
-                                                                 stat(AIC.label),
-                                                                 stat(BIC.label),
+                                               aes(label = paste(after_stat(eq.label),
+                                                                 after_stat(rr.label),
+                                                                 after_stat(adj.rr.label),
+                                                                 after_stat(f.value.label),
+                                                                 after_stat(p.value.label),
+                                                                 after_stat(n.label),
+                                                                 after_stat(AIC.label),
+                                                                 after_stat(BIC.label),
                                                                  sep = "~~")))
   )
 
@@ -267,14 +267,14 @@ test_that("poly_methods", {
                                 stat_poly_eq(formula = y ~ x, parse = TRUE,
                                              method = MASS::rlm,
                                              mapping =
-                                               aes(label = paste(stat(eq.label),
-                                                                 stat(rr.label),
-                                                                 stat(adj.rr.label),
-                                                                 stat(f.value.label),
-                                                                 stat(p.value.label),
-                                                                 stat(n.label),
-                                                                 stat(AIC.label),
-                                                                 stat(BIC.label),
+                                               aes(label = paste(after_stat(eq.label),
+                                                                 after_stat(rr.label),
+                                                                 after_stat(adj.rr.label),
+                                                                 after_stat(f.value.label),
+                                                                 after_stat(p.value.label),
+                                                                 after_stat(n.label),
+                                                                 after_stat(AIC.label),
+                                                                 after_stat(BIC.label),
                                                                  sep = "~~")))
   )
 
@@ -285,14 +285,14 @@ test_that("poly_methods", {
                                 stat_poly_eq(formula = y ~ x, parse = TRUE,
                                              method = "rq",
                                              mapping =
-                                               aes(label = paste(stat(eq.label),
-                                                                 stat(rr.label),
-                                                                 stat(adj.rr.label),
-                                                                 stat(f.value.label),
-                                                                 stat(p.value.label),
-                                                                 stat(n.label),
-                                                                 stat(AIC.label),
-                                                                 stat(BIC.label),
+                                               aes(label = paste(after_stat(eq.label),
+                                                                 after_stat(rr.label),
+                                                                 after_stat(adj.rr.label),
+                                                                 after_stat(f.value.label),
+                                                                 after_stat(p.value.label),
+                                                                 after_stat(n.label),
+                                                                 after_stat(AIC.label),
+                                                                 after_stat(BIC.label),
                                                                  sep = "~~")))
   )
 
@@ -302,14 +302,14 @@ test_that("poly_methods", {
                                 stat_poly_eq(formula = y ~ x, parse = TRUE,
                                              method = quantreg::rq,
                                              mapping =
-                                               aes(label = paste(stat(eq.label),
-                                                                 stat(rr.label),
-                                                                 stat(adj.rr.label),
-                                                                 stat(f.value.label),
-                                                                 stat(p.value.label),
-                                                                 stat(n.label),
-                                                                 stat(AIC.label),
-                                                                 stat(BIC.label),
+                                               aes(label = paste(after_stat(eq.label),
+                                                                 after_stat(rr.label),
+                                                                 after_stat(adj.rr.label),
+                                                                 after_stat(f.value.label),
+                                                                 after_stat(p.value.label),
+                                                                 after_stat(n.label),
+                                                                 after_stat(AIC.label),
+                                                                 after_stat(BIC.label),
                                                                  sep = "~~")))
   )
   }, warning=function(w) {
@@ -466,10 +466,10 @@ test_that("rounding_signif", {
                                              f.digits = 2,
                                              coef.digits = 6,
                                              mapping =
-                                               aes(label = paste(stat(eq.label),
-                                                                 stat(adj.rr.label),
-                                                                 stat(f.value.label),
-                                                                 stat(p.value.label),
+                                               aes(label = paste(after_stat(eq.label),
+                                                                 after_stat(adj.rr.label),
+                                                                 after_stat(f.value.label),
+                                                                 after_stat(p.value.label),
                                                                  sep = "~~")))
   )
 
@@ -483,10 +483,10 @@ test_that("rounding_signif", {
                                              f.digits = 2,
                                              coef.digits = 4,
                                              mapping =
-                                               aes(label = paste(stat(eq.label),
-                                                                 stat(adj.rr.label),
-                                                                 stat(f.value.label),
-                                                                 stat(p.value.label),
+                                               aes(label = paste(after_stat(eq.label),
+                                                                 after_stat(adj.rr.label),
+                                                                 after_stat(f.value.label),
+                                                                 after_stat(p.value.label),
                                                                  sep = "~~")))
   )
 

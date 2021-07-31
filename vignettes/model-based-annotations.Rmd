@@ -29,15 +29,18 @@ We load all the packages used in the examples.
 
 ```{r, message=FALSE}
 library(ggpmisc)
-library(ggrepel)
 library(xts)
 library(lubridate)
 library(tibble)
 library(dplyr)
-library(nlme)
 library(quantreg)
-library(broom)
-library(broom.mixed)
+
+eval_nlme <-  requireNamespace("nlme", quietly = TRUE)
+if (eval_nlme) library(nlme)
+eval_broom <-  requireNamespace("broom", quietly = TRUE)
+if (eval_broom) library(broom)
+eval_broom_mixed <-  requireNamespace("broom.mixed", quietly = TRUE)
+if (eval_broom_mixed) library(broom.mixed)
 ```
 
 As we will use text and labels on the plotting area we change the default theme
@@ -1041,7 +1044,7 @@ ggplot(mtcars, aes(wt, mpg)) +
 
 **Note:** The tidiers for mixed models have moved to package 'broom.mixed'!
 
-```{r}
+```{r, eval=(eval_nlme && eval_broom_mixed)}
 args <- list(model = y ~ SSlogis(x, Asym, xmid, scal),
              fixed = Asym + xmid + scal ~1,
              random = Asym ~1 | group,

@@ -255,7 +255,7 @@
 #'        grp.label = group)) +
 #'   geom_point() +
 #'   stat_quant_line(formula = formula, color = "black") +
-#'   stat_quant_eq(aes(label = paste(stat(grp.label), stat(eq.label), sep = "*\": \"*")),
+#'   stat_quant_eq(aes(label = paste(after_stat(grp.label), after_stat(eq.label), sep = "*\": \"*")),
 #'                 formula = formula) +
 #'   theme_classic()
 #'
@@ -295,8 +295,8 @@
 #'   geom_point() +
 #'   stat_quant_line(method = "rq", formula = formula,
 #'                 quantiles = c(0.05, 0.5, 0.95)) +
-#'   stat_quant_eq(aes(label = paste(stat(grp.label), "*\": \"*",
-#'                                    stat(eq.label), sep = "")),
+#'   stat_quant_eq(aes(label = paste(after_stat(grp.label), "*\": \"*",
+#'                                    after_stat(eq.label), sep = "")),
 #'                 quantiles = c(0.05, 0.5, 0.95),
 #'                 formula = formula, size = 3)
 #'
@@ -307,41 +307,41 @@
 #'   stat_quant_eq(label.x = "left", label.y = "top",
 #'                 formula = formula)
 #'
-#' # Examples using geom_debug() to show computed values
-#' #
-#' # This provides a quick way of finding out which variables are available for
-#' # use in mapping of aesthetics when using other geoms as in the examples
-#' # above.
+#' # Inspecting the returned data using geom_debug()
+#' if (requireNamespace("gginnards", quietly = TRUE)) {
+#'   library(gginnards)
 #'
-#' library(gginnards)
+#' # This provides a quick way of finding out the names of the variables that
+#' # are available for mapping to aesthetics.
 #'
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_point() +
-#'   stat_quant_eq(formula = formula, geom = "debug")
+#'   ggplot(my.data, aes(x, y)) +
+#'     geom_point() +
+#'     stat_quant_eq(formula = formula, geom = "debug")
 #'
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_point() +
-#'   stat_quant_eq(aes(label = stat(eq.label)),
-#'                formula = formula, geom = "debug",
-#'                output.type = "markdown")
+#'   ggplot(my.data, aes(x, y)) +
+#'     geom_point() +
+#'     stat_quant_eq(aes(label = after_stat(eq.label)),
+#'                   formula = formula, geom = "debug",
+#'                   output.type = "markdown")
 #'
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_point() +
-#'   stat_quant_eq(formula = formula, geom = "debug", output.type = "text")
+#'   ggplot(my.data, aes(x, y)) +
+#'     geom_point() +
+#'     stat_quant_eq(formula = formula, geom = "debug", output.type = "text")
 #'
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_point() +
-#'   stat_quant_eq(formula = formula, geom = "debug", output.type = "numeric")
+#'   ggplot(my.data, aes(x, y)) +
+#'     geom_point() +
+#'     stat_quant_eq(formula = formula, geom = "debug", output.type = "numeric")
 #'
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_point() +
-#'   stat_quant_eq(formula = formula, quantiles = c(0.25, 0.5, 0.75),
-#'                 geom = "debug", output.type = "text")
+#'   ggplot(my.data, aes(x, y)) +
+#'     geom_point() +
+#'     stat_quant_eq(formula = formula, quantiles = c(0.25, 0.5, 0.75),
+#'                   geom = "debug", output.type = "text")
 #'
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_point() +
-#'   stat_quant_eq(formula = formula, quantiles = c(0.25, 0.5, 0.75),
-#'                 geom = "debug", output.type = "numeric")
+#'   ggplot(my.data, aes(x, y)) +
+#'     geom_point() +
+#'     stat_quant_eq(formula = formula, quantiles = c(0.25, 0.5, 0.75),
+#'                   geom = "debug", output.type = "numeric")
+#' }
 #'
 #' @family quantile regression functions.
 #'
