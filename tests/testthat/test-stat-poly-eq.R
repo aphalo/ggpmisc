@@ -278,45 +278,6 @@ test_that("poly_methods", {
                                                                  sep = "~~")))
   )
 
-  withCallingHandlers({
-    vdiffr::expect_doppelganger("stat_poly_eq_rq_chr",
-                              ggplot(my.data, aes(x, y)) +
-                                geom_point() +
-                                stat_poly_eq(formula = y ~ x, parse = TRUE,
-                                             method = "rq",
-                                             mapping =
-                                               aes(label = paste(after_stat(eq.label),
-                                                                 after_stat(rr.label),
-                                                                 after_stat(adj.rr.label),
-                                                                 after_stat(f.value.label),
-                                                                 after_stat(p.value.label),
-                                                                 after_stat(n.label),
-                                                                 after_stat(AIC.label),
-                                                                 after_stat(BIC.label),
-                                                                 sep = "~~")))
-  )
-
-  vdiffr::expect_doppelganger("stat_poly_eq_rq_fun",
-                              ggplot(my.data, aes(x, y)) +
-                                geom_point() +
-                                stat_poly_eq(formula = y ~ x, parse = TRUE,
-                                             method = quantreg::rq,
-                                             mapping =
-                                               aes(label = paste(after_stat(eq.label),
-                                                                 after_stat(rr.label),
-                                                                 after_stat(adj.rr.label),
-                                                                 after_stat(f.value.label),
-                                                                 after_stat(p.value.label),
-                                                                 after_stat(n.label),
-                                                                 after_stat(AIC.label),
-                                                                 after_stat(BIC.label),
-                                                                 sep = "~~")))
-  )
-  }, warning=function(w) {
-    if (startsWith(conditionMessage(w), "Solution may be nonunique"))
-      invokeRestart("muffleWarning")
-  })
-
 })
 
 test_that("textual_positions", {

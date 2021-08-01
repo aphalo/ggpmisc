@@ -99,15 +99,15 @@ quadrant and other plots as used for genomics, metabolomics and similar data.
 A frequently used annotation in plots showing fitted lines is the display of the
 parameters estimates from the model fit as an equation. `stat_poly_eq()`
 automates this for models of _y_ on _x_ or _x_ on _y_ fitted with function
-`lm()`, `MASS:rlm()`, `quantreg::rq()` (only median regression) or a
-user-supplied model fitting function and arguments. By default this _statistic_
-behaves similarly as `ggplot2::stat_smooth()` with `method = "lm"` for _y_ on
-_x_ fits but adds support for model formulas of _x_ on _y_ (in addition to the
-use of `orientation = "y"`). Its default behaviour is to generate labels as
-character strings using R's _expression_ syntax. This stat can also output
-equations using different mark-up languages, including $\LaTeX$ and Markdown, or
-just numeric values selected by the argument passed to parameter `output.type`.
-Nevertheless, all examples below use expression syntax.
+`lm()`, and `MASS:rlm()` or a user-supplied model fitting function and
+arguments. By default this _statistic_ behaves similarly as
+`ggplot2::stat_smooth()` with `method = "lm"` for _y_ on _x_ fits but adds
+support for model formulas of _x_ on _y_ (in addition to the use of `orientation
+= "y"`). Its default behaviour is to generate labels as character strings using
+R's _expression_ syntax. This stat can also output equations using different
+mark-up languages, including $\LaTeX$ and Markdown, or just numeric values
+selected by the argument passed to parameter `output.type`. Nevertheless, all
+examples below use expression syntax.
 
 The statistic `stat_poly_line()` adds a layer identical to that from
 `ggplot2::stat_smooth()` but has the same user interface and default arguments
@@ -507,43 +507,76 @@ The statistic `stat_quant_line()` adds a layer similar to that created by
 `ggplot2::stat_smooth()` including confidence bands for quantile regression, by
 default for _p_ = 0.95. However, it has the same user interface and default
 arguments as `stat_quant_eq()`, and supports both _x_ and _y_ as explanatory
-variable in formula` and also `orientation`. Confidence intervals for the
-fits to individual quantiles fulfil the same purpose as in OLS fits: providing
-a boundary for the _estimated line_ computed for each individual quantile.
+variable in `formula` and also `orientation`. Confidence intervals for the fits
+to individual quantiles fulfil the same purpose as in OLS fits: providing a
+boundary for the _estimated line_ computed for each individual quantile. They
+are not shown by default, unless a single quantile is passed, but can be enabled
+with `se = TRUE` and disabled with `se = FALSE`.
 
 The statistic `stat_quant_band()` creates a line plus band plot that is, by
-default equivalent for quantile regression of the box of a box plot showing
-quartiles plus a line for the median median regression. In this case the 
+default equivalent to the box of a box plot showing regressions as a band for
+quartiles plus a line for the median media. In this case the 
 band informs about the spread of the _observations_. Which three quantiles
 are fitted can be set through parameter `quantiles` but in contrast to
 `stat_quant_line()` and `stat_quant_eq()` only a vector of three quantiles is
 accepted.
 
-Please, see the section on `stat_poly_eq()` for additional examples, as here
-we highlight only the differences between these two statistics. Like
-`stat_quantiles()`, `stat_quant_eq()` supports a `numeric` vector of quantiles
-as argument and outputs as many equations per group as values are passed in 
-this vector. The computed string `grp.label` contains by default a character
-string indicating the value of the quantile. Here we use the default value
-for quantiles, equivalent to those used for the box of box plots.
+Similarly to `ggplot2::stat_quantiles()`, `stat_quant_eq()` and
+`stat_quant_line()` accept a `numeric` vector as argument to `quantiles` and
+output one equation or one line per group and quantile. Stat `stat_quant_eq()`
+also returns column `grp.label` containing by default a character string
+indicating the value of the quantile.
+
+Here we use the default value for quantiles, `c(0.25, 0.50, 0.75)`, equivalent
+to those used for the box of box plots, and we obtain a plot with a line for
+median regression and a band highlighting the space between the quartiles.
 
 ```{r, warning=FALSE}
-ggplot(my.data, aes(x, y, color = group)) +
+ggplot(my.data, aes(x, y)) +
   geom_point() +
-  stat_quantile(formula = formula) +
-  stat_quant_eq(aes(label = paste(stat(grp.label), "*\": \"*",
-                                  stat(eq.label), sep = "")),
-               formula = formula)
+  stat_quant_band(formula = y ~ poly(x, 2))
 ```
+
 Overriding the values for `quantiles` we find a possible boundary containing 90% of the observations.
 
 ```{r, warning=FALSE}
-ggplot(my.data, aes(x, y, color = group)) +
+ggplot(my.data, aes(x, y)) +
   geom_point() +
-  stat_quantile(formula = formula, quantiles = c(0.05, 0.95)) +
+  stat_quant_line(formula = y ~ poly(x, 2), quantiles = c(0.1, 0.9))
+```
+
+A line for the median regression plus a confidence band for it is the default
+for a single quantile. (This is similar to the behaviour of `ggplot2::stat_smooth()`.)
+
+```{r, warning=FALSE}
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_quant_line(formula = y ~ poly(x, 2), quantiles = 0.5)
+```
+
+With `stat_quant_eq()` we add the fitted equations to the first example in this
+section (we also override the use of color).
+
+```{r, warning=FALSE}
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_quant_band(formula = formula, color = "black", fill = "grey60") +
   stat_quant_eq(aes(label = paste(stat(grp.label), "*\": \"*",
                                   stat(eq.label), sep = "")),
-                formula = formula, quantiles = c(0.05, 0.95))
+                formula = formula) +
+  theme_classic()
+```
+
+Grouping and faceting are supported by `stat_quant_eq()`, `stat_quant_line()`
+and `stat_quant_band()`. Below are some examples of grouping.
+
+```{r, warning=FALSE}
+ggplot(my.data, aes(x, y, color = group)) +
+  geom_point() +
+  stat_quant_line(formula = formula) +
+  stat_quant_eq(aes(label = paste(stat(grp.label), "*\": \"*",
+                                  stat(eq.label), sep = "")),
+               formula = formula)
 ```
 
 This can be combined with a group label by mapping in `aes()` a character 
@@ -556,18 +589,7 @@ ggplot(my.data, aes(x, y, group = group, linetype = group,
   stat_quantile(formula = formula, color = "black") +
   stat_quant_eq(aes(label = paste(stat(grp.label), "*\": \"*",
                                   stat(eq.label), sep = "")),
-                formula = formula, size = 3) +
-  theme_classic()
-```
-
-
-```{r, warning=FALSE}
-ggplot(my.data, aes(x, y)) +
-  geom_point() +
-  stat_quant_band(formula = formula, color = "black") +
-  stat_quant_eq(aes(label = paste(stat(grp.label), "*\": \"*",
-                                  stat(eq.label), sep = "")),
-                formula = formula) +
+                formula = formula, quantiles = c(0.05, 0.95)) +
   theme_classic()
 ```
 
@@ -575,10 +597,10 @@ In some cases _double quantile regression_ is an informative method to assess
 reciprocal constraints. For this a fit of _x_ on _y_ and one of _y_ on _x_ in
 the same plot are computed for a large quantile. As is the case for model
 fitting functions themselves this is simply indicated by the model passed as
-argument to `formula`, or consistently with `stat_smooth()` through parameter
-`orientation`.
+argument to `formula`, or consistently with `ggplot2::stat_smooth()` through
+parameter `orientation`.
 
-```{r}
+```{r, warning=FALSE}
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_quant_line(formula = y ~ x, color = "blue", quantiles = 0.05) +
@@ -588,6 +610,9 @@ ggplot(my.data, aes(x, y)) +
   stat_quant_eq(aes(label = stat(eq.label)), formula = x ~ y, color = "red", 
                 quantiles = 0.95, label.y = 0.9)
 ```
+
+Please, see the section on `stat_poly_eq()` for additional examples, as here
+we have highlighted mainly the differences between these two statistics. 
 
 ### stat_fit_residuals
 

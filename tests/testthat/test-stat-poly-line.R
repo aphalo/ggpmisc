@@ -93,7 +93,7 @@ test_that("poly_methods", {
   vdiffr::expect_doppelganger("stat_poly_line_lm_fun",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
-                                stat_poly_line(formula = y ~ x, method = lm)
+                                stat_poly_line(formula = y ~ x, method = stats::lm)
   )
 
   vdiffr::expect_doppelganger("stat_poly_line_rlm_chr",

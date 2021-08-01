@@ -15,8 +15,8 @@ users have lead to bug fixes as well as to an interface with better
 defaults for arguments (see issue \#1). Some other enhancements are
 based on my own needs or ideas.
 
--   Add support for median regression using `rq`, robust regression
-    using `rlm` and other `function` objects in `stat_poly_eq()`.
+-   Add support for median regression using `rlm` and other `function`
+    objects in `stat_poly_eq()`.
 -   Make it easier to use `stat_poly_eq()` and `stat_quant_eq()` with
     `formula = x ~ y` and other models in which the explanatory variable
     is `y` in addition to models with `x` as explanatory variable (this
@@ -32,7 +32,7 @@ based on my own needs or ideas.
 -   Revise `stat_poly_eq()` and `stat_quant_eq()` so that when
     `output.type = "numeric"` they return the coefficient estimates as
     `numeric` columns in `data` (problem with `coefs.ls` column in data
-    when using facets reported by cgnolte in issue \#12).
+    when using facets reported by *cgnolte* in issue \#12).
 -   Revise `stat_poly_eq()` adding support for optional use of lower
     case *r* and *p* for $R^2$ and $P$-value, respectively.
 -   Fix bug in `stat_poly_eq()` and `stat_quant_eq()` resulting in
@@ -47,16 +47,17 @@ based on my own needs or ideas.
 -   Add `stat_quant_line()` which is a merge of `ggplot2::stat_smooth()`
     and `ggplot2::stat_quantile()` accepting `formula = x ~ y` and other
     models in which the explanatory variable is `y` rather than `x` or
-    setting `orientation = "y"` in addition to models with `x` as
-    explanatory variable. This statistic makes it possible to add to a
-    plot a *double quantile regression*. `stat_quant_line()` supports
-    plotting of confidence bands for quantile regression using
+    setting `orientation = "y"` to fit models with `x` as explanatory
+    variable. This statistic makes it possible to add to a plot a
+    *double quantile regression*. `stat_quant_line()` supports plotting
+    of confidence bands for quantile regression using
     `ggplot2::geom_smooth()` to create the plot layer.
 -   Add `stat_quant_band()` which plots quantile regressions for three
     quantiles as a band plus a line, accepting `formula = x ~ y` and
     other models in which the explanatory variable is `y` rather than
-    `x` or setting `orientation = "y"` in addition to models with `x` as
-    explanatory variable.
+    `x` or setting `orientation = "y"` to fit models with `x` as
+    explanatory variable. By default the band uses `"steelblue"` as
+    `fill`, to distinguish them from confidence bands.
 -   Add support for quantile regression `rq`, robust regression `rlm`,
     and resistant regression `lqs` and `function` objects to
     `stat_fit_residuals()` and `stat_fit_deviations()` .
@@ -68,16 +69,16 @@ based on my own needs or ideas.
     `stat_fit_deviations()` and add support for the `weight` aesthetic
     as their input for parameter `weights` of the model fit functions.
 -   Revise `stat_poly_eq()` and `stat_quant_eq()` so that by default
-    keep trailing zeros according to the numbers of significant digits
-    given by `coef.digits`. A new parameter `coef.keep.zeros` can be set
-    to `FALSE` to restore the deletion of trailing zeros. Be aware that
-    even if the character label for the equation contains trailing
-    zeros, if it is parsed into R expressions (as it is by default) the
-    trailing zeros will be dropped at this later stage. *Trailing zeros
-    in the equation will be rendered to the plot only if `output.type`
-    is other than `"expression"`.* Equations and other labels may render
-    slightly differently than in previous versions as now `sprintf()` is
-    used for all labels.
+    they keep trailing zeros according to the numbers of significant
+    digits given by `coef.digits`. A new parameter `coef.keep.zeros` can
+    be set to `FALSE` to restore the deletion of trailing zeros. Be
+    aware that even if the character label for the equation contains
+    trailing zeros, if it is parsed into R an expression (as it is by
+    default) the trailing zeros will be dropped at this later stage.
+    *Trailing zeros in the equation will be rendered to the plot only if
+    `output.type` is other than `"expression"`.* Equations and other
+    labels may render slightly differently than in previous versions as
+    now `sprintf()` is used to format all labels.
 -   Fix bug in `stat_poly_eq()` and `stat_quant_eq()` that resulted in
     bad/non-syntactical character strings for `eq.label` when
     `output.type` was different from its default of `"expression"`.

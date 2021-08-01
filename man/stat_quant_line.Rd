@@ -12,7 +12,7 @@ stat_quant_line(
   ...,
   quantiles = c(0.25, 0.5, 0.75),
   formula = NULL,
-  se = FALSE,
+  se = length(quantiles) == 1L,
   n = 80,
   method = "rq",
   method.args = list(),

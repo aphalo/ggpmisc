@@ -259,20 +259,36 @@ ggplot(my.data, aes(x, y)) +
                label.y = 0.9)
 
 ## ---- warning=FALSE-----------------------------------------------------------
-ggplot(my.data, aes(x, y, color = group)) +
+ggplot(my.data, aes(x, y)) +
   geom_point() +
-  stat_quantile(formula = formula) +
+  stat_quant_band(formula = y ~ poly(x, 2))
+
+## ---- warning=FALSE-----------------------------------------------------------
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_quant_line(formula = y ~ poly(x, 2), quantiles = c(0.1, 0.9))
+
+## ---- warning=FALSE-----------------------------------------------------------
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_quant_line(formula = y ~ poly(x, 2), quantiles = 0.5)
+
+## ---- warning=FALSE-----------------------------------------------------------
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_quant_band(formula = formula, color = "black", fill = "grey60") +
   stat_quant_eq(aes(label = paste(stat(grp.label), "*\": \"*",
                                   stat(eq.label), sep = "")),
-               formula = formula)
+                formula = formula) +
+  theme_classic()
 
 ## ---- warning=FALSE-----------------------------------------------------------
 ggplot(my.data, aes(x, y, color = group)) +
   geom_point() +
-  stat_quantile(formula = formula, quantiles = c(0.05, 0.95)) +
+  stat_quant_line(formula = formula) +
   stat_quant_eq(aes(label = paste(stat(grp.label), "*\": \"*",
                                   stat(eq.label), sep = "")),
-                formula = formula, quantiles = c(0.05, 0.95))
+               formula = formula)
 
 ## ---- warning=FALSE-----------------------------------------------------------
 ggplot(my.data, aes(x, y, group = group, linetype = group, 
@@ -281,19 +297,10 @@ ggplot(my.data, aes(x, y, group = group, linetype = group,
   stat_quantile(formula = formula, color = "black") +
   stat_quant_eq(aes(label = paste(stat(grp.label), "*\": \"*",
                                   stat(eq.label), sep = "")),
-                formula = formula, size = 3) +
+                formula = formula, quantiles = c(0.05, 0.95)) +
   theme_classic()
 
 ## ---- warning=FALSE-----------------------------------------------------------
-ggplot(my.data, aes(x, y)) +
-  geom_point() +
-  stat_quant_band(formula = formula, color = "black") +
-  stat_quant_eq(aes(label = paste(stat(grp.label), "*\": \"*",
-                                  stat(eq.label), sep = "")),
-                formula = formula) +
-  theme_classic()
-
-## -----------------------------------------------------------------------------
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_quant_line(formula = y ~ x, color = "blue", quantiles = 0.05) +

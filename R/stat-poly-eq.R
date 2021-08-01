@@ -395,6 +395,15 @@ stat_poly_eq <- function(mapping = NULL, data = NULL,
   if (is.null(parse)) {
     parse <- output.type == "expression"
   }
+  if (is.character(method)) {
+    if (method == "rlm") {
+      method <- MASS::rlm
+    } else if (method == "rq") {
+      warning("Method 'rq' not supported, please use 'stat_quant_line()'.")
+      method <- "auto"
+    }
+  }
+
   ggplot2::layer(
     data = data,
     mapping = mapping,

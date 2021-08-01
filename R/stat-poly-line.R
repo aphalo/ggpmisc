@@ -178,9 +178,13 @@ stat_poly_line <- function(mapping = NULL, data = NULL,
     }
   }
 
-  if (method == "rq") {
-    warning("Method 'rq' not supported, please use 'stat_quant_line()'.")
-    method <- "auto"
+  if (is.character(method)) {
+    if (method == "rlm") {
+      method <- MASS::rlm
+    } else if (method == "rq") {
+      warning("Method 'rq' not supported, please use 'stat_quant_line()'.")
+      method <- "auto"
+    }
   }
 
   ggplot2::layer(
