@@ -56,14 +56,19 @@
 #'   \code{n} rows of predicted values for three quantiles as \code{y},
 #'   \code{ymin} and \code{ymax}, plus \code{x}.
 #'
-#' @section Computed variables: \code{stat_quant_band()} provides the following
-#'   variables,
+#' @note Even though the \code{ggplot2::geom_smooth()} is used by default, the
+#'   default colour of the band is different to avoid confusion of between
+#'   quantile bands and confidence bands. Of course, the \code{fill} aesthtics
+#'   can be mapped to a variable or to a constant as usual
+#'   (\code{fill = "grey60"} restores the geom's original default).
 #'
-#' @section Aesthetics: \code{stat_poly_eq} understands \code{x} and \code{y},
-#'   to be referenced in the \code{formula} and \code{weight} passed as argument
-#'   to parameter \code{weights}. All three must be mapped to \code{numeric}
-#'   variables. In addition, the aesthetics understood by the geom
-#'   (\code{"geom_smooth"} is the default) are understood and grouping
+#' @section Aesthetics: \code{stat_quant_eq} expects \code{x} and \code{y},
+#'   aesthetics to be used in the \code{formula} rather than the names of the
+#'   variables mapped to them. If present, the variable mapped to the
+#'   \code{weight} aesthetics is passed as argument to parameter \code{weights}
+#'   of the fitting function. All three must be mapped to \code{numeric}
+#'   variables. In addition, the aesthetics recognized by the geometry
+#'   (\code{"geom_smooth"} is the default) are obeyed and grouping
 #'   respected.
 #'
 #' @family quantile regression functions.
@@ -115,7 +120,7 @@
 #'
 #' ggplot(mpg, aes(displ, hwy)) +
 #'   geom_point() +
-#'   stat_quant_band(fill = "skyblue", linetype = "dashed")
+#'   stat_quant_band(linetype = "dashed", color = "darkred", fill = "red")
 #'
 #' ggplot(mpg, aes(displ, hwy)) +
 #'   stat_quant_band(color = NA, alpha = 1) +
@@ -240,7 +245,11 @@ quant_band_compute_group_fun <- function(data,
   z[["quantile.ymax"]] <- z.ls[[3]][["quantile"]]
 
   z[["flipped_aes"]] <- flipped_aes
-  ggplot2::flip_data(z, flipped_aes)
+  z <- ggplot2::flip_data(z, flipped_aes)
+  if (!"fill" %in% colnames(z)) {
+    z[["fill"]] <- "steelblue"
+  }
+  z
 }
 
 #' @rdname ggpmisc-ggproto
@@ -256,8 +265,6 @@ StatQuantBand <-
                    },
                    extra_params = c("na.rm", "orientation"),
                    compute_group = quant_band_compute_group_fun,
-                   default_aes = ggplot2::aes(group = after_stat(group),
-                                              weight = 1),
                    required_aes = c("x", "y")
   )
 

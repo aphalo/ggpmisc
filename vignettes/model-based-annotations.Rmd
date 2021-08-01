@@ -490,28 +490,36 @@ ggplot(my.data, aes(x, y)) +
 
 ### stat_quant_eq(), stat_quant_line() and stat_quant_band()
 
+Package 'quantreg' implements quantile regression for multiple types of models:
+linear models with function `rq()`, non-linear models with function `nlreg()`, 
+and additive models with function `rqss()`. Each of these functions supports
+different methods of estimation. As with the statistics for polynomials 
+described in the previous section, the statistics described in the current
+section _support only linear models_.
+
 In the case of quantile regression it is frequently the case that multiple
 quantile regressions are fitted. This case is not supported by `stat_poly_eq()`
 and we need to use `stat_quant_eq()`. This statistics is very similar to
 `stat_poly_eq()` both in behaviour and parameters. It supports quantile
-regression of _y_ on _x_ or _x_ on _y_ fitted with function `quantreg::rq`. This
-_statistic_ behaves similarly to `ggplot2::stat_quantiles` with `method = "rq"`
-for _y_ on _x_ fits but adds support for _x_ on _y_ fits.
+regression of _y_ on _x_ or _x_ on _y_ fitted with function `quantreg::rq`.
 
 The statistic `stat_quant_line()` adds a layer similar to that created by
 `ggplot2::stat_smooth()` including confidence bands for quantile regression, by
 default for _p_ = 0.95. However, it has the same user interface and default
 arguments as `stat_quant_eq()`, and supports both _x_ and _y_ as explanatory
-variable in formula` and also `orientation`.
+variable in formula` and also `orientation`. Confidence intervals for the
+fits to individual quantiles fulfil the same purpose as in OLS fits: providing
+a boundary for the _estimated line_ computed for each individual quantile.
 
-The statistic `stst_quant_band()` creates a line plus band plot that is, by
-default equivalent for quantile regressio of the box of a box plot showing
-quartiles plus a line for the median median regression. Which three quantiles
-are fitted can be set through paramater `quantiles` but in contrasts to
+The statistic `stat_quant_band()` creates a line plus band plot that is, by
+default equivalent for quantile regression of the box of a box plot showing
+quartiles plus a line for the median median regression. In this case the 
+band informs about the spread of the _observations_. Which three quantiles
+are fitted can be set through parameter `quantiles` but in contrast to
 `stat_quant_line()` and `stat_quant_eq()` only a vector of three quantiles is
 accepted.
 
-Please, see the section on `stat_poly_eq()` for applicable examples, as here
+Please, see the section on `stat_poly_eq()` for additional examples, as here
 we highlight only the differences between these two statistics. Like
 `stat_quantiles()`, `stat_quant_eq()` supports a `numeric` vector of quantiles
 as argument and outputs as many equations per group as values are passed in 
