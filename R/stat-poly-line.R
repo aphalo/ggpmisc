@@ -178,6 +178,11 @@ stat_poly_line <- function(mapping = NULL, data = NULL,
     }
   }
 
+  if (method == "rq") {
+    warning("Method 'rq' not supported, please use 'stat_quant_line()'.")
+    method <- "auto"
+  }
+
   ggplot2::layer(
     data = data,
     mapping = mapping,
