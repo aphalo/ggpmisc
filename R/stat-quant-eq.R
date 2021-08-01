@@ -161,7 +161,7 @@
 #'   that the user passes as argument suitable numeric values to override the
 #'   defaults for label positions.
 #'
-#' @family ggplot statistics for model fits
+#' @family ggplot statistics for quantile regression
 #'
 #' @import quantreg
 #'
@@ -342,8 +342,6 @@
 #'     stat_quant_eq(formula = formula, quantiles = c(0.25, 0.5, 0.75),
 #'                   geom = "debug", output.type = "numeric")
 #' }
-#'
-#' @family quantile regression functions.
 #'
 #' @export
 #'

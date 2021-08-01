@@ -2,7 +2,7 @@
 % Please edit documentation in R/stat-poly-line.R
 \name{stat_poly_line}
 \alias{stat_poly_line}
-\title{Compute predicted line from model fit}
+\title{Predicted line from model fit}
 \usage{
 stat_poly_line(
   mapping = NULL,
@@ -99,11 +99,11 @@ alternatively by done by any of the methods supported by
 \details{
 This statistic is just \code{\link[ggplot2]{stat_smooth}} with different
 defaults and updated so that it interprets the argument passed to
-\code{formula} differently, accepting \code{y} as explanatory variable
-and setting \code{orientation} automatically. In addition the default for \code{method}
-is \code{"lm"}, matching the default used in \code{stat_poly_eq()} and
-\code{stat_poly_quant()}. It calls \code{\link[ggplot2]{StatSmooth}} to
-build a layer.
+\code{formula} differently, accepting \code{y} as explanatory variable and
+setting \code{orientation} automatically. In addition the default for
+\code{method} is \code{"lm"}, matching the default used in
+\code{stat_poly_eq()} and \code{stat_poly_quant()}. It calls
+\code{\link[ggplot2]{StatSmooth}} to build a layer.
 
 \code{\link[ggplot2]{geom_smooth}}, which is used by default, treats each
 axis differently and can thus have two orientations. The orientation is easy
@@ -129,9 +129,10 @@ statistics as they are not needed and conceptually transformations of
 \section{Aesthetics}{
  \code{stat_poly_eq} understands \code{x} and \code{y},
   to be referenced in the \code{formula} and \code{weight} passed as argument
-  to parameter \code{weights}. All three must be mapped to
-  \code{numeric} variables. In addition, the aesthetics understood by the geom
-  (\code{"geom_smooth"} is the default) are understood and grouping respected.
+  to parameter \code{weights}. All three must be mapped to \code{numeric}
+  variables. In addition, the aesthetics understood by the geom
+  (\code{"geom_smooth"} is the default) are understood and grouping
+  respected.
 }
 
 \examples{
@@ -185,7 +186,7 @@ ggplot(mpg, aes(displ, hwy)) +
 
 }
 \seealso{
-Other polynomial regression functions.: 
+Other ggplot statistics for linear and polynomial regression: 
 \code{\link{stat_poly_eq}()}
 }
-\concept{polynomial regression functions.}
+\concept{ggplot statistics for linear and polynomial regression}

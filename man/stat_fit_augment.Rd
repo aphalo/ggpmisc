@@ -196,8 +196,6 @@ Other ggplot statistics for model fits:
 \code{\link{stat_fit_glance}()},
 \code{\link{stat_fit_residuals}()},
 \code{\link{stat_fit_tb}()},
-\code{\link{stat_fit_tidy}()},
-\code{\link{stat_poly_eq}()},
-\code{\link{stat_quant_eq}()}
+\code{\link{stat_fit_tidy}()}
 }
 \concept{ggplot statistics for model fits}

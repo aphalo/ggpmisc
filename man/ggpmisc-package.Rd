@@ -125,7 +125,8 @@ Useful links:
 
 Other contributors:
 \itemize{
-  \item Kamil Slowikowski [contributor]
+  \item Kamil Slowikowski (\href{https://orcid.org/0000-0002-2843-6370}{ORCID}) [contributor]
+  \item Samer Mouksassi \email{samermouksassi@gmail.com} (\href{https://orcid.org/0000-0002-7152-6654}{ORCID}) [contributor]
 }
 
 }

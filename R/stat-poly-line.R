@@ -1,4 +1,4 @@
-#' Compute predicted line from model fit
+#' Predicted line from model fit
 #'
 #' Predicted values and a confidence band are computed and, by default, plotted.
 #' \code{stat_poly_line()} behaves like \code{\link[ggplot2]{stat_smooth}}
@@ -11,11 +11,11 @@
 #' @details
 #' This statistic is just \code{\link[ggplot2]{stat_smooth}} with different
 #' defaults and updated so that it interprets the argument passed to
-#' \code{formula} differently, accepting \code{y} as explanatory variable
-#' and setting \code{orientation} automatically. In addition the default for \code{method}
-#' is \code{"lm"}, matching the default used in \code{stat_poly_eq()} and
-#' \code{stat_poly_quant()}. It calls \code{\link[ggplot2]{StatSmooth}} to
-#' build a layer.
+#' \code{formula} differently, accepting \code{y} as explanatory variable and
+#' setting \code{orientation} automatically. In addition the default for
+#' \code{method} is \code{"lm"}, matching the default used in
+#' \code{stat_poly_eq()} and \code{stat_poly_quant()}. It calls
+#' \code{\link[ggplot2]{StatSmooth}} to build a layer.
 #'
 #' \code{\link[ggplot2]{geom_smooth}}, which is used by default, treats each
 #' axis differently and can thus have two orientations. The orientation is easy
@@ -83,9 +83,12 @@
 #'
 #' @section Aesthetics: \code{stat_poly_eq} understands \code{x} and \code{y},
 #'   to be referenced in the \code{formula} and \code{weight} passed as argument
-#'   to parameter \code{weights}. All three must be mapped to
-#'   \code{numeric} variables. In addition, the aesthetics understood by the geom
-#'   (\code{"geom_smooth"} is the default) are understood and grouping respected.
+#'   to parameter \code{weights}. All three must be mapped to \code{numeric}
+#'   variables. In addition, the aesthetics understood by the geom
+#'   (\code{"geom_smooth"} is the default) are understood and grouping
+#'   respected.
+#'
+#' @family ggplot statistics for linear and polynomial regression
 #'
 #' @export
 #'
@@ -137,8 +140,6 @@
 #'   geom_point() +
 #'   stat_poly_line(method = "auto", span = 0.8) +
 #'   facet_wrap(~drv)
-#'
-#' @family polynomial regression functions.
 #'
 #' @export
 #'

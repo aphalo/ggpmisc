@@ -201,6 +201,53 @@ test_that("quant_formulas", {
 
 })
 
+# library(ggtext)
+# test_that("markdown_values", {
+#   withCallingHandlers({
+#     vdiffr::expect_doppelganger("stat_quant_eq_numeric",
+#                                 ggplot(my.data, aes(x, y)) +
+#                                   geom_point() +
+#                                   stat_quant_eq(formula = y ~ poly(x, 3, raw = TRUE),
+#                                                 hjust = 0, vstep = 0.1,
+#                                                 coef.keep.zeros = TRUE,
+#                                                 geom = "richtext",
+#                                                 output.type = "markdown",
+#                                                 mapping =
+#                                                   aes(label = after_stat(AIC.label)))
+#     )
+#   }, warning=function(w) {
+#     if (startsWith(conditionMessage(w), "Solution may be nonunique"))
+#       invokeRestart("muffleWarning")
+#   })
+#
+# })
+
+formula_n <- y ~ x + I(x^2) + I(x^3)
+my.format <-
+  "b[0]~`=`~%.3g*\", \"*b[1]~`=`~%.3g*\", \"*b[2]~`=`~%.3g*\", \"*b[3]~`=`~%.3g"
+
+test_that("numeric_values", {
+  withCallingHandlers({
+    vdiffr::expect_doppelganger("stat_quant_eq_numeric",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_quant_eq(formula = formula_n,
+                                                quantiles = 0.5,
+                                                output.type = "numeric",
+                                                parse = TRUE,
+                                                mapping =
+                                                  aes(label = sprintf(my.format,
+                                                                      after_stat(b_0), after_stat(b_1),
+                                                                      after_stat(b_2), after_stat(b_3)))) +
+                                  facet_wrap(~group, ncol = 1)
+    )
+  }, warning=function(w) {
+    if (startsWith(conditionMessage(w), "Solution may be nonunique"))
+      invokeRestart("muffleWarning")
+  })
+
+})
+
 test_that("textual_positions", {
   withCallingHandlers({
     vdiffr::expect_doppelganger("stat_quant_eq_0",

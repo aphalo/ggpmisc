@@ -27,11 +27,10 @@
 #'   the computation proceeds.
 #' @param formula a formula object. Using aesthetic names \code{x} and \code{y}
 #'   instead of original variable names.
-#' @param method function or character If character, "lm", "rlm" and
-#'   "rq" are accepted. If a function, it must have formal parameters
-#'   \code{formula} and \code{data} and return a model fit object for which
-#'   \code{summary()} and \code{coefficients()} are consistent with those for
-#'   \code{lm} fits.
+#' @param method function or character If character, "lm" and "rlm" are
+#'   accepted. If a function, it must have formal parameters \code{formula} and
+#'   \code{data} and return a model fit object for which \code{summary()} and
+#'   \code{coefficients()} are consistent with those for \code{lm} fits.
 #' @param method.args named list with additional arguments.
 #' @param eq.with.lhs If \code{character} the string is pasted to the front of
 #'   the equation label before parsing or a \code{logical} (see note).
@@ -156,7 +155,7 @@
 #'   from numeric values and their mapping to aesthetic \code{label} needs to be
 #'   explicitly supplied in the call.
 #'
-#' @family ggplot statistics for model fits
+#' @family ggplot statistics for linear and polynomial regression
 #'
 #' @examples
 #' # generate artificial data
@@ -343,8 +342,6 @@
 #'     stat_poly_eq(formula = formula, geom = "debug", output.type = "numeric",
 #'                  summary.fun = function(x) {x[["coef.ls"]][[1]]})
 #' }
-#'
-#' @family polynomial regression functions.
 #'
 #' @export
 #'
@@ -541,13 +538,9 @@ poly_eq_compute_group_fun <- function(data,
   if (is.function(method)) {
     fun <- method
   } else if (is.character(method)) {
-    if (method == "rq" && length(method.args) == 0) {
-      method.args <- list(tau = 0.5)
-    }
     fun <- switch(method,
                   lm = stats::lm,
                   rlm = MASS::rlm,
-                  rq = quantreg::rq,
                   stop("Method '", method, "' not yet implemented.")
     )
   } else {
@@ -650,7 +643,7 @@ poly_eq_compute_group_fun <- function(data,
       warning("'p.digits < 2' Likely information loss!")
     }
 
-    if (output.type == "expression" && coef.keep.zeros) {
+    if (output.type == "expression") {
       rr.char <- sprintf("\"%.*#f\"", rr.digits, rr)
       adj.rr.char <- sprintf("\"%.*#f\"", rr.digits, adj.rr)
       AIC.char <- sprintf("\"%.4g\"", AIC)
@@ -904,7 +897,7 @@ coefs2poly_eq <- function(coefs,
                           coef.digits = 3L,
                           coef.keep.zeros = TRUE,
                           eq.x.rhs = "x",
-                          lhs = "y = ",
+                          lhs = "y~`=`~",
                           output.type = "expression") {
   # build equation as a character string from the coefficient estimates
   stopifnot(coef.digits > 0)
@@ -914,20 +907,26 @@ coefs2poly_eq <- function(coefs,
   eq.char <- as.character(polynom::as.polynomial(coefs),
                           digits = coef.digits,
                           keep.zeros = coef.keep.zeros)
-  eq.char <- gsub("e([+-]?[0-9]*)", "%*%10^{\\1}", eq.char)
-  # muliplication symbol
-  if (output.type %in% c("latex", "tikz")) {
-    eq.char <- gsub("%*%", "\\times{}", eq.char, fixed = TRUE)
-    eq.char <- gsub("*", "", eq.char, fixed = TRUE)
-  } else if (output.type == "markdown") {
-    eq.char <- gsub("%*%", "&times;", eq.char, fixed = TRUE)
+  if (output.type == "markdown") {
+    eq.char <- gsub("e([+-]?)[0]([1-9]*)", "&times;10<sup>\\1\\2</sup>", eq.char)
+    eq.char <- gsub("[:^]([0-9]*)", "<sup>\\1</sup>", eq.char)
     eq.char <- gsub("*", "&nbsp;", eq.char, fixed = TRUE)
-  }else if (output.type == "text") {
-    eq.char <- gsub("[*][:space:]", " ", eq.char, fixed = TRUE)
-    eq.char <- gsub("%*%", " * ", eq.char, fixed = TRUE)
+    eq.char <- gsub(" ", "", eq.char, fixed = TRUE)
+  } else {
+    eq.char <- gsub("e([+-]?[0-9]*)", "%*%10^{\\1}", eq.char)
+    # muliplication symbol
+    if (output.type %in% c("latex", "tikz")) {
+      eq.char <- gsub("%*%", "\\times{}", eq.char, fixed = TRUE)
+      eq.char <- gsub("*", "", eq.char, fixed = TRUE)
+    }else if (output.type == "text") {
+      eq.char <- gsub("[*][:space:]", " ", eq.char, fixed = TRUE)
+      eq.char <- gsub("%*%", " * ", eq.char, fixed = TRUE)
+    }
   }
 
-  eq.char <- gsub("x", eq.x.rhs, eq.char, fixed = TRUE)
+  if (eq.x.rhs != "x") {
+    eq.char <- gsub("x", eq.x.rhs, eq.char, fixed = TRUE)
+  }
   if (length(lhs)) {
     eq.char <- paste(lhs, eq.char, sep = "")
   }

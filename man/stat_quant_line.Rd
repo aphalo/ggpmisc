@@ -2,7 +2,7 @@
 % Please edit documentation in R/stat-quant-line.r
 \name{stat_quant_line}
 \alias{stat_quant_line}
-\title{Compute predicted line from quantile regression fit}
+\title{Predicted line from quantile regression fit}
 \usage{
 stat_quant_line(
   mapping = NULL,
@@ -51,13 +51,14 @@ instead of original variable names.}
 
 \item{n}{Number of points at which to evaluate smoother.}
 
-\item{method}{function or character If character, "lm", "rlm" and
-"rq" are accepted. If a function, it must have formal parameters
+\item{method}{function or character If character, "rq" and
+"rqss" are accepted. If a function, it must have formal parameters
 \code{formula} and \code{data} and return a model fit object for which
 \code{summary()} and \code{coefficients()} are consistent with those for
 \code{lm} fits.}
 
-\item{method.args}{named list with additional arguments.}
+\item{method.args}{named list with additional arguments passed to \code{rq()}
+or \code{rqss()}..}
 
 \item{level}{numeric in range [0..1] Passed to \code{quantreg::predict.rq()}.}
 
@@ -97,11 +98,16 @@ band can be interpreted similarly as that produced by \code{stat_smooth()}
 and \code{stat_poly_line()}.
 }
 \details{
-\code{stat_quant_line()} behaves similarly to \code{stat_smooth()} and
-\code{stat_poly_line()} but supports fitting regressions for multiple
+\code{stat_quant_line()} behaves similarly to \code{ggplot2::stat_smooth()}
+and \code{stat_poly_line()} but supports fitting regressions for multiple
 quantiles in the same plot layer. This statistic interprets the argument
 passed to \code{formula} accepting \code{y} as well as \code{x} as
-explanatory variable, matching \code{stat_quant_eq()}.
+explanatory variable, matching \code{stat_quant_eq()}. While
+\code{stat_quant_eq()} supports only method \code{"rq"},
+\code{stat_quant_line()} and \code{stat_quant_band()} support both
+\code{"rq"} and \code{"rqss"}, In the case of \code{"rqss"} the model
+formula makes normally use of \code{qss()} to formulate the spline and its
+constraints.
 
 \code{\link[ggplot2]{geom_smooth}}, which is used by default, treats each
 axis different and thus is dependent on orientation. If no argument is passed
@@ -162,17 +168,37 @@ ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
   stat_quant_line(formula = x ~ poly(y, 3))
 
-# Instead of a loess smooth, you can use any other modelling function:
+# Instead of rq() we can use rqss() to fit an additive model:
+library(quantreg)
 ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
-  stat_quant_line(method = "rqss")
+  stat_quant_line(method = "rqss",
+                  formula = y ~ qss(x, constraint = "D"),
+                  quantiles = 0.5)
+
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  stat_quant_line(method = "rqss",
+                  formula = x ~ qss(y, constraint = "D"),
+                  quantiles = 0.5)
+
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point()+
+  stat_quant_line(method="rqss",
+                  interval="confidence",
+                  se = TRUE,
+                  mapping = aes(fill = factor(after_stat(quantile)),
+                                color = factor(after_stat(quantile))),
+                  quantiles=c(0.05,0.5,0.95))
 
 # Smooths are automatically fit to each group (defined by categorical
 # aesthetics or the group aesthetic) and for each facet.
 
-ggplot(mpg, aes(displ, hwy, colour = class)) +
+ggplot(mpg, aes(displ, hwy, colour = drv, fill = drv)) +
   geom_point() +
-  stat_quant_line(formula = y ~ x, quantiles = 0.5)
+  stat_quant_line(method = "rqss",
+                  formula = y ~ qss(x, constraint = "V"),
+                   quantiles = 0.5)
 
 ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
@@ -186,8 +212,11 @@ Cardoso, G. C. (2019) Double quantile regression accurately assesses
   10 (8), pp. 1322-1331.
 }
 \seealso{
-Other quantile regression functions.: 
+\code{\link[quantreg]{rq}}, \code{\link[quantreg]{rqss}} and
+  \code{\link[quantreg]{qss}}.
+
+Other ggplot statistics for quantile regression: 
 \code{\link{stat_quant_band}()},
 \code{\link{stat_quant_eq}()}
 }
-\concept{quantile regression functions.}
+\concept{ggplot statistics for quantile regression}

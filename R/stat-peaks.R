@@ -30,8 +30,6 @@
 #'
 #' @seealso \code{\link[splus2R]{peaks}}
 #'
-#' @family peaks and valleys functions
-#'
 #' @keywords internal
 #'
 find_peaks <-
@@ -215,7 +213,6 @@ find_peaks <-
 #'   expand_limits(y = 8000)
 #'
 #' @export
-#' @family peaks and valleys functions
 #'
 stat_peaks <- function(mapping = NULL,
                        data = NULL,

@@ -400,18 +400,8 @@ This \code{stat_quant_eq} statistic can return ready formatted labels
   construction of character strings from numeric values and their mapping to
   aesthetic \code{label} needs to be explicitly supplied in the call.
 
-Other ggplot statistics for model fits: 
-\code{\link{stat_fit_augment}()},
-\code{\link{stat_fit_deviations}()},
-\code{\link{stat_fit_glance}()},
-\code{\link{stat_fit_residuals}()},
-\code{\link{stat_fit_tb}()},
-\code{\link{stat_fit_tidy}()},
-\code{\link{stat_poly_eq}()}
-
-Other quantile regression functions.: 
+Other ggplot statistics for quantile regression: 
 \code{\link{stat_quant_band}()},
 \code{\link{stat_quant_line}()}
 }
-\concept{ggplot statistics for model fits}
-\concept{quantile regression functions.}
+\concept{ggplot statistics for quantile regression}

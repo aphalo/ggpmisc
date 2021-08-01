@@ -138,12 +138,19 @@ ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
   stat_quant_band(formula = x ~ poly(y, 3))
 
-# Instead of a loess smooth, you can use any other modelling function:
+# Instead of rq() we can use rqss() to fit an additive model:
+library(quantreg)
 ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
-  stat_quant_band(method = "rqss")
+  stat_quant_band(method = "rqss",
+                  formula = y ~ qss(x))
 
-# Smooths are automatically fit to each group (defined by categorical
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  stat_quant_band(method = "rqss",
+                  formula = x ~ qss(y, constraint = "D"))
+
+# Regressions are automatically fit to each group (defined by categorical
 # aesthetics or the group aesthetic) and for each facet.
 
 ggplot(mpg, aes(displ, hwy, colour = class)) +
@@ -169,8 +176,8 @@ ggplot(mpg, aes(displ, hwy)) +
 
 }
 \seealso{
-Other quantile regression functions.: 
+Other ggplot statistics for quantile regression: 
 \code{\link{stat_quant_eq}()},
 \code{\link{stat_quant_line}()}
 }
-\concept{quantile regression functions.}
+\concept{ggplot statistics for quantile regression}

@@ -202,8 +202,3 @@ ggplot(lynx_datetime.df, aes(year, lynx)) +
   expand_limits(y = 8000)
 
 }
-\seealso{
-Other peaks and valleys functions: 
-\code{\link{find_peaks}()}
-}
-\concept{peaks and valleys functions}

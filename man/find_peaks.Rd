@@ -45,9 +45,5 @@ The default for parameter \code{strict} is \code{TRUE} in functions
 }
 \seealso{
 \code{\link[splus2R]{peaks}}
-
-Other peaks and valleys functions: 
-\code{\link{stat_peaks}()}
 }
-\concept{peaks and valleys functions}
 \keyword{internal}

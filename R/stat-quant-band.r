@@ -71,7 +71,7 @@
 #'   (\code{"geom_smooth"} is the default) are obeyed and grouping
 #'   respected.
 #'
-#' @family quantile regression functions.
+#' @family ggplot statistics for quantile regression
 #'
 #' @export
 #'
@@ -101,12 +101,19 @@
 #'   geom_point() +
 #'   stat_quant_band(formula = x ~ poly(y, 3))
 #'
-#' # Instead of a loess smooth, you can use any other modelling function:
+#' # Instead of rq() we can use rqss() to fit an additive model:
+#' library(quantreg)
 #' ggplot(mpg, aes(displ, hwy)) +
 #'   geom_point() +
-#'   stat_quant_band(method = "rqss")
+#'   stat_quant_band(method = "rqss",
+#'                   formula = y ~ qss(x))
 #'
-#' # Smooths are automatically fit to each group (defined by categorical
+#' ggplot(mpg, aes(displ, hwy)) +
+#'   geom_point() +
+#'   stat_quant_band(method = "rqss",
+#'                   formula = x ~ qss(y, constraint = "D"))
+#'
+#' # Regressions are automatically fit to each group (defined by categorical
 #' # aesthetics or the group aesthetic) and for each facet.
 #'
 #' ggplot(mpg, aes(displ, hwy, colour = class)) +
@@ -147,7 +154,13 @@ stat_quant_band <- function(mapping = NULL,
                             show.legend = NA,
                             inherit.aes = TRUE) {
   if (is.null(formula)) {
-    formula = y ~ x
+    if (is.character(method)) {
+      if (method == "rq") {
+        formula <- y ~ x
+      } else if (method == "rqss") {
+        formula <- y ~ quantreg::qss(x, lambda = 1, constraint = "N")
+      }
+    }
     if (is.na(orientation)) {
       orientation = "x"
     }

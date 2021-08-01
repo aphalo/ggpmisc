@@ -53,11 +53,10 @@ layer}
 can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 
-\item{method}{function or character If character, "lm", "rlm" and
-"rq" are accepted. If a function, it must have formal parameters
-\code{formula} and \code{data} and return a model fit object for which
-\code{summary()} and \code{coefficients()} are consistent with those for
-\code{lm} fits.}
+\item{method}{function or character If character, "lm" and "rlm" are
+accepted. If a function, it must have formal parameters \code{formula} and
+\code{data} and return a model fit object for which \code{summary()} and
+\code{coefficients()} are consistent with those for \code{lm} fits.}
 
 \item{method.args}{named list with additional arguments.}
 
@@ -411,17 +410,7 @@ This \code{stat_poly_eq} statistic can return ready formatted labels
   from numeric values and their mapping to aesthetic \code{label} needs to be
   explicitly supplied in the call.
 
-Other ggplot statistics for model fits: 
-\code{\link{stat_fit_augment}()},
-\code{\link{stat_fit_deviations}()},
-\code{\link{stat_fit_glance}()},
-\code{\link{stat_fit_residuals}()},
-\code{\link{stat_fit_tb}()},
-\code{\link{stat_fit_tidy}()},
-\code{\link{stat_quant_eq}()}
-
-Other polynomial regression functions.: 
+Other ggplot statistics for linear and polynomial regression: 
 \code{\link{stat_poly_line}()}
 }
-\concept{ggplot statistics for model fits}
-\concept{polynomial regression functions.}
+\concept{ggplot statistics for linear and polynomial regression}
