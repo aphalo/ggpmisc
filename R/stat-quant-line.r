@@ -89,8 +89,8 @@
 #'
 #' @references
 #' Cardoso, G. C. (2019) Double quantile regression accurately assesses
-#'   distance to boundary trade‐off. Methods in ecology and evolution, 2019-08,
-#'   10 (8), pp. 1322-1331.
+#'   distance to boundary trade-off. Methods in ecology and evolution,
+#'   10(8), 1322-1331.
 #'
 #' @seealso \code{\link[quantreg]{rq}}, \code{\link[quantreg]{rqss}} and
 #'   \code{\link[quantreg]{qss}}.

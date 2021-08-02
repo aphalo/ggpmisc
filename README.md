@@ -196,11 +196,16 @@ devtools::install_github("aphalo/ggpmisc")
 
 ## Documentation
 
-HTML documentation is available at
-(<https://docs.r4photobiology.info/ggpmisc/>), including a *User Guide*.
+HTML documentation for the package, including help pages and the *User
+Guide*, is available at (<https://docs.r4photobiology.info/ggpmisc/>).
 
 News about updates are regularly posted at
 (<https://www.r4photobiology.info/>).
+
+Chapter 7 in Aphalo (2020) explains both basic concepts of the gramamr
+of graphics as implemented in ‘ggplot2’ as well as extensions to this
+grammar including several of those made available by packages ‘ggpp’ and
+‘ggpmisc’.
 
 ## Contributing
 
@@ -232,6 +237,12 @@ citation("ggpmisc")
 #> https://github.com/aphalo/ggpmisc},
 #>   }
 ```
+
+## References
+
+Aphalo, Pedro J. (2020) *Learn R: As a Language.* The R Series. Boca
+Raton and London: Chapman and Hall/CRC Press. ISBN: 978-0-367-18253-3.
+350 pp.
 
 ## License
 
