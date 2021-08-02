@@ -29,8 +29,6 @@ We load all the packages used in the examples.
 
 ```{r, message=FALSE}
 library(ggpmisc)
-library(xts)
-library(lubridate)
 library(tibble)
 library(dplyr)
 library(quantreg)

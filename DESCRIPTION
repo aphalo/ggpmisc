@@ -11,12 +11,12 @@ Authors@R:
     )
 Maintainer: Pedro J. Aphalo <pedro.aphalo@helsinki.fi>
 Description: Extensions to 'ggplot2' respecting the grammar of graphics
-    paradigm. Statistics: locate and tag peaks and valleys; label plot with the 
-    equation of a polynomial fitted with lm() or other types of models; labels 
-    with P-value, R^2 or adjusted R^2 or information criteria for fitted models; 
-    label with ANOVA table for fitted models; label with summary for fitted 
+    paradigm. Statistics: locate and tag peaks and valleys; label plot with the
+    equation of a polynomial fitted with lm() or other types of models; labels
+    with P-value, R^2 or adjusted R^2 or information criteria for fitted models;
+    label with ANOVA table for fitted models; label with summary for fitted
     models. Model fit classes for which suitable methods are provided by package
-    'broom' and 'broom.mixed' are supported. Scales and stats to build volcano 
+    'broom' and 'broom.mixed' are supported. Scales and stats to build volcano
     and quadrant plots based on outcomes, fold changes, p-values and false 
     discovery rates.
 License: GPL (>= 2)
@@ -42,7 +42,6 @@ Imports:
     tibble (>= 3.0.3),
     plyr (>= 1.8.6),
     dplyr (>= 1.0.2),
-    xts (>= 0.12-0),
     lubridate (>= 1.7.9),
     stringr (>= 1.4.0)
 Suggests:

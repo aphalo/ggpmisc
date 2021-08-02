@@ -10,8 +10,6 @@ eval_flag <- TRUE # evaluate all code chunks
 
 ## ---- message=FALSE-----------------------------------------------------------
 library(ggpmisc)
-library(xts)
-library(lubridate)
 library(tibble)
 library(dplyr)
 library(quantreg)

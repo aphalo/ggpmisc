@@ -7,12 +7,12 @@
 \title{ggpmisc: Miscellaneous Extensions to 'ggplot2'}
 \description{
 Extensions to 'ggplot2' respecting the grammar of graphics
-    paradigm. Statistics: locate and tag peaks and valleys; label plot with the 
-    equation of a polynomial fitted with lm() or other types of models; labels 
-    with P-value, R^2 or adjusted R^2 or information criteria for fitted models; 
-    label with ANOVA table for fitted models; label with summary for fitted 
+    paradigm. Statistics: locate and tag peaks and valleys; label plot with the
+    equation of a polynomial fitted with lm() or other types of models; labels
+    with P-value, R^2 or adjusted R^2 or information criteria for fitted models;
+    label with ANOVA table for fitted models; label with summary for fitted
     models. Model fit classes for which suitable methods are provided by package
-    'broom' and 'broom.mixed' are supported. Scales and stats to build volcano 
+    'broom' and 'broom.mixed' are supported. Scales and stats to build volcano
     and quadrant plots based on outcomes, fold changes, p-values and false 
     discovery rates.
 }
