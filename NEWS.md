@@ -15,7 +15,7 @@ users have lead to bug fixes as well as to an interface with better
 defaults for arguments (see issue \#1). Some other enhancements are
 based on my own needs or ideas.
 
--   Add support for median regression using `rlm` and other `function`
+-   Add support for robust regression using `rlm` and other `function`
     objects in `stat_poly_eq()`.
 -   Make it easier to use `stat_poly_eq()` and `stat_quant_eq()` with
     `formula = x ~ y` and other models in which the explanatory variable
