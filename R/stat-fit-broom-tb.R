@@ -93,132 +93,137 @@
 #' @export
 #'
 #' @examples
-#' library(broom)
+#' # package 'broom' needs to be installed to run these examples
+#'
+#' if (requireNamespace("broom", quietly = TRUE)) {
+#'   library(broom)
 #'
 #' # data for examples
-#' x <- c(44.4, 45.9, 41.9, 53.3, 44.7, 44.1, 50.7, 45.2, 60.1)
-#' covariate <- sqrt(x) + rnorm(9)
-#' group <- factor(c(rep("A", 4), rep("B", 5)))
-#' my.df <- data.frame(x, group, covariate)
+#'   x <- c(44.4, 45.9, 41.9, 53.3, 44.7, 44.1, 50.7, 45.2, 60.1)
+#'   covariate <- sqrt(x) + rnorm(9)
+#'   group <- factor(c(rep("A", 4), rep("B", 5)))
+#'   my.df <- data.frame(x, group, covariate)
 #'
 #' # Linear regression fit summary, by default
-#' ggplot(my.df, aes(covariate, x)) +
-#'   geom_point() +
-#'   stat_fit_tb() +
-#'   expand_limits(y = 70)
+#'   ggplot(my.df, aes(covariate, x)) +
+#'     geom_point() +
+#'     stat_fit_tb() +
+#'     expand_limits(y = 70)
 #'
 #' # Linear regression fit summary, by default
-#' ggplot(my.df, aes(covariate, x)) +
-#'   geom_point() +
-#'   stat_fit_tb(digits = 2, p.digits = 4) +
-#'   expand_limits(y = 70)
+#'   ggplot(my.df, aes(covariate, x)) +
+#'     geom_point() +
+#'     stat_fit_tb(digits = 2, p.digits = 4) +
+#'     expand_limits(y = 70)
 #'
 #' # Linear regression fit summary
-#' ggplot(my.df, aes(covariate, x)) +
-#'   geom_point() +
-#'   stat_fit_tb(tb.type = "fit.summary") +
-#'   expand_limits(y = 70)
+#'   ggplot(my.df, aes(covariate, x)) +
+#'     geom_point() +
+#'     stat_fit_tb(tb.type = "fit.summary") +
+#'     expand_limits(y = 70)
 #'
 #' # Linear regression ANOVA table
-#' ggplot(my.df, aes(covariate, x)) +
-#'   geom_point() +
-#'   stat_fit_tb(tb.type = "fit.anova") +
-#'   expand_limits(y = 70)
+#'   ggplot(my.df, aes(covariate, x)) +
+#'     geom_point() +
+#'     stat_fit_tb(tb.type = "fit.anova") +
+#'     expand_limits(y = 70)
 #'
 #' # Linear regression fit coeficients
-#' ggplot(my.df, aes(covariate, x)) +
-#'   geom_point() +
-#'   stat_fit_tb(tb.type = "fit.coefs") +
-#'   expand_limits(y = 70)
+#'   ggplot(my.df, aes(covariate, x)) +
+#'     geom_point() +
+#'     stat_fit_tb(tb.type = "fit.coefs") +
+#'     expand_limits(y = 70)
 #'
 #' # Polynomial regression
-#' ggplot(my.df, aes(covariate, x)) +
-#'   geom_point() +
-#'   stat_fit_tb(method.args = list(formula = y ~ poly(x, 2))) +
-#'   expand_limits(y = 70)
+#'   ggplot(my.df, aes(covariate, x)) +
+#'     geom_point() +
+#'     stat_fit_tb(method.args = list(formula = y ~ poly(x, 2))) +
+#'     expand_limits(y = 70)
 #'
 #' # Polynomial regression with renamed parameters
-#' ggplot(my.df, aes(covariate, x)) +
-#'   geom_point() +
-#'   stat_fit_tb(method.args = list(formula = y ~ poly(x, 2)),
-#'               tb.params = c("x^0" = 1, "x^1" = 2, "x^2" = 3),
-#'               parse = TRUE) +
-#'   expand_limits(y = 70)
+#'   ggplot(my.df, aes(covariate, x)) +
+#'     geom_point() +
+#'     stat_fit_tb(method.args = list(formula = y ~ poly(x, 2)),
+#'                 tb.params = c("x^0" = 1, "x^1" = 2, "x^2" = 3),
+#'                 parse = TRUE) +
+#'     expand_limits(y = 70)
 #'
 #' # Polynomial regression with renamed parameters and columns
 #' # using numeric indexes
-#' ggplot(my.df, aes(covariate, x)) +
-#'   geom_point() +
-#'   stat_fit_tb(method.args = list(formula = y ~ poly(x, 2)),
-#'               tb.params = c("x^0" = 1, "x^1" = 2, "x^2" = 3),
-#'               tb.vars = c("Term" = 1, "Estimate" = 2, "S.E." = 3,
-#'                           "italic(F)-value" = 4, "italic(P)-value" = 5),
-#'               parse = TRUE) +
-#'   expand_limits(y = 70)
+#'   ggplot(my.df, aes(covariate, x)) +
+#'     geom_point() +
+#'     stat_fit_tb(method.args = list(formula = y ~ poly(x, 2)),
+#'                 tb.params = c("x^0" = 1, "x^1" = 2, "x^2" = 3),
+#'                 tb.vars = c("Term" = 1, "Estimate" = 2, "S.E." = 3,
+#'                             "italic(F)-value" = 4, "italic(P)-value" = 5),
+#'                 parse = TRUE) +
+#'     expand_limits(y = 70)
 #'
 #' # ANOVA summary
-#' ggplot(my.df, aes(group, x)) +
-#'   geom_point() +
-#'   stat_fit_tb() +
-#'   expand_limits(y = 70)
+#'   ggplot(my.df, aes(group, x)) +
+#'     geom_point() +
+#'     stat_fit_tb() +
+#'     expand_limits(y = 70)
 #'
 #' # ANOVA table
-#' ggplot(my.df, aes(group, x)) +
-#'   geom_point() +
-#'   stat_fit_tb(tb.type = "fit.anova") +
-#'   expand_limits(y = 70)
+#'   ggplot(my.df, aes(group, x)) +
+#'     geom_point() +
+#'     stat_fit_tb(tb.type = "fit.anova") +
+#'     expand_limits(y = 70)
 #'
 #' # ANOVA table with renamed and selected columns
 #' # using column names
-#' ggplot(my.df, aes(group, x)) +
-#'   geom_point() +
-#'   stat_fit_tb(tb.type = "fit.anova",
-#'               tb.vars = c(Effect = "term", "df", "italic(F)" = "statistic",
-#'                           "italic(P)" = "p.value"),
-#'               parse = TRUE)
+#'   ggplot(my.df, aes(group, x)) +
+#'     geom_point() +
+#'     stat_fit_tb(tb.type = "fit.anova",
+#'                 tb.vars = c(Effect = "term", "df", "italic(F)" = "statistic",
+#'                             "italic(P)" = "p.value"),
+#'                 parse = TRUE)
 #'
 #' # ANOVA table with renamed and selected columns
 #' # using column names with partial matching
-#' ggplot(my.df, aes(group, x)) +
-#'   geom_point() +
-#'   stat_fit_tb(tb.type = "fit.anova",
-#'               tb.vars = c(Effect = "term", "df", "italic(F)" = "stat",
-#'                           "italic(P)" = "p"),
-#'               parse = TRUE)
+#'   ggplot(my.df, aes(group, x)) +
+#'     geom_point() +
+#'     stat_fit_tb(tb.type = "fit.anova",
+#'                 tb.vars = c(Effect = "term", "df", "italic(F)" = "stat",
+#'                             "italic(P)" = "p"),
+#'                 parse = TRUE)
 #'
 #' # ANOVA summary
-#' ggplot(my.df, aes(group, x)) +
-#'   geom_point() +
-#'   stat_fit_tb() +
-#'   expand_limits(y = 70)
+#'   ggplot(my.df, aes(group, x)) +
+#'     geom_point() +
+#'     stat_fit_tb() +
+#'     expand_limits(y = 70)
 #'
 #' # ANCOVA (covariate not plotted)
-#' ggplot(my.df, aes(group, x, z = covariate)) +
-#'   geom_point() +
-#'   stat_fit_tb(method.args = list(formula = y ~ x + z),
-#'               tb.vars = c(Effect = "term", "italic(F)" = "statistic", "italic(P)" = "p.value"),
-#'               parse = TRUE)
+#'   ggplot(my.df, aes(group, x, z = covariate)) +
+#'     geom_point() +
+#'     stat_fit_tb(method.args = list(formula = y ~ x + z),
+#'                 tb.vars = c(Effect = "term", "italic(F)" = "statistic", "italic(P)" = "p.value"),
+#'                 parse = TRUE)
 #'
 #' # t-test
-#' ggplot(my.df, aes(group, x)) +
-#'   geom_point() +
-#'   stat_fit_tb(method = "t.test",
+#'   ggplot(my.df, aes(group, x)) +
+#'     geom_point() +
+#'     stat_fit_tb(method = "t.test",
 #'               tb.vars = c("italic(t)" = "statistic", "italic(P)" = "p.value"),
 #'               parse = TRUE)
 #'
 #' # t-test (equal variances assumed)
-#' ggplot(my.df, aes(group, x)) +
-#'   geom_point() +
-#'   stat_fit_tb(method = "t.test",
-#'               method.args = list(formula = y ~ x, var.equal = TRUE),
-#'               tb.vars = c("italic(t)" = "statistic", "italic(P)" = "p.value"),
-#'               parse = TRUE)
+#'   ggplot(my.df, aes(group, x)) +
+#'     geom_point() +
+#'     stat_fit_tb(method = "t.test",
+#'                 method.args = list(formula = y ~ x, var.equal = TRUE),
+#'                 tb.vars = c("italic(t)" = "statistic", "italic(P)" = "p.value"),
+#'                 parse = TRUE)
 #'
 #' # Linear regression using a table theme
-#' ggplot(my.df, aes(covariate, x)) +
-#'   geom_point() +
-#'   stat_fit_tb(table.theme = ttheme_gtlight) +
-#'   expand_limits(y = 70)
+#'   ggplot(my.df, aes(covariate, x)) +
+#'     geom_point() +
+#'     stat_fit_tb(table.theme = ttheme_gtlight) +
+#'     expand_limits(y = 70)
+#'
+#' }
 #'
 stat_fit_tb <- function(mapping = NULL, data = NULL, geom = "table_npc",
                         method = "lm",

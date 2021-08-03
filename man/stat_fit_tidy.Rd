@@ -126,7 +126,8 @@ Although arguments passed to parameter \code{tidy.args} will be
   passed to [generics::tidy()] whether they are silently ignored or obeyed
   depends on each specialization of [tidy()], so do carefully read the
   documentation for the version of [tidy()] corresponding to the `method`
-  used to fit the model.
+  used to fit the model. You will also need to manually intall the package,
+  such as 'broom', where the tidier you intend to use are defined.
 }
 \section{Warning!}{
  Not all `glance()` methods are defined in package 'broom'.
@@ -144,12 +145,15 @@ Although arguments passed to parameter \code{tidy.args} will be
 }
 
 \examples{
-library(broom)
-library(quantreg)
+# package 'broom' needs to be installed to run these examples
+
+if (requireNamespace("broom", quietly = TRUE)) {
+  library(broom)
+  library(quantreg)
 
 # Inspecting the returned data using geom_debug()
-if (requireNamespace("gginnards", quietly = TRUE)) {
-  library(gginnards)
+  if (requireNamespace("gginnards", quietly = TRUE)) {
+    library(gginnards)
 
 # This provides a quick way of finding out the names of the variables that
 # are available for mapping to aesthetics. This is specially important for
@@ -174,60 +178,62 @@ if (requireNamespace("gginnards", quietly = TRUE)) {
 }
 
 # Regression by panel example
-ggplot(mtcars, aes(x = disp, y = mpg)) +
-  stat_smooth(method = "lm") +
-  geom_point(aes(colour = factor(cyl))) +
-  stat_fit_tidy(method = "lm",
-                label.x = "right",
-                method.args = list(formula = y ~ x),
-                mapping = aes(label = sprintf("Slope = \%.3g\np-value = \%.3g",
-                                              after_stat(x_estimate),
-                                              after_stat(x_p.value))))
+  ggplot(mtcars, aes(x = disp, y = mpg)) +
+    stat_smooth(method = "lm") +
+    geom_point(aes(colour = factor(cyl))) +
+    stat_fit_tidy(method = "lm",
+                  label.x = "right",
+                  method.args = list(formula = y ~ x),
+                  mapping = aes(label = sprintf("Slope = \%.3g\np-value = \%.3g",
+                                                after_stat(x_estimate),
+                                                after_stat(x_p.value))))
 
 # Regression by group example
-ggplot(mtcars, aes(x = disp, y = mpg, colour = factor(cyl))) +
-  stat_smooth(method = "lm") +
-  geom_point() +
-  stat_fit_tidy(method = "lm",
-                label.x = "right",
-                method.args = list(formula = y ~ x),
-                mapping = aes(label = sprintf("Slope = \%.3g, p-value = \%.3g",
-                                              after_stat(x_estimate),
-                                              after_stat(x_p.value))))
+  ggplot(mtcars, aes(x = disp, y = mpg, colour = factor(cyl))) +
+    stat_smooth(method = "lm") +
+    geom_point() +
+    stat_fit_tidy(method = "lm",
+                  label.x = "right",
+                  method.args = list(formula = y ~ x),
+                  mapping = aes(label = sprintf("Slope = \%.3g, p-value = \%.3g",
+                                                after_stat(x_estimate),
+                                                after_stat(x_p.value))))
 
 # Weighted regression example
-ggplot(mtcars, aes(x = disp, y = mpg, weight = cyl)) +
-  stat_smooth(method = "lm") +
-  geom_point(aes(colour = factor(cyl))) +
-  stat_fit_tidy(method = "lm",
-                label.x = "right",
-                method.args = list(formula = y ~ x, weights = quote(weight)),
-                mapping = aes(label = sprintf("Slope = \%.3g\np-value = \%.3g",
-                                              after_stat(x_estimate),
-                                              after_stat(x_p.value))))
+  ggplot(mtcars, aes(x = disp, y = mpg, weight = cyl)) +
+    stat_smooth(method = "lm") +
+    geom_point(aes(colour = factor(cyl))) +
+    stat_fit_tidy(method = "lm",
+                  label.x = "right",
+                  method.args = list(formula = y ~ x, weights = quote(weight)),
+                  mapping = aes(label = sprintf("Slope = \%.3g\np-value = \%.3g",
+                                                after_stat(x_estimate),
+                                                after_stat(x_p.value))))
 
 # Correlation test
-ggplot(mtcars, aes(x = disp, y = mpg)) +
-  stat_smooth(method = "lm") +
-  geom_point() +
-  stat_fit_tidy(method = "cor.test",
-                label.y = "bottom",
-                method.args = list(formula = ~ x + y),
-                mapping = aes(label = sprintf("R = \%.3g\np-value = \%.3g",
-                                              after_stat(`_estimate`),
-                                              after_stat(`_p.value`))))
+  ggplot(mtcars, aes(x = disp, y = mpg)) +
+    stat_smooth(method = "lm") +
+    geom_point() +
+    stat_fit_tidy(method = "cor.test",
+                  label.y = "bottom",
+                  method.args = list(formula = ~ x + y),
+                  mapping = aes(label = sprintf("R = \%.3g\np-value = \%.3g",
+                                                after_stat(`_estimate`),
+                                                after_stat(`_p.value`))))
 
 # Quantile regression
-ggplot(mtcars, aes(x = disp, y = mpg)) +
-  stat_smooth(method = "lm") +
-  geom_point() +
-  stat_fit_tidy(method = "rq",
-                label.y = "bottom",
-                method.args = list(formula = y ~ x),
-                tidy.args = list(se.type = "nid"),
-                mapping = aes(label = sprintf("Slope = \%.3g\np-value = \%.3g",
-                                              after_stat(x_estimate),
-                                              after_stat(x_p.value))))
+  ggplot(mtcars, aes(x = disp, y = mpg)) +
+    stat_smooth(method = "lm") +
+    geom_point() +
+    stat_fit_tidy(method = "rq",
+                  label.y = "bottom",
+                  method.args = list(formula = y ~ x),
+                  tidy.args = list(se.type = "nid"),
+                  mapping = aes(label = sprintf("Slope = \%.3g\np-value = \%.3g",
+                                                after_stat(x_estimate),
+                                                after_stat(x_p.value))))
+
+}
 
 }
 \seealso{

@@ -122,69 +122,74 @@ Although arguments passed to parameter \code{augment.args} will be
 }
 
 \examples{
-library(broom)
-library(quantreg)
+# package 'broom' needs to be installed to run these examples
+
+if (requireNamespace("broom", quietly = TRUE)) {
+  library(broom)
+  library(quantreg)
 
 # Inspecting the returned data using geom_debug()
-if (requireNamespace("gginnards", quietly = TRUE)) {
-  library(gginnards)
+  if (requireNamespace("gginnards", quietly = TRUE)) {
+    library(gginnards)
 
 # Regression by panel
+    ggplot(mtcars, aes(x = disp, y = mpg)) +
+      geom_point(aes(colour = factor(cyl))) +
+      stat_fit_augment(method = "lm",
+                       method.args = list(formula = y ~ x),
+                       geom = "debug",
+                       summary.fun = colnames)
+  }
+
+# Regression by panel example
   ggplot(mtcars, aes(x = disp, y = mpg)) +
     geom_point(aes(colour = factor(cyl))) +
     stat_fit_augment(method = "lm",
-                     method.args = list(formula = y ~ x),
-                     geom = "debug",
-                     summary.fun = colnames)
-}
-
-# Regression by panel example
-ggplot(mtcars, aes(x = disp, y = mpg)) +
-  geom_point(aes(colour = factor(cyl))) +
-  stat_fit_augment(method = "lm",
-                   method.args = list(formula = y ~ x))
+                     method.args = list(formula = y ~ x))
 
 # Residuals from regression by panel example
-ggplot(mtcars, aes(x = disp, y = mpg)) +
-  geom_hline(yintercept = 0, linetype = "dotted") +
-  stat_fit_augment(geom = "point",
-                   method = "lm",
-                   method.args = list(formula = y ~ x),
-                   y.out = ".resid")
+  ggplot(mtcars, aes(x = disp, y = mpg)) +
+    geom_hline(yintercept = 0, linetype = "dotted") +
+    stat_fit_augment(geom = "point",
+                     method = "lm",
+                     method.args = list(formula = y ~ x),
+                     y.out = ".resid")
 
 # Regression by group example
-ggplot(mtcars, aes(x = disp, y = mpg, colour = factor(cyl))) +
-  geom_point() +
-  stat_fit_augment(method = "lm",
-                   method.args = list(formula = y ~ x))
+  ggplot(mtcars, aes(x = disp, y = mpg, colour = factor(cyl))) +
+    geom_point() +
+    stat_fit_augment(method = "lm",
+                     method.args = list(formula = y ~ x))
 
 # Residuals from regression by group example
-ggplot(mtcars, aes(x = disp, y = mpg, colour = factor(cyl))) +
-  geom_hline(yintercept = 0, linetype = "dotted") +
-  stat_fit_augment(geom = "point",
-                   method.args = list(formula = y ~ x),
-                   y.out = ".resid")
+  ggplot(mtcars, aes(x = disp, y = mpg, colour = factor(cyl))) +
+    geom_hline(yintercept = 0, linetype = "dotted") +
+    stat_fit_augment(geom = "point",
+                     method.args = list(formula = y ~ x),
+                     y.out = ".resid")
 
 # Weighted regression example
-ggplot(mtcars, aes(x = disp, y = mpg, weight = cyl)) +
-  geom_point(aes(colour = factor(cyl))) +
-  stat_fit_augment(method = "lm",
-                   method.args = list(formula = y ~ x,
-                                 weights = quote(weight)))
+  ggplot(mtcars, aes(x = disp, y = mpg, weight = cyl)) +
+    geom_point(aes(colour = factor(cyl))) +
+    stat_fit_augment(method = "lm",
+                     method.args = list(formula = y ~ x,
+                                        weights = quote(weight)))
 
 # Residuals from weighted regression example
-ggplot(mtcars, aes(x = disp, y = mpg, weight = cyl)) +
-  geom_hline(yintercept = 0, linetype = "dotted") +
-  stat_fit_augment(geom = "point",
-                   method.args = list(formula = y ~ x,
-                                 weights = quote(weight)),
-                   y.out = ".resid")
+  ggplot(mtcars, aes(x = disp, y = mpg, weight = cyl)) +
+    geom_hline(yintercept = 0, linetype = "dotted") +
+    stat_fit_augment(geom = "point",
+                     method.args = list(formula = y ~ x,
+                                        weights = quote(weight)),
+                     y.out = ".resid")
 
 # Quantile regression
-ggplot(mtcars, aes(x = disp, y = mpg)) +
-  geom_point() +
-  stat_fit_augment(method = "rq",
-                  label.y = "bottom")
+  ggplot(mtcars, aes(x = disp, y = mpg)) +
+    geom_point() +
+    stat_fit_augment(method = "rq",
+                    label.y = "bottom")
+
+}
 
 }
 \seealso{

@@ -4,6 +4,16 @@ editor_options:
     wrap: 72
 ---
 
+# ggpmisc 0.4.2
+
+Changes to Depends, Imports and Suggests, to solve errors and/or to
+avoid dependencies that are not needed. As a consequence package 'broom'
+is no longer automatically installed as a dependency of 'ggpmisc' and if
+used, will need to be explicitly installed by the user. Several examples
+are now run only if the necessary packages have been installed (*Prof.
+Brian Ripley*, *Uwe Ligges* and members of the *CRAN's team* are thanked
+for package quality control).
+
 # ggpmisc 0.4.1
 
 The suggestion from *Mark Neal* of adding support for quantile
@@ -15,7 +25,7 @@ users have lead to bug fixes as well as to an interface with better
 defaults for arguments (see issue \#1). Some other enhancements are
 based on my own needs or ideas.
 
--   Add support for robust regression using `rlm` and other `function`
+-   Add support for robust regression using `rlm` and for fit `function`
     objects in `stat_poly_eq()`.
 -   Make it easier to use `stat_poly_eq()` and `stat_quant_eq()` with
     `formula = x ~ y` and other models in which the explanatory variable
