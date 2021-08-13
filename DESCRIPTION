@@ -25,11 +25,11 @@ LazyLoad: TRUE
 ByteCompile: TRUE
 Depends:
     R (>= 3.6.0),
-    ggplot2 (>= 3.3.1),
     ggpp (>= 0.4.0)
 Imports:
     grid,
     stats,
+    ggplot2 (>= 3.3.1),
     scales (>= 1.1.1),
     rlang (>= 0.4.7),
     generics (>= 0.1.0),

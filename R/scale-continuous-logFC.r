@@ -190,8 +190,6 @@ symmetric_limits <- function(x) {
 #'   apossibly different log transformation (default is fold-change with no
 #'   transformation).
 #'
-#' @importFrom ggplot2 expansion
-#'
 #' @export
 #'
 #' @family scales for omics data

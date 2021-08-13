@@ -46,6 +46,7 @@
 #'
 #' @import stats scales grid ggpp
 #' @importFrom rlang .data
+#' @importFrom ggplot2 expansion after_stat
 #'
 #' @note The signatures of \code{stat_peaks()} and \code{stat_valleys()} are
 #'   identical to those of \code{stat_peaks} and \code{stat_valleys} from
