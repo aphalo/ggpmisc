@@ -14,6 +14,26 @@ my.data <- data.frame(x,
                       wt = sqrt(x))
 formula <- y ~ poly(x, 3, raw = TRUE)
 
+if (isNamespaceLoaded(name = "package:ggpmisc")) detach(package:ggpmisc, unload = TRUE)
+if (isNamespaceLoaded(name = "package:ggpp")) detach(package:ggpp, unload = TRUE)
+if (isNamespaceLoaded(name = "package:ggplot2")) detach(package:ggplot2, unload = TRUE)
+
+test_that("poly_eq_noload", {
+  vdiffr::expect_doppelganger("stat_poly_eq_noload",
+                              ggplot2::ggplot(my.data, aes(x, y)) +
+                                ggplot2::geom_point() +
+                                ggpmisc::stat_poly_eq(formula = y ~ 1, parse = TRUE,
+                                             mapping =
+                                               ggplot2::aes(label = paste(ggplot2::after_stat(eq.label),
+                                                                          ggplot2::after_stat(adj.rr.label),
+                                                                          ggplot2::after_stat(AIC.label),
+                                                                          ggplot2::after_stat(BIC.label),
+                                                                 sep = "~~")))
+  )
+})
+
+library(ggpmisc)
+
 test_that("poly_formulas", {
   vdiffr::expect_doppelganger("stat_poly_eq_formula_1",
                               ggplot(my.data, aes(x, y)) +

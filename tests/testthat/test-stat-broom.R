@@ -1,7 +1,6 @@
 context("stat_fit_glance")
 
 library(tibble)
-library(gginnards)
 library(nlme)
 library(quantreg)
 library(broom)
@@ -17,8 +16,64 @@ my.data <- data.frame(x,
                       y2 = y * c(0.5,2),
                       block = c("a", "a", "b", "b"),
                       wt = sqrt(x))
-                      formula <- y ~ poly(x, 3, raw = TRUE)
 
+formula <- y ~ poly(x, 3, raw = TRUE)
+
+if (isNamespaceLoaded(name = "package:ggpmisc")) detach(package:ggpmisc, unload = TRUE)
+if (isNamespaceLoaded(name = "package:ggpp")) detach(package:ggpp, unload = TRUE)
+if (isNamespaceLoaded(name = "package:ggplot2")) detach(package:ggplot2, unload = TRUE)
+
+test_that("broom_noload", {
+  # ggplot(my.data, aes(x, y)) +
+  #   geom_point() +
+  #   stat_fit_glance(geom = "debug")
+  #
+  # ggplot(my.data, aes(x, y)) +
+  #   geom_point() +
+  #   stat_fit_glance(method = "rq", geom = "debug")
+  #
+  # ggplot(my.data, aes(x, y)) +
+  #   geom_point() +
+  #   stat_fit_glance(method = "cor.test", method.args = list(formula = ~ x + y), geom = "debug")
+  #
+  # ggplot(my.data, aes(x, y)) +
+  #   geom_point() +
+  #   stat_fit_glance(method = "cor.test", method.arg = list(x = "x", y = "y"), geom = "debug")
+
+  vdiffr::expect_doppelganger("glance_method_default_noload",
+                              ggplot2::ggplot(my.data, aes(x, y)) +
+                                ggplot2::geom_point() +
+                                ggpmisc::stat_fit_glance(mapping =
+                                                  ggplot2::aes(label = sprintf("%.3g, %.3f, %.3f, %.3g, %.3g, %.3g",
+                                                                               ggplot2::after_stat(p.value),
+                                                                               ggplot2::after_stat(r.squared),
+                                                                               ggplot2::after_stat(adj.r.squared),
+                                                                               ggplot2::after_stat(AIC),
+                                                                               ggplot2::after_stat(BIC),
+                                                                               ggplot2::after_stat(df.residual))))
+  )
+  vdiffr::expect_doppelganger("tidy_method_default_noload",
+                              ggplot2::ggplot(my.data, aes(x, y)) +
+                                ggplot2::geom_point() +
+                                ggpmisc::stat_fit_tidy(mapping =
+                                                         ggplot2::aes(label = sprintf("%.3g, %.3g, %.3g, %.3g\n%.3g, %.3g, %.3g, %.3g",
+                                                                                      ggplot2::after_stat(Intercept_estimate),
+                                                                                      ggplot2::after_stat(Intercept_p.value),
+                                                                                      ggplot2::after_stat(Intercept_stat),
+                                                                                      ggplot2::after_stat(Intercept_se),
+                                                                                      ggplot2::after_stat(x_estimate),
+                                                                                      ggplot2::after_stat(x_p.value),
+                                                                                      ggplot2::after_stat(x_stat),
+                                                                                      ggplot2::after_stat(x_se))))
+  )
+  vdiffr::expect_doppelganger("augment_method_default_noload",
+                              ggplot2::ggplot(my.data, aes(x, y)) +
+                                ggplot2::geom_point() +
+                                ggpmisc::stat_fit_augment()
+  )
+})
+
+library(ggpmisc)
 
 test_that("glance_methods", {
   # ggplot(my.data, aes(x, y)) +

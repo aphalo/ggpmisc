@@ -14,6 +14,20 @@ my.data <- data.frame(x,
                       wt = sqrt(x))
 formula <- y ~ poly(x, 3, raw = TRUE)
 
+if (isNamespaceLoaded(name = "package:ggpmisc")) detach(package:ggpmisc, unload = TRUE)
+if (isNamespaceLoaded(name = "package:ggpp")) detach(package:ggpp, unload = TRUE)
+if (isNamespaceLoaded(name = "package:ggplot2")) detach(package:ggplot2, unload = TRUE)
+
+test_that("poly_line_noload", {
+  vdiffr::expect_doppelganger("stat_poly_line_noload",
+                              ggplot2::ggplot(my.data, aes(x, y)) +
+                                ggplot2::geom_point() +
+                                ggpmisc::stat_poly_line(formula = y ~ 1)
+  )
+})
+
+library(ggpmisc)
+
 test_that("poly_formulas", {
   vdiffr::expect_doppelganger("stat_poly_line_formula_1",
                               ggplot(my.data, aes(x, y)) +

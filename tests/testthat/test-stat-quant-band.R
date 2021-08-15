@@ -13,6 +13,24 @@ my.data <- data.frame(x,
                       block = c("a", "a", "b", "b"),
                       wt = sqrt(x))
 
+if (isNamespaceLoaded(name = "package:ggpmisc")) detach(package:ggpmisc, unload = TRUE)
+if (isNamespaceLoaded(name = "package:ggpp")) detach(package:ggpp, unload = TRUE)
+if (isNamespaceLoaded(name = "package:ggplot2")) detach(package:ggplot2, unload = TRUE)
+
+test_that("quant_band_noload", {
+  withCallingHandlers({
+    vdiffr::expect_doppelganger("stat_quant_band_noload",
+                                ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
+                                  ggplot2::geom_point() +
+                                  ggpmisc::stat_quant_band(formula = y ~ 1)
+    )
+  }, warning=function(w) {
+    if (grepl("Solution may be nonunique|2 non-positive fis", conditionMessage(w)))
+      invokeRestart("muffleWarning")
+  })  })
+
+library(ggpmisc)
+
 test_that("quant_formulas", {
   withCallingHandlers({
     vdiffr::expect_doppelganger("stat_quant_band_formula_1",

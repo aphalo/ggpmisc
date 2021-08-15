@@ -19,6 +19,22 @@ make_data_tbl <- function(nrow = 100, rfun = rnorm, ...) {
   )
 }
 
+if (isNamespaceLoaded(name = "package:ggpmisc")) detach(package:ggpmisc, unload = TRUE)
+if (isNamespaceLoaded(name = "package:ggpp")) detach(package:ggpp, unload = TRUE)
+if (isNamespaceLoaded(name = "package:ggplot2")) detach(package:ggplot2, unload = TRUE)
+
+test_that("valleys_noload", {
+  vdiffr::expect_doppelganger("stat_valleys_noload",
+                              ggplot2::ggplot(data = make_data_tbl(30), ggplot2::aes(x, y)) +
+                                ggplot2::geom_point() +
+                                ggplot2::geom_line() +
+                                ggpmisc::stat_valleys(colour = "red") +
+                                ggplot2::expand_limits(y = c(-2.5, 2.5))
+  )
+})
+
+library(ggpmisc)
+
 test_that("numbers_tb", {
   vdiffr::expect_doppelganger("stat_valleys_numeric_01",
                               ggplot(data = make_data_tbl(30), aes(x, y)) +

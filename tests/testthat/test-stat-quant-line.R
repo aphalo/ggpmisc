@@ -13,6 +13,20 @@ my.data <- data.frame(x,
                       block = c("a", "a", "b", "b"),
                       wt = sqrt(x))
 
+test_that("quant_line_noload", {
+  withCallingHandlers({
+    vdiffr::expect_doppelganger("stat_quant_line_noload",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_quant_line(formula = y ~ 1)
+    )
+  }, warning=function(w) {
+    if (grepl("Solution may be nonunique|2 non-positive fis", conditionMessage(w)))
+      invokeRestart("muffleWarning")
+  })  })
+
+library(ggpmisc)
+
 test_that("quant_formulas", {
   withCallingHandlers({
     vdiffr::expect_doppelganger("stat_quant_line_formula_1",
