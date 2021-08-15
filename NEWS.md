@@ -4,6 +4,11 @@ editor_options:
     wrap: 72
 ---
 
+# ggpmisc 0.4.2-1
+
+Fix a bug remaining in 0.4.2, that could result in `after_stat()` not being
+found.
+
 # ggpmisc 0.4.2
 
 Changes to Depends, Imports and Suggests, to solve errors and/or to
