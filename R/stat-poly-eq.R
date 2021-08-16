@@ -945,7 +945,7 @@ as.character.polynomial <- function (x,
                                      digits = 3,
                                      keep.zeros = TRUE) {
   if (keep.zeros) {
-    p <- sprintf("%.*#g", digits, x)
+    p <- sprintf("%#.*g", digits, x)
   } else {
     p <- sprintf("%.*g", digits, x)
   }
