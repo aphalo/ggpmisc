@@ -603,7 +603,7 @@ quant_eq_compute_group_fun <- function(data,
         rho.char[q] <- sprintf("\"%#.3g\"", rho[q])
       } else {
         AIC.char[q] <- sprintf("%.4g", AIC[q])
-        rho.char[q] <- sprintf("%.3#g", rho[q])
+        rho.char[q] <- sprintf("%#.3g", rho[q])
       }
     }
 

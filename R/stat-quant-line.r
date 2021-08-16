@@ -312,7 +312,7 @@ quant_line_compute_group_fun <- function(data,
   quant.digits <- ifelse(min(z[["quantile"]]) < 0.01 || max(z[["quantile"]]) > 0.99,
                          3, 2)
   quant.levels <- sort(unique(z[["quantile"]]), decreasing = TRUE)
-  quant.labels <- sprintf("%.*#f", quant.digits, quant.levels)
+  quant.labels <- sprintf("%#.*f", quant.digits, quant.levels)
   z[["quantile.f"]] <-
     factor(z[["quantile"]], levels = quant.levels, labels = quant.labels)
 
