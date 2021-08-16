@@ -444,7 +444,7 @@ quant_eq_compute_group_fun <- function(data,
   # factor with nicely formatted labels
   quant.digits <- ifelse(min(quantiles) < 0.01 || max(quantiles) > 0.99, 3, 2)
   quant.levels <- sort(unique(quantiles), decreasing = TRUE)
-  quant.labels <- sprintf("%.*#f", quant.digits, quant.levels)
+  quant.labels <- sprintf("%#.*f", quant.digits, quant.levels)
   quantiles.f <- factor(quantiles,
                         levels = quant.levels,
                         labels = quant.labels)
@@ -600,7 +600,7 @@ quant_eq_compute_group_fun <- function(data,
 
       if (output.type == "expression" && coef.keep.zeros) {
         AIC.char[q] <- sprintf("\"%.4g\"", AIC[q])
-        rho.char[q] <- sprintf("\"%.3#g\"", rho[q])
+        rho.char[q] <- sprintf("\"%#.3g\"", rho[q])
       } else {
         AIC.char[q] <- sprintf("%.4g", AIC[q])
         rho.char[q] <- sprintf("%.3#g", rho[q])

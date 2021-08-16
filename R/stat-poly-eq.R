@@ -644,23 +644,23 @@ poly_eq_compute_group_fun <- function(data,
     }
 
     if (output.type == "expression") {
-      rr.char <- sprintf("\"%.*#f\"", rr.digits, rr)
-      adj.rr.char <- sprintf("\"%.*#f\"", rr.digits, adj.rr)
+      rr.char <- sprintf("\"%#.*f\"", rr.digits, rr)
+      adj.rr.char <- sprintf("\"%#.*f\"", rr.digits, adj.rr)
       AIC.char <- sprintf("\"%.4g\"", AIC)
       BIC.char <- sprintf("\"%.4g\"", BIC)
-      f.value.char <- sprintf("\"%.*#g\"", f.digits, f.value)
+      f.value.char <- sprintf("\"%#.*g\"", f.digits, f.value)
       f.df1.char <- as.character(f.df1)
       f.df2.char <- as.character(f.df2)
-      p.value.char <- sprintf("\"%.*#g\"", p.digits, p.value)
+      p.value.char <- sprintf("\"%#.*g\"", p.digits, p.value)
     } else {
-      rr.char <- sprintf("%.*#f", rr.digits, rr)
-      adj.rr.char <- sprintf("%.*#f", rr.digits, adj.rr)
+      rr.char <- sprintf("%#.*f", rr.digits, rr)
+      adj.rr.char <- sprintf("%#.*f", rr.digits, adj.rr)
       AIC.char <- sprintf("%.4g", AIC)
       BIC.char <- sprintf("%.4g", BIC)
-      f.value.char <- sprintf("%.*#g", f.digits, f.value)
+      f.value.char <- sprintf("%#.*g", f.digits, f.value)
       f.df1.char <- as.character(f.df1)
       f.df2.char <- as.character(f.df2)
-      p.value.char <- sprintf("%.*#g", p.digits, p.value)
+      p.value.char <- sprintf("%#.*g", p.digits, p.value)
     }
 
     # build the data frames to return
