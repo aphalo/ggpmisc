@@ -17,6 +17,8 @@
 #' @param method character One of the methods available in \code{object}.
 #' @param ... ignored by this method.
 #'
+#' @return A named numeric vector of length two.
+#'
 #' @export
 #'
 #' @seealso \code{\link[lmodel2]{lmodel2}}
@@ -56,6 +58,8 @@ coef.lmodel2 <- function(object,
 #'   parameters are considered.
 #' @param level the confidence level required. Currently only 0.95 accepted.
 #' @param ... ignored by this method.
+#'
+#' @return A data frame with two rows and three columns.
 #'
 #' @export
 #'
@@ -103,10 +107,14 @@ confint.lmodel2 <- function (object,
 #' @param object a fitted model object.
 #' @param method character One of the methods available in \code{object}.
 #' @param newdata An optional data frame in which to look for variables with
-#' which to predict. If omitted, the fitted values are used.
+#'   which to predict. If omitted, the fitted values are used.
 #' @param interval Type of interval calculation.
 #' @param level the confidence level required. Currently only 0.95 accepted.
 #' @param ... ignored by this method.
+#'
+#' @return If \code{interval = "none"} a numeric vector is returned, while if
+#'   \code{interval = "confidence} a data frame with columns \code{fit},
+#'   \code{lwr} and \code{upr} is returned.
 #'
 #' @export
 #'
@@ -137,22 +145,29 @@ predict.lmodel2 <-function(object,
   a1 <- centr.y - b1 * centr.x
   b2 <- object$confidence.intervals[row, 5]
   a2 <- centr.y - b2 * centr.x
+
   if ((row != 1) && (object$rsquare <= object$epsilon)) {
-    warning("R-square = 0: model and C.I. not drawn for MA, SMA or RMA")
+    warning("R-square = 0: model and C.I. not computed for MA, SMA or RMA")
+    y.predicted <- rep(NA_real_, length(new.x))
   } else {
     y.predicted <- a + b * new.x
-    if (interval == "confidence" && !(is.na(a1))) {
+  }
+
+  if (interval == "confidence") {
+    if (is.na(a1) || all(is.na(y.predicted))) {
+      y1.predicted <- y2.predicted <- rep(NA_real_, length(new.x))
+    } else {
       y1.predicted <- a1 + b1 * new.x
       y2.predicted <- a2 + b2 * new.x
-      data.frame(fit = y.predicted,
-                 lwr = ifelse(y1.predicted < y2.predicted,
-                              y1.predicted,
-                              y2.predicted),
-                 upr = ifelse(y1.predicted < y2.predicted,
-                              y2.predicted,
-                              y1.predicted))
-    } else {
-      y.predicted
     }
+    data.frame(fit = y.predicted,
+               lwr = ifelse(y1.predicted < y2.predicted,
+                            y1.predicted,
+                            y2.predicted),
+               upr = ifelse(y1.predicted < y2.predicted,
+                            y2.predicted,
+                            y1.predicted))
+  } else {
+    y.predicted
   }
 }
