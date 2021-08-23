@@ -113,7 +113,7 @@ confint.lmodel2 <- function (object,
 #' @param ... ignored by this method.
 #'
 #' @return If \code{interval = "none"} a numeric vector is returned, while if
-#'   \code{interval = "confidence} a data frame with columns \code{fit},
+#'   \code{interval = "confidence"} a data frame with columns \code{fit},
 #'   \code{lwr} and \code{upr} is returned.
 #'
 #' @export
