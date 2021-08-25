@@ -1,9 +1,8 @@
-#' Equation, p-value, R^2, AIC or BIC of fitted polynomial
+#' Equation, p-value, R^2 of major axis regression
 #'
-#' \code{stat_poly_eq} fits a polynomial by default with \code{stats::lm()} but
-#' alternatively using robust regression. From the fitted model it
-#' generates several labels including the equation, p-value, F-value,
-#' coefficient of determination (R^2), 'AIC', 'BIC', and number of observations.
+#' \code{stat_ma_eq} fits model II regressions. From the fitted model it
+#' generates several labels including the equation, p-value,
+#' coefficient of determination (R^2), and number of observations.
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs to be
@@ -73,43 +72,24 @@
 #'   \code{ggplot2::stat_smooth()}.
 #'
 #' @details This stat can be used to automatically annotate a plot with R^2,
-#'   adjusted R^2 or the fitted model equation. It supports linear regression,
-#'   robust linear regression and median regression fitted with functions
-#'   \code{lm()}, \code{MASS::rlm()} or \code{quanreg::rq()}. The R^2 and
-#'   adjusted R^2 annotations can be used with any linear model formula. The
-#'   fitted equation label is correctly generated for polynomials or
-#'   quasi-polynomials through the origin. Model formulas can use \code{poly()}
-#'   or be defined algebraically with terms of powers of increasing magnitude
-#'   with no missing intermediate terms, except possibly for the intercept
-#'   indicated by "- 1" or "-1" or \code{"+ 0"} in the formula. The validity of
-#'   the \code{formula} is not checked in the current implementation, and for
-#'   this reason the default aesthetics sets R^2 as label for the annotation.
-#'   This stat generates labels as R expressions by default but LaTeX (use TikZ
-#'   device), markdown (use package 'ggtext') and plain text are also supported,
-#'   as well as numeric values for user-generated text labels. The value of
-#'   \code{parse} is set automatically based on \code{output-type}, but if you
-#'   assemble labels that need parsing from \code{numeric} output, the default
-#'   needs to be overriden. This stat only generates annotation labels, the
-#'   predicted values/line need to be added to the plot as a separate layer
-#'   using \code{\link{stat_poly_line}} or \code{\link[ggplot2]{stat_smooth}},
-#'   so to make sure that the same model formula is used in all steps it is best
-#'   to save the formula as an object and supply this object as argument to the
-#'   different statistics.
+#'   P_value, n and/or the fitted model equation. It supports linear major axis
+#'   (MA), standard major axis (SMA) and ranged major axis (RMA) regression by
+#'   means of function \code{\link[lmodel2]{lmodel2}}. Please see the
+#'   documentation, including the vignette of package 'lmodel2' for details.
+#'   The parameters in \code{stat_ma_eq()} follow the same naming as in function
+#'   \code{lmodel2()}.
 #'
 #'   A ggplot statistic receives as \code{data} a data frame that is not the one
 #'   passed as argument by the user, but instead a data frame with the variables
-#'   mapped to aesthetics. \code{stat_poly_eq()} mimics how \code{stat_smooth()}
-#'   works, except that only polynomials can be fitted. Similarly to these
+#'   mapped to aesthetics. \code{stat_ma_eq()} mimics how \code{stat_smooth()}
+#'   works, except that only linear regression can be fitted. Similarly to these
 #'   statistics the model fits respect grouping, so the scales used for \code{x}
 #'   and \code{y} should both be continuous scales rather than discrete.
 #'
-#' @references Written as an answer to a question at Stackoverflow.
-#'   \url{https://stackoverflow.com/questions/7549694/adding-regression-line-equation-and-r2-on-graph}
-#'
-#' @section Aesthetics: \code{stat_poly_eq} understands \code{x} and \code{y},
-#'   to be referenced in the \code{formula} and \code{weight} passed as argument
-#'   to parameter \code{weights}. All three must be mapped to
-#'   \code{numeric} variables. In addition, the aesthetics understood by the geom
+#' @section Aesthetics: \code{stat_ma_eq} understands \code{x} and \code{y}, to
+#'   be referenced in the \code{formula} while the \code{weight} aesthetic is
+#'   ignored. Both \code{x} and \code{y} must be mapped to \code{numeric}
+#'   variables. In addition, the aesthetics understood by the geom
 #'   (\code{"text"} is the default) are understood and grouping respected.
 #'
 #' @section Computed variables:
@@ -121,14 +101,10 @@
 #'   \item{y,npcy}{y position}
 #'   \item{eq.label}{equation for the fitted polynomial as a character string to be parsed}
 #'   \item{rr.label}{\eqn{R^2} of the fitted model as a character string to be parsed}
-#'   \item{adj.rr.label}{Adjusted \eqn{R^2} of the fitted model as a character string to be parsed}
-#'   \item{f.value.label}{F value and degrees of freedom for the fitted model as a whole.}
 #'   \item{p.value.label}{P-value for the F-value above.}
-#'   \item{AIC.label}{AIC for the fitted model.}
-#'   \item{BIC.label}{BIC for the fitted model.}
 #'   \item{n.label}{Number of observations used in the fit.}
 #'   \item{grp.label}{Set according to mapping in \code{aes}.}
-#'   \item{r.squared, adj.r.squared, p.value, n}{numeric values, from the model fit object}}
+#'   \item{r.squared, p.value, n}{numeric values, from the model fit object}}
 #'
 #' If output.type is \code{"numeric"} the returned tibble contains columns
 #' listed below. If the model fit function used does not return a value,
@@ -140,23 +116,22 @@
 #'   \item{r.squared, adj.r.squared, f.value, f.df1, f.df2, p.value, AIC, BIC, n}{numeric values, from the model fit object}
 #'   \item{grp.label}{Set according to mapping in \code{aes}.}
 #'   \item{b_0.constant}{TRUE is polynomial is forced through the origin}
-#'   \item{b_i}{One or columns with the coefficient estimates}}
+#'   \item{b_i}{One or two columns with the coefficient estimates}}
 #'
 #' To explore the computed values returned for a given input we suggest the use
 #' of \code{\link[gginnards]{geom_debug}} as shown in the last examples below.
 #'
-#' @seealso This \code{stat_poly_eq} statistic can return ready formatted labels
-#'   depending on the argument passed to \code{output.type}. This is possible
-#'   because only polynomial models are supported. For quantile regression
-#'   \code{\link{stat_quant_eq}} should be used instead of \code{stat_poly_eq}
-#'   while for model II or major axis regression \code{\link{stat_ma_eq} should
-#'   be used. For other types of models such as non-linear models, statistics
+#' @seealso This \code{stat_ma_eq} statistic can return ready formatted labels
+#'   depending on the argument passed to \code{output.type}. If other than
+#'   linear major axis regression is desired, then \code{\link{stat_poly_eq}} or
+#'   \code{\link{stat_quant_eq}} should be used instead of \code{stat_ma_eq}.
+#'   For other types of models such as non-linear models, statistics
 #'   \code{\link{stat_fit_glance}} and \code{\link{stat_fit_tidy}} should be
 #'   used instead and the code for construction of character strings from
 #'   numeric values and their mapping to aesthetic \code{label} needs to be
 #'   explicitly supplied in the call.
 #'
-#' @family ggplot statistics for linear and polynomial regression
+#' @family ggplot statistics for major axis regression
 #'
 #' @examples
 #' # generate artificial data

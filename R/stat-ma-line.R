@@ -1,0 +1,268 @@
+#' Predicted line from major axis linear fit
+#'
+#' Predicted values and a confidence band are computed and, by default, plotted.
+#' \code{stat_ma_line()} behaves similarly to \code{\link[ggplot2]{stat_smooth}}
+#' except for fitting the model with \code{lmodel2::lmodel2()} with \code{"MA"}
+#' as default for \code{method}.
+#'
+#' @details
+#' This statistic fits major axis (\code{"MA"}) and other model II regressions
+#' with function \code{\link[lmodel2]{lmodel2}}. Model II regression is called
+#' for when both \code{x} and \code{y} are subject to random variation and the
+#' intention is not to predict \code{y} from \code{x} by means of the model
+#' but rather to study the relationship between two independent variables.
+#' A frequent case in biology are allometric relationships among body parts.
+#'
+#' As the fitted line is the same wheter \code{x} or \code{y} is on the rhs of
+#' the model equation, \code{orientation} even is accepted does not have an
+#' effect on the fit. In contrast, \code{\link[ggplot2]{geom_smooth}} treats
+#' each axis differently and can thus have two orientations. The orientation is
+#' easy to deduce from the argument passed to \code{formula}. Thus,
+#' \code{stat_ma_line()} will by default guess which orientation the layer
+#' should have. If no argument is passed to \code{formula}, the orientation can
+#' be specified directly passing an argument to the \code{orientation}
+#' parameter, which can be either \code{"x"} or \code{"y"}. The value gives the
+#' axis that is on the rhs of the model equation, \code{"x"} being the default
+#' orientation. Package 'ggpmisc' does not define new geometries matching the
+#' new statistics as they are not needed and conceptually transformations of
+#' \code{data} are expressed as statistics.
+#'
+#' @param mapping The aesthetic mapping, usually constructed with
+#'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs to be
+#'   set at the layer level if you are overriding the plot defaults.
+#' @param data A layer specific dataset, only needed if you want to override
+#'   the plot defaults.
+#' @param geom The geometric object to use display the data
+#' @param position The position adjustment to use for overlapping points on this
+#'   layer
+#' @param show.legend logical. Should this layer be included in the legends?
+#'   \code{NA}, the default, includes if any aesthetics are mapped. \code{FALSE}
+#'   never includes, and \code{TRUE} always includes.
+#' @param inherit.aes If \code{FALSE}, overrides the default aesthetics, rather
+#'   than combining with them. This is most useful for helper functions that
+#'   define both data and aesthetics and shouldn't inherit behaviour from the
+#'   default plot specification, e.g. \code{\link[ggplot2]{borders}}.
+#' @param ... other arguments passed on to \code{\link[ggplot2]{layer}}. This
+#'   can include aesthetics whose values you want to set, not map. See
+#'   \code{\link[ggplot2]{layer}} for more details.
+#' @param na.rm a logical indicating whether NA values should be stripped before
+#'   the computation proceeds.
+#' @param formula a formula object. Using aesthetic names \code{x} and \code{y}
+#'   instead of original variable names.
+#' @param method character "MA", "SMA" , "RMA" and "OLS".
+#' @param lmodel2.args named list with additional arguments.
+#' @param se Display confidence interval around smooth? (`TRUE` by default, see
+#'   `level` to control.)
+#' @param fullrange Should the fit span the full range of the plot, or just
+#'   the data?
+#' @param level Level of confidence interval to use (only 0.95 currently).
+#' @param n Number of points at which to evaluate smoother.
+#' @param orientation character Either "x" or "y" controlling the default for
+#'   \code{formula}.
+#'
+#' @return The value returned by the statistic is a data frame, that will have
+#'   \code{n} rows of predicted values and and their confidence limits.
+#'
+#' @section Computed variables: `stat_ma_line()` provides the following
+#'   variables, some of which depend on the orientation: \describe{ \item{y *or*
+#'   x}{predicted value} \item{ymin *or* xmin}{lower pointwise confidence
+#'   interval around the mean} \item{ymax *or* xmax}{upper pointwise confidence
+#'   interval around the mean} \item{se}{standard error} }
+#'
+#' @section Aesthetics: \code{stat_ma_line} understands \code{x} and \code{y},
+#'   to be referenced in the \code{formula}. Both must be mapped to \code{numeric}
+#'   variables. In addition, the aesthetics understood by the geom
+#'   (\code{"geom_smooth"} is the default) are understood and grouping
+#'   respected.
+#'
+#' @family ggplot statistics for major axis regression
+#'
+#' @export
+#'
+#' @examples
+#' ggplot(mpg, aes(displ, hwy)) +
+#'   geom_point() +
+#'   stat_poly_line()
+#'
+#' ggplot(mpg, aes(displ, hwy)) +
+#'   geom_point() +
+#'   stat_poly_line(formula = x ~ y)
+#'
+#' ggplot(mpg, aes(displ, hwy)) +
+#'   geom_point() +
+#'   stat_poly_line(formula = y ~ poly(x, 3))
+#'
+#' ggplot(mpg, aes(displ, hwy)) +
+#'   geom_point() +
+#'   stat_poly_line(formula = x ~ poly(y, 3))
+#'
+#' # The default behavior of geom_smooth()
+#' ggplot(mpg, aes(displ, hwy)) +
+#'   geom_point() +
+#'   stat_poly_line(method = "auto")
+#'
+#' # Use span to control the "wiggliness" of the default loess smoother.
+#' # The span is the fraction of points used to fit each local regression:
+#' # small numbers make a wigglier curve, larger numbers make a smoother curve.
+#' ggplot(mpg, aes(displ, hwy)) +
+#'   geom_point() +
+#'   stat_poly_line(method = "loess", span = 0.3)
+#'
+#' ggplot(mpg, aes(displ, hwy)) +
+#'   geom_point() +
+#'   stat_poly_line(method = lm, formula = y ~ splines::bs(x, 3), se = FALSE)
+#'
+#' ggplot(mpg, aes(displ, hwy)) +
+#'   geom_point() +
+#'   stat_poly_line(method = lm, formula = x ~ splines::bs(y, 3), se = FALSE)
+#'
+#' # Smooths are automatically fit to each group (defined by categorical
+#' # aesthetics or the group aesthetic) and for each facet.
+#'
+#' ggplot(mpg, aes(displ, hwy, colour = class)) +
+#'   geom_point() +
+#'   stat_poly_line(se = FALSE)
+#'
+#' ggplot(mpg, aes(displ, hwy)) +
+#'   geom_point() +
+#'   stat_poly_line(method = "auto", span = 0.8) +
+#'   facet_wrap(~drv)
+#'
+#' @export
+#'
+stat_ma_line <- function(mapping = NULL, data = NULL,
+                           geom = "smooth", position = "identity",
+                           ...,
+                           method = "MA",
+                           formula = NULL,
+                           range.y = NULL,
+                           range.x = NULL,
+                           se = TRUE,
+                           n = 80,
+                           nperm = 99,
+                           fullrange = FALSE,
+                           level = 0.95,
+                           na.rm = FALSE,
+                           orientation = NA,
+                           show.legend = NA,
+                           inherit.aes = TRUE) {
+  if (is.null(formula)) {
+    formula = y ~ x
+    if (is.na(orientation)) {
+      orientation = "x"
+    }
+  } else {
+    formula.chr <- as.character(formula)
+    if (is.na(orientation)) {
+      # we guess orientation from formula
+      if (formula.chr[2] == "y") {
+        orientation <- "x"
+      } else if (formula.chr[2] == "x") {
+        orientation <- "y"
+        formula <- swap_xy(formula)
+      }
+    } else if (formula.chr[2] != "y"){
+      stop("When both 'orientation' and 'formula' are passed arguments ",
+           "the formula should have 'x' as explanatory variable.")
+    }
+  }
+
+  if (! method %in% c("MA", "SMA", "RMA", "OLS")) {
+    warning("Method \"", method, "\" unknown, using \"MA\" instead.")
+    method <- "MA"
+  }
+
+  ggplot2::layer(
+    data = data,
+    mapping = mapping,
+    stat = StatMaLine,
+    geom = geom,
+    position = position,
+    show.legend = show.legend,
+    inherit.aes = inherit.aes,
+    params = list(
+      method = ,
+      formula = formula,
+      range.y = range.y,
+      range.x = range.x,
+      se = se,
+      n = n,
+      nperm = nperm,
+      fullrange = fullrange,
+      level = level,
+      na.rm = na.rm,
+      orientation = orientation,
+      ...
+    )
+  )
+}
+
+#' @rdname ggpmisc-ggproto
+#' @format NULL
+#' @usage NULL
+#' @export
+StatMaLine <- ggproto("StatMaLine", Stat,
+                      setup_params = function(data, params) {
+                        params$flipped_aes <- has_flipped_aes(data, params, ambiguous = TRUE)
+                        message("`geom_ma_line()` using method ", params$method)
+                      params
+                      },
+
+                      extra_params = c("na.rm", "orientation"),
+
+                      compute_group = function(data, scales, method = NULL, formula = NULL,
+                                               range.y = NULL, range.x = NULL,
+                                               se = TRUE, n = 80, nperm = 99, fullrange = FALSE,
+                                               xseq = NULL, level = 0.95, method.args = list(),
+                                               na.rm = FALSE, flipped_aes = NA) {
+                        data <- ggplot2::flip_data(data, flipped_aes)
+                        if (length(unique(data$x)) < 2) {
+                          # Not enough data to perform fit
+                          return(data.frame())
+                        }
+
+                        if (is.null(xseq)) {
+                          if (is.integer(data$x)) {
+                            if (fullrange) {
+                              xseq <- scales$x$dimension()
+                            } else {
+                              xseq <- sort(unique(data$x))
+                            }
+                          } else {
+                            if (fullrange) {
+                              range <- scales$x$dimension()
+                            } else {
+                              range <- range(data$x, na.rm = TRUE)
+                            }
+                            xseq <- seq(range[1], range[2], length.out = n)
+                          }
+                        }
+
+                        method.args$range.y <- quote(range.y)
+                        method.args$range.x <- quote(range.x)
+
+                        fit.args <-
+                          list(quote(formula),
+                               data = quote(data),
+                               range.y = quote(range.y),
+                               range.x = quote(range.x),
+                               nperm = quote(mperm)
+                          )
+                        model <- do.call(lmodel2::lmodel2, fit.args)
+
+                        if (flipped.aes) {
+                          newdata <- data.frame(y = xseq)
+                        } else {
+                          newdata <- data.frame(x = xseq)
+                        }
+                        prediction <- stats::predict(model,
+                                                     method = method,
+                                                     newdata = newdata,
+                                                     interval = "confidence"
+                        )
+                        prediction$flipped_aes <- flipped_aes
+                        ggplot2::flip_data(prediction, flipped_aes)
+                      },
+
+                      required_aes = c("x", "y")
+)
