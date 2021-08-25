@@ -4,13 +4,17 @@ editor_options:
     wrap: 72
 ---
 
-# ggpmisc 0.4.3
+# ggpmisc 0.4.2-2
 
+Fix major bug in `stat_poly_eq()` and `stat_quant_eq()` affecting only some R 
+builds, reported and reproduced for Linux. (Reported by Flavio 
+Lozano-Isla, T. BruceLee and Lewis Hooper, debugged with the help of Mark B. 
+Neal.) Reported to affect versions 0.4.0, 0.4.1, 0.4.2 and 0.4.2-1.
 
 # ggpmisc 0.4.2-1
 
 Fix a bug remaining in 0.4.2, that could result in `after_stat()` not being
-found.
+found. (Reported by Prof. Brian Ripley and Michael Steinbaugh.)
 
 # ggpmisc 0.4.2
 
@@ -120,16 +124,14 @@ Many thanks!
     package 'quantreg'. (enhancement suggested by *Mark Neal*)
 
 -   Add `n.label` and `n` to the values returned by `stat_poly_eq()`and
-    `stat_quant_eq()`.(enhancement suggested by a question from
+    `stat_quant_eq()`. (enhancement suggested by a question from
     *ganidat*)
 
 -   Add `r.squared`, `adj.r.squared`, `p.value` and `n` as `numeric`
     values returned in addition to the corresponding `character` labels
     when `stat_poly_eq()` is called with `output.type` other than
     `numeric`. Similarly for `n` and `rho` in the case of
-    `stat_quant_eq()`.
-
-    (enhancement suggested by a question from *Tiptop*)
+    `stat_quant_eq()`. (enhancement suggested by a question from *Tiptop*)
 
 -   Fix bug in `stat_poly_eq()` leading to empty returned value when
     data contains too few observations to fit the model. (reported by
