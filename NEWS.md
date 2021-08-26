@@ -6,6 +6,10 @@ editor_options:
 
 # ggpmisc 0.4.3
 
+New statistics `stat_ma_line()` and `stat_ma_eq()` implement major axis
+regression based on package 'lmodel2'. Methods `coefficients()`, `confint()` and
+`predict()` for fit objects returned by `lmodel2::lmodel2()` are also
+implemented and exported.
 
 # ggpmisc 0.4.2-1
 
