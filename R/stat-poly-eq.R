@@ -149,12 +149,12 @@
 #'   depending on the argument passed to \code{output.type}. This is possible
 #'   because only polynomial models are supported. For quantile regression
 #'   \code{\link{stat_quant_eq}} should be used instead of \code{stat_poly_eq}
-#'   while for model II or major axis regression \code{\link{stat_ma_eq} should
+#'   while for model II or major axis regression \code{\link{stat_ma_eq}} should
 #'   be used. For other types of models such as non-linear models, statistics
 #'   \code{\link{stat_fit_glance}} and \code{\link{stat_fit_tidy}} should be
-#'   used instead and the code for construction of character strings from
+#'   used and the code for construction of character strings from
 #'   numeric values and their mapping to aesthetic \code{label} needs to be
-#'   explicitly supplied in the call.
+#'   explicitly supplied by the user.
 #'
 #' @family ggplot statistics for linear and polynomial regression
 #'

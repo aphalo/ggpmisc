@@ -49,8 +49,10 @@
 #'   the computation proceeds.
 #' @param formula a formula object. Using aesthetic names \code{x} and \code{y}
 #'   instead of original variable names.
+#' @param range.y,range.x character Pass "relative" or "interval" if method
+#'   "RMA" is to be computed.
 #' @param method character "MA", "SMA" , "RMA" and "OLS".
-#' @param lmodel2.args named list with additional arguments.
+#' @param nperm integer Number of permutation used to estimate significance.
 #' @param se Display confidence interval around smooth? (`TRUE` by default, see
 #'   `level` to control.)
 #' @param fullrange Should the fit span the full range of the plot, or just
@@ -82,70 +84,71 @@
 #' @examples
 #' ggplot(mpg, aes(displ, hwy)) +
 #'   geom_point() +
-#'   stat_poly_line()
+#'   stat_ma_line()
 #'
 #' ggplot(mpg, aes(displ, hwy)) +
 #'   geom_point() +
-#'   stat_poly_line(formula = x ~ y)
+#'   stat_ma_line(method = "MA")
 #'
 #' ggplot(mpg, aes(displ, hwy)) +
 #'   geom_point() +
-#'   stat_poly_line(formula = y ~ poly(x, 3))
+#'   stat_ma_line(method = "SMA")
 #'
 #' ggplot(mpg, aes(displ, hwy)) +
 #'   geom_point() +
-#'   stat_poly_line(formula = x ~ poly(y, 3))
-#'
-#' # The default behavior of geom_smooth()
-#' ggplot(mpg, aes(displ, hwy)) +
-#'   geom_point() +
-#'   stat_poly_line(method = "auto")
-#'
-#' # Use span to control the "wiggliness" of the default loess smoother.
-#' # The span is the fraction of points used to fit each local regression:
-#' # small numbers make a wigglier curve, larger numbers make a smoother curve.
-#' ggplot(mpg, aes(displ, hwy)) +
-#'   geom_point() +
-#'   stat_poly_line(method = "loess", span = 0.3)
+#'   stat_ma_line(method = "RMA",
+#'                range.y = "relative", range.x = "relative")
 #'
 #' ggplot(mpg, aes(displ, hwy)) +
 #'   geom_point() +
-#'   stat_poly_line(method = lm, formula = y ~ splines::bs(x, 3), se = FALSE)
+#'   stat_ma_line(method = "OLS")
 #'
 #' ggplot(mpg, aes(displ, hwy)) +
 #'   geom_point() +
-#'   stat_poly_line(method = lm, formula = x ~ splines::bs(y, 3), se = FALSE)
+#'   stat_ma_line(method = "MA", fullrange = TRUE) +
+#'   expand_limits(x = c(-2, 8), y = c(0, 50))
+#'
+#' ggplot(mpg, aes(displ, hwy)) +
+#'   geom_point() +
+#'   stat_ma_line(orientation = "y", fullrange = TRUE) +
+#'   expand_limits(x = c(-2, 8), y = c(0, 50))
+#'
+#' ggplot(mpg, aes(displ, hwy)) +
+#'   geom_point() +
+#'   stat_ma_line(formula = x ~ y)
 #'
 #' # Smooths are automatically fit to each group (defined by categorical
 #' # aesthetics or the group aesthetic) and for each facet.
 #'
 #' ggplot(mpg, aes(displ, hwy, colour = class)) +
 #'   geom_point() +
-#'   stat_poly_line(se = FALSE)
+#'   stat_ma_line(se = FALSE)
 #'
 #' ggplot(mpg, aes(displ, hwy)) +
 #'   geom_point() +
-#'   stat_poly_line(method = "auto", span = 0.8) +
+#'   stat_ma_line() +
 #'   facet_wrap(~drv)
 #'
 #' @export
 #'
-stat_ma_line <- function(mapping = NULL, data = NULL,
-                           geom = "smooth", position = "identity",
-                           ...,
-                           method = "MA",
-                           formula = NULL,
-                           range.y = NULL,
-                           range.x = NULL,
-                           se = TRUE,
-                           n = 80,
-                           nperm = 99,
-                           fullrange = FALSE,
-                           level = 0.95,
-                           na.rm = FALSE,
-                           orientation = NA,
-                           show.legend = NA,
-                           inherit.aes = TRUE) {
+stat_ma_line <- function(mapping = NULL,
+                         data = NULL,
+                         geom = "smooth",
+                         position = "identity",
+                         ...,
+                         method = "MA",
+                         formula = NULL,
+                         range.y = NULL,
+                         range.x = NULL,
+                         se = TRUE,
+                         n = 80,
+                         nperm = 99,
+                         fullrange = FALSE,
+                         level = 0.95,
+                         na.rm = FALSE,
+                         orientation = NA,
+                         show.legend = NA,
+                         inherit.aes = TRUE) {
   if (is.null(formula)) {
     formula = y ~ x
     if (is.na(orientation)) {
@@ -171,6 +174,9 @@ stat_ma_line <- function(mapping = NULL, data = NULL,
     warning("Method \"", method, "\" unknown, using \"MA\" instead.")
     method <- "MA"
   }
+  if (method == "RMA" & (is.null(range.y) || is.null(range.x))) {
+    stop("Method \"RMA\" is computed only if both 'range.x' and 'range.y' are set.")
+  }
 
   ggplot2::layer(
     data = data,
@@ -181,7 +187,7 @@ stat_ma_line <- function(mapping = NULL, data = NULL,
     show.legend = show.legend,
     inherit.aes = inherit.aes,
     params = list(
-      method = ,
+      method = method,
       formula = formula,
       range.y = range.y,
       range.x = range.x,
@@ -197,72 +203,80 @@ stat_ma_line <- function(mapping = NULL, data = NULL,
   )
 }
 
+# Defined here to avoid a note in check --as-cran as the import from 'polynom'
+# is not seen when the function is defined in-line in the ggproto object.
+#' @rdname ggpmisc-ggproto
+#'
+#' @format NULL
+#' @usage NULL
+#'
+ma_line_compute_group_fun <-
+  function(data, scales, method = NULL, formula = NULL,
+           range.y = NULL, range.x = NULL,
+           se = TRUE, n = 80, nperm = 99, fullrange = FALSE,
+           xseq = NULL, level = 0.95, method.args = list(),
+           na.rm = FALSE, flipped_aes = NA, orientation = "x") {
+    data <- ggplot2::flip_data(data, flipped_aes)
+    if (length(unique(data$x)) < 2) {
+      # Not enough data to perform fit
+      return(data.frame())
+    }
+
+    if (is.null(xseq)) {
+      if (fullrange) {
+        xrange <- scales[[orientation]]$dimension()
+      } else {
+        xrange <- range(data$x, na.rm = TRUE)
+      }
+      xseq <- seq(from = xrange[1], to = xrange[2], length.out = n)
+    }
+
+    if (method == "RMA") {
+      fit.args <-
+        list(formula = formula,
+             data = data,
+             range.y = range.y,
+             range.x = range.x,
+             nperm = nperm
+        )
+    } else {
+      fit.args <-
+        list(formula = formula,
+             data = data,
+             nperm = nperm
+        )
+    }
+
+    model <- do.call(what = lmodel2::lmodel2, args = fit.args)
+
+    newdata <- data.frame(x = xseq)
+
+    prediction <- stats::predict(model,
+                                 method = method,
+                                 newdata = newdata,
+                                 interval = "confidence"
+    )
+    names(prediction) <- c("y", "ymin", "ymax")
+    prediction <- cbind(newdata, prediction)
+    prediction$flipped_aes <- flipped_aes
+    ggplot2::flip_data(prediction, flipped_aes)
+  }
+
 #' @rdname ggpmisc-ggproto
 #' @format NULL
 #' @usage NULL
 #' @export
-StatMaLine <- ggproto("StatMaLine", Stat,
-                      setup_params = function(data, params) {
-                        params$flipped_aes <- has_flipped_aes(data, params, ambiguous = TRUE)
-                        message("`geom_ma_line()` using method ", params$method)
-                      params
-                      },
+StatMaLine <-
+  ggplot2::ggproto("StatMaLine", Stat,
+                   setup_params = function(data, params) {
+                     params$flipped_aes <- has_flipped_aes(data, params, ambiguous = TRUE)
+#                     message("`geom_ma_line()` using method ", params$method)
+                     params
+                   },
 
-                      extra_params = c("na.rm", "orientation"),
+                   extra_params = c("na.rm", "orientation"),
 
-                      compute_group = function(data, scales, method = NULL, formula = NULL,
-                                               range.y = NULL, range.x = NULL,
-                                               se = TRUE, n = 80, nperm = 99, fullrange = FALSE,
-                                               xseq = NULL, level = 0.95, method.args = list(),
-                                               na.rm = FALSE, flipped_aes = NA) {
-                        data <- ggplot2::flip_data(data, flipped_aes)
-                        if (length(unique(data$x)) < 2) {
-                          # Not enough data to perform fit
-                          return(data.frame())
-                        }
+                   compute_group = ma_line_compute_group_fun,
 
-                        if (is.null(xseq)) {
-                          if (is.integer(data$x)) {
-                            if (fullrange) {
-                              xseq <- scales$x$dimension()
-                            } else {
-                              xseq <- sort(unique(data$x))
-                            }
-                          } else {
-                            if (fullrange) {
-                              range <- scales$x$dimension()
-                            } else {
-                              range <- range(data$x, na.rm = TRUE)
-                            }
-                            xseq <- seq(range[1], range[2], length.out = n)
-                          }
-                        }
-
-                        method.args$range.y <- quote(range.y)
-                        method.args$range.x <- quote(range.x)
-
-                        fit.args <-
-                          list(quote(formula),
-                               data = quote(data),
-                               range.y = quote(range.y),
-                               range.x = quote(range.x),
-                               nperm = quote(mperm)
-                          )
-                        model <- do.call(lmodel2::lmodel2, fit.args)
-
-                        if (flipped.aes) {
-                          newdata <- data.frame(y = xseq)
-                        } else {
-                          newdata <- data.frame(x = xseq)
-                        }
-                        prediction <- stats::predict(model,
-                                                     method = method,
-                                                     newdata = newdata,
-                                                     interval = "confidence"
-                        )
-                        prediction$flipped_aes <- flipped_aes
-                        ggplot2::flip_data(prediction, flipped_aes)
-                      },
-
-                      required_aes = c("x", "y")
-)
+                   required_aes = c("x", "y")
+  )
