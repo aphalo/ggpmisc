@@ -793,8 +793,8 @@ poly_eq_compute_group_fun <- function(data,
       # margin set by scale
       margin.npc <- 0
     }
-    label.x <- compute_npcx(x = label.x, group = group.idx, h.step = hstep,
-                            margin.npc = margin.npc)
+    label.x <- ggpp::compute_npcx(x = label.x, group = group.idx, h.step = hstep,
+                                  margin.npc = margin.npc)
     if (!npc.used) {
       x.expanse <- abs(diff(range(data$x)))
       x.min <- min(data$x)
@@ -808,8 +808,8 @@ poly_eq_compute_group_fun <- function(data,
       # margin set by scale
       margin.npc <- 0
     }
-    label.y <- compute_npcy(y = label.y, group = group.idx, v.step = vstep,
-                            margin.npc = margin.npc)
+    label.y <- ggpp::compute_npcy(y = label.y, group = group.idx, v.step = vstep,
+                                  margin.npc = margin.npc)
     if (!npc.used) {
       y.expanse <- abs(diff(range(data$y)))
       y.min <- min(data$y)

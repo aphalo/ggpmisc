@@ -5,8 +5,8 @@
 #' coefficient of determination (R^2), and number of observations.
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
-#'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs to be
-#'   set at the layer level if you are overriding the plot defaults.
+#'   \code{\link[ggplot2]{aes}}. Only needs to be set at the layer level if you
+#'   are overriding the plot defaults.
 #' @param data A layer specific dataset, only needed if you want to override
 #'   the plot defaults.
 #' @param geom The geometric object to use display the data
@@ -22,15 +22,14 @@
 #' @param ... other arguments passed on to \code{\link[ggplot2]{layer}}. This
 #'   can include aesthetics whose values you want to set, not map. See
 #'   \code{\link[ggplot2]{layer}} for more details.
-#' @param na.rm	a logical indicating whether NA values should be stripped before
+#' @param na.rm a logical indicating whether NA values should be stripped before
 #'   the computation proceeds.
 #' @param formula a formula object. Using aesthetic names \code{x} and \code{y}
 #'   instead of original variable names.
-#' @param method function or character If character, "lm" and "rlm" are
-#'   accepted. If a function, it must have formal parameters \code{formula} and
-#'   \code{data} and return a model fit object for which \code{summary()} and
-#'   \code{coefficients()} are consistent with those for \code{lm} fits.
-#' @param method.args named list with additional arguments.
+#' @param range.y,range.x character Pass "relative" or "interval" if method
+#'   "RMA" is to be computed.
+#' @param method character "MA", "SMA" , "RMA" and "OLS".
+#' @param nperm integer Number of permutation used to estimate significance.
 #' @param eq.with.lhs If \code{character} the string is pasted to the front of
 #'   the equation label before parsing or a \code{logical} (see note).
 #' @param eq.x.rhs \code{character} this string will be used as replacement for
@@ -48,9 +47,6 @@
 #'   coordinates" (npc units) or character if using \code{geom_text_npc()} or
 #'   \code{geom_label_npc()}. If using \code{geom_text()} or \code{geom_label()}
 #'   numeric in native data units. If too short they will be recycled.
-#' @param label.x.npc,label.y.npc \code{numeric} with range 0..1 (npc units)
-#'   DEPRECATED, use label.x and label.y instead; together with a geom
-#'   using npcx and npcy aesthetics.
 #' @param hstep,vstep numeric in npc units, the horizontal and vertical step
 #'   used between labels for different groups.
 #' @param output.type character One of "expression", "LaTeX", "text",
@@ -94,7 +90,7 @@
 #'
 #' @section Computed variables:
 #' If output.type different from \code{"numeric"} the returned tibble contains
-#' columns listed below. If the model fit function used does not return a value,
+#' columns listed below. If the fitted model does not contain a given value,
 #' the label is set to \code{character(0L)}.
 #' \describe{
 #'   \item{x,npcx}{x position}
@@ -127,131 +123,114 @@
 #'   \code{\link{stat_quant_eq}} should be used instead of \code{stat_ma_eq}.
 #'   For other types of models such as non-linear models, statistics
 #'   \code{\link{stat_fit_glance}} and \code{\link{stat_fit_tidy}} should be
-#'   used instead and the code for construction of character strings from
-#'   numeric values and their mapping to aesthetic \code{label} needs to be
-#'   explicitly supplied in the call.
+#'   used and the code for construction of character strings from numeric values
+#'   and their mapping to aesthetic \code{label} needs to be explicitly supplied
+#'   in the call.
 #'
 #' @family ggplot statistics for major axis regression
 #'
 #' @examples
 #' # generate artificial data
-#' set.seed(4321)
-#' x <- 1:100
-#' y <- (x + x^2 + x^3) + rnorm(length(x), mean = 0, sd = mean(x^3) / 4)
-#' my.data <- data.frame(x = x, y = y,
-#'                       group = c("A", "B"),
-#'                       y2 = y * c(0.5,2),
-#'                       w = sqrt(x))
+#' set.seed(98723)
+#' my.data <- data.frame(x = rnorm(100) + (0:99) / 10 - 5,
+#'                       y = rnorm(100) + (0:99) / 10 - 5,
+#'                       group = c("A", "B"))
 #'
-#' # give a name to a formula
-#' formula <- y ~ poly(x, 3, raw = TRUE)
-#'
-#' # no weights
+#' # using defaults (major axis regression)
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(formula = formula)
+#'   stat_ma_line() +
+#'   stat_ma_eq()
+#'
+#' # using major axis regression
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   stat_ma_line(method = "MA") +
+#'   stat_ma_eq(method = "MA")
+#'
+#' # using standard major axis regression
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   stat_ma_line(method = "SMA") +
+#'   stat_ma_eq(method = "SMA")
+#'
+#' # using ranged major axis regression
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   stat_ma_line(method = "RMA", range.y = "interval", range.x = "interval") +
+#'   stat_ma_eq(method = "RMA", range.y = "interval", range.x = "interval")
+#'
+#' # using defaults
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   stat_ma_line() +
+#'   stat_ma_eq()
+#'
+#' # same formula as default
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   stat_ma_line(formula = y ~ x) +
+#'   stat_ma_eq(formula = y ~ x)
+#'
+#' # explicit formula "x explained by y"
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   stat_ma_line(formula = x ~ y) +
+#'   stat_ma_eq(formula = x ~ y)
+#'
+#' # angle
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   stat_ma_line() +
+#'   stat_ma_eq(angle = 90, hstep = 0.05, vstep = 0,
+#'              label.y = 0.98, hjust = 1)
+#'
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   stat_ma_line() +
+#'   stat_ma_eq(angle = 90,
+#'              hstep = 0.05, vstep = 0, hjust = 0,
+#'              label.y = 0.5)
 #'
 #' # grouping
 #' ggplot(my.data, aes(x, y, color = group)) +
 #'   geom_point() +
-#'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(formula = formula)
+#'   stat_ma_line() +
+#'   stat_ma_eq()
 #'
-#' # rotation
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_point() +
-#'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(formula = formula, angle = 90, hjust = 1)
-#'
-#' # label location
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_point() +
-#'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(formula = formula, label.y = "bottom", label.x = "right")
-#'
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_point() +
-#'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(formula = formula, label.y = 0.1, label.x = 0.9)
-#'
-#' # using weights
-#' ggplot(my.data, aes(x, y, weight = w)) +
-#'   geom_point() +
-#'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(formula = formula)
-#'
-#' # no weights, digits for R square
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_point() +
-#'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(formula = formula, rr.digits = 4)
-#'
-#' # user specified label
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_point() +
-#'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(aes(label =  paste(after_stat(rr.label),
-#'                                   after_stat(n.label), sep = "*\", \"*")),
-#'                formula = formula)
-#'
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_point() +
-#'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(aes(label =  paste(after_stat(eq.label),
-#'                                   after_stat(adj.rr.label), sep = "*\", \"*")),
-#'                formula = formula)
-#'
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_point() +
-#'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(aes(label =  paste(after_stat(f.value.label),
-#'                                   after_stat(p.value.label),
-#'                                   sep = "*\", \"*")),
-#'                formula = formula)
-#'
-#' # x on y regression
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_point() +
-#'   geom_smooth(method = "lm", formula = formula, orientation = "y") +
-#'   stat_poly_eq(aes(label =  paste(after_stat(eq.label),
-#'                                   after_stat(adj.rr.label),
-#'                                   sep = "*\", \"*")),
-#'                formula = x ~ poly(y, 3, raw = TRUE))
-#'
-#' # conditional user specified label
 #' ggplot(my.data, aes(x, y, color = group)) +
 #'   geom_point() +
-#'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(aes(label =  ifelse(after_stat(adj.r.squared) > 0.96,
-#'                                    paste(after_stat(adj.rr.label),
-#'                                          after_stat(eq.label),
-#'                                          sep = "*\", \"*"),
-#'                                    after_stat(adj.rr.label))),
-#'                rr.digits = 3,
-#'                formula = formula)
+#'   stat_ma_line() +
+#'   stat_ma_eq(angle = 90,
+#'              hstep = 0.05, vstep = 0, hjust = 0,
+#'              size = 5, label.y = 2/3)
+#'
+#' # labelling equations
+#' ggplot(my.data, aes(x, y,  shape = group, linetype = group,
+#'        grp.label = group)) +
+#'   geom_point() +
+#'   stat_ma_line(color = "black") +
+#'   stat_ma_eq(aes(label = paste(after_stat(grp.label),
+#'                                after_stat(eq.label),
+#'                                sep = "*\": \"*"))) +
+#'   theme_classic()
+#'
+#' # Location of equations
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   stat_ma_line() +
+#'   stat_ma_eq(label.y = "bottom", label.x = "right")
+#'
+#' ggplot(my.data, aes(x, y, color = group)) +
+#'   geom_point() +
+#'   stat_ma_line() +
+#'   stat_ma_eq(label.y = 0.03, label.x = 0.95, vstep = 0.1)
 #'
 #' # geom = "text"
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(geom = "text", label.x = 100, label.y = 0, hjust = 1,
-#'                formula = formula)
-#'
-#' # using numeric values
-#' # Here we use columns b_0 ... b_3 for the coefficient estimates
-#' my.format <-
-#'   "b[0]~`=`~%.3g*\", \"*b[1]~`=`~%.3g*\", \"*b[2]~`=`~%.3g*\", \"*b[3]~`=`~%.3g"
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_point() +
-#'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(formula = formula,
-#'                output.type = "numeric",
-#'                parse = TRUE,
-#'                mapping =
-#'                 aes(label = sprintf(my.format,
-#'                                     after_stat(b_0), after_stat(b_1),
-#'                                     after_stat(b_2), after_stat(b_3))))
+#'   stat_ma_line() +
+#'   stat_ma_eq(label.x = "left", label.y = "top")
 #'
 #' # Inspecting the returned data using geom_debug()
 #' if (requireNamespace("gginnards", quietly = TRUE)) {
@@ -260,104 +239,57 @@
 #' # This provides a quick way of finding out the names of the variables that
 #' # are available for mapping to aesthetics.
 #'
-#' # the whole of data
 #'   ggplot(my.data, aes(x, y)) +
 #'     geom_point() +
-#'     geom_smooth(method = "lm", formula = formula) +
-#'     stat_poly_eq(formula = formula, geom = "debug")
+#'     stat_ma_eq(geom = "debug")
 #'
 #'   ggplot(my.data, aes(x, y)) +
 #'     geom_point() +
-#'     geom_smooth(method = "lm", formula = formula) +
-#'     stat_poly_eq(formula = formula, geom = "debug", output.type = "numeric")
+#'     stat_ma_eq(aes(label = after_stat(eq.label)),
+#'                geom = "debug",
+#'                output.type = "markdown")
 #'
-#' # names of the variables
 #'   ggplot(my.data, aes(x, y)) +
 #'     geom_point() +
-#'     geom_smooth(method = "lm", formula = formula) +
-#'     stat_poly_eq(formula = formula, geom = "debug",
-#'                  summary.fun = colnames)
+#'     stat_ma_eq(geom = "debug", output.type = "text")
 #'
-#' # only data$eq.label
 #'   ggplot(my.data, aes(x, y)) +
 #'     geom_point() +
-#'     geom_smooth(method = "lm", formula = formula) +
-#'     stat_poly_eq(formula = formula, geom = "debug",
-#'                  output.type = "expression",
-#'                  summary.fun = function(x) {x[["eq.label"]]})
+#'     stat_ma_eq(geom = "debug", output.type = "numeric")
 #'
-#' # only data$eq.label
-#'   ggplot(my.data, aes(x, y)) +
-#'     geom_point() +
-#'     geom_smooth(method = "lm", formula = formula) +
-#'     stat_poly_eq(aes(label = after_stat(eq.label)),
-#'                  formula = formula, geom = "debug",
-#'                  output.type = "markdown",
-#'                  summary.fun = function(x) {x[["eq.label"]]})
-#'
-#' # only data$eq.label
-#'   ggplot(my.data, aes(x, y)) +
-#'     geom_point() +
-#'     geom_smooth(method = "lm", formula = formula) +
-#'     stat_poly_eq(formula = formula, geom = "debug",
-#'                  output.type = "latex",
-#'                  summary.fun = function(x) {x[["eq.label"]]})
-#'
-#' # only data$eq.label
-#'   ggplot(my.data, aes(x, y)) +
-#'     geom_point() +
-#'     geom_smooth(method = "lm", formula = formula) +
-#'     stat_poly_eq(formula = formula, geom = "debug",
-#'                  output.type = "text",
-#'                  summary.fun = function(x) {x[["eq.label"]]})
-#'
-#' # show the content of a list column
-#'   ggplot(my.data, aes(x, y)) +
-#'     geom_point() +
-#'     geom_smooth(method = "lm", formula = formula) +
-#'     stat_poly_eq(formula = formula, geom = "debug", output.type = "numeric",
-#'                  summary.fun = function(x) {x[["coef.ls"]][[1]]})
 #' }
+#'
 #'
 #' @export
 #'
 stat_ma_eq <- function(mapping = NULL, data = NULL,
-                         geom = "text_npc",
-                         position = "identity",
-                         ...,
-                         method = "lm",
-                         method.args = list(),
-                         formula = NULL,
-                         eq.with.lhs = TRUE,
-                         eq.x.rhs = NULL,
-                         small.r = FALSE,
-                         small.p = FALSE,
-                         coef.digits = 3,
-                         coef.keep.zeros = TRUE,
-                         rr.digits = 2,
-                         f.digits = 3,
-                         p.digits = 3,
-                         label.x = "left",
-                         label.y = "top",
-                         label.x.npc = NULL,
-                         label.y.npc = NULL,
-                         hstep = 0,
-                         vstep = NULL,
-                         output.type = NULL,
-                         na.rm = FALSE,
-                         orientation = NA,
-                         parse = NULL,
-                         show.legend = FALSE,
-                         inherit.aes = TRUE) {
-  # backwards compatibility
-  if (!is.null(label.x.npc)) {
-    stopifnot(grepl("_npc", geom))
-    label.x <- label.x.npc
-  }
-  if (!is.null(label.y.npc)) {
-    stopifnot(grepl("_npc", geom))
-    label.y <- label.y.npc
-  }
+                       geom = "text_npc",
+                       position = "identity",
+                       ...,
+                       method = "MA",
+                       formula = NULL,
+                       range.y = NULL,
+                       range.x = NULL,
+                       nperm = 99,
+                       eq.with.lhs = TRUE,
+                       eq.x.rhs = NULL,
+                       small.r = FALSE,
+                       small.p = FALSE,
+                       coef.digits = 3,
+                       coef.keep.zeros = TRUE,
+                       rr.digits = 2,
+                       f.digits = 3,
+                       p.digits = 3,
+                       label.x = "left",
+                       label.y = "top",
+                       hstep = 0,
+                       vstep = NULL,
+                       output.type = NULL,
+                       na.rm = FALSE,
+                       orientation = NA,
+                       parse = NULL,
+                       show.legend = FALSE,
+                       inherit.aes = TRUE) {
   if (is.null(output.type)) {
     if (geom %in% c("richtext", "textbox")) {
       output.type <- "markdown"
@@ -368,13 +300,12 @@ stat_ma_eq <- function(mapping = NULL, data = NULL,
   if (is.null(parse)) {
     parse <- output.type == "expression"
   }
-  if (is.character(method)) {
-    if (method == "rlm") {
-      method <- MASS::rlm
-    } else if (method == "rq") {
-      warning("Method 'rq' not supported, please use 'stat_quant_line()'.")
-      method <- "auto"
-    }
+  if (! method %in% c("MA", "SMA", "RMA", "OLS")) {
+    warning("Method \"", method, "\" unknown, using \"MA\" instead.")
+    method <- "MA"
+  }
+  if (method == "RMA" & (is.null(range.y) || is.null(range.x))) {
+    stop("Method \"RMA\" is computed only if both 'range.x' and 'range.y' are set.")
   }
 
   ggplot2::layer(
@@ -386,8 +317,10 @@ stat_ma_eq <- function(mapping = NULL, data = NULL,
     show.legend = show.legend,
     inherit.aes = inherit.aes,
     params = list(method = method,
-                  method.args = method.args,
                   formula = formula,
+                  range.y = range.y,
+                  range.x = range.x,
+                  nperm = nperm,
                   eq.with.lhs = eq.with.lhs,
                   eq.x.rhs = eq.x.rhs,
                   small.r = small.r,
@@ -395,7 +328,6 @@ stat_ma_eq <- function(mapping = NULL, data = NULL,
                   coef.digits = coef.digits,
                   coef.keep.zeros = coef.keep.zeros,
                   rr.digits = rr.digits,
-                  f.digits = f.digits,
                   p.digits = p.digits,
                   label.x = label.x,
                   label.y = label.y,
@@ -422,31 +354,31 @@ stat_ma_eq <- function(mapping = NULL, data = NULL,
 #' @usage NULL
 #'
 ma_eq_compute_group_fun <- function(data,
-                                      scales,
-                                      method,
-                                      method.args,
-                                      formula,
-                                      weight,
-                                      eq.with.lhs,
-                                      eq.x.rhs,
-                                      small.r,
-                                      small.p,
-                                      coef.digits,
-                                      coef.keep.zeros,
-                                      rr.digits,
-                                      f.digits,
-                                      p.digits,
-                                      label.x,
-                                      label.y,
-                                      hstep,
-                                      vstep,
-                                      npc.used,
-                                      output.type,
-                                      na.rm,
-                                      orientation) {
+                                    scales,
+                                    method,
+                                    method.args,
+                                    formula,
+                                    range.y,
+                                    range.x,
+                                    nperm,
+                                    weight,
+                                    eq.with.lhs,
+                                    eq.x.rhs,
+                                    small.r,
+                                    small.p,
+                                    coef.digits,
+                                    coef.keep.zeros,
+                                    rr.digits,
+                                    p.digits,
+                                    label.x,
+                                    label.y,
+                                    hstep,
+                                    vstep,
+                                    npc.used,
+                                    output.type,
+                                    na.rm,
+                                    orientation) {
   force(data)
-
-  stopifnot(!any(c("formula", "data") %in% names(method.args)))
   # we guess formula from orientation
   if (is.null(formula)) {
     if (is.na(orientation) || orientation == "x") {
@@ -467,10 +399,6 @@ ma_eq_compute_group_fun <- function(data,
   }
   stopifnot(output.type %in%
               c("expression", "text", "markdown", "numeric", "latex", "tex", "tikz"))
-
-  if (is.null(data$weight)) {
-    data$weight <- 1
-  }
 
   if (exists("grp.label", data)) {
     if (length(unique(data[["grp.label"]])) > 1L) {
@@ -511,53 +439,29 @@ ma_eq_compute_group_fun <- function(data,
     }
   }
 
-  if (is.function(method)) {
-    fun <- method
-  } else if (is.character(method)) {
-    fun <- switch(method,
-                  lm = stats::lm,
-                  rlm = MASS::rlm,
-                  stop("Method '", method, "' not yet implemented.")
-    )
+  if (method == "RMA") {
+    fit.args <-
+      list(formula = formula,
+           data = data,
+           range.y = range.y,
+           range.x = range.x,
+           nperm = nperm
+      )
   } else {
-    stop("Method '", method, "' not yet implemented.")
+    fit.args <-
+      list(formula = formula,
+           data = data,
+           nperm = nperm
+      )
   }
 
-  # quantreg contains code with partial matching of names!
-  # so we silence selectively only these warnings
-  withCallingHandlers({
-    mf <- do.call(fun,
-                  args = c(list(formula = formula, data = data, weights = quote(weight)),
-                           method.args))
-    mf.summary <- summary(mf)
-  }, warning = function(w) {
-    if (startsWith(conditionMessage(w), "partial match of 'coef'") ||
-        startsWith(conditionMessage(w), "partial argument match of 'contrasts'"))
-      invokeRestart("muffleWarning")
-  })
+  mf <- do.call(what = lmodel2::lmodel2, args = fit.args)
 
-  if ("r.squared" %in% names(mf.summary)) {
-    rr <- mf.summary[["r.squared"]]
-  } else {
-    rr <- NA_real_
-  }
-  if ("adj.r.squared" %in% names(mf.summary)) {
-    adj.rr <- mf.summary[["adj.r.squared"]]
-  } else {
-    adj.rr <- NA_real_
-  }
-  AIC <- AIC(mf)
-  BIC <- BIC(mf)
-  n <- length(mf.summary[["residuals"]])
-  if ("fstatistic" %in% names(mf.summary)) {
-    f.value <- mf.summary[["fstatistic"]]["value"]
-    f.df1 <- mf.summary[["fstatistic"]]["numdf"]
-    f.df2 <- mf.summary[["fstatistic"]]["dendf"]
-    p.value <- 1 - stats::pf(q = f.value, f.df1, f.df2)
-  } else {
-    f.value <- f.df1 <- f.df2 <- p.value <- NA_real_
-  }
-  coefs <- stats::coefficients(mf)
+  n <- mf[["n"]]
+  coefs <- stats::coefficients(mf, method = method)
+  rr <- mf[["rsquare"]]
+  idx <- which(mf[["regression.results"]][["Method"]] == method)
+  p.value <- mf[["regression.results"]]["P-perm (1-tailed)", idx]
 
   formula.rhs.chr <- as.character(formula)[3]
   forced.origin <- grepl("-[[:space:]]*1|+[[:space:]]*0", formula.rhs.chr)
@@ -567,15 +471,8 @@ ma_eq_compute_group_fun <- function(data,
   names(coefs) <- paste("b", (1:length(coefs)) - 1, sep = "_")
 
   if (output.type == "numeric") {
-    z <- tibble::tibble(coef.ls = list(summary(mf)[["coefficients"]]),
-                        r.squared = rr,
-                        adj.r.squared = adj.rr,
-                        f.value = f.value,
-                        f.df1 = f.df1,
-                        f.df2 = f.df2,
+    z <- tibble::tibble(r.squared = rr,
                         p.value = p.value,
-                        AIC = AIC,
-                        BIC = BIC,
                         n = n,
                         rr.label = "",  # needed for default 'label' mapping
                         b_0.constant = forced.origin)
@@ -610,10 +507,6 @@ ma_eq_compute_group_fun <- function(data,
     if (rr.digits < 2) {
       warning("'rr.digits < 2' Likely information loss!")
     }
-    stopifnot(f.digits > 0)
-    if (f.digits < 2) {
-      warning("'f.digits < 2' Likely information loss!")
-    }
     stopifnot(p.digits > 0)
     if (p.digits < 2) {
       warning("'p.digits < 2' Likely information loss!")
@@ -621,21 +514,9 @@ ma_eq_compute_group_fun <- function(data,
 
     if (output.type == "expression") {
       rr.char <- sprintf("\"%#.*f\"", rr.digits, rr)
-      adj.rr.char <- sprintf("\"%#.*f\"", rr.digits, adj.rr)
-      AIC.char <- sprintf("\"%.4g\"", AIC)
-      BIC.char <- sprintf("\"%.4g\"", BIC)
-      f.value.char <- sprintf("\"%#.*g\"", f.digits, f.value)
-      f.df1.char <- as.character(f.df1)
-      f.df2.char <- as.character(f.df2)
       p.value.char <- sprintf("\"%#.*g\"", p.digits, p.value)
     } else {
       rr.char <- sprintf("%#.*f", rr.digits, rr)
-      adj.rr.char <- sprintf("%#.*f", rr.digits, adj.rr)
-      AIC.char <- sprintf("%.4g", AIC)
-      BIC.char <- sprintf("%.4g", BIC)
-      f.value.char <- sprintf("%#.*g", f.digits, f.value)
-      f.df1.char <- as.character(f.df1)
-      f.df2.char <- as.character(f.df2)
       p.value.char <- sprintf("%#.*g", p.digits, p.value)
     }
 
@@ -652,26 +533,6 @@ ma_eq_compute_group_fun <- function(data,
                                          sep = ifelse(rr < 10^(-rr.digits) & rr != 0,
                                                       "~`<`~",
                                                       "~`=`~"))),
-                          adj.rr.label =
-                            ifelse(is.na(adj.rr), character(0L),
-                                   paste(ifelse(small.r, "italic(r)[adj]^2", "italic(R)[adj]^2"),
-                                         ifelse(adj.rr < 10^(-rr.digits) & adj.rr != 0,
-                                                sprintf("\"%.*f\"", rr.digits, 10^(-rr.digits)),
-                                                adj.rr.char),
-                                         sep = ifelse(adj.rr < 10^(-rr.digits) & adj.rr != 0,
-                                                      "~`<`~",
-                                                      "~`=`~"))),
-                          AIC.label =
-                            ifelse(is.na(AIC), character(0L),
-                                   paste("AIC", AIC.char, sep = "~`=`~")),
-                          BIC.label =
-                            ifelse(is.na(BIC), character(0L),
-                                   paste("BIC", BIC.char, sep = "~`=`~")),
-                          f.value.label =
-                            ifelse(is.na(f.value), character(0L),
-                                   paste("italic(F)[", f.df1.char,
-                                         "*\",\"*", f.df2.char,
-                                         "]~`=`~", f.value.char, sep = "")),
                           p.value.label =
                             ifelse(is.na(p.value), character(0L),
                                    paste(ifelse(small.p, "italic(p)",  "italic(P)"),
@@ -684,7 +545,6 @@ ma_eq_compute_group_fun <- function(data,
                           n.label = paste("italic(n)~`=`~\"", n, "\"", sep = ""),
                           grp.label = grp.label,
                           r.squared = rr,
-                          adj.r.squared = adj.rr,
                           p.value = p.value,
                           n = n)
     } else if (output.type %in% c("latex", "tex", "text", "tikz")) {
@@ -695,21 +555,6 @@ ma_eq_compute_group_fun <- function(data,
                                    paste(ifelse(small.r, "r^2", "R^2"),
                                          ifelse(rr < 10^(-rr.digits), as.character(10^(-rr.digits)), rr.char),
                                          sep = ifelse(rr < 10^(-rr.digits), " < ", " = "))),
-                          adj.rr.label =
-                            ifelse(is.na(adj.rr), character(0L),
-                                   paste(ifelse(small.r, "r_{adj}^2", "R_{adj}^2"),
-                                         ifelse(adj.rr < 10^(-rr.digits), as.character(10^(-rr.digits)), adj.rr.char),
-                                         sep = ifelse(adj.rr < 10^(-rr.digits), " < ", " = "))),
-                          AIC.label =
-                            ifelse(is.na(AIC), character(0L),
-                                   paste("AIC", AIC.char, sep = " = ")),
-                          BIC.label =
-                            ifelse(is.na(BIC), character(0L),
-                                   paste("BIC", BIC.char, sep = " = ")),
-                          f.value.label =
-                            ifelse(is.na(f.value), character(0L),
-                                   paste("F_{", f.df1.char, ",", f.df2.char,
-                                         "} = ", f.value.char, sep = "")),
                           p.value.label =
                             ifelse(is.na(p.value), character(0L),
                                    paste(ifelse(small.p, "p",  "P"),
@@ -718,7 +563,6 @@ ma_eq_compute_group_fun <- function(data,
                           n.label = paste("n = ", n, sep = ""),
                           grp.label = grp.label,
                           r.squared = rr,
-                          adj.r.squared = adj.rr,
                           p.value = p.value,
                           n = n)
     } else if (output.type == "markdown") {
@@ -729,21 +573,6 @@ ma_eq_compute_group_fun <- function(data,
                                    paste(ifelse(small.r, "_r_<sup>2</sup>", "_R_<sup>2</sup>"),
                                          ifelse(rr < 10^(-rr.digits), as.character(10^(-rr.digits)), rr.char),
                                          sep = ifelse(rr < 10^(-rr.digits), " < ", " = "))),
-                          adj.rr.label =
-                            ifelse(is.na(adj.rr), character(0L),
-                                   paste(ifelse(small.r, "_r_<sup>2</sup><sub>adj</sub>", "_R_<sup>2</sup><sub>adj</sub>"),
-                                         ifelse(adj.rr < 10^(-rr.digits), as.character(10^(-rr.digits)), adj.rr.char),
-                                         sep = ifelse(adj.rr < 10^(-rr.digits), " < ", " = "))),
-                          AIC.label =
-                            ifelse(is.na(AIC), character(0L),
-                                   paste("AIC", AIC.char, sep = " = ")),
-                          BIC.label =
-                            ifelse(is.na(BIC), character(0L),
-                                   paste("BIC", BIC.char, sep = " = ")),
-                          f.value.label =
-                            ifelse(is.na(f.value), character(0L),
-                                   paste("_F_<sub>", f.df1.char, ",", f.df2.char,
-                                         "</sub> = ", f.value.char, sep = "")),
                           p.value.label =
                             ifelse(is.na(p.value), character(0L),
                                    paste(ifelse(small.p, "_p_", "_P_"),
@@ -752,7 +581,6 @@ ma_eq_compute_group_fun <- function(data,
                           n.label = paste("_n_ = ", n, sep = ""),
                           grp.label = grp.label,
                           r.squared = rr,
-                          adj.r.squared = adj.rr,
                           p.value = p.value,
                           n = n)
     } else {
@@ -768,8 +596,8 @@ ma_eq_compute_group_fun <- function(data,
       # margin set by scale
       margin.npc <- 0
     }
-    label.x <- compute_npcx(x = label.x, group = group.idx, h.step = hstep,
-                            margin.npc = margin.npc)
+    label.x <- ggpp::compute_npcx(x = label.x, group = group.idx, h.step = hstep,
+                                  margin.npc = margin.npc)
     if (!npc.used) {
       x.expanse <- abs(diff(range(data$x)))
       x.min <- min(data$x)
@@ -783,8 +611,8 @@ ma_eq_compute_group_fun <- function(data,
       # margin set by scale
       margin.npc <- 0
     }
-    label.y <- compute_npcy(y = label.y, group = group.idx, v.step = vstep,
-                            margin.npc = margin.npc)
+    label.y <- ggpp::compute_npcy(y = label.y, group = group.idx, v.step = vstep,
+                                  margin.npc = margin.npc)
     if (!npc.used) {
       y.expanse <- abs(diff(range(data$y)))
       y.min <- min(data$y)

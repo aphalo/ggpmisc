@@ -10,9 +10,11 @@ stat_ma_eq(
   geom = "text_npc",
   position = "identity",
   ...,
-  method = "lm",
-  method.args = list(),
+  method = "MA",
   formula = NULL,
+  range.y = NULL,
+  range.x = NULL,
+  nperm = 99,
   eq.with.lhs = TRUE,
   eq.x.rhs = NULL,
   small.r = FALSE,
@@ -24,8 +26,6 @@ stat_ma_eq(
   p.digits = 3,
   label.x = "left",
   label.y = "top",
-  label.x.npc = NULL,
-  label.y.npc = NULL,
   hstep = 0,
   vstep = NULL,
   output.type = NULL,
@@ -38,8 +38,8 @@ stat_ma_eq(
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
-\code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs to be
-set at the layer level if you are overriding the plot defaults.}
+\code{\link[ggplot2]{aes}}. Only needs to be set at the layer level if you
+are overriding the plot defaults.}
 
 \item{data}{A layer specific dataset, only needed if you want to override
 the plot defaults.}
@@ -53,15 +53,15 @@ layer}
 can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 
-\item{method}{function or character If character, "lm" and "rlm" are
-accepted. If a function, it must have formal parameters \code{formula} and
-\code{data} and return a model fit object for which \code{summary()} and
-\code{coefficients()} are consistent with those for \code{lm} fits.}
-
-\item{method.args}{named list with additional arguments.}
+\item{method}{character "MA", "SMA" , "RMA" and "OLS".}
 
 \item{formula}{a formula object. Using aesthetic names \code{x} and \code{y}
 instead of original variable names.}
+
+\item{range.y, range.x}{character Pass "relative" or "interval" if method
+"RMA" is to be computed.}
+
+\item{nperm}{integer Number of permutation used to estimate significance.}
 
 \item{eq.with.lhs}{If \code{character} the string is pasted to the front of
 the equation label before parsing or a \code{logical} (see note).}
@@ -86,10 +86,6 @@ use for R^2 and P-value in labels.}
 coordinates" (npc units) or character if using \code{geom_text_npc()} or
 \code{geom_label_npc()}. If using \code{geom_text()} or \code{geom_label()}
 numeric in native data units. If too short they will be recycled.}
-
-\item{label.x.npc, label.y.npc}{\code{numeric} with range 0..1 (npc units)
-DEPRECATED, use label.x and label.y instead; together with a geom
-using npcx and npcy aesthetics.}
 
 \item{hstep, vstep}{numeric in npc units, the horizontal and vertical step
 used between labels for different groups.}
@@ -159,7 +155,7 @@ For backward compatibility a logical is accepted as argument for
 \section{Computed variables}{
 
 If output.type different from \code{"numeric"} the returned tibble contains
-columns listed below. If the model fit function used does not return a value,
+columns listed below. If the fitted model does not contain a given value,
 the label is set to \code{character(0L)}.
 \describe{
   \item{x,npcx}{x position}
@@ -189,123 +185,106 @@ of \code{\link[gginnards]{geom_debug}} as shown in the last examples below.
 
 \examples{
 # generate artificial data
-set.seed(4321)
-x <- 1:100
-y <- (x + x^2 + x^3) + rnorm(length(x), mean = 0, sd = mean(x^3) / 4)
-my.data <- data.frame(x = x, y = y,
-                      group = c("A", "B"),
-                      y2 = y * c(0.5,2),
-                      w = sqrt(x))
+set.seed(98723)
+my.data <- data.frame(x = rnorm(100) + (0:99) / 10 - 5,
+                      y = rnorm(100) + (0:99) / 10 - 5,
+                      group = c("A", "B"))
 
-# give a name to a formula
-formula <- y ~ poly(x, 3, raw = TRUE)
-
-# no weights
+# using defaults (major axis regression)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(formula = formula)
+  stat_ma_line() +
+  stat_ma_eq()
+
+# using major axis regression
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_ma_line(method = "MA") +
+  stat_ma_eq(method = "MA")
+
+# using standard major axis regression
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_ma_line(method = "SMA") +
+  stat_ma_eq(method = "SMA")
+
+# using ranged major axis regression
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_ma_line(method = "RMA", range.y = "interval", range.x = "interval") +
+  stat_ma_eq(method = "RMA", range.y = "interval", range.x = "interval")
+
+# using defaults
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_ma_line() +
+  stat_ma_eq()
+
+# same formula as default
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_ma_line(formula = y ~ x) +
+  stat_ma_eq(formula = y ~ x)
+
+# explicit formula "x explained by y"
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_ma_line(formula = x ~ y) +
+  stat_ma_eq(formula = x ~ y)
+
+# angle
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_ma_line() +
+  stat_ma_eq(angle = 90, hstep = 0.05, vstep = 0,
+             label.y = 0.98, hjust = 1)
+
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_ma_line() +
+  stat_ma_eq(angle = 90,
+             hstep = 0.05, vstep = 0, hjust = 0,
+             label.y = 0.5)
 
 # grouping
 ggplot(my.data, aes(x, y, color = group)) +
   geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(formula = formula)
+  stat_ma_line() +
+  stat_ma_eq()
 
-# rotation
-ggplot(my.data, aes(x, y)) +
-  geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(formula = formula, angle = 90, hjust = 1)
-
-# label location
-ggplot(my.data, aes(x, y)) +
-  geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(formula = formula, label.y = "bottom", label.x = "right")
-
-ggplot(my.data, aes(x, y)) +
-  geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(formula = formula, label.y = 0.1, label.x = 0.9)
-
-# using weights
-ggplot(my.data, aes(x, y, weight = w)) +
-  geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(formula = formula)
-
-# no weights, digits for R square
-ggplot(my.data, aes(x, y)) +
-  geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(formula = formula, rr.digits = 4)
-
-# user specified label
-ggplot(my.data, aes(x, y)) +
-  geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label =  paste(after_stat(rr.label),
-                                  after_stat(n.label), sep = "*\", \"*")),
-               formula = formula)
-
-ggplot(my.data, aes(x, y)) +
-  geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label =  paste(after_stat(eq.label),
-                                  after_stat(adj.rr.label), sep = "*\", \"*")),
-               formula = formula)
-
-ggplot(my.data, aes(x, y)) +
-  geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label =  paste(after_stat(f.value.label),
-                                  after_stat(p.value.label),
-                                  sep = "*\", \"*")),
-               formula = formula)
-
-# x on y regression
-ggplot(my.data, aes(x, y)) +
-  geom_point() +
-  geom_smooth(method = "lm", formula = formula, orientation = "y") +
-  stat_poly_eq(aes(label =  paste(after_stat(eq.label),
-                                  after_stat(adj.rr.label),
-                                  sep = "*\", \"*")),
-               formula = x ~ poly(y, 3, raw = TRUE))
-
-# conditional user specified label
 ggplot(my.data, aes(x, y, color = group)) +
   geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label =  ifelse(after_stat(adj.r.squared) > 0.96,
-                                   paste(after_stat(adj.rr.label),
-                                         after_stat(eq.label),
-                                         sep = "*\", \"*"),
-                                   after_stat(adj.rr.label))),
-               rr.digits = 3,
-               formula = formula)
+  stat_ma_line() +
+  stat_ma_eq(angle = 90,
+             hstep = 0.05, vstep = 0, hjust = 0,
+             size = 5, label.y = 2/3)
+
+# labelling equations
+ggplot(my.data, aes(x, y,  shape = group, linetype = group,
+       grp.label = group)) +
+  geom_point() +
+  stat_ma_line(color = "black") +
+  stat_ma_eq(aes(label = paste(after_stat(grp.label),
+                               after_stat(eq.label),
+                               sep = "*\": \"*"))) +
+  theme_classic()
+
+# Location of equations
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_ma_line() +
+  stat_ma_eq(label.y = "bottom", label.x = "right")
+
+ggplot(my.data, aes(x, y, color = group)) +
+  geom_point() +
+  stat_ma_line() +
+  stat_ma_eq(label.y = 0.03, label.x = 0.95, vstep = 0.1)
 
 # geom = "text"
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(geom = "text", label.x = 100, label.y = 0, hjust = 1,
-               formula = formula)
-
-# using numeric values
-# Here we use columns b_0 ... b_3 for the coefficient estimates
-my.format <-
-  "b[0]~`=`~\%.3g*\", \"*b[1]~`=`~\%.3g*\", \"*b[2]~`=`~\%.3g*\", \"*b[3]~`=`~\%.3g"
-ggplot(my.data, aes(x, y)) +
-  geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(formula = formula,
-               output.type = "numeric",
-               parse = TRUE,
-               mapping =
-                aes(label = sprintf(my.format,
-                                    after_stat(b_0), after_stat(b_1),
-                                    after_stat(b_2), after_stat(b_3))))
+  stat_ma_line() +
+  stat_ma_eq(label.x = "left", label.y = "top")
 
 # Inspecting the returned data using geom_debug()
 if (requireNamespace("gginnards", quietly = TRUE)) {
@@ -314,64 +293,26 @@ if (requireNamespace("gginnards", quietly = TRUE)) {
 # This provides a quick way of finding out the names of the variables that
 # are available for mapping to aesthetics.
 
-# the whole of data
   ggplot(my.data, aes(x, y)) +
     geom_point() +
-    geom_smooth(method = "lm", formula = formula) +
-    stat_poly_eq(formula = formula, geom = "debug")
+    stat_ma_eq(geom = "debug")
 
   ggplot(my.data, aes(x, y)) +
     geom_point() +
-    geom_smooth(method = "lm", formula = formula) +
-    stat_poly_eq(formula = formula, geom = "debug", output.type = "numeric")
+    stat_ma_eq(aes(label = after_stat(eq.label)),
+               geom = "debug",
+               output.type = "markdown")
 
-# names of the variables
   ggplot(my.data, aes(x, y)) +
     geom_point() +
-    geom_smooth(method = "lm", formula = formula) +
-    stat_poly_eq(formula = formula, geom = "debug",
-                 summary.fun = colnames)
+    stat_ma_eq(geom = "debug", output.type = "text")
 
-# only data$eq.label
   ggplot(my.data, aes(x, y)) +
     geom_point() +
-    geom_smooth(method = "lm", formula = formula) +
-    stat_poly_eq(formula = formula, geom = "debug",
-                 output.type = "expression",
-                 summary.fun = function(x) {x[["eq.label"]]})
+    stat_ma_eq(geom = "debug", output.type = "numeric")
 
-# only data$eq.label
-  ggplot(my.data, aes(x, y)) +
-    geom_point() +
-    geom_smooth(method = "lm", formula = formula) +
-    stat_poly_eq(aes(label = after_stat(eq.label)),
-                 formula = formula, geom = "debug",
-                 output.type = "markdown",
-                 summary.fun = function(x) {x[["eq.label"]]})
-
-# only data$eq.label
-  ggplot(my.data, aes(x, y)) +
-    geom_point() +
-    geom_smooth(method = "lm", formula = formula) +
-    stat_poly_eq(formula = formula, geom = "debug",
-                 output.type = "latex",
-                 summary.fun = function(x) {x[["eq.label"]]})
-
-# only data$eq.label
-  ggplot(my.data, aes(x, y)) +
-    geom_point() +
-    geom_smooth(method = "lm", formula = formula) +
-    stat_poly_eq(formula = formula, geom = "debug",
-                 output.type = "text",
-                 summary.fun = function(x) {x[["eq.label"]]})
-
-# show the content of a list column
-  ggplot(my.data, aes(x, y)) +
-    geom_point() +
-    geom_smooth(method = "lm", formula = formula) +
-    stat_poly_eq(formula = formula, geom = "debug", output.type = "numeric",
-                 summary.fun = function(x) {x[["coef.ls"]][[1]]})
 }
+
 
 }
 \seealso{
@@ -381,9 +322,9 @@ This \code{stat_ma_eq} statistic can return ready formatted labels
   \code{\link{stat_quant_eq}} should be used instead of \code{stat_ma_eq}.
   For other types of models such as non-linear models, statistics
   \code{\link{stat_fit_glance}} and \code{\link{stat_fit_tidy}} should be
-  used instead and the code for construction of character strings from
-  numeric values and their mapping to aesthetic \code{label} needs to be
-  explicitly supplied in the call.
+  used and the code for construction of character strings from numeric values
+  and their mapping to aesthetic \code{label} needs to be explicitly supplied
+  in the call.
 
 Other ggplot statistics for major axis regression: 
 \code{\link{stat_ma_line}()}

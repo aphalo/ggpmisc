@@ -6,10 +6,17 @@ editor_options:
 
 # ggpmisc 0.4.3
 
-New statistics `stat_ma_line()` and `stat_ma_eq()` implement major axis
-regression based on package 'lmodel2'. Methods `coefficients()`, `confint()` and
-`predict()` for fit objects returned by `lmodel2::lmodel2()` are also
-implemented and exported.
+Add statistics `stat_ma_line()` and `stat_ma_eq()` implement model II regression
+based on package 'lmodel2' (major axis, standard major axis, and ranged major
+axis regression). Methods `coef()`, `confint()` and `predict()` for fit
+objects returned by `lmodel2::lmodel2()` are also implemented and exported.
+
+# ggpmisc 0.4.2-2
+
+Fix major bug in `stat_poly_eq()` and `stat_quant_eq()` affecting only some R
+builds, reported and reproduced for Linux. (Reported by Flavio Lozano-Isla, T.
+BruceLee and Lewis Hooper, debugged with the help of Mark B. Neal.) Reported to
+affect versions 0.4.0, 0.4.1, 0.4.2 and 0.4.2-1.
 
 # ggpmisc 0.4.2-1
 

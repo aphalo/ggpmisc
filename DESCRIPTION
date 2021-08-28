@@ -25,7 +25,7 @@ LazyLoad: TRUE
 ByteCompile: TRUE
 Depends:
     R (>= 3.6.0),
-    ggpp (>= 0.4.0)
+    ggpp (>= 0.4.2)
 Imports:
     grid,
     stats,

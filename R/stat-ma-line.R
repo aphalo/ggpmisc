@@ -28,8 +28,8 @@
 #' \code{data} are expressed as statistics.
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
-#'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs to be
-#'   set at the layer level if you are overriding the plot defaults.
+#'   \code{\link[ggplot2]{aes}}. Only needs to be set at the layer level if you
+#'   are overriding the plot defaults.
 #' @param data A layer specific dataset, only needed if you want to override
 #'   the plot defaults.
 #' @param geom The geometric object to use display the data
@@ -82,52 +82,66 @@
 #' @export
 #'
 #' @examples
-#' ggplot(mpg, aes(displ, hwy)) +
+#' # generate artificial data
+#' set.seed(98723)
+#' my.data <- data.frame(x = rnorm(100) + (0:99) / 10 - 5,
+#'                       y = rnorm(100) + (0:99) / 10 - 5,
+#'                       group = c("A", "B"))
+#'
+#' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   stat_ma_line()
 #'
-#' ggplot(mpg, aes(displ, hwy)) +
+#' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   stat_ma_line(method = "MA")
 #'
-#' ggplot(mpg, aes(displ, hwy)) +
+#' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   stat_ma_line(method = "SMA")
 #'
-#' ggplot(mpg, aes(displ, hwy)) +
+#' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   stat_ma_line(method = "RMA",
-#'                range.y = "relative", range.x = "relative")
+#'                range.y = "interval", range.x = "interval")
 #'
-#' ggplot(mpg, aes(displ, hwy)) +
+#' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   stat_ma_line(method = "OLS")
 #'
-#' ggplot(mpg, aes(displ, hwy)) +
+#' # plot line to the ends of range of data (the default)
+#' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   stat_ma_line(method = "MA", fullrange = TRUE) +
-#'   expand_limits(x = c(-2, 8), y = c(0, 50))
+#'   stat_ma_line(fullrange = FALSE) +
+#'   expand_limits(x = c(-10, 10), y = c(-10, 10))
 #'
-#' ggplot(mpg, aes(displ, hwy)) +
+#' # plot line to the limits of the scales
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   stat_ma_line(fullrange = TRUE) +
+#'   expand_limits(x = c(-10, 10), y = c(-10, 10))
+#'
+#' # plot line to the limits of the scales
+#' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   stat_ma_line(orientation = "y", fullrange = TRUE) +
-#'   expand_limits(x = c(-2, 8), y = c(0, 50))
+#'   expand_limits(x = c(-10, 10), y = c(-10, 10))
 #'
-#' ggplot(mpg, aes(displ, hwy)) +
+#' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   stat_ma_line(formula = x ~ y)
 #'
 #' # Smooths are automatically fit to each group (defined by categorical
 #' # aesthetics or the group aesthetic) and for each facet.
 #'
-#' ggplot(mpg, aes(displ, hwy, colour = class)) +
+#' ggplot(my.data, aes(x, y, colour = group)) +
 #'   geom_point() +
 #'   stat_ma_line(se = FALSE)
 #'
-#' ggplot(mpg, aes(displ, hwy)) +
+#' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   stat_ma_line() +
-#'   facet_wrap(~drv)
+#'   facet_wrap(~group)
 #'
 #' @export
 #'
