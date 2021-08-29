@@ -1,7 +1,7 @@
 #' Equation, p-value, R^2, AIC or BIC of fitted polynomial
 #'
 #' \code{stat_poly_eq} fits a polynomial by default with \code{stats::lm()} but
-#' alternatively using robust or quantile regression. From the fitted model it
+#' alternatively using robust regression. From the fitted model it
 #' generates several labels including the equation, p-value, F-value,
 #' coefficient of determination (R^2), 'AIC', 'BIC', and number of observations.
 #'
@@ -147,13 +147,14 @@
 #'
 #' @seealso This \code{stat_poly_eq} statistic can return ready formatted labels
 #'   depending on the argument passed to \code{output.type}. This is possible
-#'   because only polynomial models are supported. If multiple quantiles are
-#'   desired, then \code{\link{stat_quant_eq}} should be used instead of
-#'   \code{stat_poly_eq}. For other types of models such as non-linear models,
-#'   statistics \code{\link{stat_fit_glance}} and \code{\link{stat_fit_tidy}}
-#'   should be used instead and the code for construction of character strings
-#'   from numeric values and their mapping to aesthetic \code{label} needs to be
-#'   explicitly supplied in the call.
+#'   because only polynomial models are supported. For quantile regression
+#'   \code{\link{stat_quant_eq}} should be used instead of \code{stat_poly_eq}
+#'   while for model II or major axis regression \code{\link{stat_ma_eq}} should
+#'   be used. For other types of models such as non-linear models, statistics
+#'   \code{\link{stat_fit_glance}} and \code{\link{stat_fit_tidy}} should be
+#'   used and the code for construction of character strings from
+#'   numeric values and their mapping to aesthetic \code{label} needs to be
+#'   explicitly supplied by the user.
 #'
 #' @family ggplot statistics for linear and polynomial regression
 #'
@@ -792,8 +793,8 @@ poly_eq_compute_group_fun <- function(data,
       # margin set by scale
       margin.npc <- 0
     }
-    label.x <- compute_npcx(x = label.x, group = group.idx, h.step = hstep,
-                            margin.npc = margin.npc)
+    label.x <- ggpp::compute_npcx(x = label.x, group = group.idx, h.step = hstep,
+                                  margin.npc = margin.npc)
     if (!npc.used) {
       x.expanse <- abs(diff(range(data$x)))
       x.min <- min(data$x)
@@ -807,8 +808,8 @@ poly_eq_compute_group_fun <- function(data,
       # margin set by scale
       margin.npc <- 0
     }
-    label.y <- compute_npcy(y = label.y, group = group.idx, v.step = vstep,
-                            margin.npc = margin.npc)
+    label.y <- ggpp::compute_npcy(y = label.y, group = group.idx, v.step = vstep,
+                                  margin.npc = margin.npc)
     if (!npc.used) {
       y.expanse <- abs(diff(range(data$y)))
       y.min <- min(data$y)

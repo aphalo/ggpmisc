@@ -23,6 +23,8 @@ reference:
     - stat_peaks
     - stat_poly_line
     - stat_poly_eq
+    - stat_ma_line
+    - stat_ma_eq
     - stat_quant_line
     - stat_quant_band
     - stat_quant_eq
@@ -41,6 +43,9 @@ reference:
     desc: Low level functions that can be useful to developers of other ggplot2 extensions.
     contents:
     - swap_xy
+    - coef.lmodel2
+    - confint.lmodel2
+    - predict.lmodel2
   - title: Changes
     desc: Geometries, statistics and functions moved to package 'gginnards'.
     contents:

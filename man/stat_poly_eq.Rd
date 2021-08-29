@@ -119,7 +119,7 @@ default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
 }
 \description{
 \code{stat_poly_eq} fits a polynomial by default with \code{stats::lm()} but
-alternatively using robust or quantile regression. From the fitted model it
+alternatively using robust regression. From the fitted model it
 generates several labels including the equation, p-value, F-value,
 coefficient of determination (R^2), 'AIC', 'BIC', and number of observations.
 }
@@ -402,13 +402,14 @@ Written as an answer to a question at Stackoverflow.
 \seealso{
 This \code{stat_poly_eq} statistic can return ready formatted labels
   depending on the argument passed to \code{output.type}. This is possible
-  because only polynomial models are supported. If multiple quantiles are
-  desired, then \code{\link{stat_quant_eq}} should be used instead of
-  \code{stat_poly_eq}. For other types of models such as non-linear models,
-  statistics \code{\link{stat_fit_glance}} and \code{\link{stat_fit_tidy}}
-  should be used instead and the code for construction of character strings
-  from numeric values and their mapping to aesthetic \code{label} needs to be
-  explicitly supplied in the call.
+  because only polynomial models are supported. For quantile regression
+  \code{\link{stat_quant_eq}} should be used instead of \code{stat_poly_eq}
+  while for model II or major axis regression \code{\link{stat_ma_eq}} should
+  be used. For other types of models such as non-linear models, statistics
+  \code{\link{stat_fit_glance}} and \code{\link{stat_fit_tidy}} should be
+  used and the code for construction of character strings from
+  numeric values and their mapping to aesthetic \code{label} needs to be
+  explicitly supplied by the user.
 
 Other ggplot statistics for linear and polynomial regression: 
 \code{\link{stat_poly_line}()}

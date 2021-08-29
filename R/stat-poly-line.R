@@ -14,13 +14,13 @@
 #' \code{formula} differently, accepting \code{y} as explanatory variable and
 #' setting \code{orientation} automatically. In addition the default for
 #' \code{method} is \code{"lm"}, matching the default used in
-#' \code{stat_poly_eq()} and \code{stat_poly_quant()}. It calls
-#' \code{\link[ggplot2]{StatSmooth}} to build a layer.
+#' \code{stat_poly_line()}, \code{stat_quant_line()} and \code{stat_quant_eq()}.
+#' It calls \code{\link[ggplot2]{StatSmooth}} to build a layer.
 #'
 #' \code{\link[ggplot2]{geom_smooth}}, which is used by default, treats each
 #' axis differently and can thus have two orientations. The orientation is easy
 #' to deduce from the argument passed to \code{formula}. Thus,
-#' \code{stat_smooth_xy()} will by default guess which orientation the layer
+#' \code{stat_poly_line()} will by default guess which orientation the layer
 #' should have. If no argument is passed to \code{formula}, the orientation is
 #' ambiguous. In that case the orientation can be specified directly passing an
 #' argument to the \code{orientation} parameter, which can be either \code{"x"}
@@ -75,13 +75,13 @@
 #' @return The value returned by the statistic is a data frame, that will have
 #'   \code{n} rows of predicted values and and their confidence limits.
 #'
-#' @section Computed variables: `stat_smooth_xy()` provides the following
+#' @section Computed variables: `stat_poly_line()` provides the following
 #'   variables, some of which depend on the orientation: \describe{ \item{y *or*
 #'   x}{predicted value} \item{ymin *or* xmin}{lower pointwise confidence
 #'   interval around the mean} \item{ymax *or* xmax}{upper pointwise confidence
 #'   interval around the mean} \item{se}{standard error} }
 #'
-#' @section Aesthetics: \code{stat_poly_eq} understands \code{x} and \code{y},
+#' @section Aesthetics: \code{stat_poly_line} understands \code{x} and \code{y},
 #'   to be referenced in the \code{formula} and \code{weight} passed as argument
 #'   to parameter \code{weights}. All three must be mapped to \code{numeric}
 #'   variables. In addition, the aesthetics understood by the geom
