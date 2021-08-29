@@ -136,7 +136,7 @@
 #'
 #' ggplot(my.data, aes(x, y, colour = group)) +
 #'   geom_point() +
-#'   stat_ma_line(se = FALSE)
+#'   stat_ma_line()
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +

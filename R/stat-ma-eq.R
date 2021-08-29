@@ -142,55 +142,90 @@
 #'   stat_ma_line() +
 #'   stat_ma_eq()
 #'
+#' # using defaults (major axis regression)
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   stat_ma_line() +
+#'   stat_ma_eq(aes(label =
+#'     paste(after_stat(eq.label),
+#'           after_stat(p.value.label),
+#'           sep = "*\", \"*")))
+#'
 #' # using major axis regression
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   stat_ma_line(method = "MA") +
-#'   stat_ma_eq(method = "MA")
+#'   stat_ma_eq(aes(label =
+#'     paste(after_stat(eq.label),
+#'           after_stat(p.value.label),
+#'           sep = "*\", \"*")),
+#'           method = "MA")
 #'
 #' # using standard major axis regression
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   stat_ma_line(method = "SMA") +
-#'   stat_ma_eq(method = "SMA")
+#'   stat_ma_eq(aes(label =
+#'     paste(after_stat(eq.label),
+#'           after_stat(p.value.label),
+#'           sep = "*\", \"*")),
+#'           method = "SMA")
 #'
 #' # using ranged major axis regression
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   stat_ma_line(method = "RMA", range.y = "interval", range.x = "interval") +
-#'   stat_ma_eq(method = "RMA", range.y = "interval", range.x = "interval")
+#'   stat_ma_eq(aes(label =
+#'     paste(after_stat(eq.label),
+#'           after_stat(p.value.label),
+#'           sep = "*\", \"*")),
+#'           method = "RMA",
+#'           range.y = "interval", range.x = "interval")
 #'
-#' # using defaults
+#' # using standard major axis regression
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   stat_ma_line() +
-#'   stat_ma_eq()
+#'   stat_ma_line(method = "OLS") +
+#'   stat_ma_eq(aes(label =
+#'     paste(after_stat(eq.label),
+#'           after_stat(p.value.label),
+#'           sep = "*\", \"*")),
+#'           method = "OLS")
+#'
+#' # No permutation-based test
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   stat_ma_line(method = "MA") +
+#'   stat_ma_eq(aes(label =
+#'     paste(after_stat(eq.label),
+#'           after_stat(p.value.label),
+#'           sep = "*\", \"*")),
+#'           method = "MA", nperm = 0)
 #'
 #' # same formula as default
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   stat_ma_line(formula = y ~ x) +
-#'   stat_ma_eq(formula = y ~ x)
+#'   stat_ma_eq(formula = y ~ x,
+#'              aes(label = paste(after_stat(eq.label),
+#'                                after_stat(p.value.label),
+#'                                sep = "*\", \"*")))
 #'
 #' # explicit formula "x explained by y"
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   stat_ma_line(formula = x ~ y) +
-#'   stat_ma_eq(formula = x ~ y)
+#'   stat_ma_eq(formula = x ~ y,
+#'              aes(label = paste(after_stat(eq.label),
+#'                                after_stat(p.value.label),
+#'                                sep = "*\", \"*")))
 #'
-#' # angle
+#' # angle of label text
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   stat_ma_line() +
 #'   stat_ma_eq(angle = 90, hstep = 0.05, vstep = 0,
 #'              label.y = 0.98, hjust = 1)
-#'
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_point() +
-#'   stat_ma_line() +
-#'   stat_ma_eq(angle = 90,
-#'              hstep = 0.05, vstep = 0, hjust = 0,
-#'              label.y = 0.5)
 #'
 #' # grouping
 #' ggplot(my.data, aes(x, y, color = group)) +
@@ -215,17 +250,6 @@
 #'                                sep = "*\": \"*"))) +
 #'   theme_classic()
 #'
-#' # Location of equations
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_point() +
-#'   stat_ma_line() +
-#'   stat_ma_eq(label.y = "bottom", label.x = "right")
-#'
-#' ggplot(my.data, aes(x, y, color = group)) +
-#'   geom_point() +
-#'   stat_ma_line() +
-#'   stat_ma_eq(label.y = 0.03, label.x = 0.95, vstep = 0.1)
-#'
 #' # geom = "text"
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
@@ -239,6 +263,7 @@
 #' # This provides a quick way of finding out the names of the variables that
 #' # are available for mapping to aesthetics.
 #'
+#' # default is ouitput.type = "expression"
 #'   ggplot(my.data, aes(x, y)) +
 #'     geom_point() +
 #'     stat_ma_eq(geom = "debug")
@@ -461,7 +486,7 @@ ma_eq_compute_group_fun <- function(data,
   coefs <- stats::coefficients(mf, method = method)
   rr <- mf[["rsquare"]]
   idx <- which(mf[["regression.results"]][["Method"]] == method)
-  p.value <- mf[["regression.results"]]["P-perm (1-tailed)", idx]
+  p.value <- mf[["regression.results"]][["P-perm (1-tailed)"]][idx]
 
   formula.rhs.chr <- as.character(formula)[3]
   forced.origin <- grepl("-[[:space:]]*1|+[[:space:]]*0", formula.rhs.chr)
@@ -514,10 +539,10 @@ ma_eq_compute_group_fun <- function(data,
 
     if (output.type == "expression") {
       rr.char <- sprintf("\"%#.*f\"", rr.digits, rr)
-      p.value.char <- sprintf("\"%#.*g\"", p.digits, p.value)
+      p.value.char <- sprintf("\"%#.*f\"", p.digits, p.value)
     } else {
       rr.char <- sprintf("%#.*f", rr.digits, rr)
-      p.value.char <- sprintf("%#.*g", p.digits, p.value)
+      p.value.char <- sprintf("%#.*f", p.digits, p.value)
     }
 
     # build the data frames to return
@@ -535,7 +560,7 @@ ma_eq_compute_group_fun <- function(data,
                                                       "~`=`~"))),
                           p.value.label =
                             ifelse(is.na(p.value), character(0L),
-                                   paste(ifelse(small.p, "italic(p)",  "italic(P)"),
+                                   paste(ifelse(small.p, "italic(p)[perm]",  "italic(P)[perm]"),
                                          ifelse(p.value < 10^(-p.digits),
                                                 sprintf("\"%.*f\"", p.digits, 10^(-p.digits)),
                                                 p.value.char),
@@ -557,7 +582,7 @@ ma_eq_compute_group_fun <- function(data,
                                          sep = ifelse(rr < 10^(-rr.digits), " < ", " = "))),
                           p.value.label =
                             ifelse(is.na(p.value), character(0L),
-                                   paste(ifelse(small.p, "p",  "P"),
+                                   paste(ifelse(small.p, "p_{perm}",  "P_{perm}"),
                                          ifelse(p.value < 10^(-p.digits), as.character(10^(-p.digits)), p.value.char),
                                          sep = ifelse(p.value < 10^(-p.digits), " < ", " = "))),
                           n.label = paste("n = ", n, sep = ""),
@@ -575,7 +600,7 @@ ma_eq_compute_group_fun <- function(data,
                                          sep = ifelse(rr < 10^(-rr.digits), " < ", " = "))),
                           p.value.label =
                             ifelse(is.na(p.value), character(0L),
-                                   paste(ifelse(small.p, "_p_", "_P_"),
+                                   paste(ifelse(small.p, "_p_<sub>perm</sub>", "_P_<sub>perm</sub>"),
                                          ifelse(p.value < 10^(-p.digits), as.character(10^(-p.digits)), p.value.char),
                                          sep = ifelse(p.value < 10^(-p.digits), " < ", " = "))),
                           n.label = paste("_n_ = ", n, sep = ""),

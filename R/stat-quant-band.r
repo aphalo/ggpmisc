@@ -258,11 +258,7 @@ quant_band_compute_group_fun <- function(data,
   z[["quantile.ymax"]] <- z.ls[[3]][["quantile"]]
 
   z[["flipped_aes"]] <- flipped_aes
-  z <- ggplot2::flip_data(z, flipped_aes)
-  if (!"fill" %in% colnames(z)) {
-    z[["fill"]] <- "steelblue"
-  }
-  z
+  ggplot2::flip_data(z, flipped_aes)
 }
 
 #' @rdname ggpmisc-ggproto

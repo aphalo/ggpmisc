@@ -486,6 +486,38 @@ ggplot(my.data, aes(x, y)) +
                label.y = 0.9)
 ```
 
+### stat_ma_eq() and stat_ma_line()
+
+Package 'lmodel2' implements model II fits for major axis (MA), standard major
+axis (SMA) and ranged (RMA) regression for linear relationships. These
+approaches of regression are used when both variables are subject to random
+variation and the intention is not to estimate _y_ from _x_ but instead to
+describe the slope of the relationship between them. A typical example in
+biology are allometric relationships.
+
+In the figure above we see that the ordinary least squares (OLS) linear
+regression of _y_ on _x_ and _x_ on _y_ differ. Major axis regression provides
+an estimate of the slope that is independent of the direction of the
+relationship relation. $R^2$ remains the same in all cases, while the equation
+changes it decribes the same line.
+
+```{r}
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_ma_line() +
+  stat_ma_eq(aes(label = stat(eq.label)))
+```
+
+```{r}
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_ma_line(color = "blue") +
+  stat_ma_eq(aes(label = stat(eq.label)), color = "blue") +
+  stat_ma_line(color = "red", orientation = "y") +
+  stat_ma_eq(aes(label = stat(eq.label)), color = "red", orientation = "y",
+             label.y = 0.9)
+```
+
 ### stat_quant_eq(), stat_quant_line() and stat_quant_band()
 
 Package 'quantreg' implements quantile regression for multiple types of models:

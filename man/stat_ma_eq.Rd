@@ -196,29 +196,65 @@ ggplot(my.data, aes(x, y)) +
   stat_ma_line() +
   stat_ma_eq()
 
+# using defaults (major axis regression)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_ma_line() +
+  stat_ma_eq(aes(label =
+    paste(after_stat(eq.label),
+          after_stat(p.value.label),
+          sep = "*\", \"*")))
+
 # using major axis regression
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_ma_line(method = "MA") +
-  stat_ma_eq(method = "MA")
+  stat_ma_eq(aes(label =
+    paste(after_stat(eq.label),
+          after_stat(p.value.label),
+          sep = "*\", \"*")),
+          method = "MA")
 
 # using standard major axis regression
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_ma_line(method = "SMA") +
-  stat_ma_eq(method = "SMA")
+  stat_ma_eq(aes(label =
+    paste(after_stat(eq.label),
+          after_stat(p.value.label),
+          sep = "*\", \"*")),
+          method = "SMA")
 
 # using ranged major axis regression
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_ma_line(method = "RMA", range.y = "interval", range.x = "interval") +
-  stat_ma_eq(method = "RMA", range.y = "interval", range.x = "interval")
+  stat_ma_eq(aes(label =
+    paste(after_stat(eq.label),
+          after_stat(p.value.label),
+          sep = "*\", \"*")),
+          method = "RMA",
+          range.y = "interval", range.x = "interval")
 
-# using defaults
+# using standard major axis regression
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  stat_ma_line() +
-  stat_ma_eq()
+  stat_ma_line(method = "OLS") +
+  stat_ma_eq(aes(label =
+    paste(after_stat(eq.label),
+          after_stat(p.value.label),
+          sep = "*\", \"*")),
+          method = "OLS")
+
+# No permutation-based test
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_ma_line(method = "MA") +
+  stat_ma_eq(aes(label =
+    paste(after_stat(eq.label),
+          after_stat(p.value.label),
+          sep = "*\", \"*")),
+          method = "MA", nperm = 0)
 
 # same formula as default
 ggplot(my.data, aes(x, y)) +
@@ -232,7 +268,7 @@ ggplot(my.data, aes(x, y)) +
   stat_ma_line(formula = x ~ y) +
   stat_ma_eq(formula = x ~ y)
 
-# angle
+# angle of label text
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_ma_line() +
@@ -269,17 +305,6 @@ ggplot(my.data, aes(x, y,  shape = group, linetype = group,
                                sep = "*\": \"*"))) +
   theme_classic()
 
-# Location of equations
-ggplot(my.data, aes(x, y)) +
-  geom_point() +
-  stat_ma_line() +
-  stat_ma_eq(label.y = "bottom", label.x = "right")
-
-ggplot(my.data, aes(x, y, color = group)) +
-  geom_point() +
-  stat_ma_line() +
-  stat_ma_eq(label.y = 0.03, label.x = 0.95, vstep = 0.1)
-
 # geom = "text"
 ggplot(my.data, aes(x, y)) +
   geom_point() +
@@ -293,6 +318,7 @@ if (requireNamespace("gginnards", quietly = TRUE)) {
 # This provides a quick way of finding out the names of the variables that
 # are available for mapping to aesthetics.
 
+# default is ouitput.type = "expression"
   ggplot(my.data, aes(x, y)) +
     geom_point() +
     stat_ma_eq(geom = "debug")
