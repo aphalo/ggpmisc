@@ -256,6 +256,21 @@ ggplot(my.data, aes(x, y)) +
   stat_poly_eq(aes(label = stat(eq.label)), color = "red", orientation = "y",
                label.y = 0.9)
 
+## -----------------------------------------------------------------------------
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_ma_line() +
+  stat_ma_eq(aes(label = stat(eq.label)))
+
+## -----------------------------------------------------------------------------
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_ma_line(color = "blue") +
+  stat_ma_eq(aes(label = stat(eq.label)), color = "blue") +
+  stat_ma_line(color = "red", orientation = "y") +
+  stat_ma_eq(aes(label = stat(eq.label)), color = "red", orientation = "y",
+             label.y = 0.9)
+
 ## ---- warning=FALSE-----------------------------------------------------------
 ggplot(my.data, aes(x, y)) +
   geom_point() +

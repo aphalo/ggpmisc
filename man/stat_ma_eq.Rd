@@ -260,13 +260,19 @@ ggplot(my.data, aes(x, y)) +
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_ma_line(formula = y ~ x) +
-  stat_ma_eq(formula = y ~ x)
+  stat_ma_eq(formula = y ~ x,
+             aes(label = paste(after_stat(eq.label),
+                               after_stat(p.value.label),
+                               sep = "*\", \"*")))
 
 # explicit formula "x explained by y"
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_ma_line(formula = x ~ y) +
-  stat_ma_eq(formula = x ~ y)
+  stat_ma_eq(formula = x ~ y,
+             aes(label = paste(after_stat(eq.label),
+                               after_stat(p.value.label),
+                               sep = "*\", \"*")))
 
 # angle of label text
 ggplot(my.data, aes(x, y)) +
@@ -274,13 +280,6 @@ ggplot(my.data, aes(x, y)) +
   stat_ma_line() +
   stat_ma_eq(angle = 90, hstep = 0.05, vstep = 0,
              label.y = 0.98, hjust = 1)
-
-ggplot(my.data, aes(x, y)) +
-  geom_point() +
-  stat_ma_line() +
-  stat_ma_eq(angle = 90,
-             hstep = 0.05, vstep = 0, hjust = 0,
-             label.y = 0.5)
 
 # grouping
 ggplot(my.data, aes(x, y, color = group)) +

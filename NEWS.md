@@ -4,12 +4,15 @@ editor_options:
     wrap: 72
 ---
 
-# ggpmisc 0.4.2-2
+# ggpmisc 0.4.3
 
 Add statistics `stat_ma_line()` and `stat_ma_eq()` implement model II regression
 based on package 'lmodel2' (major axis, standard major axis, and ranged major
 axis regression). Methods `coef()`, `confint()` and `predict()` for fit
 objects returned by `lmodel2::lmodel2()` are also implemented and exported.
+
+Removed setting of fill to light blue in `stat_quant_band()` as there is no safe
+way of overriding the geom's default.
 
 # ggpmisc 0.4.2-2
 
