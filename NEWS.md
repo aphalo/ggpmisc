@@ -20,7 +20,7 @@ affect versions 0.4.0, 0.4.1, 0.4.2 and 0.4.2-1.
 
 # ggpmisc 0.4.2-1
 
-Fix a bug remaining in 0.4.2, that could result in `after_stat()` not being
+Fix a bug remaining in 0.4.2 that could result in `after_stat()` not being
 found.
 
 # ggpmisc 0.4.2
