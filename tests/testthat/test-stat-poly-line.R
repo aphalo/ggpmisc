@@ -20,7 +20,7 @@ if (isNamespaceLoaded(name = "package:ggplot2")) detach(package:ggplot2, unload 
 
 test_that("poly_line_noload", {
   vdiffr::expect_doppelganger("stat_poly_line_noload",
-                              ggplot2::ggplot(my.data, aes(x, y)) +
+                              ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
                                 ggplot2::geom_point() +
                                 ggpmisc::stat_poly_line(formula = y ~ 1)
   )

@@ -13,10 +13,14 @@ my.data <- data.frame(x,
                       block = c("a", "a", "b", "b"),
                       wt = sqrt(x))
 
+if (isNamespaceLoaded(name = "package:ggpmisc")) detach(package:ggpmisc, unload = TRUE)
+if (isNamespaceLoaded(name = "package:ggpp")) detach(package:ggpp, unload = TRUE)
+if (isNamespaceLoaded(name = "package:ggplot2")) detach(package:ggplot2, unload = TRUE)
+
 test_that("quant_line_noload", {
   withCallingHandlers({
     vdiffr::expect_doppelganger("stat_quant_line_noload",
-                                ggplot(my.data, aes(x, y)) +
+                                ggplot(my.data, ggplot2::aes(x, y)) +
                                   geom_point() +
                                   stat_quant_line(formula = y ~ 1)
     )
