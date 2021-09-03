@@ -15,6 +15,7 @@ stat_ma_line(
   range.y = NULL,
   range.x = NULL,
   se = TRUE,
+  signif = FALSE,
   n = 80,
   nperm = 99,
   fullrange = FALSE,
@@ -50,8 +51,11 @@ instead of original variable names.}
 \item{range.y, range.x}{character Pass "relative" or "interval" if method
 "RMA" is to be computed.}
 
-\item{se}{Display confidence interval around smooth? (`TRUE` by default, see
-`level` to control.)}
+\item{se}{logical Return confidence interval around smooth? (`TRUE` by
+default, see `level` to control.)}
+
+\item{signif}{logical Return R2, p-value and n as columns in data? (`FALSE`
+by default.)}
 
 \item{n}{Number of points at which to evaluate smoother.}
 

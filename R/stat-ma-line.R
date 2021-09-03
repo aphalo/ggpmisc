@@ -53,8 +53,10 @@
 #'   "RMA" is to be computed.
 #' @param method character "MA", "SMA" , "RMA" and "OLS".
 #' @param nperm integer Number of permutation used to estimate significance.
-#' @param se Display confidence interval around smooth? (`TRUE` by default, see
-#'   `level` to control.)
+#' @param se logical Return confidence interval around smooth? (`TRUE` by
+#'   default, see `level` to control.)
+#' @param signif logical Return R2, p-value and n as columns in data? (`FALSE`
+#'   by default.)
 #' @param fullrange Should the fit span the full range of the plot, or just
 #'   the data?
 #' @param level Level of confidence interval to use (only 0.95 currently).
@@ -143,6 +145,18 @@
 #'   stat_ma_line() +
 #'   facet_wrap(~group)
 #'
+#' # Inspecting the returned data using geom_debug()
+#' if (requireNamespace("gginnards", quietly = TRUE)) {
+#'   library(gginnards)
+#'
+#'   ggplot(my.data, aes(x, y)) +
+#'     stat_ma_line(geom = "debug")
+#'
+#'   ggplot(my.data, aes(x, y)) +
+#'     stat_ma_line(geom = "debug", signif = TRUE)
+#'
+##' }
+#'
 #' @export
 #'
 stat_ma_line <- function(mapping = NULL,
@@ -155,6 +169,7 @@ stat_ma_line <- function(mapping = NULL,
                          range.y = NULL,
                          range.x = NULL,
                          se = TRUE,
+                         signif = FALSE,
                          n = 80,
                          nperm = 99,
                          fullrange = FALSE,
@@ -206,6 +221,7 @@ stat_ma_line <- function(mapping = NULL,
       range.y = range.y,
       range.x = range.x,
       se = se,
+      signif = signif,
       n = n,
       nperm = nperm,
       fullrange = fullrange,
@@ -227,7 +243,8 @@ stat_ma_line <- function(mapping = NULL,
 ma_line_compute_group_fun <-
   function(data, scales, method = NULL, formula = NULL,
            range.y = NULL, range.x = NULL,
-           se = TRUE, n = 80, nperm = 99, fullrange = FALSE,
+           se = TRUE, signif = FALSE,
+           n = 80, nperm = 99, fullrange = FALSE,
            xseq = NULL, level = 0.95, method.args = list(),
            na.rm = FALSE, flipped_aes = NA, orientation = "x") {
     data <- ggplot2::flip_data(data, flipped_aes)
@@ -261,17 +278,23 @@ ma_line_compute_group_fun <-
         )
     }
 
-    model <- do.call(what = lmodel2::lmodel2, args = fit.args)
+    mf <- do.call(what = lmodel2::lmodel2, args = fit.args)
 
     newdata <- data.frame(x = xseq)
 
-    prediction <- stats::predict(model,
+    prediction <- stats::predict(mf,
                                  method = method,
                                  newdata = newdata,
                                  interval = "confidence"
     )
     names(prediction) <- c("y", "ymin", "ymax")
     prediction <- cbind(newdata, prediction)
+    if (signif) {
+      idx <- which(mf[["regression.results"]][["Method"]] == method)
+      prediction[["p.value"]] <- mf[["regression.results"]][["P-perm (1-tailed)"]][idx]
+      prediction[["r.squared"]] <- mf[["rsquare"]]
+      prediction[["n"]] <- mf[["n"]]
+    }
     prediction$flipped_aes <- flipped_aes
     ggplot2::flip_data(prediction, flipped_aes)
   }
