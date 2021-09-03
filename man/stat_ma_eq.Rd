@@ -196,15 +196,6 @@ ggplot(my.data, aes(x, y)) +
   stat_ma_line() +
   stat_ma_eq()
 
-# using defaults (major axis regression)
-ggplot(my.data, aes(x, y)) +
-  geom_point() +
-  stat_ma_line() +
-  stat_ma_eq(aes(label =
-    paste(after_stat(eq.label),
-          after_stat(p.value.label),
-          sep = "*\", \"*")))
-
 # using major axis regression
 ggplot(my.data, aes(x, y)) +
   geom_point() +
@@ -236,16 +227,6 @@ ggplot(my.data, aes(x, y)) +
           method = "RMA",
           range.y = "interval", range.x = "interval")
 
-# using standard major axis regression
-ggplot(my.data, aes(x, y)) +
-  geom_point() +
-  stat_ma_line(method = "OLS") +
-  stat_ma_eq(aes(label =
-    paste(after_stat(eq.label),
-          after_stat(p.value.label),
-          sep = "*\", \"*")),
-          method = "OLS")
-
 # No permutation-based test
 ggplot(my.data, aes(x, y)) +
   geom_point() +
@@ -256,15 +237,6 @@ ggplot(my.data, aes(x, y)) +
           sep = "*\", \"*")),
           method = "MA", nperm = 0)
 
-# same formula as default
-ggplot(my.data, aes(x, y)) +
-  geom_point() +
-  stat_ma_line(formula = y ~ x) +
-  stat_ma_eq(formula = y ~ x,
-             aes(label = paste(after_stat(eq.label),
-                               after_stat(p.value.label),
-                               sep = "*\", \"*")))
-
 # explicit formula "x explained by y"
 ggplot(my.data, aes(x, y)) +
   geom_point() +
@@ -274,25 +246,11 @@ ggplot(my.data, aes(x, y)) +
                                after_stat(p.value.label),
                                sep = "*\", \"*")))
 
-# angle of label text
-ggplot(my.data, aes(x, y)) +
-  geom_point() +
-  stat_ma_line() +
-  stat_ma_eq(angle = 90, hstep = 0.05, vstep = 0,
-             label.y = 0.98, hjust = 1)
-
 # grouping
 ggplot(my.data, aes(x, y, color = group)) +
   geom_point() +
   stat_ma_line() +
   stat_ma_eq()
-
-ggplot(my.data, aes(x, y, color = group)) +
-  geom_point() +
-  stat_ma_line() +
-  stat_ma_eq(angle = 90,
-             hstep = 0.05, vstep = 0, hjust = 0,
-             size = 5, label.y = 2/3)
 
 # labelling equations
 ggplot(my.data, aes(x, y,  shape = group, linetype = group,
