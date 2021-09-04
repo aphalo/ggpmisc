@@ -9,26 +9,26 @@
 #' \code{\link[ggplot2]{stat_smooth}}, including \code{method = "auto"}.
 #'
 #' @details
-#' This statistic is just \code{\link[ggplot2]{stat_smooth}} with different
-#' defaults and updated so that it interprets the argument passed to
-#' \code{formula} differently, accepting \code{y} as explanatory variable and
-#' setting \code{orientation} automatically. In addition the default for
-#' \code{method} is \code{"lm"}, matching the default used in
-#' \code{stat_poly_line()}, \code{stat_quant_line()} and \code{stat_quant_eq()}.
-#' It calls \code{\link[ggplot2]{StatSmooth}} to build a layer.
+#' This statistic is similar to \code{\link[ggplot2]{stat_smooth}} but has
+#' different defaults and it interprets the argument passed to \code{formula}
+#' differently, accepting \code{y} as explanatory variable and setting
+#' \code{orientation} automatically. The default for \code{method} is
+#' \code{"lm"} and spline-based smoothers are not supported. Other defaults are
+#' consistent with those in \code{stat_poly_eq()}, \code{stat_quant_line()},
+#' \code{stat_quant_eq()}, \code{stat_ma_line()}, \code{stat_ma_eq()}.
 #'
-#' \code{\link[ggplot2]{geom_smooth}}, which is used by default, treats each
-#' axis differently and can thus have two orientations. The orientation is easy
-#' to deduce from the argument passed to \code{formula}. Thus,
-#' \code{stat_poly_line()} will by default guess which orientation the layer
-#' should have. If no argument is passed to \code{formula}, the orientation is
-#' ambiguous. In that case the orientation can be specified directly passing an
-#' argument to the \code{orientation} parameter, which can be either \code{"x"}
-#' or \code{"y"}. The value gives the axis that is taken as the explanatory
-#' variable, \code{"x"} being the default orientation you would expect for the
-#' geom. Package 'ggpmisc' does not define new geometries matching the new
-#' statistics as they are not needed and conceptually transformations of
-#' \code{data} are expressed as statistics.
+#' \code{geom_poly_line()} treats the x and y aesthetics differently and can
+#' thus have two orientations. The orientation can be deduced from the argument
+#' passed to \code{formula}. Thus, \code{stat_poly_line()} will by default guess
+#' which orientation the layer should have. If no argument is passed to
+#' \code{formula}, the formula defaults to \code{y ~ x}. For consistency with
+#' \code{\link[ggplot2]{stat_smooth}} orientation can be also specified directly
+#' passing an argument to the \code{orientation} parameter, which can be either
+#' \code{"x"} or \code{"y"}. The value of \code{orientation} gives the axis that
+#' is taken as the explanatory variable. Package 'ggpmisc' does not define
+#' new geometries matching the new statistics as they are not needed and
+#' conceptually transformations of \code{data} are statistics in the grammar
+#' of graphics.
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs to be
@@ -60,6 +60,8 @@
 #' @param method.args named list with additional arguments.
 #' @param se Display confidence interval around smooth? (`TRUE` by default, see
 #'   `level` to control.)
+#' @param mf.values logical Add R2, adjusted R2, p-value and n as columns to
+#'   returned data? (`FALSE` by default.)
 #' @param fullrange Should the fit span the full range of the plot, or just
 #'   the data?
 #' @param level Level of confidence interval to use (0.95 by default).
@@ -141,6 +143,18 @@
 #'   stat_poly_line(method = "auto", span = 0.8) +
 #'   facet_wrap(~drv)
 #'
+#' # Inspecting the returned data using geom_debug()
+#' if (requireNamespace("gginnards", quietly = TRUE)) {
+#'   library(gginnards)
+#'
+#'   ggplot(my.data, aes(x, y)) +
+#'     stat_poly_line(geom = "debug")
+#'
+#'   ggplot(my.data, aes(x, y)) +
+#'     stat_poly_line(geom = "debug", mf.values = TRUE)
+#'
+##' }
+#'
 #' @export
 #'
 stat_poly_line <- function(mapping = NULL, data = NULL,
@@ -149,6 +163,7 @@ stat_poly_line <- function(mapping = NULL, data = NULL,
                            method = "lm",
                            formula = NULL,
                            se = TRUE,
+                           mf.values = FALSE,
                            n = 80,
                            span = 0.75,
                            fullrange = FALSE,
@@ -191,7 +206,7 @@ stat_poly_line <- function(mapping = NULL, data = NULL,
   ggplot2::layer(
     data = data,
     mapping = mapping,
-    stat = ggplot2::StatSmooth,
+    stat = StatPolyLine,
     geom = geom,
     position = position,
     show.legend = show.legend,
@@ -200,17 +215,127 @@ stat_poly_line <- function(mapping = NULL, data = NULL,
       method = method,
       formula = formula,
       se = se,
+      mf.values = mf.values,
       n = n,
       fullrange = fullrange,
       level = level,
       na.rm = na.rm,
       orientation = orientation,
       method.args = method.args,
-      span = span,
       ...
     )
   )
 }
+
+poly_line_compute_group_fun <-
+  function(data, scales,
+           method = NULL,
+           formula = NULL,
+           se = TRUE,
+           mf.values = FALSE,
+           n = 80,
+           fullrange = FALSE,
+           xseq = NULL,
+           level = 0.95,
+           method.args = list(),
+           na.rm = FALSE,
+           flipped_aes = NA,
+           orientation = "x") {
+    data <- ggplot2::flip_data(data, flipped_aes)
+    if (length(unique(data$x)) < 2) {
+      # Not enough data to perform fit
+      return(data.frame())
+    }
+
+    if (is.null(data$weight)) data$weight <- 1
+
+    if (is.null(xseq)) {
+      if (fullrange) {
+        xrange <- scales[[orientation]]$dimension()
+      } else {
+        xrange <- range(data$x, na.rm = TRUE)
+      }
+      xseq <- seq(from = xrange[1], to = xrange[2], length.out = n)
+    }
+
+    if (is.character(method)) {
+      method <- match.fun(method)
+    }
+
+    base.args <- list(quote(formula),
+                      data = quote(data),
+                      weights = quote(weight))
+    mf <- do.call(method, c(base.args, method.args))
+
+    newdata <- data.frame(x = xseq)
+    prediction <- stats::predict(mf,
+                                 newdata = newdata,
+                                 se.fit = se,
+                                 level = level,
+                                 interval = if (se) "confidence" else "none"
+    )
+    if (se) {
+      if (exists("fit", prediction)) {
+        prediction <- as.data.frame(prediction[["fit"]])
+      }
+      names(prediction) <- c("y", "ymin", "ymax")
+    } else {
+      prediction <- data.frame(y = as.vector(prediction))
+    }
+    prediction <- cbind(newdata, prediction)
+
+    if (mf.values) {
+      mf.summary <- summary(mf)
+      # summary methods for different fit methods may no return some slots
+      if (exists("fstatistic", mf.summary)) {
+        prediction[["p.value"]] <-
+          stats::pf(q = mf.summary[["fstatistic"]][["value"]],
+                    df1 = mf.summary[["fstatistic"]][["numdf"]],
+                    df2 = mf.summary[["fstatistic"]][["dendf"]],
+                    lower.tail = FALSE)
+      } else {
+        prediction[["p.value"]] <- NA_real_
+      }
+      if (exists("r.squared", mf.summary)) {
+        prediction[["r.squared"]] <- mf.summary[["r.squared"]]
+      } else {
+        prediction[["r.squared"]] <- NA_real_
+      }
+      if (exists("adj.r.squared", mf.summary)) {
+        prediction[["adj.r.squared"]] <- mf.summary[["adj.r.squared"]]
+      } else {
+        prediction[["adj.r.squared"]] <- NA_real_
+      }
+      if (exists("residuals", mf)) {
+        prediction[["n"]] <- length(mf[["residuals"]])
+      } else {
+        prediction[["n"]] <- NA_real_
+      }
+    }
+
+    prediction$flipped_aes <- flipped_aes
+    ggplot2::flip_data(prediction, flipped_aes)
+  }
+
+#' @rdname ggpmisc-ggproto
+#' @format NULL
+#' @usage NULL
+#' @export
+StatPolyLine <-
+  ggplot2::ggproto("StatPolyLine", Stat,
+                   setup_params = function(data, params) {
+                     params[["flipped_aes"]] <-
+                       ggplot2::has_flipped_aes(data, params, ambiguous = TRUE)
+                     params
+                   },
+
+                   extra_params = c("na.rm", "orientation"),
+
+                   compute_group = poly_line_compute_group_fun,
+
+                   required_aes = c("x", "y")
+  )
+
 
 #' Swap x and y in a formula
 #'

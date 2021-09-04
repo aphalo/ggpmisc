@@ -55,8 +55,8 @@
 #' @param nperm integer Number of permutation used to estimate significance.
 #' @param se logical Return confidence interval around smooth? (`TRUE` by
 #'   default, see `level` to control.)
-#' @param signif logical Return R2, p-value and n as columns in data? (`FALSE`
-#'   by default.)
+#' @param mf.values logical Add R2, p-value and n as columns to returned data?
+#'   (`FALSE` by default.)
 #' @param fullrange Should the fit span the full range of the plot, or just
 #'   the data?
 #' @param level Level of confidence interval to use (only 0.95 currently).
@@ -74,9 +74,9 @@
 #'   interval around the mean} \item{se}{standard error} }
 #'
 #' @section Aesthetics: \code{stat_ma_line} understands \code{x} and \code{y},
-#'   to be referenced in the \code{formula}. Both must be mapped to \code{numeric}
-#'   variables. In addition, the aesthetics understood by the geom
-#'   (\code{"geom_smooth"} is the default) are understood and grouping
+#'   to be referenced in the \code{formula}. Both must be mapped to
+#'   \code{numeric} variables. In addition, the aesthetics understood by the
+#'   geom (\code{"geom_smooth"} is the default) are understood and grouping
 #'   respected.
 #'
 #' @family ggplot statistics for major axis regression
@@ -153,7 +153,7 @@
 #'     stat_ma_line(geom = "debug")
 #'
 #'   ggplot(my.data, aes(x, y)) +
-#'     stat_ma_line(geom = "debug", signif = TRUE)
+#'     stat_ma_line(geom = "debug", mf.values = TRUE)
 #'
 ##' }
 #'
@@ -169,7 +169,7 @@ stat_ma_line <- function(mapping = NULL,
                          range.y = NULL,
                          range.x = NULL,
                          se = TRUE,
-                         signif = FALSE,
+                         mf.values = FALSE,
                          n = 80,
                          nperm = 99,
                          fullrange = FALSE,
@@ -221,7 +221,7 @@ stat_ma_line <- function(mapping = NULL,
       range.y = range.y,
       range.x = range.x,
       se = se,
-      signif = signif,
+      mf.values = mf.values,
       n = n,
       nperm = nperm,
       fullrange = fullrange,
@@ -243,7 +243,7 @@ stat_ma_line <- function(mapping = NULL,
 ma_line_compute_group_fun <-
   function(data, scales, method = NULL, formula = NULL,
            range.y = NULL, range.x = NULL,
-           se = TRUE, signif = FALSE,
+           se = TRUE, mf.values = FALSE,
            n = 80, nperm = 99, fullrange = FALSE,
            xseq = NULL, level = 0.95, method.args = list(),
            na.rm = FALSE, flipped_aes = NA, orientation = "x") {
@@ -289,7 +289,7 @@ ma_line_compute_group_fun <-
     )
     names(prediction) <- c("y", "ymin", "ymax")
     prediction <- cbind(newdata, prediction)
-    if (signif) {
+    if (mf.values) {
       idx <- which(mf[["regression.results"]][["Method"]] == method)
       prediction[["p.value"]] <- mf[["regression.results"]][["P-perm (1-tailed)"]][idx]
       prediction[["r.squared"]] <- mf[["rsquare"]]

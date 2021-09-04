@@ -15,7 +15,7 @@ stat_ma_line(
   range.y = NULL,
   range.x = NULL,
   se = TRUE,
-  signif = FALSE,
+  mf.values = FALSE,
   n = 80,
   nperm = 99,
   fullrange = FALSE,
@@ -54,8 +54,8 @@ instead of original variable names.}
 \item{se}{logical Return confidence interval around smooth? (`TRUE` by
 default, see `level` to control.)}
 
-\item{signif}{logical Return R2, p-value and n as columns in data? (`FALSE`
-by default.)}
+\item{mf.values}{logical Add R2, p-value and n as columns to returned data?
+(`FALSE` by default.)}
 
 \item{n}{Number of points at which to evaluate smoother.}
 
@@ -123,9 +123,9 @@ new statistics as they are not needed and conceptually transformations of
 
 \section{Aesthetics}{
  \code{stat_ma_line} understands \code{x} and \code{y},
-  to be referenced in the \code{formula}. Both must be mapped to \code{numeric}
-  variables. In addition, the aesthetics understood by the geom
-  (\code{"geom_smooth"} is the default) are understood and grouping
+  to be referenced in the \code{formula}. Both must be mapped to
+  \code{numeric} variables. In addition, the aesthetics understood by the
+  geom (\code{"geom_smooth"} is the default) are understood and grouping
   respected.
 }
 
@@ -190,6 +190,18 @@ ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_ma_line() +
   facet_wrap(~group)
+
+# Inspecting the returned data using geom_debug()
+if (requireNamespace("gginnards", quietly = TRUE)) {
+  library(gginnards)
+
+  ggplot(my.data, aes(x, y)) +
+    stat_ma_line(geom = "debug")
+
+  ggplot(my.data, aes(x, y)) +
+    stat_ma_line(geom = "debug", mf.values = TRUE)
+
+}
 
 }
 \seealso{

@@ -4,6 +4,12 @@ editor_options:
     wrap: 72
 ---
 
+# ggpmisc 0.4.4
+
+- Update `stat_poly_line()` and `stat_ma_line()` to optionally add R^2, p-value 
+and n columns to the returned data frame. This is to allow selective colouring
+or hidding of fitted lines.
+
 # ggpmisc 0.4.3
 
 Add statistics `stat_ma_line()` and `stat_ma_eq()` implement model II regression

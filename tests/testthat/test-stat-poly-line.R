@@ -41,6 +41,18 @@ test_that("poly_formulas", {
                                 stat_poly_line(formula = y ~ x)
   )
 
+  vdiffr::expect_doppelganger("stat_poly_line_formula_x_mf",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_line(formula = y ~ x, mf.values = TRUE)
+  )
+
+  vdiffr::expect_doppelganger("stat_poly_line_formula_x_nose",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_line(formula = y ~ x, se = FALSE)
+  )
+
   vdiffr::expect_doppelganger("stat_poly_line_formula_xminus1",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +

@@ -578,7 +578,7 @@ poly_eq_compute_group_fun <- function(data,
     f.value <- mf.summary[["fstatistic"]]["value"]
     f.df1 <- mf.summary[["fstatistic"]]["numdf"]
     f.df2 <- mf.summary[["fstatistic"]]["dendf"]
-    p.value <- 1 - stats::pf(q = f.value, f.df1, f.df2)
+    p.value <- stats::pf(q = f.value, f.df1, f.df2, lower.tail = FALSE)
   } else {
     f.value <- f.df1 <- f.df2 <- p.value <- NA_real_
   }
@@ -968,27 +968,3 @@ as.character.polynomial <- function (x,
   p <- gsub("^-", "", p)
   paste0(signs, p, stars, pow, collapse = " ")
 }
-
-#' author:
-#'
-#' @noRd
-#'
-# polynomial2character <- function (x, decreasing = FALSE, digits = 2, nsmall = 2) {
-#   p <- format(unclass(x), digits = digits, nsmall = nsmall)
-#   lp <- length(p) - 1
-#   names(p) <- 0:lp
-#   p <- p[as.numeric(p) != 0]
-#   if (length(p) == 0)
-#     return("0")
-#   if (decreasing)
-#     p <- rev(p)
-#   signs <- ifelse(as.numeric(p) < 0, "- ", "+")
-#   signs[1] <- if (signs[1] == "- ") "-" else ""
-#   np <- names(p)
-#   pow <- paste("x^", np, sep = "")
-#   pow[np == "0"] <- ""
-#   pow[np == "1"] <- "x"
-#   stars <- rep.int("*", length(p))
-#   stars[p == "" | pow == ""] <- ""
-#   paste0(signs, p, stars, pow, collapse = " ")
-# }

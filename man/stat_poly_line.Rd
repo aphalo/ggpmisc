@@ -13,6 +13,7 @@ stat_poly_line(
   method = "lm",
   formula = NULL,
   se = TRUE,
+  mf.values = FALSE,
   n = 80,
   span = 0.75,
   fullrange = FALSE,
@@ -52,6 +53,9 @@ instead of original variable names.}
 
 \item{se}{Display confidence interval around smooth? (`TRUE` by default, see
 `level` to control.)}
+
+\item{mf.values}{logical Add R2, adjusted R2, p-value and n as columns to
+returned data? (`FALSE` by default.)}
 
 \item{n}{Number of points at which to evaluate smoother.}
 
@@ -97,26 +101,26 @@ alternatively by done by any of the methods supported by
 \code{\link[ggplot2]{stat_smooth}}, including \code{method = "auto"}.
 }
 \details{
-This statistic is just \code{\link[ggplot2]{stat_smooth}} with different
-defaults and updated so that it interprets the argument passed to
-\code{formula} differently, accepting \code{y} as explanatory variable and
-setting \code{orientation} automatically. In addition the default for
-\code{method} is \code{"lm"}, matching the default used in
-\code{stat_poly_line()}, \code{stat_quant_line()} and \code{stat_quant_eq()}.
-It calls \code{\link[ggplot2]{StatSmooth}} to build a layer.
+This statistic is similar to \code{\link[ggplot2]{stat_smooth}} but has
+different defaults and it interprets the argument passed to \code{formula}
+differently, accepting \code{y} as explanatory variable and setting
+\code{orientation} automatically. The default for \code{method} is
+\code{"lm"} and spline-based smoothers are not supported. Other defaults are
+consistent with those in \code{stat_poly_eq()}, \code{stat_quant_line()},
+\code{stat_quant_eq()}, \code{stat_ma_line()}, \code{stat_ma_eq()}.
 
-\code{\link[ggplot2]{geom_smooth}}, which is used by default, treats each
-axis differently and can thus have two orientations. The orientation is easy
-to deduce from the argument passed to \code{formula}. Thus,
-\code{stat_poly_line()} will by default guess which orientation the layer
-should have. If no argument is passed to \code{formula}, the orientation is
-ambiguous. In that case the orientation can be specified directly passing an
-argument to the \code{orientation} parameter, which can be either \code{"x"}
-or \code{"y"}. The value gives the axis that is taken as the explanatory
-variable, \code{"x"} being the default orientation you would expect for the
-geom. Package 'ggpmisc' does not define new geometries matching the new
-statistics as they are not needed and conceptually transformations of
-\code{data} are expressed as statistics.
+\code{geom_poly_line()} treats the x and y aesthetics differently and can
+thus have two orientations. The orientation can be deduced from the argument
+passed to \code{formula}. Thus, \code{stat_poly_line()} will by default guess
+which orientation the layer should have. If no argument is passed to
+\code{formula}, the formula defaults to \code{y ~ x}. For consistency with
+\code{\link[ggplot2]{stat_smooth}} orientation can be also specified directly
+passing an argument to the \code{orientation} parameter, which can be either
+\code{"x"} or \code{"y"}. The value of \code{orientation} gives the axis that
+is taken as the explanatory variable. Package 'ggpmisc' does not define
+new geometries matching the new statistics as they are not needed and
+conceptually transformations of \code{data} are statistics in the grammar
+of graphics.
 }
 \section{Computed variables}{
  `stat_poly_line()` provides the following
@@ -183,6 +187,18 @@ ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
   stat_poly_line(method = "auto", span = 0.8) +
   facet_wrap(~drv)
+
+# Inspecting the returned data using geom_debug()
+if (requireNamespace("gginnards", quietly = TRUE)) {
+  library(gginnards)
+
+  ggplot(my.data, aes(x, y)) +
+    stat_poly_line(geom = "debug")
+
+  ggplot(my.data, aes(x, y)) +
+    stat_poly_line(geom = "debug", mf.values = TRUE)
+
+}
 
 }
 \seealso{

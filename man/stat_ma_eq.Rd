@@ -275,7 +275,7 @@ if (requireNamespace("gginnards", quietly = TRUE)) {
 # This provides a quick way of finding out the names of the variables that
 # are available for mapping to aesthetics.
 
-# default is ouitput.type = "expression"
+# default is output.type = "expression"
   ggplot(my.data, aes(x, y)) +
     geom_point() +
     stat_ma_eq(geom = "debug")
