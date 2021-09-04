@@ -156,11 +156,6 @@ ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
   stat_poly_line(formula = x ~ poly(y, 3))
 
-# The default behavior of geom_smooth()
-ggplot(mpg, aes(displ, hwy)) +
-  geom_point() +
-  stat_poly_line(method = "auto")
-
 # Use span to control the "wiggliness" of the default loess smoother.
 # The span is the fraction of points used to fit each local regression:
 # small numbers make a wigglier curve, larger numbers make a smoother curve.

@@ -111,11 +111,6 @@
 #'   geom_point() +
 #'   stat_poly_line(formula = x ~ poly(y, 3))
 #'
-#' # The default behavior of geom_smooth()
-#' ggplot(mpg, aes(displ, hwy)) +
-#'   geom_point() +
-#'   stat_poly_line(method = "auto")
-#'
 #' # Use span to control the "wiggliness" of the default loess smoother.
 #' # The span is the fraction of points used to fit each local regression:
 #' # small numbers make a wigglier curve, larger numbers make a smoother curve.
@@ -199,7 +194,10 @@ stat_poly_line <- function(mapping = NULL, data = NULL,
       method <- MASS::rlm
     } else if (method == "rq") {
       warning("Method 'rq' not supported, please use 'stat_quant_line()'.")
-      method <- "auto"
+      method <- "lm"
+    } else if (method == "auto") {
+      message("Method 'auto' is equivalent to 'lm', please use 'stat_smooth()' for splines.")
+      method <- "lm"
     }
   }
 
