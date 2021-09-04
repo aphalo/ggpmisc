@@ -1,21 +1,16 @@
 #' Predicted line from model fit
 #'
 #' Predicted values and a confidence band are computed and, by default, plotted.
-#' \code{stat_poly_line()} behaves like \code{\link[ggplot2]{stat_smooth}}
-#' except for supporting the use of \code{y} as explanatory variable in the
-#' model formula, fits the model with \code{stats::lm()} as default for
-#' \code{method}, irrespective of the number of observations. The fit can
-#' alternatively by done by any of the methods supported by
-#' \code{\link[ggplot2]{stat_smooth}}, including \code{method = "auto"}.
 #'
 #' @details
 #' This statistic is similar to \code{\link[ggplot2]{stat_smooth}} but has
 #' different defaults and it interprets the argument passed to \code{formula}
 #' differently, accepting \code{y} as explanatory variable and setting
 #' \code{orientation} automatically. The default for \code{method} is
-#' \code{"lm"} and spline-based smoothers are not supported. Other defaults are
-#' consistent with those in \code{stat_poly_eq()}, \code{stat_quant_line()},
-#' \code{stat_quant_eq()}, \code{stat_ma_line()}, \code{stat_ma_eq()}.
+#' \code{"lm"} and spline-based smoothers like \code{loess} are not supported.
+#' Other defaults are consistent with those in \code{stat_poly_eq()},
+#' \code{stat_quant_line()}, \code{stat_quant_eq()}, \code{stat_ma_line()},
+#' \code{stat_ma_eq()}.
 #'
 #' \code{geom_poly_line()} treats the x and y aesthetics differently and can
 #' thus have two orientations. The orientation can be deduced from the argument
@@ -65,11 +60,6 @@
 #' @param fullrange Should the fit span the full range of the plot, or just
 #'   the data?
 #' @param level Level of confidence interval to use (0.95 by default).
-#' @param span Controls the amount of smoothing for the default loess smoother.
-#'   Smaller numbers produce wigglier lines, larger numbers produce smoother
-#'   lines. Only used with loess, i.e. when `method = "loess"`,
-#'   or when `method = NULL` (the default) and there are fewer than 1,000
-#'   observations.
 #' @param n Number of points at which to evaluate smoother.
 #' @param orientation character Either "x" or "y" controlling the default for
 #'   \code{formula}.
@@ -111,21 +101,6 @@
 #'   geom_point() +
 #'   stat_poly_line(formula = x ~ poly(y, 3))
 #'
-#' # Use span to control the "wiggliness" of the default loess smoother.
-#' # The span is the fraction of points used to fit each local regression:
-#' # small numbers make a wigglier curve, larger numbers make a smoother curve.
-#' ggplot(mpg, aes(displ, hwy)) +
-#'   geom_point() +
-#'   stat_poly_line(method = "loess", span = 0.3)
-#'
-#' ggplot(mpg, aes(displ, hwy)) +
-#'   geom_point() +
-#'   stat_poly_line(method = lm, formula = y ~ splines::bs(x, 3), se = FALSE)
-#'
-#' ggplot(mpg, aes(displ, hwy)) +
-#'   geom_point() +
-#'   stat_poly_line(method = lm, formula = x ~ splines::bs(y, 3), se = FALSE)
-#'
 #' # Smooths are automatically fit to each group (defined by categorical
 #' # aesthetics or the group aesthetic) and for each facet.
 #'
@@ -135,7 +110,7 @@
 #'
 #' ggplot(mpg, aes(displ, hwy)) +
 #'   geom_point() +
-#'   stat_poly_line(method = "auto", span = 0.8) +
+#'   stat_poly_line() +
 #'   facet_wrap(~drv)
 #'
 #' # Inspecting the returned data using geom_debug()
@@ -160,7 +135,6 @@ stat_poly_line <- function(mapping = NULL, data = NULL,
                            se = TRUE,
                            mf.values = FALSE,
                            n = 80,
-                           span = 0.75,
                            fullrange = FALSE,
                            level = 0.95,
                            method.args = list(),

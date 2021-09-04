@@ -6,12 +6,15 @@ editor_options:
 
 # ggpmisc 0.4.4
 
-An issue raised in GitHub and a question in StackOverflow asked for the
-possibility of changing how fitted lines are plotted based on the
-*goodness* of the fit.
+An issue raised in **GitHub** and a question in **StackOverflow** asked
+for the possibility of changing how fitted lines are plotted based on
+the *goodness* of the fit.
 
 -   Update `stat_poly_line()` to optionally add columns `n`, `p.value`,
-    `r.squared` and `adj.r.squared` to the returned data frame.
+    `r.squared` and `adj.r.squared` to the returned data frame. *This
+    statistic no longer supports fitting of splines with methods such as
+    `loess` . This could potentially break user code, in which case the
+    solution is to use `stat_smooth()`.*
 
 -   Update `stat_ma_line()` to optionally add columns `n`, `p.value`,
     and `r.squared` to the returned data frame. (As only a slope can be
@@ -23,7 +26,7 @@ possibility of changing how fitted lines are plotted based on the
 
 # ggpmisc 0.4.3
 
-Add statistics `stat_ma_line()` and `stat_ma_eq()` implement model II
+Add statistics `stat_ma_line()` and `stat_ma_eq()` implementing model II
 regression based on package 'lmodel2' (major axis, standard major axis,
 and ranged major axis regression). Methods `coef()`, `confint()` and
 `predict()` for fit objects returned by `lmodel2::lmodel2()` are also
