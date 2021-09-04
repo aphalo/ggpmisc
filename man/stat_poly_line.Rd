@@ -160,10 +160,10 @@ ggplot(mpg, aes(displ, hwy)) +
 if (requireNamespace("gginnards", quietly = TRUE)) {
   library(gginnards)
 
-  ggplot(my.data, aes(x, y)) +
+  ggplot(mpg, aes(displ, hwy)) +
     stat_poly_line(geom = "debug")
 
-  ggplot(my.data, aes(x, y)) +
+  ggplot(mpg, aes(displ, hwy)) +
     stat_poly_line(geom = "debug", mf.values = TRUE)
 
 }

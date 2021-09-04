@@ -20,9 +20,9 @@ the *goodness* of the fit.
     and `r.squared` to the returned data frame. (As only a slope can be
     fitted, `adj.r.squared` is irrelevant.)
 
--   Update `stat_quant_line()` to optionally add an `n` column to the
-    returned data frame. (No exact equivalent of `r.squared`, which is
-    globally defined for OLS, exists for quantile regression.)
+-   Update `stat_quant_line()` and `stat_quant_band()` to optionally add
+    an `n` column to the returned data frame. (No exact equivalent of
+    `r.squared` exists for quantile regression.)
 
 # ggpmisc 0.4.3
 

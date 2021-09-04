@@ -12,6 +12,7 @@ stat_quant_band(
   ...,
   quantiles = c(0.25, 0.5, 0.75),
   formula = NULL,
+  mf.values = FALSE,
   n = 80,
   method = "rq",
   method.args = list(),
@@ -43,6 +44,9 @@ quantiles at the  edges of the band and optionally a line within the band.}
 
 \item{formula}{a formula object. Using aesthetic names \code{x} and \code{y}
 instead of original variable names.}
+
+\item{mf.values}{logical Add n as a column to returned data? (`FALSE` by
+default.)}
 
 \item{n}{Number of points at which to evaluate smoother.}
 
@@ -82,7 +86,7 @@ optional line within. \code{stat_quant_band()} supports the use of both
 \details{
 This statistic is similar to \code{\link{stat_quant_line}} but plots the
 quantiles differently with the band representing a region between two
-quantiles, while in \code{stat_quant_line()} the bands plotted whe
+quantiles, while in \code{stat_quant_line()} the bands plotted when
 \code{se = TRUE} represent confidence intervals for the fitted quantile
 lines.
 
@@ -93,13 +97,6 @@ passed to \code{formula}, it defaults to \code{y ~ x} but \code{x ~y} is also
 accepted, and equivalent to \code{y ~ x} plus \code{orientation = "y"}.
 Package 'ggpmisc' does not define a new geometry matching this statistic as
 it is enough for the statistic to return suitable `x` and `y` values.
-}
-\note{
-Even though the \code{ggplot2::geom_smooth()} is used by default, the
-  default colour of the band is different to avoid confusion of between
-  quantile bands and confidence bands. Of course, the \code{fill} aesthtics
-  can be mapped to a variable or to a constant as usual
-  (\code{fill = "grey60"} restores the geom's original default).
 }
 \section{Aesthetics}{
  \code{stat_quant_eq} expects \code{x} and \code{y},
@@ -173,6 +170,18 @@ ggplot(mpg, aes(displ, hwy)) +
 ggplot(mpg, aes(displ, hwy)) +
   stat_quant_band(quantiles = c(0, 0.1, 0.2)) +
   geom_point()
+
+# Inspecting the returned data using geom_debug()
+if (requireNamespace("gginnards", quietly = TRUE)) {
+  library(gginnards)
+
+  ggplot(mpg, aes(displ, hwy)) +
+    stat_quant_band(geom = "debug")
+
+  ggplot(mpg, aes(displ, hwy)) +
+    stat_quant_band(geom = "debug", mf.values = TRUE)
+
+}
 
 }
 \seealso{

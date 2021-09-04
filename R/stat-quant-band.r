@@ -6,7 +6,7 @@
 #'
 #' This statistic is similar to \code{\link{stat_quant_line}} but plots the
 #' quantiles differently with the band representing a region between two
-#' quantiles, while in \code{stat_quant_line()} the bands plotted whe
+#' quantiles, while in \code{stat_quant_line()} the bands plotted when
 #' \code{se = TRUE} represent confidence intervals for the fitted quantile
 #' lines.
 #'
@@ -51,16 +51,12 @@
 #' @param n Number of points at which to evaluate smoother.
 #' @param orientation character Either "x" or "y" controlling the default for
 #'   \code{formula}.
+#' @param mf.values logical Add n as a column to returned data? (`FALSE` by
+#'   default.)
 #'
 #' @return The value returned by the statistic is a data frame, that will have
 #'   \code{n} rows of predicted values for three quantiles as \code{y},
 #'   \code{ymin} and \code{ymax}, plus \code{x}.
-#'
-#' @note Even though the \code{ggplot2::geom_smooth()} is used by default, the
-#'   default colour of the band is different to avoid confusion of between
-#'   quantile bands and confidence bands. Of course, the \code{fill} aesthtics
-#'   can be mapped to a variable or to a constant as usual
-#'   (\code{fill = "grey60"} restores the geom's original default).
 #'
 #' @section Aesthetics: \code{stat_quant_eq} expects \code{x} and \code{y},
 #'   aesthetics to be used in the \code{formula} rather than the names of the
@@ -137,6 +133,18 @@
 #'   stat_quant_band(quantiles = c(0, 0.1, 0.2)) +
 #'   geom_point()
 #'
+#' # Inspecting the returned data using geom_debug()
+#' if (requireNamespace("gginnards", quietly = TRUE)) {
+#'   library(gginnards)
+#'
+#'   ggplot(mpg, aes(displ, hwy)) +
+#'     stat_quant_band(geom = "debug")
+#'
+#'   ggplot(mpg, aes(displ, hwy)) +
+#'     stat_quant_band(geom = "debug", mf.values = TRUE)
+#'
+##' }
+#'
 #' @export
 #'
 stat_quant_band <- function(mapping = NULL,
@@ -146,6 +154,7 @@ stat_quant_band <- function(mapping = NULL,
                             ...,
                             quantiles = c(0.25, 0.5, 0.75),
                             formula = NULL,
+                            mf.values = FALSE,
                             n = 80,
                             method = "rq",
                             method.args = list(),
@@ -191,6 +200,7 @@ stat_quant_band <- function(mapping = NULL,
     params = list(
       quantiles = quantiles,
       formula = formula,
+      mf.values = mf.values,
       n = n,
       method = method,
       method.args = method.args,
@@ -217,6 +227,7 @@ quant_band_compute_group_fun <- function(data,
                                          method = "rq",
                                          method.args = list(),
                                          lambda = 1,
+                                         mf.values = FALSE,
                                          na.rm = FALSE,
                                          flipped_aes = NA) {
   rlang::check_installed("quantreg", reason = "for `stat_quantile()`")
@@ -256,6 +267,10 @@ quant_band_compute_group_fun <- function(data,
   z[["quantile.ymin"]] <- z.ls[[1]][["quantile"]]
   z[["ymax"]] <- z.ls[[3]][["y"]]
   z[["quantile.ymax"]] <- z.ls[[3]][["quantile"]]
+
+  if (mf.values) {
+    z[["n"]] <- nrow(data)
+  }
 
   z[["flipped_aes"]] <- flipped_aes
   ggplot2::flip_data(z, flipped_aes)
