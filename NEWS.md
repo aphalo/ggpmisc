@@ -6,31 +6,44 @@ editor_options:
 
 # ggpmisc 0.4.4
 
-- Update `stat_poly_line()` and `stat_ma_line()` to optionally add R^2, p-value 
-and n columns to the returned data frame. This is to allow selective colouring
-or hidding of fitted lines.
+An issue raised in GitHub and a question in StackOverflow asked for the
+possibility of changing how fitted lines are plotted based on the
+*goodness* of the fit.
+
+-   Update `stat_poly_line()` to optionally add columns `n`, `p.value`,
+    `r.squared` and `adj.r.squared` to the returned data frame.
+
+-   Update `stat_ma_line()` to optionally add columns `n`, `p.value`,
+    and `r.squared` to the returned data frame. (As only a slope can be
+    fitted, `adj.r.squared` is irrelevant.)
+
+-   Update `stat_quant_line()` to optionally add an `n` column to the
+    returned data frame. (No exact equivalent of `r.squared`, which is
+    globally defined for OLS, exists for quantile regression.)
 
 # ggpmisc 0.4.3
 
-Add statistics `stat_ma_line()` and `stat_ma_eq()` implement model II regression
-based on package 'lmodel2' (major axis, standard major axis, and ranged major
-axis regression). Methods `coef()`, `confint()` and `predict()` for fit
-objects returned by `lmodel2::lmodel2()` are also implemented and exported.
+Add statistics `stat_ma_line()` and `stat_ma_eq()` implement model II
+regression based on package 'lmodel2' (major axis, standard major axis,
+and ranged major axis regression). Methods `coef()`, `confint()` and
+`predict()` for fit objects returned by `lmodel2::lmodel2()` are also
+implemented and exported.
 
-Removed setting of fill to light blue in `stat_quant_band()` as there is no safe
-way of overriding the geom's default.
+Removed setting of fill to light blue in `stat_quant_band()` as there is
+no safe way of overriding the geom's default.
 
 # ggpmisc 0.4.2-2
 
-Fix major bug in `stat_poly_eq()` and `stat_quant_eq()` affecting only some R
-builds, reported and reproduced for Linux. (Reported by Flavio Lozano-Isla, T.
-BruceLee and Lewis Hooper, debugged with the help of Mark B. Neal.) Reported to
-affect versions 0.4.0, 0.4.1, 0.4.2 and 0.4.2-1.
+Fix major bug in `stat_poly_eq()` and `stat_quant_eq()` affecting only
+some R builds, reported and reproduced for Linux. (Reported by Flavio
+Lozano-Isla, T. BruceLee and Lewis Hooper, debugged with the help of
+Mark B. Neal.) Reported to affect versions 0.4.0, 0.4.1, 0.4.2 and
+0.4.2-1.
 
 # ggpmisc 0.4.2-1
 
-Fix a bug remaining in 0.4.2, that could result in `after_stat()` not being
-found. (Reported by Prof. Brian Ripley and Michael Steinbaugh.)
+Fix a bug remaining in 0.4.2, that could result in `after_stat()` not
+being found. (Reported by Prof. Brian Ripley and Michael Steinbaugh.)
 
 # ggpmisc 0.4.2
 
@@ -147,7 +160,8 @@ Many thanks!
     values returned in addition to the corresponding `character` labels
     when `stat_poly_eq()` is called with `output.type` other than
     `numeric`. Similarly for `n` and `rho` in the case of
-    `stat_quant_eq()`. (enhancement suggested by a question from *Tiptop*)
+    `stat_quant_eq()`. (enhancement suggested by a question from
+    *Tiptop*)
 
 -   Fix bug in `stat_poly_eq()` leading to empty returned value when
     data contains too few observations to fit the model. (reported by

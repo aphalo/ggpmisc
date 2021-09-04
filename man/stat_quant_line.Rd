@@ -13,6 +13,7 @@ stat_quant_line(
   quantiles = c(0.25, 0.5, 0.75),
   formula = NULL,
   se = length(quantiles) == 1L,
+  mf.values = FALSE,
   n = 80,
   method = "rq",
   method.args = list(),
@@ -48,6 +49,9 @@ can include aesthetics whose values you want to set, not map. See
 instead of original variable names.}
 
 \item{se}{logical Passed to \code{quantreg::predict.rq()}.}
+
+\item{mf.values}{logical Add n as a column to returned data? (`FALSE` by
+default.)}
 
 \item{n}{Number of points at which to evaluate smoother.}
 
@@ -204,6 +208,18 @@ ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
   stat_quant_line(formula = y ~ poly(x, 2)) +
   facet_wrap(~drv)
+
+# Inspecting the returned data using geom_debug()
+if (requireNamespace("gginnards", quietly = TRUE)) {
+  library(gginnards)
+
+  ggplot(mpg, aes(displ, hwy)) +
+    stat_quant_line(geom = "debug")
+
+  ggplot(mpg, aes(displ, hwy)) +
+    stat_quant_line(geom = "debug", mf.values = TRUE)
+
+}
 
 }
 \references{
