@@ -50,11 +50,8 @@ default.)}
 
 \item{n}{Number of points at which to evaluate smoother.}
 
-\item{method}{function or character If character, "lm", "rlm" and
-"rq" are accepted. If a function, it must have formal parameters
-\code{formula} and \code{data} and return a model fit object for which
-\code{summary()} and \code{coefficients()} are consistent with those for
-\code{lm} fits.}
+\item{method}{function or character If character, "rq" and
+"rqss" are accepted.}
 
 \item{method.args}{named list with additional arguments.}
 

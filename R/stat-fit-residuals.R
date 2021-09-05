@@ -30,13 +30,17 @@
 #' @param formula a "formula" object. Using aesthetic names instead of
 #'   original variable names.
 #' @param resid.type character passed to \code{residuals()} as argument for
-#'   \code{type}.
+#'   \code{type} (defaults to \code{"working"} except if \code{weighted = TRUE}
+#'   when it is forced to \code{"deviance"}).
+#' @param weighted logical If true weighted residuals will be returned.
 #' @param orientation character Either "x" or "y" controlling the default for
 #'   \code{formula}.
 #'
 #' @details This stat can be used to automatically plot residuals as points in a
 #'   plot. At the moment it supports only linear models fitted with function
-#'   \code{lm()}. This stat only generates the residuals.
+#'   \code{lm()} or \code{rlm()}. It applies to the fitted model object methods
+#'   \code{\link[stats]{residuals}} or \code{\link[stats]{weighted.residuals()}}
+#'   depending on the argument passed to parameter \code{weighted}.
 #'
 #'   A ggplot statistic receives as data a data frame that is not the one passed
 #'   as argument by the user, but instead a data frame with the variables mapped
@@ -46,16 +50,26 @@
 #'   names, while data is automatically passed the data frame. This helps ensure
 #'   that the model is fitted to the same data as plotted in other layers.
 #'
-#' @note Parameter \code{orientation} is redundant as it only affects the default
-#'   for \code{formula} but is included for consistency with
-#'   \code{ggplot2}.
+#' @note How weights are applied to residuals depends on the method used to fit
+#'   the model. For ordinary least squares (OLS), weights are applied to the
+#'   squares of the residuals, so the weighted residuals are obtained by
+#'   multiplying the "deviance" residuals by the square root of the weights.
+#'   When residuals are penalized differently to fit a model, the weighted
+#'   residuals need to be computed accordingly. Say if we use the absolute value
+#'   of the residuals instead of the squared values, weighted residuals are
+#'   obtained by multiplying the residuals by the weights.
 #'
-#' @section Computed variables: Data frame with same \code{nrow} as \code{data}
-#'   as subset for each group containing five numeric variables. \describe{
-#'   \item{x}{x coordinates of observations} \item{y.resid}{residuals from
-#'   fitted values} \item{y.resid.abs}{absolute residuals from the fit}}.
+#' @section Computed variables: Data frame with same value of \code{nrow} as
+#'   \code{data} as subset for each group containing five numeric variables.
+#'   \describe{ \item{x}{x coordinates of observations or x residuals from
+#'   fitted values}, \item{y}{y coordinates of observations or y residuals from
+#'   fitted values}, \item{x.resid}{residuals from fitted values},
+#'   \item{y.resid}{residuals from fitted values}, \item{weights}{the weights
+#'   passed as input to lm or those computed by rlm}}.
 #'
-#'   By default \code{stat(y.resid)} is mapped to the \code{y} aesthetic.
+#'   For \code{orientation = "x"}, the default, \code{stat(y.resid)} is copied
+#'   to variable \code{y}, while for \code{orientation = "y"}
+#'   \code{stat(x.resid)} is copied to variable \code{x}.
 #'
 #' @family ggplot statistics for model fits
 #'
@@ -70,6 +84,10 @@
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_hline(yintercept = 0, linetype = "dashed") +
 #'   stat_fit_residuals(formula = y ~ x)
+#'
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_hline(yintercept = 0, linetype = "dashed") +
+#'   stat_fit_residuals(formula = y ~ x, weighted = TRUE)
 #'
 #' # plot residuals from linear model with y as explanatory variable
 #' ggplot(my.data, aes(x, y)) +
@@ -148,6 +166,7 @@ stat_fit_residuals <- function(mapping = NULL,
                                method.args = list(),
                                formula = NULL,
                                resid.type = NULL,
+                               weighted = FALSE,
                                position = "identity",
                                na.rm = FALSE,
                                orientation = NA,
@@ -160,6 +179,7 @@ stat_fit_residuals <- function(mapping = NULL,
                   method.args = method.args,
                   formula = formula,
                   resid.type = resid.type,
+                  weighted = weighted,
                   na.rm = na.rm,
                   orientation = orientation,
                   ...)
@@ -177,6 +197,7 @@ residuals_compute_group_fun <- function(data,
                                         method.args,
                                         formula,
                                         resid.type,
+                                        weighted,
                                         orientation) {
   stopifnot(!any(c("formula", "data") %in% names(method.args)))
   if (is.null(data$weight)) {
@@ -219,11 +240,26 @@ residuals_compute_group_fun <- function(data,
                          method.args))
 
   if (!is.null(resid.type)) {
-    resid.args <- list(object = mf, type = resid.type)
+    if (weighted) {
+      if (resid.type != "deviance") {
+        warning("Ignoring supplied 'resid.type' as 'weighted = TRUE'")
+      }
+      resid.args <- list(obj = mf, drop0 = TRUE)
+    } else {
+      resid.args <- list(object = mf, type = resid.type)
+    }
   } else {
-    resid.args <- list(object = mf)
+    if (weighted) {
+      resid.args <- list(obj = mf, drop0 = TRUE)
+    } else {
+      resid.args <- list(object = mf)
+    }
   }
-  fit.residuals <- do.call(stats::residuals, args = resid.args)
+  if (weighted) {
+    fit.residuals <- do.call(stats::weighted.residuals, args = resid.args)
+  } else {
+    fit.residuals <- do.call(stats::residuals, args = resid.args)
+  }
 
   if (exists("w", mf)) {
     weight.vals <- mf[["w"]]
@@ -248,7 +284,6 @@ residuals_compute_group_fun <- function(data,
                weights = weight.vals)
   }
 }
-
 
 #' @rdname ggpmisc-ggproto
 #' @format NULL

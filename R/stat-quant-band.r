@@ -42,11 +42,8 @@
 #'   instead of original variable names.
 #' @param quantiles numeric vector Two or three values in 0..1 indicating the
 #'   quantiles at the  edges of the band and optionally a line within the band.
-#' @param method function or character If character, "lm", "rlm" and
-#'   "rq" are accepted. If a function, it must have formal parameters
-#'   \code{formula} and \code{data} and return a model fit object for which
-#'   \code{summary()} and \code{coefficients()} are consistent with those for
-#'   \code{lm} fits.
+#' @param method function or character If character, "rq" and
+#'   "rqss" are accepted.
 #' @param method.args named list with additional arguments.
 #' @param n Number of points at which to evaluate smoother.
 #' @param orientation character Either "x" or "y" controlling the default for

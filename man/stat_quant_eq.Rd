@@ -178,7 +178,6 @@ columns below in addition to a modified version of the original \code{group}:
 \describe{
   \item{x,npcx}{x position}
   \item{y,npcy}{y position}
-  \item{coef.ls, r.squared, adj.r.squared, AIC, BIC}{as numric values extracted from fit object}
   \item{eq.label}{equation for the fitted polynomial as a character string to be parsed}
   \item{rho.label}{\eqn{rho} of the fitted model as a character string to be parsed}
   \item{AIC.label}{AIC for the fitted model.}

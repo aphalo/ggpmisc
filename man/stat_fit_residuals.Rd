@@ -12,6 +12,7 @@ stat_fit_residuals(
   method.args = list(),
   formula = NULL,
   resid.type = NULL,
+  weighted = FALSE,
   position = "identity",
   na.rm = FALSE,
   orientation = NA,
@@ -40,7 +41,10 @@ and \code{data}.}
 original variable names.}
 
 \item{resid.type}{character passed to \code{residuals()} as argument for
-\code{type}.}
+\code{type} (defaults to \code{"working"} except if \code{weighted = TRUE}
+when it is forced to \code{"deviance"}).}
+
+\item{weighted}{logical If true weighted residuals will be returned.}
 
 \item{position}{The position adjustment to use for overlapping points on this
 layer}
@@ -71,7 +75,9 @@ can include aesthetics whose values you want to set, not map. See
 \details{
 This stat can be used to automatically plot residuals as points in a
   plot. At the moment it supports only linear models fitted with function
-  \code{lm()}. This stat only generates the residuals.
+  \code{lm()} or \code{rlm()}. It applies to the fitted model object methods
+  \code{\link[stats]{residuals}} or \code{\link[stats]{weighted.residuals()}}
+  depending on the argument passed to parameter \code{weighted}.
 
   A ggplot statistic receives as data a data frame that is not the one passed
   as argument by the user, but instead a data frame with the variables mapped
@@ -82,17 +88,27 @@ This stat can be used to automatically plot residuals as points in a
   that the model is fitted to the same data as plotted in other layers.
 }
 \note{
-Parameter \code{orientation} is redundant as it only affects the default
-  for \code{formula} but is included for consistency with
-  \code{ggplot2}.
+How weights are applied to residuals depends on the method used to fit
+  the model. For ordinary least squares (OLS), weights are applied to the
+  squares of the residuals, so the weighted residuals are obtained by
+  multiplying the "deviance" residuals by the square root of the weights.
+  When residuals are penalized differently to fit a model, the weighted
+  residuals need to be computed accordingly. Say if we use the absolute value
+  of the residuals instead of the squared values, weighted residuals are
+  obtained by multiplying the residuals by the weights.
 }
 \section{Computed variables}{
- Data frame with same \code{nrow} as \code{data}
-  as subset for each group containing five numeric variables. \describe{
-  \item{x}{x coordinates of observations} \item{y.resid}{residuals from
-  fitted values} \item{y.resid.abs}{absolute residuals from the fit}}.
+ Data frame with same value of \code{nrow} as
+  \code{data} as subset for each group containing five numeric variables.
+  \describe{ \item{x}{x coordinates of observations or x residuals from
+  fitted values}, \item{y}{y coordinates of observations or y residuals from
+  fitted values}, \item{x.resid}{residuals from fitted values},
+  \item{y.resid}{residuals from fitted values}, \item{weights}{the weights
+  passed as input to lm or those computed by rlm}}.
 
-  By default \code{stat(y.resid)} is mapped to the \code{y} aesthetic.
+  For \code{orientation = "x"}, the default, \code{stat(y.resid)} is copied
+  to variable \code{y}, while for \code{orientation = "y"}
+  \code{stat(x.resid)} is copied to variable \code{x}.
 }
 
 \examples{
@@ -106,6 +122,10 @@ my.data <- data.frame(x, y)
 ggplot(my.data, aes(x, y)) +
   geom_hline(yintercept = 0, linetype = "dashed") +
   stat_fit_residuals(formula = y ~ x)
+
+ggplot(my.data, aes(x, y)) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  stat_fit_residuals(formula = y ~ x, weighted = TRUE)
 
 # plot residuals from linear model with y as explanatory variable
 ggplot(my.data, aes(x, y)) +

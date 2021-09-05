@@ -24,6 +24,9 @@ the *goodness* of the fit.
     an `n` column to the returned data frame. (No exact equivalent of
     `r.squared` exists for quantile regression.)
 
+-   Update `stat_fit_residuals()` to optionally return weighted
+    residuals.
+
 # ggpmisc 0.4.3
 
 Add statistics `stat_ma_line()` and `stat_ma_eq()` implementing model II
