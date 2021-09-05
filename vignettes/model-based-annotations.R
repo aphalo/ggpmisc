@@ -331,6 +331,21 @@ ggplot(my.data, aes(x, y, colour = group)) +
 
 ## -----------------------------------------------------------------------------
 formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y, colour = group)) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  stat_fit_residuals(formula = formula,
+                     method = "rlm",
+                     mapping = aes(size = sqrt(after_stat(weights))),
+                     alpha = 2/3)
+
+## ---- eval = FALSE------------------------------------------------------------
+#  formula <- y ~ poly(x, 3, raw = TRUE)
+#  ggplot(my.data, aes(x, y, colour = group)) +
+#    geom_hline(yintercept = 0, linetype = "dashed") +
+#    stat_fit_residuals(formula = formula, weighted = TRUE)
+
+## -----------------------------------------------------------------------------
+formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_smooth(method = "lm", formula = formula) +
   stat_fit_deviations(formula = formula, colour = "red") +
