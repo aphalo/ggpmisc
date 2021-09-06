@@ -12,19 +12,37 @@ status](https://github.com/aphalo/ggpmisc/workflows/R-CMD-check/badge.svg)](http
 
 Package ‘**ggpmisc**’ (Miscellaneous Extensions to ‘ggplot2’) is a set
 of extensions to R package ‘ggplot2’ (&gt;= 3.0.0) with emphasis on
-annotations and highlighting related to fitted models and data
-summaries. Data summaries shown as text, tables or equations are
-implemented. Package ‘**ggpmisc**’ continues to give access to
-extensions moved to package ‘**ggpp**’. New geoms support insets in
-ggplots. The grammar of graphics is extended to support native plot
-coordinates (npc) so that annotations can be easily positioned using
-special geometries and scales. New position functions facilitate the
-labeling of observations by nudging data labels away or towards curves
-or a focal virtual center.
+annotations and plotting related to fitted models. Estimates from model
+fit objects can be displayed in ggplots as text, tables or equations.
+Predicted values, residuals, deviations and weights can be plotted for
+various model fit functions. Linear models, quantile regression and
+major axis regression as well as those functions with accessors
+following the syntax of package ‘broom’ are supported. Package
+‘**ggpmisc**’ continues to give access to extensions moved as of version
+0.4.0 to package [‘**ggpp**’](https://docs.r4photobiology.info/ggpp/).
 
-## Extended Grammar of Graphics
+## Statistics
 
-Please, see the documentation of package ‘**ggpp**’.
+Statistics that help with reporting the results of model fits are:
+
+| Statistic               | Layer (default geometry)                         | Methods                                        |
+|-------------------------|--------------------------------------------------|------------------------------------------------|
+| stat\_poly\_eq()        | equation, *R*<sup>2</sup>, *P, etc. (text\_npc)* | lm, rlm (**weight** aesthetic fully supported) |
+| stat\_ma\_eq()          | equation, *R*<sup>2</sup>, *P, etc. (text\_npc)* | lmodel2: MA, SMA, RMA, OLS                     |
+| stat\_quant\_eq()       | equation, *P, etc. (text\_npc)*                  | rq (any number of quantiles)                   |
+| stat\_poly\_line()      | line + conf. (smooth)                            | lm, rlm (**weight** aesthetic fully supported) |
+| stat\_ma\_line()        | line + conf. (smooth)                            | lmodel2: MA, SMA, RMA, OLS                     |
+| stat\_quant\_line()     | line + conf. (smooth)                            | rq, rqss (any number of quantiles)             |
+| stat\_quant\_band()     | median + quartiles (smooth)                      | rq, rqss (two or three quantiles)              |
+| stat\_fit\_residuals()  | residuals plot (point)                           | lm, rlm (**weight** aesthetic fully supported) |
+| stat\_fit\_deviations() | deviations from observations (segment)           | lm, rlm (**weight** aesthetic fully supported) |
+| stat\_fit\_glance()     | equation, *R*<sup>2</sup>, *P, etc.*(text\_npc)  | all those supported by ‘broom’                 |
+| stat\_fit\_augment()    | predicted and other values (smooth)              | all those supported by ‘broom’                 |
+| stat\_fit\_tidy()       | fit results, e.g. for equation (text\_npc)       | all those supported by ‘broom’                 |
+| stat\_fit\_tb()         | ANOVA and summary tables (table\_npc)            | all those supported by ‘broom’                 |
+
+Statistics `stat_peaks()` and `stat_valleys()` can be used to highlight
+and/or label maxima and minima in a plot.
 
 ## Aesthetics and scales
 
@@ -43,29 +61,21 @@ numeric outputs and logical binary outcomes to color, fill and shape
 aesthetics. Default arguments are suitable for volcano, quadrant and
 other plots as used for genomics, metabolomics and similar data.
 
-## Statistics
+## Migrated
 
-Statistics `stat_peaks()` and `stat_valleys()` can be used to highlight
-and/or label maxima and minima in a plot.
-
-Statistics that help with reporting the results of model fits are
-`stat_poly_eq()`, `stat_fit_residuals()`, `stat_fit_deviations()`,
-`stat_fit_glance()`, `stat_fit_augment()`, `stat_fit_tidy()` and
-`stat_fit_tb()`.
-
-## MIGRATED
-
-Several extensions formerly included in package ‘ggpmisc’ before version
-0.4.0 were migrated to package ‘ggpp’. They are still available when
-‘ggpmisc’ is loaded, but the documentation now resides in the new
-package ‘**ggpp**’. [![cran
+Several geoms and other extensions formerly included in package
+‘ggpmisc’ until version 0.3.9 were migrated to package ‘ggpp’. They are
+still available when ‘ggpmisc’ is loaded, but the documentation now
+resides in the new package
+[‘**ggpp**’](https://docs.r4photobiology.info/ggpp/). [![cran
 version](https://www.r-pkg.org/badges/version/ggpp)](https://cran.r-project.org/package=ggpp)
 <a href="https://docs.r4photobiology.info/ggpp/"><img src="https://img.shields.io/badge/documentation-ggpp-informational.svg" alt="" /></a>
 
 Functions for the manipulation of layers in ggplot objects, together
 with statistics and geometries useful for debugging extensions to
-package ‘ggplot2’, included in package ‘ggpmisc’ before version 0.3.0
-are now in package ‘**gginnards**’. [![cran
+package ‘ggplot2’, included in package ‘ggpmisc’ until version 0.2.17
+are now in package
+[‘**gginnards**’](https://docs.r4photobiology.info/gginnards). [![cran
 version](https://www.r-pkg.org/badges/version/gginnards)](https://cran.r-project.org/package=gginnards)
 <a href="https://docs.r4photobiology.info/gginnards/"><img src="https://img.shields.io/badge/documentation-gginnards-informational.svg" alt="" /></a>
 
@@ -197,21 +207,22 @@ devtools::install_github("aphalo/ggpmisc")
 ## Documentation
 
 HTML documentation for the package, including help pages and the *User
-Guide*, is available at (<https://docs.r4photobiology.info/ggpmisc/>).
+Guide*, is available at <https://docs.r4photobiology.info/ggpmisc/>.
 
 News about updates are regularly posted at
-(<https://www.r4photobiology.info/>).
+<https://www.r4photobiology.info/>.
 
-Chapter 7 in Aphalo (2020) explains both basic concepts of the gramamr
-of graphics as implemented in ‘ggplot2’ as well as extensions to this
+Chapter 7 in Aphalo (2020) explains basic concepts of the grammar of
+graphics as implemented in ‘ggplot2’ as well as extensions to this
 grammar including several of those made available by packages ‘ggpp’ and
-‘ggpmisc’.
+‘ggpmisc’. Open access supplementary chapters and other information
+related to the book is avaialble at <https://www.learnr-book.info/>.
 
 ## Contributing
 
 Please report bugs and request new features at
-(<https://github.com/aphalo/ggpmisc/issues>). Pull requests are welcome
-at (<https://github.com/aphalo/ggpmisc>).
+<https://github.com/aphalo/ggpmisc/issues>. Pull requests are welcome at
+<https://github.com/aphalo/ggpmisc>.
 
 ## Citation
 

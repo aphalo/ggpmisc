@@ -82,6 +82,8 @@ navbar:
     tutorials:
       text: Resources
       menu:
+      - text: Book 'Learn R - As a Language'
+        href: https://www.learnr-book.info/
       - text: Blog on R by Pedro J. Aphalo
         href: https://www.r4photobiology.info/
       - text: Package 'ggpp'

@@ -12,7 +12,7 @@
 
 <meta name="author" content="Pedro J. Aphalo" />
 
-<meta name="date" content="2021-09-05" />
+<meta name="date" content="2021-09-06" />
 
 <title>Model-Based Plot Annotations</title>
 
@@ -142,7 +142,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h1 class="title toc-ignore">Model-Based Plot Annotations</h1>
 <h3 class="subtitle">‘ggpmisc’ 0.4.3.9000</h3>
 <h4 class="author">Pedro J. Aphalo</h4>
-<h4 class="date">2021-09-05</h4>
+<h4 class="date">2021-09-06</h4>
 
 
 <div id="TOC">
@@ -219,26 +219,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </thead>
 <tbody>
 <tr class="odd">
-<td>stat_poly_line()</td>
-<td>line + conf. (smooth)</td>
-<td>lm, rlm (<strong>weight</strong> aesthetic fully supported)</td>
-</tr>
-<tr class="even">
-<td>stat_ma_line()</td>
-<td>line + conf. (smooth)</td>
-<td>lmodel2: MA, SMA, RMA, OLS</td>
-</tr>
-<tr class="odd">
-<td>s tat_quant_line()</td>
-<td>line + conf. (smooth)</td>
-<td>rq, rqss (any number of quantiles)</td>
-</tr>
-<tr class="even">
-<td>s tat_quant_band()</td>
-<td>median + quartiles (smooth)</td>
-<td>rq, rqss (three quantiles)</td>
-</tr>
-<tr class="odd">
 <td>stat_poly_eq()</td>
 <td>equation, <em>R</em><sup>2</sup>, <em>P, etc. (text_npc)</em></td>
 <td>lm, rlm (<strong>weight</strong> aesthetic fully supported)</td>
@@ -254,22 +234,42 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td>rq (any number of quantiles)</td>
 </tr>
 <tr class="even">
-<td>stat _ fit_residuals()</td>
+<td>stat_poly_line()</td>
+<td>line + conf. (smooth)</td>
+<td>lm, rlm (<strong>weight</strong> aesthetic fully supported)</td>
+</tr>
+<tr class="odd">
+<td>stat_ma_line()</td>
+<td>line + conf. (smooth)</td>
+<td>lmodel2: MA, SMA, RMA, OLS</td>
+</tr>
+<tr class="even">
+<td>stat_quant_line()</td>
+<td>line + conf. (smooth)</td>
+<td>rq, rqss (any number of quantiles)</td>
+</tr>
+<tr class="odd">
+<td>stat_quant_band()</td>
+<td>median + quartiles (smooth)</td>
+<td>rq, rqss (three quantiles)</td>
+</tr>
+<tr class="even">
+<td>stat_fit_residuals()</td>
 <td>residuals plot (point)</td>
 <td>lm, rlm (<strong>weight</strong> aesthetic fully supported)</td>
 </tr>
 <tr class="odd">
-<td>stat_ f it_deviations()</td>
+<td>stat_fit_deviations()</td>
 <td>deviations from observations (segment)</td>
 <td>lm, rlm (<strong>weight</strong> aesthetic fully supported)</td>
 </tr>
 <tr class="even">
-<td>s tat_fit_glance()</td>
+<td>stat_fit_glance()</td>
 <td>equation, <em>R</em><sup>2</sup>, <em>P, etc.</em>(text_npc)</td>
 <td>all those supported by ‘broom’</td>
 </tr>
 <tr class="odd">
-<td>st at_fit_augment()</td>
+<td>stat_fit_augment()</td>
 <td>predicted and other values (smooth)</td>
 <td>all those supported by ‘broom’</td>
 </tr>
