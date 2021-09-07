@@ -37,8 +37,8 @@
 #'   it.
 #' @param small.r,small.p logical Flags to switch use of lower case r and p for
 #'   coefficient of determination and p-value.
-#' @param coef.digits,f.digits integer Number of significant digits to use for
-#'   the fitted coefficients and F-value.
+#' @param coef.digits integer Number of significant digits to use for
+#'   the fitted coefficients.
 #' @param coef.keep.zeros logical Keep or drop trailing zeros when formatting
 #'   the fitted coefficients and F-value.
 #' @param rr.digits,p.digits integer Number of digits after the decimal point to
@@ -261,8 +261,7 @@ stat_ma_eq <- function(mapping = NULL, data = NULL,
                        coef.digits = 3,
                        coef.keep.zeros = TRUE,
                        rr.digits = 2,
-                       f.digits = 3,
-                       p.digits = 3,
+                       p.digits = max(1, ceiling(log10(nperm))),
                        label.x = "left",
                        label.y = "top",
                        hstep = 0,
