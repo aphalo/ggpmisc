@@ -22,7 +22,7 @@ stat_ma_eq(
   coef.digits = 3,
   coef.keep.zeros = TRUE,
   rr.digits = 2,
-  p.digits = min(2, ceiling(log10(nperm))),
+  p.digits = max(1, ceiling(log10(nperm))),
   label.x = "left",
   label.y = "top",
   hstep = 0,

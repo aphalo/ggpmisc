@@ -197,7 +197,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label = stat(eq.label)), formula = formula)
+  stat_poly_eq(aes(label = after_stat(eq.label)), formula = formula)
 ```
 
 `stat_poly_eq()` makes available several character strings in the returned data frame in separate columns: `eq.label`, `rr.label`, `adj.rr.label`, `AIC.label`, `BIC.label`, `f.value.label`, `p.value.label` and `n`. One of these, `rr.label`, is used by default, but `aes()` can be used to map a different one to the `label` aesthetic. Here we show the adjusted coefficient of determination and AIC. We call `stat_poly_eq()` twice to be able to separately control the position and size of each label.
@@ -207,8 +207,8 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label = stat(adj.rr.label)), formula = formula) +
-  stat_poly_eq(aes(label = stat(AIC.label)),
+  stat_poly_eq(aes(label = after_stat(adj.rr.label)), formula = formula) +
+  stat_poly_eq(aes(label = after_stat(AIC.label)),
                label.x = "right", label.y = "bottom", size = 3,     
                formula = formula)
 
@@ -221,7 +221,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label =  paste(stat(eq.label), stat(adj.rr.label), 
+  stat_poly_eq(aes(label =  paste(after_stat(eq.label), after_stat(adj.rr.label), 
                                   sep = "*\", \"*")),
                formula = formula) +
   labs(x = expression(italic(x)), y = expression(italic(y)))
@@ -234,10 +234,10 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label =  paste(stat(eq.label), "*\" with \"*", 
-                                  stat(rr.label), "*\", \"*", 
-                                  stat(f.value.label), "*\", and \"*",
-                                  stat(p.value.label), "*\".\"",
+  stat_poly_eq(aes(label =  paste(after_stat(eq.label), "*\" with \"*", 
+                                  after_stat(rr.label), "*\", \"*", 
+                                  after_stat(f.value.label), "*\", and \"*",
+                                  after_stat(p.value.label), "*\".\"",
                                   sep = "")),
                formula = formula, size = 3)
 ```
@@ -249,7 +249,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label =  paste(stat(eq.label), stat(adj.rr.label), 
+  stat_poly_eq(aes(label =  paste(after_stat(eq.label), after_stat(adj.rr.label), 
                                   sep = "~~italic(\"with\")~~")),
                formula = formula)
 ```
@@ -261,7 +261,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label = paste("atop(", stat(AIC.label), ",", stat(BIC.label), ")", sep = "")), 
+  stat_poly_eq(aes(label = paste("atop(", after_stat(AIC.label), ",", after_stat(BIC.label), ")", sep = "")), 
                formula = formula)
 ```
 
@@ -272,7 +272,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label = stat(eq.label)),
+  stat_poly_eq(aes(label = after_stat(eq.label)),
                eq.with.lhs = FALSE,
                formula = formula)
 ```
@@ -284,7 +284,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label = stat(eq.label)),
+  stat_poly_eq(aes(label = after_stat(eq.label)),
                eq.with.lhs = "italic(hat(y))~`=`~",
                formula = formula)
 ```
@@ -296,7 +296,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label = stat(eq.label)),
+  stat_poly_eq(aes(label = after_stat(eq.label)),
                eq.with.lhs = "italic(h)~`=`~",
                eq.x.rhs = "~italic(z)",
                formula = formula) +
@@ -310,7 +310,7 @@ formula <- y ~ poly(x, 2, raw = TRUE)
 ggplot(my.data, aes(x, log10(y + 1e6))) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label = stat(eq.label)),
+  stat_poly_eq(aes(label = after_stat(eq.label)),
                eq.with.lhs = "plain(log)[10](italic(delta)+10^6)~`=`~",
                eq.x.rhs = "~Omega",
                formula = formula) +
@@ -326,7 +326,7 @@ formula <- y ~ poly(x, 5, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label = stat(eq.label)), formula = formula)
+  stat_poly_eq(aes(label = after_stat(eq.label)), formula = formula)
 ```
 
 Intercept forced to zero.
@@ -336,7 +336,7 @@ formula <- y ~ x + I(x^2) + I(x^3) - 1
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label = stat(eq.label)), formula = formula)
+  stat_poly_eq(aes(label = after_stat(eq.label)), formula = formula)
 ```
 
 Even when labels are returned, numeric values are also returned for `r.square`, `p.value` and `n`. This can be used in `aes()` for example to show the equation only if a certain condition like a minimum value for `r.square` has been reached.
@@ -346,10 +346,10 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label =  ifelse(stat(adj.r.squared > 0.3),
-                                   paste(stat(eq.label), stat(adj.rr.label), 
+  stat_poly_eq(aes(label =  ifelse(after_stat(adj.r.squared > 0.3),
+                                   paste(after_stat(eq.label), after_stat(adj.rr.label), 
                                          sep = "*\", \"*"),
-                                   stat(adj.rr.label))),
+                                   after_stat(adj.rr.label))),
                formula = formula) +
   labs(x = expression(italic(x)), y = expression(italic(y)))
 ```
@@ -363,7 +363,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label = stat(eq.label)), size = 3,
+  stat_poly_eq(aes(label = after_stat(eq.label)), size = 3,
                formula = formula) +
   facet_wrap(~group)
 ```
@@ -373,7 +373,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label = stat(eq.label)), size = 3,
+  stat_poly_eq(aes(label = after_stat(eq.label)), size = 3,
                formula = formula) +
   facet_wrap(~group, scales = "free_y")
 ```
@@ -385,7 +385,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2, colour = group)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label = stat(eq.label)), formula = formula, vstep = 0.06)
+  stat_poly_eq(aes(label = after_stat(eq.label)), formula = formula, vstep = 0.06)
 ```
 
 To add a label to the equation for each group, we map it to a pseudo-aesthetic named `grp.label`. (Equation labelling uses a "back door" in 'ggplot2' that may be closed in future versions, meaning that this approach to labelling may stop working in the future.)
@@ -395,7 +395,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2, colour = group, grp.label = group)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label = stat(paste("bold(", grp.label, "*\":\")~~", 
+  stat_poly_eq(aes(label = after_stat(paste("bold(", grp.label, "*\":\")~~", 
                                       eq.label, sep = ""))),
                formula = formula)
 ```
@@ -407,7 +407,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2, linetype = group, grp.label = group)) +
   geom_point() +
   stat_poly_line(formula = formula, color = "black") +
-  stat_poly_eq(aes(label = stat(paste("bold(", grp.label, "*':')~~~", 
+  stat_poly_eq(aes(label = after_stat(paste("bold(", grp.label, "*':')~~~", 
                                       eq.label, sep = ""))),
                formula = formula)
 ```
@@ -419,7 +419,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2, colour = group)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label = stat(eq.label)),
+  stat_poly_eq(aes(label = after_stat(eq.label)),
                formula = formula,
                label.x = "centre")
 ```
@@ -431,7 +431,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2, fill = block)) +
   geom_point(shape = 21, size = 3) +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label = stat(rr.label)), size = 3,
+  stat_poly_eq(aes(label = after_stat(rr.label)), size = 3,
                geom = "label_npc", alpha = 0.33,
                formula = formula) +
   facet_wrap(~group, scales = "free_y")
@@ -444,7 +444,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2, colour = group, fill = block)) +
   geom_point(shape = 21, size = 3) +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label = stat(rr.label)), size = 3, alpha = 0.2,
+  stat_poly_eq(aes(label = after_stat(rr.label)), size = 3, alpha = 0.2,
                geom = "label_npc", label.y = c(0.95, 0.85, 0.95, 0.85),
                formula = formula) +
   facet_wrap(~group, scales = "free_y")
@@ -457,7 +457,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2, colour = group)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(geom = "text", aes(label = stat(eq.label)),
+  stat_poly_eq(geom = "text", aes(label = after_stat(eq.label)),
                label.x = c(100, 90), label.y = c(-1e4, 2.1e6), hjust = "inward",
                formula = formula)
 ```
@@ -470,9 +470,9 @@ Occasionally, possibly as a demonstration in teaching, we may want to compare a 
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = y ~ x, color = "blue") +
-  stat_poly_eq(aes(label = stat(eq.label)), color = "blue") +
+  stat_poly_eq(aes(label = after_stat(eq.label)), color = "blue") +
   stat_poly_line(formula = y ~ x, color = "red", orientation = "y") +
-  stat_poly_eq(aes(label = stat(eq.label)), color = "red", orientation = "y",
+  stat_poly_eq(aes(label = after_stat(eq.label)), color = "red", orientation = "y",
                label.y = 0.9)
 ```
 
@@ -486,28 +486,28 @@ In the figure above we see that the ordinary least squares (OLS) linear regressi
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_ma_line() +
-  stat_ma_eq(aes(label = stat(eq.label)))
+  stat_ma_eq(aes(label = after_stat(eq.label)))
 ```
 
 ```{r}
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_ma_line(color = "blue") +
-  stat_ma_eq(aes(label = stat(eq.label)), color = "blue") +
+  stat_ma_eq(aes(label = after_stat(eq.label)), color = "blue") +
   stat_ma_line(color = "red", orientation = "y") +
-  stat_ma_eq(aes(label = stat(eq.label)), color = "red", orientation = "y",
+  stat_ma_eq(aes(label = after_stat(eq.label)), color = "red", orientation = "y",
              label.y = 0.9)
 ```
 
 ### stat_quant_eq(), stat_quant_line() and stat_quant_band()
 
-Package 'quantreg' implements quantile regression for multiple types of models: linear models with function `rq()`, non-linear models with function `nlreg()`, and additive models with function `rqss()`. Each of these functions supports different methods of estimation. As with the statistics for polynomials described in the previous section, the statistics described in the current section *support only linear models*.
+Package 'quantreg' implements quantile regression for multiple types of models: linear models with function `rq()`, non-linear models with function `nlreg()`, and additive models with function `rqss()`. Each of these functions supports different methods of estimation. As with the statistics for polynomials described in the previous section, all the statistics described in the current section support linear models while `stat_quant_line()` and `stat_quant_band()` also  support additive models. (Support for `nlreg()` is not yet implemented.)
 
 In the case of quantile regression it is frequently the case that multiple quantile regressions are fitted. This case is not supported by `stat_poly_eq()` and we need to use `stat_quant_eq()`. This statistics is very similar to `stat_poly_eq()` both in behaviour and parameters. It supports quantile regression of *y* on *x* or *x* on *y* fitted with function `quantreg::rq`.
 
-The statistic `stat_quant_line()` adds a layer similar to that created by `ggplot2::stat_smooth()` including confidence bands for quantile regression, by default for *p* = 0.95. However, it has the same user interface and default arguments as `stat_quant_eq()`, and supports both *x* and *y* as explanatory variable in `formula` and also `orientation`. Confidence intervals for the fits to individual quantiles fulfil the same purpose as in OLS fits: providing a boundary for the *estimated line* computed for each individual quantile. They are not shown by default, unless a single quantile is passed, but can be enabled with `se = TRUE` and disabled with `se = FALSE`.
+The statistic `stat_quant_line()` adds a layer similar to that created by `ggplot2::stat_smooth()` including confidence bands for quantile regression, by default for *p* = 0.95. However, it has the same user interface and default arguments as `stat_quant_eq()`, and supports both *x* and *y* as explanatory variable in `formula` and also `orientation`. Confidence intervals for the fits to individual quantiles fulfil the same purpose as in OLS fits: providing a boundary for the *estimated line* computed for each individual quantile. They are not shown by default, unless a single quantile is passed as argument, but can be enabled with `se = TRUE` and disabled with `se = FALSE`.
 
-The statistic `stat_quant_band()` creates a line plus band plot that is, by default equivalent to the box of a box plot showing regressions as a band for quartiles plus a line for the median media. In this case the band informs about the spread of the *observations*. Which three quantiles are fitted can be set through parameter `quantiles` but in contrast to `stat_quant_line()` and `stat_quant_eq()` only a vector of three quantiles is accepted.
+The statistic `stat_quant_band()` creates a line plus band plot that is, by default equivalent to the box of a box plot showing regressions as a band for quartiles plus a line for the median media. In this case the band informs about the spread of the *observations* line the box in box plots does. Which three quantiles are fitted can be set through parameter `quantiles` but in contrast to `stat_quant_line()` and `stat_quant_eq()` only a vector of three quantiles is accepted.
 
 Similarly to `ggplot2::stat_quantiles()`, `stat_quant_eq()` and `stat_quant_line()` accept a `numeric` vector as argument to `quantiles` and output one equation or one line per group and quantile. Stat `stat_quant_eq()` also returns column `grp.label` containing by default a character string indicating the value of the quantile.
 
@@ -519,7 +519,7 @@ ggplot(my.data, aes(x, y)) +
   stat_quant_band(formula = y ~ poly(x, 2))
 ```
 
-Overriding the values for `quantiles` we find a possible boundary containing 90% of the observations.
+Overriding the values for `quantiles` we find a boundary containing 90% of the observations.
 
 ```{r, warning=FALSE}
 ggplot(my.data, aes(x, y)) +
@@ -541,8 +541,8 @@ With `stat_quant_eq()` we add the fitted equations to the first example in this 
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_quant_band(formula = formula, color = "black", fill = "grey60") +
-  stat_quant_eq(aes(label = paste(stat(grp.label), "*\": \"*",
-                                  stat(eq.label), sep = "")),
+  stat_quant_eq(aes(label = paste(after_stat(grp.label), "*\": \"*",
+                                  after_stat(eq.label), sep = "")),
                 formula = formula) +
   theme_classic()
 ```
@@ -553,8 +553,8 @@ Grouping and faceting are supported by `stat_quant_eq()`, `stat_quant_line()` an
 ggplot(my.data, aes(x, y, color = group)) +
   geom_point() +
   stat_quant_line(formula = formula) +
-  stat_quant_eq(aes(label = paste(stat(grp.label), "*\": \"*",
-                                  stat(eq.label), sep = "")),
+  stat_quant_eq(aes(label = paste(after_stat(grp.label), "*\": \"*",
+                                  after_stat(eq.label), sep = "")),
                formula = formula)
 ```
 
@@ -565,8 +565,8 @@ ggplot(my.data, aes(x, y, group = group, linetype = group,
                     shape = group, grp.label = group)) +
   geom_point() +
   stat_quantile(formula = formula, color = "black") +
-  stat_quant_eq(aes(label = paste(stat(grp.label), "*\": \"*",
-                                  stat(eq.label), sep = "")),
+  stat_quant_eq(aes(label = paste(after_stat(grp.label), "*\": \"*",
+                                  after_stat(eq.label), sep = "")),
                 formula = formula, quantiles = c(0.05, 0.95)) +
   theme_classic()
 ```
@@ -577,10 +577,10 @@ In some cases *double quantile regression* is an informative method to assess re
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_quant_line(formula = y ~ x, color = "blue", quantiles = 0.05) +
-  stat_quant_eq(aes(label = stat(eq.label)), formula = y ~ x, color = "blue",
+  stat_quant_eq(aes(label = after_stat(eq.label)), formula = y ~ x, color = "blue",
                 quantiles = 0.05) +
   stat_quant_line(formula = x ~ y, color = "red", quantiles = 0.95) +
-  stat_quant_eq(aes(label = stat(eq.label)), formula = x ~ y, color = "red", 
+  stat_quant_eq(aes(label = after_stat(eq.label)), formula = x ~ y, color = "red", 
                 quantiles = 0.95, label.y = 0.9)
 ```
 
@@ -676,7 +676,7 @@ ggplot(my.data, aes(x, y, colour = group)) +
                   label.x = "right",
                   label.y = "bottom",
                   aes(label = paste("italic(P)*\"-value = \"*", 
-                                    signif(stat(p.value), digits = 4),
+                                    signif(after_stat(p.value), digits = 4),
                                     sep = "")),
                   parse = TRUE)
 ```
@@ -692,8 +692,8 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
               se = FALSE) +
   stat_fit_glance(method = "nls", 
                   method.args = list(formula = micmen.formula),
-                  aes(label = paste("AIC = ", signif(stat(AIC), digits = 3), 
-                                    ", BIC = ", signif(stat(BIC), digits = 3),
+                  aes(label = paste("AIC = ", signif(after_stat(AIC), digits = 3), 
+                                    ", BIC = ", signif(after_stat(BIC), digits = 3),
                                     sep = "")),
                   label.x = "centre", label.y = "bottom")
 ```
@@ -715,10 +715,10 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
                 method.args = list(formula = micmen.formula),
                 label.x = "right",
                 label.y = "bottom",
-                aes(label = paste("V[m]~`=`~", signif(stat(Vm_estimate), digits = 3),
-                                  "%+-%", signif(stat(Vm_se), digits = 2),
-                                  "~~~~K~`=`~", signif(stat(K_estimate), digits = 3),
-                                  "%+-%", signif(stat(K_se), digits = 2),
+                aes(label = paste("V[m]~`=`~", signif(after_stat(Vm_estimate), digits = 3),
+                                  "%+-%", signif(after_stat(Vm_se), digits = 2),
+                                  "~~~~K~`=`~", signif(after_stat(K_estimate), digits = 3),
+                                  "%+-%", signif(after_stat(K_se), digits = 2),
                                   sep = "")),
                 parse = TRUE)
 ```
@@ -738,8 +738,8 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
                 label.x = "center",
                 label.y = "bottom",
                 vstep = 0.12,
-                aes(label = paste("V~`=`~frac(", signif(stat(Vm_estimate), digits = 2), "~C,",
-                                  signif(stat(K_estimate), digits = 2), "+C)",
+                aes(label = paste("V~`=`~frac(", signif(after_stat(Vm_estimate), digits = 2), "~C,",
+                                  signif(after_stat(K_estimate), digits = 2), "+C)",
                                   sep = "")),
                 parse = TRUE) +
   labs(x = "C", y = "V")
@@ -753,8 +753,8 @@ stat_micmen_eq <- function(vstep = 0.12,
                            ...) {
   stat_fit_tidy(method = "nls", 
                 method.args = list(formula = micmen.formula),
-                aes(label = paste("V~`=`~frac(", signif(stat(Vm_estimate), digits = 2), "~C,",
-                                  signif(stat(K_estimate), digits = 2), "+C)",
+                aes(label = paste("V~`=`~frac(", signif(after_stat(Vm_estimate), digits = 2), "~C,",
+                                  signif(after_stat(K_estimate), digits = 2), "+C)",
                                   sep = "")),
                 parse = TRUE,
                 vstep = vstep,
