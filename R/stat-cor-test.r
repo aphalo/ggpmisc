@@ -26,8 +26,6 @@
 #'   \code{\link[ggplot2]{layer}} for more details.
 #' @param na.rm	a logical indicating whether NA values should be stripped before
 #'   the computation proceeds.
-#' @param formula a formula object. Using aesthetic names \code{x} and \code{y}
-#'   instead of original variable names.
 #' @param method character One of "pearson", "kendall" or "spearman".
 #' @param small.r,small.p logical Flags to switch use of lower case r and p for
 #'   coefficient of correlation (only for \code{method = "pearson}) and p-value.
@@ -43,8 +41,6 @@
 #'   used between labels for different groups.
 #' @param output.type character One of "expression", "LaTeX", "text",
 #'   "markdown" or "numeric".
-#' @param orientation character Either "x" or "y" controlling the default for
-#'   \code{formula}.
 #' @param parse logical Passed to the geom. If \code{TRUE}, the labels will be
 #'   parsed into expressions and displayed as described in \code{?plotmath}.
 #'   Default is \code{TRUE} if \code{output.type = "expression"} and
@@ -69,54 +65,12 @@
 #'
 #'   A ggplot statistic receives as \code{data} a data frame that is not the one
 #'   passed as argument by the user, but instead a data frame with the variables
-#'   mapped to aesthetics. Similarly to  \code{stat_smooth()} the correlation
-#'   tests respect grouping, so the scales used for \code{x} and \code{y} should
-#'   both be continuous scales rather than discrete.
+#'   mapped to aesthetics. \code{cor.test()} is always applied to the variabled
+#'   mapped to the \code{x} and \code{y} aesthetics, so the scales used for
+#'   \code{x} and \code{y} should both be continuous scales rather than
+#'   discrete.
 #'
-#' @note This function is similar to \code{ggpubr::stat_cor()} but
-#'    rewritten to match functionality and interface used in recent versions of
-#'   'ggpmisc'.
-#'
-#' @section Aesthetics: \code{stat_poly_eq} understands \code{x} and \code{y},
-#'   to be referenced in the \code{formula} and \code{weight} passed as argument
-#'   to parameter \code{weights}. All three must be mapped to
-#'   \code{numeric} variables. In addition, the aesthetics understood by the geom
-#'   (\code{"text"} is the default) are understood and grouping respected.
-#'
-#' @section Computed variables:
-#' If \code{output.type} is other than \code{"numeric"} the returned tibble contains
-#' the columns listed below. If the model fit function used does not return a given estimate
-#' the label is set to \code{character(0L)}.
-#' \describe{
-#'   \item{x,npcx}{x position}
-#'   \item{y,npcy}{y position}
-#'   \item{eq.label}{equation for the fitted polynomial as a character string to be parsed}
-#'   \item{rr.label}{\eqn{R^2} of the fitted model as a character string to be parsed}
-#'   \item{adj.rr.label}{Adjusted \eqn{R^2} of the fitted model as a character string to be parsed}
-#'   \item{f.value.label}{F value and degrees of freedom for the fitted model as a whole.}
-#'   \item{p.value.label}{P-value for the F-value above.}
-#'   \item{AIC.label}{AIC for the fitted model.}
-#'   \item{BIC.label}{BIC for the fitted model.}
-#'   \item{n.label}{Number of observations used in the fit.}
-#'   \item{grp.label}{Set according to mapping in \code{aes}.}
-#'   \item{r.squared, adj.r.squared, p.value, n}{numeric values, from the model fit object}}
-#'
-#' If \code{output.type} is \code{"numeric"} the returned tibble contains the columns
-#' listed below. If the model fit function used does not return a given estimate
-#' its value is set to \code{NA_real_}.
-#' \describe{
-#'   \item{x,npcx}{x position}
-#'   \item{y,npcy}{y position}
-#'   \item{coef.ls}{list containing the "coefficients" matrix from the summary of the fit object}
-#'   \item{r.squared, adj.r.squared, f.value, f.df1, f.df2, p.value, AIC, BIC, n}{numeric values, from the model fit object}
-#'   \item{grp.label}{Set according to mapping in \code{aes}.}
-#'   \item{b_0.constant}{TRUE is polynomial is forced through the origin}
-#'   \item{b_i}{One or columns with the coefficient estimates}}
-#'
-#' To explore the computed values returned for a given input we suggest the use
-#' of \code{\link[gginnards]{geom_debug}} as shown in the last examples below.
-#'
-#' @export
+#' @seealso \code{\link[stats]{cor.test}} for details on the computations.
 #'
 #' @examples
 #' # generate artificial data
@@ -129,6 +83,8 @@
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   stat_cor_test()
+#'
+#' @export
 #'
 stat_cor_test <- function(mapping = NULL,
                           data = NULL,
@@ -219,7 +175,6 @@ cor_test_compute_fun <- function(data,
                                  exact,
                                  conf.level,
                                  continuity,
-                                 formula,
                                  small.r,
                                  small.p,
                                  coef.keep.zeros,
@@ -232,22 +187,9 @@ cor_test_compute_fun <- function(data,
                                  vstep,
                                  npc.used,
                                  output.type,
-                                 na.rm,
-                                 orientation) {
+                                 na.rm) {
   force(data)
-
-  # we guess formula from orientation
-  if (is.null(formula)) {
-    if (is.na(orientation) || orientation == "x") {
-      formula = y ~ x
-    } else if (orientation == "y") {
-      formula = x ~ y
-    }
-  }
-  # we guess orientation from formula
-  if (is.na(orientation)) {
-    orientation <- unname(c(x = "y", y = "x")[as.character(formula)[2]])
-  }
+  formula = ~ y + x
 
   output.type <- tolower(output.type)
   stopifnot(output.type %in%
@@ -274,24 +216,6 @@ cor_test_compute_fun <- function(data,
     label.y <- label.y[group.idx]
   } else if (length(label.y) > 0) {
     label.y <- label.y[1]
-  }
-
-  data.ok <- TRUE
-  if (orientation == "x") {
-    if (length(unique(data$x)) < 2) {
-      data.ok <- FALSE
-      warning("Not enough data to compute correlation",
-              group.idx, "; returning NA instead.",
-              call. = FALSE)
-    }
-  } else if (orientation == "y") {
-    if (length(unique(data$y)) < 2) {
-      data.ok <- FALSE
-      warning("Not enough data to perform fit for group ",
-              group.idx, "; computing mean instead.",
-              call. = FALSE)
-      formula = x ~ 1
-    }
   }
 
   htest.ls <- do.call(cor.test,
