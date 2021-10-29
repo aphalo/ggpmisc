@@ -11,7 +11,7 @@ status](https://github.com/aphalo/ggpmisc/workflows/R-CMD-check/badge.svg)](http
 ## Purpose
 
 Package ‘**ggpmisc**’ (Miscellaneous Extensions to ‘ggplot2’) is a set
-of extensions to R package ‘ggplot2’ (&gt;= 3.0.0) with emphasis on
+of extensions to R package ‘ggplot2’ (>= 3.0.0) with emphasis on
 annotations and plotting related to fitted models. Estimates from model
 fit objects can be displayed in ggplots as text, tables or equations.
 Predicted values, residuals, deviations and weights can be plotted for
@@ -25,21 +25,22 @@ following the syntax of package ‘broom’ are supported. Package
 
 Statistics that help with reporting the results of model fits are:
 
-| Statistic               | Layer (default geometry)                         | Methods                                        |
-|-------------------------|--------------------------------------------------|------------------------------------------------|
-| stat\_poly\_eq()        | equation, *R*<sup>2</sup>, *P, etc. (text\_npc)* | lm, rlm (**weight** aesthetic fully supported) |
-| stat\_ma\_eq()          | equation, *R*<sup>2</sup>, *P, etc. (text\_npc)* | lmodel2: MA, SMA, RMA, OLS                     |
-| stat\_quant\_eq()       | equation, *P, etc. (text\_npc)*                  | rq (any number of quantiles)                   |
-| stat\_poly\_line()      | line + conf. (smooth)                            | lm, rlm (**weight** aesthetic fully supported) |
-| stat\_ma\_line()        | line + conf. (smooth)                            | lmodel2: MA, SMA, RMA, OLS                     |
-| stat\_quant\_line()     | line + conf. (smooth)                            | rq, rqss (any number of quantiles)             |
-| stat\_quant\_band()     | median + quartiles (smooth)                      | rq, rqss (two or three quantiles)              |
-| stat\_fit\_residuals()  | residuals plot (point)                           | lm, rlm (**weight** aesthetic fully supported) |
-| stat\_fit\_deviations() | deviations from observations (segment)           | lm, rlm (**weight** aesthetic fully supported) |
-| stat\_fit\_glance()     | equation, *R*<sup>2</sup>, *P, etc.*(text\_npc)  | all those supported by ‘broom’                 |
-| stat\_fit\_augment()    | predicted and other values (smooth)              | all those supported by ‘broom’                 |
-| stat\_fit\_tidy()       | fit results, e.g. for equation (text\_npc)       | all those supported by ‘broom’                 |
-| stat\_fit\_tb()         | ANOVA and summary tables (table\_npc)            | all those supported by ‘broom’                 |
+| Statistic               | `after_stat` values (*default geometry*)          | Methods                                        |
+|-------------------------|---------------------------------------------------|------------------------------------------------|
+| `stat_poly_eq()`        | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lm, rlm (**weight** aesthetic fully supported) |
+| `stat_ma_eq()`          | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lmodel2: MA, SMA, RMA, OLS                     |
+| `stat_quant_eq()`       | equation, *P*, etc. (`text_npc`)                  | rq (any number of quantiles)                   |
+| `stat_corr()`           | correlation, *P*-value, CI (`text_npc`)           | Pearson (*t*), Kendall (*z*), Spearman (*S*)   |
+| `stat_poly_line()`      | line + conf. (`smooth`)                           | lm, rlm (**weight** aesthetic fully supported) |
+| `stat_ma_line()`        | line + conf. (`smooth`)                           | lmodel2: MA, SMA, RMA, OLS                     |
+| `stat_quant_line()`     | line + conf. (`smooth`)                           | rq, rqss (any number of quantiles)             |
+| `stat_quant_band()`     | median + quartiles (`smooth`)                     | rq, rqss (two or three quantiles)              |
+| `stat_fit_residuals()`  | residuals (`point`)                               | lm, rlm (**weight** aesthetic fully supported) |
+| `stat_fit_deviations()` | deviations from observations (`segment`)          | lm, rlm (**weight** aesthetic fully supported) |
+| `stat_fit_glance()`     | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | all those supported by ‘broom’                 |
+| `stat_fit_augment()`    | predicted and other values (`smooth`)             | all those supported by ‘broom’                 |
+| `stat_fit_tidy()`       | fit results, e.g., for equation (`text_npc`)      | all those supported by ‘broom’                 |
+| `stat_fit_tb()`         | ANOVA and summary tables (`table_npc`)            | all those supported by ‘broom’                 |
 
 Statistics `stat_peaks()` and `stat_valleys()` can be used to highlight
 and/or label maxima and minima in a plot.

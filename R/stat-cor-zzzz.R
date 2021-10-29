@@ -1,6 +1,6 @@
 #' @title Annotate plot with correlation test
 #'
-#' @description \code{stat_cor_test} applies \code{stats::cor.test()} respecting grouping
+#' @description \code{stat_corr} applies \code{stats::cor.test()} respecting grouping
 #' with \code{method = "pearson"} default but
 #' alternatively using \code{"kendall"} or \code{"spearman"} methods. It
 #' generates labels for correlation coefficients and p-value, coefficient of
@@ -27,11 +27,18 @@
 #' @param na.rm	a logical indicating whether NA values should be stripped before
 #'   the computation proceeds.
 #' @param method character One of "pearson", "kendall" or "spearman".
+#' @param alternative character One of "two.sided", "less" or "greater".
+#' @param exact logical Whether an exact p-value should be computed. Used for
+#'   Kendall's tau and Spearman's rho.
+#' @param conf.level numeric Confidence level for the returned confidence
+#'   interval (only if \code{method = "pearson"} which is the default).
+#' @param continuity logical If TRUE , a continuity correction is used for
+#'   Kendall's tau and Spearman's rho when not computed exactly.
 #' @param small.r,small.p logical Flags to switch use of lower case r and p for
-#'   coefficient of correlation (only for \code{method = "pearson}) and p-value.
+#'   coefficient of correlation (only for \code{method = "pearson"}) and p-value.
 #' @param coef.keep.zeros logical Keep or drop trailing zeros when formatting
 #'   the fitted coefficients and F-value.
-#' @param r.digits,rr.digits,p.digits integer Number of digits after the decimal point to
+#' @param r.digits,t.digits,p.digits integer Number of digits after the decimal point to
 #'   use for R, r.squared, tau or rho and P-value in labels.
 #' @param label.x,label.y \code{numeric} with range 0..1 "normalized parent
 #'   coordinates" (npc units) or character if using \code{geom_text_npc()} or
@@ -45,13 +52,6 @@
 #'   parsed into expressions and displayed as described in \code{?plotmath}.
 #'   Default is \code{TRUE} if \code{output.type = "expression"} and
 #'   \code{FALSE} otherwise.
-#'
-#' @note For backward compatibility a logical is accepted as argument for
-#'   \code{eq.with.lhs}. If \code{TRUE}, the default is used, either
-#'   \code{"x"} or \code{"y"}, depending on the argument passed to \code{formula}.
-#'   Parameter \code{orientation} is redundant as it only affects the default
-#'   for \code{formula} but is included for consistency with
-#'   \code{ggplot2::stat_smooth()}.
 #'
 #' @details This statistic can be used to annotate a plot with the correlation
 #'   coefficient and the outcome of its test of significance. It supports
@@ -77,42 +77,81 @@
 #' set.seed(4321)
 #' x <- (1:100) / 10
 #' y <- x + rnorm(length(x))
-#' my.data <- data.frame(x = x, y = y,
+#' my.data <- data.frame(x = x,
+#'                       y = y,
+#'                       y.desc = - y,
 #'                       group = c("A", "B"))
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   stat_cor_test()
+#'   stat_corr()
+#'
+#' ggplot(my.data, aes(x, y.desc)) +
+#'   geom_point() +
+#'   stat_corr(label.x = "right")
+#'
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   stat_corr(aes(label = paste(after_stat(r.label),
+#'                               after_stat(p.value.label),
+#'                               after_stat(n.label),
+#'                               sep = "*\"; \"*")))
+#'
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   stat_corr(small.r = TRUE)
+#'
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   stat_corr(aes(label = paste(after_stat(r.label),
+#'                               after_stat(p.value.label),
+#'                               after_stat(n.label),
+#'                               sep = "*\"; \"*")),
+#'             method = "kendall")
+#'
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   stat_corr(method = "kendall")
+#'
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   stat_corr(method = "spearman")
+#'
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   stat_corr(aes(label = paste(after_stat(r.label),
+#'                               after_stat(p.value.label),
+#'                               after_stat(n.label),
+#'                               sep = "*\"; \"*")),
+#'             method = "spearman")
 #'
 #' @export
 #'
-stat_cor_test <- function(mapping = NULL,
-                          data = NULL,
-                          geom = "text_npc",
-                          position = "identity",
-                          ...,
-                          method = "pearson",
-                          formula = NULL,
-                          alternative = "two.sided",
-                          exact = NULL,
-                          conf.level = 0.95,
-                          continuity = FALSE,
-                          small.r = FALSE,
-                          small.p = FALSE,
-                          coef.keep.zeros = TRUE,
-                          r.digits = 2,
-                          t.digits = 3,
-                          p.digits = 3,
-                          label.x = "left",
-                          label.y = "top",
-                          hstep = 0,
-                          vstep = NULL,
-                          output.type = NULL,
-                          na.rm = FALSE,
-                          orientation = NA,
-                          parse = NULL,
-                          show.legend = FALSE,
-                          inherit.aes = TRUE) {
+stat_corr <- function(mapping = NULL,
+                      data = NULL,
+                      geom = "text_npc",
+                      position = "identity",
+                      ...,
+                      method = "pearson",
+                      alternative = "two.sided",
+                      exact = NULL,
+                      conf.level = 0.95,
+                      continuity = FALSE,
+                      small.r = FALSE,
+                      small.p = FALSE,
+                      coef.keep.zeros = TRUE,
+                      r.digits = 2,
+                      t.digits = 3,
+                      p.digits = 3,
+                      label.x = "left",
+                      label.y = "top",
+                      hstep = 0,
+                      vstep = NULL,
+                      output.type = NULL,
+                      na.rm = FALSE,
+                      parse = NULL,
+                      show.legend = FALSE,
+                      inherit.aes = TRUE) {
   if (is.null(output.type)) {
     if (geom %in% c("richtext", "textbox")) {
       output.type <- "markdown"
@@ -127,13 +166,12 @@ stat_cor_test <- function(mapping = NULL,
   ggplot2::layer(
     data = data,
     mapping = mapping,
-    stat = StatCorTest,
+    stat = StatCorr,
     geom = geom,
     position = position,
     show.legend = show.legend,
     inherit.aes = inherit.aes,
     params = list(method = method,
-                  formula = formula,
                   alternative = alternative,
                   exact = exact,
                   conf.level = conf.level,
@@ -155,7 +193,6 @@ stat_cor_test <- function(mapping = NULL,
                   npc.used = grepl("_npc", geom),
                   output.type = output.type,
                   na.rm = na.rm,
-                  orientation = orientation,
                   parse = parse,
                   ...)
   )
@@ -189,6 +226,7 @@ cor_test_compute_fun <- function(data,
                                  output.type,
                                  na.rm) {
   force(data)
+
   formula = ~ y + x
 
   output.type <- tolower(output.type)
@@ -226,30 +264,30 @@ cor_test_compute_fun <- function(data,
                                   conf.level = conf.level,
                                   continuity = continuity,
                                   data = data,
-                                  na.action = na.action))
+                                  na.action = na.omit))
 
-  idx.map <- list(pearson = c(statistic.t = "t.value",
-                              parameter.df = "df",
+  idx.map <- list(pearson = c(statistic = "t.value",
+                              parameter = "df",
                               p.value = "p.value",
-                              estimate.cor = "cor",
-                              alternative = "test",
-                              conf.int1 = "cor.low",
-                              conf.int2 = "cor.hi"),
-                  kendall = c(statistic.z = "z.value",
-                              p.value = "p.value",
-                              estimate.tau = "tau",
+                              estimate = "cor",
                               alternative = "test"),
-                  spearman = c(statistic.S = "S.value",
+                  kendall = c(statistic = "z.value",
+                              p.value = "p.value",
+                              estimate = "tau",
+                              alternative = "test"),
+                  spearman = c(statistic = "S.value",
                                p.value = "p.value",
-                               estimate.rho = "rho",
+                               estimate = "rho",
                                alternative = "test"))
 
-  z <- tibble::as_tibble_row(unlist(htest.ls[idx.map[[method]]]))
-  z[["n"]] <- nrow(na.omit(data[[c("x", "y")]]))
+  z <- htest.ls[names(idx.map[[method]])]
+  names(z) <- unname(idx.map[[method]])
+  z <- tibble::as_tibble_row(z)
+  z[["n"]] <- nrow(na.omit(data[ , c("x", "y")]))
   z[["method"]] <- method
-  if (method == "pearson") {
-    z[["conf.level"]] <- conf.level
-  }
+  # if (method == "pearson") {
+  #   z[["conf.level"]] <- conf.level
+  # }
 
   if (output.type != "numeric") {
     # warn if too narrow formats requested
@@ -268,11 +306,11 @@ cor_test_compute_fun <- function(data,
 
     # build the character strings
     if (output.type == "expression") {
-      r <- z[[c(pearson = "cor", kendall = "tau", spearman = "rho")[method]]]
+      r <- z[[unname(c(pearson = "cor", kendall = "tau", spearman = "rho")[method])]]
       r.char <- sprintf("\"%#.*f\"", r.digits, r)
       if (method == "pearson") {
         t.value.char <- sprintf("\"%#.*g\"", t.digits, z[["t.value"]])
-        df.char <- as.character(df)
+        df.char <- as.character(z[["df"]])
       } else if (method == "kendall") {
         z.value.char <- sprintf("\"%#.*g\"", t.digits, z[["z.value"]])
       } else if (method == "spearman") {
@@ -280,11 +318,11 @@ cor_test_compute_fun <- function(data,
       }
       p.value.char <- sprintf("\"%#.*f\"", p.digits, z[["p.value"]])
     } else {
-      r <- z[[c(pearson = "cor", kendall = "tau", spearman = "rho")[method]]]
+      r <- z[[unname(c(pearson = "cor", kendall = "tau", spearman = "rho")[method])]]
       r.char <- sprintf("%#.*f", r.digits, r)
       if (method == "pearson") {
         t.value.char <- sprintf("%#.*g", t.digits, z[["t.value"]])
-        df.char <- as.character(df)
+        df.char <- as.character(z[["df"]])
       } else if (method == "kendall") {
         z.value.char <- sprintf("%#.*g", t.digits, z[["z.value"]])
       } else if (method == "spearman") {
@@ -317,35 +355,38 @@ cor_test_compute_fun <- function(data,
                               sprintf("\"%.*f\"", r.digits, 10^(-r.digits) * sign(z[["cor"]])),
                               r.char),
                        sep = ifelse(abs(z[["cor"]]) < 10^(-r.digits),
-                                    c("~`>`~", "~`<`~", "~`=`~")[sign(z[["cor"]]) + 2],
+                                    c("~`>`~", "~`=`~", "~`<`~")[sign(z[["cor"]]) + 2],
                                     "~`=`~")))
-        z[["t.value.label"]] <- ifelse(is.na(z[["t.value"]]), character(0L),
-                                       paste("italic(t)[", df.char, "]~`=`~", t.value.char, sep = ""))
-      } else if (method == "kendal") {
-        z[["tau.label"]] <- ifelse(is.na(z[["tau"]]), character(0L),
-                                   paste("italic(tau)",
-                                         ifelse(abs(z[["tau"]]) < 10^(-r.digits),
-                                                sprintf("\"%.*f\"", r.digits, 10^(-r.digits) * sign(z[["tau"]])),
-                                                r.char),
-                                         sep = ifelse(abs(z[["tau"]]) < 10^(-r.digits),
-                                                      c("~`>`~", "~`<`~", "~`=`~")[sign(z[["tau"]]) + 2],
-                                                      "~`=`~")))
-        z[["z.value.label"]] <- ifelse(is.na(z[["t.value"]]), character(0L),
-                                       paste("italic(z)~`=`~", z.value.char, sep = ""))
-
+        z[["t.value.label"]] <-
+          ifelse(is.na(z[["t.value"]]), character(0L),
+                 paste("italic(t)[", df.char, "]~`=`~", t.value.char, sep = ""))
+      } else if (method == "kendall") {
+        z[["tau.label"]] <-
+          ifelse(is.na(z[["tau"]]), character(0L),
+                 paste("italic(tau)",
+                       ifelse(abs(z[["tau"]]) < 10^(-r.digits),
+                              sprintf("\"%.*f\"", r.digits, 10^(-r.digits) * sign(z[["tau"]])),
+                              r.char),
+                       sep = ifelse(abs(z[["tau"]]) < 10^(-r.digits),
+                                    c("~`>`~", "~`=`~", "~`<`~")[sign(z[["tau"]]) + 2],
+                                    "~`=`~")))
+        z[["z.value.label"]] <-
+          ifelse(is.na(z[["z.value"]]), character(0L),
+                 paste("italic(z)~`=`~", z.value.char, sep = ""))
       } else if (method == "spearman") {
-        z[["rho.label"]] <- ifelse(is.na(z[["rho"]]), character(0L),
-                                   paste("italic(rho)",
-                                         ifelse(abs(z[["rho"]]) < 10^(-r.digits),
-                                                sprintf("\"%.*f\"", r.digits, 10^(-r.digits) * sign(z[["rho"]])),
-                                                r.char),
-                                         sep = ifelse(abs(z[["rho"]]) < 10^(-r.digits),
-                                                      c("~`>`~", "~`<`~", "~`=`~")[sign(z[["rho"]]) + 2],
-                                                      "~`=`~")))
-        z[["S.value.label"]] <- ifelse(is.na(z[["S.value"]]), character(0L),
-                                       paste("italic(S)~`=`~", S.value.char, sep = ""))
+        z[["rho.label"]] <-
+          ifelse(is.na(z[["rho"]]), character(0L),
+                 paste("italic(rho)",
+                       ifelse(abs(z[["rho"]]) < 10^(-r.digits),
+                              sprintf("\"%.*f\"", r.digits, 10^(-r.digits) * sign(z[["rho"]])),
+                              r.char),
+                       sep = ifelse(abs(z[["rho"]]) < 10^(-r.digits),
+                                    c("~`>`~", "~`=`~", "~`<`~")[sign(z[["rho"]]) + 2],
+                                    "~`=`~")))
+        z[["S.value.label"]] <-
+          ifelse(is.na(z[["S.value"]]), character(0L),
+                 paste("italic(S)~`=`~", S.value.char, sep = ""))
       }
-
     } else if (output.type %in% c("latex", "tex", "text", "tikz")) {
       # character(0) instead of "" avoids in paste() the insertion of sep for missing labels
       z[["p.value.label"]] <-
@@ -372,7 +413,7 @@ cor_test_compute_fun <- function(data,
                                     " = ")))
         z[["t.value.label"]] <- ifelse(is.na(z[["t.value"]]), character(0L),
                                        paste("t_{", df.char, "} = ", t.value.char, sep = ""))
-      } else if (method == "kendal") {
+      } else if (method == "kendall") {
         z[["tau.label"]] <- ifelse(is.na(z[["tau"]]), character(0L),
                                    paste(ifelse(output.type == "text",
                                                 "tau", "\tau"),
@@ -384,7 +425,6 @@ cor_test_compute_fun <- function(data,
                                                       " = ")))
         z[["z.value.label"]] <- ifelse(is.na(z[["z.value"]]), character(0L),
                                        paste("z = ", z.value.char, sep = ""))
-
       } else if (method == "spearman") {
         z[["rho.label"]] <- ifelse(is.na(z[["rho"]]), character(0L),
                                    paste(ifelse(output.type == "text",
@@ -423,7 +463,7 @@ cor_test_compute_fun <- function(data,
                                     " = ")))
         z[["t.value.label"]] <- ifelse(is.na(z[["t.value"]]), character(0L),
                                        paste("_t_<sub>", df.char, "</sub> = ", t.value.char, sep = ""))
-      } else if (method == "kendal") {
+      } else if (method == "kendall") {
         z[["tau.label"]] <- ifelse(is.na(z[["tau"]]), character(0L),
                                    paste("_&tau;_",
                                          ifelse(abs(z[["tau"]]) < 10^(-r.digits),
@@ -434,7 +474,6 @@ cor_test_compute_fun <- function(data,
                                                       " = ")))
         z[["z.value.label"]] <- ifelse(is.na(z[["t.value"]]), character(0L),
                                        paste("_z_ = ", z.value.char, sep = ""))
-
       } else if (method == "spearman") {
         z[["rho.label"]] <- ifelse(is.na(z[["rho"]]), character(0L),
                                    paste("_&rho;_",
@@ -454,7 +493,7 @@ cor_test_compute_fun <- function(data,
 
   # set column to map by default to label
   z[["r.label"]] <- switch(method,
-                           pearson =  z[["co.label"]],
+                           pearson =  z[["cor.label"]],
                            kendall =  z[["tau.label"]],
                            spearman = z[["rho.label"]])
 
@@ -509,8 +548,8 @@ cor_test_compute_fun <- function(data,
 #' @format NULL
 #' @usage NULL
 #' @export
-StatCorTest <-
-  ggplot2::ggproto("StaCorTest",
+StatCorr <-
+  ggplot2::ggproto("StaCorr",
                    ggplot2::Stat,
                    extra_params = c("na.rm", "parse"),
                    compute_group = cor_test_compute_fun,

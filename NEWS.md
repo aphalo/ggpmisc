@@ -27,6 +27,10 @@ the *goodness* of the fit.
 -   Update `stat_fit_residuals()` to optionally return weighted
     residuals.
 
+-   New function `stat_corr()` to annotate plots with correlation
+    estimates and optionally *P*-value and a test statistic. computed
+    with `stats::cor.test()`.
+
 # ggpmisc 0.4.3
 
 Add statistics `stat_ma_line()` and `stat_ma_eq()` implementing model II
@@ -69,8 +73,8 @@ enhancements in this version. The idea of supporting confidence bands
 for quantile regression came from *Samer Mouksassi* who also provided
 code examples. Additional suggestions from *Mark Neal, Carl* and other
 users have lead to bug fixes as well as to an interface with better
-defaults for arguments (see issue \#1). Some other enhancements are
-based on my own needs or ideas.
+defaults for arguments (see issue #1). Some other enhancements are based
+on my own needs or ideas.
 
 -   Add support for robust regression using `rlm` and for fit `function`
     objects in `stat_poly_eq()`.
@@ -83,18 +87,18 @@ based on my own needs or ideas.
 -   Revise `stat_poly_eq()` and `stat_quant_eq()` so that they pass to
     the geom by default a suitable value as argument to `parse`
     depending on `output.type` (enhancement suggested by *Mark Neal* in
-    issue \#11) and so that the default `output.type` is `"markdown"` if
+    issue #11) and so that the default `output.type` is `"markdown"` if
     the argument passed to `geom` is one of `"richtext"` or `"textbox"`,
     improving compatibility with package 'ggtext'.
 -   Revise `stat_poly_eq()` and `stat_quant_eq()` so that when
     `output.type = "numeric"` they return the coefficient estimates as
     `numeric` columns in `data` (problem with `coefs.ls` column in data
-    when using facets reported by *cgnolte* in issue \#12).
+    when using facets reported by *cgnolte* in issue #12).
 -   Revise `stat_poly_eq()` adding support for optional use of lower
     case *r* and *p* for $R^2$ and $P$-value, respectively.
 -   Fix bug in `stat_poly_eq()` and `stat_quant_eq()` resulting in
     mishandling of formulas using the `+ 0` notation to exclude the
-    intercept (reported by *orgadish* in issue \#10).
+    intercept (reported by *orgadish* in issue #10).
 -   Add `stat_poly_line()`, which is a new interface to
     `ggplot2::stat_smooth()` accepting `formula = x ~ y` and other
     models in which the explanatory variable is `y` rather than `x` or
@@ -187,7 +191,7 @@ Many thanks!
     *x*-values to fit the polynomial (reported by
     [ganidat](https://stackoverflow.com/users/5432156/ganidat) in
     StackOverflow).
--   [**Under development!**] Link repositioned text to its original
+-   \[**Under development!**\] Link repositioned text to its original
     position with a segment or arrow: `geom_linked_text()`. Except for
     the drawing of segments or arrows this new *geometry* behaves as
     `ggplot2::geom_text()` . *Note:* Segments and arrows are drawn only
@@ -241,8 +245,7 @@ Many thanks!
     datetime, and was obvious as it resulted in a shift in dates by
     several decades)*.
 -   **Move git repository from Bitbucket to Github.** Numbering of
-    issues restarts from \#1, but all old commits were transferred as
-    is.
+    issues restarts from #1, but all old commits were transferred as is.
 -   Set up Github action for CRAN-checks on Windows, OS X and Ubuntu.
 
 # ggpmisc 0.3.7
@@ -285,7 +288,7 @@ Many thanks!
 # ggpmisc 0.3.4
 
 -   Add support for p.value.label and f.value.label to `stat_poly_eq()`.
--   Update to track deprecations in 'ggplot2' (\>= 3.3.0).
+-   Update to track deprecations in 'ggplot2' (>= 3.3.0).
 
 # ggpmisc 0.3.3
 
@@ -297,7 +300,7 @@ Many thanks!
 This version implements some new features and fixes bugs in the features
 introduced in version 0.3.1, please do rise an issue if you notice any
 remaining bugs! Some reported weaknesses in the documentation have been
-addressed. This updated version depends on 'ggplot2' (\>= 3.2.1).
+addressed. This updated version depends on 'ggplot2' (>= 3.2.1).
 
 -   Add support for *volcano* and *quadrant* *plots* of outcomes.
 
@@ -349,7 +352,7 @@ differences in the positions of labels used as annotations. The many new
 features may still have some bugs, please do rise an issue if you notice
 one!
 
-Version requiring 'ggplot2' (\>= 3.1.0).
+Version requiring 'ggplot2' (>= 3.1.0).
 
 Add new geometries, several of them accepting *x* and *y* in *npc* units
 through the new aesthetics `npcx` and `npcy`, allowing positioning
@@ -388,12 +391,12 @@ of annotate().
 
 # ggpmisc 0.3.0
 
-Version requiring 'ggplot2' (\>= 3.0.0), now in CRAN. **Low level
+Version requiring 'ggplot2' (>= 3.0.0), now in CRAN. **Low level
 manipulation and debug methods and functions moved to new package
 'gginnards' available through CRAN.**
 
--   Remove debug stats and geoms -\> 'gginnards'.
--   Remove layer manipulation functions -\> 'gginnards'.
+-   Remove debug stats and geoms -> 'gginnards'.
+-   Remove layer manipulation functions -> 'gginnards'.
 -   Add support for "weight" aesthetic in `stat_poly_eq()` (fixing bug
     reported by S.Al-Khalidi).
 -   Add support for column selection and renaming to `stat_fit_tb()`.
@@ -408,12 +411,12 @@ manipulation and debug methods and functions moved to new package
 Non-CRAN version with additional functionality, but requiring the
 development version of 'ggplot2'.
 
--   Track code breaking change in 'ggplot2' commit \#2620 (2018-05-17).
+-   Track code breaking change in 'ggplot2' commit #2620 (2018-05-17).
 
 # ggpmisc 0.2.17.9900
 
 Non-CRAN version with additional functionality, but requiring the
-development version of 'ggplot2' \>= 2.2.1.9000 (\>= commit of
+development version of 'ggplot2' \>= 2.2.1.9000 (>= commit of
 2017-02-09) from Github. Visit
 
 -   `geom_table()`, a geom for adding a layer containing one or more
