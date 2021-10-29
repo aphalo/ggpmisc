@@ -106,6 +106,12 @@
 #' @references Written as an answer to a question at Stackoverflow.
 #'   \url{https://stackoverflow.com/questions/7549694/adding-regression-line-equation-and-r2-on-graph}
 #'
+#' @section IMPORTANT: \code{stat_regline_equation()} in package 'ggpubr' is
+#'   a renamed but almost unchanged copy of \code{stat_poly_eq()} taken from an
+#'   earlier version of this package (without acknowledgement of source and
+#'   authorship). \code{stat_regline_equation()} lacks important functionality
+#'   and contains bugs that have been fixed in \code{stat_poly_eq()}.
+#'
 #' @section Aesthetics: \code{stat_poly_eq} understands \code{x} and \code{y},
 #'   to be referenced in the \code{formula} and \code{weight} passed as argument
 #'   to parameter \code{weights}. All three must be mapped to
@@ -908,22 +914,7 @@ coefs2poly_eq <- function(coefs,
   eq.char <- as.character(polynom::as.polynomial(coefs),
                           digits = coef.digits,
                           keep.zeros = coef.keep.zeros)
-  if (output.type == "markdown") {
-    eq.char <- gsub("e([+-]?)[0]([1-9]*)", "&times;10<sup>\\1\\2</sup>", eq.char)
-    eq.char <- gsub("[:^]([0-9]*)", "<sup>\\1</sup>", eq.char)
-    eq.char <- gsub("*", "&nbsp;", eq.char, fixed = TRUE)
-    eq.char <- gsub(" ", "", eq.char, fixed = TRUE)
-  } else {
-    eq.char <- gsub("e([+-]?[0-9]*)", "%*%10^{\\1}", eq.char)
-    # muliplication symbol
-    if (output.type %in% c("latex", "tikz")) {
-      eq.char <- gsub("%*%", "\\times{}", eq.char, fixed = TRUE)
-      eq.char <- gsub("*", "", eq.char, fixed = TRUE)
-    }else if (output.type == "text") {
-      eq.char <- gsub("[*][:space:]", " ", eq.char, fixed = TRUE)
-      eq.char <- gsub("%*%", " * ", eq.char, fixed = TRUE)
-    }
-  }
+  eq.char <- typeset_numbers(eq.char, output.type)
 
   if (eq.x.rhs != "x") {
     eq.char <- gsub("x", eq.x.rhs, eq.char, fixed = TRUE)
@@ -967,4 +958,26 @@ as.character.polynomial <- function (x,
   stars[p == "" | pow == ""] <- ""
   p <- gsub("^-", "", p)
   paste0(signs, p, stars, pow, collapse = " ")
+}
+
+# exponential number notation to typeset equivalent
+#
+typeset_numbers <- function(eq.char, output.type) {
+  if (output.type == "markdown") {
+    eq.char <- gsub("e([+-]?)[0]([1-9]*)", "&times;10<sup>\\1\\2</sup>", eq.char)
+    eq.char <- gsub("[:^]([0-9]*)", "<sup>\\1</sup>", eq.char)
+    eq.char <- gsub("*", "&nbsp;", eq.char, fixed = TRUE)
+    eq.char <- gsub(" ", "", eq.char, fixed = TRUE)
+  } else {
+    eq.char <- gsub("e([+-]?[0-9]*)", "%*%10^{\\1}", eq.char)
+    # muliplication symbol
+    if (output.type %in% c("latex", "tikz")) {
+      eq.char <- gsub("%*%", "\\times{}", eq.char, fixed = TRUE)
+      eq.char <- gsub("*", "", eq.char, fixed = TRUE)
+    }else if (output.type == "text") {
+      eq.char <- gsub("[*][:space:]", " ", eq.char, fixed = TRUE)
+      eq.char <- gsub("%*%", " * ", eq.char, fixed = TRUE)
+    }
+  }
+  eq.char
 }

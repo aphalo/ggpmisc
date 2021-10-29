@@ -8,7 +8,11 @@ editor_options:
 
 An issue raised in **GitHub** and a question in **StackOverflow** asked
 for the possibility of changing how fitted lines are plotted based on
-the *goodness* of the fit.
+the *goodness* of the fit. In addition an old question in
+**StackOverflow** highlighted the need of more intuitive support for
+annotations based on `stats::cor.test()`. There was also a need for
+clarification of the overlapping functionality between some statistics
+in packages 'ggpubr' and 'ggpmisc' .
 
 -   Update `stat_poly_line()` to optionally add columns `n`, `p.value`,
     `r.squared` and `adj.r.squared` to the returned data frame. *This
@@ -27,7 +31,7 @@ the *goodness* of the fit.
 -   Update `stat_fit_residuals()` to optionally return weighted
     residuals.
 
--   New function `stat_corr()` to annotate plots with correlation
+-   New function `stat_correlation()` to annotate plots with correlation
     estimates and optionally *P*-value and a test statistic. computed
     with `stats::cor.test()`.
 

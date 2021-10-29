@@ -1,10 +1,10 @@
 #' @title Annotate plot with correlation test
 #'
-#' @description \code{stat_corr} applies \code{stats::cor.test()} respecting grouping
-#' with \code{method = "pearson"} default but
-#' alternatively using \code{"kendall"} or \code{"spearman"} methods. It
-#' generates labels for correlation coefficients and p-value, coefficient of
-#' determination (R^2) for method "pearson" and number of observations.
+#' @description \code{stat_corelation()} applies \code{stats::cor.test()}
+#'   respecting grouping with \code{method = "pearson"} default but
+#'   alternatively using \code{"kendall"} or \code{"spearman"} methods. It
+#'   generates labels for correlation coefficients and p-value, coefficient of
+#'   determination (R^2) for method "pearson" and number of observations.
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs to be
@@ -84,26 +84,26 @@
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   stat_corr()
+#'   stat_corelation()
 #'
 #' ggplot(my.data, aes(x, y.desc)) +
 #'   geom_point() +
-#'   stat_corr(label.x = "right")
+#'   stat_corelation(label.x = "right")
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   stat_corr(aes(label = paste(after_stat(r.label),
+#'   stat_corelation(aes(label = paste(after_stat(r.label),
 #'                               after_stat(p.value.label),
 #'                               after_stat(n.label),
 #'                               sep = "*\"; \"*")))
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   stat_corr(small.r = TRUE)
+#'   stat_corelation(small.r = TRUE)
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   stat_corr(aes(label = paste(after_stat(r.label),
+#'   stat_corelation(aes(label = paste(after_stat(r.label),
 #'                               after_stat(p.value.label),
 #'                               after_stat(n.label),
 #'                               sep = "*\"; \"*")),
@@ -111,15 +111,15 @@
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   stat_corr(method = "kendall")
+#'   stat_corelation(method = "kendall")
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   stat_corr(method = "spearman")
+#'   stat_corelation(method = "spearman")
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   stat_corr(aes(label = paste(after_stat(r.label),
+#'   stat_corelation(aes(label = paste(after_stat(r.label),
 #'                               after_stat(p.value.label),
 #'                               after_stat(n.label),
 #'                               sep = "*\"; \"*")),
@@ -127,7 +127,7 @@
 #'
 #' @export
 #'
-stat_corr <- function(mapping = NULL,
+stat_corelation <- function(mapping = NULL,
                       data = NULL,
                       geom = "text_npc",
                       position = "identity",

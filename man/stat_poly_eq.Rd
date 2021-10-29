@@ -165,6 +165,14 @@ For backward compatibility a logical is accepted as argument for
   for \code{formula} but is included for consistency with
   \code{ggplot2::stat_smooth()}.
 }
+\section{IMPORTANT}{
+ \code{stat_regline_equation()} in package 'ggpubr' is
+  a renamed but almost unchanged copy of \code{stat_poly_eq()} taken from an
+  earlier version of this package (without acknowledgement of source and
+  authorship). \code{stat_regline_equation()} lacks important functionality
+  and contains bugs that have been fixed in \code{stat_poly_eq()}.
+}
+
 \section{Aesthetics}{
  \code{stat_poly_eq} understands \code{x} and \code{y},
   to be referenced in the \code{formula} and \code{weight} passed as argument

@@ -82,6 +82,22 @@
 #'   "level" for each quantile. Is \code{se = TRUE}, a confidence band is
 #'   computed and values for it returned in \code{ymax} and \code{ymin}.
 #'
+#' @return The value returned by the statistic is a data frame, that will have
+#'   \code{n} rows of predicted values and their confidence limits. Optionally
+#'   it will also include additional values related to the model fit.
+#'
+#' @section Computed variables: `stat_quant_line()` provides the following
+#'   variables, some of which depend on the orientation: \describe{ \item{y *or*
+#'   x}{predicted value} \item{ymin *or* xmin}{lower confidence
+#'   interval around the mean} \item{ymax *or* xmax}{upper confidence
+#'   interval around the mean}}
+#'
+#'   If \code{mf.values = TRUE} is passed then one column with the number of
+#'   observations \code{n} used for each fit is also included, with the same
+#'   value in each row within a group. This is wasteful and disabled by default,
+#'   but provides a simple and robust approach to achieve effects like colouring
+#'   or hiding of the model fit line based on the number of observations.
+#'
 #' @section Aesthetics: \code{stat_quant_line} understands \code{x} and \code{y},
 #'   to be referenced in the \code{formula} and \code{weight} passed as argument
 #'   to parameter \code{weights}. All three must be mapped to \code{numeric}

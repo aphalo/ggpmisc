@@ -30,7 +30,7 @@ Statistics that help with reporting the results of model fits are:
 | `stat_poly_eq()`        | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lm, rlm (**weight** aesthetic fully supported) |
 | `stat_ma_eq()`          | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lmodel2: MA, SMA, RMA, OLS                     |
 | `stat_quant_eq()`       | equation, *P*, etc. (`text_npc`)                  | rq (any number of quantiles)                   |
-| `stat_corr()`           | correlation, *P*-value, CI (`text_npc`)           | Pearson (*t*), Kendall (*z*), Spearman (*S*)   |
+| `stat_corelation()`     | correlation, *P*-value, CI (`text_npc`)           | Pearson (*t*), Kendall (*z*), Spearman (*S*)   |
 | `stat_poly_line()`      | line + conf. (`smooth`)                           | lm, rlm (**weight** aesthetic fully supported) |
 | `stat_ma_line()`        | line + conf. (`smooth`)                           | lmodel2: MA, SMA, RMA, OLS                     |
 | `stat_quant_line()`     | line + conf. (`smooth`)                           | rq, rqss (any number of quantiles)             |

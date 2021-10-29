@@ -83,7 +83,8 @@ default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
 }
 \value{
 The value returned by the statistic is a data frame, that will have
-  \code{n} rows of predicted values and and their confidence limits.
+  \code{n} rows of predicted values and their confidence limits. Optionally
+  it will also include additional values related to the model fit.
 }
 \description{
 Predicted values and a confidence band are computed and, by default, plotted.
@@ -119,6 +120,12 @@ new statistics as they are not needed and conceptually transformations of
   x}{predicted value} \item{ymin *or* xmin}{lower pointwise confidence
   interval around the mean} \item{ymax *or* xmax}{upper pointwise confidence
   interval around the mean} \item{se}{standard error} }
+
+  If \code{mf.values = TRUE} is passed then columns based on the summary of
+  the model fit are added, with the same value in each row within a group.
+  This is wasteful and disabled by default, but provides a simple and robust
+  approach to achieve effects like colouring or hiding of the model fit line
+  based on P-values, r-squared or the number of observations.
 }
 
 \section{Aesthetics}{

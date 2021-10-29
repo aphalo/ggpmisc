@@ -65,13 +65,21 @@
 #'   \code{formula}.
 #'
 #' @return The value returned by the statistic is a data frame, that will have
-#'   \code{n} rows of predicted values and and their confidence limits.
+#'   \code{n} rows of predicted values and their confidence limits. Optionally
+#'   it will also include additional values related to the model fit.
 #'
 #' @section Computed variables: `stat_poly_line()` provides the following
 #'   variables, some of which depend on the orientation: \describe{ \item{y *or*
 #'   x}{predicted value} \item{ymin *or* xmin}{lower pointwise confidence
 #'   interval around the mean} \item{ymax *or* xmax}{upper pointwise confidence
 #'   interval around the mean} \item{se}{standard error} }
+#'
+#'   If \code{mf.values = TRUE} is passed then columns based on the summary of
+#'   the model fit are added, with the same value in each row within a group.
+#'   This is wasteful and disabled by default, but provides a simple and robust
+#'   approach to achieve effects like colouring or hiding of the model fit line
+#'   based on P-values, r-squared, adjusted r-squared or the number of
+#'   observations.
 #'
 #' @section Aesthetics: \code{stat_poly_line} understands \code{x} and \code{y},
 #'   to be referenced in the \code{formula} and \code{weight} passed as argument
