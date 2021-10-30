@@ -1,5 +1,5 @@
 ---
-title: "Computed Plot Annotations"
+title: "Model-Based Plot Annotations"
 subtitle: "'ggpmisc' `r packageVersion('ggpmisc')`"
 author: "Pedro J. Aphalo"
 date: "`r Sys.Date()`"
@@ -7,7 +7,7 @@ output:
   rmarkdown::html_vignette:
     toc: yes
 vignette: >
-  %\VignetteIndexEntry{Computed Plot Annotations}
+  %\VignetteIndexEntry{Model-Based Plot Annotations}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 ---
@@ -49,15 +49,17 @@ old_theme <- theme_set(theme_bw())
 
 # Introduction to computed annotations
 
-Common plot annotations based on model fits are model equations, tests of significance and various indicators of goodness of fit. What annotations are most useful depend on whether both *x* and *y* are mapped to continuous variables, or *y* to a continuous variable, and *x* to a factor. In some cases it may be desirable to add an ANOVA table or a summary table as plot insets. Other annotations computed from data are various summaries and features such as location of local maxima and minima.
+Common plot annotations based on model fits are model equations, tests of significance and various indicators of goodness of fit. What annotations are most useful depend on whether both *x* and *y* are mapped to continuous variables, or *y* to a continuous variable, and *x* to a factor. In some cases it may be desirable to add an ANOVA table or a summary table as plot insets. Other annotations computed from data are various summaries and features such as location of local or global maxima and minima (Please see help pages for `stat_peaks()` and `stat_valleys()`). Several additional statistics for plot annotations computed from `data` are documented in the vignettes and help pages of package 'ggpp' even if these statistics are imported and re-exported by 'ggpmisc'.
 
-Supporting these in ggplots does not require extending the grammar of graphics with new geometries, it is enough to define new statistics that do previously unsupported computations on the plot data. These new statistics are only a convenience in the sense that similar plots can be achieved by fitting models and operating on the fitted model objects before plotting and adding plot layers by passing the model fit data as arguments to individual layers in a plot and adding the code needed to assemble character strings to be parsed into R expressions. We find such an approach rather tedious and error prone, so we have developed the statistics described in this vignette.
+Supporting computed and model-fit based annotations in ggplots can be implemented as new statistics that do computations on the plot data and pass the results to existing geometries. These new statistics are only a convenience in the sense that similar plots can be achieved by fitting models and operating on the fitted model objects before plotting and adding plot layers by passing the model fit data as arguments to individual layer functions in a plot. This approach also requires additional code to assemble character strings to be parsed into R expressions. We find such an approach rather tedious and error prone, so we have developed the statistics described in this vignette.
 
-There is always a compromise between simplicity and flexibility in which the choice of default arguments plays a key role. I have aimed to make everyday use simple without constraining the flexibility inherent to the Grammar of Graphics. The assumption is that users desire/need the flexibility inherent in the layered approach of the Grammar of Graphics, and that the layer functions provided will be combined with those from 'ggplot2', 'ggpp' and other packages extending the Grammar of Graphics as implemented in 'ggplot2'. 
+The statistics defined in 'ggpmisc' even if usable with native geometries from package 'ggplot2', in most cases have as default geometries defined in package 'ggpp'. These new geometries are better suited for plot annotations than those from 'ggplot2'.
+
+There is always a compromise between simplicity and flexibility in which the choice of default arguments plays a key role obtaining a balance. I have aimed to make everyday use simple without constraining the flexibility inherent to the Grammar of Graphics. The assumption is that users desire/need the flexibility inherent in the layered approach of the Grammar of Graphics, and that the layer functions provided will be combined with those from 'ggplot2', 'ggpp' and other packages extending the Grammar of Graphics as implemented in 'ggplot2'. 
 
 ## Statistics
 
-Statistics made available by package 'ggpmisc' that help with reporting the results of model fits are `stat_poly_line()`, `stat_poly_eq()`, `stat_ma_line()`, `stat_ma_eq()`, `stat_quant_line()`, `stat_quant_band()`, `stat_quant_eq()`, `stat_fit_residuals()`, `stat_fit_deviations()`, `stat_fit_glance()`, `stat_fit_augment()`, `stat_fit_tidy()` and `stat_fit_tb()`.
+Statistics made available by package 'ggpmisc' that help with reporting the results of model fits are `stat_poly_line()`, `stat_poly_eq()`, `stat_ma_line()`, `stat_ma_eq()`, `stat_quant_line()`, `stat_quant_band()`, `stat_quant_eq()`, `stat_fit_residuals()`, `stat_fit_deviations()`, `stat_fit_glance()`, `stat_fit_augment()`, `stat_fit_tidy()` and `stat_fit_tb()`. In addition, `stat_correlation()` helps with the reporting of Pearson, Kendall and Spearman correlations. 
 
 All these statistics support grouping and faceting. In the case of those that return character strings to be mapped to the `label` aesthetic they return suitable `x`, `y` , `hjust` and `vjust` values to avoid overlaps. The automatic computation of these positions can be adjusted through arguments passed to these statistics and also overridden by user-supplied manual positions.
 

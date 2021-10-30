@@ -170,6 +170,12 @@ ggplot(lynx_num.df, aes(year, lynx)) +
   stat_peaks(colour = "red") +
   stat_peaks(colour = "red", geom = "text", hjust = -0.1, angle = 33)
 
+ggplot(lynx_num.df, aes(lynx, year)) +
+  geom_line(orientation = "y") +
+  stat_peaks(colour = "red", orientation = "y") +
+  stat_peaks(colour = "red", orientation = "y",
+             geom = "text", hjust = -0.1)
+
 lynx_datetime.df <-
    try_tibble(lynx,
               col.names = c("year", "lynx")) # years -> POSIXct

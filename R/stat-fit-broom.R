@@ -53,26 +53,27 @@
 #'   that the model is fitted to the same data as plotted in other layers.
 #'
 #' @section Warning!: Not all `glance()` methods are defined in package 'broom'.
-#'   `glance()` especializations for mixed models fits of classes `lme`, `nlme`,
+#'   `glance()` specializations for mixed models fits of classes `lme`, `nlme`,
 #'   `lme4`, and many others are defined in package 'broom.mixed'.
 #'
 #' @section Handling of grouping: \code{stat_fit_glance} applies the function
 #'   given by \code{method} separately to each group of observations, and
-#'   factors mapped to aesthetics generate a separate group for each factor
-#'   level. Because of this, \code{stat_fit_glance} is not useful for annotating
-#'   plots with results from \code{t.test()}, ANOVA or ANCOVA. In such cases use
-#'   the \code{stat_fit_tb()} statistic which applies the model fitting per
-#'   panel.
+#'   factors mapped to aesthetics, including \code{x} and \code{y}, create a
+#'   separate group for each factor level. Because of this,
+#'   \code{stat_fit_glance} is not useful for annotating plots with results from
+#'   \code{t.test()}, ANOVA or ANCOVA. In such cases use the
+#'   \code{stat_fit_tb()} statistic which applies the model fitting per panel.
 #'
 #' @section Model formula required: The current implementation works only with
 #'   methods that accept a formula as argument and which have a \code{data}
 #'   parameter through which a data frame can be passed. For example,
 #'   \code{lm()} should be used with the formula interface, as the evaluation of
-#'   \code{x} and \code{y} needs to be delayed until the internal \code{object}
-#'   of the ggplot is available.  With some methods like \code{cor.test()} the
-#'   data embedded in the \code{"ggplot"} object cannot be automatically passed
-#'   as argument for the \code{data} parameter of the test or model fit
-#'   function.
+#'   \code{x} and \code{y} needs to be delayed until the internal \code{data}
+#'   object of the ggplot is available. With some methods like
+#'   \code{stats::cor.test()} the data embedded in the \code{"ggplot"} object
+#'   cannot be automatically passed as argument for the \code{data} parameter of
+#'   the test or model fit function. Please, for annotations based on
+#'   \code{stats::cor.test()} use \code{stat_correlation()}.
 #'
 #' @return The output of the \code{glance()} methods is returned almost as is in
 #'   the \code{data} object, as a data frame. The names of the columns in the
@@ -414,12 +415,12 @@ StatFitGlance <-
 #'   as argument by the user, but instead a data frame with the variables mapped
 #'   to aesthetics. In other words, it respects the grammar of graphics and
 #'   consequently within arguments passed through \code{method.args} names of
-#'   aesthetics like $x$ and $y$ should be used intead of the original variable
+#'   aesthetics like $x$ and $y$ should be used instead of the original variable
 #'   names, while data is automatically passed the data frame. This helps ensure
 #'   that the model is fitted to the same data as plotted in other layers.
 #'
 #' @section Warning!: Not all `glance()` methods are defined in package 'broom'.
-#'   `glance()` especializations for mixed models fits of classes `lme`, `nlme`,
+#'   `glance()` specializations for mixed models fits of classes `lme`, `nlme`,
 #'   `lme4`, and many others are defined in package 'broom.mixed'.
 #'
 #' @section Handling of grouping: \code{stat_fit_augment} applies the function
@@ -731,7 +732,7 @@ StatFitAugment <-
 #'   passed to [generics::tidy()] whether they are silently ignored or obeyed
 #'   depends on each specialization of [tidy()], so do carefully read the
 #'   documentation for the version of [tidy()] corresponding to the `method`
-#'   used to fit the model. You will also need to manually intall the package,
+#'   used to fit the model. You will also need to manually install the package,
 #'   such as 'broom', where the tidier you intend to use are defined.
 #'
 #' @family ggplot statistics for model fits

@@ -126,7 +126,7 @@ Although arguments passed to parameter \code{tidy.args} will be
   passed to [generics::tidy()] whether they are silently ignored or obeyed
   depends on each specialization of [tidy()], so do carefully read the
   documentation for the version of [tidy()] corresponding to the `method`
-  used to fit the model. You will also need to manually intall the package,
+  used to fit the model. You will also need to manually install the package,
   such as 'broom', where the tidier you intend to use are defined.
 }
 \section{Warning!}{
