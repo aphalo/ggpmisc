@@ -31,6 +31,9 @@ in packages 'ggpubr' and 'ggpmisc' .
 -   Update `stat_fit_residuals()` to optionally return weighted
     residuals.
 
+-   Update `stat_peaks()` and `stat_valleys()` to allow flipping with
+    new parameter `orientation`.
+
 -   New function `stat_correlation()` to annotate plots with correlation
     estimates and optionally *P*-value and a test statistic. computed
     with `stats::cor.test()`.

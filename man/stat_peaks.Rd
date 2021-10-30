@@ -15,6 +15,7 @@ stat_peaks(
   label.fmt = NULL,
   x.label.fmt = NULL,
   y.label.fmt = NULL,
+  orientation = "x",
   position = "identity",
   na.rm = FALSE,
   show.legend = FALSE,
@@ -32,6 +33,7 @@ stat_valleys(
   label.fmt = NULL,
   x.label.fmt = NULL,
   y.label.fmt = NULL,
+  orientation = "x",
   position = "identity",
   na.rm = FALSE,
   show.legend = FALSE,
@@ -73,6 +75,8 @@ varies depending on the scale in use.}
 \item{y.label.fmt}{character  string giving a format definition for
 converting $y$-values into character strings by means of function
 \code{\link{sprintf}}.}
+
+\item{orientation}{character Either "x" or "y".}
 
 \item{position}{The position adjustment to use for overlapping points
 on this layer.}
@@ -150,6 +154,11 @@ ggplot(lynx_num.df, aes(year, lynx)) +
   geom_line() +
   stat_peaks(colour = "red") +
   stat_valleys(colour = "blue")
+
+ggplot(lynx_num.df, aes(lynx, year)) +
+  geom_line(orientation = "y") +
+  stat_peaks(colour = "red", orientation = "y") +
+  stat_valleys(colour = "blue", orientation = "y")
 
 ggplot(lynx_num.df, aes(year, lynx)) +
   geom_line() +

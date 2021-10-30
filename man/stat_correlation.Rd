@@ -177,6 +177,44 @@ ggplot(my.data, aes(x, y)) +
                               sep = "*\"; \"*")),
             method = "spearman")
 
+# Inspecting the returned data using geom_debug()
+if (requireNamespace("gginnards", quietly = TRUE)) {
+  library(gginnards)
+
+# This provides a quick way of finding out the names of the variables that
+# are available for mapping to aesthetics.
+
+# the whole of data
+  ggplot(my.data, aes(x, y)) +
+    geom_point() +
+    stat_correlation(geom = "debug")
+
+  ggplot(my.data, aes(x, y)) +
+    geom_point() +
+    stat_correlation(geom = "debug", method = "pearson")
+
+  ggplot(my.data, aes(x, y)) +
+    geom_point() +
+    stat_correlation(geom = "debug", method = "kendall")
+
+  ggplot(my.data, aes(x, y)) +
+    geom_point() +
+    stat_correlation(geom = "debug", method = "spearman")
+
+  ggplot(my.data, aes(x, y)) +
+    geom_point() +
+    stat_correlation(geom = "debug", output.type = "numeric")
+
+  ggplot(my.data, aes(x, y)) +
+    geom_point() +
+    stat_correlation(geom = "debug", output.type = "markdown")
+
+  ggplot(my.data, aes(x, y)) +
+    geom_point() +
+    stat_correlation(geom = "debug", output.type = "LaTeX")
+
+}
+
 }
 \seealso{
 \code{\link[stats]{cor.test}} for details on the computations.

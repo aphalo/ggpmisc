@@ -114,6 +114,7 @@ find_peaks <-
 #' @param y.label.fmt character  string giving a format definition for
 #'   converting $y$-values into character strings by means of function
 #'   \code{\link{sprintf}}.
+#' @param orientation character Either "x" or "y".
 #'
 #' @section Returned and computed variables:
 #' \describe{
@@ -162,6 +163,11 @@ find_peaks <-
 #'   stat_peaks(colour = "red") +
 #'   stat_valleys(colour = "blue")
 #'
+#' ggplot(lynx_num.df, aes(lynx, year)) +
+#'   geom_line(orientation = "y") +
+#'   stat_peaks(colour = "red", orientation = "y") +
+#'   stat_valleys(colour = "blue", orientation = "y")
+#'
 #' ggplot(lynx_num.df, aes(year, lynx)) +
 #'   geom_line() +
 #'   stat_peaks(colour = "red") +
@@ -171,6 +177,12 @@ find_peaks <-
 #'   geom_line() +
 #'   stat_peaks(colour = "red") +
 #'   stat_peaks(colour = "red", geom = "text", hjust = -0.1, angle = 33)
+#'
+#' ggplot(lynx_num.df, aes(lynx, year)) +
+#'   geom_line(orientation = "y") +
+#'   stat_peaks(colour = "red", orientation = "y") +
+#'   stat_peaks(colour = "red", orientation = "y",
+#'              geom = "text", hjust = -0.1)
 #'
 #' lynx_datetime.df <-
 #'    try_tibble(lynx,
@@ -223,6 +235,7 @@ stat_peaks <- function(mapping = NULL,
                        label.fmt = NULL,
                        x.label.fmt = NULL,
                        y.label.fmt = NULL,
+                       orientation = "x",
                        position = "identity",
                        na.rm = FALSE,
                        show.legend = FALSE,
@@ -243,6 +256,7 @@ stat_peaks <- function(mapping = NULL,
       label.fmt = label.fmt,
       x.label.fmt = x.label.fmt,
       y.label.fmt = y.label.fmt,
+      orientation = orientation,
       na.rm = na.rm,
       ...
     )
@@ -263,8 +277,9 @@ peaks_compute_group_fun <- function(data,
                                     strict,
                                     label.fmt,
                                     x.label.fmt,
-                                    y.label.fmt) {
-  force(data)
+                                    y.label.fmt,
+                                    flipped_aes = FALSE) {
+  data <- ggplot2::flip_data(data, flipped_aes)
   if (!is.null(label.fmt)) {
     warning("Use of parameter 'label.format' is deprecated, ",
             "use parameters 'x.label.format' and 'y.label.format' instead.")
@@ -313,7 +328,9 @@ peaks_compute_group_fun <- function(data,
   }
   peaks.df[["x.label"]] <- as_label(x.label.fmt, peaks.df[["x"]])
   peaks.df[["y.label"]] <- sprintf(y.label.fmt, peaks.df[["y"]])
-  peaks.df
+
+  peaks.df$flipped_aes <- flipped_aes
+  ggplot2::flip_data(peaks.df, flipped_aes)
 }
 
 # Define here to avoid a note in check as the imports are not seen by checks
@@ -330,8 +347,9 @@ valleys_compute_group_fun <- function(data,
                                       strict,
                                       label.fmt,
                                       x.label.fmt,
-                                      y.label.fmt) {
-  force(data)
+                                      y.label.fmt,
+                                      flipped_aes = FALSE) {
+  data <- ggplot2::flip_data(data, flipped_aes)
   if (!is.null(label.fmt)) {
     warning("Use of parameter 'label.format' is deprecated, ",
             "use parameters 'x.label.format' and 'y.label.format' instead.")
@@ -380,7 +398,9 @@ valleys_compute_group_fun <- function(data,
   }
   valleys.df[["x.label"]] <- as_label(x.label.fmt, valleys.df[["x"]])
   valleys.df[["y.label"]] <- sprintf(y.label.fmt, valleys.df[["y"]])
-  valleys.df
+
+  valleys.df$flipped_aes <- flipped_aes
+  ggplot2::flip_data(valleys.df, flipped_aes)
 }
 
 #' \code{Stat*} Objects
@@ -403,6 +423,18 @@ valleys_compute_group_fun <- function(data,
 #' @keywords internal
 StatPeaks <-
   ggplot2::ggproto("StatPeaks", ggplot2::Stat,
+                   setup_params = function(data, params) {
+                     params$flipped_aes <- ggplot2::has_flipped_aes(data, params)
+
+                     has_x <- !(is.null(data$x) && is.null(params$x))
+                     has_y <- !(is.null(data$y) && is.null(params$y))
+                     if (!has_x && !has_y) {
+                       rlang::abort("stat_density() requires an x or y aesthetic.")
+                     }
+
+                     params
+                   },
+                   extra_params = c("na.rm", "orientation"),
                    compute_group = peaks_compute_group_fun,
                    default_aes = ggplot2::aes(label = after_stat(x.label),
                                               xintercept = after_stat(x),
@@ -423,6 +455,7 @@ stat_valleys <- function(mapping = NULL,
                          label.fmt = NULL,
                          x.label.fmt = NULL,
                          y.label.fmt = NULL,
+                         orientation = "x",
                          position = "identity",
                          na.rm = FALSE,
                          show.legend = FALSE,
@@ -443,6 +476,7 @@ stat_valleys <- function(mapping = NULL,
       label.fmt = label.fmt,
       x.label.fmt = x.label.fmt,
       y.label.fmt = y.label.fmt,
+      orientation = orientation,
       na.rm = na.rm,
       ...
     )
@@ -457,6 +491,18 @@ stat_valleys <- function(mapping = NULL,
 #'
 StatValleys <-
   ggplot2::ggproto("StatValleys", ggplot2::Stat,
+                   setup_params = function(data, params) {
+                     params$flipped_aes <- ggplot2::has_flipped_aes(data, params)
+
+                     has_x <- !(is.null(data$x) && is.null(params$x))
+                     has_y <- !(is.null(data$y) && is.null(params$y))
+                     if (!has_x && !has_y) {
+                       rlang::abort("stat_density() requires an x or y aesthetic.")
+                     }
+
+                     params
+                   },
+                   extra_params = c("na.rm", "orientation"),
                    compute_group = valleys_compute_group_fun,
                    default_aes = ggplot2::aes(label = after_stat(x.label),
                                               xintercept = after_stat(x),

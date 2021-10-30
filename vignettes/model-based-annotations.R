@@ -37,6 +37,56 @@ my.data <- data.frame(x,
                       wt = sqrt(x))
 
 ## -----------------------------------------------------------------------------
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_correlation()
+
+## -----------------------------------------------------------------------------
+ggplot(my.data, aes(x, y, color = group)) +
+  geom_point() +
+  stat_correlation()
+
+## -----------------------------------------------------------------------------
+ggplot(my.data, aes(x, y, color = group)) +
+  geom_point() +
+  stat_correlation(method = "spearman")
+
+## -----------------------------------------------------------------------------
+ggplot(my.data, aes(x, y, color = group)) +
+  geom_point() +
+  stat_correlation(mapping = aes(label = paste(after_stat(cor.label),
+                                               after_stat(t.value.label),
+                                               after_stat(p.value.label),
+                                               after_stat(n.label),
+                                               sep = '*"; "*')))
+
+## -----------------------------------------------------------------------------
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_correlation() +
+  facet_wrap(~group)
+
+## -----------------------------------------------------------------------------
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_correlation(mapping = aes(color = ifelse(after_stat(cor) > 0.9,
+                                                "red", "black"))) +
+  scale_color_identity() +
+  facet_wrap(~group)
+
+## -----------------------------------------------------------------------------
+set.seed(4321)
+# generate artificial data
+x <- 1:100
+y <- (x + x^2 + x^3) + rnorm(length(x), mean = 0, sd = mean(x^3) / 4)
+my.data <- data.frame(x, 
+                      y, 
+                      group = c("A", "B"), 
+                      y2 = y * c(0.5,2),
+                      block = c("a", "a", "b", "b"),
+                      wt = sqrt(x))
+
+## -----------------------------------------------------------------------------
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
