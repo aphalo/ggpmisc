@@ -1,5 +1,5 @@
 ---
-title: "Model-Based Plot Annotations"
+title: "Computed Plot Annotations"
 subtitle: "'ggpmisc' `r packageVersion('ggpmisc')`"
 author: "Pedro J. Aphalo"
 date: "`r Sys.Date()`"
@@ -7,7 +7,7 @@ output:
   rmarkdown::html_vignette:
     toc: yes
 vignette: >
-  %\VignetteIndexEntry{Model-Based Plot Annotations}
+  %\VignetteIndexEntry{Computed Plot Annotations}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 ---
@@ -47,9 +47,13 @@ As we will use text and labels on the plotting area we change the default theme 
 old_theme <- theme_set(theme_bw())
 ```
 
-# Introduction to model-based annotations
+# Introduction to computed annotations
 
-The most common annotations on plots based on model fits are model equations, tests of significance and various indicators of goodness of fit. What annotations are most useful depend on whether both *x* and *y* are mapped to continuous variables, or *y* to a continuous variable, and *x* to a factor. In some cases it may be desirable to add an ANOVA table or a summary table as plot insets. Supporting these in ggplots does not require extending the grammar of graphics with new geometries, it is enough to define new statistics that do previously unsupported computations on the plot data. These new statistics are only a convenience in the sense that similar plots can be achieved by fitting models and operating on the fitted model objects before plotting and adding plot layers by passing the model fit data as arguments to individual layers in a plot. We find such an approach rather tedious and error prone, so we have developed the statistics described in this section.
+Common plot annotations based on model fits are model equations, tests of significance and various indicators of goodness of fit. What annotations are most useful depend on whether both *x* and *y* are mapped to continuous variables, or *y* to a continuous variable, and *x* to a factor. In some cases it may be desirable to add an ANOVA table or a summary table as plot insets. Other annotations computed from data are various summaries and features such as location of local maxima and minima.
+
+Supporting these in ggplots does not require extending the grammar of graphics with new geometries, it is enough to define new statistics that do previously unsupported computations on the plot data. These new statistics are only a convenience in the sense that similar plots can be achieved by fitting models and operating on the fitted model objects before plotting and adding plot layers by passing the model fit data as arguments to individual layers in a plot and adding the code needed to assemble character strings to be parsed into R expressions. We find such an approach rather tedious and error prone, so we have developed the statistics described in this vignette.
+
+There is always a compromise between simplicity and flexibility in which the choice of default arguments plays a key role. I have aimed to make everyday use simple without constraining the flexibility inherent to the Grammar of Graphics. The assumption is that users desire/need the flexibility inherent in the layered approach of the Grammar of Graphics, and that the layer functions provided will be combined with those from 'ggplot2', 'ggpp' and other packages extending the Grammar of Graphics as implemented in 'ggplot2'. 
 
 ## Statistics
 
@@ -59,89 +63,111 @@ All these statistics support grouping and faceting. In the case of those that re
 
 The table below summarizes their use and the type plot layer geometries they are most useful to combine with. The four statistics at the bottom of the table require in their use more effort as the mapping to aesthetics and conversion of numeric values into character strings must be coded in the layer function call, but on the other hand they support all model fit objects catered by package 'broom' or any of the packages extending 'broom', including user-fined methods.
 
-+--------------------------+-------------------------------------------------+------------------------------------------------+
-| Statistic                | Layer (default geometry)                        | Methods                                        |
-+==========================+=================================================+================================================+
-| stat_poly_eq()           | equation, *R*<sup>2</sup>, *P, etc. (text_npc)* | lm, rlm (**weight** aesthetic fully supported) |
-+--------------------------+-------------------------------------------------+------------------------------------------------+
-| stat_ma_eq()             | equation, *R*<sup>2</sup>, *P, etc. (text_npc)* | lmodel2: MA, SMA, RMA, OLS                     |
-+--------------------------+-------------------------------------------------+------------------------------------------------+
-| stat_quant_eq()          | equation, *P, etc. (text_npc)*                  | rq (any number of quantiles)                   |
-+--------------------------+-------------------------------------------------+------------------------------------------------+
-| stat_poly_line()         | line + conf. (smooth)                           | lm, rlm (**weight** aesthetic fully supported) |
-+--------------------------+-------------------------------------------------+------------------------------------------------+
-| stat_ma_line()           | line + conf. (smooth)                           | lmodel2: MA, SMA, RMA, OLS                     |
-+--------------------------+-------------------------------------------------+------------------------------------------------+
-| stat_quant_line()        | line + conf. (smooth)                           | rq, rqss (any number of quantiles)             |
-+--------------------------+-------------------------------------------------+------------------------------------------------+
-| stat_quant_band()        | median + quartiles (smooth)                     | rq, rqss (three quantiles)                     |
-+--------------------------+-------------------------------------------------+------------------------------------------------+
-| stat_fit_residuals()     | residuals plot (point)                          | lm, rlm (**weight** aesthetic fully supported) |
-+--------------------------+-------------------------------------------------+------------------------------------------------+
-| stat_fit_deviations()    | deviations from observations (segment)          | lm, rlm (**weight** aesthetic fully supported) |
-+--------------------------+-------------------------------------------------+------------------------------------------------+
-| stat_fit_glance()        | equation, *R*<sup>2</sup>, *P, etc.*(text_npc)  | all those supported by 'broom'                 |
-+--------------------------+-------------------------------------------------+------------------------------------------------+
-| stat_fit_augment()       | predicted and other values (smooth)             | all those supported by 'broom'                 |
-+--------------------------+-------------------------------------------------+------------------------------------------------+
-| stat_fit_tidy()          | fit results, e.g. for equation (text_npc)       | all those supported by 'broom'                 |
-+--------------------------+-------------------------------------------------+------------------------------------------------+
-| stat_fit_tb()            | ANOVA and summary tables (table_npc)            | all those supported by 'broom'                 |
-+--------------------------+-------------------------------------------------+------------------------------------------------+
++--------------------------+---------------------------------------------------+------------------------------------------------+
+| Statistic                | `after_stat` values (_default geometry_)          | Methods                                        |
++==========================+===================================================+================================================+
+| `stat_poly_eq()`         | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lm, rlm (**weight** aesthetic fully supported) |
++--------------------------+---------------------------------------------------+------------------------------------------------+
+| `stat_ma_eq()`           | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lmodel2: MA, SMA, RMA, OLS                     |
++--------------------------+---------------------------------------------------+------------------------------------------------+
+| `stat_quant_eq()`        | equation, *P*, etc. (`text_npc`)                  | rq (any number of quantiles)                   |
++--------------------------+---------------------------------------------------+------------------------------------------------+
+| `stat_correlation()`      | correlation, _P_-value, CI (`text_npc`)           | Pearson (_t_), Kendall (_z_), Spearman (_S_)   |
++--------------------------+---------------------------------------------------+------------------------------------------------+
+| `stat_poly_line()`       | line + conf. (`smooth`)                           | lm, rlm (**weight** aesthetic fully supported) |
++--------------------------+---------------------------------------------------+------------------------------------------------+
+| `stat_ma_line()`         | line + conf. (`smooth`)                           | lmodel2: MA, SMA, RMA, OLS                     |
++--------------------------+---------------------------------------------------+------------------------------------------------+
+| `stat_quant_line()`      | line + conf. (`smooth`)                           | rq, rqss (any number of quantiles)             |
++--------------------------+---------------------------------------------------+------------------------------------------------+
+| `stat_quant_band()`      | median + quartiles (`smooth`)                     | rq, rqss (two or three quantiles)              |
++--------------------------+---------------------------------------------------+------------------------------------------------+
+| `stat_fit_residuals()`   | residuals (`point`)                               | lm, rlm (**weight** aesthetic fully supported) |
++--------------------------+---------------------------------------------------+------------------------------------------------+
+| `stat_fit_deviations()`  | deviations from observations (`segment`)          | lm, rlm (**weight** aesthetic fully supported) |
++--------------------------+---------------------------------------------------+------------------------------------------------+
+| `stat_fit_glance()`      | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | all those supported by 'broom'                 |
++--------------------------+---------------------------------------------------+------------------------------------------------+
+| `stat_fit_augment()`     | predicted and other values (`smooth`)             | all those supported by 'broom'                 |
++--------------------------+---------------------------------------------------+------------------------------------------------+
+| `stat_fit_tidy()`        | fit results, e.g., for equation (`text_npc`)      | all those supported by 'broom'                 |
++--------------------------+---------------------------------------------------+------------------------------------------------+
+| `stat_fit_tb()`          | ANOVA and summary tables (`table_npc`)            | all those supported by 'broom'                 |
++--------------------------+---------------------------------------------------+------------------------------------------------+
 
 The three statistics with names ending in `eq` return by default ready formatted character strings that can be mapped to the `label` aesthetic individually or concatenated using using `paste()` or `sprintf()` functions within the call to `aes()`. By default the character strings are formatted ready to be parsed as R expressions. Optionally they can be formatted as R Markdown, $\LaTeX$ or plain text as shown in the table below.
 
-The returned values for `output.type` different from `numeric` are shown below. The default mapping of the label aesthetics is indicated with an asterisk. The values for `x` and `y` are for the default location of the labels. The returned data frame has one row per group of observations in each panel of the plot.
+The returned values for `output.type` different from `numeric` are shown below. The default mapping of the label aesthetics is indicated with an asterisk. The values for `x` and `y` are for the default location of the labels. The returned data frame has one row per group of observations in each panel of the plot. (1) depends on argument passed to `method`.
 
-| Variable      | Mode      | stat_poly_eq() | stat_ma_eq() | stat_quant_eq() |
-|---------------|-----------|----------------|--------------|-----------------|
-| eq.label      | character | y              | y            | y               |
-| rr.label      | character | y\*            | y\*          | n               |
-| adj.rr.label  | character | y              | n            | n               |
-| rho.label     | character | n              | n            | y               |
-| f.value.label | character | y              | n            | n               |
-| p.value.label | character | y              | y            | n               |
-| AIC.label     | character | y              | n            | y               |
-| BIC.label     | character | y              | n            | n               |
-| n.label       | character | y              | y            | y               |
-| grp.label     | character | y              | y            | y               |
-| r.squared     | numeric   | y              | y            | n               |
-| adj.r.squared | numeric   | y              | n            | n               |
-| rho           | numeric   | n              | n            | y               |
-| p.value       | numeric   | y              | y            | n               |
-| n             | numeric   | y              | y            | y               |
-| rq.method     | character | n              | n            | y               |
-| quantile      | numeric   | n              | n            | y               |
-| quantile.f    | factor    | n              | n            | y               |
-| x             | numeric   | y              | y            | y               |
-| y             | numeric   | y              | y            | y               |
+| Variable      | Mode      | stat_poly_eq() | stat_ma_eq() | stat_quant_eq() | stat_correlation() |
+|---------------|-----------|----------------|--------------|-----------------|--------------------|
+| eq.label      | character | y              | y            | y\*             | n                  |
+| rr.label      | character | y\*            | y\*          | n               | n                  |
+| adj.rr.label  | character | y              | n            | n               | n                  |
+| cor.label     | character | n              | n            | n               | y(1)               |
+| rho.label     | character | n              | n            | y               | y(1)               |
+| tau.label     | character | n              | n            | n               | y(1)               |
+| r.label       | character | n              | n            | n               | y\*                |
+| f.value.label | character | y              | n            | n               | n                  |
+| t.value.label | character | n              | n            | n               | y(1)               |
+| z.value.label | character | y              | n            | n               | y(1)               |
+| S.value.label | character | y              | n            | n               | y(1)               |
+| p.value.label | character | y              | y            | n               | y                  |
+| AIC.label     | character | y              | n            | y               | n                  |
+| BIC.label     | character | y              | n            | n               | n                  |
+| n.label       | character | y              | y            | y               | y                  |
+| grp.label     | character | y              | y            | y               | y                  |
+| r.squared     | numeric   | y              | y            | n               | n                  |
+| adj.r.squared | numeric   | y              | n            | n               | n                  |
+| rho           | numeric   | n              | n            | y               | y(1)               |
+| tau           | numeric   | n              | n            | n               | y(1)               |
+| cor           | numeric   | n              | n            | n               | y(1)               |
+| p.value       | numeric   | y              | y            | n               | y                  |
+| n             | numeric   | y              | y            | y               | y                  |
+| rq.method     | character | n              | n            | y               | n                  |
+| method        | character | n              | n            | n               | y                  |
+| test          | character | n              | n            | n               | y                  |
+| quantile      | numeric   | n              | n            | y               | n                  |
+| quantile.f    | factor    | n              | n            | y               | n                  |
+| x             | numeric   | y              | y            | y               | y                  |
+| y             | numeric   | y              | y            | y               | y                  |
 
-Even though the number of significant digits and some other formatting can be adjusted by passing arguments, in some cases it maybe necessary for the user to do the conversion to character strings. For these special cases, it is possible to have numeric values. The values returned for `output.type` equal to `numeric` are shown below. The returned data frame has one row per group of observations in each panel of the plot.
+Even though the number of significant digits and some other formatting can be adjusted by passing arguments, in some cases it maybe necessary for the user to do the conversion to character strings. For these special cases, it is possible to have numeric values. The values returned for `output.type` equal to `numeric` are shown below. The returned data frame has one row per group of observations in each panel of the plot. (1) depends on argument passed to `method`.
 
-| Variable      | Mode      | stat_poly_eq() | stat_ma_eq() | stat_quant_eq() |
-|---------------|-----------|----------------|--------------|-----------------|
-| coef.ls       | list      | y              | y            | y               |
-| r.squared     | numeric   | y              | y            | n               |
-| adj.r.squared | numeric   | y              | n            | n               |
-| rho           | numeric   | n              | n            | y               |
-| f.value       | numeric   | y              | n            | n               |
-| f.df1         | numeric   | y              | n            | n               |
-| f.df2         | numeric   | y              | n            | n               |
-| p.value       | numeric   | y              | y            | n               |
-| AIC           | numeric   | y              | y            | y               |
-| BIC           | numeric   | y              | y            | n               |
-| n             | numeric   | y              | y            | y               |
-| b_0.constant  | numeric   | y              | y            | y               |
-| b_0           | numeric   | y              | y            | y               |
-| b_1           | numeric   | y              | y            | y               |
-| b_2...b_n     | numeric   | y              | y            | y               |
-| rq.method     | character | n              | n            | y               |
-| quantile      | numeric   | n              | n            | y               |
-| quantile.f    | factor    | n              | n            | y               |
-| x             | numeric   | y              | y            | y               |
-| y             | numeric   | y              | y            | y               |
+| Variable      | Mode      | stat_poly_eq() | stat_ma_eq() | stat_quant_eq() | stat_correlation() |
+|---------------|-----------|----------------|--------------|-----------------|--------------------|
+| coef.ls       | list      | y              | y            | y               | n                  |
+| r.squared     | numeric   | y              | y            | n               | n                  |
+| adj.r.squared | numeric   | y              | n            | n               | n                  |
+| rho           | numeric   | n              | n            | y               | y(1)               |
+| tau           | numeric   | n              | n            | n               | y(1)               |
+| cor           | numeric   | n              | n            | n               | y(1)               |
+| f.value       | numeric   | y              | n            | n               | n                  |
+| f.df1         | numeric   | y              | n            | n               | n                  |
+| f.df2         | numeric   | y              | n            | n               | n                  |
+| t.value       | numeric   | n              | n            | n               | y(1)               |
+| df            | numeric   | n              | n            | n               | y(1)               |
+| z.value       | numeric   | n              | n            | n               | y(1)               |
+| S.value       | numeric   | n              | n            | n               | y(1)               |
+| p.value       | numeric   | y              | y            | n               | y                  |
+| AIC           | numeric   | y              | y            | y               | n                  |
+| BIC           | numeric   | y              | y            | n               | n                  |
+| n             | numeric   | y              | y            | y               | y                  |
+| b_0.constant  | numeric   | y              | y            | y               | n                  |
+| b_0           | numeric   | y              | y            | y               | n                  |
+| b_1           | numeric   | y              | y            | y               | n                  |
+| b_2...b_n     | numeric   | y              | y            | y               | n                  |
+| rq.method     | character | n              | n            | y               | n                  |
+| method        | character | n              | n            | n               | y                  |
+| test          | character | n              | n            | n               | y                  |
+| quantile      | numeric   | n              | n            | y               | n                  |
+| quantile.f    | factor    | n              | n            | y               | n                  |
+| x             | numeric   | y              | y            | y               | y                  |
+| y             | numeric   | y              | y            | y               | y                  |
 
 The three statistics with names ending in `line` and the one with name ending in `band` return numeric data suitable for plotting lines or lines plus bands, with variables `x`, `y`, `ymin` and `ymax`. They return a basic set of variables which can be expanded by setting `mf.values = TRUE` adding `n`, `r.squared`, `adj.r.squared` and `p.value` when available, in fact, the same numeric variables that the corresponding `stat_<name>_eq()` statistics add to the label data. The number of rows per group and panel in the plot is that given by `n` with default `n = 80`.
+
+Satisitics `stat_peaks()` and `stat_valleys()` can be used to locate and annotate global and local maxima and minima in the variable mapped to the `y` aesthetic. 
 
 ## Scales
 
@@ -156,6 +182,81 @@ Scales `scale_colour_outcome()`, `scale_fill_outcome()` and `scale_shape_outcome
 # Examples
 
 ## Statistics
+
+### stat_correlation()
+
+The statistic `stat_correlation()` computes one of Pearson, Kendall or Spearman correlation coefficients and tests if the differ from zero. This is done by calling `stats::cor.test()`, with all of its formal parameters supported. Depending on the argument passed to parameter `output.type`, only numeric values or numeric values plus formatted character strings are returned.  The default behaviour is to generate labels as character strings using R's *expression* syntax, suitable to be _parsed_. This stat can also output labels using other mark-up languages, including $\LaTeX$ and Markdown, or just numeric values. Nevertheless, all examples below use expression syntax, which is the most commonly used.
+
+We first generate a set of artificial data suitable for the plotting examples in this and subsequent sections.
+
+```{r}
+set.seed(4321)
+# generate artificial data
+x <- 1:100
+y <- (x + x^2 + x^3) + rnorm(length(x), mean = 0, sd = mean(x^3) / 4)
+my.data <- data.frame(x, 
+                      y, 
+                      group = c("A", "B"), 
+                      y2 = y * c(0.5,2),
+                      block = c("a", "a", "b", "b"),
+                      wt = sqrt(x))
+```
+
+
+For the first example we use defaults to add an annotation with Pearson's corelation coefficient.
+
+```{r}
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_correlation()
+```
+
+Grouping is supported.
+
+```{r}
+ggplot(my.data, aes(x, y, color = group)) +
+  geom_point() +
+  stat_correlation()
+```
+We can also compute Spearman's rank correlation. (The symbol used for it is the letter rho to distinguish it from Pearson's correlation for which _R_ or _r_ are used as symbols.)
+
+```{r}
+ggplot(my.data, aes(x, y, color = group)) +
+  geom_point() +
+  stat_correlation(method = "spearman")
+```
+Statistic `stat_correlation()` generates multiple labels as listed in the tables above. We can combine them freely within a call to `aes()` to customize the annotations.
+
+
+```{r}
+ggplot(my.data, aes(x, y, color = group)) +
+  geom_point() +
+  stat_correlation(mapping = aes(label = paste(after_stat(cor.label),
+                                               after_stat(t.value.label),
+                                               after_stat(p.value.label),
+                                               after_stat(n.label),
+                                               sep = '*"; "*')))
+```
+Facets are also supported.
+
+```{r}
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_correlation() +
+  facet_wrap(~group)
+```
+
+Using the numeric values returned it is possible to set other aesthetics on-the-fly. 
+
+```{r}
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_correlation(mapping = aes(color = ifelse(after_stat(cor) > 0.9,
+                                                "red", "black"))) +
+  scale_color_identity() +
+  facet_wrap(~group)
+```
+Above we use the value of the correlation coefficient, but other numeric values such as `p.value` can be used similarly. In addition to color, any aesthetics recognized by the geometry used such as `alpha` and `face` can be also used. The statistics described below for adding equations of the fitted models have user interfaces very similar to that of `stat_correaltion()` so examples can be easily adapted. Please, see the next section for examples of the use of different geometries instead of the default one, and other advanced examples.
 
 ### stat_poly_eq() and stat_poly_line()
 

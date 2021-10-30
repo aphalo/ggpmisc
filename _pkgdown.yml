@@ -28,6 +28,7 @@ reference:
     - stat_quant_line
     - stat_quant_band
     - stat_quant_eq
+    - stat_correlation
     - stat_fit_tb
     - stat_fit_tidy
     - stat_fit_glance

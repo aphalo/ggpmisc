@@ -43,7 +43,7 @@ Statistics that help with reporting the results of model fits are:
 +--------------------------+---------------------------------------------------+------------------------------------------------+
 | `stat_quant_eq()`        | equation, *P*, etc. (`text_npc`)                  | rq (any number of quantiles)                   |
 +--------------------------+---------------------------------------------------+------------------------------------------------+
-| `stat_corelation()`      | correlation, _P_-value, CI (`text_npc`)           | Pearson (_t_), Kendall (_z_), Spearman (_S_)   |
+| `stat_correlation()`      | correlation, _P_-value, CI (`text_npc`)           | Pearson (_t_), Kendall (_z_), Spearman (_S_)   |
 +--------------------------+---------------------------------------------------+------------------------------------------------+
 | `stat_poly_line()`       | line + conf. (`smooth`)                           | lm, rlm (**weight** aesthetic fully supported) |
 +--------------------------+---------------------------------------------------+------------------------------------------------+

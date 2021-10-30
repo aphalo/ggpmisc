@@ -1,4 +1,4 @@
-context("stat_corelation")
+context("stat_correlation")
 
 set.seed(4321)
 # generate artificial data
@@ -10,10 +10,10 @@ if (isNamespaceLoaded(name = "package:ggpp")) detach(package:ggpp, unload = TRUE
 if (isNamespaceLoaded(name = "package:ggplot2")) detach(package:ggplot2, unload = TRUE)
 
 test_that("corr_noload", {
-  vdiffr::expect_doppelganger("stat_corelation_pearson_noload",
+  vdiffr::expect_doppelganger("stat_correlation_pearson_noload",
                               ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
                                 ggplot2::geom_point() +
-                                ggpmisc::stat_corelation(method = "pearson",
+                                ggpmisc::stat_correlation(method = "pearson",
                                              mapping =
                                                ggplot2::aes(label = paste(ggplot2::after_stat(r.label),
                                                                           ggplot2::after_stat(t.value.label),
@@ -21,10 +21,10 @@ test_that("corr_noload", {
                                                                           ggplot2::after_stat(n.label),
                                                                  sep = "~~")))
   )
-  vdiffr::expect_doppelganger("stat_corelation_kendall_noload",
+  vdiffr::expect_doppelganger("stat_correlation_kendall_noload",
                               ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
                                 ggplot2::geom_point() +
-                                ggpmisc::stat_corelation(method = "kendall",
+                                ggpmisc::stat_correlation(method = "kendall",
                                                    mapping =
                                                      ggplot2::aes(label = paste(ggplot2::after_stat(r.label),
                                                                                 ggplot2::after_stat(z.value.label),
@@ -32,10 +32,10 @@ test_that("corr_noload", {
                                                                                 ggplot2::after_stat(n.label),
                                                                                 sep = "~~")))
   )
-  vdiffr::expect_doppelganger("stat_corelation_spearman_noload",
+  vdiffr::expect_doppelganger("stat_correlation_spearman_noload",
                               ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
                                 ggplot2::geom_point() +
-                                ggpmisc::stat_corelation(method = "spearman",
+                                ggpmisc::stat_correlation(method = "spearman",
                                                    mapping =
                                                      ggplot2::aes(label = paste(ggplot2::after_stat(r.label),
                                                                                 ggplot2::after_stat(S.value.label),
@@ -48,10 +48,10 @@ test_that("corr_noload", {
 library(ggpmisc)
 
 test_that("corr_load", {
-  vdiffr::expect_doppelganger("stat_corelation_pearson_load",
+  vdiffr::expect_doppelganger("stat_correlation_pearson_load",
                               ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
                                 ggplot2::geom_point() +
-                                ggpmisc::stat_corelation(method = "pearson",
+                                ggpmisc::stat_correlation(method = "pearson",
                                                    mapping =
                                                      ggplot2::aes(label = paste(ggplot2::after_stat(r.label),
                                                                                 ggplot2::after_stat(t.value.label),
@@ -59,10 +59,10 @@ test_that("corr_load", {
                                                                                 ggplot2::after_stat(n.label),
                                                                                 sep = "~~")))
   )
-  vdiffr::expect_doppelganger("stat_corelation_kendall_load",
+  vdiffr::expect_doppelganger("stat_correlation_kendall_load",
                               ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
                                 ggplot2::geom_point() +
-                                ggpmisc::stat_corelation(method = "kendall",
+                                ggpmisc::stat_correlation(method = "kendall",
                                                    mapping =
                                                      ggplot2::aes(label = paste(ggplot2::after_stat(r.label),
                                                                                 ggplot2::after_stat(z.value.label),
@@ -70,10 +70,10 @@ test_that("corr_load", {
                                                                                 ggplot2::after_stat(n.label),
                                                                                 sep = "~~")))
   )
-  vdiffr::expect_doppelganger("stat_corelation_spearman_load",
+  vdiffr::expect_doppelganger("stat_correlation_spearman_load",
                               ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
                                 ggplot2::geom_point() +
-                                ggpmisc::stat_corelation(method = "spearman",
+                                ggpmisc::stat_correlation(method = "spearman",
                                                    mapping =
                                                      ggplot2::aes(label = paste(ggplot2::after_stat(r.label),
                                                                                 ggplot2::after_stat(S.value.label),
@@ -84,10 +84,10 @@ test_that("corr_load", {
 })
 
 test_that("corr_exact", {
-    vdiffr::expect_doppelganger("stat_corelation_pearson_exact",
+    vdiffr::expect_doppelganger("stat_correlation_pearson_exact",
                                 ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
                                   ggplot2::geom_point() +
-                                  ggpmisc::stat_corelation(method = "pearson", exact = TRUE,
+                                  ggpmisc::stat_correlation(method = "pearson", exact = TRUE,
                                                      mapping =
                                                        ggplot2::aes(label = paste(ggplot2::after_stat(r.label),
                                                                                   ggplot2::after_stat(t.value.label),
@@ -96,10 +96,10 @@ test_that("corr_exact", {
                                                                                   sep = "~~")))
     )
 
-  vdiffr::expect_doppelganger("stat_corelation_kendall_exact",
+  vdiffr::expect_doppelganger("stat_correlation_kendall_exact",
                               ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
                                 ggplot2::geom_point() +
-                                ggpmisc::stat_corelation(method = "kendall", exact = TRUE,
+                                ggpmisc::stat_correlation(method = "kendall", exact = TRUE,
                                                    mapping =
                                                      ggplot2::aes(label = paste(ggplot2::after_stat(r.label),
                                                                                 ggplot2::after_stat(z.value.label),
@@ -108,10 +108,10 @@ test_that("corr_exact", {
                                                                                 sep = "~~")))
   )
 
-  vdiffr::expect_doppelganger("stat_corelation_spearman_exact",
+  vdiffr::expect_doppelganger("stat_correlation_spearman_exact",
                               ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
                                 ggplot2::geom_point() +
-                                ggpmisc::stat_corelation(method = "spearman", exact = TRUE,
+                                ggpmisc::stat_correlation(method = "spearman", exact = TRUE,
                                                    mapping =
                                                      ggplot2::aes(label = paste(ggplot2::after_stat(r.label),
                                                                                 ggplot2::after_stat(S.value.label),
@@ -123,10 +123,10 @@ test_that("corr_exact", {
 })
 
 test_that("corr_continuity", {
-  vdiffr::expect_doppelganger("stat_corelation_pearson_cont",
+  vdiffr::expect_doppelganger("stat_correlation_pearson_cont",
                               ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
                                 ggplot2::geom_point() +
-                                ggpmisc::stat_corelation(method = "pearson", continuity = TRUE,
+                                ggpmisc::stat_correlation(method = "pearson", continuity = TRUE,
                                                    mapping =
                                                      ggplot2::aes(label = paste(ggplot2::after_stat(r.label),
                                                                                 ggplot2::after_stat(t.value.label),
@@ -135,10 +135,10 @@ test_that("corr_continuity", {
                                                                                 sep = "~~")))
   )
 
-  vdiffr::expect_doppelganger("stat_corelation_kendall_cont",
+  vdiffr::expect_doppelganger("stat_correlation_kendall_cont",
                               ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
                                 ggplot2::geom_point() +
-                                ggpmisc::stat_corelation(method = "kendall", continuity = TRUE,
+                                ggpmisc::stat_correlation(method = "kendall", continuity = TRUE,
                                                    mapping =
                                                      ggplot2::aes(label = paste(ggplot2::after_stat(r.label),
                                                                                 ggplot2::after_stat(z.value.label),
@@ -147,10 +147,10 @@ test_that("corr_continuity", {
                                                                                 sep = "~~")))
   )
 
-  vdiffr::expect_doppelganger("stat_corelation_spearman_cont",
+  vdiffr::expect_doppelganger("stat_correlation_spearman_cont",
                               ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
                                 ggplot2::geom_point() +
-                                ggpmisc::stat_corelation(method = "spearman", continuity = TRUE,
+                                ggpmisc::stat_correlation(method = "spearman", continuity = TRUE,
                                                    mapping =
                                                      ggplot2::aes(label = paste(ggplot2::after_stat(r.label),
                                                                                 ggplot2::after_stat(S.value.label),
@@ -165,7 +165,7 @@ test_that("rounding_signif", {
   vdiffr::expect_doppelganger("stat_coor_pearson_round",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
-                                stat_corelation(r.digits = 3,
+                                stat_correlation(r.digits = 3,
                                           p.digits = 4,
                                            t.digits = 4,
                                            mapping =
@@ -179,7 +179,7 @@ test_that("rounding_signif", {
   vdiffr::expect_doppelganger("stat_coor_pearson_round2",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
-                                stat_corelation(r.digits = 2,
+                                stat_correlation(r.digits = 2,
                                           p.digits = 2,
                                           t.digits = 2,
                                           mapping =
@@ -193,7 +193,7 @@ test_that("rounding_signif", {
   vdiffr::expect_doppelganger("stat_coor_kendall_round",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
-                                stat_corelation(method = "kendall",
+                                stat_correlation(method = "kendall",
                                           r.digits = 3,
                                           p.digits = 4,
                                           t.digits = 4,
@@ -208,7 +208,7 @@ test_that("rounding_signif", {
   vdiffr::expect_doppelganger("stat_coor_kendall_round2",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
-                                stat_corelation(method = "kendall",
+                                stat_correlation(method = "kendall",
                                           r.digits = 2,
                                           p.digits = 2,
                                           t.digits = 2,
@@ -223,7 +223,7 @@ test_that("rounding_signif", {
   vdiffr::expect_doppelganger("stat_coor_spearman_round",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
-                                stat_corelation(method = "spearman",
+                                stat_correlation(method = "spearman",
                                           r.digits = 3,
                                           p.digits = 4,
                                           t.digits = 4,
@@ -238,7 +238,7 @@ test_that("rounding_signif", {
   vdiffr::expect_doppelganger("stat_coor_spearman_round2",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
-                                stat_corelation(method = "spearman",
+                                stat_correlation(method = "spearman",
                                           r.digits = 2,
                                           p.digits = 2,
                                           t.digits = 2,

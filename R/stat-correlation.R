@@ -1,6 +1,6 @@
 #' @title Annotate plot with correlation test
 #'
-#' @description \code{stat_corelation()} applies \code{stats::cor.test()}
+#' @description \code{stat_correlation()} applies \code{stats::cor.test()}
 #'   respecting grouping with \code{method = "pearson"} default but
 #'   alternatively using \code{"kendall"} or \code{"spearman"} methods. It
 #'   generates labels for correlation coefficients and p-value, coefficient of
@@ -84,26 +84,26 @@
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   stat_corelation()
+#'   stat_correlation()
 #'
 #' ggplot(my.data, aes(x, y.desc)) +
 #'   geom_point() +
-#'   stat_corelation(label.x = "right")
+#'   stat_correlation(label.x = "right")
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   stat_corelation(aes(label = paste(after_stat(r.label),
+#'   stat_correlation(aes(label = paste(after_stat(r.label),
 #'                               after_stat(p.value.label),
 #'                               after_stat(n.label),
 #'                               sep = "*\"; \"*")))
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   stat_corelation(small.r = TRUE)
+#'   stat_correlation(small.r = TRUE)
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   stat_corelation(aes(label = paste(after_stat(r.label),
+#'   stat_correlation(aes(label = paste(after_stat(r.label),
 #'                               after_stat(p.value.label),
 #'                               after_stat(n.label),
 #'                               sep = "*\"; \"*")),
@@ -111,23 +111,61 @@
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   stat_corelation(method = "kendall")
+#'   stat_correlation(method = "kendall")
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   stat_corelation(method = "spearman")
+#'   stat_correlation(method = "spearman")
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   stat_corelation(aes(label = paste(after_stat(r.label),
+#'   stat_correlation(aes(label = paste(after_stat(r.label),
 #'                               after_stat(p.value.label),
 #'                               after_stat(n.label),
 #'                               sep = "*\"; \"*")),
 #'             method = "spearman")
 #'
+#' # Inspecting the returned data using geom_debug()
+#' if (requireNamespace("gginnards", quietly = TRUE)) {
+#'   library(gginnards)
+#'
+#' # This provides a quick way of finding out the names of the variables that
+#' # are available for mapping to aesthetics.
+#'
+#' # the whole of data
+#'   ggplot(my.data, aes(x, y)) +
+#'     geom_point() +
+#'     stat_correlation(geom = "debug")
+#'
+#'   ggplot(my.data, aes(x, y)) +
+#'     geom_point() +
+#'     stat_correlation(geom = "debug", method = "pearson")
+#'
+#'   ggplot(my.data, aes(x, y)) +
+#'     geom_point() +
+#'     stat_correlation(geom = "debug", method = "kendall")
+#'
+#'   ggplot(my.data, aes(x, y)) +
+#'     geom_point() +
+#'     stat_correlation(geom = "debug", method = "spearman")
+#'
+#'   ggplot(my.data, aes(x, y)) +
+#'     geom_point() +
+#'     stat_correlation(geom = "debug", output.type = "numeric")
+#'
+#'   ggplot(my.data, aes(x, y)) +
+#'     geom_point() +
+#'     stat_correlation(geom = "debug", output.type = "markdown")
+#'
+#'   ggplot(my.data, aes(x, y)) +
+#'     geom_point() +
+#'     stat_correlation(geom = "debug", output.type = "LaTeX")
+#'
+#' }
+#'
 #' @export
 #'
-stat_corelation <- function(mapping = NULL,
+stat_correlation <- function(mapping = NULL,
                       data = NULL,
                       geom = "text_npc",
                       position = "identity",
