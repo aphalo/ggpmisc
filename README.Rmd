@@ -94,7 +94,7 @@ loaded, but the documentation now resides in the new package ['**ggpp**'](https:
 
 Functions for the manipulation of layers in ggplot objects, together with statistics and
 geometries useful for debugging extensions to package 'ggplot2', included in
-package 'ggpmisc' until version 0.2.17 are now in package ['**gginnards**'](https://docs.r4photobiology.info/gginnards).
+package 'ggpmisc' until version 0.2.17 are now in package ['**gginnards**'](https://docs.r4photobiology.info/gginnards/).
 [![cran version](https://www.r-pkg.org/badges/version/gginnards)](https://cran.r-project.org/package=gginnards) 
 <a href="https://docs.r4photobiology.info/gginnards/"><img src="https://img.shields.io/badge/documentation-gginnards-informational.svg" alt="" /></a>
 

@@ -404,8 +404,7 @@ if (requireNamespace("gginnards", quietly = TRUE)) {
 
 }
 \references{
-Written as an answer to a question at Stackoverflow.
-  \url{https://stackoverflow.com/questions/7549694/adding-regression-line-equation-and-r2-on-graph}
+Written as an answer to question 7549694 at Stackoverflow.
 }
 \seealso{
 This \code{stat_poly_eq} statistic can return ready formatted labels

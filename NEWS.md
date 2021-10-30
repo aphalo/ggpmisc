@@ -10,9 +10,10 @@ An issue raised in **GitHub** and a question in **StackOverflow** asked
 for the possibility of changing how fitted lines are plotted based on
 the *goodness* of the fit. In addition an old question in
 **StackOverflow** highlighted the need of more intuitive support for
-annotations based on `stats::cor.test()`. There was also a need for
-clarification of the overlapping functionality between some statistics
-in packages 'ggpubr' and 'ggpmisc' .
+annotations based on `stats::cor.test()`. We implemented these requested
+enhancements and continued adding support for flipping of statistics
+through parameter `orientation` as implemented in 'ggplot2' since
+version 3.3.0.
 
 -   Update `stat_poly_line()` to optionally add columns `n`, `p.value`,
     `r.squared` and `adj.r.squared` to the returned data frame. *This
@@ -195,9 +196,8 @@ Many thanks!
     `stat_poly_eq()`.
 -   Fix bug in `stat_poly_eq()` that resulted in no labels being
     displayed for any group when one group has too few distinct
-    *x*-values to fit the polynomial (reported by
-    [ganidat](https://stackoverflow.com/users/5432156/ganidat) in
-    StackOverflow).
+    *x*-values to fit the polynomial (reported by user 5432156 "ganidat"
+    in StackOverflow).
 -   \[**Under development!**\] Link repositioned text to its original
     position with a segment or arrow: `geom_linked_text()`. Except for
     the drawing of segments or arrows this new *geometry* behaves as

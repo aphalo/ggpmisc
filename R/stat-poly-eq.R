@@ -103,8 +103,7 @@
 #'   statistics the model fits respect grouping, so the scales used for \code{x}
 #'   and \code{y} should both be continuous scales rather than discrete.
 #'
-#' @references Written as an answer to a question at Stackoverflow.
-#'   \url{https://stackoverflow.com/questions/7549694/adding-regression-line-equation-and-r2-on-graph}
+#' @references Written as an answer to question 7549694 at Stackoverflow.
 #'
 #' @section IMPORTANT: \code{stat_regline_equation()} in package 'ggpubr' is
 #'   a renamed but almost unchanged copy of \code{stat_poly_eq()} taken from an

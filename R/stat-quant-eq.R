@@ -105,8 +105,8 @@
 #'   graphics. This helps ensure that the model is fitted to the same data as
 #'   plotted in other layers.
 #'
-#' @references Written as an answer to a question by Mark Neal at Stackoverflow.
-#'   \url{https://stackoverflow.com/questions/65695409/is-there-a-neat-approach-to-label-a-ggplot-plot-with-the-equation-and-other-stat}
+#' @references Written as an answer to question 65695409 by Mark Neal at
+#'   Stackoverflow.
 #'
 #' @section Aesthetics: \code{stat_quant_eq} understands \code{x} and \code{y},
 #'   to be referenced in the \code{formula} and \code{weight} passed as argument

@@ -25,22 +25,92 @@ following the syntax of package ‘broom’ are supported. Package
 
 Statistics that help with reporting the results of model fits are:
 
-| Statistic               | `after_stat` values (*default geometry*)          | Methods                                        |
-|-------------------------|---------------------------------------------------|------------------------------------------------|
-| `stat_poly_eq()`        | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lm, rlm (**weight** aesthetic fully supported) |
-| `stat_ma_eq()`          | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lmodel2: MA, SMA, RMA, OLS                     |
-| `stat_quant_eq()`       | equation, *P*, etc. (`text_npc`)                  | rq (any number of quantiles)                   |
-| `stat_corelation()`     | correlation, *P*-value, CI (`text_npc`)           | Pearson (*t*), Kendall (*z*), Spearman (*S*)   |
-| `stat_poly_line()`      | line + conf. (`smooth`)                           | lm, rlm (**weight** aesthetic fully supported) |
-| `stat_ma_line()`        | line + conf. (`smooth`)                           | lmodel2: MA, SMA, RMA, OLS                     |
-| `stat_quant_line()`     | line + conf. (`smooth`)                           | rq, rqss (any number of quantiles)             |
-| `stat_quant_band()`     | median + quartiles (`smooth`)                     | rq, rqss (two or three quantiles)              |
-| `stat_fit_residuals()`  | residuals (`point`)                               | lm, rlm (**weight** aesthetic fully supported) |
-| `stat_fit_deviations()` | deviations from observations (`segment`)          | lm, rlm (**weight** aesthetic fully supported) |
-| `stat_fit_glance()`     | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | all those supported by ‘broom’                 |
-| `stat_fit_augment()`    | predicted and other values (`smooth`)             | all those supported by ‘broom’                 |
-| `stat_fit_tidy()`       | fit results, e.g., for equation (`text_npc`)      | all those supported by ‘broom’                 |
-| `stat_fit_tb()`         | ANOVA and summary tables (`table_npc`)            | all those supported by ‘broom’                 |
+<table>
+<colgroup>
+<col style="width: 21%" />
+<col style="width: 40%" />
+<col style="width: 38%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Statistic</th>
+<th><code>after_stat</code> values (<em>default geometry</em>)</th>
+<th>Methods</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>stat_poly_eq()</code></td>
+<td>equation, <em>R</em><sup>2</sup>, <em>P</em>, etc. (<code>text_npc</code>)</td>
+<td>lm, rlm (<strong>weight</strong> aesthetic fully supported)</td>
+</tr>
+<tr class="even">
+<td><code>stat_ma_eq()</code></td>
+<td>equation, <em>R</em><sup>2</sup>, <em>P</em>, etc. (<code>text_npc</code>)</td>
+<td>lmodel2: MA, SMA, RMA, OLS</td>
+</tr>
+<tr class="odd">
+<td><code>stat_quant_eq()</code></td>
+<td>equation, <em>P</em>, etc. (<code>text_npc</code>)</td>
+<td>rq (any number of quantiles)</td>
+</tr>
+<tr class="even">
+<td><code>stat_correlation()</code></td>
+<td><div class="line-block">correlation, <em>P</em>-value, CI (<code>text_npc</code>)</div></td>
+<td><div class="line-block">Pearson (<em>t</em>), Kendall (<em>z</em>), Spearman (<em>S</em>)</div></td>
+</tr>
+<tr class="odd">
+<td><code>stat_poly_line()</code></td>
+<td>line + conf. (<code>smooth</code>)</td>
+<td>lm, rlm (<strong>weight</strong> aesthetic fully supported)</td>
+</tr>
+<tr class="even">
+<td><code>stat_ma_line()</code></td>
+<td>line + conf. (<code>smooth</code>)</td>
+<td>lmodel2: MA, SMA, RMA, OLS</td>
+</tr>
+<tr class="odd">
+<td><code>stat_quant_line()</code></td>
+<td>line + conf. (<code>smooth</code>)</td>
+<td>rq, rqss (any number of quantiles)</td>
+</tr>
+<tr class="even">
+<td><code>stat_quant_band()</code></td>
+<td>median + quartiles (<code>smooth</code>)</td>
+<td>rq, rqss (two or three quantiles)</td>
+</tr>
+<tr class="odd">
+<td><code>stat_fit_residuals()</code></td>
+<td>residuals (<code>point</code>)</td>
+<td>lm, rlm (<strong>weight</strong> aesthetic fully supported)</td>
+</tr>
+<tr class="even">
+<td><code>stat_fit_deviations()</code></td>
+<td>deviations from observations (<code>segment</code>)</td>
+<td>lm, rlm (<strong>weight</strong> aesthetic fully supported)</td>
+</tr>
+<tr class="odd">
+<td><code>stat_fit_glance()</code></td>
+<td>equation, <em>R</em><sup>2</sup>, <em>P</em>, etc. (<code>text_npc</code>)</td>
+<td>all those supported by ‘broom’</td>
+</tr>
+<tr class="even">
+<td><code>stat_fit_augment()</code></td>
+<td>predicted and other values (<code>smooth</code>)</td>
+<td>all those supported by ‘broom’</td>
+</tr>
+<tr class="odd">
+<td><code>stat_fit_tidy()</code></td>
+<td>fit results, e.g., for equation (<code>text_npc</code>)</td>
+<td>all those supported by ‘broom’</td>
+</tr>
+<tr class="even">
+<td><code>stat_fit_tb()</code></td>
+<td>ANOVA and summary tables (<code>table_npc</code>)</td>
+<td>all those supported by ‘broom’</td>
+</tr>
+</tbody>
+</table>
 
 Statistics `stat_peaks()` and `stat_valleys()` can be used to highlight
 and/or label maxima and minima in a plot.
@@ -76,7 +146,7 @@ Functions for the manipulation of layers in ggplot objects, together
 with statistics and geometries useful for debugging extensions to
 package ‘ggplot2’, included in package ‘ggpmisc’ until version 0.2.17
 are now in package
-[‘**gginnards**’](https://docs.r4photobiology.info/gginnards). [![cran
+[‘**gginnards**’](https://docs.r4photobiology.info/gginnards/). [![cran
 version](https://www.r-pkg.org/badges/version/gginnards)](https://cran.r-project.org/package=gginnards)
 <a href="https://docs.r4photobiology.info/gginnards/"><img src="https://img.shields.io/badge/documentation-gginnards-informational.svg" alt="" /></a>
 

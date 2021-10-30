@@ -387,8 +387,8 @@ if (requireNamespace("gginnards", quietly = TRUE)) {
 
 }
 \references{
-Written as an answer to a question by Mark Neal at Stackoverflow.
-  \url{https://stackoverflow.com/questions/65695409/is-there-a-neat-approach-to-label-a-ggplot-plot-with-the-equation-and-other-stat}
+Written as an answer to question 65695409 by Mark Neal at
+  Stackoverflow.
 }
 \seealso{
 This \code{stat_quant_eq} statistic can return ready formatted labels
