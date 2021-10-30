@@ -41,10 +41,10 @@ Imports:
     tibble (>= 3.1.5),
     plyr (>= 1.8.6),
     dplyr (>= 1.0.6),
-    lubridate (>= 1.7.10),
-    rmarkdown (>= 2.10)
+    lubridate (>= 1.7.10)
 Suggests:
     knitr (>= 1.34),
+    rmarkdown (>= 2.10),
     ggrepel (>= 0.9.1),
     broom (>= 0.7.7),
     broom.mixed (>= 0.2.7),
