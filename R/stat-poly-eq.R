@@ -1,4 +1,4 @@
-#' Equation, p-value, R^2, AIC or BIC of fitted polynomial
+#' Equation, p-value, \eqn{R^2}, AIC or BIC of fitted polynomial
 #'
 #' \code{stat_poly_eq} fits a polynomial by default with \code{stats::lm()} but
 #' alternatively using robust regression. From the fitted model it
@@ -44,7 +44,7 @@
 #' @param coef.keep.zeros logical Keep or drop trailing zeros when formatting
 #'   the fitted coefficients and F-value.
 #' @param rr.digits,p.digits integer Number of digits after the decimal point to
-#'   use for R^2 and P-value in labels.
+#'   use for \eqn{R^2} and P-value in labels.
 #' @param label.x,label.y \code{numeric} with range 0..1 "normalized parent
 #'   coordinates" (npc units) or character if using \code{geom_text_npc()} or
 #'   \code{geom_label_npc()}. If using \code{geom_text()} or \code{geom_label()}
@@ -72,29 +72,29 @@
 #'   for \code{formula} but is included for consistency with
 #'   \code{ggplot2::stat_smooth()}.
 #'
-#' @details This stat can be used to automatically annotate a plot with R^2,
-#'   adjusted R^2 or the fitted model equation. It supports linear regression,
-#'   robust linear regression and median regression fitted with functions
-#'   \code{lm()}, \code{MASS::rlm()} or \code{quanreg::rq()}. The R^2 and
-#'   adjusted R^2 annotations can be used with any linear model formula. The
-#'   fitted equation label is correctly generated for polynomials or
-#'   quasi-polynomials through the origin. Model formulas can use \code{poly()}
-#'   or be defined algebraically with terms of powers of increasing magnitude
-#'   with no missing intermediate terms, except possibly for the intercept
-#'   indicated by "- 1" or "-1" or \code{"+ 0"} in the formula. The validity of
-#'   the \code{formula} is not checked in the current implementation, and for
-#'   this reason the default aesthetics sets R^2 as label for the annotation.
-#'   This stat generates labels as R expressions by default but LaTeX (use TikZ
-#'   device), markdown (use package 'ggtext') and plain text are also supported,
-#'   as well as numeric values for user-generated text labels. The value of
-#'   \code{parse} is set automatically based on \code{output-type}, but if you
-#'   assemble labels that need parsing from \code{numeric} output, the default
-#'   needs to be overriden. This stat only generates annotation labels, the
-#'   predicted values/line need to be added to the plot as a separate layer
-#'   using \code{\link{stat_poly_line}} or \code{\link[ggplot2]{stat_smooth}},
-#'   so to make sure that the same model formula is used in all steps it is best
-#'   to save the formula as an object and supply this object as argument to the
-#'   different statistics.
+#' @details This statistic can be used to automatically annotate a plot with
+#'   \eqn{R^2}, adjusted \eqn{R^2} or the fitted model equation. It supports
+#'   linear regression, robust linear regression and median regression fitted
+#'   with functions \code{lm()}, \code{MASS::rlm()} or \code{quanreg::rq()}. The
+#'   \eqn{R^2} and adjusted \eqn{R^2} annotations can be used with any linear
+#'   model formula. The fitted equation label is correctly generated for
+#'   polynomials or quasi-polynomials through the origin. Model formulas can use
+#'   \code{poly()} or be defined algebraically with terms of powers of
+#'   increasing magnitude with no missing intermediate terms, except possibly
+#'   for the intercept indicated by "- 1" or "-1" or \code{"+ 0"} in the
+#'   formula. The validity of the \code{formula} is not checked in the current
+#'   implementation, and for this reason the default aesthetics sets \eqn{R^2}
+#'   as label for the annotation. This stat generates labels as R expressions by
+#'   default but LaTeX (use TikZ device), markdown (use package 'ggtext') and
+#'   plain text are also supported, as well as numeric values for user-generated
+#'   text labels. The value of \code{parse} is set automatically based on
+#'   \code{output-type}, but if you assemble labels that need parsing from
+#'   \code{numeric} output, the default needs to be overriden. This stat only
+#'   generates annotation labels, the predicted values/line need to be added to
+#'   the plot as a separate layer using \code{\link{stat_poly_line}} or
+#'   \code{\link[ggplot2]{stat_smooth}}, so to make sure that the same model
+#'   formula is used in all steps it is best to save the formula as an object
+#'   and supply this object as argument to the different statistics.
 #'
 #'   A ggplot statistic receives as \code{data} a data frame that is not the one
 #'   passed as argument by the user, but instead a data frame with the variables

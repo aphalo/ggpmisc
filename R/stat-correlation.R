@@ -37,7 +37,7 @@
 #' @param small.r,small.p logical Flags to switch use of lower case r and p for
 #'   coefficient of correlation (only for \code{method = "pearson"}) and p-value.
 #' @param coef.keep.zeros logical Keep or drop trailing zeros when formatting
-#'   the fitted coefficients and F-value.
+#'   the correlation coefficients and t-value, z-value or S-value (see note below).
 #' @param r.digits,t.digits,p.digits integer Number of digits after the decimal point to
 #'   use for R, r.squared, tau or rho and P-value in labels.
 #' @param label.x,label.y \code{numeric} with range 0..1 "normalized parent
@@ -55,20 +55,59 @@
 #'
 #' @details This statistic can be used to annotate a plot with the correlation
 #'   coefficient and the outcome of its test of significance. It supports
-#'   Pearson, Kendall and Spearman methods to compute correlation. This stat
-#'   generates labels as R expressions by default but LaTeX (use TikZ device),
-#'   markdown (use package 'ggtext') and plain text are also supported, as well
-#'   as numeric values for user-generated text labels. The value of \code{parse}
-#'   is set automatically based on \code{output-type}, but if you assemble
-#'   labels that need parsing from \code{numeric} output, the default needs to
-#'   be overridden.
+#'   Pearson, Kendall and Spearman methods to compute correlation. This
+#'   statistic generates labels as R expressions by default but LaTeX (use TikZ
+#'   device), markdown (use package 'ggtext') and plain text are also supported,
+#'   as well as numeric values for user-generated text labels. The character
+#'   labels include the symbol describing the quantity together with the numeric
+#'   value.
+#'
+#'   The value of \code{parse} is set automatically based on \code{output-type},
+#'   but if you assemble labels that need parsing from \code{numeric} output,
+#'   the default needs to be overridden. By default the value of
+#'   \code{output.type} is guessed from the name of the geometry.
 #'
 #'   A ggplot statistic receives as \code{data} a data frame that is not the one
 #'   passed as argument by the user, but instead a data frame with the variables
-#'   mapped to aesthetics. \code{cor.test()} is always applied to the variabled
+#'   mapped to aesthetics. \code{cor.test()} is always applied to the variables
 #'   mapped to the \code{x} and \code{y} aesthetics, so the scales used for
 #'   \code{x} and \code{y} should both be continuous scales rather than
 #'   discrete.
+#'
+#' @section Aesthetics: \code{stat_correaltion()} requires \code{x} and
+#'   \code{y}. In addition, the aesthetics understood by the geom
+#'   (\code{"text"} is the default) are understood and grouping respected.
+#'
+#' @section Computed variables: If output.type is \code{"numeric"} the returned
+#'   tibble contains the columns listed below with variations depending on the
+#'   \code{method}. If the model fit function used does not return a value, the
+#'   variable is set to \code{NA_real_}.
+#' \describe{
+#'   \item{x,npcx}{x position}
+#'   \item{y,npcy}{y position}
+#'   \item{cor, tau or rho}{numeric values for correlation coefficient estimates}
+#'   \item{t.value and its df, z.value or S.value }{numeric values for statistic estimates}
+#'   \item{p.value, n}{numeric values}
+#'   \item{grp.label}{Set according to mapping in \code{aes}.}
+#'   \item{method, test}{character values}}
+#'
+#' If output.type different from \code{"numeric"} the returned tibble contains
+#' in addition to the columns listed above those listed below. If the numeric
+#' value is missing the label is set to \code{character(0L)}.
+#'
+#' \describe{
+#'   \item{r.label, and cor.label, tau.label or rho.label}{Correlation coefficient as a character string.}
+#'   \item{t.value.label, z.value.label or S.value.label}{t-value and degrees of freedom, z-value or S-value as a character string.}
+#'   \item{p.value.label}{P-value for test against zero, as a character string.}
+#'   \item{n.label}{Number of observations used in the fit, as a character string.}
+#'   \item{grp.label}{Set according to mapping in \code{aes}, as a character string.}}
+#'
+#' To explore the computed values returned for a given input we suggest the use
+#' of \code{\link[gginnards]{geom_debug}} as shown in the last examples below.
+#'
+#' @note Currently \code{coef.keep.zeros} is ignored, with trailing zeros always
+#'   retained in the labels but not protected from being dropped by R when
+#'   character strings are parsed into expressions.
 #'
 #' @seealso \code{\link[stats]{cor.test}} for details on the computations.
 #'
