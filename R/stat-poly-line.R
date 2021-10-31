@@ -131,7 +131,10 @@
 #'   ggplot(mpg, aes(displ, hwy)) +
 #'     stat_poly_line(geom = "debug", mf.values = TRUE)
 #'
-##' }
+#'   ggplot(mpg, aes(displ, hwy)) +
+#'     stat_poly_line(geom = "debug", method = lm, mf.values = TRUE)
+#'
+#' }
 #'
 #' @export
 #'
@@ -171,7 +174,9 @@ stat_poly_line <- function(mapping = NULL, data = NULL,
     }
   }
 
+  # here so that warnings are triggered before rendering
   if (is.character(method)) {
+    method.name <- method
     if (method == "rlm") {
       method <- MASS::rlm
     } else if (method == "rq") {
@@ -181,6 +186,8 @@ stat_poly_line <- function(mapping = NULL, data = NULL,
       message("Method 'auto' is equivalent to 'lm', please use 'stat_smooth()' for splines.")
       method <- "lm"
     }
+  } else {
+    method.name <- "function"
   }
 
   ggplot2::layer(
@@ -193,6 +200,7 @@ stat_poly_line <- function(mapping = NULL, data = NULL,
     inherit.aes = inherit.aes,
     params = list(
       method = method,
+      method.name = method.name,
       formula = formula,
       se = se,
       mf.values = mf.values,
@@ -210,6 +218,7 @@ stat_poly_line <- function(mapping = NULL, data = NULL,
 poly_line_compute_group_fun <-
   function(data, scales,
            method = NULL,
+           method.name = NA_character_,
            formula = NULL,
            se = TRUE,
            mf.values = FALSE,
@@ -291,6 +300,7 @@ poly_line_compute_group_fun <-
       } else {
         prediction[["n"]] <- NA_real_
       }
+      prediction[["method"]] <- method.name
     }
 
     prediction$flipped_aes <- flipped_aes

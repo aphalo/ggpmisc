@@ -199,6 +199,7 @@ ggplot(my.data, aes(x, y)) +
   facet_wrap(~group)
 
 # Inspecting the returned data using geom_debug()
+\dontrun{
 if (requireNamespace("gginnards", quietly = TRUE)) {
   library(gginnards)
 
@@ -208,6 +209,7 @@ if (requireNamespace("gginnards", quietly = TRUE)) {
   ggplot(my.data, aes(x, y)) +
     stat_ma_line(geom = "debug", mf.values = TRUE)
 
+}
 }
 
 }

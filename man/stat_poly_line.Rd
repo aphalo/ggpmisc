@@ -174,6 +174,9 @@ if (requireNamespace("gginnards", quietly = TRUE)) {
   ggplot(mpg, aes(displ, hwy)) +
     stat_poly_line(geom = "debug", mf.values = TRUE)
 
+  ggplot(mpg, aes(displ, hwy)) +
+    stat_poly_line(geom = "debug", method = lm, mf.values = TRUE)
+
 }
 
 }

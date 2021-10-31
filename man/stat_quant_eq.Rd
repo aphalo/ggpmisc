@@ -350,6 +350,7 @@ ggplot(my.data, aes(x, y)) +
                 formula = formula)
 
 # Inspecting the returned data using geom_debug()
+\dontrun{
 if (requireNamespace("gginnards", quietly = TRUE)) {
   library(gginnards)
 
@@ -383,6 +384,7 @@ if (requireNamespace("gginnards", quietly = TRUE)) {
     geom_point() +
     stat_quant_eq(formula = formula, quantiles = c(0.25, 0.5, 0.75),
                   geom = "debug", output.type = "numeric")
+}
 }
 
 }

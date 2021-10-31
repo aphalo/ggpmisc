@@ -202,6 +202,8 @@
 #'
 #' }
 #'
+#' @family ggplot statistics for correlation.
+#'
 #' @export
 #'
 stat_correlation <- function(mapping = NULL,

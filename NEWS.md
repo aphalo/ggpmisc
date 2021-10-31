@@ -16,18 +16,18 @@ through parameter `orientation` as implemented in 'ggplot2' since
 version 3.3.0.
 
 -   Update `stat_poly_line()` to optionally add columns `n`, `p.value`,
-    `r.squared` and `adj.r.squared` to the returned data frame. *This
-    statistic no longer supports fitting of splines with methods such as
-    `loess` . This could potentially break user code, in which case the
-    solution is to use `stat_smooth()`.*
+    `r.squared` , `adj.r.squared` and `method` to the returned data
+    frame. *This statistic no longer supports fitting of splines with
+    methods such as `loess` . This could potentially break user code, in
+    which case the solution is to use `stat_smooth()`.*
 
 -   Update `stat_ma_line()` to optionally add columns `n`, `p.value`,
-    and `r.squared` to the returned data frame. (As only a slope can be
-    fitted, `adj.r.squared` is irrelevant.)
+    `r.squared` and `method` to the returned data frame. (As only a
+    slope can be fitted, `adj.r.squared` is irrelevant.)
 
 -   Update `stat_quant_line()` and `stat_quant_band()` to optionally add
-    an `n` column to the returned data frame. (No exact equivalent of
-    `r.squared` exists for quantile regression.)
+    `n` and `method` columns to the returned data frame. (No exact
+    equivalent of `r.squared` exists for quantile regression.)
 
 -   Update `stat_fit_residuals()` to optionally return weighted
     residuals.
@@ -36,8 +36,9 @@ version 3.3.0.
     new parameter `orientation`.
 
 -   New function `stat_correlation()` to annotate plots with correlation
-    estimates and optionally *P*-value and a test statistic. computed
-    with `stats::cor.test()`.
+    estimates, their P-value, a test statistic and n computed with
+    `stats::cor.test()`. Numeric values are included in the returned
+    data frame to facilitate conditional display.
 
 # ggpmisc 0.4.3
 

@@ -215,6 +215,7 @@
 #'   stat_ma_eq(label.x = "left", label.y = "top")
 #'
 #' # Inspecting the returned data using geom_debug()
+#' \dontrun{
 #' if (requireNamespace("gginnards", quietly = TRUE)) {
 #'   library(gginnards)
 #'
@@ -241,7 +242,7 @@
 #'     stat_ma_eq(geom = "debug", output.type = "numeric")
 #'
 #' }
-#'
+#' }
 #'
 #' @export
 #'

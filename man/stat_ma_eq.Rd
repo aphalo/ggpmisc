@@ -268,6 +268,7 @@ ggplot(my.data, aes(x, y)) +
   stat_ma_eq(label.x = "left", label.y = "top")
 
 # Inspecting the returned data using geom_debug()
+\dontrun{
 if (requireNamespace("gginnards", quietly = TRUE)) {
   library(gginnards)
 
@@ -294,7 +295,7 @@ if (requireNamespace("gginnards", quietly = TRUE)) {
     stat_ma_eq(geom = "debug", output.type = "numeric")
 
 }
-
+}
 
 }
 \seealso{

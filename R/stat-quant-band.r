@@ -244,6 +244,7 @@ quant_band_compute_group_fun <- function(data,
   # if method was specified as a character string, replace with
   # the corresponding function
   if (is.character(method)) {
+    method.name <- method
     if (identical(method, "rq")) {
       method <- quantreg::rq
     } else if (identical(method, "rqss")) {
@@ -253,6 +254,7 @@ quant_band_compute_group_fun <- function(data,
     }
   } else {
     stopifnot(is.function(method))
+    method.name <- "function"
   }
 
   z.ls <- lapply(sort(quantiles), quant_pred, data = data, method = method,
@@ -266,7 +268,8 @@ quant_band_compute_group_fun <- function(data,
   z[["quantile.ymax"]] <- z.ls[[3]][["quantile"]]
 
   if (mf.values) {
-    z[["n"]] <- nrow(data)
+    z[["n"]] <- nrow(na.omit(data[, c("x", "y")]))
+    z[["method"]] <- method.name
   }
 
   z[["flipped_aes"]] <- flipped_aes

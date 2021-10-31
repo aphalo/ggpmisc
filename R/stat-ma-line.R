@@ -153,6 +153,7 @@
 #'   facet_wrap(~group)
 #'
 #' # Inspecting the returned data using geom_debug()
+#' \dontrun{
 #' if (requireNamespace("gginnards", quietly = TRUE)) {
 #'   library(gginnards)
 #'
@@ -162,7 +163,8 @@
 #'   ggplot(my.data, aes(x, y)) +
 #'     stat_ma_line(geom = "debug", mf.values = TRUE)
 #'
-##' }
+#' }
+#' }
 #'
 #' @export
 #'
@@ -301,6 +303,7 @@ ma_line_compute_group_fun <-
       prediction[["p.value"]] <- mf[["regression.results"]][["P-perm (1-tailed)"]][idx]
       prediction[["r.squared"]] <- mf[["rsquare"]]
       prediction[["n"]] <- mf[["n"]]
+      prediction[["method"]] <- method
     }
     prediction$flipped_aes <- flipped_aes
     ggplot2::flip_data(prediction, flipped_aes)

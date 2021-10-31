@@ -263,3 +263,4 @@ if (requireNamespace("gginnards", quietly = TRUE)) {
 \seealso{
 \code{\link[stats]{cor.test}} for details on the computations.
 }
+\concept{ggplot statistics for correlation.}
