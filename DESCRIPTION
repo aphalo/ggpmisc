@@ -49,7 +49,7 @@ Suggests:
     broom (>= 0.7.7),
     broom.mixed (>= 0.2.7),
     nlme (>= 3.1-152),
-    gginnards(>= 0.1.0-2)
+    gginnards (>= 0.1.0-1)
 URL: https://docs.r4photobiology.info/ggpmisc/, 
      https://github.com/aphalo/ggpmisc
 BugReports: https://github.com/aphalo/ggpmisc/issues
