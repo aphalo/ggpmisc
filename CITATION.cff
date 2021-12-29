@@ -1,0 +1,61 @@
+# -----------------------------------------------------------
+# CITATION file created with {cffr} R package, v0.1.1
+# See also: https://docs.ropensci.org/cffr/
+# -----------------------------------------------------------
+ 
+cff-version: 1.2.0
+message: 'To cite package "ggpmisc" in publications use:'
+type: software
+license: GPL-2.0-or-later
+title: 'ggpmisc: Miscellaneous Extensions to ''ggplot2'''
+version: 0.4.5
+abstract: 'Extensions to ''ggplot2'' respecting the grammar of graphics paradigm.
+  Statistics: locate and tag peaks and valleys; label plot with the equation of a
+  fitted polynomial or other types of models; labels with P-value, R^2 or adjusted
+  R^2 or information criteria for fitted models; label with ANOVA table for fitted
+  models; label with summary for fitted models. Model fit classes for which suitable
+  methods are provided by package ''broom'' and ''broom.mixed'' are supported. Scales
+  and stats to build volcano and quadrant plots based on outcomes, fold changes, p-values
+  and false discovery rates.'
+authors:
+- family-names: Aphalo
+  given-names: Pedro J.
+  email: pedro.aphalo@helsinki.fi
+  orcid: https://orcid.org/0000-0003-3385-972X
+preferred-citation:
+  type: manual
+  title: 'ggpmisc: Miscellaneous Extensions to ''ggplot2'''
+  authors:
+  - family-names: Aphalo
+    given-names: Pedro J.
+    email: pedro.aphalo@helsinki.fi
+    orcid: https://orcid.org/0000-0003-3385-972X
+  version: 0.4.5
+  abstract: 'Extensions to ''ggplot2'' respecting the grammar of graphics paradigm.
+    Statistics: locate and tag peaks and valleys; label plot with the equation of
+    a fitted polynomial or other types of models; labels with P-value, R^2 or adjusted
+    R^2 or information criteria for fitted models; label with ANOVA table for fitted
+    models; label with summary for fitted models. Model fit classes for which suitable
+    methods are provided by package ''broom'' and ''broom.mixed'' are supported. Scales
+    and stats to build volcano and quadrant plots based on outcomes, fold changes,
+    p-values and false discovery rates.'
+  repository: https://CRAN.R-project.org/package=ggpmisc
+  repository-code: https://github.com/aphalo/ggpmisc
+  url: https://docs.r4photobiology.info/ggpmisc/
+  date-released: '2021-12-11'
+  contact:
+  - family-names: Aphalo
+    given-names: Pedro J.
+    email: pedro.aphalo@helsinki.fi
+    orcid: https://orcid.org/0000-0003-3385-972X
+  license: GPL-2.0-or-later
+  year: '2021'
+repository: https://CRAN.R-project.org/package=ggpmisc
+repository-code: https://github.com/aphalo/ggpmisc
+url: https://docs.r4photobiology.info/ggpmisc/
+date-released: '2021-12-11'
+contact:
+- family-names: Aphalo
+  given-names: Pedro J.
+  email: pedro.aphalo@helsinki.fi
+  orcid: https://orcid.org/0000-0003-3385-972X
