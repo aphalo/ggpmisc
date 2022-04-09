@@ -202,12 +202,6 @@ find_peaks <-
 #'              x.label.fmt = "%Y",
 #'              angle = 33)
 #'
-#' if (packageVersion(pkg = "ggpp") <= "0.4.2") {
-#'   geom_text_s <- "text_linked"
-#' } else {
-#'   geom_text_s <- "text_s"
-#' }
-#'
 #' ggplot(lynx_datetime.df, aes(year, lynx)) +
 #'   geom_line() +
 #'   stat_peaks(colour = "red") +
@@ -222,7 +216,7 @@ find_peaks <-
 #' ggplot(lynx_datetime.df, aes(year, lynx)) +
 #'   geom_line() +
 #'   stat_peaks(colour = "red",
-#'              geom = geom_text_s,
+#'              geom = "text_s",
 #'              position = position_nudge_to(y = 7200),
 #'              arrow = arrow(length = grid::unit(1.5, "mm")),
 #'              hjust = -0.1,

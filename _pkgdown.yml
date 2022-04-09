@@ -1,6 +1,9 @@
 destination: ../ggpmisc-docs
 url: https://docs.r4photobiology.info/ggpmisc/
 
+template:
+  bootstrap: 5
+
 reference:
   - title: Package overview
     contents:
@@ -54,16 +57,10 @@ reference:
 
 navbar:
   structure:
-    left:
-    - home
-    - reference
-    - articles
-    - tutorials
-    - news
-    - intro
-    right: github
+    left:  [intro, reference, articles, tutorials, news]
+    right: [search, github]
   components:
-    home:
+    intro:
       icon: fas fa-home fa-lg
       href: index.html
     reference:
@@ -87,6 +84,7 @@ navbar:
         href: https://www.learnr-book.info/
       - text: Blog on R by Pedro J. Aphalo
         href: https://www.r4photobiology.info/
+      - text: ------
       - text: Package 'ggpp'
         href: https://docs.r4photobiology.info/ggpp/
       - text: Package 'gginnards'
