@@ -78,7 +78,7 @@ These scales only alter default arguments of
   automatically add a units string, otherwise user-supplied values for
   names, breaks, and labels work as usual. Tick labels are built based on
   the transformation already applied to the data (log2 by default) and
-  apossibly different log transformation (default is fold-change with no
+  a possibly different log transformation (default is fold-change with no
   transformation).
 }
 \examples{

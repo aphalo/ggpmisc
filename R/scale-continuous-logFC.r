@@ -65,7 +65,7 @@ FC_plain <- function(x, log.base.data = 2, log.base.labels = 10, digits = 3, ...
 #'
 #' Generate axis labels for different log-fold change on different log bases.
 #'
-#' @param format character string, "R", "R.expresion", "R.character", or
+#' @param format character string, "R", "R.expression", "R.character", or
 #'   "LaTeX".
 #' @param unit.exponent integer.
 #'
@@ -187,7 +187,7 @@ symmetric_limits <- function(x) {
 #'   automatically add a units string, otherwise user-supplied values for
 #'   names, breaks, and labels work as usual. Tick labels are built based on
 #'   the transformation already applied to the data (log2 by default) and
-#'   apossibly different log transformation (default is fold-change with no
+#'   a possibly different log transformation (default is fold-change with no
 #'   transformation).
 #'
 #' @export

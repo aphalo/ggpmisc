@@ -1,4 +1,4 @@
-#' Covenience scale for P-values
+#' Convenience scale for P-values
 #'
 #' Scales for y aesthetic mapped to P-values as used in volcano plots with
 #' transcriptomics and metabolomics data.

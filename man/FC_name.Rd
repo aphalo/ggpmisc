@@ -11,7 +11,7 @@ FC_name(
 )
 }
 \arguments{
-\item{format}{character string, "R", "R.expresion", "R.character", or
+\item{format}{character string, "R", "R.expression", "R.character", or
 "LaTeX".}
 
 \item{unit.exponent}{integer.}

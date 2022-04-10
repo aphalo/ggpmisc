@@ -135,7 +135,7 @@ This stat can be used to automatically annotate a plot with R^2,
   as well as numeric values for user-generated text labels. The value of
   \code{parse} is set automatically based on \code{output-type}, but if you
   assemble labels that need parsing from \code{numeric} output, the default
-  needs to be overriden. This stat only generates annotation labels, the
+  needs to be overridden. This stat only generates annotation labels, the
   predicted values/line need to be added to the plot as a separate layer
   using \code{\link{stat_quant_line}} or
   \code{\link[ggplot2]{stat_quantile}}, so to make sure that the same model
@@ -167,8 +167,8 @@ Support for the \code{angle} aesthetic is not automatic and requires
  \code{stat_quant_eq} understands \code{x} and \code{y},
   to be referenced in the \code{formula} and \code{weight} passed as argument
   to parameter \code{weights} of \code{lm()}. All three must be mapped to
-  \code{numeric} variables. In addition, the aesthetics undertood by the geom
-  used (\code{"text"} by default) are understood and grouping respected.
+  \code{numeric} variables. In addition, the aesthetics understood by the
+  geom used (\code{"text"} by default) are understood and grouping respected.
 }
 
 \section{Computed variables}{

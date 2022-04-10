@@ -72,8 +72,8 @@ recycled.}
 \item{position}{The position adjustment to use for overlapping points on this
 layer}
 
-\item{table.theme}{NULL, list or function A gridExtra ttheme defintion, or
-a constructor for a ttheme or NULL for default.}
+\item{table.theme}{NULL, list or function A 'gridExtra' \code{ttheme}
+definition, or a constructor for a \cde{ttheme} or NULL for default.}
 
 \item{table.rownames, table.colnames}{logical flag to enable or disabling
 printing of row names and column names.}
@@ -108,13 +108,13 @@ can include aesthetics whose values you want to set, not map. See
 }
 \details{
 \code{stat_fit_tb} Applies a model fitting function per panel,
-  using the grouping factors from easthetic mappings in the fitted model.
+  using the grouping factors from aesthetic mappings in the fitted model.
   This is suitable, for example for analysis of variance used to test for
   differences among groups.
 
   The argument to \code{method} can be any fit method for which a
   suitable \code{tidy()} method is available, including non-linear
-  regression. Fit methods retain their default arguments unless orverridden.
+  regression. Fit methods retain their default arguments unless overridden.
 
   A ggplot statistic receives as data a data frame that is not the one passed
   as argument by the user, but instead a data frame with the variables mapped

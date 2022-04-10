@@ -46,7 +46,7 @@
 #'   as argument by the user, but instead a data frame with the variables mapped
 #'   to aesthetics. In other words, it respects the grammar of graphics and
 #'   consequently within the model \code{formula} names of
-#'   aesthetics like $x$ and $y$ should be used intead of the original variable
+#'   aesthetics like $x$ and $y$ should be used instead of the original variable
 #'   names, while data is automatically passed the data frame. This helps ensure
 #'   that the model is fitted to the same data as plotted in other layers.
 #'

@@ -5,7 +5,7 @@
 \alias{scale_y_FDR}
 \alias{scale_x_Pvalue}
 \alias{scale_x_FDR}
-\title{Covenience scale for P-values}
+\title{Convenience scale for P-values}
 \usage{
 scale_y_Pvalue(
   ...,

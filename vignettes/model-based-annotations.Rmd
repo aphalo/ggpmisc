@@ -169,7 +169,7 @@ Even though the number of significant digits and some other formatting can be ad
 
 The three statistics with names ending in `line` and the one with name ending in `band` return numeric data suitable for plotting lines or lines plus bands, with variables `x`, `y`, `ymin` and `ymax`. They return a basic set of variables which can be expanded by setting `mf.values = TRUE` adding `n`, `r.squared`, `adj.r.squared` and `p.value` when available, in fact, the same numeric variables that the corresponding `stat_<name>_eq()` statistics add to the label data. The number of rows per group and panel in the plot is that given by `n` with default `n = 80`.
 
-Satisitics `stat_peaks()` and `stat_valleys()` can be used to locate and annotate global and local maxima and minima in the variable mapped to the `y` aesthetic.
+Statistics `stat_peaks()` and `stat_valleys()` can be used to locate and annotate global and local maxima and minima in the variable mapped to the `y` aesthetic.
 
 ## Scales
 
@@ -205,7 +205,7 @@ my.data <- data.frame(x,
 ```
 
 
-For the first example we use defaults to add an annotation with Pearson's corelation coefficient.
+For the first example we use defaults to add an annotation with Pearson's correlation coefficient.
 
 ```{r}
 ggplot(my.data, aes(x, y)) +
@@ -583,7 +583,7 @@ ggplot(my.data, aes(x, y)) +
 
 Package 'lmodel2' implements model II fits for major axis (MA), standard major axis (SMA) and ranged (RMA) regression for linear relationships. These approaches of regression are used when both variables are subject to random variation and the intention is not to estimate *y* from *x* but instead to describe the slope of the relationship between them. A typical example in biology are allometric relationships.
 
-In the figure above we see that the ordinary least squares (OLS) linear regression of *y* on *x* and *x* on *y* differ. Major axis regression provides an estimate of the slope that is independent of the direction of the relationship relation. $R^2$ remains the same in all cases, while the equation changes it decribes the same line.
+In the figure above we see that the ordinary least squares (OLS) linear regression of *y* on *x* and *x* on *y* differ. Major axis regression provides an estimate of the slope that is independent of the direction of the relationship relation. $R^2$ remains the same in all cases, while the equation changes it describes the same line.
 
 ```{r}
 ggplot(my.data, aes(x, y)) +
@@ -747,7 +747,7 @@ ggplot(my.data, aes(x, y)) +
                                    ends = "both"))
 ```
 
-When weights are available, either suplied by the user, or computed as part of the fit, they are returned in `data`. Having weights available allows encoding them using colour. We here use a robust regression fit with `MASS::rlm`.
+When weights are available, either supplied by the user, or computed as part of the fit, they are returned in `data`. Having weights available allows encoding them using colour. We here use a robust regression fit with `MASS::rlm`.
 
 ```{r}
 my.data.outlier <- my.data

@@ -13,7 +13,7 @@
 #' but rather to study the relationship between two independent variables.
 #' A frequent case in biology are allometric relationships among body parts.
 #'
-#' As the fitted line is the same wheter \code{x} or \code{y} is on the rhs of
+#' As the fitted line is the same whether \code{x} or \code{y} is on the rhs of
 #' the model equation, \code{orientation} even is accepted does not have an
 #' effect on the fit. In contrast, \code{\link[ggplot2]{geom_smooth}} treats
 #' each axis differently and can thus have two orientations. The orientation is

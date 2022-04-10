@@ -52,7 +52,7 @@ The signatures of \code{stat_peaks()} and \code{stat_valleys()} are
   \code{bottom_layer()}, \code{delete_layers()}, \code{extract_layers()},
   \code{move_layers()}, \code{num_layesr()}, \code{shift_layers()},
   \code{top_layer()} and \code{which_layers()} have been moved from package
-  'ggpmisc' into their own seperate package
+  'ggpmisc' into their own separate package
   '\code{\link[gginnards]{gginnards-package}}.
 }
 

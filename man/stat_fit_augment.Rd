@@ -68,7 +68,7 @@ can include aesthetics whose values you want to set, not map. See
 \code{stat_fit_augment} together with \code{\link{stat_fit_glance}}
   and \code{\link{stat_fit_tidy}}, based on package 'broom' can be used
   with a broad range of model fitting functions as supported at any given
-  time by 'broom'. In contrast to \code{\link{stat_poly_eq}} wich can
+  time by 'broom'. In contrast to \code{\link{stat_poly_eq}} which can
   generate text or expression labels automatically, for these functions the
   mapping of aesthetic \code{label} needs to be explicitly supplied in the
   call, and labels built on the fly.

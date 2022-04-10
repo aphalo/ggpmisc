@@ -81,19 +81,19 @@ The output of the \code{glance()} methods is returned almost as is in
   'broom.mixed', or other sources.
 }
 \details{
-\code{stat_fit_glance} together with \code{\link{stat_fit_tidy}}
-  and \code{\link{stat_fit_augment}}, based on package 'broom' can be used
-  with a broad range of model fitting functions as supported at any given
-  time by package 'broom'. In contrast to \code{\link{stat_poly_eq}} wich can
+\code{stat_fit_glance} together with \code{\link{stat_fit_tidy}} and
+  \code{\link{stat_fit_augment}}, based on package 'broom' can be used with a
+  broad range of model fitting functions as supported at any given time by
+  package 'broom'. In contrast to \code{\link{stat_poly_eq}} which can
   generate text or expression labels automatically, for these functions the
   mapping of aesthetic \code{label} needs to be explicitly supplied in the
-  callm, and labels built on the fly.
+  call, and labels built on the fly.
 
   A ggplot statistic receives as data a data frame that is not the one passed
   as argument by the user, but instead a data frame with the variables mapped
   to aesthetics. In other words, it respects the grammar of graphics and
   consequently within arguments passed through \code{method.args} names of
-  aesthetics like $x$ and $y$ should be used intead of the original variable
+  aesthetics like $x$ and $y$ should be used instead of the original variable
   names, while data is automatically passed the data frame. This helps ensure
   that the model is fitted to the same data as plotted in other layers.
 }

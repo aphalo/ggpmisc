@@ -292,7 +292,7 @@ Chapter 7 in Aphalo (2020) explains basic concepts of the grammar of
 graphics as implemented in ‘ggplot2’ as well as extensions to this
 grammar including several of those made available by packages ‘ggpp’ and
 ‘ggpmisc’. Open access supplementary chapters and other information
-related to the book is avaialble at <https://www.learnr-book.info/>.
+related to the book is available at <https://www.learnr-book.info/>.
 
 ## Contributing
 

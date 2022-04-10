@@ -141,7 +141,7 @@ This statistic can be used to automatically annotate a plot with
   plain text are also supported, as well as numeric values for user-generated
   text labels. The value of \code{parse} is set automatically based on
   \code{output-type}, but if you assemble labels that need parsing from
-  \code{numeric} output, the default needs to be overriden. This stat only
+  \code{numeric} output, the default needs to be overridden. This stat only
   generates annotation labels, the predicted values/line need to be added to
   the plot as a separate layer using \code{\link{stat_poly_line}} or
   \code{\link[ggplot2]{stat_smooth}}, so to make sure that the same model
