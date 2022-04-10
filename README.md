@@ -11,7 +11,7 @@ status](https://github.com/aphalo/ggpmisc/workflows/R-CMD-check/badge.svg)](http
 ## Purpose
 
 Package ‘**ggpmisc**’ (Miscellaneous Extensions to ‘ggplot2’) is a set
-of extensions to R package ‘ggplot2’ (>= 3.0.0) with emphasis on
+of extensions to R package ‘ggplot2’ (\>= 3.0.0) with emphasis on
 annotations and plotting related to fitted models. Estimates from model
 fit objects can be displayed in ggplots as text, tables or equations.
 Predicted values, residuals, deviations and weights can be plotted for
@@ -41,12 +41,14 @@ Statistics that help with reporting the results of model fits are:
 <tbody>
 <tr class="odd">
 <td><code>stat_poly_eq()</code></td>
-<td>equation, <em>R</em><sup>2</sup>, <em>P</em>, etc. (<code>text_npc</code>)</td>
+<td>equation, <em>R</em><sup>2</sup>, <em>P</em>, etc.
+(<code>text_npc</code>)</td>
 <td>lm, rlm (<strong>weight</strong> aesthetic fully supported)</td>
 </tr>
 <tr class="even">
 <td><code>stat_ma_eq()</code></td>
-<td>equation, <em>R</em><sup>2</sup>, <em>P</em>, etc. (<code>text_npc</code>)</td>
+<td>equation, <em>R</em><sup>2</sup>, <em>P</em>, etc.
+(<code>text_npc</code>)</td>
 <td>lmodel2: MA, SMA, RMA, OLS</td>
 </tr>
 <tr class="odd">
@@ -56,8 +58,10 @@ Statistics that help with reporting the results of model fits are:
 </tr>
 <tr class="even">
 <td><code>stat_correlation()</code></td>
-<td><div class="line-block">correlation, <em>P</em>-value, CI (<code>text_npc</code>)</div></td>
-<td><div class="line-block">Pearson (<em>t</em>), Kendall (<em>z</em>), Spearman (<em>S</em>)</div></td>
+<td><div class="line-block">correlation, <em>P</em>-value, CI
+(<code>text_npc</code>)</div></td>
+<td><div class="line-block">Pearson (<em>t</em>), Kendall (<em>z</em>),
+Spearman (<em>S</em>)</div></td>
 </tr>
 <tr class="odd">
 <td><code>stat_poly_line()</code></td>
@@ -91,7 +95,8 @@ Statistics that help with reporting the results of model fits are:
 </tr>
 <tr class="odd">
 <td><code>stat_fit_glance()</code></td>
-<td>equation, <em>R</em><sup>2</sup>, <em>P</em>, etc. (<code>text_npc</code>)</td>
+<td>equation, <em>R</em><sup>2</sup>, <em>P</em>, etc.
+(<code>text_npc</code>)</td>
 <td>all those supported by ‘broom’</td>
 </tr>
 <tr class="even">
@@ -305,7 +310,7 @@ citation("ggpmisc")
 #> 
 #> To cite package 'ggpmisc' in publications use:
 #> 
-#>   Pedro J. Aphalo (2021). ggpmisc: Miscellaneous Extensions to
+#>   Pedro J. Aphalo (2022). ggpmisc: Miscellaneous Extensions to
 #>   'ggplot2'. https://docs.r4photobiology.info/ggpmisc/,
 #>   https://github.com/aphalo/ggpmisc.
 #> 
@@ -314,7 +319,7 @@ citation("ggpmisc")
 #>   @Manual{,
 #>     title = {ggpmisc: Miscellaneous Extensions to 'ggplot2'},
 #>     author = {Pedro J. Aphalo},
-#>     year = {2021},
+#>     year = {2022},
 #>     note = {https://docs.r4photobiology.info/ggpmisc/,
 #> https://github.com/aphalo/ggpmisc},
 #>   }

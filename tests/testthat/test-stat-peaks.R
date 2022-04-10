@@ -19,6 +19,10 @@ make_data_tbl <- function(nrow = 100, rfun = rnorm, ...) {
   )
 }
 
+shuffle_data <- function(data) {
+  data[sample(1:nrow(data), nrow(data)), ]
+}
+
 if (isNamespaceLoaded(name = "package:ggpmisc")) detach(package:ggpmisc, unload = TRUE)
 if (isNamespaceLoaded(name = "package:ggpp")) detach(package:ggpp, unload = TRUE)
 if (isNamespaceLoaded(name = "package:ggplot2")) detach(package:ggplot2, unload = TRUE)
@@ -38,6 +42,13 @@ library(ggpmisc)
 test_that("numbers_tb", {
   vdiffr::expect_doppelganger("stat_peaks_numeric_01",
                               ggplot(data = make_data_tbl(30), aes(x, y)) +
+                                geom_point() +
+                                geom_line() +
+                                stat_peaks(colour = "red") +
+                                expand_limits(y = c(-2.5, 2.5))
+  )
+  vdiffr::expect_doppelganger("stat_peaks_numeric_s01",
+                              ggplot(data = shuffle_data(make_data_tbl(30)), aes(x, y)) +
                                 geom_point() +
                                 geom_line() +
                                 stat_peaks(colour = "red") +
@@ -88,6 +99,13 @@ test_that("numbers_tb", {
 test_that("dates_tb", {
   vdiffr::expect_doppelganger("stat_peaks_date_01",
                               ggplot(data = make_data_tbl(30), aes(x.date, y)) +
+                                geom_point() +
+                                geom_line() +
+                                stat_peaks(colour = "red") +
+                                expand_limits(y = c(-2.5, 2.5))
+  )
+  vdiffr::expect_doppelganger("stat_peaks_date_s01",
+                              ggplot(data = shuffle_data(make_data_tbl(30)), aes(x.date, y)) +
                                 geom_point() +
                                 geom_line() +
                                 stat_peaks(colour = "red") +
@@ -147,6 +165,13 @@ test_that("dates_tb", {
 test_that("datetimes_tb", {
   vdiffr::expect_doppelganger("stat_peaks_datetime_01",
                               ggplot(data = make_data_tbl(30), aes(x.datetime, y)) +
+                                geom_point() +
+                                geom_line() +
+                                stat_peaks(colour = "red") +
+                                expand_limits(y = c(-2.5, 2.5))
+  )
+  vdiffr::expect_doppelganger("stat_peaks_datetime_s01",
+                              ggplot(data = shuffle_data(make_data_tbl(30)), aes(x.datetime, y)) +
                                 geom_point() +
                                 geom_line() +
                                 stat_peaks(colour = "red") +

@@ -4,10 +4,17 @@ editor_options:
     wrap: 72
 ---
 
+# ggpmisc 0.4.6
+
+-   Fix bug in `stat_peaks()` and `stat_valleys()`. They could return wrong 
+    values for peaks and valleys if the rows in `data` in the ggplot object were
+    not sorted by the value of _x_ for all arguments to `span` different from
+    null.
+
 # ggpmisc 0.4.5
 
 This is a minor update for compatibility with 'ggpp' (>= 0.4.3) and
-fixing a wrong version number for 'gginnars' in DESCRIPTION.
+fixing a wrong version number for 'gginnards' in DESCRIPTION.
 
 # ggpmisc 0.4.4
 

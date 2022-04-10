@@ -117,21 +117,22 @@ These stats use \code{geom_point} by default as it is the geom most
   in \code{stat_peaks()} and in \code{stat_valleys()}.
 }
 \note{
-These stats check the scale of the \code{x} aesthetic and if it is Date
-  or Datetime they correctly generate the labels by transforming the numeric
-  \code{x} values to Date or POSIXct objects, respectively. In which case the
-  \code{x.label.fmt} must follow the syntax supported by \code{strftime()}
-  rather than by \code{sprintf()}. These stats work nicely together with
-  geoms \code{\link[ggrepel]{geom_text_repel}} and
+These statistics check the scale of the \code{x} aesthetic and if it is
+  Date or Datetime they correctly generate the labels by transforming the
+  numeric \code{x} values to Date or POSIXct objects, respectively. In which
+  case the \code{x.label.fmt} must follow the syntax supported by
+  \code{strftime()} rather than by \code{sprintf()}. Overlap of labels with
+  points can avoided by use of one of the nudge positions, possibly together
+  with geometry \code{\link[ggpp]{geom_text_s}} from package
+  \code{\link[ggpp]{ggpp}}, or with \code{\link[ggrepel]{geom_text_repel}} or
   \code{\link[ggrepel]{geom_label_repel}} from package
-  \code{\link[ggrepel]{ggrepel}} to solve the problem of overlapping labels
-  by displacing them. Alternatively, to discard overlapping labels use
-  \code{check_overlap = TRUE} as argument to \code{geom_text}. By default the
-  labels are character values suitable to be plotted as is, but with a
-  suitable format passed as argument to \code{label.fmt} labels suitable for
-  parsing by the geoms (e.g. into expressions containing Greek letters,
-  super- or subscripts, maths symbols or maths constructs) can be also easily
-  obtained.
+  \code{\link[ggrepel]{ggrepel}}. To discard overlapping labels use
+  \code{check_overlap = TRUE} as argument to \code{geom_text} or
+  \code{geom_text_s}. By default the labels are character values suitable to
+  be plotted as is, but with a suitable format passed as argument to
+  \code{label.fmt} labels suitable for parsing by the geoms (e.g. into
+  expressions containing Greek letters, super- or subscripts, maths symbols
+  or maths constructs) can be also easily obtained.
 }
 \section{Returned and computed variables}{
 
@@ -141,6 +142,13 @@ These stats check the scale of the \code{x} aesthetic and if it is Date
   \item{x.label}{x-value at the peak (or valley) as character}
   \item{y.label}{y-value at the peak (or valley) as character}
 }
+}
+
+\section{Warning!}{
+ The current version of these statistics do not support
+  passing \code{nudge_x} or \code{nurge_y} named parameters to the geometry.
+  Use `position` and one of the position functions such as
+  \code{\link{position_nudge_keep}} instead.
 }
 
 \examples{
@@ -194,17 +202,11 @@ ggplot(lynx_datetime.df, aes(year, lynx)) +
              x.label.fmt = "\%Y",
              angle = 33)
 
-if (packageVersion(pkg = "ggpp") <= "0.4.2") {
-  geom_text_s <- "text_linked"
-} else {
-  geom_text_s <- "text_s"
-}
-
 ggplot(lynx_datetime.df, aes(year, lynx)) +
   geom_line() +
   stat_peaks(colour = "red") +
   stat_peaks(colour = "red",
-             geom = geom_text_s,
+             geom = "text_s",
              position = position_nudge_keep(x = 0, y = 200),
              hjust = -0.1,
              x.label.fmt = "\%Y",
@@ -214,7 +216,7 @@ ggplot(lynx_datetime.df, aes(year, lynx)) +
 ggplot(lynx_datetime.df, aes(year, lynx)) +
   geom_line() +
   stat_peaks(colour = "red",
-             geom = geom_text_s,
+             geom = "text_s",
              position = position_nudge_to(y = 7200),
              arrow = arrow(length = grid::unit(1.5, "mm")),
              hjust = -0.1,
