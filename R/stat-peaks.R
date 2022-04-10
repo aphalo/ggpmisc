@@ -285,11 +285,6 @@ peaks_compute_group_fun <- function(data,
                                     x.label.fmt,
                                     y.label.fmt,
                                     flipped_aes = FALSE) {
-  if (flipped_aes) {
-    temp <- x.label.fmt
-    x.label.fmt <- y.label.fmt
-    y.label.fmt <- temp
-  }
   data <- ggplot2::flip_data(data, flipped_aes)
   if (!is.null(label.fmt)) {
     warning("Use of parameter 'label.format' is deprecated, ",
@@ -340,11 +335,13 @@ peaks_compute_group_fun <- function(data,
                                 strict = strict,
                                 na.rm = TRUE), , drop = FALSE]
   }
-  peaks.df[["x.label"]] <- as_label(x.label.fmt, peaks.df[["x"]])
-  peaks.df[["y.label"]] <- sprintf(y.label.fmt, peaks.df[["y"]])
 
   peaks.df$flipped_aes <- flipped_aes
-  ggplot2::flip_data(peaks.df, flipped_aes)
+  peaks.df <- ggplot2::flip_data(peaks.df, flipped_aes)
+
+  peaks.df[["x.label"]] <- as_label(x.label.fmt, peaks.df[["x"]])
+  peaks.df[["y.label"]] <- sprintf(y.label.fmt, peaks.df[["y"]])
+  peaks.df
 }
 
 # Define here to avoid a note in check as the imports are not seen by checks
@@ -363,11 +360,6 @@ valleys_compute_group_fun <- function(data,
                                       x.label.fmt,
                                       y.label.fmt,
                                       flipped_aes = FALSE) {
-  if (flipped_aes) {
-    temp <- x.label.fmt
-    x.label.fmt <- y.label.fmt
-    y.label.fmt <- temp
-  }
   data <- ggplot2::flip_data(data, flipped_aes)
   if (!is.null(label.fmt)) {
     warning("Use of parameter 'label.format' is deprecated, ",
@@ -418,11 +410,13 @@ valleys_compute_group_fun <- function(data,
                                   strict = strict,
                                   na.rm = TRUE), , drop = FALSE]
   }
-  valleys.df[["x.label"]] <- as_label(x.label.fmt, valleys.df[["x"]])
-  valleys.df[["y.label"]] <- sprintf(y.label.fmt, valleys.df[["y"]])
 
   valleys.df$flipped_aes <- flipped_aes
-  ggplot2::flip_data(valleys.df, flipped_aes)
+  valleys.df <- ggplot2::flip_data(valleys.df, flipped_aes)
+
+  valleys.df[["x.label"]] <- as_label(x.label.fmt, valleys.df[["x"]])
+  valleys.df[["y.label"]] <- sprintf(y.label.fmt, valleys.df[["y"]])
+  valleys.df
 }
 
 #' \code{Stat*} Objects
