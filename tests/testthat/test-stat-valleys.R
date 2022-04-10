@@ -202,3 +202,34 @@ test_that("datetimes_tb", {
                                 expand_limits(y = c(-2.5, 2.5))
   )
 })
+
+test_that("many_layers", {
+  if (packageVersion("ggpp") >= "0.4.4") {
+    vdiffr::expect_doppelganger("stat_valleys_ml_01",
+                                ggplot(mtcars, aes(mpg, hp)) +
+                                  geom_line() +
+                                  geom_point() +
+                                  stat_peaks(span = 5,
+                                             strict = TRUE,
+                                             geom = "text_s",
+                                             mapping = aes(label = paste(after_stat(y.label), after_stat(x.label))),
+                                             x.label.fmt = "at %.0f mpg",
+                                             y.label.fmt = "hp = %.0f\n",
+                                             segment.colour = "red",
+                                             arrow = grid::arrow(length = unit(0.1, "inches")),
+                                             position = position_nudge_keep(x = 1, y = 0),
+                                             hjust = 0) +
+                                  stat_valleys(span = NULL,
+                                               strict = TRUE,
+                                               geom = "text_s",
+                                               mapping = aes(label = paste(after_stat(y.label), after_stat(x.label))),
+                                               x.label.fmt = "at %.0f mpg ",
+                                               y.label.fmt = "hp = %.0f",
+                                               segment.colour = "blue",
+                                               arrow = grid::arrow(length = unit(0.1, "inches")),
+                                               position = position_nudge_keep(x = -1, y = -20),
+                                               hjust = 1) +
+                                  expand_limits(y = 0)
+    )
+  }
+})
