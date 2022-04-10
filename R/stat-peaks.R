@@ -285,6 +285,11 @@ peaks_compute_group_fun <- function(data,
                                     x.label.fmt,
                                     y.label.fmt,
                                     flipped_aes = FALSE) {
+  if (flipped_aes) {
+    temp <- x.label.fmt
+    x.label.fmt <- y.label.fmt
+    y.label.fmt <- temp
+  }
   data <- ggplot2::flip_data(data, flipped_aes)
   if (!is.null(label.fmt)) {
     warning("Use of parameter 'label.format' is deprecated, ",
@@ -358,6 +363,11 @@ valleys_compute_group_fun <- function(data,
                                       x.label.fmt,
                                       y.label.fmt,
                                       flipped_aes = FALSE) {
+  if (flipped_aes) {
+    temp <- x.label.fmt
+    x.label.fmt <- y.label.fmt
+    y.label.fmt <- temp
+  }
   data <- ggplot2::flip_data(data, flipped_aes)
   if (!is.null(label.fmt)) {
     warning("Use of parameter 'label.format' is deprecated, ",
