@@ -6,6 +6,9 @@ editor_options:
 
 # ggpmisc 0.4.6
 
+This update fixes a significant bug. Although the problem, when triggered, is
+obvious by looking at the plot, please, update. 
+
 -   Fix bug in `stat_peaks()` and `stat_valleys()`. They could return wrong 
     values for peaks and valleys if the rows in `data` in the ggplot object were
     not sorted by the value of _x_ for all arguments to `span` different from

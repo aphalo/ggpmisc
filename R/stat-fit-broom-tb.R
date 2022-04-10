@@ -47,7 +47,7 @@
 #' @param label.x,label.y \code{numeric} Coordinates (in data units) to be used
 #'   for absolute positioning of the output. If too short they will be recycled.
 #' @param table.theme NULL, list or function A 'gridExtra' \code{ttheme}
-#'   definition, or a constructor for a \cde{ttheme} or NULL for default.
+#'   definition, or a constructor for a \code{ttheme} or NULL for default.
 #' @param table.rownames,table.colnames logical flag to enable or disabling
 #'   printing of row names and column names.
 #' @param table.hjust numeric Horizontal justification for the core and column

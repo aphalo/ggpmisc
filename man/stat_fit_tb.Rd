@@ -73,7 +73,7 @@ recycled.}
 layer}
 
 \item{table.theme}{NULL, list or function A 'gridExtra' \code{ttheme}
-definition, or a constructor for a \cde{ttheme} or NULL for default.}
+definition, or a constructor for a \code{ttheme} or NULL for default.}
 
 \item{table.rownames, table.colnames}{logical flag to enable or disabling
 printing of row names and column names.}
