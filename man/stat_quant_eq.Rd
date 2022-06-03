@@ -2,7 +2,7 @@
 % Please edit documentation in R/stat-quant-eq.R
 \name{stat_quant_eq}
 \alias{stat_quant_eq}
-\title{Equation, p-value, R^2, AIC or BIC from quantile regression}
+\title{Equation, rho, AIC or BIC from quantile regression}
 \usage{
 stat_quant_eq(
   mapping = NULL,
@@ -105,8 +105,7 @@ default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
 }
 \description{
 \code{stat_quant_eq} fits a polynomial model by quantile regression and
-generates several labels including the equation, p-value, coefficient of
-determination (R^2), 'AIC' and 'BIC'.
+generates several labels including the equation, rho, 'AIC' and 'BIC'.
 }
 \details{
 This statistic interprets the argument passed to \code{formula} differently
@@ -119,35 +118,36 @@ from version 0.4.1 'ggpmisc' makes it possible to easily implement the
 approach described by Cardoso (2019) under the name of "Double quantile
 regression".
 
-This stat can be used to automatically annotate a plot with R^2,
-  adjusted R^2 or the fitted model equation. It supports only linear models
-  fitted with function \code{lm()}. The R^2 and adjusted R^2 annotations can
-  be used with any linear model formula. The fitted equation label is
-  correctly generated for polynomials or quasi-polynomials through the
-  origin. Model formulas can use \code{poly()} or be defined algebraically
-  with terms of powers of increasing magnitude with no missing intermediate
-  terms, except possibly for the intercept indicated by \code{"- 1"} or
-  \code{"-1"} or \code{"+ 0"} in the formula. The validity of the
-  \code{formula} is not checked in the current implementation, and for this
-  reason the default aesthetics sets R^2 as label for the annotation.  This
-  stat generates labels as R expressions by default but LaTeX (use TikZ
-  device), markdown (use package 'ggtext') and plain text are also supported,
-  as well as numeric values for user-generated text labels. The value of
-  \code{parse} is set automatically based on \code{output-type}, but if you
-  assemble labels that need parsing from \code{numeric} output, the default
-  needs to be overridden. This stat only generates annotation labels, the
-  predicted values/line need to be added to the plot as a separate layer
-  using \code{\link{stat_quant_line}} or
-  \code{\link[ggplot2]{stat_quantile}}, so to make sure that the same model
-  formula is used in all steps it is best to save the formula as an object
-  and supply this object as argument to the different statistics.
+This stat can be used to automatically annotate a plot with rho or
+  the fitted model equation. It supports only linear models fitted with
+  function \code{rq()}, passing \code{method = "br"} to it, should work well
+  with up to several thousand observations. The rho, AIC, BIC and n annotations can be used with
+  any linear model formula. The fitted equation label is correctly generated
+  for polynomials or quasi-polynomials through the origin. Model formulas can
+  use \code{poly()} or be defined algebraically with terms of powers of
+  increasing magnitude with no missing intermediate terms, except possibly
+  for the intercept indicated by \code{"- 1"} or \code{"-1"} or \code{"+ 0"}
+  in the formula. The validity of the \code{formula} is not checked in the
+  current implementation. The default aesthetics sets rho as label for the
+  annotation.  This stat generates labels as R expressions by default but
+  LaTeX (use TikZ device), markdown (use package 'ggtext') and plain text are
+  also supported, as well as numeric values for user-generated text labels.
+  The value of \code{parse} is set automatically based on \code{output-type},
+  but if you assemble labels that need parsing from \code{numeric} output,
+  the default needs to be overridden. This stat only generates annotation
+  labels, the predicted values/line need to be added to the plot as a
+  separate layer using \code{\link{stat_quant_line}},
+  \code{\link{stat_quant_band}} or \code{\link[ggplot2]{stat_quantile}}, so
+  to make sure that the same model formula is used in all steps it is best to
+  save the formula as an object and supply this object as argument to the
+  different statistics.
 
   A ggplot statistic receives as data a data frame that is not the one passed
   as argument by the user, but instead a data frame with the variables mapped
-  to aesthetics. stat_quant_eq() mimics how stat_smooth() works, except that
-  only polynomials can be fitted. In other words, it respects the grammar of
-  graphics. This helps ensure that the model is fitted to the same data as
-  plotted in other layers.
+  to aesthetics. \code{stat_quant_eq()} mimics how \code{stat_smooth()}
+  works, except that only polynomials can be fitted. In other words, it
+  respects the grammar of graphics. This helps ensure that the model is
+  fitted to the same data as plotted in other layers.
 }
 \note{
 For backward compatibility a logical is accepted as argument for
@@ -166,7 +166,7 @@ Support for the \code{angle} aesthetic is not automatic and requires
 \section{Aesthetics}{
  \code{stat_quant_eq} understands \code{x} and \code{y},
   to be referenced in the \code{formula} and \code{weight} passed as argument
-  to parameter \code{weights} of \code{lm()}. All three must be mapped to
+  to parameter \code{weights} of \code{rq()}. All three must be mapped to
   \code{numeric} variables. In addition, the aesthetics understood by the
   geom used (\code{"text"} by default) are understood and grouping respected.
 }
@@ -393,10 +393,12 @@ Written as an answer to question 65695409 by Mark Neal at
   Stackoverflow.
 }
 \seealso{
-This \code{stat_quant_eq} statistic can return ready formatted labels
-  depending on the argument passed to \code{output.type}. This is possible
-  because only polynomial models are supported. For other types of models,
-  statistics \code{\link{stat_fit_glance}},  \code{\link{stat_fit_tidy}} and
+The quantile fit is done with function \code{\link[quantreg]{rq}},
+  please consult its documentation. This \code{stat_quant_eq} statistic can
+  return ready formatted labels depending on the argument passed to
+  \code{output.type}. This is possible because only polynomial models are
+  supported. For other types of models, statistics
+  \code{\link{stat_fit_glance}},  \code{\link{stat_fit_tidy}} and
   \code{\link{stat_fit_glance}} should be used instead and the code for
   construction of character strings from numeric values and their mapping to
   aesthetic \code{label} needs to be explicitly supplied in the call.
