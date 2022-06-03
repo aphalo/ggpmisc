@@ -59,7 +59,7 @@ default.)}
 "rqss" are accepted. If a function, it must have formal parameters
 \code{formula} and \code{data} and return a model fit object for which
 \code{summary()} and \code{coefficients()} are consistent with those for
-\code{lm} fits.}
+\code{rq} fits.}
 
 \item{method.args}{named list with additional arguments passed to \code{rq()}
 or \code{rqss()}..}

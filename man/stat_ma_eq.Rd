@@ -299,10 +299,12 @@ if (requireNamespace("gginnards", quietly = TRUE)) {
 
 }
 \seealso{
-This \code{stat_ma_eq} statistic can return ready formatted labels
-  depending on the argument passed to \code{output.type}. If other than
-  linear major axis regression is desired, then \code{\link{stat_poly_eq}} or
-  \code{\link{stat_quant_eq}} should be used instead of \code{stat_ma_eq}.
+The major axis regression model is fitted with function
+  \code{\link[lmodel2]{lmodel2}}, please consult its documentation. This
+  \code{stat_ma_eq} statistic can return ready formatted labels depending on
+  the argument passed to \code{output.type}. If ordinary least squares
+  polynomial regression is desired, then \code{\link{stat_poly_eq}}. For quantile fits of polynomial
+  regression is desired, \code{\link{stat_quant_eq}} should be used.
   For other types of models such as non-linear models, statistics
   \code{\link{stat_fit_glance}} and \code{\link{stat_fit_tidy}} should be
   used and the code for construction of character strings from numeric values

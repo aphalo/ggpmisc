@@ -5,33 +5,33 @@
 #' band can be interpreted similarly as that produced by \code{stat_smooth()}
 #' and \code{stat_poly_line()}.
 #'
-#' @details
-#' \code{stat_quant_line()} behaves similarly to \code{ggplot2::stat_smooth()}
-#' and \code{stat_poly_line()} but supports fitting regressions for multiple
-#' quantiles in the same plot layer. This statistic interprets the argument
-#' passed to \code{formula} accepting \code{y} as well as \code{x} as
-#' explanatory variable, matching \code{stat_quant_eq()}. While
-#' \code{stat_quant_eq()} supports only method \code{"rq"},
-#' \code{stat_quant_line()} and \code{stat_quant_band()} support both
-#' \code{"rq"} and \code{"rqss"}, In the case of \code{"rqss"} the model
-#' formula makes normally use of \code{qss()} to formulate the spline and its
-#' constraints.
+#' @details \code{stat_quant_line()} behaves similarly to
+#'   \code{ggplot2::stat_smooth()} and \code{stat_poly_line()} but supports
+#'   fitting regressions for multiple quantiles in the same plot layer. This
+#'   statistic interprets the argument passed to \code{formula} accepting
+#'   \code{y} as well as \code{x} as explanatory variable, matching
+#'   \code{stat_quant_eq()}. While \code{stat_quant_eq()} supports only method
+#'   \code{"rq"}, \code{stat_quant_line()} and \code{stat_quant_band()} support
+#'   both \code{"rq"} and \code{"rqss"}, In the case of \code{"rqss"} the model
+#'   formula makes normally use of \code{qss()} to formulate the spline and its
+#'   constraints.
 #'
-#' \code{\link[ggplot2]{geom_smooth}}, which is used by default, treats each
-#' axis different and thus is dependent on orientation. If no argument is passed
-#' to \code{formula}, it defaults to \code{y ~ x}. Formulas with \code{y} as
-#' explanatory variable are treated as if \code{x} was the explanatory variable
-#' and \code{orientation = "y"}.
+#'   \code{\link[ggplot2]{geom_smooth}}, which is used by default, treats each
+#'   axis different and thus is dependent on orientation. If no argument is
+#'   passed to \code{formula}, it defaults to \code{y ~ x}. Formulas with
+#'   \code{y} as explanatory variable are treated as if \code{x} was the
+#'   explanatory variable and \code{orientation = "y"}.
 #'
-#' Package 'ggpmisc' does not define a new geometry matching this statistic
-#' as it is enough for the statistic to return suitable \code{x}, \code{y},
-#' \code{ymin}, \code{ymax} and \code{group} values.
+#'   Package 'ggpmisc' does not define a new geometry matching this statistic as
+#'   it is enough for the statistic to return suitable \code{x}, \code{y},
+#'   \code{ymin}, \code{ymax} and \code{group} values.
 #'
-#' There are multiple uses for double regression on x and y. For example, when
-#' two variables are subject to mutual constrains, it is useful to consider both
-#' of them as explanatory and interpret the relationship based on them. So, from
-#' version 0.4.1 'ggpmisc' makes it possible to easily implement the approach
-#' described by Cardoso (2019) under the name of "Double quantile regression".
+#'   There are multiple uses for double regression on x and y. For example, when
+#'   two variables are subject to mutual constrains, it is useful to consider
+#'   both of them as explanatory and interpret the relationship based on them.
+#'   So, from version 0.4.1 'ggpmisc' makes it possible to easily implement the
+#'   approach described by Cardoso (2019) under the name of "Double quantile
+#'   regression".
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs to be
@@ -60,7 +60,7 @@
 #'   "rqss" are accepted. If a function, it must have formal parameters
 #'   \code{formula} and \code{data} and return a model fit object for which
 #'   \code{summary()} and \code{coefficients()} are consistent with those for
-#'   \code{lm} fits.
+#'   \code{rq} fits.
 #' @param method.args named list with additional arguments passed to \code{rq()}
 #'   or \code{rqss()}..
 #' @param n Number of points at which to evaluate smoother.
