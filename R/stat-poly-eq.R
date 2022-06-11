@@ -557,7 +557,7 @@ poly_eq_compute_group_fun <- function(data,
   # so we silence selectively only these warnings
   withCallingHandlers({
     mf <- do.call(fun,
-                  args = c(list(formula = formula, data = data, weights = quote(weight)),
+                  args = c(list(formula = formula, data = data, weights = data[["weight"]]),
                            method.args))
     mf.summary <- summary(mf)
   }, warning = function(w) {
@@ -959,7 +959,11 @@ as.character.polynomial <- function (x,
   paste0(signs, p, stars, pow, collapse = " ")
 }
 
-# exponential number notation to typeset equivalent
+# exponential number notation to typeset equivalent: Protecting trailing zeros
+# in negative numbers is more involved than I would like. Not only we need to
+# enclose numbers in quotations marks but we also need to replace dashes with
+# the minus character. I am not sure we can do the replacement portably, but
+# that recent R supports UTF gives some hope.
 #
 typeset_numbers <- function(eq.char, output.type) {
   if (output.type == "markdown") {

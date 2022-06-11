@@ -519,7 +519,7 @@ quant_eq_compute_group_fun <- function(data,
   rq.args <- list(quote(formula),
                   tau = quantiles,
                   data = quote(data),
-                  weights = quote(weight))
+                  weights = data[["weight"]])
 
   # quantreg contains code with partial matching of names!
   # so we silence selectively only these warnings

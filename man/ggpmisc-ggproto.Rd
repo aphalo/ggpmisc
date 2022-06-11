@@ -3,7 +3,7 @@
 %   R/stat-fit-broom.R, R/stat-fit-deviations.R, R/stat-fit-residuals.R,
 %   R/stat-ma-eq.R, R/stat-ma-line.R, R/stat-peaks.R, R/stat-poly-eq.R,
 %   R/stat-poly-line.R, R/stat-quant-band.R, R/stat-quant-eq.R,
-%   R/stat-quant-line.R
+%   R/stat-quant-line.r
 \docType{data}
 \name{cor_test_compute_fun}
 \alias{cor_test_compute_fun}

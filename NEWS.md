@@ -4,6 +4,11 @@ editor_options:
     wrap: 72
 ---
 
+# ggpmisc 0.4.7
+
+-   Fix bug in the handling of the `weight` aesthetic in `stat_poly_eq()`,
+    `stat_poly_line()`, `stat_quant_eq()` and `stat_qunat_line()`.
+
 # ggpmisc 0.4.6
 
 This update fixes a significant bug. Although the problem, when triggered, is

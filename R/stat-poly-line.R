@@ -253,7 +253,7 @@ poly_line_compute_group_fun <-
 
     base.args <- list(quote(formula),
                       data = quote(data),
-                      weights = quote(weight))
+                      weights = data[["weight"]])
     mf <- do.call(method, c(base.args, method.args))
 
     newdata <- data.frame(x = xseq)
