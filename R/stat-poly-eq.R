@@ -543,6 +543,7 @@ poly_eq_compute_group_fun <- function(data,
 
   if (is.function(method)) {
     fun <- method
+    method <- "function"
   } else if (is.character(method)) {
     fun <- switch(method,
                   lm = stats::lm,
@@ -566,6 +567,10 @@ poly_eq_compute_group_fun <- function(data,
       invokeRestart("muffleWarning")
   })
 
+  # allow model selection by the method
+  if (method == "function" && exists("terms", mf)) {
+    formula <- mf[["terms"]]
+  }
   if ("r.squared" %in% names(mf.summary)) {
     rr <- mf.summary[["r.squared"]]
   } else {
