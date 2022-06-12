@@ -11,8 +11,7 @@ editor_options:
 -   Allow `method` to modify formula in `stat_poly_eq()`. This makes it possible
     model selection within the function passed as argument to `method`. 
     (Inspired by an answer read in Stackoverflow.)
--   
-    
+
 # ggpmisc 0.4.6
 
 This update fixes a significant bug. Although the problem, when triggered, is
