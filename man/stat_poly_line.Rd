@@ -2,7 +2,7 @@
 % Please edit documentation in R/stat-poly-line.R
 \name{stat_poly_line}
 \alias{stat_poly_line}
-\title{Predicted line from model fit}
+\title{Predicted line from linear model fit}
 \usage{
 stat_poly_line(
   mapping = NULL,
@@ -41,11 +41,12 @@ layer}
 can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 
-\item{method}{function or character If character, "lm", "rlm" and
-"rq" are accepted. If a function, it must have formal parameters
-\code{formula} and \code{data} and return a model fit object for which
-\code{summary()} and \code{coefficients()} are consistent with those for
-\code{lm} fits.}
+\item{method}{function or character If character, "lm", "rlm" or the name of
+a model fit function are accepted, possibly followed by the fit function's
+\code{method} argument separated by a colon (e.g. \code{"rlm:M"}). If a
+function different to \code{lm()}, it must accept arguments named
+\code{formula}, \code{data}, \code{weights}, and \code{method} and return a
+model fit object of class \code{lm}.}
 
 \item{formula}{a formula object. Using aesthetic names \code{x} and \code{y}
 instead of original variable names.}
@@ -90,7 +91,7 @@ Predicted values and a confidence band are computed and, by default, plotted.
 }
 \details{
 This statistic is similar to \code{\link[ggplot2]{stat_smooth}} but has
-different defaults and it interprets the argument passed to \code{formula}
+different defaults. It interprets the argument passed to \code{formula}
 differently, accepting \code{y} as explanatory variable and setting
 \code{orientation} automatically. The default for \code{method} is
 \code{"lm"} and spline-based smoothers like \code{loess} are not supported.
@@ -106,10 +107,10 @@ which orientation the layer should have. If no argument is passed to
 \code{\link[ggplot2]{stat_smooth}} orientation can be also specified directly
 passing an argument to the \code{orientation} parameter, which can be either
 \code{"x"} or \code{"y"}. The value of \code{orientation} gives the axis that
-is taken as the explanatory variable. Package 'ggpmisc' does not define
-new geometries matching the new statistics as they are not needed and
-conceptually transformations of \code{data} are statistics in the grammar
-of graphics.
+is taken as the explanatory variable or \code{x} in the model formula.
+Package 'ggpmisc' does not define new geometries matching the new statistics
+as they are not needed and conceptually transformations of \code{data} are
+statistics in the grammar of graphics.
 }
 \section{Computed variables}{
  `stat_poly_line()` provides the following

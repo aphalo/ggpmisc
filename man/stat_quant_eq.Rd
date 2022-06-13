@@ -2,7 +2,7 @@
 % Please edit documentation in R/stat-quant-eq.R
 \name{stat_quant_eq}
 \alias{stat_quant_eq}
-\title{Equation, rho, AIC or BIC from quantile regression}
+\title{Equation, rho, AIC and BIC from quantile regression}
 \usage{
 stat_quant_eq(
   mapping = NULL,

@@ -1,10 +1,10 @@
-#' Predicted line from model fit
+#' Predicted line from linear model fit
 #'
 #' Predicted values and a confidence band are computed and, by default, plotted.
 #'
 #' @details
 #' This statistic is similar to \code{\link[ggplot2]{stat_smooth}} but has
-#' different defaults and it interprets the argument passed to \code{formula}
+#' different defaults. It interprets the argument passed to \code{formula}
 #' differently, accepting \code{y} as explanatory variable and setting
 #' \code{orientation} automatically. The default for \code{method} is
 #' \code{"lm"} and spline-based smoothers like \code{loess} are not supported.
@@ -20,10 +20,10 @@
 #' \code{\link[ggplot2]{stat_smooth}} orientation can be also specified directly
 #' passing an argument to the \code{orientation} parameter, which can be either
 #' \code{"x"} or \code{"y"}. The value of \code{orientation} gives the axis that
-#' is taken as the explanatory variable. Package 'ggpmisc' does not define
-#' new geometries matching the new statistics as they are not needed and
-#' conceptually transformations of \code{data} are statistics in the grammar
-#' of graphics.
+#' is taken as the explanatory variable or \code{x} in the model formula.
+#' Package 'ggpmisc' does not define new geometries matching the new statistics
+#' as they are not needed and conceptually transformations of \code{data} are
+#' statistics in the grammar of graphics.
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs to be
@@ -47,11 +47,12 @@
 #'   the computation proceeds.
 #' @param formula a formula object. Using aesthetic names \code{x} and \code{y}
 #'   instead of original variable names.
-#' @param method function or character If character, "lm", "rlm" and
-#'   "rq" are accepted. If a function, it must have formal parameters
-#'   \code{formula} and \code{data} and return a model fit object for which
-#'   \code{summary()} and \code{coefficients()} are consistent with those for
-#'   \code{lm} fits.
+#' @param method function or character If character, "lm", "rlm" or the name of
+#'   a model fit function are accepted, possibly followed by the fit function's
+#'   \code{method} argument separated by a colon (e.g. \code{"rlm:M"}). If a
+#'   function different to \code{lm()}, it must accept arguments named
+#'   \code{formula}, \code{data}, \code{weights}, and \code{method} and return a
+#'   model fit object of class \code{lm}.
 #' @param method.args named list with additional arguments.
 #' @param se Display confidence interval around smooth? (`TRUE` by default, see
 #'   `level` to control.)
@@ -174,20 +175,15 @@ stat_poly_line <- function(mapping = NULL, data = NULL,
     }
   }
 
-  # here so that warnings are triggered before rendering
   if (is.character(method)) {
-    method.name <- method
-    if (method == "rlm") {
-      method <- MASS::rlm
-    } else if (method == "rq") {
-      warning("Method 'rq' not supported, please use 'stat_quant_line()'.")
+    if (method == "auto") {
+      message("Method 'auto' is equivalent to 'lm', splines are not supported.")
       method <- "lm"
-    } else if (method == "auto") {
-      message("Method 'auto' is equivalent to 'lm', please use 'stat_smooth()' for splines.")
-      method <- "lm"
+    } else if (grepl("^rq", method)) {
+      stop("Method 'rq' not supported, please use 'stat_quant_eq()'.")
+    } else if (grepl("^lmodel2", method)) {
+      stop("Method 'lmodel2' not supported, please use 'stat_ma_eq()'.")
     }
-  } else {
-    method.name <- "function"
   }
 
   ggplot2::layer(
@@ -200,7 +196,6 @@ stat_poly_line <- function(mapping = NULL, data = NULL,
     inherit.aes = inherit.aes,
     params = list(
       method = method,
-      method.name = method.name,
       formula = formula,
       se = se,
       mf.values = mf.values,
@@ -218,7 +213,6 @@ stat_poly_line <- function(mapping = NULL, data = NULL,
 poly_line_compute_group_fun <-
   function(data, scales,
            method = NULL,
-           method.name = NA_character_,
            formula = NULL,
            se = TRUE,
            mf.values = FALSE,
@@ -247,14 +241,45 @@ poly_line_compute_group_fun <-
       xseq <- seq(from = xrange[1], to = xrange[2], length.out = n)
     }
 
+    # If method was specified as a character string, replace with
+    # the corresponding function. Some model fit functions themselves have a
+    # method parameter accepting character strings as argument. We support
+    # these by splitting strings passed as argument at a colon.
     if (is.character(method)) {
-      method <- match.fun(method)
+      method <- switch(method,
+                       lm = "lm:qr",
+                       rlm = "rlm:M",
+                       method)
+      method.name <- method
+      method <- strsplit(x = method, split = ":", fixed = TRUE)[[1]]
+      if (length(method) > 1L) {
+        fun.method <- method[2]
+        method <- method[1]
+      } else {
+        fun.method <- character()
+      }
+      method <- switch(method,
+                       lm = stats::lm,
+                       rlm = MASS::rlm,
+                       match.fun(method))
+    } else if (is.function(method)) {
+      fun.method <- character()
+      if (is.name(quote(method))) {
+        method.name <- as.character(quote(method))
+      } else {
+        method.name <- "function"
+      }
     }
 
-    base.args <- list(quote(formula),
-                      data = quote(data),
-                      weights = data[["weight"]])
-    mf <- do.call(method, c(base.args, method.args))
+    fun.args <- list(quote(formula),
+                     data = quote(data),
+                     weights = data[["weight"]])
+    fun.args <- c(fun.args, method.args)
+    if (length(fun.method)) {
+      fun.args[["method"]] <- fun.method
+    }
+
+    mf <- do.call(method, args = fun.args)
 
     newdata <- data.frame(x = xseq)
     prediction <- stats::predict(mf,

@@ -2,7 +2,7 @@
 % Please edit documentation in R/stat-quant-band.R
 \name{stat_quant_band}
 \alias{stat_quant_band}
-\title{Compute predicted line from quantile regression fit}
+\title{Predicted band from quantile regression fits}
 \usage{
 stat_quant_band(
   mapping = NULL,

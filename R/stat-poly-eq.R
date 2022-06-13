@@ -1,4 +1,4 @@
-#' Equation, p-value, \eqn{R^2}, AIC or BIC of fitted polynomial
+#' Equation, p-value, \eqn{R^2}, AIC and BIC of fitted polynomial
 #'
 #' \code{stat_poly_eq} fits a polynomial by default with \code{stats::lm()} but
 #' alternatively using robust regression. From the fitted model it
@@ -27,10 +27,12 @@
 #'   the computation proceeds.
 #' @param formula a formula object. Using aesthetic names \code{x} and \code{y}
 #'   instead of original variable names.
-#' @param method function or character If character, "lm" and "rlm" are
-#'   accepted. If a function, it must have formal parameters \code{formula} and
-#'   \code{data} and return a model fit object of class \code{lm} or a class
-#'   derived from it.
+#' @param method function or character If character, "lm", "rlm" or the name of
+#'   a model fit function are accepted, possibly followed by the fit function's
+#'   \code{method} argument separated by a colon (e.g. \code{"rlm:M"}). If a
+#'   function different to \code{lm()}, it must accept arguments named
+#'   \code{formula}, \code{data}, \code{weights}, and \code{method} and return a
+#'   model fit object of class \code{lm}.
 #' @param method.args named list with additional arguments.
 #' @param eq.with.lhs If \code{character} the string is pasted to the front of
 #'   the equation label before parsing or a \code{logical} (see note).
@@ -399,11 +401,13 @@ stat_poly_eq <- function(mapping = NULL, data = NULL,
     parse <- output.type == "expression"
   }
   if (is.character(method)) {
-    if (method == "rlm") {
-      method <- MASS::rlm
-    } else if (method == "rq") {
-      warning("Method 'rq' not supported, please use 'stat_quant_line()'.")
-      method <- "auto"
+    if (method == "auto") {
+      message("Method 'auto' is equivalent to 'lm', splines are not supported.")
+      method <- "lm"
+    } else if (grepl("^rq", method)) {
+      stop("Method 'rq' not supported, please use 'stat_quant_eq()'.")
+    } else if (grepl("^lmodel2", method)) {
+      stop("Method 'lmodel2' not supported, please use 'stat_ma_eq()'.")
     }
   }
 
@@ -541,25 +545,48 @@ poly_eq_compute_group_fun <- function(data,
     }
   }
 
-  if (is.function(method)) {
-    fun <- method
-    method <- "function"
-  } else if (is.character(method)) {
-    fun <- switch(method,
-                  lm = stats::lm,
-                  rlm = MASS::rlm,
-                  stop("Method '", method, "' not yet implemented.")
-    )
-  } else {
-    stop("Method '", method, "' not yet implemented.")
+  # If method was specified as a character string, replace with
+  # the corresponding function. Some model fit functions themselves have a
+  # method parameter accepting character strings as argument. We support
+  # these by splitting strings passed as argument at a colon.
+  if (is.character(method)) {
+    method <- switch(method,
+                     lm = "lm:qr",
+                     rlm = "rlm:M",
+                     method)
+    method.name <- method
+    method <- strsplit(x = method, split = ":", fixed = TRUE)[[1]]
+    if (length(method) > 1L) {
+      fun.method <- method[2]
+      method <- method[1]
+    } else {
+      fun.method <- character()
+    }
+    method <- switch(method,
+                     lm = stats::lm,
+                     rlm = MASS::rlm,
+                     match.fun(method))
+  } else if (is.function(method)) {
+    fun.method <- character()
+    if (is.name(quote(method))) {
+      method.name <- as.character(quote(method))
+    } else {
+      method.name <- "function"
+    }
+  }
+
+  fun.args <- list(quote(formula),
+                   data = quote(data),
+                   weights = data[["weight"]])
+  fun.args <- c(fun.args, method.args)
+  if (length(fun.method)) {
+    fun.args[["method"]] <- fun.method
   }
 
   # some model fit functions contain code with partial matching of names!
   # so we silence selectively only these warnings
   withCallingHandlers({
-    mf <- do.call(fun,
-                  args = c(list(formula = formula, data = data, weights = data[["weight"]]),
-                           method.args))
+    mf <- do.call(method, args = fun.args)
     mf.summary <- summary(mf)
   }, warning = function(w) {
     if (startsWith(conditionMessage(w), "partial match of 'coef'") ||
@@ -567,10 +594,13 @@ poly_eq_compute_group_fun <- function(data,
       invokeRestart("muffleWarning")
   })
 
-  # allow model selection by the method
-  if (method == "function" && exists("terms", mf)) {
+  # allow model formula selection by the method function
+  if (inherits(mf, "lm")) {
     formula <- mf[["terms"]]
+  } else {
+    stop("Fitted model object does not inherit from class \"lm\"")
   }
+
   if ("r.squared" %in% names(mf.summary)) {
     rr <- mf.summary[["r.squared"]]
   } else {
@@ -794,6 +824,8 @@ poly_eq_compute_group_fun <- function(data,
       warning("Unknown 'output.type' argument: ", output.type)
     }
   }
+
+  z[["method"]] <- method.name
 
   # Compute label positions
   if (is.character(label.x)) {

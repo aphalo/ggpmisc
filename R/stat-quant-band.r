@@ -1,4 +1,4 @@
-#' Compute predicted line from quantile regression fit
+#' Predicted band from quantile regression fits
 #'
 #' Predicted values are computed and, by default, plotted as a band plus an
 #' optional line within. \code{stat_quant_band()} supports the use of both

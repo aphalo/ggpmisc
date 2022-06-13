@@ -2,7 +2,7 @@
 % Please edit documentation in R/stat-poly-eq.R
 \name{stat_poly_eq}
 \alias{stat_poly_eq}
-\title{Equation, p-value, \eqn{R^2}, AIC or BIC of fitted polynomial}
+\title{Equation, p-value, \eqn{R^2}, AIC and BIC of fitted polynomial}
 \usage{
 stat_poly_eq(
   mapping = NULL,
@@ -53,10 +53,12 @@ layer}
 can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 
-\item{method}{function or character If character, "lm" and "rlm" are
-accepted. If a function, it must have formal parameters \code{formula} and
-\code{data} and return a model fit object of class \code{lm} or a class
-derived from it.}
+\item{method}{function or character If character, "lm", "rlm" or the name of
+a model fit function are accepted, possibly followed by the fit function's
+\code{method} argument separated by a colon (e.g. \code{"rlm:M"}). If a
+function different to \code{lm()}, it must accept arguments named
+\code{formula}, \code{data}, \code{weights}, and \code{method} and return a
+model fit object of class \code{lm}.}
 
 \item{method.args}{named list with additional arguments.}
 
