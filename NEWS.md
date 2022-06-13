@@ -8,8 +8,10 @@ editor_options:
 
 -   Fix bug in the handling of the `weight` aesthetic in `stat_poly_eq()`,
     `stat_poly_line()`, `stat_quant_eq()` and `stat_qunat_line()`.
--   Allow `method` to modify formula in `stat_poly_eq()`. This makes it possible
-    model selection within the function passed as argument to `method`. 
+-   When a function is passed as argument to `method` the model formula 
+    is now in calls to `stat_poly_eq()` and `stat_quant_eq()` retrieved from
+    the returned fitted model object. This makes it possible model selection
+    within the function passed as argument to `method`. 
     (Inspired by an answer read in Stackoverflow.)
 
 # ggpmisc 0.4.6

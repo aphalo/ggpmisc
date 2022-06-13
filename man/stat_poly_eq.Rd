@@ -55,8 +55,8 @@ can include aesthetics whose values you want to set, not map. See
 
 \item{method}{function or character If character, "lm" and "rlm" are
 accepted. If a function, it must have formal parameters \code{formula} and
-\code{data} and return a model fit object for which \code{summary()} and
-\code{coefficients()} are consistent with those for \code{lm} fits.}
+\code{data} and return a model fit object of class \code{lm} or a class
+derived from it.}
 
 \item{method.args}{named list with additional arguments.}
 

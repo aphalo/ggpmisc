@@ -12,6 +12,8 @@ stat_quant_eq(
   ...,
   formula = NULL,
   quantiles = c(0.25, 0.5, 0.75),
+  method = "rq",
+  method.args = list(),
   eq.with.lhs = TRUE,
   eq.x.rhs = NULL,
   coef.digits = 3,
@@ -52,6 +54,15 @@ can include aesthetics whose values you want to set, not map. See
 original variable names.}
 
 \item{quantiles}{numeric vector Values in 0..1 indicating the quantiles.}
+
+\item{method}{function or character If character, "rq" and "rqss" are
+accepted, as well as the methods accepted by function
+\code{\link[quantreg]{rq}}. If a function, it must accept arguments named
+\code{formula}, \code{data}, \code{weights}, \code{tau} and \code{method}
+and return and return a model fit object of class \code{rq} or \code{rqs}.}
+
+\item{method.args}{named list with additional arguments passed to \code{rq()}
+or to a function passed as argument to \code{method}.}
 
 \item{eq.with.lhs}{If \code{character} the string is pasted to the front of
 the equation label before parsing or a \code{logical} (see note).}
@@ -121,26 +132,26 @@ regression".
 This stat can be used to automatically annotate a plot with rho or
   the fitted model equation. It supports only linear models fitted with
   function \code{rq()}, passing \code{method = "br"} to it, should work well
-  with up to several thousand observations. The rho, AIC, BIC and n annotations can be used with
-  any linear model formula. The fitted equation label is correctly generated
-  for polynomials or quasi-polynomials through the origin. Model formulas can
-  use \code{poly()} or be defined algebraically with terms of powers of
-  increasing magnitude with no missing intermediate terms, except possibly
-  for the intercept indicated by \code{"- 1"} or \code{"-1"} or \code{"+ 0"}
-  in the formula. The validity of the \code{formula} is not checked in the
-  current implementation. The default aesthetics sets rho as label for the
-  annotation.  This stat generates labels as R expressions by default but
-  LaTeX (use TikZ device), markdown (use package 'ggtext') and plain text are
-  also supported, as well as numeric values for user-generated text labels.
-  The value of \code{parse} is set automatically based on \code{output-type},
-  but if you assemble labels that need parsing from \code{numeric} output,
-  the default needs to be overridden. This stat only generates annotation
-  labels, the predicted values/line need to be added to the plot as a
-  separate layer using \code{\link{stat_quant_line}},
-  \code{\link{stat_quant_band}} or \code{\link[ggplot2]{stat_quantile}}, so
-  to make sure that the same model formula is used in all steps it is best to
-  save the formula as an object and supply this object as argument to the
-  different statistics.
+  with up to several thousand observations. The rho, AIC, BIC and n
+  annotations can be used with any linear model formula. The fitted equation
+  label is correctly generated for polynomials or quasi-polynomials through
+  the origin. Model formulas can use \code{poly()} or be defined
+  algebraically with terms of powers of increasing magnitude with no missing
+  intermediate terms, except possibly for the intercept indicated by \code{"-
+  1"} or \code{"-1"} or \code{"+ 0"} in the formula. The validity of the
+  \code{formula} is not checked in the current implementation. The default
+  aesthetics sets rho as label for the annotation.  This stat generates
+  labels as R expressions by default but LaTeX (use TikZ device), markdown
+  (use package 'ggtext') and plain text are also supported, as well as
+  numeric values for user-generated text labels. The value of \code{parse} is
+  set automatically based on \code{output-type}, but if you assemble labels
+  that need parsing from \code{numeric} output, the default needs to be
+  overridden. This stat only generates annotation labels, the predicted
+  values/line need to be added to the plot as a separate layer using
+  \code{\link{stat_quant_line}}, \code{\link{stat_quant_band}} or
+  \code{\link[ggplot2]{stat_quantile}}, so to make sure that the same model
+  formula is used in all steps it is best to save the formula as an object
+  and supply this object as argument to the different statistics.
 
   A ggplot statistic receives as data a data frame that is not the one passed
   as argument by the user, but instead a data frame with the variables mapped
@@ -345,9 +356,10 @@ ggplot(my.data, aes(x, y, color = group, grp.label = group)) +
 # geom = "text"
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  stat_quant_line(method = "rq", formula = formula, quantiles = 0.5) +
+  stat_quant_line(formula = formula, quantiles = 0.5) +
   stat_quant_eq(label.x = "left", label.y = "top",
-                formula = formula)
+                formula = formula,
+                quantiles = 0.5)
 
 # Inspecting the returned data using geom_debug()
 \dontrun{

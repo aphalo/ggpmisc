@@ -17,7 +17,7 @@
 #'   constraints.
 #'
 #'   \code{\link[ggplot2]{geom_smooth}}, which is used by default, treats each
-#'   axis different and thus is dependent on orientation. If no argument is
+#'   axis differently and thus is dependent on orientation. If no argument is
 #'   passed to \code{formula}, it defaults to \code{y ~ x}. Formulas with
 #'   \code{y} as explanatory variable are treated as if \code{x} was the
 #'   explanatory variable and \code{orientation = "y"}.
@@ -56,13 +56,15 @@
 #' @param formula a formula object. Using aesthetic names \code{x} and \code{y}
 #'   instead of original variable names.
 #' @param quantiles numeric vector Values in 0..1 indicating the quantiles.
-#' @param method function or character If character, "rq" and
-#'   "rqss" are accepted. If a function, it must have formal parameters
-#'   \code{formula} and \code{data} and return a model fit object for which
-#'   \code{summary()} and \code{coefficients()} are consistent with those for
-#'   \code{rq} fits.
-#' @param method.args named list with additional arguments passed to \code{rq()}
-#'   or \code{rqss()}..
+#' @param method function or character If character, "rq" and "rqss" are
+#'   accepted, as well as the methods accepted by function
+#'   \code{\link[quantreg]{rq}}. If a function, it must accept arguments named
+#'   \code{formula}, \code{data}, \code{weights}, \code{tau} and \code{method}
+#'   and return a model fit object of class \code{rq}, \code{rqs} or
+#'   \code{rqss}.
+#' @param method.args named list with additional arguments passed to
+#'   \code{rq()}, \code{rqss()} or to a function passed as argument to
+#'   \code{method}.
 #' @param n Number of points at which to evaluate smoother.
 #' @param orientation character Either "x" or "y" controlling the default for
 #'   \code{formula}.
@@ -300,7 +302,7 @@ quant_line_compute_group_fun <- function(data,
                                          mf.values = FALSE,
                                          na.rm = FALSE,
                                          flipped_aes = NA) {
-  rlang::check_installed("quantreg", reason = "for `stat_quantile()`")
+  rlang::check_installed("quantreg", reason = "for `stat_quant_line()`")
 
   data <- ggplot2::flip_data(data, flipped_aes)
 
@@ -319,15 +321,28 @@ quant_line_compute_group_fun <- function(data,
   if (is.character(method)) {
     method.name <- method
     if (identical(method, "rq")) {
+      if (! "method" %in% names(method.args)) {
+        rq.method <- "br"
+      }
       method <- quantreg::rq
     } else if (identical(method, "rqss")) {
+      if (! "method" %in% names(method.args)) {
+        rq.method <- "sfn"
+      }
       method <- quantreg::rqss
+    } else if (method %in% c("br", "fn", "pfn", "sfn", "fnc", "conquer",
+                             "pfnb", "qfnb", "ppro", "lasso")) {
+      method.name <- "rq"
+      rq.method <- method
+      method <- quantreg::rq
     } else {
-      method <- match.fun(method) # allow users to supply their own methods
+      stop("Method '", method, "' not yet implemented.")
     }
-  } else {
-    stopifnot(is.function(method))
+  } else if (is.function(method)) {
     method.name <- "function"
+    if (! "method" %in% names(method.args)) {
+      rq.method <- "br"
+    }
   }
 
   z <- dplyr::bind_rows(

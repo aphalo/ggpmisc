@@ -36,6 +36,13 @@
 #' @param formula a formula object. Using aesthetic names instead of
 #'   original variable names.
 #' @param quantiles numeric vector Values in 0..1 indicating the quantiles.
+#' @param method function or character If character, "rq" and "rqss" are
+#'   accepted, as well as the methods accepted by function
+#'   \code{\link[quantreg]{rq}}. If a function, it must accept arguments named
+#'   \code{formula}, \code{data}, \code{weights}, \code{tau} and \code{method}
+#'   and return and return a model fit object of class \code{rq} or \code{rqs}.
+#' @param method.args named list with additional arguments passed to \code{rq()}
+#'   or to a function passed as argument to \code{method}.
 #' @param eq.with.lhs If \code{character} the string is pasted to the front of
 #'   the equation label before parsing or a \code{logical} (see note).
 #' @param eq.x.rhs \code{character} this string will be used as replacement for
@@ -77,26 +84,26 @@
 #' @details This stat can be used to automatically annotate a plot with rho or
 #'   the fitted model equation. It supports only linear models fitted with
 #'   function \code{rq()}, passing \code{method = "br"} to it, should work well
-#'   with up to several thousand observations. The rho, AIC, BIC and n annotations can be used with
-#'   any linear model formula. The fitted equation label is correctly generated
-#'   for polynomials or quasi-polynomials through the origin. Model formulas can
-#'   use \code{poly()} or be defined algebraically with terms of powers of
-#'   increasing magnitude with no missing intermediate terms, except possibly
-#'   for the intercept indicated by \code{"- 1"} or \code{"-1"} or \code{"+ 0"}
-#'   in the formula. The validity of the \code{formula} is not checked in the
-#'   current implementation. The default aesthetics sets rho as label for the
-#'   annotation.  This stat generates labels as R expressions by default but
-#'   LaTeX (use TikZ device), markdown (use package 'ggtext') and plain text are
-#'   also supported, as well as numeric values for user-generated text labels.
-#'   The value of \code{parse} is set automatically based on \code{output-type},
-#'   but if you assemble labels that need parsing from \code{numeric} output,
-#'   the default needs to be overridden. This stat only generates annotation
-#'   labels, the predicted values/line need to be added to the plot as a
-#'   separate layer using \code{\link{stat_quant_line}},
-#'   \code{\link{stat_quant_band}} or \code{\link[ggplot2]{stat_quantile}}, so
-#'   to make sure that the same model formula is used in all steps it is best to
-#'   save the formula as an object and supply this object as argument to the
-#'   different statistics.
+#'   with up to several thousand observations. The rho, AIC, BIC and n
+#'   annotations can be used with any linear model formula. The fitted equation
+#'   label is correctly generated for polynomials or quasi-polynomials through
+#'   the origin. Model formulas can use \code{poly()} or be defined
+#'   algebraically with terms of powers of increasing magnitude with no missing
+#'   intermediate terms, except possibly for the intercept indicated by \code{"-
+#'   1"} or \code{"-1"} or \code{"+ 0"} in the formula. The validity of the
+#'   \code{formula} is not checked in the current implementation. The default
+#'   aesthetics sets rho as label for the annotation.  This stat generates
+#'   labels as R expressions by default but LaTeX (use TikZ device), markdown
+#'   (use package 'ggtext') and plain text are also supported, as well as
+#'   numeric values for user-generated text labels. The value of \code{parse} is
+#'   set automatically based on \code{output-type}, but if you assemble labels
+#'   that need parsing from \code{numeric} output, the default needs to be
+#'   overridden. This stat only generates annotation labels, the predicted
+#'   values/line need to be added to the plot as a separate layer using
+#'   \code{\link{stat_quant_line}}, \code{\link{stat_quant_band}} or
+#'   \code{\link[ggplot2]{stat_quantile}}, so to make sure that the same model
+#'   formula is used in all steps it is best to save the formula as an object
+#'   and supply this object as argument to the different statistics.
 #'
 #'   A ggplot statistic receives as data a data frame that is not the one passed
 #'   as argument by the user, but instead a data frame with the variables mapped
@@ -304,9 +311,10 @@
 #' # geom = "text"
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   stat_quant_line(method = "rq", formula = formula, quantiles = 0.5) +
+#'   stat_quant_line(formula = formula, quantiles = 0.5) +
 #'   stat_quant_eq(label.x = "left", label.y = "top",
-#'                 formula = formula)
+#'                 formula = formula,
+#'                 quantiles = 0.5)
 #'
 #' # Inspecting the returned data using geom_debug()
 #' \dontrun{
@@ -354,6 +362,8 @@ stat_quant_eq <- function(mapping = NULL, data = NULL,
                          ...,
                          formula = NULL,
                          quantiles = c(0.25, 0.5, 0.75),
+                         method = "rq",
+                         method.args = list(),
                          eq.with.lhs = TRUE,
                          eq.x.rhs = NULL,
                          coef.digits = 3,
@@ -391,6 +401,8 @@ stat_quant_eq <- function(mapping = NULL, data = NULL,
     inherit.aes = inherit.aes,
     params = list(formula = formula,
                   quantiles = quantiles,
+                  method = method,
+                  method.args = method.args,
                   eq.with.lhs = eq.with.lhs,
                   eq.x.rhs = eq.x.rhs,
                   coef.digits = coef.digits,
@@ -424,6 +436,8 @@ quant_eq_compute_group_fun <- function(data,
                                        scales,
                                        formula,
                                        quantiles,
+                                       method,
+                                       method.args,
                                        weight,
                                        eq.with.lhs,
                                        eq.x.rhs,
@@ -438,7 +452,10 @@ quant_eq_compute_group_fun <- function(data,
                                        output.type,
                                        na.rm,
                                        orientation) {
+  rlang::check_installed("quantreg", reason = "for `stat_quant_eq()`")
+
   force(data)
+  force(method)
   num.quantiles <- length(quantiles)
 
   # make sure quantiles are ordered
@@ -516,23 +533,53 @@ quant_eq_compute_group_fun <- function(data,
     }
   }
 
+  # if method was specified as a character string, replace with
+  # the corresponding function
+  if (is.character(method)) {
+    method.name <- method
+    if (identical(method, "rq")) {
+      if (! "method" %in% names(method.args)) {
+        rq.method <- "br"
+      }
+      method <- quantreg::rq
+     # } else if (identical(method, "rqss")) {
+    #   method <- quantreg::rqss
+    } else if (method %in% c("br", "fn", "pfn", "sfn", "fnc", "conquer",
+                             "pfnb", "qfnb", "ppro", "lasso")) {
+      rq.method <- method
+      method <- quantreg::rq
+    } else {
+      stop("Method '", method, "' not yet implemented.")
+    }
+  } else if (is.function(method)) {
+    method.name <- "function"
+    if (! "method" %in% names(method.args)) {
+      rq.method <- "br"
+    }
+  }
+
   rq.args <- list(quote(formula),
                   tau = quantiles,
                   data = quote(data),
-                  weights = data[["weight"]])
+                  weights = data[["weight"]],
+                  method = rq.method)
+  rq.args <- c(rq.args, method.args)
 
-  # quantreg contains code with partial matching of names!
-  # so we silence selectively only these warnings
-  withCallingHandlers({
-    mf <- do.call(quantreg::rq, rq.args)
-    mf.summary <- summary(mf)
-  }, warning = function(w) {
-    if (startsWith(conditionMessage(w), "partial match of 'coef'") ||
-        startsWith(conditionMessage(w), "partial argument match of 'contrasts'"))
-      invokeRestart("muffleWarning")
-  })
+  mf <- do.call(method, rq.args)
+  mf.summary <- summary(mf)
 
-  if (class(mf.summary)[1L] == "summary.rq") {
+  if (method.name == "function") {
+    # allow model selection by the method
+    if (inherits(mf, "rq") || inherits(mf, "rqs")) {
+      formula <- mf[["formula"]]
+      quantiles <- mf[["tau"]]
+    } else {
+      stop("Fitted model object of class \"", class(mf), "\" not supported")
+    }
+  }
+
+  # if length tau is 1 class is summary.rq, otherwise a list of class summary.rqs
+  if (!class(mf.summary) == "summary.rqs") {
     mf.summary <- list(mf.summary)
   }
   names(mf.summary) <- as.character(quantiles)
@@ -554,7 +601,7 @@ quant_eq_compute_group_fun <- function(data,
   }
   coefs.ls <- asplit(coefs.mt, 2)
   # located here so that names in coef.ls remain the same as in version 0.4.0
-  rownames(coefs.mt) <-paste("b", (1:nrow(coefs.mt)) - 1, sep = "_")
+  rownames(coefs.mt) <- paste("b", (1:nrow(coefs.mt)) - 1, sep = "_")
 
   z <- tibble::tibble()
   if (output.type == "numeric") {

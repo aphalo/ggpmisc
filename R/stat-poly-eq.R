@@ -29,8 +29,8 @@
 #'   instead of original variable names.
 #' @param method function or character If character, "lm" and "rlm" are
 #'   accepted. If a function, it must have formal parameters \code{formula} and
-#'   \code{data} and return a model fit object for which \code{summary()} and
-#'   \code{coefficients()} are consistent with those for \code{lm} fits.
+#'   \code{data} and return a model fit object of class \code{lm} or a class
+#'   derived from it.
 #' @param method.args named list with additional arguments.
 #' @param eq.with.lhs If \code{character} the string is pasted to the front of
 #'   the equation label before parsing or a \code{logical} (see note).
@@ -554,7 +554,7 @@ poly_eq_compute_group_fun <- function(data,
     stop("Method '", method, "' not yet implemented.")
   }
 
-  # quantreg contains code with partial matching of names!
+  # some model fit functions contain code with partial matching of names!
   # so we silence selectively only these warnings
   withCallingHandlers({
     mf <- do.call(fun,

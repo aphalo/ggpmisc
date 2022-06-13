@@ -55,14 +55,16 @@ default.)}
 
 \item{n}{Number of points at which to evaluate smoother.}
 
-\item{method}{function or character If character, "rq" and
-"rqss" are accepted. If a function, it must have formal parameters
-\code{formula} and \code{data} and return a model fit object for which
-\code{summary()} and \code{coefficients()} are consistent with those for
-\code{rq} fits.}
+\item{method}{function or character If character, "rq" and "rqss" are
+accepted, as well as the methods accepted by function
+\code{\link[quantreg]{rq}}. If a function, it must accept arguments named
+\code{formula}, \code{data}, \code{weights}, \code{tau} and \code{method}
+and return a model fit object of class \code{rq}, \code{rqs} or
+\code{rqss}.}
 
-\item{method.args}{named list with additional arguments passed to \code{rq()}
-or \code{rqss()}..}
+\item{method.args}{named list with additional arguments passed to
+\code{rq()}, \code{rqss()} or to a function passed as argument to
+\code{method}.}
 
 \item{level}{numeric in range [0..1] Passed to \code{quantreg::predict.rq()}.}
 
@@ -118,7 +120,7 @@ and \code{stat_poly_line()}.
   constraints.
 
   \code{\link[ggplot2]{geom_smooth}}, which is used by default, treats each
-  axis different and thus is dependent on orientation. If no argument is
+  axis differently and thus is dependent on orientation. If no argument is
   passed to \code{formula}, it defaults to \code{y ~ x}. Formulas with
   \code{y} as explanatory variable are treated as if \code{x} was the
   explanatory variable and \code{orientation = "y"}.
