@@ -43,7 +43,7 @@ Statistics that help with reporting the results of model fits are:
 <td><code>stat_poly_eq()</code></td>
 <td>equation, <em>R</em><sup>2</sup>, <em>P</em>, etc.
 (<code>text_npc</code>)</td>
-<td>lm, rlm (<strong>weight</strong> aesthetic fully supported)</td>
+<td>lm, rlm (1, 2)</td>
 </tr>
 <tr class="even">
 <td><code>stat_ma_eq()</code></td>
@@ -54,7 +54,8 @@ Statistics that help with reporting the results of model fits are:
 <tr class="odd">
 <td><code>stat_quant_eq()</code></td>
 <td>equation, <em>P</em>, etc. (<code>text_npc</code>)</td>
-<td>rq (any number of quantiles)</td>
+<td>rq: br, fn, pfn, sfn, fnc, conquer, pfnb, qfnb, ppro, lasso. (1, 3,
+4)</td>
 </tr>
 <tr class="even">
 <td><code>stat_correlation()</code></td>
@@ -66,7 +67,7 @@ Spearman (<em>S</em>)</div></td>
 <tr class="odd">
 <td><code>stat_poly_line()</code></td>
 <td>line + conf. (<code>smooth</code>)</td>
-<td>lm, rlm (<strong>weight</strong> aesthetic fully supported)</td>
+<td>lm, rlm (1, 2)</td>
 </tr>
 <tr class="even">
 <td><code>stat_ma_line()</code></td>
@@ -76,22 +77,23 @@ Spearman (<em>S</em>)</div></td>
 <tr class="odd">
 <td><code>stat_quant_line()</code></td>
 <td>line + conf. (<code>smooth</code>)</td>
-<td>rq, rqss (any number of quantiles)</td>
+<td>rq: br, fn, pfn, sfn, fnc, conquer, pfnb, qfnb, ppro, lasso; rqss:
+sfn. (1, 3, 4)</td>
 </tr>
 <tr class="even">
 <td><code>stat_quant_band()</code></td>
 <td>median + quartiles (<code>smooth</code>)</td>
-<td>rq, rqss (two or three quantiles)</td>
+<td>rq, rqss (1, 4, 5)</td>
 </tr>
 <tr class="odd">
 <td><code>stat_fit_residuals()</code></td>
 <td>residuals (<code>point</code>)</td>
-<td>lm, rlm (<strong>weight</strong> aesthetic fully supported)</td>
+<td>lm, rlm (1)</td>
 </tr>
 <tr class="even">
 <td><code>stat_fit_deviations()</code></td>
 <td>deviations from observations (<code>segment</code>)</td>
-<td>lm, rlm (<strong>weight</strong> aesthetic fully supported)</td>
+<td>lm, rlm (1)</td>
 </tr>
 <tr class="odd">
 <td><code>stat_fit_glance()</code></td>
@@ -116,6 +118,14 @@ Spearman (<em>S</em>)</div></td>
 </tr>
 </tbody>
 </table>
+
+Notes: (1) **weight** aesthetic supported; (2) user defined fit
+functions that return an object of a class derived from `lm` are
+supported even if they override the statistic’s *formula* argument; (3)
+unlimited quantiles supported; (4) user defined fit functions that
+return an object of a class derived from `rq` or `rqs` are supported
+even if they override the statistic’s *formula* and/or *quantiles*
+argument; (5) two and three quantiles supported.
 
 Statistics `stat_peaks()` and `stat_valleys()` can be used to highlight
 and/or label maxima and minima in a plot.
@@ -310,8 +320,8 @@ citation("ggpmisc")
 #> 
 #> To cite package 'ggpmisc' in publications use:
 #> 
-#>   Pedro J. Aphalo (2022). ggpmisc: Miscellaneous Extensions to
-#>   'ggplot2'. https://docs.r4photobiology.info/ggpmisc/,
+#>   Aphalo P (2022). _ggpmisc: Miscellaneous Extensions to 'ggplot2'_.
+#>   https://docs.r4photobiology.info/ggpmisc/,
 #>   https://github.com/aphalo/ggpmisc.
 #> 
 #> A BibTeX entry for LaTeX users is

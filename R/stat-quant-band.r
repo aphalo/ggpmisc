@@ -190,6 +190,13 @@ stat_quant_band <- function(mapping = NULL,
            "the formula should have 'x' as explanatory variable.")
     }
   }
+  if (is.character(method)) {
+    if (grepl("^lm|^rlm", method)) {
+      stop("Methods 'lm' and 'rlm' not supported, please use 'stat_poly_eq()'.")
+    } else if (grepl("^lmodel2", method)) {
+      stop("Method 'lmodel2' not supported, please use 'stat_ma_eq()'.")
+    }
+  }
 
   ggplot2::layer(
     data = data,
