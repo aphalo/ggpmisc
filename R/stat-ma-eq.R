@@ -28,7 +28,14 @@
 #'   instead of original variable names.
 #' @param range.y,range.x character Pass "relative" or "interval" if method
 #'   "RMA" is to be computed.
-#' @param method character "MA", "SMA" , "RMA" and "OLS".
+#' @param method function or character If character, "MA", "SMA" , "RMA" or
+#'   "OLS", alternatively "lmodel2" or the name of a model fit function are
+#'   accepted, possibly followed by the fit function's \code{method} argument
+#'   separated by a colon (e.g. \code{"lmodel2:MA"}). If a function different to
+#'   \code{lmodel2()}, it must accept arguments named \code{formula},
+#'   \code{data}, \code{range.y}, \code{range.x} and \code{nperm} and return a
+#'   model fit object of class \code{lmodel2}.
+#' @param method.args named list with additional arguments.
 #' @param nperm integer Number of permutation used to estimate significance.
 #' @param eq.with.lhs If \code{character} the string is pasted to the front of
 #'   the equation label before parsing or a \code{logical} (see note).
@@ -66,6 +73,15 @@
 #'   Parameter \code{orientation} is redundant as it only affects the default
 #'   for \code{formula} but is included for consistency with
 #'   \code{ggplot2::stat_smooth()}.
+#'
+#'   Methods in \code{\link[lmodel2]{lmodel2}} are all computed always except
+#'   for RMA that requires a numeric argument to at least one of \code{range.y}
+#'   or \code{range.x}. The results for specific methods are extracted a
+#'   posteriori from the model fit object. When a function is passed as argument
+#'   to \code{method}, the method can be passed in a list to \code{method.args}
+#'   as member \code{method}. More easily, the name of the function can be
+#'   passed as a character string together with the \code{lmodel2}-supported
+#'   method.
 #'
 #' @details This stat can be used to automatically annotate a plot with R^2,
 #'   P_value, n and/or the fitted model equation. It supports linear major axis
@@ -121,12 +137,13 @@
 #'   \code{\link[lmodel2]{lmodel2}}, please consult its documentation. This
 #'   \code{stat_ma_eq} statistic can return ready formatted labels depending on
 #'   the argument passed to \code{output.type}. If ordinary least squares
-#'   polynomial regression is desired, then \code{\link{stat_poly_eq}}. For quantile fits of polynomial
-#'   regression is desired, \code{\link{stat_quant_eq}} should be used.
-#'   For other types of models such as non-linear models, statistics
-#'   \code{\link{stat_fit_glance}} and \code{\link{stat_fit_tidy}} should be
-#'   used and the code for construction of character strings from numeric values
-#'   and their mapping to aesthetic \code{label} needs to be explicitly supplied
+#'   polynomial regression is desired, then \code{\link{stat_poly_eq}}. For
+#'   quantile fits of polynomial regression is desired,
+#'   \code{\link{stat_quant_eq}} should be used. For other types of models such
+#'   as non-linear models, statistics \code{\link{stat_fit_glance}} and
+#'   \code{\link{stat_fit_tidy}} should be used and the code for construction of
+#'   character strings from numeric values and their mapping to aesthetic
+#'   \code{label} needs to be explicitly supplied
 #'   in the call.
 #'
 #' @family ggplot statistics for major axis regression
@@ -252,7 +269,8 @@ stat_ma_eq <- function(mapping = NULL, data = NULL,
                        geom = "text_npc",
                        position = "identity",
                        ...,
-                       method = "MA",
+                       method = "lmodel2:MA",
+                       method.args = list(),
                        formula = NULL,
                        range.y = NULL,
                        range.x = NULL,
@@ -285,11 +303,15 @@ stat_ma_eq <- function(mapping = NULL, data = NULL,
   if (is.null(parse)) {
     parse <- output.type == "expression"
   }
-  if (! method %in% c("MA", "SMA", "RMA", "OLS")) {
-    warning("Method \"", method, "\" unknown, using \"MA\" instead.")
-    method <- "MA"
+  if (is.character(method)) {
+    if (grepl("^rq", method)) {
+      stop("Method 'rq' not supported, please use 'stat_quant_eq()'.")
+    } else if (grepl("^lm$|^lm[:]|^rlm$|^rlm[:]", method)) {
+      stop("Methods 'lm' and 'rlm' not supported, please use 'stat_poly_eq()'.")
+    }
   }
-  if (method == "RMA" & (is.null(range.y) || is.null(range.x))) {
+
+  if (grepl("RMA$", method) && (is.null(range.y) || is.null(range.x))) {
     stop("Method \"RMA\" is computed only if both 'range.x' and 'range.y' are set.")
   }
 
@@ -302,6 +324,7 @@ stat_ma_eq <- function(mapping = NULL, data = NULL,
     show.legend = show.legend,
     inherit.aes = inherit.aes,
     params = list(method = method,
+                  method.args = method.args,
                   formula = formula,
                   range.y = range.y,
                   range.x = range.x,
@@ -424,7 +447,50 @@ ma_eq_compute_group_fun <- function(data,
     }
   }
 
-  if (method == "RMA") {
+  # If method was specified as a character string, replace with
+  # the corresponding function. Some model fit functions themselves have a
+  # method parameter accepting character strings as argument. We support
+  # these by splitting strings passed as argument at a colon.
+  if (is.character(method)) {
+    if (method %in% c("MA", "SMA", "RMA", "OLS")) {
+      method <- paste("lmodel2", method, sep = ":")
+    }
+    if (method == "lmodel2") {
+      method <- "lmodel2:MA"
+    }
+    method.name <- method
+    method <- strsplit(x = method, split = ":", fixed = TRUE)[[1]]
+    if (length(method) > 1L) {
+      fun.method <- method[2]
+      method <- method[1]
+    } else {
+      fun.method <- character()
+    }
+    if (method == "lmodel2") {
+      method <- lmodel2::lmodel2
+    } else {
+      method <- match.fun(method)
+    }
+  } else if (is.function(method)) {
+    fun.method <- method.args[["method"]]
+    if (!length(fun.method)) {
+      fun.method <- "MA"
+    } else {
+      method.args[["method"]] <- NULL
+    }
+    if (is.name(quote(method))) {
+      method.name <- as.character(quote(method))
+    } else {
+      method.name <- "function"
+    }
+  }
+
+  if (! fun.method %in% c("MA", "SMA", "RMA", "OLS")) {
+    warning("Method \"", method, "\" unknown, using \"MA\" instead.")
+    method <- "MA"
+  }
+
+  if (fun.method == "RMA") {
     fit.args <-
       list(formula = formula,
            data = data,
@@ -440,12 +506,21 @@ ma_eq_compute_group_fun <- function(data,
       )
   }
 
-  mf <- do.call(what = lmodel2::lmodel2, args = fit.args)
+  if (!grepl("^lmodel2", method.name)) {
+    fit.args <- c(fit.args, method.args)
+    mf <- do.call(what = method, args = fit.args)
+  } else {
+    mf <- do.call(what = lmodel2::lmodel2, args = fit.args)
+  }
+
+  if (!inherits(mf, "lmodel2")) {
+    stop("Method \"", method.name, "\" did not return a \"lmodel2\" object")
+  }
 
   n <- mf[["n"]]
-  coefs <- stats::coefficients(mf, method = method)
+  coefs <- stats::coefficients(mf, method = fun.method)
   rr <- mf[["rsquare"]]
-  idx <- which(mf[["regression.results"]][["Method"]] == method)
+  idx <- which(mf[["regression.results"]][["Method"]] == fun.method)
   p.value <- mf[["regression.results"]][["P-perm (1-tailed)"]][idx]
 
   formula.rhs.chr <- as.character(formula)[3]
@@ -572,6 +647,8 @@ ma_eq_compute_group_fun <- function(data,
       warning("Unknown 'output.type' argument: ", output.type)
     }
   }
+
+  z[["method"]] <- method.name
 
   # Compute label positions
   if (is.character(label.x)) {

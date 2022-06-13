@@ -51,7 +51,14 @@
 #'   instead of original variable names.
 #' @param range.y,range.x character Pass "relative" or "interval" if method
 #'   "RMA" is to be computed.
-#' @param method character "MA", "SMA" , "RMA" and "OLS".
+#' @param method function or character If character, "MA", "SMA" , "RMA" or
+#'   "OLS", alternatively "lmodel2" or the name of a model fit function are
+#'   accepted, possibly followed by the fit function's \code{method} argument
+#'   separated by a colon (e.g. \code{"lmodel2:MA"}). If a function different to
+#'   \code{lmodel2()}, it must accept arguments named \code{formula},
+#'   \code{data}, \code{range.y}, \code{range.x} and \code{nperm} and return a
+#'   model fit object of class \code{lmodel2}.
+#' @param method.args named list with additional arguments.
 #' @param nperm integer Number of permutation used to estimate significance.
 #' @param se logical Return confidence interval around smooth? (`TRUE` by
 #'   default, see `level` to control.)
@@ -173,7 +180,8 @@ stat_ma_line <- function(mapping = NULL,
                          geom = "smooth",
                          position = "identity",
                          ...,
-                         method = "MA",
+                         method = "lmodel2:MA",
+                         method.args = list(),
                          formula = NULL,
                          range.y = NULL,
                          range.x = NULL,
@@ -208,11 +216,15 @@ stat_ma_line <- function(mapping = NULL,
     }
   }
 
-  if (! method %in% c("MA", "SMA", "RMA", "OLS")) {
-    warning("Method \"", method, "\" unknown, using \"MA\" instead.")
-    method <- "MA"
+  if (is.character(method)) {
+    if (grepl("^rq", method)) {
+      stop("Method 'rq' not supported, please use 'stat_quant_eq()'.")
+    } else if (grepl("^lm$|^lm[:]|^rlm$|^rlm[:]", method)) {
+      stop("Methods 'lm' and 'rlm' not supported, please use 'stat_poly_eq()'.")
+    }
   }
-  if (method == "RMA" & (is.null(range.y) || is.null(range.x))) {
+
+  if (grepl("RMA$", method) && (is.null(range.y) || is.null(range.x))) {
     stop("Method \"RMA\" is computed only if both 'range.x' and 'range.y' are set.")
   }
 
@@ -226,6 +238,7 @@ stat_ma_line <- function(mapping = NULL,
     inherit.aes = inherit.aes,
     params = list(
       method = method,
+      method.args = method.args,
       formula = formula,
       range.y = range.y,
       range.x = range.x,
@@ -250,12 +263,21 @@ stat_ma_line <- function(mapping = NULL,
 #' @usage NULL
 #'
 ma_line_compute_group_fun <-
-  function(data, scales, method = NULL, formula = NULL,
+  function(data, scales,
+           method = NULL,
+           method.args = list(),
+           formula = NULL,
            range.y = NULL, range.x = NULL,
-           se = TRUE, mf.values = FALSE,
-           n = 80, nperm = 99, fullrange = FALSE,
-           xseq = NULL, level = 0.95, method.args = list(),
-           na.rm = FALSE, flipped_aes = NA, orientation = "x") {
+           se = TRUE,
+           mf.values = FALSE,
+           n = 80,
+           nperm = 99,
+           fullrange = FALSE,
+           xseq = NULL,
+           level = 0.95,
+           na.rm = FALSE,
+           flipped_aes = NA,
+           orientation = "x") {
     data <- ggplot2::flip_data(data, flipped_aes)
     if (length(unique(data$x)) < 2) {
       # Not enough data to perform fit
@@ -271,7 +293,50 @@ ma_line_compute_group_fun <-
       xseq <- seq(from = xrange[1], to = xrange[2], length.out = n)
     }
 
-    if (method == "RMA") {
+    # If method was specified as a character string, replace with
+    # the corresponding function. Some model fit functions themselves have a
+    # method parameter accepting character strings as argument. We support
+    # these by splitting strings passed as argument at a colon.
+    if (is.character(method)) {
+      if (method %in% c("MA", "SMA", "RMA", "OLS")) {
+        method <- paste("lmodel2", method, sep = ":")
+      }
+      if (method == "lmodel2") {
+        method <- "lmodel2:MA"
+      }
+      method.name <- method
+      method <- strsplit(x = method, split = ":", fixed = TRUE)[[1]]
+      if (length(method) > 1L) {
+        fun.method <- method[2]
+        method <- method[1]
+      } else {
+        fun.method <- character()
+      }
+      if (method == "lmodel2") {
+        method <- lmodel2::lmodel2
+      } else {
+        method <- match.fun(method)
+      }
+    } else if (is.function(method)) {
+      fun.method <- method.args[["method"]]
+      if (!length(fun.method)) {
+        fun.method <- "MA"
+      } else {
+        method.args[["method"]] <- NULL
+      }
+      if (is.name(quote(method))) {
+        method.name <- as.character(quote(method))
+      } else {
+        method.name <- "function"
+      }
+    }
+
+    if (! fun.method %in% c("MA", "SMA", "RMA", "OLS")) {
+      warning("Method \"", method, "\" unknown, using \"MA\" instead.")
+      method <- "MA"
+    }
+
+    if (fun.method == "RMA") {
       fit.args <-
         list(formula = formula,
              data = data,
@@ -287,23 +352,32 @@ ma_line_compute_group_fun <-
         )
     }
 
-    mf <- do.call(what = lmodel2::lmodel2, args = fit.args)
+    if (!grepl("^lmodel2", method.name)) {
+      fit.args <- c(fit.args, method.args)
+      mf <- do.call(what = method, args = fit.args)
+    } else {
+      mf <- do.call(what = lmodel2::lmodel2, args = fit.args)
+    }
+
+    if (!inherits(mf, "lmodel2")) {
+      stop("Method \"", method.name, "\" did not return a \"lmodel2\" object")
+    }
 
     newdata <- data.frame(x = xseq)
 
     prediction <- stats::predict(mf,
-                                 method = method,
+                                 method = fun.method,
                                  newdata = newdata,
                                  interval = "confidence"
     )
     names(prediction) <- c("y", "ymin", "ymax")
     prediction <- cbind(newdata, prediction)
     if (mf.values) {
-      idx <- which(mf[["regression.results"]][["Method"]] == method)
+      idx <- which(mf[["regression.results"]][["Method"]] == fun.method)
       prediction[["p.value"]] <- mf[["regression.results"]][["P-perm (1-tailed)"]][idx]
       prediction[["r.squared"]] <- mf[["rsquare"]]
       prediction[["n"]] <- mf[["n"]]
-      prediction[["method"]] <- method
+      prediction[["method"]] <- method.name
     }
     prediction$flipped_aes <- flipped_aes
     ggplot2::flip_data(prediction, flipped_aes)

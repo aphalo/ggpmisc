@@ -10,7 +10,8 @@ stat_ma_eq(
   geom = "text_npc",
   position = "identity",
   ...,
-  method = "MA",
+  method = "lmodel2:MA",
+  method.args = list(),
   formula = NULL,
   range.y = NULL,
   range.x = NULL,
@@ -52,7 +53,15 @@ layer}
 can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 
-\item{method}{character "MA", "SMA" , "RMA" and "OLS".}
+\item{method}{function or character If character, "MA", "SMA" , "RMA" or
+"OLS", alternatively "lmodel2" or the name of a model fit function are
+accepted, possibly followed by the fit function's \code{method} argument
+separated by a colon (e.g. \code{"lmodel2:MA"}). If a function different to
+\code{lmodel2()}, it must accept arguments named \code{formula},
+\code{data}, \code{range.y}, \code{range.x} and \code{nperm} and return a
+model fit object of class \code{lmodel2}.}
+
+\item{method.args}{named list with additional arguments.}
 
 \item{formula}{a formula object. Using aesthetic names \code{x} and \code{y}
 instead of original variable names.}
@@ -142,6 +151,15 @@ For backward compatibility a logical is accepted as argument for
   Parameter \code{orientation} is redundant as it only affects the default
   for \code{formula} but is included for consistency with
   \code{ggplot2::stat_smooth()}.
+
+  Methods in \code{\link[lmodel2]{lmodel2}} are all computed always except
+  for RMA that requires a numeric argument to at least one of \code{range.y}
+  or \code{range.x}. The results for specific methods are extracted a
+  posteriori from the model fit object. When a function is passed as argument
+  to \code{method}, the method can be passed in a list to \code{method.args}
+  as member \code{method}. More easily, the name of the function can be
+  passed as a character string together with the \code{lmodel2}-supported
+  method.
 }
 \section{Aesthetics}{
  \code{stat_ma_eq} understands \code{x} and \code{y}, to
@@ -303,12 +321,13 @@ The major axis regression model is fitted with function
   \code{\link[lmodel2]{lmodel2}}, please consult its documentation. This
   \code{stat_ma_eq} statistic can return ready formatted labels depending on
   the argument passed to \code{output.type}. If ordinary least squares
-  polynomial regression is desired, then \code{\link{stat_poly_eq}}. For quantile fits of polynomial
-  regression is desired, \code{\link{stat_quant_eq}} should be used.
-  For other types of models such as non-linear models, statistics
-  \code{\link{stat_fit_glance}} and \code{\link{stat_fit_tidy}} should be
-  used and the code for construction of character strings from numeric values
-  and their mapping to aesthetic \code{label} needs to be explicitly supplied
+  polynomial regression is desired, then \code{\link{stat_poly_eq}}. For
+  quantile fits of polynomial regression is desired,
+  \code{\link{stat_quant_eq}} should be used. For other types of models such
+  as non-linear models, statistics \code{\link{stat_fit_glance}} and
+  \code{\link{stat_fit_tidy}} should be used and the code for construction of
+  character strings from numeric values and their mapping to aesthetic
+  \code{label} needs to be explicitly supplied
   in the call.
 
 Other ggplot statistics for major axis regression: 

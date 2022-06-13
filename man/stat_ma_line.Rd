@@ -10,7 +10,8 @@ stat_ma_line(
   geom = "smooth",
   position = "identity",
   ...,
-  method = "MA",
+  method = "lmodel2:MA",
+  method.args = list(),
   formula = NULL,
   range.y = NULL,
   range.x = NULL,
@@ -43,7 +44,15 @@ layer}
 can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 
-\item{method}{character "MA", "SMA" , "RMA" and "OLS".}
+\item{method}{function or character If character, "MA", "SMA" , "RMA" or
+"OLS", alternatively "lmodel2" or the name of a model fit function are
+accepted, possibly followed by the fit function's \code{method} argument
+separated by a colon (e.g. \code{"lmodel2:MA"}). If a function different to
+\code{lmodel2()}, it must accept arguments named \code{formula},
+\code{data}, \code{range.y}, \code{range.x} and \code{nperm} and return a
+model fit object of class \code{lmodel2}.}
+
+\item{method.args}{named list with additional arguments.}
 
 \item{formula}{a formula object. Using aesthetic names \code{x} and \code{y}
 instead of original variable names.}

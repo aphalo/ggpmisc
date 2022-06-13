@@ -281,6 +281,10 @@ poly_line_compute_group_fun <-
 
     mf <- do.call(method, args = fun.args)
 
+    if (!inherits(mf, "lm")) {
+      stop("Method \"", method.name, "\" did not return a \"lm\" object")
+    }
+
     newdata <- data.frame(x = xseq)
     prediction <- stats::predict(mf,
                                  newdata = newdata,

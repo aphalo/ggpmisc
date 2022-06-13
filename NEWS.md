@@ -9,10 +9,12 @@ editor_options:
 -   Fix bug in the handling of the `weight` aesthetic in `stat_poly_eq()`,
     `stat_poly_line()`, `stat_quant_eq()` and `stat_qunat_line()`.
 -   When a function is passed as argument to `method` the model formula 
-    is now in calls to `stat_poly_eq()` and `stat_quant_eq()` retrieved from
+    is in calls to `stat_poly_eq()` and `stat_quant_eq()` retrieved from
     the returned fitted model object. This makes it possible model selection
-    within the function passed as argument to `method`. 
+    within the function passed as argument to `method`.
     (Inspired by an answer read in Stackoverflow.)
+-   Statistics now search for a matching function when an arbitrary name is
+    supplied as a character string argument to parameter \code{method}.
 
 # ggpmisc 0.4.6
 
