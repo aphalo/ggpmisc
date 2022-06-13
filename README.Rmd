@@ -37,21 +37,21 @@ Statistics that help with reporting the results of model fits are:
 +--------------------------+---------------------------------------------------+------------------------------------------------+
 | Statistic                | `after_stat` values (_default geometry_)          | Methods                                        |
 +==========================+===================================================+================================================+
-| `stat_poly_eq()`         | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lm, rlm (1, 2) |
+| `stat_poly_eq()`         | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lm, rlm (1, 2, 6) |
 +--------------------------+---------------------------------------------------+------------------------------------------------+
 | `stat_ma_eq()`           | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lmodel2: MA, SMA, RMA, OLS                     |
 +--------------------------+---------------------------------------------------+------------------------------------------------+
-| `stat_quant_eq()`        | equation, *P*, etc. (`text_npc`)                  | rq: br, fn, pfn, sfn, fnc, conquer, pfnb, qfnb, ppro, lasso. (1, 3, 4)   |
+| `stat_quant_eq()`        | equation, *P*, etc. (`text_npc`)                  | rq (1, 3, 4, 6)   |
 +--------------------------+---------------------------------------------------+------------------------------------------------+
-| `stat_correlation()`      | correlation, _P_-value, CI (`text_npc`)           | Pearson (_t_), Kendall (_z_), Spearman (_S_)   |
+| `stat_correlation()`     | correlation, _P_-value, CI (`text_npc`)           | Pearson (_t_), Kendall (_z_), Spearman (_S_)   |
 +--------------------------+---------------------------------------------------+------------------------------------------------+
-| `stat_poly_line()`       | line + conf. (`smooth`)                           | lm, rlm (1, 2) |
+| `stat_poly_line()`       | line + conf. (`smooth`)                           | lm, rlm (1, 2, 6) |
 +--------------------------+---------------------------------------------------+------------------------------------------------+
 | `stat_ma_line()`         | line + conf. (`smooth`)                           | lmodel2: MA, SMA, RMA, OLS                     |
 +--------------------------+---------------------------------------------------+------------------------------------------------+
-| `stat_quant_line()`      | line + conf. (`smooth`)                           | rq: br, fn, pfn, sfn, fnc, conquer, pfnb, qfnb, ppro, lasso; rqss: sfn. (1, 3, 4)             |
+| `stat_quant_line()`      | line + conf. (`smooth`)                           | rq, rqss (1, 3, 4, 6)             |
 +--------------------------+---------------------------------------------------+------------------------------------------------+
-| `stat_quant_band()`      | median + quartiles (`smooth`)                     | rq, rqss (1, 4, 5)           |
+| `stat_quant_band()`      | median + quartiles (`smooth`)                     | rq, rqss (1, 4, 5, 6)           |
 +--------------------------+---------------------------------------------------+------------------------------------------------+
 | `stat_fit_residuals()`   | residuals (`point`)                               | lm, rlm (1) |
 +--------------------------+---------------------------------------------------+------------------------------------------------+
@@ -65,7 +65,7 @@ Statistics that help with reporting the results of model fits are:
 +--------------------------+---------------------------------------------------+------------------------------------------------+
 | `stat_fit_tb()`          | ANOVA and summary tables (`table_npc`)            | all those supported by 'broom'                 |
 +--------------------------+---------------------------------------------------+------------------------------------------------+
-Notes:  (1) **weight** aesthetic supported; (2) user defined fit functions that return an object of a class derived from `lm` are supported even if they override the statistic's *formula*  argument; (3) unlimited quantiles supported; (4) user defined fit functions that return an object of a class derived from `rq` or `rqs` are supported even if they override the statistic's *formula* and/or *quantiles* argument; (5) two and three quantiles supported.
+Notes:  (1) **weight** aesthetic supported; (2) user defined fit functions that return an object of a class derived from `lm` are supported even if they override the statistic's *formula*  argument; (3) unlimited quantiles supported; (4) user defined fit functions that return an object of a class derived from `rq` or `rqs` are supported even if they override the statistic's *formula* and/or *quantiles* argument; (5) two and three quantiles supported; (6) `method` arguments support colon based notation. 
 
 Statistics `stat_peaks()` and `stat_valleys()` can be used to highlight and/or
 label maxima and minima in a plot.
