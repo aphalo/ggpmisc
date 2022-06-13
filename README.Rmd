@@ -239,4 +239,4 @@ Aphalo, Pedro J. (2020) _Learn R: As a Language._ The R Series. Boca Raton and L
 
 ## License
 
-© 2016-2021 Pedro J. Aphalo (pedro.aphalo@helsinki.fi). Released under the GPL, version 2 or greater. This software carries no warranty of any kind.
+© 2016-2022 Pedro J. Aphalo (pedro.aphalo@helsinki.fi). Released under the GPL, version 2 or greater. This software carries no warranty of any kind.

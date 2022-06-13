@@ -31,9 +31,13 @@ the plot defaults.}
 
 \item{geom}{The geometric object to use display the data}
 
-\item{method}{function or character If character, "lm", "rlm", and "rq"
-are implemented. If a function, it must support parameters \code{formula}
-and \code{data}.}
+\item{method}{function or character If character, "lm", "rlm", "rq" and the
+name of a function to be matched, possibly followed by the fit function's
+\code{method} argument separated by a colon (e.g. \code{"rq:br"}).
+Functions implementing methods must accept arguments to parameters
+\code{formula}, \code{data}, \code{weights} and \code{method}. A
+\code{residuals()} method must exist for the returned model fit object
+class.}
 
 \item{method.args}{named list with additional arguments.}
 

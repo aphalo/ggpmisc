@@ -267,6 +267,6 @@ Raton and London: Chapman and Hall/CRC Press. ISBN: 978-0-367-18253-3.
 
 ## License
 
-© 2016-2021 Pedro J. Aphalo (<pedro.aphalo@helsinki.fi>). Released under
+© 2016-2022 Pedro J. Aphalo (<pedro.aphalo@helsinki.fi>). Released under
 the GPL, version 2 or greater. This software carries no warranty of any
 kind.

@@ -23,9 +23,13 @@
 #'   \code{\link[ggplot2]{layer}} for more details.
 #' @param na.rm	a logical indicating whether NA values should be stripped
 #'   before the computation proceeds.
-#' @param method function or character If character, "lm", "rlm", and "rq"
-#'   are implemented. If a function, it must support parameters \code{formula}
-#'   and \code{data}.
+#' @param method function or character If character, "lm", "rlm", "rq" and the
+#'   name of a function to be matched, possibly followed by the fit function's
+#'   \code{method} argument separated by a colon (e.g. \code{"rq:br"}).
+#'   Functions implementing methods must accept arguments to parameters
+#'   \code{formula}, \code{data}, \code{weights} and \code{method}. A
+#'   \code{residuals()} method must exist for the returned model fit object
+#'   class.
 #' @param method.args named list with additional arguments.
 #' @param formula a "formula" object. Using aesthetic names instead of
 #'   original variable names.
@@ -217,27 +221,47 @@ residuals_compute_group_fun <- function(data,
     orientation <- unname(c(x = "y", y = "x")[as.character(formula)[2]])
   }
 
-  if (is.function(method)) {
-    fun <- method
-  } else if (is.character(method)) {
-    if (method == "rq" && length(method.args) == 0) {
-      method.args <- list(tau = 0.5)
+  # If method was specified as a character string, replace with
+  # the corresponding function. Some model fit functions themselves have a
+  # method parameter accepting character strings as argument. We support
+  # these by splitting strings passed as argument at a colon.
+  if (is.character(method)) {
+    method <- switch(method,
+                     lm = "lm:qr",
+                     rlm = "rlm:M",
+                     rq = "rq:br",
+                     method)
+    method.name <- method
+    method <- strsplit(x = method, split = ":", fixed = TRUE)[[1]]
+    if (length(method) > 1L) {
+      fun.method <- method[2]
+      method <- method[1]
+    } else {
+      fun.method <- character()
     }
-    fun <- switch(method,
-                  lm = stats::lm,
-                  rlm = MASS::rlm,
-#                  lqs = MASS::lqs,
-                  rq = quantreg::rq,
-                  stop("Method '", method, "' not yet implemented.")
-    )
-  } else {
-    stop("Method '", method, "' not yet implemented.")
+    method <- switch(method,
+                     lm = stats::lm,
+                     rlm = MASS::rlm,
+                     rq = quantreg::rq,
+                     match.fun(method))
+  } else if (is.function(method)) {
+    fun.method <- character()
+    if (is.name(quote(method))) {
+      method.name <- as.character(quote(method))
+    } else {
+      method.name <- "function"
+    }
   }
 
-  mf <- do.call(fun,
-                args = c(list(formula = formula, data = data,
-                              weights = data[["weight"]]),
-                         method.args))
+  fun.args <- list(quote(formula),
+                   data = quote(data),
+                   weights = data[["weight"]])
+  fun.args <- c(fun.args, method.args)
+  if (length(fun.method)) {
+    fun.args[["method"]] <- fun.method
+  }
+
+  mf <- do.call(method, args = fun.args)
 
   if (!is.null(resid.type)) {
     if (weighted) {

@@ -29,9 +29,12 @@ the plot defaults.}
 
 \item{geom}{The geometric object to use display the data}
 
-\item{method}{function or character If character, "lm", "rlm", "lqs" and "rq"
-are implemented. If a function, it must support parameters \code{formula}
-and \code{data}.}
+\item{method}{function or character If character, "lm", "rlm", "lqs", "rq"
+and the name of a function to be matched, possibly followed by the fit
+function's \code{method} argument separated by a colon (e.g.
+\code{"rq:br"}). Functions implementing methods must accept arguments to
+parameters \code{formula}, \code{data}, \code{weights} and \code{method}. A
+\code{fitted()} method must exist for the returned model fit object class.}
 
 \item{method.args}{named list with additional arguments.}
 
@@ -66,11 +69,11 @@ residuals ready to be plotted as segments.
 }
 \details{
 This stat can be used to automatically highlight residuals as
-  segments in a plot of a fitted model equation. This stat only
-  generates the residuals, the predicted values need to be separately added
-  to the plot, so to make sure that the same model formula is used in all
-  steps it is best to save the formula as an object and supply this object as
-  argument to the different statistics.
+  segments in a plot of a fitted model equation. This stat only generates the
+  residuals, the predicted values need to be separately added to the plot, so
+  to make sure that the same model formula is used in all steps it is best to
+  save the formula as an object and supply this object as argument to the
+  different statistics.
 
   A ggplot statistic receives as data a data frame that is not the one passed
   as argument by the user, but instead a data frame with the variables mapped
