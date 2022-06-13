@@ -236,7 +236,7 @@ residuals_compute_group_fun <- function(data,
 
   mf <- do.call(fun,
                 args = c(list(formula = formula, data = data,
-                              weights = quote(weight)),
+                              weights = data[["weight"]]),
                          method.args))
 
   if (!is.null(resid.type)) {
