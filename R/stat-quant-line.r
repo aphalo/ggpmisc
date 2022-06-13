@@ -56,9 +56,10 @@
 #' @param formula a formula object. Using aesthetic names \code{x} and \code{y}
 #'   instead of original variable names.
 #' @param quantiles numeric vector Values in 0..1 indicating the quantiles.
-#' @param method function or character If character, "rq" and "rqss" are
-#'   accepted, as well as the methods accepted by function
-#'   \code{\link[quantreg]{rq}}. If a function, it must accept arguments named
+#' @param method function or character If character, "rq", "rqss" or the name of
+#'   a model fit function are accepted, possibly followed by the fit function's
+#'   \code{method} argument separated by a colon (e.g. \code{"rq:br"}). If a
+#'   function different to \code{rq()}, it must accept arguments named
 #'   \code{formula}, \code{data}, \code{weights}, \code{tau} and \code{method}
 #'   and return a model fit object of class \code{rq}, \code{rqs} or
 #'   \code{rqss}.
@@ -316,33 +317,38 @@ quant_line_compute_group_fun <- function(data,
 
   grid <- data.frame(x = seq.indep)
 
-  # if method was specified as a character string, replace with
-  # the corresponding function
+  # If method was specified as a character string, replace with
+  # the corresponding function. Some model fit functions themselves have a
+  # method parameter accepting character strings as argument. We support
+  # these by splitting strings passed as argument at a colon.
   if (is.character(method)) {
+    if (method %in% c("br", "fn", "pfn", "sfn", "fnc", "conquer",
+                      "pfnb", "qfnb", "ppro", "lasso")) {
+      method <- paste("rq", method, sep = ":")
+      message("Using method: ", method)
+    }
     method.name <- method
-    if (identical(method, "rq")) {
-      if (! "method" %in% names(method.args)) {
-        rq.method <- "br"
-      }
-      method <- quantreg::rq
-    } else if (identical(method, "rqss")) {
-      if (! "method" %in% names(method.args)) {
-        rq.method <- "sfn"
-      }
-      method <- quantreg::rqss
-    } else if (method %in% c("br", "fn", "pfn", "sfn", "fnc", "conquer",
-                             "pfnb", "qfnb", "ppro", "lasso")) {
-      method.name <- "rq"
-      rq.method <- method
-      method <- quantreg::rq
+    method <- strsplit(x = method, split = ":", fixed = TRUE)[[1]]
+    if (length(method) > 1L) {
+      fun.method <- method[2]
+      method <- method[1]
     } else {
-      stop("Method '", method, "' not yet implemented.")
+      fun.method <- NULL
     }
+    method <- switch(method,
+                     rq = quantreg::rq,
+                     rqss = quantreg::rqss,
+                     match.fun(method))
   } else if (is.function(method)) {
-    method.name <- "function"
-    if (! "method" %in% names(method.args)) {
-      rq.method <- "br"
+    if (is.name(quote(method))) {
+      method.name <- as.character(quote(method))
+    } else {
+      method.name <- "function"
     }
+  }
+
+  if (length(fun.method)) {
+    method.args[["method"]] <- fun.method
   }
 
   z <- dplyr::bind_rows(

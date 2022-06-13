@@ -12,7 +12,7 @@ stat_quant_eq(
   ...,
   formula = NULL,
   quantiles = c(0.25, 0.5, 0.75),
-  method = "rq",
+  method = "rq:br",
   method.args = list(),
   eq.with.lhs = TRUE,
   eq.x.rhs = NULL,
@@ -55,11 +55,12 @@ original variable names.}
 
 \item{quantiles}{numeric vector Values in 0..1 indicating the quantiles.}
 
-\item{method}{function or character If character, "rq" and "rqss" are
-accepted, as well as the methods accepted by function
-\code{\link[quantreg]{rq}}. If a function, it must accept arguments named
+\item{method}{function or character If character, "rq" or the name of a model
+fit function are accepted, possibly followed by the fit function's
+\code{method} argument separated by a colon (e.g. \code{"rq:br"}). If a
+function different to \code{rq()}, it must accept arguments named
 \code{formula}, \code{data}, \code{weights}, \code{tau} and \code{method}
-and return and return a model fit object of class \code{rq} or \code{rqs}.}
+and return a model fit object of class \code{rq} or \code{rqs}.}
 
 \item{method.args}{named list with additional arguments passed to \code{rq()}
 or to a function passed as argument to \code{method}.}

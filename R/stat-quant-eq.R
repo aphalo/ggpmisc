@@ -36,11 +36,12 @@
 #' @param formula a formula object. Using aesthetic names instead of
 #'   original variable names.
 #' @param quantiles numeric vector Values in 0..1 indicating the quantiles.
-#' @param method function or character If character, "rq" and "rqss" are
-#'   accepted, as well as the methods accepted by function
-#'   \code{\link[quantreg]{rq}}. If a function, it must accept arguments named
+#' @param method function or character If character, "rq" or the name of a model
+#'   fit function are accepted, possibly followed by the fit function's
+#'   \code{method} argument separated by a colon (e.g. \code{"rq:br"}). If a
+#'   function different to \code{rq()}, it must accept arguments named
 #'   \code{formula}, \code{data}, \code{weights}, \code{tau} and \code{method}
-#'   and return and return a model fit object of class \code{rq} or \code{rqs}.
+#'   and return a model fit object of class \code{rq} or \code{rqs}.
 #' @param method.args named list with additional arguments passed to \code{rq()}
 #'   or to a function passed as argument to \code{method}.
 #' @param eq.with.lhs If \code{character} the string is pasted to the front of
@@ -362,7 +363,7 @@ stat_quant_eq <- function(mapping = NULL, data = NULL,
                          ...,
                          formula = NULL,
                          quantiles = c(0.25, 0.5, 0.75),
-                         method = "rq",
+                         method = "rq:br",
                          method.args = list(),
                          eq.with.lhs = TRUE,
                          eq.x.rhs = NULL,
@@ -533,53 +534,58 @@ quant_eq_compute_group_fun <- function(data,
     }
   }
 
-  # if method was specified as a character string, replace with
-  # the corresponding function
+  # If method was specified as a character string, replace with
+  # the corresponding function. Some model fit functions themselves have a
+  # method parameter accepting character strings as argument. We support
+  # these by splitting strings passed as argument at a colon.
   if (is.character(method)) {
-    method.name <- method
-    if (identical(method, "rq")) {
-      if (! "method" %in% names(method.args)) {
-        rq.method <- "br"
-      }
-      method <- quantreg::rq
-     # } else if (identical(method, "rqss")) {
-    #   method <- quantreg::rqss
-    } else if (method %in% c("br", "fn", "pfn", "sfn", "fnc", "conquer",
-                             "pfnb", "qfnb", "ppro", "lasso")) {
-      rq.method <- method
-      method <- quantreg::rq
-    } else {
-      stop("Method '", method, "' not yet implemented.")
+    if (method %in% c("br", "fn", "pfn", "sfn", "fnc", "conquer",
+                      "pfnb", "qfnb", "ppro", "lasso")) {
+      method <- paste("rq", method, sep = ":")
+      message("Using method: ", method)
     }
+    method.name <- method
+    method <- strsplit(x = method, split = ":", fixed = TRUE)[[1]]
+    if (length(method) > 1L) {
+      fun.method <- method[2]
+      method <- method[1]
+    } else {
+      fun.method <- NULL
+    }
+    method <- switch(method,
+                     rq = quantreg::rq,
+                     rqss = quantreg::rqss,
+                     match.fun(method))
   } else if (is.function(method)) {
-    method.name <- "function"
-    if (! "method" %in% names(method.args)) {
-      rq.method <- "br"
+    if (is.name(quote(method))) {
+      method.name <- as.character(quote(method))
+    } else {
+      method.name <- "function"
     }
   }
 
-  rq.args <- list(quote(formula),
-                  tau = quantiles,
-                  data = quote(data),
-                  weights = data[["weight"]],
-                  method = rq.method)
-  rq.args <- c(rq.args, method.args)
+  fun.args <- list(quote(formula),
+                   tau = quantiles,
+                   data = quote(data),
+                   weights = data[["weight"]])
+  fun.args <- c(fun.args, method.args)
+  if (length(fun.method)) {
+    fun.args[["method"]] <- fun.method
+  }
 
-  mf <- do.call(method, rq.args)
+  mf <- do.call(method, fun.args)
   mf.summary <- summary(mf)
 
-  if (method.name == "function") {
-    # allow model selection by the method
-    if (inherits(mf, "rq") || inherits(mf, "rqs")) {
-      formula <- mf[["formula"]]
-      quantiles <- mf[["tau"]]
-    } else {
-      stop("Fitted model object of class \"", class(mf), "\" not supported")
-    }
+  # allow model formula and tau selection by method functions
+  if (inherits(mf, "rq") || inherits(mf, "rqs")) {
+    formula <- mf[["formula"]]
+    quantiles <- mf[["tau"]]
+  } else {
+    stop("Fitted model object does not inherit from class \"rq\" or \"rqs\" as expected")
   }
 
-  # if length tau is 1 class is summary.rq, otherwise a list of class summary.rqs
-  if (!class(mf.summary) == "summary.rqs") {
+  # class of returned summary value depends on length of quantiles vector
+  if (!inherits(mf.summary, "summary.rqs")) {
     mf.summary <- list(mf.summary)
   }
   names(mf.summary) <- as.character(quantiles)
@@ -699,6 +705,8 @@ quant_eq_compute_group_fun <- function(data,
       warning("Unknown 'output.type' argument: ", output.type)
     }
   }
+
+  z[["method"]] <- method.name
 
   # Compute label positions
   if (is.character(label.x)) {
