@@ -340,17 +340,21 @@ quant_line_compute_group_fun <- function(data,
       fun.method <- method[2]
       method <- method[1]
     } else {
-      fun.method <- NULL
+      fun.method <- character()
     }
     method <- switch(method,
                      rq = quantreg::rq,
                      rqss = quantreg::rqss,
                      match.fun(method))
   } else if (is.function(method)) {
+    fun.method <- method.args[["method"]]
     if (is.name(quote(method))) {
       method.name <- as.character(quote(method))
     } else {
       method.name <- "function"
+    }
+    if (length(fun.method)) {
+      method.name <- paste(method.name, fun.method, sep = ":")
     }
   }
 

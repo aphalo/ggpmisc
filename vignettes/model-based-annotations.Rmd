@@ -68,25 +68,25 @@ The table below summarizes their use and the type plot layer geometries they are
 +--------------------------+---------------------------------------------------+------------------------------------------------+
 | Statistic                | `after_stat` values (_default geometry_)          | Methods                                        |
 +==========================+===================================================+================================================+
-| `stat_poly_eq()`         | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lm, rlm (**weight** aesthetic fully supported) |
+| `stat_poly_eq()`         | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lm, rlm (1, 2, 7)                              |
 +--------------------------+---------------------------------------------------+------------------------------------------------+
-| `stat_ma_eq()`           | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lmodel2: MA, SMA, RMA, OLS                     |
+| `stat_ma_eq()`           | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lmodel2 (6, 7)                                 |
 +--------------------------+---------------------------------------------------+------------------------------------------------+
-| `stat_quant_eq()`        | equation, *P*, etc. (`text_npc`)                  | rq (any number of quantiles)                   |
+| `stat_quant_eq()`        | equation, *P*, etc. (`text_npc`)                  | rq (1, 3, 4, 7)                                |
 +--------------------------+---------------------------------------------------+------------------------------------------------+
-| `stat_correlation()`      | correlation, _P_-value, CI (`text_npc`)           | Pearson (_t_), Kendall (_z_), Spearman (_S_)   |
+| `stat_correlation()`     | correlation, _P_-value, CI (`text_npc`)           | Pearson (_t_), Kendall (_z_), Spearman (_S_)   |
 +--------------------------+---------------------------------------------------+------------------------------------------------+
-| `stat_poly_line()`       | line + conf. (`smooth`)                           | lm, rlm (**weight** aesthetic fully supported) |
+| `stat_poly_line()`       | line + conf. (`smooth`)                           | lm, rlm (1, 2, 7)                              |
 +--------------------------+---------------------------------------------------+------------------------------------------------+
-| `stat_ma_line()`         | line + conf. (`smooth`)                           | lmodel2: MA, SMA, RMA, OLS                     |
+| `stat_ma_line()`         | line + conf. (`smooth`)                           | lmodel2 (6, 7)                                 |
 +--------------------------+---------------------------------------------------+------------------------------------------------+
-| `stat_quant_line()`      | line + conf. (`smooth`)                           | rq, rqss (any number of quantiles)             |
+| `stat_quant_line()`      | line + conf. (`smooth`)                           | rq, rqss (1, 3, 4, 7)                          |
 +--------------------------+---------------------------------------------------+------------------------------------------------+
-| `stat_quant_band()`      | median + quartiles (`smooth`)                     | rq, rqss (two or three quantiles)              |
+| `stat_quant_band()`      | median + quartiles (`smooth`)                     | rq, rqss (1, 4, 5, 7)                          |
 +--------------------------+---------------------------------------------------+------------------------------------------------+
-| `stat_fit_residuals()`   | residuals (`point`)                               | lm, rlm (**weight** aesthetic fully supported) |
+| `stat_fit_residuals()`   | residuals (`point`)                               | lm, rlm, rq (1, 2, 4, 7, 8)                    |
 +--------------------------+---------------------------------------------------+------------------------------------------------+
-| `stat_fit_deviations()`  | deviations from observations (`segment`)          | lm, rlm (**weight** aesthetic fully supported) |
+| `stat_fit_deviations()`  | deviations from observations (`segment`)          | lm, rlm, lqs, rq (1, 2, 4, 7, 9)               |
 +--------------------------+---------------------------------------------------+------------------------------------------------+
 | `stat_fit_glance()`      | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | all those supported by 'broom'                 |
 +--------------------------+---------------------------------------------------+------------------------------------------------+
@@ -96,6 +96,7 @@ The table below summarizes their use and the type plot layer geometries they are
 +--------------------------+---------------------------------------------------+------------------------------------------------+
 | `stat_fit_tb()`          | ANOVA and summary tables (`table_npc`)            | all those supported by 'broom'                 |
 +--------------------------+---------------------------------------------------+------------------------------------------------+
+Notes:  (1) *weight* aesthetic supported; (2) user defined fit functions that return an object of a class derived from `lm` are supported even if they override the statistic's *formula*  argument; (3) unlimited quantiles supported; (4) user defined fit functions that return an object of a class derived from `rq` or `rqs` are supported even if they override the statistic's *formula* and/or *quantiles* argument; (5) two and three quantiles supported; (6) user defined fit functions that return an object of a class derived from `lmodel2` are supported; (7) `method` arguments support colon based notation; (8) various functions if method `residuals()` defined for returned value; (9) various functions if method `fitted()` defined for returned value.
 
 The three statistics with names ending in `eq` return by default ready formatted character strings that can be mapped to the `label` aesthetic individually or concatenated using using `paste()` or `sprintf()` functions within the call to `aes()`. By default the character strings are formatted ready to be parsed as R expressions. Optionally they can be formatted as R Markdown, $\LaTeX$ or plain text as shown in the table below.
 
@@ -127,7 +128,7 @@ The returned values for `output.type` different from `numeric` are shown below. 
 | p.value       | numeric   | y              | y            | n               | y                  |
 | n             | numeric   | y              | y            | y               | y                  |
 | rq.method     | character | n              | n            | y               | n                  |
-| method        | character | n              | n            | n               | y                  |
+| method        | character | y              | y            | y               | y                  |
 | test          | character | n              | n            | n               | y                  |
 | quantile      | numeric   | n              | n            | y               | n                  |
 | quantile.f    | factor    | n              | n            | y               | n                  |
@@ -604,7 +605,7 @@ ggplot(my.data, aes(x, y)) +
 
 ### stat_quant_eq(), stat_quant_line() and stat_quant_band()
 
-Package 'quantreg' implements quantile regression for multiple types of models: linear models with function `rq()`, non-linear models with function `nlreg()`, and additive models with function `rqss()`. Each of these functions supports different methods of estimation. As with the statistics for polynomials described in the previous section, all the statistics described in the current section support linear models while `stat_quant_line()` and `stat_quant_band()` also  support additive models. (Support for `nlreg()` is not yet implemented.)
+Package 'quantreg' implements quantile regression for multiple types of models: linear models with function `rq()`, non-linear models with function `nlreg()`, and additive models with function `rqss()`. Each of these functions supports different methods of estimation which can be passed through parameter `method.args` or more easily using a character string such as `"rq:br"` argument to parameter `method` of the statistic, where `rq()` is the model fit function and `"br"` the argument passed to the `method` parameter of `rq()`. As with the statistics for polynomials described in the previous section, all the statistics described in the current section support linear models while `stat_quant_line()` and `stat_quant_band()` also  support additive models. (Support for `nlreg()` is not yet implemented.) 
 
 In the case of quantile regression it is frequently the case that multiple quantile regressions are fitted. This case is not supported by `stat_poly_eq()` and we need to use `stat_quant_eq()`. This statistics is very similar to `stat_poly_eq()` both in behaviour and parameters. It supports quantile regression of *y* on *x* or *x* on *y* fitted with function `quantreg::rq`.
 
@@ -691,9 +692,9 @@ Please, see the section on `stat_poly_eq()` for additional examples, as here we 
 
 ### stat_fit_residuals
 
-Sometimes we need to quickly plot residuals matching fits plotted with `geom_smooth()` using grouping and facets, so a new (simple) statistic was born. In teaching it is specially important to avoid distractions and plots residuals from different types of models consistently.
+Sometimes we need to quickly plot residuals matching fits plotted with `geom_poly_line()`, `geom_quant_line()` or `geom_smooth()` using grouping and facets. `stat_fit_residuals` allows thia. In teaching it is specially important to avoid distractions and plots residuals from different types of models consistently.
 
-`stat_fit_residuals()` can be used to plot the residuals form models of *y* on *x* or *x* on *y* fitted with function `lm`, `MASS:rlm`, `quantreg::rq` (only median regression) or a user-supplied model fitting function and arguments. In the returned values the response variable is replaced by the residuals from the fit. The default geom is `"point"`.
+`stat_fit_residuals()` can be used to plot the residuals from models of *y* on *x* or *x* on *y* fitted with function `lm`, `MASS:rlm`, `quantreg::rq` (only median regression) or a user-supplied model fitting function and arguments. In the returned values the response variable is replaced by the residuals from the fit. The default geom is `"point"`.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -702,7 +703,7 @@ ggplot(my.data, aes(x, y, colour = group)) +
   stat_fit_residuals(formula = formula)
 ```
 
-We can of course also map the weights to aesthetics, here we use `size`.
+We can of course also map the weights returned in the model fit object to ggplot2 aesthetics, here we use `size`.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)

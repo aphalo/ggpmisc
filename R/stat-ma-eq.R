@@ -483,6 +483,7 @@ ma_eq_compute_group_fun <- function(data,
     } else {
       method.name <- "function"
     }
+    method.name <- paste(method.name, fun.method, sep = ":")
   }
 
   if (! fun.method %in% c("MA", "SMA", "RMA", "OLS")) {

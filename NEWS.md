@@ -7,14 +7,21 @@ editor_options:
 # ggpmisc 0.4.7
 
 -   Fix bug in the handling of the `weight` aesthetic in `stat_poly_eq()`,
-    `stat_poly_line()`, `stat_quant_eq()` and `stat_qunat_line()`.
--   When a function is passed as argument to `method` the model formula 
-    is in calls to `stat_poly_eq()` and `stat_quant_eq()` retrieved from
-    the returned fitted model object. This makes it possible model selection
-    within the function passed as argument to `method`.
-    (Inspired by an answer read in Stackoverflow.)
+    `stat_poly_line()`, `stat_quant_eq()` and `stat_quant_line()`.
+-   The model formula is in calls to `stat_poly_eq()` and `stat_quant_eq()` now
+    retrieved from the returned fitted model object before constructing the 
+    equation label. This makes it possible model selection within the function 
+    passed as argument to `method`. (Inspired by an answer read in 
+    Stackoverflow.)
 -   Statistics now search for a matching function when an arbitrary name is
-    supplied as a character string argument to parameter \code{method}.
+    supplied as a character string argument to parameter `method`.
+-   The character string passed as argument to parameter `method` is now parsed
+    so that it can contain both the name of a model fit function and the
+    argument to be passed to this function's own `method` parameter. (Backward
+    compatibility is maintained.)
+-   The stats that create equation labels now include a variable `method` in the
+    returned `data` containing a character string with the method used in the
+    model fit.
 
 # ggpmisc 0.4.6
 

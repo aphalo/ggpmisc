@@ -12,7 +12,7 @@
 
 <meta name="author" content="Pedro J. Aphalo" />
 
-<meta name="date" content="2022-04-10" />
+<meta name="date" content="2022-06-14" />
 
 <title>Model-Based Plot Annotations</title>
 
@@ -333,9 +333,9 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 <h1 class="title toc-ignore">Model-Based Plot Annotations</h1>
-<h3 class="subtitle">‘ggpmisc’ 0.4.6</h3>
+<h3 class="subtitle">‘ggpmisc’ 0.4.7</h3>
 <h4 class="author">Pedro J. Aphalo</h4>
-<h4 class="date">2022-04-10</h4>
+<h4 class="date">2022-06-14</h4>
 
 
 <div id="TOC">
@@ -479,55 +479,54 @@ packages extending ‘broom’, including user-fined methods.</p>
 <td><code>stat_poly_eq()</code></td>
 <td>equation, <em>R</em><sup>2</sup>, <em>P</em>, etc.
 (<code>text_npc</code>)</td>
-<td>lm, rlm (<strong>weight</strong> aesthetic fully supported)</td>
+<td>lm, rlm (1, 2, 7)</td>
 </tr>
 <tr class="even">
 <td><code>stat_ma_eq()</code></td>
 <td>equation, <em>R</em><sup>2</sup>, <em>P</em>, etc.
 (<code>text_npc</code>)</td>
-<td>lmodel2: MA, SMA, RMA, OLS</td>
+<td>lmodel2 (6, 7)</td>
 </tr>
 <tr class="odd">
 <td><code>stat_quant_eq()</code></td>
 <td>equation, <em>P</em>, etc. (<code>text_npc</code>)</td>
-<td>rq (any number of quantiles)</td>
+<td>rq (1, 3, 4, 7)</td>
 </tr>
 <tr class="even">
 <td><code>stat_correlation()</code></td>
-<td><div class="line-block">correlation, <em>P</em>-value, CI
-(<code>text_npc</code>)</div></td>
-<td><div class="line-block">Pearson (<em>t</em>), Kendall (<em>z</em>),
-Spearman (<em>S</em>)</div></td>
+<td>correlation, <em>P</em>-value, CI (<code>text_npc</code>)</td>
+<td>Pearson (<em>t</em>), Kendall (<em>z</em>), Spearman
+(<em>S</em>)</td>
 </tr>
 <tr class="odd">
 <td><code>stat_poly_line()</code></td>
 <td>line + conf. (<code>smooth</code>)</td>
-<td>lm, rlm (<strong>weight</strong> aesthetic fully supported)</td>
+<td>lm, rlm (1, 2, 7)</td>
 </tr>
 <tr class="even">
 <td><code>stat_ma_line()</code></td>
 <td>line + conf. (<code>smooth</code>)</td>
-<td>lmodel2: MA, SMA, RMA, OLS</td>
+<td>lmodel2 (6, 7)</td>
 </tr>
 <tr class="odd">
 <td><code>stat_quant_line()</code></td>
 <td>line + conf. (<code>smooth</code>)</td>
-<td>rq, rqss (any number of quantiles)</td>
+<td>rq, rqss (1, 3, 4, 7)</td>
 </tr>
 <tr class="even">
 <td><code>stat_quant_band()</code></td>
 <td>median + quartiles (<code>smooth</code>)</td>
-<td>rq, rqss (two or three quantiles)</td>
+<td>rq, rqss (1, 4, 5, 7)</td>
 </tr>
 <tr class="odd">
 <td><code>stat_fit_residuals()</code></td>
 <td>residuals (<code>point</code>)</td>
-<td>lm, rlm (<strong>weight</strong> aesthetic fully supported)</td>
+<td>lm, rlm, rq (1, 2, 4, 7, 8)</td>
 </tr>
 <tr class="even">
 <td><code>stat_fit_deviations()</code></td>
 <td>deviations from observations (<code>segment</code>)</td>
-<td>lm, rlm (<strong>weight</strong> aesthetic fully supported)</td>
+<td>lm, rlm, lqs, rq (1, 2, 4, 7, 9)</td>
 </tr>
 <tr class="odd">
 <td><code>stat_fit_glance()</code></td>
@@ -552,6 +551,19 @@ Spearman (<em>S</em>)</div></td>
 </tr>
 </tbody>
 </table>
+<p>Notes: (1) <em>weight</em> aesthetic supported; (2) user defined fit
+functions that return an object of a class derived from <code>lm</code>
+are supported even if they override the statistic’s <em>formula</em>
+argument; (3) unlimited quantiles supported; (4) user defined fit
+functions that return an object of a class derived from <code>rq</code>
+or <code>rqs</code> are supported even if they override the statistic’s
+<em>formula</em> and/or <em>quantiles</em> argument; (5) two and three
+quantiles supported; (6) user defined fit functions that return an
+object of a class derived from <code>lmodel2</code> are supported; (7)
+<code>method</code> arguments support colon based notation; (8) various
+functions if method <code>residuals()</code> defined for returned value;
+(9) various functions if method <code>fitted()</code> defined for
+returned value.</p>
 <p>The three statistics with names ending in <code>eq</code> return by
 default ready formatted character strings that can be mapped to the
 <code>label</code> aesthetic individually or concatenated using using
@@ -781,9 +793,9 @@ of the plot. (1) depends on argument passed to <code>method</code>.</p>
 <tr class="odd">
 <td>method</td>
 <td>character</td>
-<td>n</td>
-<td>n</td>
-<td>n</td>
+<td>y</td>
+<td>y</td>
+<td>y</td>
 <td>y</td>
 </tr>
 <tr class="even">
@@ -1600,11 +1612,17 @@ while the equation changes it describes the same line.</p>
 of models: linear models with function <code>rq()</code>, non-linear
 models with function <code>nlreg()</code>, and additive models with
 function <code>rqss()</code>. Each of these functions supports different
-methods of estimation. As with the statistics for polynomials described
-in the previous section, all the statistics described in the current
-section support linear models while <code>stat_quant_line()</code> and
-<code>stat_quant_band()</code> also support additive models. (Support
-for <code>nlreg()</code> is not yet implemented.)</p>
+methods of estimation which can be passed through parameter
+<code>method.args</code> or more easily using a character string such as
+<code>&quot;rq:br&quot;</code> argument to parameter <code>method</code> of the
+statistic, where <code>rq()</code> is the model fit function and
+<code>&quot;br&quot;</code> the argument passed to the <code>method</code>
+parameter of <code>rq()</code>. As with the statistics for polynomials
+described in the previous section, all the statistics described in the
+current section support linear models while
+<code>stat_quant_line()</code> and <code>stat_quant_band()</code> also
+support additive models. (Support for <code>nlreg()</code> is not yet
+implemented.)</p>
 <p>In the case of quantile regression it is frequently the case that
 multiple quantile regressions are fitted. This case is not supported by
 <code>stat_poly_eq()</code> and we need to use
@@ -1715,12 +1733,13 @@ these two statistics.</p>
 <div id="stat_fit_residuals" class="section level3">
 <h3>stat_fit_residuals</h3>
 <p>Sometimes we need to quickly plot residuals matching fits plotted
-with <code>geom_smooth()</code> using grouping and facets, so a new
-(simple) statistic was born. In teaching it is specially important to
-avoid distractions and plots residuals from different types of models
-consistently.</p>
+with <code>geom_poly_line()</code>, <code>geom_quant_line()</code> or
+<code>geom_smooth()</code> using grouping and facets.
+<code>stat_fit_residuals</code> allows thia. In teaching it is specially
+important to avoid distractions and plots residuals from different types
+of models consistently.</p>
 <p><code>stat_fit_residuals()</code> can be used to plot the residuals
-form models of <em>y</em> on <em>x</em> or <em>x</em> on <em>y</em>
+from models of <em>y</em> on <em>x</em> or <em>x</em> on <em>y</em>
 fitted with function <code>lm</code>, <code>MASS:rlm</code>,
 <code>quantreg::rq</code> (only median regression) or a user-supplied
 model fitting function and arguments. In the returned values the
@@ -1731,8 +1750,8 @@ geom is <code>&quot;point&quot;</code>.</p>
 <span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>) <span class="sc">+</span></span>
 <span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_fit_residuals</span>(<span class="at">formula =</span> formula)</span></code></pre></div>
 <p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
-<p>We can of course also map the weights to aesthetics, here we use
-<code>size</code>.</p>
+<p>We can of course also map the weights returned in the model fit
+object to ggplot2 aesthetics, here we use <code>size</code>.</p>
 <div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>formula <span class="ot">&lt;-</span> y <span class="sc">~</span> <span class="fu">poly</span>(x, <span class="dv">3</span>, <span class="at">raw =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(my.data, <span class="fu">aes</span>(x, y, <span class="at">colour =</span> group)) <span class="sc">+</span></span>
 <span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>) <span class="sc">+</span></span>

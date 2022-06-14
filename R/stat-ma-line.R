@@ -329,6 +329,7 @@ ma_line_compute_group_fun <-
       } else {
         method.name <- "function"
       }
+      method.name <- paste(method.name, fun.method, sep = ":")
     }
 
     if (! fun.method %in% c("MA", "SMA", "RMA", "OLS")) {
