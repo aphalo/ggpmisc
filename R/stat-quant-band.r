@@ -239,7 +239,7 @@ quant_band_compute_group_fun <- function(data,
                                          mf.values = FALSE,
                                          na.rm = FALSE,
                                          flipped_aes = NA) {
-  rlang::check_installed("quantreg", reason = "for `stat_quantile()`")
+  rlang::check_installed("quantreg", reason = "for `stat_quant_band()`")
 
   data <- ggplot2::flip_data(data, flipped_aes)
 

@@ -239,6 +239,9 @@ residuals_compute_group_fun <- function(data,
     } else {
       fun.method <- character()
     }
+    if (method == "rq") {
+      rlang::check_installed("quantreg", reason = "for `stat_fit_residuals()` with method `rq()`")
+    }
     method <- switch(method,
                      lm = stats::lm,
                      rlm = MASS::rlm,
@@ -261,7 +264,16 @@ residuals_compute_group_fun <- function(data,
     fun.args[["method"]] <- fun.method
   }
 
-  mf <- do.call(method, args = fun.args)
+  # quantreg contains code with partial matching of names!
+  # so we silence selectively only these warnings
+  withCallingHandlers({
+    mf <- do.call(method, args = fun.args)
+  }, warning = function(w) {
+    if (startsWith(conditionMessage(w), "partial match of") ||
+        startsWith(conditionMessage(w), "partial argument match of")) {
+      invokeRestart("muffleWarning")
+    }
+  })
 
   if (!is.null(resid.type)) {
     if (weighted) {

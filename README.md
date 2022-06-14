@@ -27,29 +27,32 @@ Statistics that help with reporting the results of model fits are:
 
 | Statistic               | `after_stat` values (*default geometry*)          | Methods                                      |
 |-------------------------|---------------------------------------------------|----------------------------------------------|
-| `stat_poly_eq()`        | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lm, rlm (1, 2, 6)                            |
-| `stat_ma_eq()`          | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lmodel2: MA, SMA, RMA, OLS                   |
-| `stat_quant_eq()`       | equation, *P*, etc. (`text_npc`)                  | rq (1, 3, 4, 6)                              |
+| `stat_poly_eq()`        | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lm, rlm (1, 2, 7)                            |
+| `stat_ma_eq()`          | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lmodel2 (6, 7)                               |
+| `stat_quant_eq()`       | equation, *P*, etc. (`text_npc`)                  | rq (1, 3, 4, 7)                              |
 | `stat_correlation()`    | correlation, *P*-value, CI (`text_npc`)           | Pearson (*t*), Kendall (*z*), Spearman (*S*) |
-| `stat_poly_line()`      | line + conf. (`smooth`)                           | lm, rlm (1, 2, 6)                            |
-| `stat_ma_line()`        | line + conf. (`smooth`)                           | lmodel2: MA, SMA, RMA, OLS                   |
-| `stat_quant_line()`     | line + conf. (`smooth`)                           | rq, rqss (1, 3, 4, 6)                        |
-| `stat_quant_band()`     | median + quartiles (`smooth`)                     | rq, rqss (1, 4, 5, 6)                        |
-| `stat_fit_residuals()`  | residuals (`point`)                               | lm, rlm (1)                                  |
-| `stat_fit_deviations()` | deviations from observations (`segment`)          | lm, rlm (1)                                  |
+| `stat_poly_line()`      | line + conf. (`smooth`)                           | lm, rlm (1, 2, 7)                            |
+| `stat_ma_line()`        | line + conf. (`smooth`)                           | lmodel2 (6, 7)                               |
+| `stat_quant_line()`     | line + conf. (`smooth`)                           | rq, rqss (1, 3, 4, 7)                        |
+| `stat_quant_band()`     | median + quartiles (`smooth`)                     | rq, rqss (1, 4, 5, 7)                        |
+| `stat_fit_residuals()`  | residuals (`point`)                               | lm, rlm, rq (1, 2, 4, 7, 8)                  |
+| `stat_fit_deviations()` | deviations from observations (`segment`)          | lm, rlm, lqs, rq (1, 2, 4, 7, 9)             |
 | `stat_fit_glance()`     | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | all those supported by ‘broom’               |
 | `stat_fit_augment()`    | predicted and other values (`smooth`)             | all those supported by ‘broom’               |
 | `stat_fit_tidy()`       | fit results, e.g., for equation (`text_npc`)      | all those supported by ‘broom’               |
 | `stat_fit_tb()`         | ANOVA and summary tables (`table_npc`)            | all those supported by ‘broom’               |
 
-Notes: (1) **weight** aesthetic supported; (2) user defined fit
-functions that return an object of a class derived from `lm` are
-supported even if they override the statistic’s *formula* argument; (3)
-unlimited quantiles supported; (4) user defined fit functions that
-return an object of a class derived from `rq` or `rqs` are supported
-even if they override the statistic’s *formula* and/or *quantiles*
-argument; (5) two and three quantiles supported; (6) `method` arguments
-support colon based notation.
+Notes: (1) *weight* aesthetic supported; (2) user defined fit functions
+that return an object of a class derived from `lm` are supported even if
+they override the statistic’s *formula* argument; (3) unlimited
+quantiles supported; (4) user defined fit functions that return an
+object of a class derived from `rq` or `rqs` are supported even if they
+override the statistic’s *formula* and/or *quantiles* argument; (5) two
+and three quantiles supported; (6) user defined fit functions that
+return an object of a class derived from `lmodel2` are supported; (7)
+`method` arguments support colon based notation; (8) various functions
+if method `residuals()` defined for returned value; (9) various
+functions if method `fitted()` defined for returned value.
 
 Statistics `stat_peaks()` and `stat_valleys()` can be used to highlight
 and/or label maxima and minima in a plot.

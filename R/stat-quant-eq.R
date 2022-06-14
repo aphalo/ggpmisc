@@ -582,8 +582,17 @@ quant_eq_compute_group_fun <- function(data,
     fun.args[["method"]] <- fun.method
   }
 
-  mf <- do.call(method, fun.args)
-  mf.summary <- summary(mf)
+  # quantreg contains code with partial matching of names!
+  # so we silence selectively only these warnings
+  withCallingHandlers({
+    mf <- do.call(method, args = fun.args)
+    mf.summary <- summary(mf)
+  }, warning = function(w) {
+    if (startsWith(conditionMessage(w), "partial match of") ||
+        startsWith(conditionMessage(w), "partial argument match of")) {
+      invokeRestart("muffleWarning")
+    }
+  })
 
   # allow model formula and tau selection by method functions
   if (inherits(mf, "rq") || inherits(mf, "rqs")) {
