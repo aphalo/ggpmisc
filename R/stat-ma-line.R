@@ -355,10 +355,17 @@ ma_line_compute_group_fun <-
 
     if (!grepl("^lmodel2", method.name)) {
       fit.args <- c(fit.args, method.args)
-      mf <- do.call(what = method, args = fit.args)
-    } else {
-      mf <- do.call(what = lmodel2::lmodel2, args = fit.args)
     }
+
+    # lmodel2 issues a warning that is irrelevant here
+    # so we silence it selectively
+    withCallingHandlers({
+      mf <- do.call(what = method, args = fit.args)
+    }, message = function(w) {
+      if (grepl("RMA was not requested", conditionMessage(w), fixed = TRUE)) {
+        invokeRestart("muffleMessage")
+      }
+    })
 
     if (!inherits(mf, "lmodel2")) {
       stop("Method \"", method.name, "\" did not return a \"lmodel2\" object")
