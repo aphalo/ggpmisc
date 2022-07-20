@@ -88,6 +88,8 @@
 #'   \item{cor, tau or rho}{numeric values for correlation coefficient estimates}
 #'   \item{t.value and its df, z.value or S.value }{numeric values for statistic estimates}
 #'   \item{p.value, n}{numeric values}
+#'   \item{conf.int.low}{Confidence interval limit for \code{r} (only with \code{method = "pearson"}).}
+#'   \item{conf.int.high}{Confidence interval limit for \code{r} (only with \code{method = "pearson"}).}
 #'   \item{grp.label}{Set according to mapping in \code{aes}.}
 #'   \item{method, test}{character values}}
 #'
@@ -99,6 +101,7 @@
 #'   \item{r.label, and cor.label, tau.label or rho.label}{Correlation coefficient as a character string.}
 #'   \item{t.value.label, z.value.label or S.value.label}{t-value and degrees of freedom, z-value or S-value as a character string.}
 #'   \item{p.value.label}{P-value for test against zero, as a character string.}
+#'   \item{conf.int.label}{Confidence interval for \code{r} (only with \code{method = "pearson"}).}
 #'   \item{n.label}{Number of observations used in the fit, as a character string.}
 #'   \item{grp.label}{Set according to mapping in \code{aes}, as a character string.}}
 #'
@@ -132,9 +135,19 @@
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   stat_correlation(aes(label = paste(after_stat(r.label),
-#'                               after_stat(p.value.label),
-#'                               after_stat(n.label),
-#'                               sep = "*\"; \"*")))
+#'                                      after_stat(p.value.label),
+#'                                      after_stat(n.label),
+#'                                      sep = "*\"; \"*")))
+#'
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   stat_correlation(aes(label = after_stat(conf.int.label)))
+#'
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   stat_correlation(aes(label = paste(after_stat(r.label),
+#'                                      after_stat(conf.int.label),
+#'                                      sep = "*\"; \"*")))
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
@@ -143,10 +156,10 @@
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   stat_correlation(aes(label = paste(after_stat(r.label),
-#'                               after_stat(p.value.label),
-#'                               after_stat(n.label),
-#'                               sep = "*\"; \"*")),
-#'             method = "kendall")
+#'                                      after_stat(p.value.label),
+#'                                      after_stat(n.label),
+#'                                      sep = "*\"; \"*")),
+#'                    method = "kendall")
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
@@ -304,6 +317,11 @@ cor_test_compute_fun <- function(data,
                                  npc.used,
                                  output.type,
                                  na.rm) {
+  # Much of the complexity of the label formatting is needed to
+  # prevent the automatic dropping of trailing zeros in expressions.
+  # The approach used is to include formatted numbers as character
+  # strings within expressions, which is very cumbersome.
+
   force(data)
 
   formula = ~ y + x
@@ -364,9 +382,11 @@ cor_test_compute_fun <- function(data,
   z <- tibble::as_tibble_row(z)
   z[["n"]] <- nrow(na.omit(data[ , c("x", "y")]))
   z[["method"]] <- method
-  # if (method == "pearson") {
-  #   z[["conf.level"]] <- conf.level
-  # }
+  if (method == "pearson") {
+    z[["conf.int.low"]]  <-  htest.ls[["conf.int"]][1]
+    z[["conf.int.high"]] <-  htest.ls[["conf.int"]][2]
+    z[["conf.level"]] <- conf.level
+  }
 
   if (output.type != "numeric") {
     # warn if too narrow formats requested
@@ -390,6 +410,10 @@ cor_test_compute_fun <- function(data,
       if (method == "pearson") {
         t.value.char <- sprintf("\"%#.*g\"", t.digits, z[["t.value"]])
         df.char <- as.character(z[["df"]])
+        conf.int.chr <- sprintf("\"%#.*f, %#.*f\"",
+                                r.digits, z[["conf.int.low"]],
+                                r.digits, z[["conf.int.high"]])
+        conf.level.chr <- sprintf("\"%#.*f\"", r.digits, conf.level)
       } else if (method == "kendall") {
         z.value.char <- sprintf("\"%#.*g\"", t.digits, z[["z.value"]])
       } else if (method == "spearman") {
@@ -402,6 +426,8 @@ cor_test_compute_fun <- function(data,
       if (method == "pearson") {
         t.value.char <- sprintf("%#.*g", t.digits, z[["t.value"]])
         df.char <- as.character(z[["df"]])
+        conf.int <- z[["conf.int"]]
+        conf.int.chr <- sprintf("\"%#.*f-%#.*f\"", r.digits, conf.int)
       } else if (method == "kendall") {
         z.value.char <- sprintf("%#.*g", t.digits, z[["z.value"]])
       } else if (method == "spearman") {
@@ -439,6 +465,8 @@ cor_test_compute_fun <- function(data,
         z[["t.value.label"]] <-
           ifelse(is.na(z[["t.value"]]), character(0L),
                  paste("italic(t)[", df.char, "]~`=`~", t.value.char, sep = ""))
+        z[["conf.int.label"]] <-
+          paste("\"CI \"*", conf.level.chr, "*\": (\"*", conf.int.chr, "*\")\"", sep = "")
       } else if (method == "kendall") {
         z[["tau.label"]] <-
           ifelse(is.na(z[["tau"]]), character(0L),
@@ -492,6 +520,8 @@ cor_test_compute_fun <- function(data,
                                     " = ")))
         z[["t.value.label"]] <- ifelse(is.na(z[["t.value"]]), character(0L),
                                        paste("t_{", df.char, "} = ", t.value.char, sep = ""))
+        z[["conf.int.label"]] <-
+          paste("CI ", conf.level.chr, ": (", conf.int.chr, ")", sep = "")
       } else if (method == "kendall") {
         z[["tau.label"]] <- ifelse(is.na(z[["tau"]]), character(0L),
                                    paste(ifelse(output.type == "text",
@@ -542,6 +572,8 @@ cor_test_compute_fun <- function(data,
                                     " = ")))
         z[["t.value.label"]] <- ifelse(is.na(z[["t.value"]]), character(0L),
                                        paste("_t_<sub>", df.char, "</sub> = ", t.value.char, sep = ""))
+        z[["conf.int.label"]] <-
+          paste("CI<sub>", conf.level.chr, "</sub>: (", conf.int.chr, ")", sep = "")
       } else if (method == "kendall") {
         z[["tau.label"]] <- ifelse(is.na(z[["tau"]]), character(0L),
                                    paste("_&tau;_",

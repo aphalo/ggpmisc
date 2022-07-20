@@ -150,6 +150,8 @@ Currently \code{coef.keep.zeros} is ignored, with trailing zeros always
   \item{cor, tau or rho}{numeric values for correlation coefficient estimates}
   \item{t.value and its df, z.value or S.value }{numeric values for statistic estimates}
   \item{p.value, n}{numeric values}
+  \item{conf.int.low}{Confidence interval limit for \code{r} (only with \code{method = "pearson"}).}
+  \item{conf.int.high}{Confidence interval limit for \code{r} (only with \code{method = "pearson"}).}
   \item{grp.label}{Set according to mapping in \code{aes}.}
   \item{method, test}{character values}}
 
@@ -161,6 +163,7 @@ value is missing the label is set to \code{character(0L)}.
   \item{r.label, and cor.label, tau.label or rho.label}{Correlation coefficient as a character string.}
   \item{t.value.label, z.value.label or S.value.label}{t-value and degrees of freedom, z-value or S-value as a character string.}
   \item{p.value.label}{P-value for test against zero, as a character string.}
+  \item{conf.int.label}{Confidence interval for \code{r} (only with \code{method = "pearson"}).}
   \item{n.label}{Number of observations used in the fit, as a character string.}
   \item{grp.label}{Set according to mapping in \code{aes}, as a character string.}}
 
@@ -189,9 +192,19 @@ ggplot(my.data, aes(x, y.desc)) +
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_correlation(aes(label = paste(after_stat(r.label),
-                              after_stat(p.value.label),
-                              after_stat(n.label),
-                              sep = "*\"; \"*")))
+                                     after_stat(p.value.label),
+                                     after_stat(n.label),
+                                     sep = "*\"; \"*")))
+
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_correlation(aes(label = after_stat(conf.int.label)))
+
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_correlation(aes(label = paste(after_stat(r.label),
+                                     after_stat(conf.int.label),
+                                     sep = "*\"; \"*")))
 
 ggplot(my.data, aes(x, y)) +
   geom_point() +
@@ -200,10 +213,10 @@ ggplot(my.data, aes(x, y)) +
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_correlation(aes(label = paste(after_stat(r.label),
-                              after_stat(p.value.label),
-                              after_stat(n.label),
-                              sep = "*\"; \"*")),
-            method = "kendall")
+                                     after_stat(p.value.label),
+                                     after_stat(n.label),
+                                     sep = "*\"; \"*")),
+                   method = "kendall")
 
 ggplot(my.data, aes(x, y)) +
   geom_point() +

@@ -4,6 +4,10 @@ editor_options:
     wrap: 72
 ---
 
+# ggpmisc 0.4.8
+
+- Add support for confidence interval in `stat_correlation()` when `method = "pearson"`.
+
 # ggpmisc 0.4.7
 
 -   Fix bug in the handling of the `weight` aesthetic in `stat_poly_eq()`,
