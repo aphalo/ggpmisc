@@ -38,6 +38,7 @@ reference:
     - stat_fit_augment
     - stat_fit_deviations
     - stat_fit_residuals
+    - label.mappings
   - title: Example data
     desc: Data sets as R objects. The data are used for examples in the documentation.
     contents:

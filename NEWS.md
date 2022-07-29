@@ -7,6 +7,8 @@ editor_options:
 # ggpmisc 0.4.8
 
 - Add support for confidence interval in `stat_correlation()` when `method = "pearson"`.
+- Add predefined label mappings usable with `stat_poly_eq()`,
+`stat_quant_eq()` and `stat_ma_eq()`.
 
 # ggpmisc 0.4.7
 
