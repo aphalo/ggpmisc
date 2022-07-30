@@ -7,8 +7,11 @@ editor_options:
 # ggpmisc 0.4.8
 
 - Add support for confidence interval in `stat_correlation()` when `method = "pearson"`.
-- Add predefined label mappings usable with `stat_poly_eq()`,
-`stat_quant_eq()` and `stat_ma_eq()`.
+- Add function `use_label()` that greatly simplifies assembling and mapping combined labels from the values returned by `stat_poly_eq()`, `stat_ma_eq()`, `stat_quant_eq()` and `stat_correlation()`.
+
+-----
+I did not realize until today how easily function `use_label()` could be implemented. I hope `use_label()` will make the flexibility inherent to the four _equation_ statistics a lot easier to use in the future.
+-----
 
 # ggpmisc 0.4.7
 
