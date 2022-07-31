@@ -105,6 +105,7 @@ use_label <- function(labels = c("eq", "p.value"),
   labels[truncated.labels] <- paste(labels[truncated.labels], ".label", sep = "")
   # accept r2
   labels <- gsub("r2\\.label$", "rr.label", labels)
+  labels <- gsub("ci\\.label$", "conf.int.label", labels)
   # accept F and P
   labels <- gsub("^f\\.label$", "f.value.label", labels)
   labels <- gsub("^p\\.label$", "p.value.label", labels)

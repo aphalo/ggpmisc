@@ -9,8 +9,8 @@
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs to be
 #'   set at the layer level if you are overriding the plot defaults.
-#' @param data A layer specific dataset, only needed if you want to override
-#'   the plot defaults.
+#' @param data A layer specific dataset, only needed if you want to override the
+#'   plot defaults.
 #' @param geom The geometric object to use display the data
 #' @param position The position adjustment to use for overlapping points on this
 #'   layer
@@ -35,19 +35,23 @@
 #' @param continuity logical If TRUE , a continuity correction is used for
 #'   Kendall's tau and Spearman's rho when not computed exactly.
 #' @param small.r,small.p logical Flags to switch use of lower case r and p for
-#'   coefficient of correlation (only for \code{method = "pearson"}) and p-value.
+#'   coefficient of correlation (only for \code{method = "pearson"}) and
+#'   p-value.
 #' @param coef.keep.zeros logical Keep or drop trailing zeros when formatting
-#'   the correlation coefficients and t-value, z-value or S-value (see note below).
-#' @param r.digits,t.digits,p.digits integer Number of digits after the decimal point to
-#'   use for R, r.squared, tau or rho and P-value in labels.
+#'   the correlation coefficients and t-value, z-value or S-value (see note
+#'   below).
+#' @param r.digits,t.digits,p.digits integer Number of digits after the decimal
+#'   point to use for R, r.squared, tau or rho and P-value in labels.
+#' @param CI.brackets character vector of length 2. The opening and closing
+#'   brackets used for the CI label.
 #' @param label.x,label.y \code{numeric} with range 0..1 "normalized parent
 #'   coordinates" (npc units) or character if using \code{geom_text_npc()} or
 #'   \code{geom_label_npc()}. If using \code{geom_text()} or \code{geom_label()}
 #'   numeric in native data units. If too short they will be recycled.
 #' @param hstep,vstep numeric in npc units, the horizontal and vertical step
 #'   used between labels for different groups.
-#' @param output.type character One of "expression", "LaTeX", "text",
-#'   "markdown" or "numeric".
+#' @param output.type character One of "expression", "LaTeX", "text", "markdown"
+#'   or "numeric".
 #' @param parse logical Passed to the geom. If \code{TRUE}, the labels will be
 #'   parsed into expressions and displayed as described in \code{?plotmath}.
 #'   Default is \code{TRUE} if \code{output.type = "expression"} and
@@ -60,7 +64,8 @@
 #'   device), markdown (use package 'ggtext') and plain text are also supported,
 #'   as well as numeric values for user-generated text labels. The character
 #'   labels include the symbol describing the quantity together with the numeric
-#'   value.
+#'   value. For the confidence interval (CI) the default is to follow the APA
+#'   recommendation of using square brackets.
 #'
 #'   The value of \code{parse} is set automatically based on \code{output-type},
 #'   but if you assemble labels that need parsing from \code{numeric} output,
@@ -235,6 +240,7 @@ stat_correlation <- function(mapping = NULL,
                       r.digits = 2,
                       t.digits = 3,
                       p.digits = 3,
+                      CI.brackets = c("[", "]"),
                       label.x = "left",
                       label.y = "top",
                       hstep = 0,
@@ -274,6 +280,7 @@ stat_correlation <- function(mapping = NULL,
                   r.digits = r.digits,
                   t.digits = t.digits,
                   p.digits = p.digits,
+                  CI.brackets = CI.brackets,
                   label.x = label.x,
                   label.y = label.y,
                   hstep = hstep,
@@ -310,6 +317,7 @@ cor_test_compute_fun <- function(data,
                                  r.digits,
                                  t.digits,
                                  p.digits,
+                                 CI.brackets,
                                  label.x,
                                  label.y,
                                  hstep,
@@ -386,6 +394,10 @@ cor_test_compute_fun <- function(data,
     z[["conf.int.low"]]  <-  htest.ls[["conf.int"]][1]
     z[["conf.int.high"]] <-  htest.ls[["conf.int"]][2]
     z[["conf.level"]] <- conf.level
+  } else {
+    z[["conf.int.low"]]  <- NA_real_
+    z[["conf.int.high"]] <- NA_real_
+    z[["conf.level"]] <- NA_real_
   }
 
   if (output.type != "numeric") {
@@ -407,13 +419,18 @@ cor_test_compute_fun <- function(data,
     if (output.type == "expression") {
       r <- z[[unname(c(pearson = "cor", kendall = "tau", spearman = "rho")[method])]]
       r.char <- sprintf("\"%#.*f\"", r.digits, r)
+      conf.int.chr <- sprintf("%#.*f, %#.*f",
+                              r.digits, z[["conf.int.low"]],
+                              r.digits, z[["conf.int.high"]])
+      if (as.logical((z[["conf.level"]] * 100) %% 1)) {
+        conf.level.digits = 1L
+      } else {
+        conf.level.digits = 0L
+      }
+      conf.level.chr <- sprintf("%.*f", conf.level.digits, z[["conf.level"]] * 100)
       if (method == "pearson") {
         t.value.char <- sprintf("\"%#.*g\"", t.digits, z[["t.value"]])
         df.char <- as.character(z[["df"]])
-        conf.int.chr <- sprintf("\"%#.*f, %#.*f\"",
-                                r.digits, z[["conf.int.low"]],
-                                r.digits, z[["conf.int.high"]])
-        conf.level.chr <- sprintf("\"%#.*f\"", r.digits, conf.level)
       } else if (method == "kendall") {
         z.value.char <- sprintf("\"%#.*g\"", t.digits, z[["z.value"]])
       } else if (method == "spearman") {
@@ -423,11 +440,18 @@ cor_test_compute_fun <- function(data,
     } else {
       r <- z[[unname(c(pearson = "cor", kendall = "tau", spearman = "rho")[method])]]
       r.char <- sprintf("%#.*f", r.digits, r)
+      conf.int.chr <- sprintf("%#.*f, %#.*f",
+                              r.digits, z[["conf.int.low"]],
+                              r.digits, z[["conf.int.high"]])
+      if (as.logical((z[["conf.level"]] * 100) %% 1)) {
+        conf.level.digits = 1L
+      } else {
+        conf.level.digits = 0L
+      }
+      conf.level.chr <- sprintf("%.*f", conf.level.digits, z[["conf.level"]] * 100)
       if (method == "pearson") {
         t.value.char <- sprintf("%#.*g", t.digits, z[["t.value"]])
         df.char <- as.character(z[["df"]])
-        conf.int <- z[["conf.int"]]
-        conf.int.chr <- sprintf("\"%#.*f-%#.*f\"", r.digits, conf.int)
       } else if (method == "kendall") {
         z.value.char <- sprintf("%#.*g", t.digits, z[["z.value"]])
       } else if (method == "spearman") {
@@ -466,7 +490,7 @@ cor_test_compute_fun <- function(data,
           ifelse(is.na(z[["t.value"]]), character(0L),
                  paste("italic(t)[", df.char, "]~`=`~", t.value.char, sep = ""))
         z[["conf.int.label"]] <-
-          paste("\"CI \"*", conf.level.chr, "*\": (\"*", conf.int.chr, "*\")\"", sep = "")
+          paste("\"", conf.level.chr, "% CI ", CI.brackets[1], conf.int.chr, CI.brackets[2], "\"", sep = "")
       } else if (method == "kendall") {
         z[["tau.label"]] <-
           ifelse(is.na(z[["tau"]]), character(0L),
@@ -521,7 +545,7 @@ cor_test_compute_fun <- function(data,
         z[["t.value.label"]] <- ifelse(is.na(z[["t.value"]]), character(0L),
                                        paste("t_{", df.char, "} = ", t.value.char, sep = ""))
         z[["conf.int.label"]] <-
-          paste("CI ", conf.level.chr, ": (", conf.int.chr, ")", sep = "")
+          paste(conf.int.chr, "% CI ", CI.brackets[1], conf.int.chr, CI.brackets[2], sep = "")
       } else if (method == "kendall") {
         z[["tau.label"]] <- ifelse(is.na(z[["tau"]]), character(0L),
                                    paste(ifelse(output.type == "text",
@@ -573,7 +597,7 @@ cor_test_compute_fun <- function(data,
         z[["t.value.label"]] <- ifelse(is.na(z[["t.value"]]), character(0L),
                                        paste("_t_<sub>", df.char, "</sub> = ", t.value.char, sep = ""))
         z[["conf.int.label"]] <-
-          paste("CI<sub>", conf.level.chr, "</sub>: (", conf.int.chr, ")", sep = "")
+          paste(conf.level.chr, "% CI", ": [", conf.int.chr, "]", sep = "")
       } else if (method == "kendall") {
         z[["tau.label"]] <- ifelse(is.na(z[["tau"]]), character(0L),
                                    paste("_&tau;_",

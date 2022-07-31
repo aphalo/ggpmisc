@@ -21,6 +21,7 @@ stat_correlation(
   r.digits = 2,
   t.digits = 3,
   p.digits = 3,
+  CI.brackets = c("[", "]"),
   label.x = "left",
   label.y = "top",
   hstep = 0,
@@ -37,8 +38,8 @@ stat_correlation(
 \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs to be
 set at the layer level if you are overriding the plot defaults.}
 
-\item{data}{A layer specific dataset, only needed if you want to override
-the plot defaults.}
+\item{data}{A layer specific dataset, only needed if you want to override the
+plot defaults.}
 
 \item{geom}{The geometric object to use display the data}
 
@@ -63,13 +64,18 @@ interval (only if \code{method = "pearson"} which is the default).}
 Kendall's tau and Spearman's rho when not computed exactly.}
 
 \item{small.r, small.p}{logical Flags to switch use of lower case r and p for
-coefficient of correlation (only for \code{method = "pearson"}) and p-value.}
+coefficient of correlation (only for \code{method = "pearson"}) and
+p-value.}
 
 \item{coef.keep.zeros}{logical Keep or drop trailing zeros when formatting
-the correlation coefficients and t-value, z-value or S-value (see note below).}
+the correlation coefficients and t-value, z-value or S-value (see note
+below).}
 
-\item{r.digits, t.digits, p.digits}{integer Number of digits after the decimal point to
-use for R, r.squared, tau or rho and P-value in labels.}
+\item{r.digits, t.digits, p.digits}{integer Number of digits after the decimal
+point to use for R, r.squared, tau or rho and P-value in labels.}
+
+\item{CI.brackets}{character vector of length 2. The opening and closing
+brackets used for the CI label.}
 
 \item{label.x, label.y}{\code{numeric} with range 0..1 "normalized parent
 coordinates" (npc units) or character if using \code{geom_text_npc()} or
@@ -79,8 +85,8 @@ numeric in native data units. If too short they will be recycled.}
 \item{hstep, vstep}{numeric in npc units, the horizontal and vertical step
 used between labels for different groups.}
 
-\item{output.type}{character One of "expression", "LaTeX", "text",
-"markdown" or "numeric".}
+\item{output.type}{character One of "expression", "LaTeX", "text", "markdown"
+or "numeric".}
 
 \item{na.rm}{a logical indicating whether NA values should be stripped before
 the computation proceeds.}
@@ -114,7 +120,8 @@ This statistic can be used to annotate a plot with the correlation
   device), markdown (use package 'ggtext') and plain text are also supported,
   as well as numeric values for user-generated text labels. The character
   labels include the symbol describing the quantity together with the numeric
-  value.
+  value. For the confidence interval (CI) the default is to follow the APA
+  recommendation of using square brackets.
 
   The value of \code{parse} is set automatically based on \code{output-type},
   but if you assemble labels that need parsing from \code{numeric} output,
