@@ -60,12 +60,13 @@
 #' ggplot(my.data, aes(x, y2, colour = group)) +
 #'   geom_point() +
 #'   stat_poly_line(formula = formula) +
-#'   stat_poly_eq(use_label(c("R2", "F")), formula = formula)
+#'   stat_poly_eq(use_label(c("R2", "F"), sep = "*\" with \"*"),
+#'                formula = formula)
 #'
 #' ggplot(my.data, aes(x, y2, colour = group)) +
 #'   geom_point() +
 #'   stat_poly_line(formula = formula) +
-#'   stat_poly_eq(use_label(c("eq", "adj.rr", "n")), formula = formula)
+#'   stat_poly_eq(use_label(c("eq", "adj.R2", "n")), formula = formula)
 #'
 #' ggplot(my.data, aes(x, y2, colour = group)) +
 #'   geom_point() +
@@ -90,7 +91,7 @@
 #' ggplot(my.data, aes(x, y2)) +
 #'   geom_point(aes(colour = group)) +
 #'   stat_poly_line(aes(colour = group), formula = formula) +
-#'   stat_poly_eq(use_label(c("eq", "F"), aes(colour = group)), formula = formula)
+#'   stat_poly_eq(use_label(c("eq", "F"), aes(grp.label = group)), formula = formula)
 #'
 use_label <- function(labels = c("eq", "p.value"),
                       other.mapping = NULL,

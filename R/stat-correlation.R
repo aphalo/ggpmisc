@@ -129,43 +129,20 @@
 #'                       y.desc = - y,
 #'                       group = c("A", "B"))
 #'
+#' # by default only R is displayed
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   stat_correlation()
-#'
-#' ggplot(my.data, aes(x, y.desc)) +
-#'   geom_point() +
-#'   stat_correlation(label.x = "right")
-#'
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_point() +
-#'   stat_correlation(aes(label = paste(after_stat(r.label),
-#'                                      after_stat(p.value.label),
-#'                                      after_stat(n.label),
-#'                                      sep = "*\"; \"*")))
-#'
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_point() +
-#'   stat_correlation(aes(label = after_stat(conf.int.label)))
-#'
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_point() +
-#'   stat_correlation(aes(label = paste(after_stat(r.label),
-#'                                      after_stat(conf.int.label),
-#'                                      sep = "*\"; \"*")))
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   stat_correlation(small.r = TRUE)
 #'
-#' ggplot(my.data, aes(x, y)) +
+#' ggplot(my.data, aes(x, y.desc)) +
 #'   geom_point() +
-#'   stat_correlation(aes(label = paste(after_stat(r.label),
-#'                                      after_stat(p.value.label),
-#'                                      after_stat(n.label),
-#'                                      sep = "*\"; \"*")),
-#'                    method = "kendall")
+#'   stat_correlation(label.x = "right")
 #'
+#' # non-default methods
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   stat_correlation(method = "kendall")
@@ -174,13 +151,30 @@
 #'   geom_point() +
 #'   stat_correlation(method = "spearman")
 #'
+#' # use_label() can assemble and map a combined label
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   stat_correlation(use_label(c("R", "P", "n")))
+#'
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   stat_correlation(use_label(c("R", "CI")))
+#'
+#' # manually assemble and map a specific label using paste() and aes()
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   stat_correlation(aes(label = paste(after_stat(r.label),
-#'                               after_stat(p.value.label),
-#'                               after_stat(n.label),
-#'                               sep = "*\"; \"*")),
-#'             method = "spearman")
+#'                                      after_stat(p.value.label),
+#'                                      after_stat(n.label),
+#'                                      sep = "*\", \"*")))
+#'
+#' # manually format and map a specific label using sprintf() and aes()
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   stat_correlation(aes(label = sprintf("%s*\" with \"*%s*\" for \"*%s",
+#'                                        after_stat(r.label),
+#'                                        after_stat(p.value.label),
+#'                                        after_stat(t.value.label))))
 #'
 #' # Inspecting the returned data using geom_debug()
 #' if (requireNamespace("gginnards", quietly = TRUE)) {
@@ -340,13 +334,14 @@ cor_test_compute_fun <- function(data,
 
   if (exists("grp.label", data)) {
     if (length(unique(data[["grp.label"]])) > 1L) {
-      warning("Non-unique value in 'data$grp.label' for group.")
-      grp.label <- ""
+      warning("Non-unique value in 'data$grp.label' using group index ", data[["group"]][1], " as label.")
+      grp.label <- as.character(data[["group"]][1])
     } else {
       grp.label <- data[["grp.label"]][1]
     }
   } else {
-    grp.label <- ""
+    # if nothing mapped to grp.label we use group index as label
+    grp.label <- as.character(data[["group"]][1])
   }
 
   group.idx <- abs(data$group[1])
@@ -387,20 +382,20 @@ cor_test_compute_fun <- function(data,
 
   z <- htest.ls[names(idx.map[[method]])]
   names(z) <- unname(idx.map[[method]])
+
   z <- tibble::as_tibble_row(z)
+
   z[["n"]] <- nrow(na.omit(data[ , c("x", "y")]))
   z[["method"]] <- method
   if (method == "pearson") {
     z[["conf.int.low"]]  <-  htest.ls[["conf.int"]][1]
     z[["conf.int.high"]] <-  htest.ls[["conf.int"]][2]
     z[["conf.level"]] <- conf.level
-  } else {
-    z[["conf.int.low"]]  <- NA_real_
-    z[["conf.int.high"]] <- NA_real_
-    z[["conf.level"]] <- NA_real_
   }
 
-  if (output.type != "numeric") {
+  if (output.type == "numeric") {
+    z[["r.label"]] <- NA_character_
+  } else {
     # warn if too narrow formats requested
     stopifnot(r.digits > 0)
     if (r.digits < 2) {
@@ -419,18 +414,18 @@ cor_test_compute_fun <- function(data,
     if (output.type == "expression") {
       r <- z[[unname(c(pearson = "cor", kendall = "tau", spearman = "rho")[method])]]
       r.char <- sprintf("\"%#.*f\"", r.digits, r)
-      conf.int.chr <- sprintf("%#.*f, %#.*f",
-                              r.digits, z[["conf.int.low"]],
-                              r.digits, z[["conf.int.high"]])
-      if (as.logical((z[["conf.level"]] * 100) %% 1)) {
-        conf.level.digits = 1L
-      } else {
-        conf.level.digits = 0L
-      }
-      conf.level.chr <- sprintf("%.*f", conf.level.digits, z[["conf.level"]] * 100)
       if (method == "pearson") {
         t.value.char <- sprintf("\"%#.*g\"", t.digits, z[["t.value"]])
         df.char <- as.character(z[["df"]])
+        conf.int.chr <- sprintf("%#.*f, %#.*f",
+                                r.digits, z[["conf.int.low"]],
+                                r.digits, z[["conf.int.high"]])
+        if (as.logical((z[["conf.level"]] * 100) %% 1)) {
+          conf.level.digits = 1L
+        } else {
+          conf.level.digits = 0L
+        }
+        conf.level.chr <- sprintf("%.*f", conf.level.digits, z[["conf.level"]] * 100)
       } else if (method == "kendall") {
         z.value.char <- sprintf("\"%#.*g\"", t.digits, z[["z.value"]])
       } else if (method == "spearman") {
@@ -440,18 +435,18 @@ cor_test_compute_fun <- function(data,
     } else {
       r <- z[[unname(c(pearson = "cor", kendall = "tau", spearman = "rho")[method])]]
       r.char <- sprintf("%#.*f", r.digits, r)
-      conf.int.chr <- sprintf("%#.*f, %#.*f",
-                              r.digits, z[["conf.int.low"]],
-                              r.digits, z[["conf.int.high"]])
-      if (as.logical((z[["conf.level"]] * 100) %% 1)) {
-        conf.level.digits = 1L
-      } else {
-        conf.level.digits = 0L
-      }
-      conf.level.chr <- sprintf("%.*f", conf.level.digits, z[["conf.level"]] * 100)
       if (method == "pearson") {
         t.value.char <- sprintf("%#.*g", t.digits, z[["t.value"]])
         df.char <- as.character(z[["df"]])
+        conf.int.chr <- sprintf("%#.*f, %#.*f",
+                                r.digits, z[["conf.int.low"]],
+                                r.digits, z[["conf.int.high"]])
+        if (as.logical((z[["conf.level"]] * 100) %% 1)) {
+          conf.level.digits = 1L
+        } else {
+          conf.level.digits = 0L
+        }
+        conf.level.chr <- sprintf("%.*f", conf.level.digits, z[["conf.level"]] * 100)
       } else if (method == "kendall") {
         z.value.char <- sprintf("%#.*g", t.digits, z[["z.value"]])
       } else if (method == "spearman") {
@@ -477,7 +472,7 @@ cor_test_compute_fun <- function(data,
         paste("italic(n)~`=`~\"", z[["n"]], "\"", sep = "")
       z[["grp.label"]] <- grp.label
       if (method == "pearson") {
-        z[["cor.label"]] <-
+        z[["cor.label"]] <- z[["r.label"]] <-
           ifelse(is.na(z[["cor"]]), character(0L),
                  paste(ifelse(small.r, "italic(r)", "italic(R)"),
                        ifelse(abs(z[["cor"]]) < 10^(-r.digits),
@@ -492,7 +487,7 @@ cor_test_compute_fun <- function(data,
         z[["conf.int.label"]] <-
           paste("\"", conf.level.chr, "% CI ", CI.brackets[1], conf.int.chr, CI.brackets[2], "\"", sep = "")
       } else if (method == "kendall") {
-        z[["tau.label"]] <-
+        z[["tau.label"]] <- z[["r.label"]] <-
           ifelse(is.na(z[["tau"]]), character(0L),
                  paste("italic(tau)",
                        ifelse(abs(z[["tau"]]) < 10^(-r.digits),
@@ -505,7 +500,7 @@ cor_test_compute_fun <- function(data,
           ifelse(is.na(z[["z.value"]]), character(0L),
                  paste("italic(z)~`=`~", z.value.char, sep = ""))
       } else if (method == "spearman") {
-        z[["rho.label"]] <-
+        z[["rho.label"]] <- z[["r.label"]] <-
           ifelse(is.na(z[["rho"]]), character(0L),
                  paste("italic(rho)",
                        ifelse(abs(z[["rho"]]) < 10^(-r.digits),
@@ -533,7 +528,7 @@ cor_test_compute_fun <- function(data,
         paste("n = ", z[["n"]], sep = "")
       z[["grp.label"]] <- grp.label
       if (method == "pearson") {
-        z[["cor.label"]] <-
+        z[["cor.label"]] <- z[["r.label"]] <-
           ifelse(is.na(z[["cor"]]), character(0L),
                  paste(ifelse(small.r, "r", "R"),
                        ifelse(abs(z[["cor"]]) < 10^(-r.digits),
@@ -547,27 +542,29 @@ cor_test_compute_fun <- function(data,
         z[["conf.int.label"]] <-
           paste(conf.int.chr, "% CI ", CI.brackets[1], conf.int.chr, CI.brackets[2], sep = "")
       } else if (method == "kendall") {
-        z[["tau.label"]] <- ifelse(is.na(z[["tau"]]), character(0L),
-                                   paste(ifelse(output.type == "text",
-                                                "tau", "\tau"),
-                                         ifelse(abs(z[["tau"]]) < 10^(-r.digits),
-                                                sprintf("\"%.*f\"", r.digits, 10^(-r.digits) * sign(z[["tau"]])),
-                                                r.char),
-                                         sep = ifelse(abs(z[["tau"]]) < 10^(-r.digits),
-                                                      c(" > ", " = ", " < ")[sign(z[["tau"]]) + 2],
-                                                      " = ")))
+        z[["tau.label"]] <- z[["r.label"]] <-
+          ifelse(is.na(z[["tau"]]), character(0L),
+                 paste(ifelse(output.type == "text",
+                              "tau", "\tau"),
+                       ifelse(abs(z[["tau"]]) < 10^(-r.digits),
+                              sprintf("\"%.*f\"", r.digits, 10^(-r.digits) * sign(z[["tau"]])),
+                              r.char),
+                       sep = ifelse(abs(z[["tau"]]) < 10^(-r.digits),
+                                    c(" > ", " = ", " < ")[sign(z[["tau"]]) + 2],
+                                    " = ")))
         z[["z.value.label"]] <- ifelse(is.na(z[["z.value"]]), character(0L),
                                        paste("z = ", z.value.char, sep = ""))
       } else if (method == "spearman") {
-        z[["rho.label"]] <- ifelse(is.na(z[["rho"]]), character(0L),
-                                   paste(ifelse(output.type == "text",
-                                                "rho", "\rho"),
-                                         ifelse(abs(z[["rho"]]) < 10^(-r.digits),
-                                                sprintf("\"%.*f\"", r.digits, 10^(-r.digits) * sign(z[["rho"]])),
-                                                r.char),
-                                         sep = ifelse(abs(z[["rho"]]) < 10^(-r.digits),
-                                                      c(" > ", " = ", " < ")[sign(z[["rho"]]) + 2],
-                                                      " = ")))
+        z[["rho.label"]] <- z[["r.label"]] <-
+          ifelse(is.na(z[["rho"]]), character(0L),
+                 paste(ifelse(output.type == "text",
+                              "rho", "\rho"),
+                       ifelse(abs(z[["rho"]]) < 10^(-r.digits),
+                              sprintf("\"%.*f\"", r.digits, 10^(-r.digits) * sign(z[["rho"]])),
+                              r.char),
+                       sep = ifelse(abs(z[["rho"]]) < 10^(-r.digits),
+                                    c(" > ", " = ", " < ")[sign(z[["rho"]]) + 2],
+                                    " = ")))
         z[["S.value.label"]] <- ifelse(is.na(z[["S.value"]]), character(0L),
                                        paste("S = ", S.value.char, sep = ""))
       }
@@ -585,7 +582,7 @@ cor_test_compute_fun <- function(data,
         paste("_n_ = ", z[["n"]], sep = "")
       z[["grp.label"]] <- grp.label
       if (method == "pearson") {
-        z[["cor.label"]] <-
+        z[["cor.label"]] <- z[["r.label"]] <-
           ifelse(is.na(z[["cor"]]), character(0L),
                  paste(ifelse(small.r, "_r_", "_R_"),
                        ifelse(abs(z[["cor"]]) < 10^(-r.digits),
@@ -599,25 +596,27 @@ cor_test_compute_fun <- function(data,
         z[["conf.int.label"]] <-
           paste(conf.level.chr, "% CI", ": [", conf.int.chr, "]", sep = "")
       } else if (method == "kendall") {
-        z[["tau.label"]] <- ifelse(is.na(z[["tau"]]), character(0L),
-                                   paste("_&tau;_",
-                                         ifelse(abs(z[["tau"]]) < 10^(-r.digits),
-                                                sprintf("\"%.*f\"", r.digits, 10^(-r.digits) * sign(z[["tau"]])),
-                                                r.char),
-                                         sep = ifelse(abs(z[["tau"]]) < 10^(-r.digits),
-                                                      c(" > ", " = ", " < ")[sign(z[["tau"]]) + 2],
-                                                      " = ")))
+        z[["tau.label"]] <- z[["r.label"]] <-
+          ifelse(is.na(z[["tau"]]), character(0L),
+                 paste("_&tau;_",
+                       ifelse(abs(z[["tau"]]) < 10^(-r.digits),
+                              sprintf("\"%.*f\"", r.digits, 10^(-r.digits) * sign(z[["tau"]])),
+                              r.char),
+                       sep = ifelse(abs(z[["tau"]]) < 10^(-r.digits),
+                                    c(" > ", " = ", " < ")[sign(z[["tau"]]) + 2],
+                                    " = ")))
         z[["z.value.label"]] <- ifelse(is.na(z[["t.value"]]), character(0L),
                                        paste("_z_ = ", z.value.char, sep = ""))
       } else if (method == "spearman") {
-        z[["rho.label"]] <- ifelse(is.na(z[["rho"]]), character(0L),
-                                   paste("_&rho;_",
-                                         ifelse(abs(z[["rho"]]) < 10^(-r.digits),
-                                                sprintf("\"%.*f\"", r.digits, 10^(-r.digits) * sign(z[["rho"]])),
-                                                r.char),
-                                         sep = ifelse(abs(z[["rho"]]) < 10^(-r.digits),
-                                                      c(" > ", " = ", " < ")[sign(z[["rho"]]) + 2],
-                                                      " = ")))
+        z[["rho.label"]] <- z[["r.label"]] <-
+          ifelse(is.na(z[["rho"]]), character(0L),
+                 paste("_&rho;_",
+                       ifelse(abs(z[["rho"]]) < 10^(-r.digits),
+                              sprintf("\"%.*f\"", r.digits, 10^(-r.digits) * sign(z[["rho"]])),
+                              r.char),
+                       sep = ifelse(abs(z[["rho"]]) < 10^(-r.digits),
+                                    c(" > ", " = ", " < ")[sign(z[["rho"]]) + 2],
+                                    " = ")))
         z[["S.value.label"]] <- ifelse(is.na(z[["S.value"]]), character(0L),
                                        paste("_S_ = ", S.value.char, sep = ""))
       }
@@ -625,12 +624,6 @@ cor_test_compute_fun <- function(data,
       warning("Unknown 'output.type' argument: ", output.type)
     }
   }
-
-  # set column to map by default to label
-  z[["r.label"]] <- switch(method,
-                           pearson =  z[["cor.label"]],
-                           kendall =  z[["tau.label"]],
-                           spearman = z[["rho.label"]])
 
   # Compute label positions
   if (is.character(label.x)) {
@@ -692,6 +685,8 @@ StatCorr <-
                      ggplot2::aes(npcx = after_stat(npcx),
                                   npcy = after_stat(npcy),
                                   label = after_stat(r.label),
-                                  hjust = "inward", vjust = "inward"),
-                   required_aes = c("x", "y")
+                                  hjust = "inward",
+                                  vjust = "inward"),
+                   required_aes = c("x", "y"),
+                   optional_aes = "grp.label"
   )

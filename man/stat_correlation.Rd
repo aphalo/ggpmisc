@@ -188,43 +188,20 @@ my.data <- data.frame(x = x,
                       y.desc = - y,
                       group = c("A", "B"))
 
+# by default only R is displayed
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_correlation()
-
-ggplot(my.data, aes(x, y.desc)) +
-  geom_point() +
-  stat_correlation(label.x = "right")
-
-ggplot(my.data, aes(x, y)) +
-  geom_point() +
-  stat_correlation(aes(label = paste(after_stat(r.label),
-                                     after_stat(p.value.label),
-                                     after_stat(n.label),
-                                     sep = "*\"; \"*")))
-
-ggplot(my.data, aes(x, y)) +
-  geom_point() +
-  stat_correlation(aes(label = after_stat(conf.int.label)))
-
-ggplot(my.data, aes(x, y)) +
-  geom_point() +
-  stat_correlation(aes(label = paste(after_stat(r.label),
-                                     after_stat(conf.int.label),
-                                     sep = "*\"; \"*")))
 
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_correlation(small.r = TRUE)
 
-ggplot(my.data, aes(x, y)) +
+ggplot(my.data, aes(x, y.desc)) +
   geom_point() +
-  stat_correlation(aes(label = paste(after_stat(r.label),
-                                     after_stat(p.value.label),
-                                     after_stat(n.label),
-                                     sep = "*\"; \"*")),
-                   method = "kendall")
+  stat_correlation(label.x = "right")
 
+# non-default methods
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_correlation(method = "kendall")
@@ -233,13 +210,30 @@ ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_correlation(method = "spearman")
 
+# use_label() can assemble and map a combined label
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_correlation(use_label(c("R", "P", "n")))
+
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_correlation(use_label(c("R", "CI")))
+
+# manually assemble and map a specific label using paste() and aes()
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_correlation(aes(label = paste(after_stat(r.label),
-                              after_stat(p.value.label),
-                              after_stat(n.label),
-                              sep = "*\"; \"*")),
-            method = "spearman")
+                                     after_stat(p.value.label),
+                                     after_stat(n.label),
+                                     sep = "*\", \"*")))
+
+# manually format and map a specific label using sprintf() and aes()
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_correlation(aes(label = sprintf("\%s*\" with \"*\%s*\" for \"*\%s",
+                                       after_stat(r.label),
+                                       after_stat(p.value.label),
+                                       after_stat(t.value.label))))
 
 # Inspecting the returned data using geom_debug()
 if (requireNamespace("gginnards", quietly = TRUE)) {

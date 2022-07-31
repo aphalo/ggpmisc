@@ -505,13 +505,14 @@ quant_eq_compute_group_fun <- function(data,
 
   if (exists("grp.label", data)) {
     if (length(unique(data[["grp.label"]])) > 1L) {
-    warning("Non-unique value in 'data$grp.label' for group.")
-      grp.label <- ""
+      warning("Non-unique value in 'data$grp.label' using group index ", data[["group"]][1], " as label.")
+      grp.label <- as.character(data[["group"]][1])
     } else {
       grp.label <- data[["grp.label"]][1]
     }
   } else {
-    grp.label <- ""
+    # if nothing mapped to grp.label we use group index as label
+    grp.label <- as.character(data[["group"]][1])
   }
 
   group.idx <- abs(data[["group"]][1])
@@ -845,6 +846,7 @@ StatQuantEq <-
                                   label = after_stat(eq.label),
                                   hjust = "inward",
                                   vjust = "inward"),
-                   required_aes = c("x", "y")
+                   required_aes = c("x", "y"),
+                   optional_aes = "grp.label"
   )
 
