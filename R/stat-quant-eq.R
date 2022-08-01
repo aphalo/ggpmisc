@@ -179,9 +179,10 @@
 #' set.seed(4321)
 #' x <- 1:100
 #' y <- (x + x^2 + x^3) + rnorm(length(x), mean = 0, sd = mean(x^3) / 4)
+#' y <- y / max(y)
 #' my.data <- data.frame(x = x, y = y,
 #'                       group = c("A", "B"),
-#'                       y2 = y * c(0.5,2),
+#'                       y2 = y * c(1, 2) + max(y) * c(0, 0.1),
 #'                       w = sqrt(x))
 #'
 #' # using defaults
@@ -220,10 +221,9 @@
 #' # give a name to a formula
 #' formula <- y ~ poly(x, 3, raw = TRUE)
 #'
-#' # no weights
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   stat_quant_line(formula = formula) +
+#'   stat_quant_line(formula = formula, size = 0.5) +
 #'   stat_quant_eq(formula = formula)
 #'
 #' # angle
@@ -246,51 +246,39 @@
 #'   stat_quant_line(formula = formula, quantiles = 0.5) +
 #'   stat_quant_eq(formula = formula, quantiles = 0.5)
 #'
-#' # grouping
-#' ggplot(my.data, aes(x, y, color = group)) +
-#'   geom_point() +
-#'   stat_quant_line(formula = formula) +
-#'   stat_quant_eq(formula = formula)
-#'
-#' ggplot(my.data, aes(x, y, color = group)) +
-#'   geom_point() +
-#'   stat_quant_line(formula = formula) +
-#'   stat_quant_eq(formula = formula, angle = 90,
-#'                 hstep = 0.05, vstep = 0, hjust = 0,
-#'                 size = 3, label.y = 0.3)
-#'
-#' # labelling equations
-#' ggplot(my.data, aes(x, y,  shape = group, linetype = group,
-#'        grp.label = group)) +
-#'   geom_point() +
-#'   stat_quant_line(formula = formula, color = "black") +
-#'   stat_quant_eq(aes(label = paste(after_stat(grp.label), after_stat(eq.label), sep = "*\": \"*")),
-#'                 formula = formula) +
-#'   theme_classic()
-#'
-#' # setting non-default quantiles
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   stat_quant_line(formula = formula,
+#'   stat_quant_band(formula = formula,
 #'                   quantiles = c(0.1, 0.5, 0.9)) +
 #'   stat_quant_eq(formula = formula, parse = TRUE,
 #'                 quantiles = c(0.1, 0.5, 0.9))
 #'
-#' # Location of equations
-#' ggplot(my.data, aes(x, y)) +
+#' # grouping
+#' ggplot(my.data, aes(x, y2, color = group)) +
 #'   geom_point() +
-#'   stat_quant_line(formula = formula) +
-#'   stat_quant_eq(formula = formula, label.y = "bottom", label.x = "right")
+#'   stat_quant_line(formula = formula, size = 0.5) +
+#'   stat_quant_eq(formula = formula)
 #'
-#' ggplot(my.data, aes(x, y)) +
+#' ggplot(my.data, aes(x, y2, color = group)) +
 #'   geom_point() +
-#'   stat_quant_line(formula = formula) +
-#'   stat_quant_eq(formula = formula, label.y = 0.03, label.x = 0.95, vstep = 0.04)
+#'   stat_quant_band(formula = formula, size = 0.75) +
+#'   stat_quant_eq(formula = formula) +
+#'   theme_bw()
+#'
+#' # labelling equations
+#' ggplot(my.data, aes(x, y2,  shape = group, linetype = group,
+#'        grp.label = group)) +
+#'   geom_point() +
+#'   stat_quant_band(formula = formula, color = "black", size = 0.75) +
+#'   stat_quant_eq(use_label(c("grp", "eq"), sep = "*\": \"*"),
+#'                 formula = formula) +
+#'   expand_limits(y = 3) +
+#'   theme_classic()
 #'
 #' # using weights
 #' ggplot(my.data, aes(x, y, weight = w)) +
 #'   geom_point() +
-#'   stat_quant_line(formula = formula) +
+#'   stat_quant_line(formula = formula, size = 0.5) +
 #'   stat_quant_eq(formula = formula)
 #'
 #' # no weights, quantile set to upper boundary
@@ -299,13 +287,25 @@
 #'   stat_quant_line(formula = formula, quantiles = 0.95) +
 #'   stat_quant_eq(formula = formula, quantiles = 0.95)
 #'
-#' # user specified label
-#' ggplot(my.data, aes(x, y, color = group, grp.label = group)) +
+#' # manually assemble and map a specific label using paste() and aes()
+#' ggplot(my.data, aes(x, y2, color = group, grp.label = group)) +
 #'   geom_point() +
 #'   stat_quant_line(method = "rq", formula = formula,
-#'                 quantiles = c(0.05, 0.5, 0.95)) +
+#'                 quantiles = c(0.05, 0.5, 0.95),
+#'                 size = 0.5) +
 #'   stat_quant_eq(aes(label = paste(after_stat(grp.label), "*\": \"*",
 #'                                    after_stat(eq.label), sep = "")),
+#'                 quantiles = c(0.05, 0.5, 0.95),
+#'                 formula = formula, size = 3)
+#'
+#' # manually assemble and map a specific label using sprintf() and aes()
+#' ggplot(my.data, aes(x, y2, color = group, grp.label = group)) +
+#'   geom_point() +
+#'   stat_quant_band(method = "rq", formula = formula,
+#'                   quantiles = c(0.05, 0.5, 0.95)) +
+#'   stat_quant_eq(aes(label = sprintf("%s*\": \"*%s",
+#'                                     after_stat(grp.label),
+#'                                     after_stat(eq.label))),
 #'                 quantiles = c(0.05, 0.5, 0.95),
 #'                 formula = formula, size = 3)
 #'
@@ -693,10 +693,10 @@ quant_eq_compute_group_fun <- function(data,
                           n.label = paste("italic(n)~`=`~", n, sep = ""),
                           grp.label = if (any(grp.label != ""))
                                          paste(grp.label,
-                                            sprintf("italic(q)~`=`~%.2f", quantiles),
+                                            sprintf("italic(q)~`=`~\"%.2f\"", quantiles),
                                             sep = "*\", \"*")
                                       else
-                                        sprintf("italic(q)~`=`~%.2f", quantiles),
+                                        sprintf("italic(q)~`=`~\"%.2f\"", quantiles),
                           rq.method = rq.method,
                           quantile = quantiles,
                           quantile.f = quantiles.f,

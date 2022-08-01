@@ -210,6 +210,11 @@ ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_correlation(method = "spearman")
 
+# use_label() can map a user selected label
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_correlation(use_label("R2"))
+
 # use_label() can assemble and map a combined label
 ggplot(my.data, aes(x, y)) +
   geom_point() +

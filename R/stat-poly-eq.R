@@ -170,91 +170,108 @@
 #' set.seed(4321)
 #' x <- 1:100
 #' y <- (x + x^2 + x^3) + rnorm(length(x), mean = 0, sd = mean(x^3) / 4)
+#' y <- y / max(y)
 #' my.data <- data.frame(x = x, y = y,
 #'                       group = c("A", "B"),
-#'                       y2 = y * c(0.5,2),
+#'                       y2 = y * c(1, 2) + max(y) * c(0, 0.1),
 #'                       w = sqrt(x))
 #'
 #' # give a name to a formula
 #' formula <- y ~ poly(x, 3, raw = TRUE)
 #'
+#' # using defaults
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   stat_poly_line() +
+#'   stat_poly_eq()
+#'
 #' # no weights
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   geom_smooth(method = "lm", formula = formula) +
+#'   stat_poly_line(formula = formula) +
 #'   stat_poly_eq(formula = formula)
 #'
-#' # grouping
-#' ggplot(my.data, aes(x, y, color = group)) +
+#' # other labels
+#' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   geom_smooth(method = "lm", formula = formula) +
+#'   stat_poly_line(formula = formula) +
+#'   stat_poly_eq(use_label("eq"), formula = formula)
+#'
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   stat_poly_line(formula = formula) +
+#'   stat_poly_eq(use_label(c("eq", "R2")), formula = formula)
+#'
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   stat_poly_line(formula = formula) +
+#'   stat_poly_eq(use_label(c("R2", "F", "P", "n"), sep = "*\"; \"*"),
+#'                formula = formula)
+#'
+#' # grouping
+#' ggplot(my.data, aes(x, y2, color = group)) +
+#'   geom_point() +
+#'   stat_poly_line(formula = formula) +
 #'   stat_poly_eq(formula = formula)
 #'
 #' # rotation
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(formula = formula, angle = 90, hjust = 1)
+#'   stat_poly_line(formula = formula) +
+#'   stat_poly_eq(formula = formula, angle = 90)
 #'
 #' # label location
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   geom_smooth(method = "lm", formula = formula) +
+#'   stat_poly_line(formula = formula) +
 #'   stat_poly_eq(formula = formula, label.y = "bottom", label.x = "right")
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   geom_smooth(method = "lm", formula = formula) +
+#'   stat_poly_line(formula = formula) +
 #'   stat_poly_eq(formula = formula, label.y = 0.1, label.x = 0.9)
 #'
 #' # using weights
 #' ggplot(my.data, aes(x, y, weight = w)) +
 #'   geom_point() +
-#'   geom_smooth(method = "lm", formula = formula) +
+#'   stat_poly_line(formula = formula) +
 #'   stat_poly_eq(formula = formula)
 #'
-#' # no weights, digits for R square
+#' # no weights, 4 digits for R square
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   geom_smooth(method = "lm", formula = formula) +
+#'   stat_poly_line(formula = formula) +
 #'   stat_poly_eq(formula = formula, rr.digits = 4)
 #'
-#' # user specified label
+#' # manually assemble and map a specific label using paste() and aes()
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   geom_smooth(method = "lm", formula = formula) +
+#'   stat_poly_line(formula = formula) +
 #'   stat_poly_eq(aes(label =  paste(after_stat(rr.label),
 #'                                   after_stat(n.label), sep = "*\", \"*")),
 #'                formula = formula)
 #'
+#' # manually assemble and map a specific label using sprintf() and aes()
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(aes(label =  paste(after_stat(eq.label),
-#'                                   after_stat(adj.rr.label), sep = "*\", \"*")),
-#'                formula = formula)
-#'
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_point() +
-#'   geom_smooth(method = "lm", formula = formula) +
-#'   stat_poly_eq(aes(label =  paste(after_stat(f.value.label),
-#'                                   after_stat(p.value.label),
-#'                                   sep = "*\", \"*")),
+#'   stat_poly_line(formula = formula) +
+#'   stat_poly_eq(aes(label =  sprintf("%s*\" with \"*%s*\" and \"*%s",
+#'                                     after_stat(rr.label),
+#'                                     after_stat(f.value.label),
+#'                                     after_stat(p.value.label))),
 #'                formula = formula)
 #'
 #' # x on y regression
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   geom_smooth(method = "lm", formula = formula, orientation = "y") +
-#'   stat_poly_eq(aes(label =  paste(after_stat(eq.label),
-#'                                   after_stat(adj.rr.label),
-#'                                   sep = "*\", \"*")),
+#'   stat_poly_line(formula = formula, orientation = "y") +
+#'   stat_poly_eq(use_label(c("eq", "adj.R2")),
 #'                formula = x ~ poly(y, 3, raw = TRUE))
 #'
 #' # conditional user specified label
-#' ggplot(my.data, aes(x, y, color = group)) +
+#' ggplot(my.data, aes(x, y2, color = group)) +
 #'   geom_point() +
-#'   geom_smooth(method = "lm", formula = formula) +
+#'   stat_poly_line(formula = formula) +
 #'   stat_poly_eq(aes(label =  ifelse(after_stat(adj.r.squared) > 0.96,
 #'                                    paste(after_stat(adj.rr.label),
 #'                                          after_stat(eq.label),
@@ -266,7 +283,7 @@
 #' # geom = "text"
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   geom_smooth(method = "lm", formula = formula) +
+#'   stat_poly_line(formula = formula) +
 #'   stat_poly_eq(geom = "text", label.x = 100, label.y = 0, hjust = 1,
 #'                formula = formula)
 #'
@@ -276,7 +293,7 @@
 #'   "b[0]~`=`~%.3g*\", \"*b[1]~`=`~%.3g*\", \"*b[2]~`=`~%.3g*\", \"*b[3]~`=`~%.3g"
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   geom_smooth(method = "lm", formula = formula) +
+#'   stat_poly_line(formula = formula) +
 #'   stat_poly_eq(formula = formula,
 #'                output.type = "numeric",
 #'                parse = TRUE,
@@ -295,25 +312,25 @@
 #' # the whole of data
 #'   ggplot(my.data, aes(x, y)) +
 #'     geom_point() +
-#'     geom_smooth(method = "lm", formula = formula) +
+#'     stat_poly_line(formula = formula) +
 #'     stat_poly_eq(formula = formula, geom = "debug")
 #'
 #'   ggplot(my.data, aes(x, y)) +
 #'     geom_point() +
-#'     geom_smooth(method = "lm", formula = formula) +
+#'     stat_poly_line(formula = formula) +
 #'     stat_poly_eq(formula = formula, geom = "debug", output.type = "numeric")
 #'
 #' # names of the variables
 #'   ggplot(my.data, aes(x, y)) +
 #'     geom_point() +
-#'     geom_smooth(method = "lm", formula = formula) +
+#'     stat_poly_line(formula = formula) +
 #'     stat_poly_eq(formula = formula, geom = "debug",
 #'                  summary.fun = colnames)
 #'
 #' # only data$eq.label
 #'   ggplot(my.data, aes(x, y)) +
 #'     geom_point() +
-#'     geom_smooth(method = "lm", formula = formula) +
+#'     stat_poly_line(formula = formula) +
 #'     stat_poly_eq(formula = formula, geom = "debug",
 #'                  output.type = "expression",
 #'                  summary.fun = function(x) {x[["eq.label"]]})
@@ -321,7 +338,7 @@
 #' # only data$eq.label
 #'   ggplot(my.data, aes(x, y)) +
 #'     geom_point() +
-#'     geom_smooth(method = "lm", formula = formula) +
+#'     stat_poly_line(formula = formula) +
 #'     stat_poly_eq(aes(label = after_stat(eq.label)),
 #'                  formula = formula, geom = "debug",
 #'                  output.type = "markdown",
@@ -330,7 +347,7 @@
 #' # only data$eq.label
 #'   ggplot(my.data, aes(x, y)) +
 #'     geom_point() +
-#'     geom_smooth(method = "lm", formula = formula) +
+#'     stat_poly_line(formula = formula) +
 #'     stat_poly_eq(formula = formula, geom = "debug",
 #'                  output.type = "latex",
 #'                  summary.fun = function(x) {x[["eq.label"]]})
@@ -338,7 +355,7 @@
 #' # only data$eq.label
 #'   ggplot(my.data, aes(x, y)) +
 #'     geom_point() +
-#'     geom_smooth(method = "lm", formula = formula) +
+#'     stat_poly_line(formula = formula) +
 #'     stat_poly_eq(formula = formula, geom = "debug",
 #'                  output.type = "text",
 #'                  summary.fun = function(x) {x[["eq.label"]]})
@@ -346,7 +363,7 @@
 #' # show the content of a list column
 #'   ggplot(my.data, aes(x, y)) +
 #'     geom_point() +
-#'     geom_smooth(method = "lm", formula = formula) +
+#'     stat_poly_line(formula = formula) +
 #'     stat_poly_eq(formula = formula, geom = "debug", output.type = "numeric",
 #'                  summary.fun = function(x) {x[["coef.ls"]][[1]]})
 #' }

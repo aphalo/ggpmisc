@@ -26,19 +26,19 @@ following the syntax of package ‘broom’ are supported. Package
 Package ‘**ggpmisc**’ is consistent with the grammar of graphics, and
 opens new possibilities retaining the flexibility inherent to this
 grammar. Its aim is not to automate plotting or annotations in a way
-suitable for fast data exploration, by use a of fits-all predefined
-graphic design. Package ‘**ggpmisc**’ together with package ‘**ggpp**’,
-provide new layer functions, position functions and scales. In fact,
-these packages follow the tenets of the grammar even more strictly than
-‘**ggplot2**’ in the distinction between geometries and statistics. The
-new statistics in ‘**ggpmisc**’ focus mainly on model fitting, but there
-is not yet support for multiple comparisons among groups. The default
-annotations are those most broadly valid and of easiest interpretation.
-We follow R’s approach of expecting that users know what they need or
-want, and will usually want to adjust how results from model fits are
-presented both graphically and textually. The approach and mechanics of
-plot construction and rendering remain unchanged from those implemented
-in package ‘**ggplot2**’.
+suitable for fast data exploration by use of a “fits-all-sizes”
+predefined design. Package ‘**ggpmisc**’ together with package
+‘**ggpp**’, provide new layer functions, position functions and scales.
+In fact, these packages follow the tenets of the grammar even more
+strictly than ‘**ggplot2**’ in the distinction between geometries and
+statistics. The new statistics in ‘**ggpmisc**’ focus mainly on model
+fitting, but there is not yet support for multiple comparisons among
+groups. The default annotations are those most broadly valid and of
+easiest interpretation. We follow R’s approach of expecting that users
+know what they need or want, and will usually want to adjust how results
+from model fits are presented both graphically and textually. The
+approach and mechanics of plot construction and rendering remain
+unchanged from those implemented in package ‘**ggplot2**’.
 
 ## Statistics
 
@@ -146,8 +146,7 @@ ggplot(cars, aes(speed, dist)) +
   geom_point() +
   stat_fit_deviations(formula = formula, colour = "red") +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label =  paste(stat(eq.label), stat(adj.rr.label), sep = "*\", \"*")),
-               formula = formula)
+  stat_poly_eq(use_label(c("eq", "adj.R2")), formula = formula)
 ```
 
 ![](man/figures/README-readme-04-1.png)<!-- -->
@@ -186,8 +185,7 @@ formula <- y ~ x + I(x^2)
 ggplot(cars, aes(speed, dist)) +
   geom_point() +
   stat_quant_line(formula = formula, quantiles = 0.5) +
-  stat_quant_eq(aes(label = paste(stat(grp.label), stat(eq.label), sep = "*\": \"*")),
-               formula = formula, quantiles = 0.5)
+  stat_quant_eq(formula = formula, quantiles = 0.5)
 ```
 
 ![](man/figures/README-readme-04b-1.png)<!-- -->

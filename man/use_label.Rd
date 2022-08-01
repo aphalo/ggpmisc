@@ -103,7 +103,7 @@ ggplot(my.data, aes(x, y)) +
 ggplot(my.data, aes(x, y2)) +
   geom_point(aes(colour = group)) +
   stat_poly_line(aes(colour = group), formula = formula) +
-  stat_poly_eq(use_label(c("eq", "F"), aes(group = group)), formula = formula)
+  stat_poly_eq(use_label(c("eq", "F"), aes(grp.label = group)), formula = formula)
 
 }
 \seealso{

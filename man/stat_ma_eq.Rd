@@ -213,55 +213,65 @@ ggplot(my.data, aes(x, y)) +
   stat_ma_line() +
   stat_ma_eq()
 
+# use_label() can assemble and map a combined label
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_ma_line(method = "MA") +
+  stat_ma_eq(use_label(c("eq", "R2", "P")))
+
 # using major axis regression
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_ma_line(method = "MA") +
-  stat_ma_eq(aes(label =
-    paste(after_stat(eq.label),
-          after_stat(p.value.label),
-          sep = "*\", \"*")),
-          method = "MA")
+  stat_ma_eq(use_label(c("eq", "R2", "P")), method = "MA")
 
 # using standard major axis regression
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_ma_line(method = "SMA") +
-  stat_ma_eq(aes(label =
-    paste(after_stat(eq.label),
-          after_stat(p.value.label),
-          sep = "*\", \"*")),
-          method = "SMA")
+  stat_ma_eq(use_label(c("eq", "R2")), method = "SMA")
 
 # using ranged major axis regression
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_ma_line(method = "RMA", range.y = "interval", range.x = "interval") +
-  stat_ma_eq(aes(label =
-    paste(after_stat(eq.label),
-          after_stat(p.value.label),
-          sep = "*\", \"*")),
-          method = "RMA",
-          range.y = "interval", range.x = "interval")
+  stat_ma_eq(use_label(c("eq", "R2", "P")),
+             method = "RMA",
+             range.y = "interval",
+             range.x = "interval")
 
 # No permutation-based test
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_ma_line(method = "MA") +
-  stat_ma_eq(aes(label =
-    paste(after_stat(eq.label),
-          after_stat(p.value.label),
-          sep = "*\", \"*")),
-          method = "MA", nperm = 0)
+  stat_ma_eq(use_label(c("eq", "R2")),
+             method = "MA",
+             nperm = 0)
 
 # explicit formula "x explained by y"
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_ma_line(formula = x ~ y) +
   stat_ma_eq(formula = x ~ y,
-             aes(label = paste(after_stat(eq.label),
-                               after_stat(p.value.label),
-                               sep = "*\", \"*")))
+             use_label(c("eq", "R2", "P")))
+
+# manually assemble and map a specific label using paste() and aes()
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_ma_line() +
+  stat_ma_eq(aes(label =  paste(after_stat(eq.label),
+                                after_stat(rr.label),
+                                after_stat(p.value.label),
+                                sep = "*\", \"*")))
+
+# manually assemble and map a specific label using sprintf() and aes()
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_ma_line() +
+  stat_ma_eq(aes(label =  sprintf("\%s*\" with \"*\%s*\" and \"*\%s",
+                                  after_stat(eq.label),
+                                  after_stat(p.value.label),
+                                  after_stat(rr.label))))
 
 # grouping
 ggplot(my.data, aes(x, y, color = group)) +
@@ -274,16 +284,16 @@ ggplot(my.data, aes(x, y,  shape = group, linetype = group,
        grp.label = group)) +
   geom_point() +
   stat_ma_line(color = "black") +
-  stat_ma_eq(aes(label = paste(after_stat(grp.label),
-                               after_stat(eq.label),
-                               sep = "*\": \"*"))) +
+  stat_ma_eq(use_label(c("grp", "eq", "R2"))) +
   theme_classic()
 
-# geom = "text"
+# geom = "label"
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_ma_line() +
-  stat_ma_eq(label.x = "left", label.y = "top")
+  stat_ma_eq(geom = "label",
+             label.x = "right", label.y = "bottom",
+             hjust = "inward", vjust = "inward")
 
 # Inspecting the returned data using geom_debug()
 \dontrun{

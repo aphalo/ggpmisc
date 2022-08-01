@@ -2,7 +2,7 @@ Package: ggpmisc
 Type: Package
 Title: Miscellaneous Extensions to 'ggplot2'
 Version: 0.4.7.9001
-Date: 2022-07-30
+Date: 2022-08-01
 Authors@R:
     c(
     person("Pedro J.", "Aphalo", email = "pedro.aphalo@helsinki.fi", role = c("aut", "cre"), comment = c(ORCID = "0000-0003-3385-972X")),
@@ -24,7 +24,7 @@ LazyData: TRUE
 LazyLoad: TRUE
 ByteCompile: TRUE
 Depends:
-    R (>= 3.6.0),
+    R (>= 4.0.0),
     ggpp (>= 0.4.4)
 Imports:
     grid,

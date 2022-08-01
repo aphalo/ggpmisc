@@ -151,6 +151,11 @@
 #'   geom_point() +
 #'   stat_correlation(method = "spearman")
 #'
+#' # use_label() can map a user selected label
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   stat_correlation(use_label("R2"))
+#'
 #' # use_label() can assemble and map a combined label
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
@@ -415,6 +420,7 @@ cor_test_compute_fun <- function(data,
       r <- z[[unname(c(pearson = "cor", kendall = "tau", spearman = "rho")[method])]]
       r.char <- sprintf("\"%#.*f\"", r.digits, r)
       if (method == "pearson") {
+        rr.char <- sprintf("\"%#.*f\"", r.digits, r^2)
         t.value.char <- sprintf("\"%#.*g\"", t.digits, z[["t.value"]])
         df.char <- as.character(z[["df"]])
         conf.int.chr <- sprintf("%#.*f, %#.*f",
@@ -436,6 +442,7 @@ cor_test_compute_fun <- function(data,
       r <- z[[unname(c(pearson = "cor", kendall = "tau", spearman = "rho")[method])]]
       r.char <- sprintf("%#.*f", r.digits, r)
       if (method == "pearson") {
+        rr.char <- sprintf("\"%#.*f\"", r.digits, r^2)
         t.value.char <- sprintf("%#.*g", t.digits, z[["t.value"]])
         df.char <- as.character(z[["df"]])
         conf.int.chr <- sprintf("%#.*f, %#.*f",
@@ -481,6 +488,14 @@ cor_test_compute_fun <- function(data,
                        sep = ifelse(abs(z[["cor"]]) < 10^(-r.digits),
                                     c("~`>`~", "~`=`~", "~`<`~")[sign(z[["cor"]]) + 2],
                                     "~`=`~")))
+        z[["rr.label"]] <-
+           paste(ifelse(small.r, "italic(r)^2", "italic(R)^2"),
+                ifelse(r^2 < 10^(-r.digits) & r^2 != 0,
+                       sprintf("\"%.*f\"", r.digits, 10^(-r.digits)),
+                       rr.char),
+                sep = ifelse(r^2 < 10^(-r.digits) & r^2 != 0,
+                             "~`<`~",
+                             "~`=`~"))
         z[["t.value.label"]] <-
           ifelse(is.na(z[["t.value"]]), character(0L),
                  paste("italic(t)[", df.char, "]~`=`~", t.value.char, sep = ""))
@@ -514,7 +529,6 @@ cor_test_compute_fun <- function(data,
                  paste("italic(S)~`=`~", S.value.char, sep = ""))
       }
     } else if (output.type %in% c("latex", "tex", "text", "tikz")) {
-      # character(0) instead of "" avoids in paste() the insertion of sep for missing labels
       z[["p.value.label"]] <-
         ifelse(is.na(z[["p.value"]]), character(0L),
                paste(ifelse(small.p, "p",  "P"),
@@ -537,6 +551,14 @@ cor_test_compute_fun <- function(data,
                        sep = ifelse(abs(z[["cor"]]) < 10^(-r.digits),
                                     c(" > ", " = ", " < ")[sign(z[["cor"]]) + 2],
                                     " = ")))
+        z[["rr.label"]] <-
+          paste(ifelse(small.r, "italic(r)^2", "italic(R)^2"),
+                ifelse(r^2 < 10^(-r.digits) & r^2 != 0,
+                       sprintf("\"%.*f\"", r.digits, 10^(-r.digits)),
+                       rr.char),
+                sep = ifelse(r^2 < 10^(-r.digits) & r^2 != 0,
+                             "~`<`~",
+                             "~`=`~"))
         z[["t.value.label"]] <- ifelse(is.na(z[["t.value"]]), character(0L),
                                        paste("t_{", df.char, "} = ", t.value.char, sep = ""))
         z[["conf.int.label"]] <-
@@ -591,6 +613,14 @@ cor_test_compute_fun <- function(data,
                        sep = ifelse(abs(z[["cor"]]) < 10^(-r.digits),
                                     c(" > ", " = ", " < ")[sign(z[["cor"]]) + 2],
                                     " = ")))
+        z[["rr.label"]] <-
+          paste(ifelse(small.r, "_r_<sup>2</sup>", "_R_<sup>2</sup>"),
+                ifelse(r^2 < 10^(-r.digits) & r^2 != 0,
+                       sprintf("\"%.*f\"", r.digits, 10^(-r.digits)),
+                       rr.char),
+                sep = ifelse(r^2 < 10^(-r.digits) & r^2 != 0,
+                             " < ",
+                             " = "))
         z[["t.value.label"]] <- ifelse(is.na(z[["t.value"]]), character(0L),
                                        paste("_t_<sub>", df.char, "</sub> = ", t.value.char, sep = ""))
         z[["conf.int.label"]] <-

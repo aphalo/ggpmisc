@@ -141,7 +141,8 @@ ggplot(lynx, as.numeric = FALSE) + geom_line() +
 
 In the second example we add the equation for a fitted polynomial plus the
 adjusted coefficient of determination to a plot showing the observations plus
-the fitted curve, deviations and confidence band. We use `stat_poly_eq()`.
+the fitted curve, deviations and confidence band. We use `stat_poly_eq()` 
+together with `use_label()` to assemble and map the desired annotations.
 
 ```{r readme-04}
 formula <- y ~ x + I(x^2)
@@ -149,8 +150,7 @@ ggplot(cars, aes(speed, dist)) +
   geom_point() +
   stat_fit_deviations(formula = formula, colour = "red") +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label =  paste(stat(eq.label), stat(adj.rr.label), sep = "*\", \"*")),
-               formula = formula)
+  stat_poly_eq(use_label(c("eq", "adj.R2")), formula = formula)
 ```
 
 The same figure as in the second example but this time annotated with the
@@ -183,8 +183,7 @@ formula <- y ~ x + I(x^2)
 ggplot(cars, aes(speed, dist)) +
   geom_point() +
   stat_quant_line(formula = formula, quantiles = 0.5) +
-  stat_quant_eq(aes(label = paste(stat(grp.label), stat(eq.label), sep = "*\": \"*")),
-               formula = formula, quantiles = 0.5)
+  stat_quant_eq(formula = formula, quantiles = 0.5)
 ```
 
 Band highlighting the region between both quartile regressions and a line for the median regression.
