@@ -105,7 +105,7 @@ The returned values for `output.type` different from `numeric` are shown below. 
 | Variable      | Mode      | stat_poly_eq() | stat_ma_eq() | stat_quant_eq() | stat_correlation() |
 |---------------|-----------|----------------|--------------|-----------------|--------------------|
 | eq.label      | character | y              | y            | y\*             | n                  |
-| rr.label      | character | y\*            | y\*          | n               | n                  |
+| rr.label      | character | y\*            | y\*          | n               | y(1)                  |
 | adj.rr.label  | character | y              | n            | n               | n                  |
 | cor.label     | character | n              | n            | n               | y(1)               |
 | rho.label     | character | n              | n            | y               | y(1)               |
@@ -113,8 +113,8 @@ The returned values for `output.type` different from `numeric` are shown below. 
 | r.label       | character | n              | n            | n               | y\*                |
 | f.value.label | character | y              | n            | n               | n                  |
 | t.value.label | character | n              | n            | n               | y(1)               |
-| z.value.label | character | y              | n            | n               | y(1)               |
-| S.value.label | character | y              | n            | n               | y(1)               |
+| z.value.label | character | n              | n            | n               | y(1)               |
+| S.value.label | character | n              | n            | n               | y(1)               |
 | p.value.label | character | y              | y            | n               | y                  |
 | AIC.label     | character | y              | n            | y               | n                  |
 | BIC.label     | character | y              | n            | n               | n                  |
@@ -194,15 +194,12 @@ We first generate a set of artificial data suitable for the plotting examples in
 
 ```{r}
 set.seed(4321)
-# generate artificial data
-x <- 1:100
-y <- (x + x^2 + x^3) + rnorm(length(x), mean = 0, sd = mean(x^3) / 4)
-my.data <- data.frame(x, 
-                      y, 
-                      group = c("A", "B"), 
-                      y2 = y * c(0.5,2),
-                      block = c("a", "a", "b", "b"),
-                      wt = sqrt(x))
+x <- (1:100) / 10
+y <- x + rnorm(length(x))
+my.data <- data.frame(x = x,
+                      y = y,
+                      y.desc = - y,
+                      group = c("A", "B"))
 ```
 
 
@@ -234,11 +231,7 @@ Statistic `stat_correlation()` generates multiple labels as listed in the tables
 ```{r}
 ggplot(my.data, aes(x, y, color = group)) +
   geom_point() +
-  stat_correlation(mapping = aes(label = paste(after_stat(cor.label),
-                                               after_stat(t.value.label),
-                                               after_stat(p.value.label),
-                                               after_stat(n.label),
-                                               sep = '*"; "*')))
+  stat_correlation(use_label(c("R", "t", "P", "n")))
 ```
 Facets are also supported.
 
@@ -254,7 +247,7 @@ Using the numeric values returned it is possible to set other aesthetics on-the-
 ```{r}
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  stat_correlation(mapping = aes(color = ifelse(after_stat(cor) > 0.9,
+  stat_correlation(mapping = aes(color = ifelse(after_stat(cor) > 0.955,
                                                 "red", "black"))) +
   scale_color_identity() +
   facet_wrap(~group)
@@ -276,10 +269,11 @@ set.seed(4321)
 # generate artificial data
 x <- 1:100
 y <- (x + x^2 + x^3) + rnorm(length(x), mean = 0, sd = mean(x^3) / 4)
+y <- y / max(y)
 my.data <- data.frame(x, 
                       y, 
                       group = c("A", "B"), 
-                      y2 = y * c(0.5,2),
+                      y2 = y * c(1, 2) + c(0, 0.2),
                       block = c("a", "a", "b", "b"),
                       wt = sqrt(x))
 ```
@@ -294,7 +288,17 @@ ggplot(my.data, aes(x, y)) +
   stat_poly_eq(formula = formula)
 ```
 
-A ready formatted equation is also returned as a string that needs to be parsed into an *expression* for display.
+A ready formatted equation is also returned as a string that needs to be parsed into an *expression* for display. Function `use_label()` can be used to select or assemble the expression and map it to the `label` aesthetic.
+
+```{r}
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_poly_line(formula = formula) +
+  stat_poly_eq(use_label("eq"), formula = formula)
+```
+
+The mapping can also be done with `aes()` using the name of the variable in the returned `data` containing the desired label.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -304,34 +308,31 @@ ggplot(my.data, aes(x, y)) +
   stat_poly_eq(aes(label = after_stat(eq.label)), formula = formula)
 ```
 
-`stat_poly_eq()` makes available several character strings in the returned data frame in separate columns: `eq.label`, `rr.label`, `adj.rr.label`, `AIC.label`, `BIC.label`, `f.value.label`, `p.value.label` and `n`. One of these, `rr.label`, is used by default, but `aes()` can be used to map a different one to the `label` aesthetic. Here we show the adjusted coefficient of determination and AIC. We call `stat_poly_eq()` twice to be able to separately control the position and size of each label.
+`stat_poly_eq()` makes available several character strings in the returned data frame in separate columns: `eq.label`, `rr.label`, `adj.rr.label`, `AIC.label`, `BIC.label`, `f.value.label`, `p.value.label` and `n`. One of these, `rr.label`, is used by default, but `use_label()` and `aes()` can be used to map a different one to the `label` aesthetic. Here we show the adjusted coefficient of determination, $R^2_\mathrm{adj}$, Akaike's information criterion, AIC, and the Bayesian information criterion, BIC. We call `stat_poly_eq()` twice to be able to separately control the position and size of each label.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label = after_stat(adj.rr.label)), formula = formula) +
-  stat_poly_eq(aes(label = after_stat(AIC.label)),
-               label.x = "right", label.y = "bottom", size = 3,     
+  stat_poly_eq(use_label("adj.R2"), formula = formula) +
+  stat_poly_eq(use_label(c("AIC", "BIC")), label.x = "right", label.y = "bottom", size = 3,
                formula = formula)
-
 ```
 
-Within `aes()` it is also possible to *compute* new labels based on those returned plus "arbitrary" text. The labels returned by default are meant to be *parsed* into expressions, so any text added should be valid for a string that will be parsed. Inserting a comma plus white space in an expression requires some trickery in the argument passed to `sep`. Do note the need to *escape* the embedded quotation marks as `\"`. Combining the labels in this way ensures correct alignment. To insert only white space `sep = "~~~~~"` can be used, with each tilde character, `~`, adding a rather small amount of white space. We show only here, not to clutter the remaining examples, how to change the axis labels to ensure consistency with the typesetting of the equation.
+Within `aes()` it is also possible to *compute* new labels based on those returned plus "arbitrary" text. The labels returned by default are meant to be *parsed* into expressions, so any text added should be valid for a string that will be parsed. Inserting a comma plus white space in an expression requires some trickery in the argument passed to parameter `sep` of `paste()` or `use_label()`. Do note the need to *escape* the embedded quotation marks as `\"`. Combining the labels in this way ensures correct alignment. To insert only white space `sep = "~~~~~"` can be used, with each tilde character, `~`, adding a rather small amount of white space. We show only here, not to clutter the remaining examples, how to change the axis labels to ensure consistency with the typesetting of the equation.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label =  paste(after_stat(eq.label), after_stat(adj.rr.label), 
-                                  sep = "*\", \"*")),
+  stat_poly_eq(use_label(c("eq", "adj.R2")),
                formula = formula) +
   labs(x = expression(italic(x)), y = expression(italic(y)))
 ```
 
-Above we combined two character-string labels, but it is possible to add additional ones and even character strings constants. In this example we use several labels instead of just two, and separate them with various character strings. We also change the size of the text in the label.
+Above we combined two character-string labels, but it is possible to add additional ones and even character strings constants. In this example we use several labels instead of just two, and separate them with various character strings. In this case we need to use `paste()` and `aes()` as `use_label()`. We also change the size of the text in the label.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -353,8 +354,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label =  paste(after_stat(eq.label), after_stat(adj.rr.label), 
-                                  sep = "~~italic(\"with\")~~")),
+  stat_poly_eq(use_label(c("eq", "adj.R2"), sep = "~~italic(\"with\")~~"),
                formula = formula)
 ```
 
@@ -376,7 +376,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label = after_stat(eq.label)),
+  stat_poly_eq(use_label("eq"),
                eq.with.lhs = FALSE,
                formula = formula)
 ```
@@ -388,7 +388,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label = after_stat(eq.label)),
+  stat_poly_eq(use_label("eq"),
                eq.with.lhs = "italic(hat(y))~`=`~",
                formula = formula)
 ```
@@ -400,7 +400,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label = after_stat(eq.label)),
+  stat_poly_eq(use_label(c("eq", "R2")),
                eq.with.lhs = "italic(h)~`=`~",
                eq.x.rhs = "~italic(z)",
                formula = formula) +
@@ -414,7 +414,7 @@ formula <- y ~ poly(x, 2, raw = TRUE)
 ggplot(my.data, aes(x, log10(y + 1e6))) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label = after_stat(eq.label)),
+  stat_poly_eq(use_label("eq"),
                eq.with.lhs = "plain(log)[10](italic(delta)+10^6)~`=`~",
                eq.x.rhs = "~Omega",
                formula = formula) +
@@ -430,7 +430,7 @@ formula <- y ~ poly(x, 5, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label = after_stat(eq.label)), formula = formula)
+  stat_poly_eq(use_label("eq"), formula = formula)
 ```
 
 Intercept forced to zero.
@@ -528,7 +528,7 @@ ggplot(my.data, aes(x, y2, colour = group)) +
                label.x = "centre")
 ```
 
-The default locations are now based on normalized coordinates, and consequently these defaults work even when the range of the *x* and *y* scales varies from panel to panel.
+The default locations are based on normalized coordinates, and consequently these defaults work even when the range of the *x* and *y* scales varies from panel to panel.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -562,7 +562,7 @@ ggplot(my.data, aes(x, y2, colour = group)) +
   geom_point() +
   stat_poly_line(formula = formula) +
   stat_poly_eq(geom = "text", aes(label = after_stat(eq.label)),
-               label.x = c(100, 90), label.y = c(-1e4, 2.1e6), hjust = "inward",
+               label.x = c(100, 20), label.y = c(-0.1, 2.1), hjust = "inward",
                formula = formula)
 ```
 
@@ -574,9 +574,9 @@ Occasionally, possibly as a demonstration in teaching, we may want to compare a 
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = y ~ x, color = "blue") +
-  stat_poly_eq(aes(label = after_stat(eq.label)), color = "blue") +
+  stat_poly_eq(use_label(c("R2", "eq")), color = "blue") +
   stat_poly_line(formula = y ~ x, color = "red", orientation = "y") +
-  stat_poly_eq(aes(label = after_stat(eq.label)), color = "red", orientation = "y",
+  stat_poly_eq(use_label(c("R2", "eq")), color = "red", orientation = "y",
                label.y = 0.9)
 ```
 
@@ -590,16 +590,16 @@ In the figure above we see that the ordinary least squares (OLS) linear regressi
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_ma_line() +
-  stat_ma_eq(aes(label = after_stat(eq.label)))
+  stat_ma_eq(use_label("eq"))
 ```
 
 ```{r}
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_ma_line(color = "blue") +
-  stat_ma_eq(aes(label = after_stat(eq.label)), color = "blue") +
+  stat_ma_eq(use_label(c("R2", "eq")), color = "blue") +
   stat_ma_line(color = "red", orientation = "y") +
-  stat_ma_eq(aes(label = after_stat(eq.label)), color = "red", orientation = "y",
+  stat_ma_eq(use_label(c("R2", "eq")), color = "red", orientation = "y",
              label.y = 0.9)
 ```
 
@@ -681,10 +681,10 @@ In some cases *double quantile regression* is an informative method to assess re
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_quant_line(formula = y ~ x, color = "blue", quantiles = 0.05) +
-  stat_quant_eq(aes(label = after_stat(eq.label)), formula = y ~ x, color = "blue",
+  stat_quant_eq(use_label("eq"), formula = y ~ x, color = "blue",
                 quantiles = 0.05) +
   stat_quant_line(formula = x ~ y, color = "red", quantiles = 0.95) +
-  stat_quant_eq(aes(label = after_stat(eq.label)), formula = x ~ y, color = "red", 
+  stat_quant_eq(use_label("eq"), formula = x ~ y, color = "red", 
                 quantiles = 0.95, label.y = 0.9)
 ```
 
@@ -779,9 +779,8 @@ ggplot(my.data, aes(x, y, colour = group)) +
                   method.args = list(formula = formula),
                   label.x = "right",
                   label.y = "bottom",
-                  aes(label = paste("italic(P)*\"-value = \"*", 
-                                    signif(after_stat(p.value), digits = 4),
-                                    sep = "")),
+                  aes(label = sprintf("italic(P)*\"-value = \"*%.3g", 
+                                      after_stat(p.value))),
                   parse = TRUE)
 ```
 

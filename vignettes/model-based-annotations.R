@@ -26,15 +26,12 @@ old_theme <- theme_set(theme_bw())
 
 ## -----------------------------------------------------------------------------
 set.seed(4321)
-# generate artificial data
-x <- 1:100
-y <- (x + x^2 + x^3) + rnorm(length(x), mean = 0, sd = mean(x^3) / 4)
-my.data <- data.frame(x, 
-                      y, 
-                      group = c("A", "B"), 
-                      y2 = y * c(0.5,2),
-                      block = c("a", "a", "b", "b"),
-                      wt = sqrt(x))
+x <- (1:100) / 10
+y <- x + rnorm(length(x))
+my.data <- data.frame(x = x,
+                      y = y,
+                      y.desc = - y,
+                      group = c("A", "B"))
 
 ## -----------------------------------------------------------------------------
 ggplot(my.data, aes(x, y)) +
@@ -54,11 +51,7 @@ ggplot(my.data, aes(x, y, color = group)) +
 ## -----------------------------------------------------------------------------
 ggplot(my.data, aes(x, y, color = group)) +
   geom_point() +
-  stat_correlation(mapping = aes(label = paste(after_stat(cor.label),
-                                               after_stat(t.value.label),
-                                               after_stat(p.value.label),
-                                               after_stat(n.label),
-                                               sep = '*"; "*')))
+  stat_correlation(use_label(c("R", "t", "P", "n")))
 
 ## -----------------------------------------------------------------------------
 ggplot(my.data, aes(x, y)) +
@@ -69,7 +62,7 @@ ggplot(my.data, aes(x, y)) +
 ## -----------------------------------------------------------------------------
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  stat_correlation(mapping = aes(color = ifelse(after_stat(cor) > 0.9,
+  stat_correlation(mapping = aes(color = ifelse(after_stat(cor) > 0.955,
                                                 "red", "black"))) +
   scale_color_identity() +
   facet_wrap(~group)
@@ -79,10 +72,11 @@ set.seed(4321)
 # generate artificial data
 x <- 1:100
 y <- (x + x^2 + x^3) + rnorm(length(x), mean = 0, sd = mean(x^3) / 4)
+y <- y / max(y)
 my.data <- data.frame(x, 
                       y, 
                       group = c("A", "B"), 
-                      y2 = y * c(0.5,2),
+                      y2 = y * c(1, 2) + c(0, 0.2),
                       block = c("a", "a", "b", "b"),
                       wt = sqrt(x))
 
@@ -98,6 +92,13 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
+  stat_poly_eq(use_label("eq"), formula = formula)
+
+## -----------------------------------------------------------------------------
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_poly_line(formula = formula) +
   stat_poly_eq(aes(label = after_stat(eq.label)), formula = formula)
 
 ## -----------------------------------------------------------------------------
@@ -105,19 +106,16 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label = after_stat(adj.rr.label)), formula = formula) +
-  stat_poly_eq(aes(label = after_stat(AIC.label)),
-               label.x = "right", label.y = "bottom", size = 3,     
+  stat_poly_eq(use_label("adj.R2"), formula = formula) +
+  stat_poly_eq(use_label(c("AIC", "BIC")), label.x = "right", label.y = "bottom", size = 3,
                formula = formula)
-
 
 ## -----------------------------------------------------------------------------
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label =  paste(after_stat(eq.label), after_stat(adj.rr.label), 
-                                  sep = "*\", \"*")),
+  stat_poly_eq(use_label(c("eq", "adj.R2")),
                formula = formula) +
   labs(x = expression(italic(x)), y = expression(italic(y)))
 
@@ -138,8 +136,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label =  paste(after_stat(eq.label), after_stat(adj.rr.label), 
-                                  sep = "~~italic(\"with\")~~")),
+  stat_poly_eq(use_label(c("eq", "adj.R2"), sep = "~~italic(\"with\")~~"),
                formula = formula)
 
 ## ---- eval=eval_flag----------------------------------------------------------
@@ -155,7 +152,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label = after_stat(eq.label)),
+  stat_poly_eq(use_label("eq"),
                eq.with.lhs = FALSE,
                formula = formula)
 
@@ -164,7 +161,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label = after_stat(eq.label)),
+  stat_poly_eq(use_label("eq"),
                eq.with.lhs = "italic(hat(y))~`=`~",
                formula = formula)
 
@@ -173,7 +170,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label = after_stat(eq.label)),
+  stat_poly_eq(use_label(c("eq", "R2")),
                eq.with.lhs = "italic(h)~`=`~",
                eq.x.rhs = "~italic(z)",
                formula = formula) +
@@ -184,7 +181,7 @@ formula <- y ~ poly(x, 2, raw = TRUE)
 ggplot(my.data, aes(x, log10(y + 1e6))) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label = after_stat(eq.label)),
+  stat_poly_eq(use_label("eq"),
                eq.with.lhs = "plain(log)[10](italic(delta)+10^6)~`=`~",
                eq.x.rhs = "~Omega",
                formula = formula) +
@@ -195,7 +192,7 @@ formula <- y ~ poly(x, 5, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label = after_stat(eq.label)), formula = formula)
+  stat_poly_eq(use_label("eq"), formula = formula)
 
 ## ---- eval=eval_flag----------------------------------------------------------
 formula <- y ~ x + I(x^2) + I(x^3) - 1
@@ -294,31 +291,31 @@ ggplot(my.data, aes(x, y2, colour = group)) +
   geom_point() +
   stat_poly_line(formula = formula) +
   stat_poly_eq(geom = "text", aes(label = after_stat(eq.label)),
-               label.x = c(100, 90), label.y = c(-1e4, 2.1e6), hjust = "inward",
+               label.x = c(100, 20), label.y = c(-0.1, 2.1), hjust = "inward",
                formula = formula)
 
 ## -----------------------------------------------------------------------------
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = y ~ x, color = "blue") +
-  stat_poly_eq(aes(label = after_stat(eq.label)), color = "blue") +
+  stat_poly_eq(use_label(c("R2", "eq")), color = "blue") +
   stat_poly_line(formula = y ~ x, color = "red", orientation = "y") +
-  stat_poly_eq(aes(label = after_stat(eq.label)), color = "red", orientation = "y",
+  stat_poly_eq(use_label(c("R2", "eq")), color = "red", orientation = "y",
                label.y = 0.9)
 
 ## -----------------------------------------------------------------------------
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_ma_line() +
-  stat_ma_eq(aes(label = after_stat(eq.label)))
+  stat_ma_eq(use_label("eq"))
 
 ## -----------------------------------------------------------------------------
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_ma_line(color = "blue") +
-  stat_ma_eq(aes(label = after_stat(eq.label)), color = "blue") +
+  stat_ma_eq(use_label(c("R2", "eq")), color = "blue") +
   stat_ma_line(color = "red", orientation = "y") +
-  stat_ma_eq(aes(label = after_stat(eq.label)), color = "red", orientation = "y",
+  stat_ma_eq(use_label(c("R2", "eq")), color = "red", orientation = "y",
              label.y = 0.9)
 
 ## ---- warning=FALSE-----------------------------------------------------------
@@ -367,10 +364,10 @@ ggplot(my.data, aes(x, y, group = group, linetype = group,
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_quant_line(formula = y ~ x, color = "blue", quantiles = 0.05) +
-  stat_quant_eq(aes(label = after_stat(eq.label)), formula = y ~ x, color = "blue",
+  stat_quant_eq(use_label("eq"), formula = y ~ x, color = "blue",
                 quantiles = 0.05) +
   stat_quant_line(formula = x ~ y, color = "red", quantiles = 0.95) +
-  stat_quant_eq(aes(label = after_stat(eq.label)), formula = x ~ y, color = "red", 
+  stat_quant_eq(use_label("eq"), formula = x ~ y, color = "red", 
                 quantiles = 0.95, label.y = 0.9)
 
 ## -----------------------------------------------------------------------------
@@ -432,9 +429,8 @@ ggplot(my.data, aes(x, y, colour = group)) +
                   method.args = list(formula = formula),
                   label.x = "right",
                   label.y = "bottom",
-                  aes(label = paste("italic(P)*\"-value = \"*", 
-                                    signif(after_stat(p.value), digits = 4),
-                                    sep = "")),
+                  aes(label = sprintf("italic(P)*\"-value = \"*%.3g", 
+                                      after_stat(p.value))),
                   parse = TRUE)
 
 ## -----------------------------------------------------------------------------

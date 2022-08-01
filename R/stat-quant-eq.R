@@ -511,8 +511,8 @@ quant_eq_compute_group_fun <- function(data,
       grp.label <- data[["grp.label"]][1]
     }
   } else {
-    # if nothing mapped to grp.label we use group index as label
-    grp.label <- as.character(data[["group"]][1])
+    # if nothing mapped to grp.label we use ""
+    grp.label <- ""
   }
 
   group.idx <- abs(data[["group"]][1])

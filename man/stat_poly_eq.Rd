@@ -226,7 +226,7 @@ y <- (x + x^2 + x^3) + rnorm(length(x), mean = 0, sd = mean(x^3) / 4)
 y <- y / max(y)
 my.data <- data.frame(x = x, y = y,
                       group = c("A", "B"),
-                      y2 = y * c(1, 2) + max(y) * c(0, 0.1),
+                      y2 = y * c(1, 2) + c(0, 0.1),
                       w = sqrt(x))
 
 # give a name to a formula
