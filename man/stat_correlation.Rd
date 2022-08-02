@@ -27,6 +27,7 @@ stat_correlation(
   hstep = 0,
   vstep = NULL,
   output.type = NULL,
+  boot.R = ifelse(method == "pearson", 0, 999),
   na.rm = FALSE,
   parse = NULL,
   show.legend = FALSE,
@@ -87,6 +88,9 @@ used between labels for different groups.}
 
 \item{output.type}{character One of "expression", "LaTeX", "text", "markdown"
 or "numeric".}
+
+\item{boot.R}{interger The number of bootstrap resamples. Set to zero for no
+bootstrap estimates for the CI.}
 
 \item{na.rm}{a logical indicating whether NA values should be stripped before
 the computation proceeds.}
@@ -154,11 +158,11 @@ Currently \code{coef.keep.zeros} is ignored, with trailing zeros always
 \describe{
   \item{x,npcx}{x position}
   \item{y,npcy}{y position}
-  \item{cor, tau or rho}{numeric values for correlation coefficient estimates}
+  \item{r, and cor, tau or rho}{numeric values for correlation coefficient estimates}
   \item{t.value and its df, z.value or S.value }{numeric values for statistic estimates}
   \item{p.value, n}{numeric values}
-  \item{conf.int.low}{Confidence interval limit for \code{r} (only with \code{method = "pearson"}).}
-  \item{conf.int.high}{Confidence interval limit for \code{r} (only with \code{method = "pearson"}).}
+  \item{r.confint.low}{Confidence interval limit for \code{r} (only with \code{method = "pearson"}).}
+  \item{r.confint.high}{Confidence interval limit for \code{r} (only with \code{method = "pearson"}).}
   \item{grp.label}{Set according to mapping in \code{aes}.}
   \item{method, test}{character values}}
 
@@ -170,7 +174,7 @@ value is missing the label is set to \code{character(0L)}.
   \item{r.label, and cor.label, tau.label or rho.label}{Correlation coefficient as a character string.}
   \item{t.value.label, z.value.label or S.value.label}{t-value and degrees of freedom, z-value or S-value as a character string.}
   \item{p.value.label}{P-value for test against zero, as a character string.}
-  \item{conf.int.label}{Confidence interval for \code{r} (only with \code{method = "pearson"}).}
+  \item{r.confint.label, and cor.conint.label, tau.confint.label or rho.confint.label}{Confidence interval for \code{r} (only with \code{method = "pearson"}).}
   \item{n.label}{Number of observations used in the fit, as a character string.}
   \item{grp.label}{Set according to mapping in \code{aes}, as a character string.}}
 
@@ -222,7 +226,19 @@ ggplot(my.data, aes(x, y)) +
 
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  stat_correlation(use_label(c("R", "CI")))
+  stat_correlation(use_label(c("R", "R.CI")))
+
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_correlation(use_label(c("R", "R.CI")), boot.R = 999)
+
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_correlation(use_label(c("R", "R.CI")), method = "kendall")
+
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_correlation(use_label(c("R", "R.CI")), method = "spearman")
 
 # manually assemble and map a specific label using paste() and aes()
 ggplot(my.data, aes(x, y)) +

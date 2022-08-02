@@ -1,8 +1,8 @@
 Package: ggpmisc
 Type: Package
 Title: Miscellaneous Extensions to 'ggplot2'
-Version: 0.4.7.9001
-Date: 2022-08-01
+Version: 0.4.7.9002
+Date: 2022-08-02
 Authors@R:
     c(
     person("Pedro J.", "Aphalo", email = "pedro.aphalo@helsinki.fi", role = c("aut", "cre"), comment = c(ORCID = "0000-0003-3385-972X")),
@@ -34,6 +34,7 @@ Imports:
     rlang (>= 1.0.0),
     generics (>= 0.1.2),
     MASS (>= 7.3-51.6),
+    confintr (>= 0.1.2),
     polynom (>= 1.4-0),
     quantreg (>= 5.93),
     lmodel2 (>= 1.7-3),

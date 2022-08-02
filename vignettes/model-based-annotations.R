@@ -92,14 +92,15 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(use_label("eq"), formula = formula)
+  stat_poly_eq(mapping = use_label("eq"), formula = formula)
 
 ## -----------------------------------------------------------------------------
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label = after_stat(eq.label)), formula = formula)
+  stat_poly_eq(mapping = aes(label = after_stat(eq.label)), 
+               formula = formula)
 
 ## -----------------------------------------------------------------------------
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -107,7 +108,7 @@ ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
   stat_poly_eq(use_label("adj.R2"), formula = formula) +
-  stat_poly_eq(use_label(c("AIC", "BIC")), label.x = "right", label.y = "bottom", size = 3,
+  stat_poly_eq(use_label("AIC"), label.x = "right", label.y = "bottom", size = 3,
                formula = formula)
 
 ## -----------------------------------------------------------------------------
@@ -326,7 +327,7 @@ ggplot(my.data, aes(x, y)) +
 ## ---- warning=FALSE-----------------------------------------------------------
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  stat_quant_line(formula = y ~ poly(x, 2), quantiles = c(0.1, 0.9))
+  stat_quant_line(formula = y ~ poly(x, 2), quantiles = c(0.05, 0.95))
 
 ## ---- warning=FALSE-----------------------------------------------------------
 ggplot(my.data, aes(x, y)) +
@@ -448,6 +449,94 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
                   label.x = "centre", label.y = "bottom")
 
 ## -----------------------------------------------------------------------------
+formula <- y ~ x + I(x^2) + I(x^3)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_fit_tb(method = "lm",
+              method.args = list(formula = formula),
+              tb.vars = c(Parameter = "term", 
+                          Estimate = "estimate", 
+                          "s.e." = "std.error", 
+                          "italic(t)" = "statistic", 
+                          "italic(P)" = "p.value"),
+              label.y = "top", label.x = "left",
+              parse = TRUE)
+
+## -----------------------------------------------------------------------------
+formula <- y ~ x + I(x^2) + I(x^3)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_fit_tb(method = "lm",
+              method.args = list(formula = formula),
+              tb.type = "fit.anova",
+              tb.vars = c(Effect = "term", 
+                          df = "df",
+                          "italic(F)" = "statistic", 
+                          "italic(P)" = "p.value"),
+              tb.params = c(x = 1, "x^2" = 2, "x^3" = 3, Resid = 4),
+              label.y = "top", label.x = "left",
+              parse = TRUE)
+
+## -----------------------------------------------------------------------------
+formula <- y ~ x + I(x^2) + I(x^3)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = formula) +
+  stat_fit_tb(method = "lm",
+              method.args = list(formula = formula),
+              tb.type = "fit.coefs", parse = TRUE,
+              label.y = "center", label.x = "left")
+
+## -----------------------------------------------------------------------------
+micmen.formula <- y ~ SSmicmen(x, Vm, K)
+ggplot(Puromycin, aes(conc, rate, colour = state)) +
+  facet_wrap(~state) +
+  geom_point() +
+  geom_smooth(method = "nls",
+              formula = micmen.formula,
+              se = FALSE) +
+  stat_fit_tb(method = "nls",
+              method.args = list(formula = micmen.formula),
+              tb.type = "fit.coefs",
+              label.x = 0.9,
+              label.y = c(0.75, 0.2)) +
+  theme(legend.position = "none") +
+  labs(x = "C", y = "V")
+
+## -----------------------------------------------------------------------------
+ggplot(chickwts, aes(factor(feed), weight)) +
+  stat_summary(fun.data = "mean_se") +
+  stat_fit_tb(tb.type = "fit.anova",
+              label.x = "center",
+              label.y = "bottom") +
+  expand_limits(y = 0)
+
+## -----------------------------------------------------------------------------
+ggplot(chickwts, aes(factor(feed), weight)) +
+  stat_summary(fun.data = "mean_se") +
+  stat_fit_tb(tb.type = "fit.anova", label.x = "left", size = 3) +
+  scale_x_discrete(expand = expansion(mult = c(0.2, 0.5))) +
+  coord_flip()
+
+## ---- eval=eval_flag----------------------------------------------------------
+ggplot(chickwts, aes(factor(feed), weight)) +
+  stat_summary(fun.data = "mean_se") +
+  stat_fit_tb(tb.type = "fit.anova",
+              angle = 90, size = 3,
+              label.x = "right", label.y = "center",
+              hjust = 0.5, vjust = 0,
+              tb.vars = c(Effect = "term", 
+                          "df",
+                          "M.S." = "meansq", 
+                          "italic(F)" = "statistic", 
+                          "italic(P)" = "p.value"),
+              parse = TRUE) +
+  scale_x_discrete(expand = expansion(mult = c(0.1, 0.35))) +
+  expand_limits(y = 0)
+
+## -----------------------------------------------------------------------------
 micmen.formula <- y ~ SSmicmen(x, Vm, K) 
 ggplot(Puromycin, aes(conc, rate, colour = state)) +
   geom_point() +
@@ -550,94 +639,6 @@ ggplot(mpg, aes(displ, 1 / hwy)) +
   geom_point() +
   geom_quantile(quantiles = 0.5, formula = my_formula) +
   stat_rq_eqn(tau = 0.5, formula = my_formula)
-
-## -----------------------------------------------------------------------------
-formula <- y ~ x + I(x^2) + I(x^3)
-ggplot(my.data, aes(x, y)) +
-  geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
-  stat_fit_tb(method = "lm",
-              method.args = list(formula = formula),
-              tb.vars = c(Parameter = "term", 
-                          Estimate = "estimate", 
-                          "s.e." = "std.error", 
-                          "italic(t)" = "statistic", 
-                          "italic(P)" = "p.value"),
-              label.y = "top", label.x = "left",
-              parse = TRUE)
-
-## -----------------------------------------------------------------------------
-formula <- y ~ x + I(x^2) + I(x^3)
-ggplot(my.data, aes(x, y)) +
-  geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
-  stat_fit_tb(method = "lm",
-              method.args = list(formula = formula),
-              tb.type = "fit.anova",
-              tb.vars = c(Effect = "term", 
-                          df = "df",
-                          "italic(F)" = "statistic", 
-                          "italic(P)" = "p.value"),
-              tb.params = c(x = 1, "x^2" = 2, "x^3" = 3, Resid = 4),
-              label.y = "top", label.x = "left",
-              parse = TRUE)
-
-## -----------------------------------------------------------------------------
-formula <- y ~ x + I(x^2) + I(x^3)
-ggplot(my.data, aes(x, y)) +
-  geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
-  stat_fit_tb(method = "lm",
-              method.args = list(formula = formula),
-              tb.type = "fit.coefs", parse = TRUE,
-              label.y = "center", label.x = "left")
-
-## -----------------------------------------------------------------------------
-micmen.formula <- y ~ SSmicmen(x, Vm, K)
-ggplot(Puromycin, aes(conc, rate, colour = state)) +
-  facet_wrap(~state) +
-  geom_point() +
-  geom_smooth(method = "nls",
-              formula = micmen.formula,
-              se = FALSE) +
-  stat_fit_tb(method = "nls",
-              method.args = list(formula = micmen.formula),
-              tb.type = "fit.coefs",
-              label.x = 0.9,
-              label.y = c(0.75, 0.2)) +
-  theme(legend.position = "none") +
-  labs(x = "C", y = "V")
-
-## -----------------------------------------------------------------------------
-ggplot(chickwts, aes(factor(feed), weight)) +
-  stat_summary(fun.data = "mean_se") +
-  stat_fit_tb(tb.type = "fit.anova",
-              label.x = "center",
-              label.y = "bottom") +
-  expand_limits(y = 0)
-
-## -----------------------------------------------------------------------------
-ggplot(chickwts, aes(factor(feed), weight)) +
-  stat_summary(fun.data = "mean_se") +
-  stat_fit_tb(tb.type = "fit.anova", label.x = "left", size = 3) +
-  scale_x_discrete(expand = expansion(mult = c(0.2, 0.5))) +
-  coord_flip()
-
-## ---- eval=eval_flag----------------------------------------------------------
-ggplot(chickwts, aes(factor(feed), weight)) +
-  stat_summary(fun.data = "mean_se") +
-  stat_fit_tb(tb.type = "fit.anova",
-              angle = 90, size = 3,
-              label.x = "right", label.y = "center",
-              hjust = 0.5, vjust = 0,
-              tb.vars = c(Effect = "term", 
-                          "df",
-                          "M.S." = "meansq", 
-                          "italic(F)" = "statistic", 
-                          "italic(P)" = "p.value"),
-              parse = TRUE) +
-  scale_x_discrete(expand = expansion(mult = c(0.1, 0.35))) +
-  expand_limits(y = 0)
 
 ## -----------------------------------------------------------------------------
 # formula <- y ~ poly(x, 3, raw = TRUE)

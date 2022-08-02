@@ -104,9 +104,9 @@ use_label <- function(labels = c("eq", "p.value"),
   # accept short names lacking ".label" as ending
   truncated.labels <- !grepl("\\.label$|\\.f$|method$", labels)
   labels[truncated.labels] <- paste(labels[truncated.labels], ".label", sep = "")
-  # accept r2
-  labels <- gsub("r2\\.label$", "rr.label", labels)
-  labels <- gsub("ci\\.label$", "conf.int.label", labels)
+  # accept R2 and CI
+  labels <- gsub("r2\\.", "rr.", labels)
+  labels <- gsub("ci\\.label$", "confint.label", labels)
   # accept F and P
   labels <- gsub("^f\\.label$", "f.value.label", labels)
   labels <- gsub("^p\\.label$", "p.value.label", labels)
