@@ -17,6 +17,8 @@ stat_poly_eq(
   eq.x.rhs = NULL,
   small.r = FALSE,
   small.p = FALSE,
+  CI.brackets = c("[", "]"),
+  rsquared.conf.level = 0.95,
   coef.digits = 3,
   coef.keep.zeros = TRUE,
   rr.digits = 2,
@@ -74,6 +76,12 @@ it.}
 
 \item{small.r, small.p}{logical Flags to switch use of lower case r and p for
 coefficient of determination and p-value.}
+
+\item{CI.brackets}{character vector of length 2. The opening and closing
+brackets used for the CI label.}
+
+\item{rsquared.conf.level}{numeric Confidence level for the returned
+confidence interval.}
 
 \item{coef.digits, f.digits}{integer Number of significant digits to use for
 the fitted coefficients and F-value.}
@@ -254,6 +262,11 @@ ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
   stat_poly_eq(use_label(c("eq", "R2")), formula = formula)
+
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_poly_line(formula = formula) +
+  stat_poly_eq(use_label(c("R2", "R2.CI", "P")), formula = formula)
 
 ggplot(my.data, aes(x, y)) +
   geom_point() +

@@ -41,6 +41,10 @@
 #'   it.
 #' @param small.r,small.p logical Flags to switch use of lower case r and p for
 #'   coefficient of determination and p-value.
+#' @param rsquared.conf.level numeric Confidence level for the returned
+#'   confidence interval.
+#' @param CI.brackets character vector of length 2. The opening and closing
+#'   brackets used for the CI label.
 #' @param coef.digits,f.digits integer Number of significant digits to use for
 #'   the fitted coefficients and F-value.
 #' @param coef.keep.zeros logical Keep or drop trailing zeros when formatting
@@ -201,6 +205,11 @@
 #'   geom_point() +
 #'   stat_poly_line(formula = formula) +
 #'   stat_poly_eq(use_label(c("eq", "R2")), formula = formula)
+#'
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   stat_poly_line(formula = formula) +
+#'   stat_poly_eq(use_label(c("R2", "R2.CI", "P")), formula = formula)
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
@@ -381,6 +390,8 @@ stat_poly_eq <- function(mapping = NULL, data = NULL,
                          eq.x.rhs = NULL,
                          small.r = FALSE,
                          small.p = FALSE,
+                         CI.brackets = c("[", "]"),
+                         rsquared.conf.level = 0.95,
                          coef.digits = 3,
                          coef.keep.zeros = TRUE,
                          rr.digits = 2,
@@ -443,6 +454,8 @@ stat_poly_eq <- function(mapping = NULL, data = NULL,
                   eq.x.rhs = eq.x.rhs,
                   small.r = small.r,
                   small.p = small.p,
+                  CI.brackets = CI.brackets,
+                  rsquared.conf.level = rsquared.conf.level,
                   coef.digits = coef.digits,
                   coef.keep.zeros = coef.keep.zeros,
                   rr.digits = rr.digits,
@@ -482,6 +495,8 @@ poly_eq_compute_group_fun <- function(data,
                                       eq.x.rhs,
                                       small.r,
                                       small.p,
+                                      CI.brackets,
+                                      rsquared.conf.level,
                                       coef.digits,
                                       coef.keep.zeros,
                                       rr.digits,
@@ -637,8 +652,15 @@ poly_eq_compute_group_fun <- function(data,
     f.df1 <- mf.summary[["fstatistic"]]["numdf"]
     f.df2 <- mf.summary[["fstatistic"]]["dendf"]
     p.value <- stats::pf(q = f.value, f.df1, f.df2, lower.tail = FALSE)
+    rr.confint <- confintr::ci_rsquared(x = f.value,
+                                        df1 = f.df1,
+                                        df2 = f.df2,
+                                        probs =  ((1 - rsquared.conf.level) / 2) * c(1, -1) + c(0, 1))
+    rr.confint.low  <- rr.confint[["interval"]][1]
+    rr.confint.high <- rr.confint[["interval"]][2]
   } else {
     f.value <- f.df1 <- f.df2 <- p.value <- NA_real_
+    rr.confint.low <- rr.confint.high <- NA_real_
   }
   coefs <- stats::coefficients(mf)
 
@@ -652,6 +674,8 @@ poly_eq_compute_group_fun <- function(data,
   if (output.type == "numeric") {
     z <- tibble::tibble(coef.ls = list(summary(mf)[["coefficients"]]),
                         r.squared = rr,
+                        rr.confint.low = rr.confint.low,
+                        rr.confint.high = rr.confint.high,
                         adj.r.squared = adj.rr,
                         f.value = f.value,
                         f.df1 = f.df1,
@@ -705,15 +729,34 @@ poly_eq_compute_group_fun <- function(data,
     if (output.type == "expression") {
       rr.char <- sprintf("\"%#.*f\"", rr.digits, rr)
       adj.rr.char <- sprintf("\"%#.*f\"", rr.digits, adj.rr)
+      rr.confint.chr <- sprintf("%#.*f, %#.*f",
+                                rr.digits, rr.confint.low,
+                                rr.digits, rr.confint.high)
+      if (as.logical((rsquared.conf.level * 100) %% 1)) {
+        conf.level.digits = 1L
+      } else {
+        conf.level.digits = 0L
+      }
+      conf.level.chr <- sprintf("%.*f", conf.level.digits, rsquared.conf.level * 100)
       AIC.char <- sprintf("\"%.4g\"", AIC)
       BIC.char <- sprintf("\"%.4g\"", BIC)
       f.value.char <- sprintf("\"%#.*g\"", f.digits, f.value)
       f.df1.char <- as.character(f.df1)
       f.df2.char <- as.character(f.df2)
       p.value.char <- sprintf("\"%#.*f\"", p.digits, p.value)
+
     } else {
       rr.char <- sprintf("%#.*f", rr.digits, rr)
       adj.rr.char <- sprintf("%#.*f", rr.digits, adj.rr)
+      rr.confint.chr <- sprintf("%#.*f, %#.*f",
+                               rr.digits, rr.confint.low,
+                               rr.digits, rr.confint.high)
+      if (as.logical((rsquared.conf.level * 100) %% 1)) {
+        conf.level.digits = 1L
+      } else {
+        conf.level.digits = 0L
+      }
+      conf.level.chr <- sprintf("%.*f", conf.level.digits, rsquared.conf.level * 100)
       AIC.char <- sprintf("%.4g", AIC)
       BIC.char <- sprintf("%.4g", BIC)
       f.value.char <- sprintf("%#.*g", f.digits, f.value)
@@ -744,6 +787,8 @@ poly_eq_compute_group_fun <- function(data,
                                          sep = ifelse(adj.rr < 10^(-rr.digits) & adj.rr != 0,
                                                       "~`<`~",
                                                       "~`=`~"))),
+                          rr.confint.label =
+                            paste("\"", conf.level.chr, "% CI ", CI.brackets[1], rr.confint.chr, CI.brackets[2], "\"", sep = ""),
                           AIC.label =
                             ifelse(is.na(AIC), character(0L),
                                    paste("AIC", AIC.char, sep = "~`=`~")),
@@ -783,6 +828,8 @@ poly_eq_compute_group_fun <- function(data,
                                    paste(ifelse(small.r, "r_{adj}^2", "R_{adj}^2"),
                                          ifelse(adj.rr < 10^(-rr.digits), as.character(10^(-rr.digits)), adj.rr.char),
                                          sep = ifelse(adj.rr < 10^(-rr.digits), " < ", " = "))),
+                          rr.confint.label =
+                            paste(conf.level.chr, "% CI ", CI.brackets[1], rr.confint.chr, CI.brackets[2], sep = ""),
                           AIC.label =
                             ifelse(is.na(AIC), character(0L),
                                    paste("AIC", AIC.char, sep = " = ")),
@@ -817,6 +864,8 @@ poly_eq_compute_group_fun <- function(data,
                                    paste(ifelse(small.r, "_r_<sup>2</sup><sub>adj</sub>", "_R_<sup>2</sup><sub>adj</sub>"),
                                          ifelse(adj.rr < 10^(-rr.digits), as.character(10^(-rr.digits)), adj.rr.char),
                                          sep = ifelse(adj.rr < 10^(-rr.digits), " < ", " = "))),
+                          rr.confint.label =
+                            paste(conf.level.chr, "% CI ", CI.brackets[1], rr.confint.chr, CI.brackets[2], sep = ""),
                           AIC.label =
                             ifelse(is.na(AIC), character(0L),
                                    paste("AIC", AIC.char, sep = " = ")),

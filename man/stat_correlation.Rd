@@ -13,7 +13,7 @@ stat_correlation(
   method = "pearson",
   alternative = "two.sided",
   exact = NULL,
-  conf.level = 0.95,
+  r.conf.level = 0.95,
   continuity = FALSE,
   small.r = FALSE,
   small.p = FALSE,
@@ -58,8 +58,8 @@ can include aesthetics whose values you want to set, not map. See
 \item{exact}{logical Whether an exact p-value should be computed. Used for
 Kendall's tau and Spearman's rho.}
 
-\item{conf.level}{numeric Confidence level for the returned confidence
-interval (only if \code{method = "pearson"} which is the default).}
+\item{r.conf.level}{numeric Confidence level for the returned confidence
+interval.}
 
 \item{continuity}{logical If TRUE , a continuity correction is used for
 Kendall's tau and Spearman's rho when not computed exactly.}

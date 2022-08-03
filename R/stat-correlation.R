@@ -30,8 +30,8 @@
 #' @param alternative character One of "two.sided", "less" or "greater".
 #' @param exact logical Whether an exact p-value should be computed. Used for
 #'   Kendall's tau and Spearman's rho.
-#' @param conf.level numeric Confidence level for the returned confidence
-#'   interval (only if \code{method = "pearson"} which is the default).
+#' @param r.conf.level numeric Confidence level for the returned confidence
+#'   interval.
 #' @param continuity logical If TRUE , a continuity correction is used for
 #'   Kendall's tau and Spearman's rho when not computed exactly.
 #' @param small.r,small.p logical Flags to switch use of lower case r and p for
@@ -245,7 +245,7 @@ stat_correlation <- function(mapping = NULL,
                       method = "pearson",
                       alternative = "two.sided",
                       exact = NULL,
-                      conf.level = 0.95,
+                      r.conf.level = 0.95,
                       continuity = FALSE,
                       small.r = FALSE,
                       small.p = FALSE,
@@ -286,7 +286,7 @@ stat_correlation <- function(mapping = NULL,
     params = list(method = method,
                   alternative = alternative,
                   exact = exact,
-                  conf.level = conf.level,
+                  conf.level = r.conf.level,
                   continuity = continuity,
                   small.r = small.r,
                   small.p = small.p,
@@ -498,7 +498,6 @@ cor_test_compute_fun <- function(data,
 
     # add labels to data.frame z.labels
     if (output.type == "expression") {
-
       # character(0) instead of "" avoids in paste() the insertion of sep for missing labels
       z[["p.value.label"]] <-
         ifelse(is.na(z[["p.value"]]), character(0L),
@@ -666,7 +665,7 @@ cor_test_compute_fun <- function(data,
         z[["t.value.label"]] <- ifelse(is.na(z[["t.value"]]), character(0L),
                                        paste("_t_<sub>", df.char, "</sub> = ", t.value.char, sep = ""))
         z[["r.confint.label"]] <- z[["cor.confint.label"]] <-
-          paste(conf.level.chr, "% CI", ": [", r.confint.chr, "]", sep = "")
+          paste(conf.level.chr, "% CI ", CI.brackets[1], r.confint.chr, CI.brackets[1], sep = "")
       } else if (method == "kendall") {
         z[["tau.label"]] <- z[["r.label"]] <-
           ifelse(is.na(z[["tau"]]), character(0L),
@@ -680,7 +679,7 @@ cor_test_compute_fun <- function(data,
         z[["z.value.label"]] <- ifelse(is.na(z[["t.value"]]), character(0L),
                                        paste("_z_ = ", z.value.char, sep = ""))
         z[["r.confint.label"]] <- z[["tau.confint.label"]] <-
-          paste(conf.level.chr, "% CI", ": [", r.confint.chr, "]", sep = "")
+          paste(conf.level.chr, "% CI ", CI.brackets[1], r.confint.chr, CI.brackets[2], sep = "")
       } else if (method == "spearman") {
         z[["rho.label"]] <- z[["r.label"]] <-
           ifelse(is.na(z[["rho"]]), character(0L),
@@ -694,7 +693,7 @@ cor_test_compute_fun <- function(data,
         z[["S.value.label"]] <- ifelse(is.na(z[["S.value"]]), character(0L),
                                        paste("_S_ = ", S.value.char, sep = ""))
         z[["r.confint.label"]] <- z[["rho.confint.label"]] <-
-          paste(conf.level.chr, "% CI", ": [", r.confint.chr, "]", sep = "")
+          paste(conf.level.chr, "% CI ", CI.brackets[1], r.confint.chr, CI.brackets[2], sep = "")
       }
     } else {
       warning("Unknown 'output.type' argument: ", output.type)
