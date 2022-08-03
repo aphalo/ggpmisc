@@ -5,7 +5,7 @@
 #'
 #' This statistic interprets the argument passed to \code{formula} differently
 #' than \code{\link[ggplot2]{stat_quantile}} accepting \code{y} as well as
-#' \code{x} as explanatory variable, matching \code{stat_poly_quant()}.
+#' \code{x} as explanatory variable, matching \code{stat_quant_line()}.
 #'
 #' When two variables are subject to mutual constrains, it is useful to consider
 #' both of them as explanatory and interpret the relationship based on them. So,
@@ -83,28 +83,30 @@
 #'   \code{ggplot2::stat_smooth()}.
 #'
 #' @details This stat can be used to automatically annotate a plot with rho or
-#'   the fitted model equation. It supports only linear models fitted with
-#'   function \code{rq()}, passing \code{method = "br"} to it, should work well
-#'   with up to several thousand observations. The rho, AIC, BIC and n
-#'   annotations can be used with any linear model formula. The fitted equation
-#'   label is correctly generated for polynomials or quasi-polynomials through
-#'   the origin. Model formulas can use \code{poly()} or be defined
-#'   algebraically with terms of powers of increasing magnitude with no missing
-#'   intermediate terms, except possibly for the intercept indicated by \code{"-
-#'   1"} or \code{"-1"} or \code{"+ 0"} in the formula. The validity of the
-#'   \code{formula} is not checked in the current implementation. The default
-#'   aesthetics sets rho as label for the annotation.  This stat generates
-#'   labels as R expressions by default but LaTeX (use TikZ device), markdown
-#'   (use package 'ggtext') and plain text are also supported, as well as
-#'   numeric values for user-generated text labels. The value of \code{parse} is
-#'   set automatically based on \code{output-type}, but if you assemble labels
-#'   that need parsing from \code{numeric} output, the default needs to be
-#'   overridden. This stat only generates annotation labels, the predicted
-#'   values/line need to be added to the plot as a separate layer using
-#'   \code{\link{stat_quant_line}}, \code{\link{stat_quant_band}} or
-#'   \code{\link[ggplot2]{stat_quantile}}, so to make sure that the same model
-#'   formula is used in all steps it is best to save the formula as an object
-#'   and supply this object as argument to the different statistics.
+#'   the fitted model equation. The model fitting is done using package
+#'  'quantreg', please, consult its documentation for the
+#'   details. It supports only linear models fitted with function \code{rq()},
+#'   passing \code{method = "br"} to it, should work well with up to several
+#'   thousand observations. The rho, AIC, BIC and n annotations can be used with
+#'   any linear model formula. The fitted equation label is correctly generated
+#'   for polynomials or quasi-polynomials through the origin. Model formulas can
+#'   use \code{poly()} or be defined algebraically with terms of powers of
+#'   increasing magnitude with no missing intermediate terms, except possibly
+#'   for the intercept indicated by \code{"- 1"} or \code{"-1"} or \code{"+ 0"}
+#'   in the formula. The validity of the \code{formula} is not checked in the
+#'   current implementation. The default aesthetics sets rho as label for the
+#'   annotation.  This stat generates labels as R expressions by default but
+#'   LaTeX (use TikZ device), markdown (use package 'ggtext') and plain text are
+#'   also supported, as well as numeric values for user-generated text labels.
+#'   The value of \code{parse} is set automatically based on \code{output-type},
+#'   but if you assemble labels that need parsing from \code{numeric} output,
+#'   the default needs to be overridden. This stat only generates annotation
+#'   labels, the predicted values/line need to be added to the plot as a
+#'   separate layer using \code{\link{stat_quant_line}},
+#'   \code{\link{stat_quant_band}} or \code{\link[ggplot2]{stat_quantile}}, so
+#'   to make sure that the same model formula is used in all steps it is best to
+#'   save the formula as an object and supply this object as argument to the
+#'   different statistics.
 #'
 #'   A ggplot statistic receives as data a data frame that is not the one passed
 #'   as argument by the user, but instead a data frame with the variables mapped
@@ -116,7 +118,7 @@
 #' @references Written as an answer to question 65695409 by Mark Neal at
 #'   Stackoverflow.
 #'
-#' @section Aesthetics: \code{stat_quant_eq} understands \code{x} and \code{y},
+#' @section Aesthetics: \code{stat_quant_eq()} understands \code{x} and \code{y},
 #'   to be referenced in the \code{formula} and \code{weight} passed as argument
 #'   to parameter \code{weights} of \code{rq()}. All three must be mapped to
 #'   \code{numeric} variables. In addition, the aesthetics understood by the
@@ -129,9 +131,10 @@
 #'   \item{x,npcx}{x position}
 #'   \item{y,npcy}{y position}
 #'   \item{eq.label}{equation for the fitted polynomial as a character string to be parsed}
-#'   \item{rho.label}{\eqn{rho} of the fitted model as a character string to be parsed}
+#'   \item{r.label, and one of cor.label, rho.label, or tau.label}{\eqn{rho} of the fitted model as a character string to be parsed}
 #'   \item{AIC.label}{AIC for the fitted model.}
 #'   \item{n.label}{Number of observations used in the fit.}
+#'   \item{method.label}{Set according \code{method} used.}
 #'   \item{rq.method}{character, method used.}
 #'   \item{rho, n}{numeric values extracted or computed from fit object.}
 #'   \item{hjust, vjust}{Set to "inward" to override the default of the "text" geom.}
@@ -190,6 +193,11 @@
 #'   geom_point() +
 #'   stat_quant_line() +
 #'   stat_quant_eq()
+#'
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   stat_quant_line() +
+#'   stat_quant_eq(use_label(c("eq", "method")))
 #'
 #' # same formula as default
 #' ggplot(my.data, aes(x, y)) +
@@ -697,6 +705,7 @@ quant_eq_compute_group_fun <- function(data,
                                             sep = "*\", \"*")
                                       else
                                         sprintf("italic(q)~`=`~\"%.2f\"", quantiles),
+                          method.label = paste("\"method: ", method.name, "\"", sep = ""),
                           rq.method = rq.method,
                           quantile = quantiles,
                           quantile.f = quantiles.f,
@@ -708,6 +717,7 @@ quant_eq_compute_group_fun <- function(data,
                           n.label = paste("n = ", n, sep = ""),
                           grp.label = paste(grp.label,
                                             sprintf("q = %.2f", quantiles)),
+                          method.label = paste("method: ", method.name, sep = ""),
                           rq.method = rq.method,
                           quantile = quantiles,
                           quantile.f = quantiles.f,
@@ -719,6 +729,7 @@ quant_eq_compute_group_fun <- function(data,
                           n.label = paste("_n_ = ", n, sep = ""),
                           grp.label = paste(grp.label,
                                             sprintf("q = %.2f", quantiles)),
+                          method.label = paste("method: ", method.name, sep = ""),
                           rq.method = rq.method,
                           quantile = quantiles,
                           quantile.f = quantiles.f,

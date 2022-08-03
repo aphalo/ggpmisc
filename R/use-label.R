@@ -102,7 +102,7 @@ use_label <- function(labels = c("eq", "p.value"),
   # accept upper case equivalents
   labels <- tolower(labels)
   # accept short names lacking ".label" as ending
-  truncated.labels <- !grepl("\\.label$|\\.f$|method$", labels)
+  truncated.labels <- !grepl("\\.label$|\\.f$", labels)
   labels[truncated.labels] <- paste(labels[truncated.labels], ".label", sep = "")
   # accept R2 and CI
   labels <- gsub("r2\\.", "rr.", labels)

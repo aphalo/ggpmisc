@@ -137,23 +137,25 @@ coefficient of determination (R^2), 'AIC', 'BIC', and number of observations.
 This statistic can be used to automatically annotate a plot with
   \eqn{R^2}, adjusted \eqn{R^2} or the fitted model equation. It supports
   linear regression, robust linear regression and median regression fitted
-  with functions \code{lm()}, \code{MASS::rlm()} or \code{quanreg::rq()}. The
-  \eqn{R^2} and adjusted \eqn{R^2} annotations can be used with any linear
-  model formula. The fitted equation label is correctly generated for
-  polynomials or quasi-polynomials through the origin. Model formulas can use
-  \code{poly()} or be defined algebraically with terms of powers of
-  increasing magnitude with no missing intermediate terms, except possibly
-  for the intercept indicated by "- 1" or "-1" or \code{"+ 0"} in the
-  formula. The validity of the \code{formula} is not checked in the current
-  implementation, and for this reason the default aesthetics sets \eqn{R^2}
-  as label for the annotation. This stat generates labels as R expressions by
-  default but LaTeX (use TikZ device), markdown (use package 'ggtext') and
-  plain text are also supported, as well as numeric values for user-generated
-  text labels. The value of \code{parse} is set automatically based on
-  \code{output-type}, but if you assemble labels that need parsing from
-  \code{numeric} output, the default needs to be overridden. This stat only
-  generates annotation labels, the predicted values/line need to be added to
-  the plot as a separate layer using \code{\link{stat_poly_line}} or
+  with functions \code{\link{lm}}, \code{\link[MASS]{rlm}} or
+  \code{\link[quantreg]{rq}}. The \eqn{R^2} and adjusted \eqn{R^2} annotations
+  can be used with any linear model formula. The confidence interval for
+  \eqn{R^2} is computed with package \code{\link[confintr]{ci_rsquared}}. The
+  fitted equation label is correctly generated for polynomials or
+  quasi-polynomials through the origin. Model formulas can use \code{poly()}
+  or be defined algebraically with terms of powers of increasing magnitude
+  with no missing intermediate terms, except possibly for the intercept
+  indicated by "- 1" or "-1" or \code{"+ 0"} in the formula. The validity of
+  the \code{formula} is not checked in the current implementation, and for
+  this reason the default aesthetics sets \eqn{R^2} as label for the
+  annotation. This statistic generates labels as R expressions by default but
+  LaTeX (use TikZ device), markdown (use package 'ggtext') and plain text are
+  also supported, as well as numeric values for user-generated text labels.
+  The value of \code{parse} is set automatically based on \code{output-type},
+  but if you assemble labels that need parsing from \code{numeric} output,
+  the default needs to be overridden. This stat only generates annotation
+  labels, the predicted values/line need to be added to the plot as a
+  separate layer using \code{\link{stat_poly_line}} or
   \code{\link[ggplot2]{stat_smooth}}, so to make sure that the same model
   formula is used in all steps it is best to save the formula as an object
   and supply this object as argument to the different statistics.
@@ -184,7 +186,7 @@ For backward compatibility a logical is accepted as argument for
 }
 
 \section{Aesthetics}{
- \code{stat_poly_eq} understands \code{x} and \code{y},
+ \code{stat_poly_eq()} understands \code{x} and \code{y},
   to be referenced in the \code{formula} and \code{weight} passed as argument
   to parameter \code{weights}. All three must be mapped to
   \code{numeric} variables. In addition, the aesthetics understood by the geom
@@ -202,12 +204,14 @@ the label is set to \code{character(0L)}.
   \item{eq.label}{equation for the fitted polynomial as a character string to be parsed}
   \item{rr.label}{\eqn{R^2} of the fitted model as a character string to be parsed}
   \item{adj.rr.label}{Adjusted \eqn{R^2} of the fitted model as a character string to be parsed}
+  \item{rr.confint.label}{Confidence interval for \eqn{R^2} of the fitted model as a character string to be parsed}
   \item{f.value.label}{F value and degrees of freedom for the fitted model as a whole.}
   \item{p.value.label}{P-value for the F-value above.}
   \item{AIC.label}{AIC for the fitted model.}
   \item{BIC.label}{BIC for the fitted model.}
   \item{n.label}{Number of observations used in the fit.}
   \item{grp.label}{Set according to mapping in \code{aes}.}
+  \item{method.label}{Set according \code{method} used.}
   \item{r.squared, adj.r.squared, p.value, n}{numeric values, from the model fit object}}
 
 If output.type is \code{"numeric"} the returned tibble contains columns
@@ -217,7 +221,7 @@ the variable is set to \code{NA_real_}.
   \item{x,npcx}{x position}
   \item{y,npcy}{y position}
   \item{coef.ls}{list containing the "coefficients" matrix from the summary of the fit object}
-  \item{r.squared, adj.r.squared, f.value, f.df1, f.df2, p.value, AIC, BIC, n}{numeric values, from the model fit object}
+  \item{r.squared, rr.confint.level, rr.confint.low, rr.confint.high, adj.r.squared, f.value, f.df1, f.df2, p.value, AIC, BIC, n}{numeric values, from the model fit object}
   \item{grp.label}{Set according to mapping in \code{aes}.}
   \item{b_0.constant}{TRUE is polynomial is forced through the origin}
   \item{b_i}{One or columns with the coefficient estimates}}
@@ -266,7 +270,7 @@ ggplot(my.data, aes(x, y)) +
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(use_label(c("R2", "R2.CI", "P")), formula = formula)
+  stat_poly_eq(use_label(c("R2", "R2.CI", "P", "method")), formula = formula)
 
 ggplot(my.data, aes(x, y)) +
   geom_point() +

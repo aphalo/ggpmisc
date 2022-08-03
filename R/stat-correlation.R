@@ -94,10 +94,12 @@
 #'   \item{y,npcy}{y position}
 #'   \item{r, and cor, tau or rho}{numeric values for correlation coefficient estimates}
 #'   \item{t.value and its df, z.value or S.value }{numeric values for statistic estimates}
-#'   \item{p.value, n}{numeric values}
-#'   \item{r.confint.low}{Confidence interval limit for \code{r} (only with \code{method = "pearson"}).}
-#'   \item{r.confint.high}{Confidence interval limit for \code{r} (only with \code{method = "pearson"}).}
+#'   \item{p.value, n}{numeric values.}
+#'   \item{r.conf.level}{numeric value, as fraction of one.}
+#'   \item{r.confint.low}{Confidence interval limit for \code{r}.}
+#'   \item{r.confint.high}{Confidence interval limit for \code{r}.}
 #'   \item{grp.label}{Set according to mapping in \code{aes}.}
+#'   \item{method.label}{Set according \code{method} used.}
 #'   \item{method, test}{character values}}
 #'
 #' If output.type different from \code{"numeric"} the returned tibble contains
@@ -161,7 +163,7 @@
 #' # use_label() can assemble and map a combined label
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   stat_correlation(use_label(c("R", "P", "n")))
+#'   stat_correlation(use_label(c("R", "P", "n", "method")))
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
@@ -409,7 +411,7 @@ cor_test_compute_fun <- function(data,
 
   z[["n"]] <- nrow(na.omit(data[ , c("x", "y")]))
   z[["method"]] <- method
-  z[["conf.level"]] <- conf.level
+  z[["r.conf.level"]] <- conf.level
   if (boot.R >= 50) {
     confint.boot <-
       confintr::ci_cor(data[ , c("x", "y")],
@@ -457,12 +459,12 @@ cor_test_compute_fun <- function(data,
       r.confint.chr <- sprintf("%#.*f, %#.*f",
                                r.digits, z[["r.confint.low"]],
                                r.digits, z[["r.confint.high"]])
-      if (as.logical((z[["conf.level"]] * 100) %% 1)) {
+      if (as.logical((z[["r.conf.level"]] * 100) %% 1)) {
         conf.level.digits = 1L
       } else {
         conf.level.digits = 0L
       }
-      conf.level.chr <- sprintf("%.*f", conf.level.digits, z[["conf.level"]] * 100)
+      conf.level.chr <- sprintf("%.*f", conf.level.digits, z[["r.conf.level"]] * 100)
       if (method == "pearson") {
         rr.char <- sprintf("\"%#.*f\"", r.digits, r^2)
         t.value.char <- sprintf("\"%#.*g\"", t.digits, z[["t.value"]])
@@ -479,12 +481,12 @@ cor_test_compute_fun <- function(data,
       r.confint.chr <- sprintf("%#.*f, %#.*f",
                                r.digits, z[["conf.int.low"]],
                                r.digits, z[["conf.int.high"]])
-      if (as.logical((z[["conf.level"]] * 100) %% 1)) {
+      if (as.logical((z[["r.conf.level"]] * 100) %% 1)) {
         conf.level.digits = 1L
       } else {
         conf.level.digits = 0L
       }
-      conf.level.chr <- sprintf("%.*f", conf.level.digits, z[["conf.level"]] * 100)
+      conf.level.chr <- sprintf("%.*f", conf.level.digits, z[["r.conf.level"]] * 100)
       if (method == "pearson") {
         rr.char <- sprintf("\"%#.*f\"", r.digits, r^2)
         t.value.char <- sprintf("%#.*g", t.digits, z[["t.value"]])
@@ -565,6 +567,8 @@ cor_test_compute_fun <- function(data,
         z[["r.confint.label"]] <- z[["rho.confint.label"]] <-
           paste("\"", conf.level.chr, "% CI ", CI.brackets[1], r.confint.chr, CI.brackets[2], "\"", sep = "")
       }
+      z[["method.label"]] <-
+        paste("\"method: ", method, "\"", sep = "")
     } else if (output.type %in% c("latex", "tex", "text", "tikz")) {
       z[["p.value.label"]] <-
         ifelse(is.na(z[["p.value"]]), character(0L),
@@ -631,6 +635,7 @@ cor_test_compute_fun <- function(data,
         z[["r.confint.label"]] <- z[["rho.confint.label"]] <-
           paste(conf.level.chr, "% CI ", CI.brackets[1], r.confint.chr, CI.brackets[2], sep = "")
       }
+      z[["method.label"]] <- paste("method: ", method, sep = "")
     } else if (output.type == "markdown") {
       z[["p.value.label"]] <-
         ifelse(is.na(z[["p.value"]]), character(0L),
@@ -695,6 +700,7 @@ cor_test_compute_fun <- function(data,
         z[["r.confint.label"]] <- z[["rho.confint.label"]] <-
           paste(conf.level.chr, "% CI ", CI.brackets[1], r.confint.chr, CI.brackets[2], sep = "")
       }
+      z[["method.label"]] <- paste("method: ", method, sep = "")
     } else {
       warning("Unknown 'output.type' argument: ", output.type)
     }

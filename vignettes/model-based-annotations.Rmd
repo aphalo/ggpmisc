@@ -68,7 +68,7 @@ Table 1 below summarizes their use and the type plot layer geometries they are m
 **Table 1.** Summary of features of the statistics.
 
 | Statistic               | `after_stat` values (*default geometry*)          | Methods                                      |
-|-------------------------|---------------------------------------------------|----------------------------------------------|
+|-----------------|-----------------------------|--------------------------|
 | `stat_poly_eq()`        | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lm, rlm (1, 2, 7)                            |
 | `stat_ma_eq()`          | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lmodel2 (6, 7)                               |
 | `stat_quant_eq()`       | equation, *P*, etc. (`text_npc`)                  | rq (1, 3, 4, 7)                              |
@@ -101,9 +101,10 @@ Function `use_label()` provides an easy way of selecting, possibly combining and
 **Table 2.** Values returned by `stat_poly_eq()` , `stat_ma_eq()` , `stat_quant_eq()` and `stat_correlation()` for `output.type` different from `numeric`. Variable gives the variable name in the returned `data` and should be used together with `after_stat()` when mapping to aesthetics using `aes()`. When using function `use_label()` , the short abbreviation shown in column Key can be used as a synonym, although full names are also supported.
 
 | Variable          | Key    | Mode      | stat_poly_eq() | stat_ma_eq() | stat_quant_eq() | stat_correlation() |
-|-------------------|--------|-----------|----------------|--------------|-----------------|--------------------|
+|-------------|-----------|-----------|-----------|-----------|-----------|-----------|
 | eq.label          | eq     | character | y              | y            | y\*             | n                  |
 | rr.label          | R2     | character | y\*            | y\*          | n               | y(1)               |
+| rr.confint.label  | R2.CI  | character | y              | n            | n               | n                  |
 | adj.rr.label      | adj.R2 | character | y              | n            | n               | n                  |
 | cor.label         | cor    | character | n              | n            | n               | y(1)               |
 | rho.label         | rho    | character | n              | n            | y               | y(1)               |
@@ -144,7 +145,7 @@ Even though the number of significant digits and some other formatting can be ad
 **Table 3.** Values returned by `stat_poly_eq()` , `stat_ma_eq()` , `stat_quant_eq()` and `stat_correlation()` for `output.type` equal to `numeric`.
 
 | Variable      | Mode      | stat_poly_eq() | stat_ma_eq() | stat_quant_eq() | stat_correlation() |
-|---------------|-----------|----------------|--------------|-----------------|--------------------|
+|------------|------------|------------|------------|------------|------------|
 | coef.ls       | list      | y              | y            | y               | n                  |
 | r.squared     | numeric   | y              | y            | n               | n                  |
 | adj.r.squared | numeric   | y              | n            | n               | n                  |

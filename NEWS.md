@@ -6,8 +6,11 @@ editor_options:
 
 # ggpmisc 0.4.8
 
--   Add support for confidence interval in `stat_correlation()` in the case of `method = "pearson"` assuming Normal distribution or estimated by bootstrap. For `method = "kendall"` and `method = "spearman"` only bootstrap estimates. These are implemented using package 'confintr'.
 -   Add function `use_label()` that greatly simplifies assembling and mapping combined labels from the values returned by `stat_poly_eq()`, `stat_ma_eq()`, `stat_quant_eq()` and `stat_correlation()`.
+-   Add confidence intervals for R (Pearson's OLS correlation), &tau; (Kendall's rank correlation) and &rho; (Spearman's rank correlation) to the values and labels returned by `stat_correlation()`. In the case of `method = "pearson"` assuming Normal distribution or estimated by bootstrap. For `method = "kendall"` and `method = "spearman"` only bootstrap estimates. These are implemented using package 'confintr'.
+-   Add confidence interval for R<sup>2</sup> to the values and labels returned by `stat_poly_eq()` (implemented using package 'confintr').
+-   Add &theta; (theta) to the values and labels returned by `stat_ma_eq()`.
+-   Add `method.label` to the data returned by `stat_correlation()`, `stat_poly_eq()`, `stat_ma_eq()` and `stat_quant_eq()`.
 
 # ggpmisc 0.4.7
 

@@ -160,10 +160,12 @@ Currently \code{coef.keep.zeros} is ignored, with trailing zeros always
   \item{y,npcy}{y position}
   \item{r, and cor, tau or rho}{numeric values for correlation coefficient estimates}
   \item{t.value and its df, z.value or S.value }{numeric values for statistic estimates}
-  \item{p.value, n}{numeric values}
-  \item{r.confint.low}{Confidence interval limit for \code{r} (only with \code{method = "pearson"}).}
-  \item{r.confint.high}{Confidence interval limit for \code{r} (only with \code{method = "pearson"}).}
+  \item{p.value, n}{numeric values.}
+  \item{r.conf.level}{numeric value, as fraction of one.}
+  \item{r.confint.low}{Confidence interval limit for \code{r}.}
+  \item{r.confint.high}{Confidence interval limit for \code{r}.}
   \item{grp.label}{Set according to mapping in \code{aes}.}
+  \item{method.label}{Set according \code{method} used.}
   \item{method, test}{character values}}
 
 If output.type different from \code{"numeric"} the returned tibble contains
@@ -222,7 +224,7 @@ ggplot(my.data, aes(x, y)) +
 # use_label() can assemble and map a combined label
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  stat_correlation(use_label(c("R", "P", "n")))
+  stat_correlation(use_label(c("R", "P", "n", "method")))
 
 ggplot(my.data, aes(x, y)) +
   geom_point() +

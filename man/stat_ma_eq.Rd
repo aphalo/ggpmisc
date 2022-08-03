@@ -23,6 +23,7 @@ stat_ma_eq(
   coef.digits = 3,
   coef.keep.zeros = TRUE,
   rr.digits = 2,
+  theta.digits = 2,
   p.digits = max(1, ceiling(log10(nperm))),
   label.x = "left",
   label.y = "top",
@@ -87,8 +88,8 @@ the fitted coefficients.}
 \item{coef.keep.zeros}{logical Keep or drop trailing zeros when formatting
 the fitted coefficients and F-value.}
 
-\item{rr.digits, p.digits}{integer Number of digits after the decimal point to
-use for R^2 and P-value in labels.}
+\item{rr.digits, p.digits, theta.digits}{integer Number of digits after the
+decimal point to use for R^2, theta and P-value in labels.}
 
 \item{label.x, label.y}{\code{numeric} with range 0..1 "normalized parent
 coordinates" (npc units) or character if using \code{geom_text_npc()} or
@@ -179,10 +180,12 @@ the label is set to \code{character(0L)}.
   \item{y,npcy}{y position}
   \item{eq.label}{equation for the fitted polynomial as a character string to be parsed}
   \item{rr.label}{\eqn{R^2} of the fitted model as a character string to be parsed}
-  \item{p.value.label}{P-value for the F-value above.}
+  \item{p.value.label}{P-value if available, depends on \code{method}.}
+  \item{theta.label}{Angle in degrees between the two OLS lines for lines estimated from \code{y ~ x} and \code{x ~ y} linear model (\code{lm}) fits.}
   \item{n.label}{Number of observations used in the fit.}
   \item{grp.label}{Set according to mapping in \code{aes}.}
-  \item{r.squared, p.value, n}{numeric values, from the model fit object}}
+  \item{method.label}{Set according \code{method} used.}
+  \item{r.squared, theta, p.value, n}{numeric values, from the model fit object}}
 
 If output.type is \code{"numeric"} the returned tibble contains columns
 listed below. If the model fit function used does not return a value,
@@ -191,7 +194,7 @@ the variable is set to \code{NA_real_}.
   \item{x,npcx}{x position}
   \item{y,npcy}{y position}
   \item{coef.ls}{list containing the "coefficients" matrix from the summary of the fit object}
-  \item{r.squared, adj.r.squared, f.value, f.df1, f.df2, p.value, AIC, BIC, n}{numeric values, from the model fit object}
+  \item{r.squared, theta, p.value, n}{numeric values, from the model fit object}
   \item{grp.label}{Set according to mapping in \code{aes}.}
   \item{b_0.constant}{TRUE is polynomial is forced through the origin}
   \item{b_i}{One or two columns with the coefficient estimates}}
@@ -219,11 +222,16 @@ ggplot(my.data, aes(x, y)) +
   stat_ma_line(method = "MA") +
   stat_ma_eq(use_label(c("eq", "R2", "P")))
 
-# using major axis regression
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_ma_line(method = "MA") +
-  stat_ma_eq(use_label(c("eq", "R2", "P")), method = "MA")
+  stat_ma_eq(use_label(c("R2", "P", "theta", "method")))
+
+# using major axis regression
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_ma_line(method = "SMA") +
+  stat_ma_eq(use_label(c("R2", "P", "theta", "method")), method = "SMA")
 
 # using standard major axis regression
 ggplot(my.data, aes(x, y)) +
