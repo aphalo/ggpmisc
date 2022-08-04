@@ -21,6 +21,44 @@ test_that("ma_eq_noload", {
                                                                           ggplot2::after_stat(n.label),
                                                                  sep = "~~")))
   )
+  vdiffr::expect_doppelganger("stat_ma_eq_noload_more",
+                              ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
+                                ggplot2::geom_point() +
+                                ggpmisc::stat_ma_eq(formula = y ~ x, parse = TRUE,
+                                                    mapping =
+                                                      ggplot2::aes(label = paste(ggplot2::after_stat(rr.label),
+                                                                                 ggplot2::after_stat(theta.label),
+                                                                                 ggplot2::after_stat(method.label),
+                                                                                 sep = "~~")))
+  )
+  vdiffr::expect_doppelganger("stat_ma_eq_noload_use_label",
+                              ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
+                                ggplot2::geom_point() +
+                                ggpmisc::stat_ma_eq(formula = y ~ x, parse = TRUE,
+                                                    mapping = use_label(c("eq", "R2", "P", "n"),
+                                                                                 sep = "~~"))
+  )
+  vdiffr::expect_doppelganger("stat_ma_eq_noload_use_label_more",
+                              ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
+                                ggplot2::geom_point() +
+                                ggpmisc::stat_ma_eq(formula = y ~ x, parse = TRUE,
+                                                    mapping = use_label(c("R2", "theta", "method"),
+                                                                       sep = "~~"))
+  )
+  vdiffr::expect_doppelganger("stat_ma_eq_noload_use_label_small",
+                              ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
+                                ggplot2::geom_point() +
+                                ggpmisc::stat_ma_eq(formula = y ~ x, parse = TRUE, small.r = TRUE, small.p = TRUE,
+                                                    mapping = use_label(c("eq", "R2", "P", "n"),
+                                                                        sep = "~~"))
+  )
+  vdiffr::expect_doppelganger("stat_ma_eq_noload_use_label_more_small",
+                              ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
+                                ggplot2::geom_point() +
+                                ggpmisc::stat_ma_eq(formula = y ~ x, parse = TRUE, small.r = TRUE, small.p =TRUE,
+                                                    mapping = use_label(c("R2", "theta", "method"),
+                                                                        sep = "~~"))
+  )
 })
 
 library(ggpmisc)

@@ -30,9 +30,10 @@
 #' @param method function or character If character, "lm", "rlm" or the name of
 #'   a model fit function are accepted, possibly followed by the fit function's
 #'   \code{method} argument separated by a colon (e.g. \code{"rlm:M"}). If a
-#'   function different to \code{lm()}, it must accept arguments named
-#'   \code{formula}, \code{data}, \code{weights}, and \code{method} and return a
-#'   model fit object of class \code{lm}.
+#'   function different to \code{lm()}, it must accept as a minimum a model
+#'   formula through its first parameter, and have formal parameters named
+#'   \code{data}, \code{weights}, and \code{method}, and return a model fit
+#'   object of class \code{lm}.
 #' @param method.args named list with additional arguments.
 #' @param eq.with.lhs If \code{character} the string is pasted to the front of
 #'   the equation label before parsing or a \code{logical} (see note).

@@ -101,7 +101,7 @@ Function `use_label()` provides an easy way of selecting, possibly combining and
 **Table 2.** Values returned by `stat_poly_eq()` , `stat_ma_eq()` , `stat_quant_eq()` and `stat_correlation()` for `output.type` different from `numeric`. Variable gives the variable name in the returned `data` and should be used together with `after_stat()` when mapping to aesthetics using `aes()`. When using function `use_label()` , the short abbreviation shown in column Key can be used as a synonym, although full names are also supported.
 
 | Variable          | Key    | Mode      | stat_poly_eq() | stat_ma_eq() | stat_quant_eq() | stat_correlation() |
-|-------------|-----------|-----------|-----------|-----------|-----------|-----------|
+|-----------|-----------|-----------|-----------|-----------|-----------|-----------|
 | eq.label          | eq     | character | y              | y            | y\*             | n                  |
 | rr.label          | R2     | character | y\*            | y\*          | n               | y(1)               |
 | rr.confint.label  | R2.CI  | character | y              | n            | n               | n                  |
@@ -486,9 +486,37 @@ ggplot(my.data, aes(x, y)) +
   labs(x = expression(italic(x)), y = expression(italic(y)))
 ```
 
+_Fitting different models to different panels is supported._ User-defined method functions are required to return an object that inherits from class `"lm"`. The function is applied per group and panel, and the model `formula` fitted can differ among them, as it is retrieved from this object to construct the equation label.
+
+In the example below instead of using `lm()` as method, we define a wrapper function that tests for the significance of the slope in linear regression, and if not significant, fits the mean instead. 
+
+```{r}
+poly_or_mean <- function(formula, data, ...) {
+   mf <- lm(formula = formula, data = data, ...)
+   if (anova(mf)[["Pr(>F)"]][1] > 0.1) {
+      lm(formula = y ~ 1, data = data, ...)
+   } else {
+      mf
+   }
+}
+```
+
+We then use our function `poly_or_mean()` as the method.
+
+```{r}
+ggplot(mpg, aes(displ, hwy)) +
+   geom_point() +
+   stat_poly_line(method = "poly_or_mean") +
+   stat_poly_eq(method = poly_or_mean,
+   aes(label = after_stat(eq.label)),
+   label.x = "right") +
+   theme(legend.position = "bottom") +
+   facet_wrap(~class, ncol = 2)
+```
+
 We give below several examples to demonstrate how other components of the `ggplot` object affect the behaviour of this statistic.
 
-Facets work as expected either with fixed or free scales. Although below we had to adjust the size of the font used for the equation.
+_Facets work as expected both with fixed or free scales._ Although below we had to adjust the size of the font used for the equation.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -510,7 +538,7 @@ ggplot(my.data, aes(x, y2)) +
   facet_wrap(~group, scales = "free_y")
 ```
 
-Grouping, in this example using the colour aesthetic also works as expected. We can use justification and supply an absolute location for the equation, but the default frequently works well as in the example below.
+_Grouping works as expected._ In this example we create groups using the colour aesthetic, but factors or descrete variables mapped to other aesthetics inlucing the "invisible" `group` aesthetic. We can use justification and supply an absolute location for the equation, but the default frequently works well as in the example below.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -532,7 +560,7 @@ ggplot(my.data, aes(x, y2, colour = group, grp.label = group)) +
                formula = formula)
 ```
 
-Being able to label equations allows us to dispense with the use of colour, which in some cases is needed for printed output.
+Being able to label equations allows us to dispense with the use of colour, which in some cases is needed for publication in journals and books.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -569,7 +597,7 @@ ggplot(my.data, aes(x, y2, fill = block)) +
   facet_wrap(~group, scales = "free_y")
 ```
 
-If grouping is not the same within each panel created by faceting, the automatic location of labels results in "holes" for the factor levels not present in a given panel. In this case, consistent positioning requires passing explicitly the positions for each individual group. In the plot below the simultaneous mapping to both colour and fill aesthetics creates four groups, two with data in panel A and the other two in panel B.
+If grouping is not the same within each panel created by faceting, i.e., not all groups have data in all panels, the automatic location of labels results in "holes" for the factor levels not present in a given panel. This behaviour ensures consistent positioning of labels for the same groups across panels. If positioning that leaves no gaps is desired, it is possible to explicitly pass as argument the positions for each individual label. In the plot below the simultaneous mapping to both colour and fill aesthetics creates four groups, two with data in panel A and the other two in panel B, but the vector passed as argument to `label.y` determines the `y` position (in `npc` units) four each of the four labels.
 
 ```{r, eval=eval_flag}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -582,7 +610,7 @@ ggplot(my.data, aes(x, y2, colour = group, fill = block)) +
   facet_wrap(~group, scales = "free_y")
 ```
 
-It is possible to use `geom_text()` and `geom_label()` but in this case, if label coordinates are given explicitly they should be expressed in native data coordinates. When multiple labels need to be positioned a vector of coordinates can be used as shown here for `label.x` and `label.y`.
+It is possible to use `geom_text()` and `geom_label()` instead of the default `geom_text_npc()` (or `geom_label_npc()`)  but in this case, if label coordinates are given explicitly they should be expressed in native data coordinates. When multiple labels need to be positioned a vector of coordinates can be used as shown here for `label.x` and `label.y`.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -594,9 +622,11 @@ ggplot(my.data, aes(x, y2, colour = group)) +
                formula = formula)
 ```
 
-**Note:** Automatic positioning using `geom_text()` and `geom_label()` is not supported when faceting uses free scales. In this case `geom_text_npc()` and/or `geom_label_npc()` or positions supplied by the user must be used.
+**Note:** Automatic positioning using `geom_text()` and `geom_label()` is supported except when faceting uses free scales. In this case `geom_text_npc()` and/or `geom_label_npc()` or positions supplied by the user must be used.
 
-Occasionally, possibly as a demonstration in teaching, we may want to compare a fit of *x* on *y* and one of *y* on *x* in the same plot. As is the case for model fitting functions themselves this is simply indicated by the model passed as argument to `formula`, or consistently with `stat_smooth()` through parameter `orientation`.
+Occasionally, possibly as a demonstration in teaching, we may want to compare a fit of *x* on *y* and one of *y* on *x* in the same plot. Here, this example also serves as introduction to the next section, which describes the use of _major axis regression_ or _Model II_ regression. 
+
+As is the case for model fitting functions themselves, which variable is dependent (reponse) and which is independent (explanatory) is simply indicated by the model equation passed as argument to `formula`, or consistently with `stat_smooth()` through parameter `orientation` as show below.
 
 ```{r}
 ggplot(my.data, aes(x, y)) +
@@ -610,7 +640,7 @@ ggplot(my.data, aes(x, y)) +
 
 ### stat_ma_eq() and stat_ma_line()
 
-Package 'lmodel2' implements model II fits for major axis (MA), standard major axis (SMA) and ranged major axis (RMA) regression for linear relationships. These approaches of regression are used when both variables are subject to random variation and the intention is not to estimate *y* from *x* but instead to describe the slope of the relationship between them. A typical example in biology are allometric relationships.
+Package 'lmodel2' implements Model II fits for major axis (MA), standard major axis (SMA) and ranged major axis (RMA) regression for linear relationships. These approaches of regression are used when both variables are subject to random variation and the intention is not to estimate *y* from *x* but instead to describe the slope of the relationship between them. A typical example in biology are allometric relationships. Rather frequently, OLS linear model fits are used in cases where Model II regression would be preferable.
 
 In the figure above we see that the ordinary least squares (OLS) linear regression of *y* on *x* and *x* on *y* differ. Major axis regression provides an estimate of the slope that is independent of the direction of the relationship relation. $R^2$ remains the same in all cases, and with major axis regression while the coefficient estimates in the equation change, they correspond to exactly the same line.
 

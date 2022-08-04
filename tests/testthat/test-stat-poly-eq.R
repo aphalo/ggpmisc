@@ -22,13 +22,39 @@ test_that("poly_eq_noload", {
   vdiffr::expect_doppelganger("stat_poly_eq_noload",
                               ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
                                 ggplot2::geom_point() +
-                                ggpmisc::stat_poly_eq(formula = y ~ 1, parse = TRUE,
+                                ggpmisc::stat_poly_eq(formula = y ~ x, parse = TRUE,
                                                       mapping =
                                                         ggplot2::aes(label = paste(ggplot2::after_stat(eq.label),
-                                                                                   ggplot2::after_stat(adj.rr.label),
                                                                                    ggplot2::after_stat(AIC.label),
                                                                                    ggplot2::after_stat(BIC.label),
                                                                                    sep = "~~")))
+  )
+
+  vdiffr::expect_doppelganger("stat_poly_eq_noload_more",
+                              ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
+                                ggplot2::geom_point() +
+                                ggpmisc::stat_poly_eq(formula = y ~ x, parse = TRUE,
+                                                      mapping =
+                                                        ggplot2::aes(label = paste(ggplot2::after_stat(rr.label),
+                                                                                   ggplot2::after_stat(rr.confint.label),
+                                                                                   ggplot2::after_stat(adj.rr.label),
+                                                                                   ggplot2::after_stat(f.value.label),
+                                                                                   ggplot2::after_stat(p.value.label),
+                                                                                   sep = "~~")))
+  )
+  vdiffr::expect_doppelganger("stat_poly_eq_noload_use_label",
+                              ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
+                                ggplot2::geom_point() +
+                                ggpmisc::stat_poly_eq(formula = y ~ x, parse = TRUE,
+                                                      mapping = ggpmisc::use_label(c("eq", "AIC", "BIC"),
+                                                                                   sep = "~~"))
+  )
+  vdiffr::expect_doppelganger("stat_poly_eq_noload_use_label_more",
+                              ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
+                                ggplot2::geom_point() +
+                                ggpmisc::stat_poly_eq(formula = y ~ x, parse = TRUE,
+                                                      mapping = ggpmisc::use_label(c("R2", "R2.CI", "adj.R2", "F", "P"),
+                                                                                   sep = "~~"))
   )
 })
 

@@ -23,12 +23,21 @@ test_that("quant_eq_noload", {
     vdiffr::expect_doppelganger("stat_quant_eq_noload",
                                 ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
                                   ggplot2::geom_point() +
-                                  ggpmisc::stat_quant_eq(formula = y ~ 1, parse = TRUE,
+                                  ggpmisc::stat_quant_eq(formula = y ~ x, parse = TRUE,
                                                 mapping =
                                                   ggplot2::aes(label = paste(ggplot2::after_stat(eq.label),
                                                                     ggplot2::after_stat(rho.label),
                                                                     ggplot2::after_stat(AIC.label),
+                                                                    ggplot2::after_stat(method.label),
                                                                     sep = "~~")))
+    )
+    vdiffr::expect_doppelganger("stat_quant_eq_noload_use_label",
+                                ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
+                                  ggplot2::geom_point() +
+                                  ggpmisc::stat_quant_eq(formula = y ~ x, parse = TRUE,
+                                                         mapping = ggpmisc::use_label(c("grp", "eq", "rho", "AIC", "method"),
+                                                                                      ggplot2::aes(colour = ggplot2::after_stat(grp.label)),
+                                                                                      sep = "~~"))
     )
   }, warning=function(w) {
     if (grepl("Solution may be nonunique|2 non-positive fis", conditionMessage(w)))

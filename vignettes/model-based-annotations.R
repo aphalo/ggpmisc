@@ -215,6 +215,26 @@ ggplot(my.data, aes(x, y)) +
   labs(x = expression(italic(x)), y = expression(italic(y)))
 
 ## -----------------------------------------------------------------------------
+poly_or_mean <- function(formula, data, ...) {
+   mf <- lm(formula = formula, data = data, ...)
+   if (anova(mf)[["Pr(>F)"]][1] > 0.1) {
+      lm(formula = y ~ 1, data = data, ...)
+   } else {
+      mf
+   }
+}
+
+## -----------------------------------------------------------------------------
+ggplot(mpg, aes(displ, hwy)) +
+   geom_point() +
+   stat_poly_line(method = "poly_or_mean") +
+   stat_poly_eq(method = poly_or_mean,
+   aes(label = after_stat(eq.label)),
+   label.x = "right") +
+   theme(legend.position = "bottom") +
+   facet_wrap(~class, ncol = 2)
+
+## -----------------------------------------------------------------------------
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2)) +
   geom_point() +
