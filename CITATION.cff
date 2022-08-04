@@ -8,7 +8,7 @@ message: 'To cite package "ggpmisc" in publications use:'
 type: software
 license: GPL-2.0-or-later
 title: 'ggpmisc: Miscellaneous Extensions to ''ggplot2'''
-version: 0.4.7.9000
+version: 0.4.8
 abstract: 'Extensions to ''ggplot2'' respecting the grammar of graphics paradigm.
   Statistics: locate and tag peaks and valleys; label plot with the equation of a
   fitted polynomial or other types of models; labels with P-value, R^2 or adjusted
@@ -30,7 +30,7 @@ preferred-citation:
     given-names: Pedro J.
     email: pedro.aphalo@helsinki.fi
     orcid: https://orcid.org/0000-0003-3385-972X
-  version: 0.4.7.9000
+  version: 0.4.8
   abstract: 'Extensions to ''ggplot2'' respecting the grammar of graphics paradigm.
     Statistics: locate and tag peaks and valleys; label plot with the equation of
     a fitted polynomial or other types of models; labels with P-value, R^2 or adjusted
@@ -42,7 +42,7 @@ preferred-citation:
   repository: https://CRAN.R-project.org/package=ggpmisc
   repository-code: https://github.com/aphalo/ggpmisc
   url: https://docs.r4photobiology.info/ggpmisc/
-  date-released: '2022-07-20'
+  date-released: '2022-08-04'
   contact:
   - family-names: Aphalo
     given-names: Pedro J.
@@ -53,7 +53,7 @@ preferred-citation:
 repository: https://CRAN.R-project.org/package=ggpmisc
 repository-code: https://github.com/aphalo/ggpmisc
 url: https://docs.r4photobiology.info/ggpmisc/
-date-released: '2022-07-20'
+date-released: '2022-08-04'
 contact:
 - family-names: Aphalo
   given-names: Pedro J.
@@ -71,7 +71,7 @@ references:
   url: https://www.R-project.org/
   institution:
     name: R Foundation for Statistical Computing
-  version: '>= 3.6.0'
+  version: '>= 4.0.0'
 - type: software
   title: ggpp
   abstract: 'ggpp: Grammar Extensions to ''ggplot2'''
@@ -199,6 +199,17 @@ references:
   year: '2022'
   url: https://CRAN.R-project.org/package=MASS
   version: '>= 7.3-51.6'
+- type: software
+  title: confintr
+  abstract: 'confintr: Confidence Intervals'
+  notes: Imports
+  authors:
+  - family-names: Mayer
+    given-names: Michael
+    email: mayermichael79@gmail.com
+  year: '2022'
+  url: https://CRAN.R-project.org/package=confintr
+  version: '>= 0.1.2'
 - type: software
   title: polynom
   abstract: 'polynom: A Collection of Functions to Implement a Class for Univariate
