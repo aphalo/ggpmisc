@@ -103,11 +103,11 @@ can include aesthetics whose values you want to set, not map. See
 \description{
 \code{stat_fit_tb} fits a model and returns a "tidy" version of
   the model's summary or ANOVA table, using '\code{tidy()} methods from
-  packages 'broom', 'broom.mixed', or other sources. The annotation is added
-  to the plots in tabular form.
+  packages 'broom', 'broom.mixed', or other 'broom' extensions. The
+  annotation is added to the plots in tabular form.
 }
 \details{
-\code{stat_fit_tb} Applies a model fitting function per panel,
+\code{stat_fit_tb()} Applies a model fitting function per panel,
   using the grouping factors from aesthetic mappings in the fitted model.
   This is suitable, for example for analysis of variance used to test for
   differences among groups.
@@ -120,16 +120,18 @@ can include aesthetics whose values you want to set, not map. See
   as argument by the user, but instead a data frame with the variables mapped
   to aesthetics. In other words, it respects the grammar of graphics and
   consequently within arguments passed through \code{method.args} names of
-  aesthetics like $x$ and $y$ should be used instead of the original variable
-  names, while data is automatically passed the data frame. This helps ensure
-  that the model is fitted to the same data as plotted in other layers.
+  aesthetics like \eqn{x} and \eqn{y} should be used instead of the original variable
+  names. The plot's default \code{data} is used by default, which  helps
+  ensure that the model is fitted to the same data as plotted in other
+  layers.
 }
 \section{Computed variables}{
  The output of \code{tidy()} is
-  returned as a single "cell" in a tibble (i.e. a tibble nested within a
-  tibble). The returned \code{data} object contains a single, containing the
+  returned as a single "cell" in a tibble (i.e., a tibble nested within a
+  tibble). The returned \code{data} object contains a single tibble, containing the
   result from a single model fit to all data in a panel. If grouping is
-  present, it is ignored.
+  present, it is ignored in the sense of returning a single table, but the
+  grouping aesthetic can be a term in the fitted model.
 
   To explore the values returned by this statistic, which vary depending
   on the model fitting function and model formula we suggest the use of
@@ -273,9 +275,9 @@ if (requireNamespace("broom", quietly = TRUE)) {
 \seealso{
 \code{\link[broom]{broom}} and
   \code{broom.mixed} for details on how the tidying of the
-  result of model fits is done. See \code{\link{geom_table}} for details on
+  result of model fits is done. See \code{\link[ggpp]{geom_table}} for details on
   how inset tables respond to mapped aesthetics and table themes. For details
-  on predefined table themes see \code{\link{ttheme_gtdefault}}.
+  on predefined table themes see \code{\link[ggpp]{ttheme_gtdefault}}.
 
 Other ggplot statistics for model fits: 
 \code{\link{stat_fit_augment}()},

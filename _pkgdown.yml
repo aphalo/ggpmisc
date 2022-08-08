@@ -48,6 +48,7 @@ reference:
     desc: Low level functions that can be useful to developers of other ggplot2 extensions.
     contents:
     - swap_xy
+    - keep_tidy
     - coef.lmodel2
     - confint.lmodel2
     - predict.lmodel2
