@@ -142,6 +142,7 @@ can include aesthetics whose values you want to set, not map. See
 # package 'broom' needs to be installed to run these examples
 
 if (requireNamespace("broom", quietly = TRUE)) {
+
   library(broom)
 
 # data for examples
@@ -273,11 +274,12 @@ if (requireNamespace("broom", quietly = TRUE)) {
 
 }
 \seealso{
-\code{\link[broom]{broom}} and
-  \code{broom.mixed} for details on how the tidying of the
-  result of model fits is done. See \code{\link[ggpp]{geom_table}} for details on
-  how inset tables respond to mapped aesthetics and table themes. For details
-  on predefined table themes see \code{\link[ggpp]{ttheme_gtdefault}}.
+\code{\link[broom]{broom}}, \code{broom.mixed},
+  \code{\link[broom]{tidy}} and \code{\link{keep_tidy}} for details on how
+  the tidying of the result of model fits is done. See
+  \code{\link[ggpp]{geom_table}} for details on how inset tables respond to
+  mapped aesthetics and table themes. For details on predefined table themes
+  see \code{\link[ggpp]{ttheme_gtdefault}}.
 
 Other ggplot statistics for model fits: 
 \code{\link{stat_fit_augment}()},

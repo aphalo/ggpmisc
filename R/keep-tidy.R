@@ -5,7 +5,7 @@
 #' names. Although this simplifies later steps in the data analysis and
 #' reporting, it drops key information needed for interpretation.
 #' \code{keep_tidy()} makes it possible to retain fields from the model fit
-#' object passed as argument to parameter \code{x} in the attribute \code{"mf"}.
+#' object passed as argument to parameter \code{x} in the attribute \code{"fm"}.
 #' The class of \code{x} is always stored, and by default also fields
 #' \code{"call"}, \code{"terms"}, \code{"formula"}, \code{"fixed"} and
 #' \code{"random"} if available.
@@ -15,12 +15,12 @@
 #' @param ... Other named arguments passed along to \code{tidy()}, \code{glance}
 #'   or \code{augment}.
 #' @param to.keep character vector of field names in \code{x} to copy to
-#'   attribute \code{"mf"} of the tibble returned by \code{tidy()},
+#'   attribute \code{"fm"} of the tibble returned by \code{tidy()},
 #'   \code{glance} or \code{augment}.
 #'
 #' @details Functions \code{keep_tidy()}, \code{keep_glance} or
 #'   \code{keep_augment} are simple wrappers of the generic methods which make
-#'   it possible to add to the returned values an attribute named \code{"mf"}
+#'   it possible to add to the returned values an attribute named \code{"fm"}
 #'   preserving user selected fields and class of the model fit object. Fields
 #'   names in \code{to.keep} missing in \code{x} are silently ignored.
 #'
@@ -28,27 +28,35 @@
 #'
 #' @examples
 #'
-#' mod <- lm(mpg ~ wt + qsec, data = mtcars)
+#' # these examples can only be run if package 'broom' is available
 #'
-#' attr(keep_tidy(mod), "mf")[["class"]]
-#' attr(keep_glance(mod), "mf")[["class"]]
-#' attr(keep_augment(mod), "mf")[["class"]]
+#' if (requireNamespace("broom", quietly = TRUE)) {
 #'
-#' attr(keep_tidy(summary(mod)), "mf")[["class"]]
+#'   library(broom)
 #'
-#' library(MASS)
-#' rmod <- rlm(mpg ~ wt + qsec, data = mtcars)
-#' attr(keep_tidy(rmod), "mf")[["class"]]
+#'   mod <- lm(mpg ~ wt + qsec, data = mtcars)
+#'
+#'   attr(keep_tidy(mod), "fm")[["class"]]
+#'   attr(keep_glance(mod), "fm")[["class"]]
+#'   attr(keep_augment(mod), "fm")[["class"]]
+#'
+#'   attr(keep_tidy(summary(mod)), "fm")[["class"]]
+#'
+#'   library(MASS)
+#'   rmod <- rlm(mpg ~ wt + qsec, data = mtcars)
+#'   attr(keep_tidy(rmod), "fm")[["class"]]
+#'
+#' }
 #'
 keep_tidy <-
   function(x,
            ...,
            to.keep = c("call", "terms", "formula", "fixed", "random")) {
-    z <- broom::tidy(x, ...)
+    z <- generics::tidy(x, ...)
     # avoid error if fields are missing to allow a default suitable for different
     # model fit functions
     keep <- intersect(names(x), to.keep)
-    attr(z, "mf") <- c(x[keep], list(class = class(x)))
+    attr(z, "fm") <- c(x[keep], list(class = class(x)))
     z
   }
 
@@ -60,11 +68,11 @@ keep_glance <-
   function(x,
            ...,
            to.keep = c("call", "terms", "formula", "fixed", "random")) {
-    z <- broom::glance(x, ...)
+    z <- generics::glance(x, ...)
     # avoid error if fields are missing to allow a default suitable for different
     # model fit functions
     keep <- intersect(names(x), to.keep)
-    attr(z, "mf") <- c(x[keep], list(class = class(x)))
+    attr(z, "fm") <- c(x[keep], list(class = class(x)))
     z
   }
 
@@ -76,10 +84,10 @@ keep_augment <-
   function(x,
            ...,
            to.keep = c("call", "terms", "formula", "fixed", "random")) {
-    z <- broom::augment(x, ...)
+    z <- generics::augment(x, ...)
     # avoid error if fields are missing to allow a default suitable for different
     # model fit functions
     keep <- intersect(names(x), to.keep)
-    attr(z, "mf") <- c(x[keep], list(class = class(x)))
+    attr(z, "fm") <- c(x[keep], list(class = class(x)))
     z
   }

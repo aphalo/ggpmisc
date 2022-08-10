@@ -84,11 +84,12 @@
 #'   on the model fitting function and model formula we suggest the use of
 #'   \code{\link[gginnards]{geom_debug}}.
 #'
-#' @seealso \code{\link[broom]{broom}} and
-#'   \code{broom.mixed} for details on how the tidying of the
-#'   result of model fits is done. See \code{\link[ggpp]{geom_table}} for details on
-#'   how inset tables respond to mapped aesthetics and table themes. For details
-#'   on predefined table themes see \code{\link[ggpp]{ttheme_gtdefault}}.
+#' @seealso \code{\link[broom]{broom}}, \code{broom.mixed},
+#'   \code{\link[broom]{tidy}} and \code{\link{keep_tidy}} for details on how
+#'   the tidying of the result of model fits is done. See
+#'   \code{\link[ggpp]{geom_table}} for details on how inset tables respond to
+#'   mapped aesthetics and table themes. For details on predefined table themes
+#'   see \code{\link[ggpp]{ttheme_gtdefault}}.
 #'
 #' @family ggplot statistics for model fits
 #'
@@ -98,6 +99,7 @@
 #' # package 'broom' needs to be installed to run these examples
 #'
 #' if (requireNamespace("broom", quietly = TRUE)) {
+#'
 #'   library(broom)
 #'
 #' # data for examples
@@ -338,34 +340,35 @@ fit_tb_compute_panel_fun <- function(data,
       method.args[["y"]] <- data[["y"]]
     }
   }
-  mf <- do.call(method, method.args)
+  fm <- do.call(method, method.args)
+  fm.class <- class(fm) # keep track of fitted model class
 
   if (tolower(tb.type) %in% c("fit.anova", "anova")) {
-    tidy.args <- c(x = quote(stats::anova(mf)), tidy.args)
-    mf_tb <- do.call(generics::tidy, tidy.args)
+    tidy.args <- c(x = quote(stats::anova(fm)), tidy.args)
+    fm.tb <- do.call(keep_tidy, tidy.args)
   } else if (tolower(tb.type) %in% c("fit.summary", "summary")) {
-    tidy.args <- c(x = quote(mf), tidy.args)
-    mf_tb <- do.call(generics::tidy, tidy.args)
+    tidy.args <- c(x = quote(fm), tidy.args)
+    fm.tb <- do.call(keep_tidy, tidy.args)
   } else if (tolower(tb.type) %in% c("fit.coefs", "coefs")) {
-    tidy.args <- c(x = quote(mf), tidy.args)
-    mf_tb <- do.call(generics::tidy, tidy.args)[c("term", "estimate")]
+    tidy.args <- c(x = quote(fm), tidy.args)
+    fm.tb <- do.call(keep_tidy, tidy.args)[c("term", "estimate")]
   }
 
   # reduce number of significant digits of all numeric columns
-  num.cols <- sapply(mf_tb, is.numeric)
-  mf_tb[num.cols] <- signif(mf_tb[num.cols], digits = digits)
+  num.cols <- sapply(fm.tb, is.numeric)
+  fm.tb[num.cols] <- signif(fm.tb[num.cols], digits = digits)
   # treat p.value as a special case
-  if ("p.value" %in% colnames(mf_tb) && p.digits > 0 && p.digits <= 22) {
-    mf_tb[["p.value"]] <- round(mf_tb[["p.value"]], digits = p.digits)
+  if ("p.value" %in% colnames(fm.tb) && p.digits > 0 && p.digits <= 22) {
+    fm.tb[["p.value"]] <- round(fm.tb[["p.value"]], digits = p.digits)
     limit.text <- paste("<", format(1 * 10^-p.digits, nsmall = p.digits))
-    mf_tb[["p.value"]] <- ifelse(mf_tb[["p.value"]] > 0,
-                                 format(mf_tb[["p.value"]], nsmall = p.digits),
+    fm.tb[["p.value"]] <- ifelse(fm.tb[["p.value"]] > 0,
+                                 format(fm.tb[["p.value"]], nsmall = p.digits),
                                  limit.text)
   }
 
-  if (!is.null(tb.params) && !is.null(mf_tb)) {
+  if (!is.null(tb.params) && !is.null(fm.tb)) {
     if (is.character(tb.params)) {
-      idxs <- pmatch(tb.params, mf_tb[[1]])
+      idxs <- pmatch(tb.params, fm.tb[[1]])
       if (length(idxs) < length(tb.params) || anyNA(idxs)) {
         warning("Attempt to select nonexistent params")
         idxs <- stats::na.omit(idxs)
@@ -374,36 +377,36 @@ fit_tb_compute_panel_fun <- function(data,
       }
     } else {
       idxs <- unname(tb.params)
-      if (any(idxs > nrow(mf_tb))) {
+      if (any(idxs > nrow(fm.tb))) {
         warning("Attempt to select nonexistent params")
-        idxs <- idxs[idxs <= nrow(mf_tb)]
+        idxs <- idxs[idxs <= nrow(fm.tb)]
         tb.params <- tb.params[idxs]
       }
     }
-    if (length(idxs) < nrow(mf_tb)) {
+    if (length(idxs) < nrow(fm.tb)) {
       message("Dropping params/terms (rows) from table!")
     }
     if (is.character(tb.params)) {
-      idxs <- pmatch(tb.params, mf_tb[[1]])
+      idxs <- pmatch(tb.params, fm.tb[[1]])
     } else {
       idxs <- unname(tb.params)
     }
     if (length(idxs) < 1L) {
       warning("No matching parameters(s).")
-      mf_tb <- NULL
+      fm.tb <- NULL
     } else {
-      mf_tb <- mf_tb[idxs, ]
+      fm.tb <- fm.tb[idxs, ]
       if (!is.null(names(tb.params))) {
         # support renaming of only some selected columns
         selector <- names(tb.params) != ""
-        mf_tb[[1]][selector] <- names(tb.params)[selector]
+        fm.tb[[1]][selector] <- names(tb.params)[selector]
       }
     }
   }
 
   if (!is.null(tb.vars)) {
     if (is.character(tb.vars)) {
-      idxs <- pmatch(tb.vars, colnames(mf_tb))
+      idxs <- pmatch(tb.vars, colnames(fm.tb))
        if (length(idxs) < length(tb.vars) || anyNA(idxs)) {
         warning("Attempt to select nonexistent columns by name")
         idxs <- stats::na.omit(idxs)
@@ -412,9 +415,9 @@ fit_tb_compute_panel_fun <- function(data,
        }
      } else {
       idxs <- unname(tb.vars)
-      if (any(idxs > ncol(mf_tb))) {
+      if (any(idxs > ncol(fm.tb))) {
         warning("Attempt to select nonexistent columns")
-        idxs <- idxs[idxs <= ncol(mf_tb)]
+        idxs <- idxs[idxs <= ncol(fm.tb)]
         tb.vars <- tb.vars[idxs]
       }
     }
@@ -423,20 +426,22 @@ fit_tb_compute_panel_fun <- function(data,
     }
     if (length(idxs) < 1L) {
       warning("No matching column(s).")
-      mf_tb <- NULL
+      fm.tb <- NULL
     } else {
-      mf_tb <- mf_tb[ , idxs]
+      fm.tb <- fm.tb[ , idxs]
       if (!is.null(names(tb.vars))) {
         # support renaming of only some selected columns
         selector <- names(tb.vars) != ""
-        colnames(mf_tb)[selector] <- names(tb.vars)[selector]
+        colnames(fm.tb)[selector] <- names(tb.vars)[selector]
       }
     }
   }
 
   # we need to enclose the tibble in a list to manually nest the table in
   # data.
-  z <- tibble::tibble(mf_tb = list(mf_tb))
+  z <- tibble::tibble(fm.tb = list(fm.tb),
+                      fm.class = fm.class[1],
+                      fm.is.lm = "lm" %in% fm.class)
 
   if (npc.used) {
     margin.npc <- 0.05
@@ -497,6 +502,6 @@ StatFitTb <-
                    default_aes =
                      ggplot2::aes(hjust = "inward",
                                   vjust = "inward",
-                                  label = after_stat(mf_tb)),
+                                  label = after_stat(fm.tb)),
                    required_aes = c("x", "y")
   )

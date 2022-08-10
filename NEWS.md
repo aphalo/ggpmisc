@@ -7,6 +7,7 @@ editor_options:
 # ggpmisc 0.4.8
 
 -   Add function `use_label()` that greatly simplifies assembling and mapping combined labels from the values returned by `stat_poly_eq()`, `stat_ma_eq()`, `stat_quant_eq()` and `stat_correlation()`.
+-   Add functions `keep_tidy()`, `keep_glance()` and `keep_augment()` as wrappers on methods `tidy()`, `glance()` and `augment()` from package 'broom'. These new functions make it possible to keep a trace of the origin of the _"broomed"_ outputs. Although generally useful, the main idea is to use them to enhance the corresponding statistics in 'ggpmisc'.
 -   Add confidence intervals for R (Pearson's OLS correlation), &tau; (Kendall's rank correlation) and &rho; (Spearman's rank correlation) to the values and labels returned by `stat_correlation()`. In the case of `method = "pearson"` assuming Normal distribution or estimated by bootstrap. For `method = "kendall"` and `method = "spearman"` only bootstrap estimates. These are implemented using package 'confintr'.
 -   Add confidence interval for R<sup>2</sup> to the values and labels returned by `stat_poly_eq()` (implemented using package 'confintr').
 -   Add &theta; (theta) to the values and labels returned by `stat_ma_eq()`.
