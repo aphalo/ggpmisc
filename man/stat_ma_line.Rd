@@ -16,7 +16,7 @@ stat_ma_line(
   range.y = NULL,
   range.x = NULL,
   se = TRUE,
-  mf.values = FALSE,
+  fm.values = FALSE,
   n = 80,
   nperm = 99,
   fullrange = FALSE,
@@ -63,7 +63,7 @@ instead of original variable names.}
 \item{se}{logical Return confidence interval around smooth? (`TRUE` by
 default, see `level` to control.)}
 
-\item{mf.values}{logical Add R2, p-value and n as columns to returned data?
+\item{fm.values}{logical Add R2, p-value and n as columns to returned data?
 (`FALSE` by default.)}
 
 \item{n}{Number of points at which to evaluate smoother.}
@@ -130,7 +130,7 @@ new statistics as they are not needed and conceptually transformations of
   interval around the mean} \item{ymax *or* xmax}{upper pointwise confidence
   interval around the mean} \item{se}{standard error} }
 
-  If \code{mf.values = TRUE} is passed then columns based on the summary of
+  If \code{fm.values = TRUE} is passed then columns based on the summary of
   the model fit are added, with the same value in each row within a group.
   This is wasteful and disabled by default, but provides a simple and robust
   approach to achieve effects like colouring or hiding of the model fit line
@@ -216,7 +216,7 @@ if (requireNamespace("gginnards", quietly = TRUE)) {
     stat_ma_line(geom = "debug")
 
   ggplot(my.data, aes(x, y)) +
-    stat_ma_line(geom = "debug", mf.values = TRUE)
+    stat_ma_line(geom = "debug", fm.values = TRUE)
 
 }
 }

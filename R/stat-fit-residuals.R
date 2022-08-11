@@ -267,7 +267,7 @@ residuals_compute_group_fun <- function(data,
   # quantreg contains code with partial matching of names!
   # so we silence selectively only these warnings
   withCallingHandlers({
-    mf <- do.call(method, args = fun.args)
+    fm <- do.call(method, args = fun.args)
   }, warning = function(w) {
     if (startsWith(conditionMessage(w), "partial match of") ||
         startsWith(conditionMessage(w), "partial argument match of")) {
@@ -280,15 +280,15 @@ residuals_compute_group_fun <- function(data,
       if (resid.type != "deviance") {
         warning("Ignoring supplied 'resid.type' as 'weighted = TRUE'")
       }
-      resid.args <- list(obj = mf, drop0 = TRUE)
+      resid.args <- list(obj = fm, drop0 = TRUE)
     } else {
-      resid.args <- list(object = mf, type = resid.type)
+      resid.args <- list(object = fm, type = resid.type)
     }
   } else {
     if (weighted) {
-      resid.args <- list(obj = mf, drop0 = TRUE)
+      resid.args <- list(obj = fm, drop0 = TRUE)
     } else {
-      resid.args <- list(object = mf)
+      resid.args <- list(object = fm)
     }
   }
   if (weighted) {
@@ -297,10 +297,10 @@ residuals_compute_group_fun <- function(data,
     fit.residuals <- do.call(stats::residuals, args = resid.args)
   }
 
-  if (exists("w", mf)) {
-    weight.vals <- mf[["w"]]
+  if (exists("w", fm)) {
+    weight.vals <- fm[["w"]]
   } else {
-    weight.vals <- stats::weights(mf)
+    weight.vals <- stats::weights(fm)
     weight.vals <- ifelse(length(weight.vals) == length(fit.residuals),
                           weight.vals,
                           rep_len(NA_real_, length(fit.residuals)))

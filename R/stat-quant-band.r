@@ -53,7 +53,7 @@
 #' @param n Number of points at which to evaluate smoother.
 #' @param orientation character Either "x" or "y" controlling the default for
 #'   \code{formula}.
-#' @param mf.values logical Add n as a column to returned data? (`FALSE` by
+#' @param fm.values logical Add n as a column to returned data? (`FALSE` by
 #'   default.)
 #'
 #' @return The value returned by the statistic is a data frame, that will have
@@ -143,7 +143,7 @@
 #'     stat_quant_band(geom = "debug")
 #'
 #'   ggplot(mpg, aes(displ, hwy)) +
-#'     stat_quant_band(geom = "debug", mf.values = TRUE)
+#'     stat_quant_band(geom = "debug", fm.values = TRUE)
 #'
 ##' }
 #'
@@ -156,7 +156,7 @@ stat_quant_band <- function(mapping = NULL,
                             ...,
                             quantiles = c(0.25, 0.5, 0.75),
                             formula = NULL,
-                            mf.values = FALSE,
+                            fm.values = FALSE,
                             n = 80,
                             method = "rq",
                             method.args = list(),
@@ -209,7 +209,7 @@ stat_quant_band <- function(mapping = NULL,
     params = list(
       quantiles = quantiles,
       formula = formula,
-      mf.values = mf.values,
+      fm.values = fm.values,
       n = n,
       method = method,
       method.args = method.args,
@@ -236,7 +236,7 @@ quant_band_compute_group_fun <- function(data,
                                          method = "rq:br",
                                          method.args = list(),
                                          lambda = 1,
-                                         mf.values = FALSE,
+                                         fm.values = FALSE,
                                          na.rm = FALSE,
                                          flipped_aes = NA) {
   rlang::check_installed("quantreg", reason = "for `stat_quant_band()`")
@@ -301,7 +301,7 @@ quant_band_compute_group_fun <- function(data,
   z[["ymax"]] <- z.ls[[3]][["y"]]
   z[["quantile.ymax"]] <- z.ls[[3]][["quantile"]]
 
-  if (mf.values) {
+  if (fm.values) {
     z[["n"]] <- nrow(na.omit(data[, c("x", "y")]))
     z[["method"]] <- method.name
   }

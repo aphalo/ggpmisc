@@ -83,13 +83,17 @@
 #'   passed as a character string together with the \code{lmodel2}-supported
 #'   method.
 #'
-#' @details This stat can be used to automatically annotate a plot with R^2,
-#'   P_value, n and/or the fitted model equation. It supports linear major axis
+#' @details This stat can be used to automatically annotate a plot with \eqn{R^2},
+#'   \eqn{P}-value, \eqn{n} and/or the fitted model equation. It supports linear major axis
 #'   (MA), standard major axis (SMA) and ranged major axis (RMA) regression by
 #'   means of function \code{\link[lmodel2]{lmodel2}}. Please see the
 #'   documentation, including the vignette of package 'lmodel2' for details.
 #'   The parameters in \code{stat_ma_eq()} follow the same naming as in function
 #'   \code{lmodel2()}.
+#'
+#'   It is important to keep in mind that although the fitted line does not
+#'   depend on whether the \eqn{x} or \eqn{y} appears on the rhs of the model
+#'   formula, the numeric estimates for the parameters do depend on this.
 #'
 #'   A ggplot statistic receives as \code{data} a data frame that is not the one
 #'   passed as argument by the user, but instead a data frame with the variables
@@ -136,17 +140,16 @@
 #' of \code{\link[gginnards]{geom_debug}} as shown in the last examples below.
 #'
 #' @seealso The major axis regression model is fitted with function
-#'   \code{\link[lmodel2]{lmodel2}}, please consult its documentation. This
-#'   \code{stat_ma_eq} statistic can return ready formatted labels depending on
-#'   the argument passed to \code{output.type}. If ordinary least squares
-#'   polynomial regression is desired, then \code{\link{stat_poly_eq}}. For
-#'   quantile fits of polynomial regression is desired,
+#'   \code{\link[lmodel2]{lmodel2}}, please consult its documentation. Statistic
+#'   \code{stat_ma_eq()} can return different ready formatted labels depending
+#'   on the argument passed to \code{output.type}. If ordinary least squares
+#'   polynomial regression is desired, then \code{\link{stat_poly_eq}}. If
+#'   quantile-fitted polynomial regression is desired,
 #'   \code{\link{stat_quant_eq}} should be used. For other types of models such
 #'   as non-linear models, statistics \code{\link{stat_fit_glance}} and
 #'   \code{\link{stat_fit_tidy}} should be used and the code for construction of
 #'   character strings from numeric values and their mapping to aesthetic
-#'   \code{label} needs to be explicitly supplied
-#'   in the call.
+#'   \code{label} explicitly supplied in the call.
 #'
 #' @family ggplot statistics for major axis regression
 #'
@@ -535,23 +538,24 @@ ma_eq_compute_group_fun <- function(data,
   # lmodel2 issues a warning that is irrelevant here
   # so we silence it selectively
   withCallingHandlers({
-    mf <- do.call(what = method, args = fit.args)
+    fm <- do.call(what = method, args = fit.args)
   }, message = function(w) {
     if (grepl("RMA was not requested", conditionMessage(w), fixed = TRUE)) {
       invokeRestart("muffleMessage")
     }
   })
 
-  if (!inherits(mf, "lmodel2")) {
+  if (!inherits(fm, "lmodel2")) {
     stop("Method \"", method.name, "\" did not return a \"lmodel2\" object")
   }
+  fm.class <- class(fm)
 
-  n <- mf[["n"]]
-  coefs <- stats::coefficients(mf, method = fun.method)
-  rr <- mf[["rsquare"]]
-  theta <- mf[["theta"]]
-  idx <- which(mf[["regression.results"]][["Method"]] == fun.method)
-  p.value <- mf[["regression.results"]][["P-perm (1-tailed)"]][idx]
+  n <- fm[["n"]]
+  coefs <- stats::coefficients(fm, method = fun.method)
+  rr <- fm[["rsquare"]]
+  theta <- fm[["theta"]]
+  idx <- which(fm[["regression.results"]][["Method"]] == fun.method)
+  p.value <- fm[["regression.results"]][["P-perm (1-tailed)"]][idx]
 
   formula.rhs.chr <- as.character(formula)[3]
   forced.origin <- grepl("-[[:space:]]*1|+[[:space:]]*0", formula.rhs.chr)
@@ -694,7 +698,9 @@ ma_eq_compute_group_fun <- function(data,
     }
   }
 
-  z[["method"]] <- method.name
+  z[["fm.method"]] <- method.name
+  z[["fm.class"]] <- fm.class[1]
+  z[["fm.formula.char"]] <- format(formula)
 
   # Compute label positions
   if (is.character(label.x)) {

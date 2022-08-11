@@ -13,7 +13,7 @@ stat_quant_line(
   quantiles = c(0.25, 0.5, 0.75),
   formula = NULL,
   se = length(quantiles) == 1L,
-  mf.values = FALSE,
+  fm.values = FALSE,
   n = 80,
   method = "rq",
   method.args = list(),
@@ -50,7 +50,7 @@ instead of original variable names.}
 
 \item{se}{logical Passed to \code{quantreg::predict.rq()}.}
 
-\item{mf.values}{logical Add n as a column to returned data? (`FALSE` by
+\item{fm.values}{logical Add n as a column to returned data? (`FALSE` by
 default.)}
 
 \item{n}{Number of points at which to evaluate smoother.}
@@ -144,7 +144,7 @@ and \code{stat_poly_line()}.
   interval around the mean} \item{ymax *or* xmax}{upper confidence
   interval around the mean}}
 
-  If \code{mf.values = TRUE} is passed then one column with the number of
+  If \code{fm.values = TRUE} is passed then one column with the number of
   observations \code{n} used for each fit is also included, with the same
   value in each row within a group. This is wasteful and disabled by default,
   but provides a simple and robust approach to achieve effects like colouring
@@ -239,7 +239,7 @@ if (requireNamespace("gginnards", quietly = TRUE)) {
     stat_quant_line(geom = "debug")
 
   ggplot(mpg, aes(displ, hwy)) +
-    stat_quant_line(geom = "debug", mf.values = TRUE)
+    stat_quant_line(geom = "debug", fm.values = TRUE)
 
 }
 

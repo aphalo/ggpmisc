@@ -13,7 +13,7 @@ stat_poly_line(
   method = "lm",
   formula = NULL,
   se = TRUE,
-  mf.values = FALSE,
+  fm.values = FALSE,
   n = 80,
   fullrange = FALSE,
   level = 0.95,
@@ -54,7 +54,7 @@ instead of original variable names.}
 \item{se}{Display confidence interval around smooth? (`TRUE` by default, see
 `level` to control.)}
 
-\item{mf.values}{logical Add R2, adjusted R2, p-value and n as columns to
+\item{fm.values}{logical Add R2, adjusted R2, p-value and n as columns to
 returned data? (`FALSE` by default.)}
 
 \item{n}{Number of points at which to evaluate smoother.}
@@ -119,7 +119,7 @@ statistics in the grammar of graphics.
   interval around the mean} \item{ymax *or* xmax}{upper pointwise confidence
   interval around the mean} \item{se}{standard error} }
 
-  If \code{mf.values = TRUE} is passed then columns based on the summary of
+  If \code{fm.values = TRUE} is passed then columns based on the summary of
   the model fit are added, with the same value in each row within a group.
   This is wasteful and disabled by default, but provides a simple and robust
   approach to achieve effects like colouring or hiding of the model fit line
@@ -173,10 +173,10 @@ if (requireNamespace("gginnards", quietly = TRUE)) {
     stat_poly_line(geom = "debug")
 
   ggplot(mpg, aes(displ, hwy)) +
-    stat_poly_line(geom = "debug", mf.values = TRUE)
+    stat_poly_line(geom = "debug", fm.values = TRUE)
 
   ggplot(mpg, aes(displ, hwy)) +
-    stat_poly_line(geom = "debug", method = lm, mf.values = TRUE)
+    stat_poly_line(geom = "debug", method = lm, fm.values = TRUE)
 
 }
 

@@ -56,7 +56,7 @@
 #' @param method.args named list with additional arguments.
 #' @param se Display confidence interval around smooth? (`TRUE` by default, see
 #'   `level` to control.)
-#' @param mf.values logical Add R2, adjusted R2, p-value and n as columns to
+#' @param fm.values logical Add R2, adjusted R2, p-value and n as columns to
 #'   returned data? (`FALSE` by default.)
 #' @param fullrange Should the fit span the full range of the plot, or just
 #'   the data?
@@ -75,7 +75,7 @@
 #'   interval around the mean} \item{ymax *or* xmax}{upper pointwise confidence
 #'   interval around the mean} \item{se}{standard error} }
 #'
-#'   If \code{mf.values = TRUE} is passed then columns based on the summary of
+#'   If \code{fm.values = TRUE} is passed then columns based on the summary of
 #'   the model fit are added, with the same value in each row within a group.
 #'   This is wasteful and disabled by default, but provides a simple and robust
 #'   approach to achieve effects like colouring or hiding of the model fit line
@@ -130,10 +130,10 @@
 #'     stat_poly_line(geom = "debug")
 #'
 #'   ggplot(mpg, aes(displ, hwy)) +
-#'     stat_poly_line(geom = "debug", mf.values = TRUE)
+#'     stat_poly_line(geom = "debug", fm.values = TRUE)
 #'
 #'   ggplot(mpg, aes(displ, hwy)) +
-#'     stat_poly_line(geom = "debug", method = lm, mf.values = TRUE)
+#'     stat_poly_line(geom = "debug", method = lm, fm.values = TRUE)
 #'
 #' }
 #'
@@ -145,7 +145,7 @@ stat_poly_line <- function(mapping = NULL, data = NULL,
                            method = "lm",
                            formula = NULL,
                            se = TRUE,
-                           mf.values = FALSE,
+                           fm.values = FALSE,
                            n = 80,
                            fullrange = FALSE,
                            level = 0.95,
@@ -198,7 +198,7 @@ stat_poly_line <- function(mapping = NULL, data = NULL,
       method = method,
       formula = formula,
       se = se,
-      mf.values = mf.values,
+      fm.values = fm.values,
       n = n,
       fullrange = fullrange,
       level = level,
@@ -215,7 +215,7 @@ poly_line_compute_group_fun <-
            method = NULL,
            formula = NULL,
            se = TRUE,
-           mf.values = FALSE,
+           fm.values = FALSE,
            n = 80,
            fullrange = FALSE,
            xseq = NULL,
@@ -279,14 +279,14 @@ poly_line_compute_group_fun <-
       fun.args[["method"]] <- fun.method
     }
 
-    mf <- do.call(method, args = fun.args)
+    fm <- do.call(method, args = fun.args)
 
-    if (!inherits(mf, "lm")) {
+    if (!inherits(fm, "lm")) {
       stop("Method \"", method.name, "\" did not return a \"lm\" object")
     }
 
     newdata <- data.frame(x = xseq)
-    prediction <- stats::predict(mf,
+    prediction <- stats::predict(fm,
                                  newdata = newdata,
                                  se.fit = se,
                                  level = level,
@@ -302,30 +302,30 @@ poly_line_compute_group_fun <-
     }
     prediction <- cbind(newdata, prediction)
 
-    if (mf.values) {
-      mf.summary <- summary(mf)
+    if (fm.values) {
+      fm.summary <- summary(fm)
       # summary methods for different fit methods may no return some slots
-      if (exists("fstatistic", mf.summary)) {
+      if (exists("fstatistic", fm.summary)) {
         prediction[["p.value"]] <-
-          stats::pf(q = mf.summary[["fstatistic"]][["value"]],
-                    df1 = mf.summary[["fstatistic"]][["numdf"]],
-                    df2 = mf.summary[["fstatistic"]][["dendf"]],
+          stats::pf(q = fm.summary[["fstatistic"]][["value"]],
+                    df1 = fm.summary[["fstatistic"]][["numdf"]],
+                    df2 = fm.summary[["fstatistic"]][["dendf"]],
                     lower.tail = FALSE)
       } else {
         prediction[["p.value"]] <- NA_real_
       }
-      if (exists("r.squared", mf.summary)) {
-        prediction[["r.squared"]] <- mf.summary[["r.squared"]]
+      if (exists("r.squared", fm.summary)) {
+        prediction[["r.squared"]] <- fm.summary[["r.squared"]]
       } else {
         prediction[["r.squared"]] <- NA_real_
       }
-      if (exists("adj.r.squared", mf.summary)) {
-        prediction[["adj.r.squared"]] <- mf.summary[["adj.r.squared"]]
+      if (exists("adj.r.squared", fm.summary)) {
+        prediction[["adj.r.squared"]] <- fm.summary[["adj.r.squared"]]
       } else {
         prediction[["adj.r.squared"]] <- NA_real_
       }
-      if (exists("residuals", mf)) {
-        prediction[["n"]] <- length(mf[["residuals"]])
+      if (exists("residuals", fm)) {
+        prediction[["n"]] <- length(fm[["residuals"]])
       } else {
         prediction[["n"]] <- NA_real_
       }

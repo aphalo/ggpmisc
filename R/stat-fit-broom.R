@@ -102,6 +102,7 @@
 #' # package 'broom' needs to be installed to run these examples
 #'
 #' if (requireNamespace("broom", quietly = TRUE)) {
+#'   broom.installed <- TRUE
 #'   library(broom)
 #'   library(quantreg)
 #'
@@ -113,22 +114,25 @@
 #'       stat_smooth(method = "lm") +
 #'       geom_point(aes(colour = factor(cyl))) +
 #'       stat_fit_glance(method = "lm",
-#'                     method.args = list(formula = y ~ x),
-#'                     geom = "debug")
+#'                       method.args = list(formula = y ~ x),
+#'                       geom = "debug")
 #'   }
+#' }
 #'
+#' if (broom.installed)
 #' # Regression by panel example
 #'   ggplot(mtcars, aes(x = disp, y = mpg)) +
-#'     stat_smooth(method = "lm") +
+#'     stat_smooth(method = "lm", formula = y ~ x) +
 #'     geom_point(aes(colour = factor(cyl))) +
 #'     stat_fit_glance(method = "lm",
 #'                     label.y = "bottom",
 #'                     method.args = list(formula = y ~ x),
-#'                     mapping = aes(label = sprintf('r^2~"="~%.3f~~italic(P)~"="~%.2g',
+#'                     mapping = aes(label = sprintf('italic(r)^2~"="~%.3f~~italic(P)~"="~%.2g',
 #'                                   after_stat(r.squared), after_stat(p.value))),
 #'                     parse = TRUE)
 #'
 #' # Regression by group example
+#' if (broom.installed)
 #'   ggplot(mtcars, aes(x = disp, y = mpg, colour = factor(cyl))) +
 #'     stat_smooth(method = "lm") +
 #'     geom_point() +
@@ -140,6 +144,7 @@
 #'                     parse = TRUE)
 #'
 #' # Weighted regression example
+#' if (broom.installed)
 #'   ggplot(mtcars, aes(x = disp, y = mpg, weight = cyl)) +
 #'     stat_smooth(method = "lm") +
 #'     geom_point(aes(colour = factor(cyl))) +
@@ -151,6 +156,7 @@
 #'                     parse = TRUE)
 #'
 #' # correlation test
+#' if (broom.installed)
 #'   ggplot(mtcars, aes(x = disp, y = mpg)) +
 #'     geom_point() +
 #'     stat_fit_glance(method = "cor.test",
@@ -160,6 +166,7 @@
 #'                                   after_stat(estimate), after_stat(p.value))),
 #'                     parse = TRUE)
 #'
+#' if (broom.installed)
 #'   ggplot(mtcars, aes(x = disp, y = mpg)) +
 #'     geom_point() +
 #'     stat_fit_glance(method = "cor.test",
@@ -170,6 +177,7 @@
 #'                     parse = TRUE)
 #'
 #' # Quantile regression by group example
+#' if (broom.installed)
 #'   ggplot(mtcars, aes(x = disp, y = mpg)) +
 #'     stat_smooth(method = "lm") +
 #'     geom_point() +
@@ -178,8 +186,6 @@
 #'                     method.args = list(formula = y ~ x),
 #'                     mapping = aes(label = sprintf('AIC = %.3g, BIC = %.3g',
 #'                                   after_stat(AIC), after_stat(BIC))))
-#'
-#' }
 #'
 stat_fit_glance <- function(mapping = NULL, data = NULL, geom = "text_npc",
                             method = "lm",
@@ -255,7 +261,13 @@ fit_glance_compute_group_fun <- function(data,
     label.y <- label.y[1]
   }
 
-  if (is.character(method)) method <- match.fun(method)
+  if (is.character(method)) {
+    method.name <- method
+    method <- match.fun(method)
+  } else {
+    method.name <- deparse(substitute(method))
+  }
+
   if ("data" %in% names(method.args)) {
     message("External 'data' passed can be inconsistent with plot!\n",
             "These data must be available at the time of printing!!!")
@@ -273,10 +285,19 @@ fit_glance_compute_group_fun <- function(data,
       method.args[["y"]] <- data[["y"]]
     }
   }
-  mf <- do.call(method, method.args)
+  fm <- do.call(method, method.args)
+  fm.class <- class(fm) # keep track of fitted model class
+  if (inherits(fm, "lm")) {
+    fm.formula <- fm[["terms"]]
+  } else {
+    fm.formula <- NA
+  }
 
-  glance.args <- c(list(x = quote(mf), glance.args))
+  glance.args <- c(list(x = quote(fm), glance.args))
   z <- do.call(generics::glance, glance.args)
+  z[["fm.class"]] <- fm.class[1]
+  z[["fm.method"]] <- method.name
+  z[["fm.formula.chr"]] <- format(fm.formula)
 
   n.labels <- nrow(z)
   if (length(label.x) != n.labels) {
@@ -460,9 +481,11 @@ StatFitGlance <-
 #' @export
 #'
 #' @examples
-#' # package 'broom' needs to be installed to run these examples
+#' # Package 'broom' needs to be installed to run these examples.
+#' # We check availability before running them to avoid errors.
 #'
 #' if (requireNamespace("broom", quietly = TRUE)) {
+#'   broom.installed <- TRUE
 #'   library(broom)
 #'   library(quantreg)
 #'
@@ -478,14 +501,17 @@ StatFitGlance <-
 #'                        geom = "debug",
 #'                        summary.fun = colnames)
 #'   }
+#' }
 #'
 #' # Regression by panel example
+#' if (broom.installed)
 #'   ggplot(mtcars, aes(x = disp, y = mpg)) +
 #'     geom_point(aes(colour = factor(cyl))) +
 #'     stat_fit_augment(method = "lm",
 #'                      method.args = list(formula = y ~ x))
 #'
 #' # Residuals from regression by panel example
+#' if (broom.installed)
 #'   ggplot(mtcars, aes(x = disp, y = mpg)) +
 #'     geom_hline(yintercept = 0, linetype = "dotted") +
 #'     stat_fit_augment(geom = "point",
@@ -494,12 +520,14 @@ StatFitGlance <-
 #'                      y.out = ".resid")
 #'
 #' # Regression by group example
+#' if (broom.installed)
 #'   ggplot(mtcars, aes(x = disp, y = mpg, colour = factor(cyl))) +
 #'     geom_point() +
 #'     stat_fit_augment(method = "lm",
 #'                      method.args = list(formula = y ~ x))
 #'
 #' # Residuals from regression by group example
+#' if (broom.installed)
 #'   ggplot(mtcars, aes(x = disp, y = mpg, colour = factor(cyl))) +
 #'     geom_hline(yintercept = 0, linetype = "dotted") +
 #'     stat_fit_augment(geom = "point",
@@ -507,6 +535,7 @@ StatFitGlance <-
 #'                      y.out = ".resid")
 #'
 #' # Weighted regression example
+#' if (broom.installed)
 #'   ggplot(mtcars, aes(x = disp, y = mpg, weight = cyl)) +
 #'     geom_point(aes(colour = factor(cyl))) +
 #'     stat_fit_augment(method = "lm",
@@ -514,6 +543,7 @@ StatFitGlance <-
 #'                                         weights = quote(weight)))
 #'
 #' # Residuals from weighted regression example
+#' if (broom.installed)
 #'   ggplot(mtcars, aes(x = disp, y = mpg, weight = cyl)) +
 #'     geom_hline(yintercept = 0, linetype = "dotted") +
 #'     stat_fit_augment(geom = "point",
@@ -522,12 +552,12 @@ StatFitGlance <-
 #'                      y.out = ".resid")
 #'
 #' # Quantile regression
+#' if (broom.installed)
 #'   ggplot(mtcars, aes(x = disp, y = mpg)) +
 #'     geom_point() +
 #'     stat_fit_augment(method = "rq",
 #'                     label.y = "bottom")
 #'
-#' }
 #'
 stat_fit_augment <- function(mapping = NULL, data = NULL, geom = "smooth",
                              method = "lm",
@@ -566,7 +596,6 @@ fit_augment_compute_group_fun <- function(data,
                                     level,
                                     y.out,
                                     ...) {
-  force(data)
   unAsIs <- function(X) {
     if ("AsIs" %in% class(X)) {
       class(X) <- class(X)[-match("AsIs", class(X))]
@@ -574,12 +603,21 @@ fit_augment_compute_group_fun <- function(data,
     X
   }
 
+  force(data)
+  data <- na.omit(data)
+
   if (length(unique(data[["x"]])) < 2) {
     # Not enough data to perform fit
     return(data.frame())
   }
-  if (is.character(method)) method <- match.fun(method)
-#  data <- data[order(data[["x"]]), ]
+  if (is.character(method)) {
+    method.name <- method
+    method <- match.fun(method)
+  } else {
+    method.name <- deparse(substitute(method))
+  }
+
+  #  data <- data[order(data[["x"]]), ]
   if ("data" %in% names(method.args)) {
     message("External 'data' passed can be inconsistent with plot!\n",
             "These data must be available at the time of printing!!!")
@@ -597,23 +635,33 @@ fit_augment_compute_group_fun <- function(data,
       method.args[["y"]] <- data[["y"]]
     }
   }
-  mf <- do.call(method, method.args)
+  fm <- do.call(method, method.args)
+  fm.class <- class(fm) # keep track of fitted model class
+  if (inherits(fm, "lm")) {
+    fm.formula <- fm[["terms"]]
+  } else {
+    fm.formula <- NA
+  }
 
-  augment.args <- c(list(x = mf), augment.args)
+  augment.args <- c(list(x = fm), augment.args)
   z <- do.call(generics::augment, augment.args)
 
   z <- plyr::colwise(unAsIs)(z)
   tibble::as_tibble(z)
   z[["y.observed"]] <- z[["y"]]
   z[["y"]] <- z[[y.out]]
-  if (exists("df.residual", mf) && y.out == ".fitted") {
-    z[["t.value"]] <- stats::qt(1 - (1 - level) / 2, mf[["df.residual"]])
+  if (exists("df.residual", fm) && y.out == ".fitted") {
+    z[["t.value"]] <- stats::qt(1 - (1 - level) / 2, fm[["df.residual"]])
   } else {
-    z[["t.value"]] <- NA_real_
+    z[["t.value"]] <- rep_len(NA_real_, nrow(z))
   }
   if (!exists(".se.fit", z)) {
-    z[[".se.fit"]] <- NA_real_
+    z[[".se.fit"]] <- rep_len(NA_real_, nrow(z))
   }
+  z[["fm.class"]] <- rep_len(fm.class[1], nrow(z))
+  z[["fm.method"]] <- rep_len(method.name, nrow(z))
+  z[["fm.formula.chr"]] <- rep_len(format(fm.formula), nrow(z))
+
   z
 }
 
@@ -743,9 +791,11 @@ StatFitAugment <-
 #' @export
 #'
 #' @examples
-#' # package 'broom' needs to be installed to run these examples
+#' # Package 'broom' needs to be installed to run these examples.
+#' # We check availability before running them to avoid errors.
 #'
 #' if (requireNamespace("broom", quietly = TRUE)) {
+#'   broom.installed <- TRUE
 #'   library(broom)
 #'   library(quantreg)
 #'
@@ -773,9 +823,11 @@ StatFitAugment <-
 #'     stat_fit_tidy(method = "lm",
 #'                   method.args = list(formula = y ~ x + I(x^2)),
 #'                   geom = "debug", sanitize.names = TRUE)
+#'   }
 #' }
 #'
 #' # Regression by panel example
+#' if (broom.installed)
 #'   ggplot(mtcars, aes(x = disp, y = mpg)) +
 #'     stat_smooth(method = "lm") +
 #'     geom_point(aes(colour = factor(cyl))) +
@@ -787,6 +839,7 @@ StatFitAugment <-
 #'                                                 after_stat(x_p.value))))
 #'
 #' # Regression by group example
+#' if (broom.installed)
 #'   ggplot(mtcars, aes(x = disp, y = mpg, colour = factor(cyl))) +
 #'     stat_smooth(method = "lm") +
 #'     geom_point() +
@@ -798,6 +851,7 @@ StatFitAugment <-
 #'                                                 after_stat(x_p.value))))
 #'
 #' # Weighted regression example
+#' if (broom.installed)
 #'   ggplot(mtcars, aes(x = disp, y = mpg, weight = cyl)) +
 #'     stat_smooth(method = "lm") +
 #'     geom_point(aes(colour = factor(cyl))) +
@@ -809,6 +863,7 @@ StatFitAugment <-
 #'                                                 after_stat(x_p.value))))
 #'
 #' # Correlation test
+#' if (broom.installed)
 #'   ggplot(mtcars, aes(x = disp, y = mpg)) +
 #'     stat_smooth(method = "lm") +
 #'     geom_point() +
@@ -820,6 +875,7 @@ StatFitAugment <-
 #'                                                 after_stat(`_p.value`))))
 #'
 #' # Quantile regression
+#' if (broom.installed)
 #'   ggplot(mtcars, aes(x = disp, y = mpg)) +
 #'     stat_smooth(method = "lm") +
 #'     geom_point() +
@@ -830,8 +886,6 @@ StatFitAugment <-
 #'                   mapping = aes(label = sprintf("Slope = %.3g\np-value = %.3g",
 #'                                                 after_stat(x_estimate),
 #'                                                 after_stat(x_p.value))))
-#'
-#' }
 #'
 stat_fit_tidy <- function(mapping = NULL, data = NULL, geom = "text_npc",
                           method = "lm",
@@ -912,7 +966,13 @@ fit_tidy_compute_group_fun <- function(data,
     label.y <- label.y[1]
   }
 
-  if (is.character(method)) method <- match.fun(method)
+  if (is.character(method)) {
+    method.name <- method
+    method <- match.fun(method)
+  } else {
+    method.name <- deparse(substitute(method))
+  }
+
   if ("data" %in% names(method.args)) {
     message("External 'data' passed can be inconsistent with plot!\n",
             "These data must be available at the time of printing!!!")
@@ -930,25 +990,32 @@ fit_tidy_compute_group_fun <- function(data,
       method.args[["y"]] <- quote(data[["y"]])
     }
   }
-  mf <- do.call(method, method.args)
-  tidy.args <- c(list(x = quote(mf)), tidy.args)
-  mf.td <- do.call(generics::tidy, tidy.args)
-  col.names <- colnames(mf.td)
-  clean.term.names <- gsub("(Intercept)", "Intercept", mf.td[["term"]], fixed = TRUE)
-  z <- as.data.frame(t(mf.td[["estimate"]]))
+  fm <- do.call(method, method.args)
+  fm.class <- class(fm) # keep track of fitted model class
+  if (inherits(fm, "lm")) {
+    fm.formula <- fm[["terms"]]
+  } else {
+    fm.formula <- NA
+  }
+
+  tidy.args <- c(list(x = quote(fm)), tidy.args)
+  fm.td <- do.call(generics::tidy, tidy.args)
+  col.names <- colnames(fm.td)
+  clean.term.names <- gsub("(Intercept)", "Intercept", fm.td[["term"]], fixed = TRUE)
+  z <- as.data.frame(t(fm.td[["estimate"]]))
   names(z) <- paste(clean.term.names, "estimate", sep = "_")
   if ("std.error" %in% col.names) {
-    z.std.error <- as.data.frame(t(mf.td[["std.error"]]))
+    z.std.error <- as.data.frame(t(fm.td[["std.error"]]))
     names(z.std.error) <- paste(clean.term.names, "se", sep = "_")
     z <- cbind(z, z.std.error)
   }
-  if (exists("statistic", mf.td, inherits = FALSE)) {
-    z.statistic <- as.data.frame(t(mf.td[["statistic"]]))
+  if (exists("statistic", fm.td, inherits = FALSE)) {
+    z.statistic <- as.data.frame(t(fm.td[["statistic"]]))
     names(z.statistic) <- paste(clean.term.names, "stat", sep = "_")
     z <- cbind(z, z.statistic)
   }
   for (col in setdiff(col.names, c("term", "estimate", "intercept", "std.error", "statistic"))) {
-    zz <- as.data.frame(t(mf.td[[col]]))
+    zz <- as.data.frame(t(fm.td[[col]]))
     names(zz) <- paste(clean.term.names, col, sep = "_")
     z <- cbind(z, zz)
   }
@@ -1006,6 +1073,9 @@ fit_tidy_compute_group_fun <- function(data,
   if (sanitize.names) {
     names(z) <- make.names(names(z), unique = TRUE)
   }
+  z[["fm.class"]] <-rep_len(fm.class[1], nrow(z))
+  z[["fm.method"]] <- rep_len(method.name, nrow(z))
+  z[["fm.formula.chr"]] <- rep_len(format(fm.formula), nrow(z))
 
   z
 }

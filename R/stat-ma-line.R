@@ -62,7 +62,7 @@
 #' @param nperm integer Number of permutation used to estimate significance.
 #' @param se logical Return confidence interval around smooth? (`TRUE` by
 #'   default, see `level` to control.)
-#' @param mf.values logical Add R2, p-value and n as columns to returned data?
+#' @param fm.values logical Add R2, p-value and n as columns to returned data?
 #'   (`FALSE` by default.)
 #' @param fullrange Should the fit span the full range of the plot, or just
 #'   the data?
@@ -81,7 +81,7 @@
 #'   interval around the mean} \item{ymax *or* xmax}{upper pointwise confidence
 #'   interval around the mean} \item{se}{standard error} }
 #'
-#'   If \code{mf.values = TRUE} is passed then columns based on the summary of
+#'   If \code{fm.values = TRUE} is passed then columns based on the summary of
 #'   the model fit are added, with the same value in each row within a group.
 #'   This is wasteful and disabled by default, but provides a simple and robust
 #'   approach to achieve effects like colouring or hiding of the model fit line
@@ -168,7 +168,7 @@
 #'     stat_ma_line(geom = "debug")
 #'
 #'   ggplot(my.data, aes(x, y)) +
-#'     stat_ma_line(geom = "debug", mf.values = TRUE)
+#'     stat_ma_line(geom = "debug", fm.values = TRUE)
 #'
 #' }
 #' }
@@ -186,7 +186,7 @@ stat_ma_line <- function(mapping = NULL,
                          range.y = NULL,
                          range.x = NULL,
                          se = TRUE,
-                         mf.values = FALSE,
+                         fm.values = FALSE,
                          n = 80,
                          nperm = 99,
                          fullrange = FALSE,
@@ -243,7 +243,7 @@ stat_ma_line <- function(mapping = NULL,
       range.y = range.y,
       range.x = range.x,
       se = se,
-      mf.values = mf.values,
+      fm.values = fm.values,
       n = n,
       nperm = nperm,
       fullrange = fullrange,
@@ -269,7 +269,7 @@ ma_line_compute_group_fun <-
            formula = NULL,
            range.y = NULL, range.x = NULL,
            se = TRUE,
-           mf.values = FALSE,
+           fm.values = FALSE,
            n = 80,
            nperm = 99,
            fullrange = FALSE,
@@ -360,31 +360,31 @@ ma_line_compute_group_fun <-
     # lmodel2 issues a warning that is irrelevant here
     # so we silence it selectively
     withCallingHandlers({
-      mf <- do.call(what = method, args = fit.args)
+      fm <- do.call(what = method, args = fit.args)
     }, message = function(w) {
       if (grepl("RMA was not requested", conditionMessage(w), fixed = TRUE)) {
         invokeRestart("muffleMessage")
       }
     })
 
-    if (!inherits(mf, "lmodel2")) {
+    if (!inherits(fm, "lmodel2")) {
       stop("Method \"", method.name, "\" did not return a \"lmodel2\" object")
     }
 
     newdata <- data.frame(x = xseq)
 
-    prediction <- stats::predict(mf,
+    prediction <- stats::predict(fm,
                                  method = fun.method,
                                  newdata = newdata,
                                  interval = "confidence"
     )
     names(prediction) <- c("y", "ymin", "ymax")
     prediction <- cbind(newdata, prediction)
-    if (mf.values) {
-      idx <- which(mf[["regression.results"]][["Method"]] == fun.method)
-      prediction[["p.value"]] <- mf[["regression.results"]][["P-perm (1-tailed)"]][idx]
-      prediction[["r.squared"]] <- mf[["rsquare"]]
-      prediction[["n"]] <- mf[["n"]]
+    if (fm.values) {
+      idx <- which(fm[["regression.results"]][["Method"]] == fun.method)
+      prediction[["p.value"]] <- fm[["regression.results"]][["P-perm (1-tailed)"]][idx]
+      prediction[["r.squared"]] <- fm[["rsquare"]]
+      prediction[["n"]] <- fm[["n"]]
       prediction[["method"]] <- method.name
     }
     prediction$flipped_aes <- flipped_aes

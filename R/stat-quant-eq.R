@@ -597,8 +597,8 @@ quant_eq_compute_group_fun <- function(data,
   # quantreg contains code with partial matching of names!
   # so we silence selectively only these warnings
   withCallingHandlers({
-    mf <- do.call(method, args = fun.args)
-    mf.summary <- summary(mf)
+    fm <- do.call(method, args = fun.args)
+    fm.summary <- summary(fm)
   }, warning = function(w) {
     if (startsWith(conditionMessage(w), "partial match of") ||
         startsWith(conditionMessage(w), "partial argument match of")) {
@@ -606,29 +606,31 @@ quant_eq_compute_group_fun <- function(data,
     }
   })
 
+  fm.class <- class(fm)
+
   # allow model formula and tau selection by method functions
-  if (inherits(mf, "rq") || inherits(mf, "rqs")) {
-    formula <- mf[["formula"]]
-    quantiles <- mf[["tau"]]
+  if (inherits(fm, "rq") || inherits(fm, "rqs")) {
+    formula <- fm[["formula"]]
+    quantiles <- fm[["tau"]]
   } else {
     stop("Fitted model object does not inherit from class \"rq\" or \"rqs\" as expected")
   }
 
   # class of returned summary value depends on length of quantiles vector
-  if (!inherits(mf.summary, "summary.rqs")) {
-    mf.summary <- list(mf.summary)
+  if (!inherits(fm.summary, "summary.rqs")) {
+    fm.summary <- list(fm.summary)
   }
-  names(mf.summary) <- as.character(quantiles)
+  names(fm.summary) <- as.character(quantiles)
 
-  AIC <- AIC(mf)
-  n <- length(mf.summary[[1]][["residuals"]])
-  rho <- mf[["rho"]]
-  rq.method <- mf[["method"]]
-  coefs.mt <- mf[["coefficients"]] # a matrix if length(quantiles) > 1
+  AIC <- AIC(fm)
+  n <- length(fm.summary[[1]][["residuals"]])
+  rho <- fm[["rho"]]
+  rq.method <- fm[["method"]]
+  coefs.mt <- fm[["coefficients"]] # a matrix if length(quantiles) > 1
   # ensure that coefs.mt is consistent
   if (is.vector(coefs.mt)) {
     coefs.mt <- as.matrix(coefs.mt)
-    colnames(coefs.mt) <- paste("tau=", mf[["tau"]], sep = "")
+    colnames(coefs.mt) <- paste("tau=", fm[["tau"]], sep = "")
   }
   formula.rhs.chr <- as.character(formula)[3]
   forced.origin <- grepl("-[[:space:]]*1|+[[:space:]]*0", formula.rhs.chr)
@@ -739,7 +741,9 @@ quant_eq_compute_group_fun <- function(data,
     }
   }
 
-  z[["method"]] <- method.name
+  z[["fm.method"]] <- method.name
+  z[["fm.class"]] <- fm.class[1]
+  z[["fm.formula,chr"]] <- format(formula)
 
   # Compute label positions
   if (is.character(label.x)) {

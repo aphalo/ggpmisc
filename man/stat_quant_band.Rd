@@ -12,7 +12,7 @@ stat_quant_band(
   ...,
   quantiles = c(0.25, 0.5, 0.75),
   formula = NULL,
-  mf.values = FALSE,
+  fm.values = FALSE,
   n = 80,
   method = "rq",
   method.args = list(),
@@ -45,7 +45,7 @@ quantiles at the  edges of the band and optionally a line within the band.}
 \item{formula}{a formula object. Using aesthetic names \code{x} and \code{y}
 instead of original variable names.}
 
-\item{mf.values}{logical Add n as a column to returned data? (`FALSE` by
+\item{fm.values}{logical Add n as a column to returned data? (`FALSE` by
 default.)}
 
 \item{n}{Number of points at which to evaluate smoother.}
@@ -181,7 +181,7 @@ if (requireNamespace("gginnards", quietly = TRUE)) {
     stat_quant_band(geom = "debug")
 
   ggplot(mpg, aes(displ, hwy)) +
-    stat_quant_band(geom = "debug", mf.values = TRUE)
+    stat_quant_band(geom = "debug", fm.values = TRUE)
 
 }
 

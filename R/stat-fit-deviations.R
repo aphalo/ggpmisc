@@ -267,7 +267,7 @@ deviations_compute_group_fun <- function(data,
   # quantreg contains code with partial matching of names!
   # so we silence selectively only these warnings
   withCallingHandlers({
-    mf <- do.call(method, args = fun.args)
+    fm <- do.call(method, args = fun.args)
   }, warning = function(w) {
     if (startsWith(conditionMessage(w), "partial match of") ||
         startsWith(conditionMessage(w), "partial argument match of")) {
@@ -275,11 +275,11 @@ deviations_compute_group_fun <- function(data,
     }
   })
 
-  fitted.vals <- stats::fitted(mf)
-  if (exists("w", mf)) {
-    weight.vals <- mf[["w"]]
+  fitted.vals <- stats::fitted(fm)
+  if (exists("w", fm)) {
+    weight.vals <- fm[["w"]]
   } else {
-    weight.vals <- stats::weights(mf)
+    weight.vals <- stats::weights(fm)
     weight.vals <- ifelse(length(weight.vals) == length(fitted.vals),
                           weight.vals,
                           rep_len(NA_real_, length(fitted.vals)))

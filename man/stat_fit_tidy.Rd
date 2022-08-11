@@ -145,9 +145,11 @@ Although arguments passed to parameter \code{tidy.args} will be
 }
 
 \examples{
-# package 'broom' needs to be installed to run these examples
+# Package 'broom' needs to be installed to run these examples.
+# We check availability before running them to avoid errors.
 
 if (requireNamespace("broom", quietly = TRUE)) {
+  broom.installed <- TRUE
   library(broom)
   library(quantreg)
 
@@ -175,9 +177,11 @@ if (requireNamespace("broom", quietly = TRUE)) {
     stat_fit_tidy(method = "lm",
                   method.args = list(formula = y ~ x + I(x^2)),
                   geom = "debug", sanitize.names = TRUE)
+  }
 }
 
 # Regression by panel example
+if (broom.installed)
   ggplot(mtcars, aes(x = disp, y = mpg)) +
     stat_smooth(method = "lm") +
     geom_point(aes(colour = factor(cyl))) +
@@ -189,6 +193,7 @@ if (requireNamespace("broom", quietly = TRUE)) {
                                                 after_stat(x_p.value))))
 
 # Regression by group example
+if (broom.installed)
   ggplot(mtcars, aes(x = disp, y = mpg, colour = factor(cyl))) +
     stat_smooth(method = "lm") +
     geom_point() +
@@ -200,6 +205,7 @@ if (requireNamespace("broom", quietly = TRUE)) {
                                                 after_stat(x_p.value))))
 
 # Weighted regression example
+if (broom.installed)
   ggplot(mtcars, aes(x = disp, y = mpg, weight = cyl)) +
     stat_smooth(method = "lm") +
     geom_point(aes(colour = factor(cyl))) +
@@ -211,6 +217,7 @@ if (requireNamespace("broom", quietly = TRUE)) {
                                                 after_stat(x_p.value))))
 
 # Correlation test
+if (broom.installed)
   ggplot(mtcars, aes(x = disp, y = mpg)) +
     stat_smooth(method = "lm") +
     geom_point() +
@@ -222,6 +229,7 @@ if (requireNamespace("broom", quietly = TRUE)) {
                                                 after_stat(`_p.value`))))
 
 # Quantile regression
+if (broom.installed)
   ggplot(mtcars, aes(x = disp, y = mpg)) +
     stat_smooth(method = "lm") +
     geom_point() +
@@ -232,8 +240,6 @@ if (requireNamespace("broom", quietly = TRUE)) {
                   mapping = aes(label = sprintf("Slope = \%.3g\np-value = \%.3g",
                                                 after_stat(x_estimate),
                                                 after_stat(x_p.value))))
-
-}
 
 }
 \seealso{

@@ -4,14 +4,18 @@ editor_options:
     wrap: 72
 ---
 
-# ggpmisc 0.4.8
+# ggpmisc 0.5.0
 
+-   Differently to the use in the R literature `mf` has been used in this package, instead of `fm`, to signify _fitted model_. This has changed in this version as formal parameter `mf.values` has been renamed `fm.values` and variable `mf_tb` in values returned by statistics renamed `fm.value`. Although _these are code breaking changes_, they are likely to cause difficulties only in isolated cases as defaults rarely need to be overridden.
 -   Add function `use_label()` that greatly simplifies assembling and mapping combined labels from the values returned by `stat_poly_eq()`, `stat_ma_eq()`, `stat_quant_eq()` and `stat_correlation()`.
--   Add functions `keep_tidy()`, `keep_glance()` and `keep_augment()` as wrappers on methods `tidy()`, `glance()` and `augment()` from package 'broom'. These new functions make it possible to keep a trace of the origin of the _"broomed"_ outputs. Although generally useful, the main idea is to use them to enhance the corresponding statistics in 'ggpmisc'.
--   Add confidence intervals for R (Pearson's OLS correlation), &tau; (Kendall's rank correlation) and &rho; (Spearman's rank correlation) to the values and labels returned by `stat_correlation()`. In the case of `method = "pearson"` assuming Normal distribution or estimated by bootstrap. For `method = "kendall"` and `method = "spearman"` only bootstrap estimates. These are implemented using package 'confintr'.
+-   Add variables `fm.tb.type`, `fm.class`, `fm.method`, and `fm.formula.chr` to the data returned by `stat_fit_tb()`, and rename `mf_tb` into `fm.tb` for naming consistency.
+-   Add variables `fm.class`, `fm.method`, and `fm.formula.chr` to the data returned by all other statistics based on model fitting.
+-   Add confidence intervals for _R_ (Pearson's OLS correlation), &tau; (Kendall's rank correlation) and &rho; (Spearman's rank correlation) to the values and labels returned by `stat_correlation()`. In the case of `method = "pearson"` assuming Normal distribution or estimated by bootstrap. For `method = "kendall"` and `method = "spearman"` only bootstrap estimates. These are implemented using package 'confintr'.
 -   Add confidence interval for R<sup>2</sup> to the values and labels returned by `stat_poly_eq()` (implemented using package 'confintr').
 -   Add &theta; (theta) to the values and labels returned by `stat_ma_eq()`.
 -   Add `method.label` to the data returned by `stat_correlation()`, `stat_poly_eq()`, `stat_ma_eq()` and `stat_quant_eq()`.
+-   Add _experimental_ functions `keep_tidy()`, `keep_glance()` and `keep_augment()` as wrappers on methods `tidy()`, `glance()` and `augment()` from package 'broom'. These new functions make it possible to keep a trace of the origin of the _"broom-tidied"_ outputs.
+
 
 # ggpmisc 0.4.7
 

@@ -137,6 +137,7 @@ Although arguments passed to parameter \code{glance.args} will be
 # package 'broom' needs to be installed to run these examples
 
 if (requireNamespace("broom", quietly = TRUE)) {
+  broom.installed <- TRUE
   library(broom)
   library(quantreg)
 
@@ -148,22 +149,25 @@ if (requireNamespace("broom", quietly = TRUE)) {
       stat_smooth(method = "lm") +
       geom_point(aes(colour = factor(cyl))) +
       stat_fit_glance(method = "lm",
-                    method.args = list(formula = y ~ x),
-                    geom = "debug")
+                      method.args = list(formula = y ~ x),
+                      geom = "debug")
   }
+}
 
+if (broom.installed)
 # Regression by panel example
   ggplot(mtcars, aes(x = disp, y = mpg)) +
-    stat_smooth(method = "lm") +
+    stat_smooth(method = "lm", formula = y ~ x) +
     geom_point(aes(colour = factor(cyl))) +
     stat_fit_glance(method = "lm",
                     label.y = "bottom",
                     method.args = list(formula = y ~ x),
-                    mapping = aes(label = sprintf('r^2~"="~\%.3f~~italic(P)~"="~\%.2g',
+                    mapping = aes(label = sprintf('italic(r)^2~"="~\%.3f~~italic(P)~"="~\%.2g',
                                   after_stat(r.squared), after_stat(p.value))),
                     parse = TRUE)
 
 # Regression by group example
+if (broom.installed)
   ggplot(mtcars, aes(x = disp, y = mpg, colour = factor(cyl))) +
     stat_smooth(method = "lm") +
     geom_point() +
@@ -175,6 +179,7 @@ if (requireNamespace("broom", quietly = TRUE)) {
                     parse = TRUE)
 
 # Weighted regression example
+if (broom.installed)
   ggplot(mtcars, aes(x = disp, y = mpg, weight = cyl)) +
     stat_smooth(method = "lm") +
     geom_point(aes(colour = factor(cyl))) +
@@ -186,6 +191,7 @@ if (requireNamespace("broom", quietly = TRUE)) {
                     parse = TRUE)
 
 # correlation test
+if (broom.installed)
   ggplot(mtcars, aes(x = disp, y = mpg)) +
     geom_point() +
     stat_fit_glance(method = "cor.test",
@@ -195,6 +201,7 @@ if (requireNamespace("broom", quietly = TRUE)) {
                                   after_stat(estimate), after_stat(p.value))),
                     parse = TRUE)
 
+if (broom.installed)
   ggplot(mtcars, aes(x = disp, y = mpg)) +
     geom_point() +
     stat_fit_glance(method = "cor.test",
@@ -205,6 +212,7 @@ if (requireNamespace("broom", quietly = TRUE)) {
                     parse = TRUE)
 
 # Quantile regression by group example
+if (broom.installed)
   ggplot(mtcars, aes(x = disp, y = mpg)) +
     stat_smooth(method = "lm") +
     geom_point() +
@@ -213,8 +221,6 @@ if (requireNamespace("broom", quietly = TRUE)) {
                     method.args = list(formula = y ~ x),
                     mapping = aes(label = sprintf('AIC = \%.3g, BIC = \%.3g',
                                   after_stat(AIC), after_stat(BIC))))
-
-}
 
 }
 \seealso{

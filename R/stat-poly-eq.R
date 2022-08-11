@@ -624,38 +624,39 @@ poly_eq_compute_group_fun <- function(data,
   # some model fit functions contain code with partial matching of names!
   # so we silence selectively only these warnings
   withCallingHandlers({
-    mf <- do.call(method, args = fun.args)
-    mf.summary <- summary(mf)
+    fm <- do.call(method, args = fun.args)
+    fm.summary <- summary(fm)
   }, warning = function(w) {
     if (startsWith(conditionMessage(w), "partial match of 'coef'") ||
         startsWith(conditionMessage(w), "partial argument match of 'contrasts'"))
       invokeRestart("muffleWarning")
   })
+  fm.class <- class(fm)
 
   # allow model formula selection by the method function
-  if (inherits(mf, "lm")) {
-    formula <- mf[["terms"]]
+  if (inherits(fm, "lm")) {
+    formula <- fm[["terms"]]
   } else {
     stop("Fitted model object does not inherit from class \"lm\"")
   }
 
-  if ("r.squared" %in% names(mf.summary)) {
-    rr <- mf.summary[["r.squared"]]
+  if ("r.squared" %in% names(fm.summary)) {
+    rr <- fm.summary[["r.squared"]]
   } else {
     rr <- NA_real_
   }
-  if ("adj.r.squared" %in% names(mf.summary)) {
-    adj.rr <- mf.summary[["adj.r.squared"]]
+  if ("adj.r.squared" %in% names(fm.summary)) {
+    adj.rr <- fm.summary[["adj.r.squared"]]
   } else {
     adj.rr <- NA_real_
   }
-  AIC <- AIC(mf)
-  BIC <- BIC(mf)
-  n <- length(mf.summary[["residuals"]])
-  if ("fstatistic" %in% names(mf.summary)) {
-    f.value <- mf.summary[["fstatistic"]]["value"]
-    f.df1 <- mf.summary[["fstatistic"]]["numdf"]
-    f.df2 <- mf.summary[["fstatistic"]]["dendf"]
+  AIC <- AIC(fm)
+  BIC <- BIC(fm)
+  n <- length(fm.summary[["residuals"]])
+  if ("fstatistic" %in% names(fm.summary)) {
+    f.value <- fm.summary[["fstatistic"]]["value"]
+    f.df1 <- fm.summary[["fstatistic"]]["numdf"]
+    f.df2 <- fm.summary[["fstatistic"]]["dendf"]
     p.value <- stats::pf(q = f.value, f.df1, f.df2, lower.tail = FALSE)
     rr.confint <- confintr::ci_rsquared(x = f.value,
                                         df1 = f.df1,
@@ -667,7 +668,7 @@ poly_eq_compute_group_fun <- function(data,
     f.value <- f.df1 <- f.df2 <- p.value <- NA_real_
     rr.confint.low <- rr.confint.high <- NA_real_
   }
-  coefs <- stats::coefficients(mf)
+  coefs <- stats::coefficients(fm)
 
   formula.rhs.chr <- as.character(formula)[3]
   forced.origin <- grepl("-[[:space:]]*1|+[[:space:]]*0", formula.rhs.chr)
@@ -677,7 +678,7 @@ poly_eq_compute_group_fun <- function(data,
   names(coefs) <- paste("b", (1:length(coefs)) - 1, sep = "_")
 
   if (output.type == "numeric") {
-    z <- tibble::tibble(coef.ls = list(summary(mf)[["coefficients"]]),
+    z <- tibble::tibble(coef.ls = list(summary(fm)[["coefficients"]]),
                         r.squared = rr,
                         rr.confint.level = rsquared.conf.level,
                         rr.confint.low = rr.confint.low,
@@ -900,7 +901,9 @@ poly_eq_compute_group_fun <- function(data,
     }
   }
 
-  z[["method"]] <- method.name
+  z[["fm.method"]] <- method.name
+  z[["fm.class"]] <- fm.class[1]
+  z[["fm.formula.chr"]] <- format(formula)
 
   # Compute label positions
   if (is.character(label.x)) {

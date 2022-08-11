@@ -128,13 +128,17 @@ generates several labels including the equation, p-value,
 coefficient of determination (R^2), and number of observations.
 }
 \details{
-This stat can be used to automatically annotate a plot with R^2,
-  P_value, n and/or the fitted model equation. It supports linear major axis
+This stat can be used to automatically annotate a plot with \eqn{R^2},
+  \eqn{P}-value, \eqn{n} and/or the fitted model equation. It supports linear major axis
   (MA), standard major axis (SMA) and ranged major axis (RMA) regression by
   means of function \code{\link[lmodel2]{lmodel2}}. Please see the
   documentation, including the vignette of package 'lmodel2' for details.
   The parameters in \code{stat_ma_eq()} follow the same naming as in function
   \code{lmodel2()}.
+
+  It is important to keep in mind that although the fitted line does not
+  depend on whether the \eqn{x} or \eqn{y} appears on the rhs of the model
+  formula, the numeric estimates for the parameters do depend on this.
 
   A ggplot statistic receives as \code{data} a data frame that is not the one
   passed as argument by the user, but instead a data frame with the variables
@@ -336,17 +340,16 @@ if (requireNamespace("gginnards", quietly = TRUE)) {
 }
 \seealso{
 The major axis regression model is fitted with function
-  \code{\link[lmodel2]{lmodel2}}, please consult its documentation. This
-  \code{stat_ma_eq} statistic can return ready formatted labels depending on
-  the argument passed to \code{output.type}. If ordinary least squares
-  polynomial regression is desired, then \code{\link{stat_poly_eq}}. For
-  quantile fits of polynomial regression is desired,
+  \code{\link[lmodel2]{lmodel2}}, please consult its documentation. Statistic
+  \code{stat_ma_eq()} can return different ready formatted labels depending
+  on the argument passed to \code{output.type}. If ordinary least squares
+  polynomial regression is desired, then \code{\link{stat_poly_eq}}. If
+  quantile-fitted polynomial regression is desired,
   \code{\link{stat_quant_eq}} should be used. For other types of models such
   as non-linear models, statistics \code{\link{stat_fit_glance}} and
   \code{\link{stat_fit_tidy}} should be used and the code for construction of
   character strings from numeric values and their mapping to aesthetic
-  \code{label} needs to be explicitly supplied
-  in the call.
+  \code{label} explicitly supplied in the call.
 
 Other ggplot statistics for major axis regression: 
 \code{\link{stat_ma_line}()}

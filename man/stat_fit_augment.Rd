@@ -122,9 +122,11 @@ Although arguments passed to parameter \code{augment.args} will be
 }
 
 \examples{
-# package 'broom' needs to be installed to run these examples
+# Package 'broom' needs to be installed to run these examples.
+# We check availability before running them to avoid errors.
 
 if (requireNamespace("broom", quietly = TRUE)) {
+  broom.installed <- TRUE
   library(broom)
   library(quantreg)
 
@@ -140,14 +142,17 @@ if (requireNamespace("broom", quietly = TRUE)) {
                        geom = "debug",
                        summary.fun = colnames)
   }
+}
 
 # Regression by panel example
+if (broom.installed)
   ggplot(mtcars, aes(x = disp, y = mpg)) +
     geom_point(aes(colour = factor(cyl))) +
     stat_fit_augment(method = "lm",
                      method.args = list(formula = y ~ x))
 
 # Residuals from regression by panel example
+if (broom.installed)
   ggplot(mtcars, aes(x = disp, y = mpg)) +
     geom_hline(yintercept = 0, linetype = "dotted") +
     stat_fit_augment(geom = "point",
@@ -156,12 +161,14 @@ if (requireNamespace("broom", quietly = TRUE)) {
                      y.out = ".resid")
 
 # Regression by group example
+if (broom.installed)
   ggplot(mtcars, aes(x = disp, y = mpg, colour = factor(cyl))) +
     geom_point() +
     stat_fit_augment(method = "lm",
                      method.args = list(formula = y ~ x))
 
 # Residuals from regression by group example
+if (broom.installed)
   ggplot(mtcars, aes(x = disp, y = mpg, colour = factor(cyl))) +
     geom_hline(yintercept = 0, linetype = "dotted") +
     stat_fit_augment(geom = "point",
@@ -169,6 +176,7 @@ if (requireNamespace("broom", quietly = TRUE)) {
                      y.out = ".resid")
 
 # Weighted regression example
+if (broom.installed)
   ggplot(mtcars, aes(x = disp, y = mpg, weight = cyl)) +
     geom_point(aes(colour = factor(cyl))) +
     stat_fit_augment(method = "lm",
@@ -176,6 +184,7 @@ if (requireNamespace("broom", quietly = TRUE)) {
                                         weights = quote(weight)))
 
 # Residuals from weighted regression example
+if (broom.installed)
   ggplot(mtcars, aes(x = disp, y = mpg, weight = cyl)) +
     geom_hline(yintercept = 0, linetype = "dotted") +
     stat_fit_augment(geom = "point",
@@ -184,12 +193,12 @@ if (requireNamespace("broom", quietly = TRUE)) {
                      y.out = ".resid")
 
 # Quantile regression
+if (broom.installed)
   ggplot(mtcars, aes(x = disp, y = mpg)) +
     geom_point() +
     stat_fit_augment(method = "rq",
                     label.y = "bottom")
 
-}
 
 }
 \seealso{

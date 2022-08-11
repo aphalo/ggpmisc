@@ -10,8 +10,8 @@
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs to be
 #'   set at the layer level if you are overriding the plot defaults.
-#' @param data A layer specific dataset, only needed if you want to override
-#'   the plot defaults.
+#' @param data A layer specific dataset, only needed if you want to override the
+#'   plot defaults.
 #' @param geom The geometric object to use display the data
 #' @param position The position adjustment to use for overlapping points on this
 #'   layer
@@ -28,15 +28,15 @@
 #' @param na.rm	a logical indicating whether NA values should be stripped before
 #'   the computation proceeds.
 #' @param method character.
-#' @param method.args,tidy.args lists of arguments to pass to \code{method}
-#'   and to \code{tidy()}.
+#' @param method.args,tidy.args lists of arguments to pass to \code{method} and
+#'   to \code{tidy()}.
 #' @param tb.type character One of "fit.summary", "fit.anova" or "fit.coefs".
-#' @param digits integer indicating the number of significant digits
-#'   to be used for all numeric values in the table.
+#' @param digits integer indicating the number of significant digits to be used
+#'   for all numeric values in the table.
 #' @param p.digits integer indicating the number of decimal places to round
 #'   p-values to, with those rounded to zero displayed as the next larger
-#'   possible value preceded by "<". If \code{p.digits} is outside the
-#'   range 1..22 no rounding takes place.
+#'   possible value preceded by "<". If \code{p.digits} is outside the range
+#'   1..22 no rounding takes place.
 #' @param tb.vars,tb.params character or numeric vectors, optionally named, used
 #'   to select and/or rename the columns or the parameters in the table
 #'   returned.
@@ -60,46 +60,53 @@
 #'   This is suitable, for example for analysis of variance used to test for
 #'   differences among groups.
 #'
-#'   The argument to \code{method} can be any fit method for which a
-#'   suitable \code{tidy()} method is available, including non-linear
-#'   regression. Fit methods retain their default arguments unless overridden.
+#'   The argument to \code{method} can be any fit method for which a suitable
+#'   \code{tidy()} method is available, including non-linear regression. Fit
+#'   methods retain their default arguments unless overridden.
 #'
 #'   A ggplot statistic receives as data a data frame that is not the one passed
 #'   as argument by the user, but instead a data frame with the variables mapped
 #'   to aesthetics. In other words, it respects the grammar of graphics and
 #'   consequently within arguments passed through \code{method.args} names of
-#'   aesthetics like \eqn{x} and \eqn{y} should be used instead of the original variable
-#'   names. The plot's default \code{data} is used by default, which  helps
-#'   ensure that the model is fitted to the same data as plotted in other
+#'   aesthetics like \eqn{x} and \eqn{y} should be used instead of the original
+#'   variable names. The plot's default \code{data} is used by default, which
+#'   helps ensure that the model is fitted to the same data as plotted in other
 #'   layers.
 #'
-#' @section Computed variables: The output of \code{tidy()} is
-#'   returned as a single "cell" in a tibble (i.e., a tibble nested within a
-#'   tibble). The returned \code{data} object contains a single tibble, containing the
-#'   result from a single model fit to all data in a panel. If grouping is
-#'   present, it is ignored in the sense of returning a single table, but the
-#'   grouping aesthetic can be a term in the fitted model.
+#' @section Computed variables: The output of \code{tidy()} is returned as a
+#'   single "cell" in a tibble (i.e., a tibble nested within a tibble). The
+#'   returned \code{data} object contains a single tibble, containing the result
+#'   from a single model fit to all data in a panel. If grouping is present, it
+#'   is ignored in the sense of returning a single table, but the grouping
+#'   aesthetic can be a term in the fitted model.
 #'
-#'   To explore the values returned by this statistic, which vary depending
-#'   on the model fitting function and model formula we suggest the use of
+#' @return A tibble with columns named \code{fm.tb} (a tibble returned by
+#'   \code{tidy()} with possibly renamed and subset columns and rows, within a
+#'   list), \code{fm.tb.type} (copy of argument passed to \code{tb.type}),
+#'   \code{fm.class} (the class of the fitted model object), \code{fm.method}
+#'   (the fit function's name), \code{fm.call} (the call if available), \code{x}
+#'   and \code{y}.
+#'
+#'   To explore the values returned by this statistic, which vary depending on
+#'   the model fitting function and model formula we suggest the use of
 #'   \code{\link[gginnards]{geom_debug}}.
 #'
-#' @seealso \code{\link[broom]{broom}}, \code{broom.mixed},
-#'   \code{\link[broom]{tidy}} and \code{\link{keep_tidy}} for details on how
-#'   the tidying of the result of model fits is done. See
-#'   \code{\link[ggpp]{geom_table}} for details on how inset tables respond to
-#'   mapped aesthetics and table themes. For details on predefined table themes
-#'   see \code{\link[ggpp]{ttheme_gtdefault}}.
+#' @seealso \code{\link[broom]{broom}}, \code{broom.mixed}, and
+#'   \code{\link[broom]{tidy}} for details on how the tidying of the result of
+#'   model fits is done. See \code{\link[ggpp]{geom_table}} for details on how
+#'   inset tables respond to mapped aesthetics and table themes. For details on
+#'   predefined table themes see \code{\link[ggpp]{ttheme_gtdefault}}.
 #'
 #' @family ggplot statistics for model fits
 #'
 #' @export
 #'
 #' @examples
-#' # package 'broom' needs to be installed to run these examples
+#' # Package 'broom' needs to be installed to run these examples.
+#' # We check availability before running them to avoid errors.
 #'
 #' if (requireNamespace("broom", quietly = TRUE)) {
-#'
+#'   broom.installed <- TRUE
 #'   library(broom)
 #'
 #' # data for examples
@@ -107,113 +114,172 @@
 #'   covariate <- sqrt(x) + rnorm(9)
 #'   group <- factor(c(rep("A", 4), rep("B", 5)))
 #'   my.df <- data.frame(x, group, covariate)
+#' }
 #'
-#' # Linear regression fit summary, by default
+#' # Linear regression fit summary, all defaults
+#' if (broom.installed)
 #'   ggplot(my.df, aes(covariate, x)) +
 #'     geom_point() +
 #'     stat_fit_tb() +
 #'     expand_limits(y = 70)
 #'
-#' # Linear regression fit summary, by default
-#'   ggplot(my.df, aes(covariate, x)) +
-#'     geom_point() +
-#'     stat_fit_tb(digits = 2, p.digits = 4) +
-#'     expand_limits(y = 70)
-#'
-#' # Linear regression fit summary
+#' # Linear regression fit summary, with default formatting
+#' if (broom.installed)
 #'   ggplot(my.df, aes(covariate, x)) +
 #'     geom_point() +
 #'     stat_fit_tb(tb.type = "fit.summary") +
 #'     expand_limits(y = 70)
 #'
-#' # Linear regression ANOVA table
+#' # Linear regression fit summary, with manual table formatting
+#' if (broom.installed)
+#'   ggplot(my.df, aes(covariate, x)) +
+#'     geom_point() +
+#'     stat_fit_tb(digits = 2,
+#'                 p.digits = 4,
+#'                 tb.params = c("intercept" = 1, "covariate" = 2),
+#'                 tb.vars = c(Term = 1, Estimate = 2,
+#'                             "italic(s)" = 3, "italic(t)" = 4,
+#'                             "italic(P)" = 5),
+#'                 parse = TRUE) +
+#'     expand_limits(y = 70)
+#'
+#' # Linear regression ANOVA table, with default formatting
+#' if (broom.installed)
 #'   ggplot(my.df, aes(covariate, x)) +
 #'     geom_point() +
 #'     stat_fit_tb(tb.type = "fit.anova") +
 #'     expand_limits(y = 70)
 #'
-#' # Linear regression fit coeficients
+#' # Linear regression ANOVA table, with manual table formatting
+#' if (broom.installed)
+#'   ggplot(my.df, aes(covariate, x)) +
+#'     geom_point() +
+#'     stat_fit_tb(tb.type = "fit.anova",
+#'                 tb.params = c("Covariate" = 1, 2),
+#'                 tb.vars = c(Effect = 1, d.f. = 2,
+#'                             "M.S." = 4, "italic(F)" = 5,
+#'                             "italic(P)" = 6),
+#'                 parse = TRUE) +
+#'     expand_limits(y = 67)
+#'
+#' # Linear regression fit coeficients, with default formatting
+#' if (broom.installed)
 #'   ggplot(my.df, aes(covariate, x)) +
 #'     geom_point() +
 #'     stat_fit_tb(tb.type = "fit.coefs") +
-#'     expand_limits(y = 70)
+#'     expand_limits(y = 67)
 #'
-#' # Polynomial regression
+#' # Linear regression fit coeficients, with manual table formatting
+#' if (broom.installed)
+#'   ggplot(my.df, aes(covariate, x)) +
+#'     geom_point() +
+#'     stat_fit_tb(tb.type = "fit.coefs",
+#'                 tb.params = c(a = 1, b = 2),
+#'                 tb.vars = c(Term = 1, Estimate = 2)) +
+#'     expand_limits(y = 67)
+#'
+#' # Polynomial regression, with default formatting
+#' if (broom.installed)
 #'   ggplot(my.df, aes(covariate, x)) +
 #'     geom_point() +
 #'     stat_fit_tb(method.args = list(formula = y ~ poly(x, 2))) +
 #'     expand_limits(y = 70)
 #'
-#' # Polynomial regression with renamed parameters
-#'   ggplot(my.df, aes(covariate, x)) +
-#'     geom_point() +
-#'     stat_fit_tb(method.args = list(formula = y ~ poly(x, 2)),
-#'                 tb.params = c("x^0" = 1, "x^1" = 2, "x^2" = 3),
-#'                 parse = TRUE) +
-#'     expand_limits(y = 70)
-#'
-#' # Polynomial regression with renamed parameters and columns
-#' # using numeric indexes
+#' # Polynomial regression, with manual table formatting
+#' if (broom.installed)
 #'   ggplot(my.df, aes(covariate, x)) +
 #'     geom_point() +
 #'     stat_fit_tb(method.args = list(formula = y ~ poly(x, 2)),
 #'                 tb.params = c("x^0" = 1, "x^1" = 2, "x^2" = 3),
 #'                 tb.vars = c("Term" = 1, "Estimate" = 2, "S.E." = 3,
-#'                             "italic(F)-value" = 4, "italic(P)-value" = 5),
+#'                             "italic(t)" = 4, "italic(P)" = 5),
 #'                 parse = TRUE) +
 #'     expand_limits(y = 70)
 #'
-#' # ANOVA summary
+#' # ANOVA summary, with default formatting
+#' if (broom.installed)
 #'   ggplot(my.df, aes(group, x)) +
 #'     geom_point() +
 #'     stat_fit_tb() +
 #'     expand_limits(y = 70)
 #'
-#' # ANOVA table
+#' # ANOVA table, with default formatting
+#' if (broom.installed)
 #'   ggplot(my.df, aes(group, x)) +
 #'     geom_point() +
 #'     stat_fit_tb(tb.type = "fit.anova") +
 #'     expand_limits(y = 70)
 #'
-#' # ANOVA table with renamed and selected columns
-#' # using column names
+#' # ANOVA table, with manual table formatting
+#' if (broom.installed)
 #'   ggplot(my.df, aes(group, x)) +
 #'     geom_point() +
 #'     stat_fit_tb(tb.type = "fit.anova",
 #'                 tb.vars = c(Effect = "term", "df", "italic(F)" = "statistic",
 #'                             "italic(P)" = "p.value"),
+#'                 tb.params = c(Group = 1, Error = 2),
 #'                 parse = TRUE)
 #'
-#' # ANOVA table with renamed and selected columns
+#' # ANOVA table, with manual table formatting
 #' # using column names with partial matching
+#' if (broom.installed)
 #'   ggplot(my.df, aes(group, x)) +
 #'     geom_point() +
 #'     stat_fit_tb(tb.type = "fit.anova",
 #'                 tb.vars = c(Effect = "term", "df", "italic(F)" = "stat",
 #'                             "italic(P)" = "p"),
+#'                 tb.params = c(Group = "x", Error = "Resid"),
 #'                 parse = TRUE)
 #'
-#' # ANOVA summary
+#' # ANOVA summary, with default formatting
+#' if (broom.installed)
 #'   ggplot(my.df, aes(group, x)) +
 #'     geom_point() +
 #'     stat_fit_tb() +
 #'     expand_limits(y = 70)
 #'
-#' # ANCOVA (covariate not plotted)
+#' # ANCOVA (covariate not plotted) ANOVA table, with default formatting
+#' if (broom.installed)
 #'   ggplot(my.df, aes(group, x, z = covariate)) +
 #'     geom_point() +
-#'     stat_fit_tb(method.args = list(formula = y ~ x + z),
-#'                 tb.vars = c(Effect = "term", "italic(F)" = "statistic", "italic(P)" = "p.value"),
+#'     stat_fit_tb(tb.type = "fit.anova",
+#'                 method.args = list(formula = y ~ x + z))
+#'
+#' # ANCOVA (covariate not plotted) ANOVA table, with manual table formatting
+#' if (broom.installed)
+#'   ggplot(my.df, aes(group, x, z = covariate)) +
+#'     geom_point() +
+#'     stat_fit_tb(tb.type = "fit.anova",
+#'                 method.args = list(formula = y ~ x + z),
+#'                 tb.vars = c(Effect = 1, d.f. = 2,
+#'                             "M.S." = 4, "italic(F)" = 5,
+#'                             "italic(P)" = 6),
+#'                 tb.params = c(Group = 1,
+#'                               Covariate = 2,
+#'                               Error = 3),
 #'                 parse = TRUE)
 #'
-#' # t-test
+#' # t-test, minimal output, with manual table formatting
+#' if (broom.installed)
 #'   ggplot(my.df, aes(group, x)) +
 #'     geom_point() +
 #'     stat_fit_tb(method = "t.test",
 #'               tb.vars = c("italic(t)" = "statistic", "italic(P)" = "p.value"),
 #'               parse = TRUE)
 #'
-#' # t-test (equal variances assumed)
+#' # t-test, more detailed output, with manual table formatting
+#' if (broom.installed)
+#'   ggplot(my.df, aes(group, x)) +
+#'     geom_point() +
+#'     stat_fit_tb(method = "t.test",
+#'               tb.vars = c("\"Delta \"*italic(x)" = "estimate",
+#'                           "CI low" = "conf.low", "CI high" = "conf.high",
+#'                           "italic(t)" = "statistic", "italic(P)" = "p.value"),
+#'               parse = TRUE) +
+#'     expand_limits(y = 67)
+#'
+#' # t-test (equal variances assumed), minimal output, with manual table formatting
+#' if (broom.installed)
 #'   ggplot(my.df, aes(group, x)) +
 #'     geom_point() +
 #'     stat_fit_tb(method = "t.test",
@@ -221,13 +287,13 @@
 #'                 tb.vars = c("italic(t)" = "statistic", "italic(P)" = "p.value"),
 #'                 parse = TRUE)
 #'
-#' # Linear regression using a table theme
+#' # Linear regression using a table theme and non-default position
+#' if (broom.installed)
 #'   ggplot(my.df, aes(covariate, x)) +
 #'     geom_point() +
-#'     stat_fit_tb(table.theme = ttheme_gtlight) +
-#'     expand_limits(y = 70)
-#'
-#' }
+#'     stat_fit_tb(table.theme = ttheme_gtlight,
+#'                 npcx = "left", npcy = "bottom") +
+#'     expand_limits(y = 35)
 #'
 stat_fit_tb <- function(mapping = NULL, data = NULL, geom = "table_npc",
                         method = "lm",
@@ -322,7 +388,13 @@ fit_tb_compute_panel_fun <- function(data,
     label.y <- label.y[1]
   }
 
-  if (is.character(method)) method <- match.fun(method)
+  if (is.character(method)) {
+    method.name <- method
+    method <- match.fun(method)
+  } else {
+    method.name <- deparse(substitute(method))
+  }
+
   if ("data" %in% names(method.args)) {
     message("External 'data' passed can be inconsistent with plot!\n",
             "These data must be available at the time of printing!!!")
@@ -342,16 +414,21 @@ fit_tb_compute_panel_fun <- function(data,
   }
   fm <- do.call(method, method.args)
   fm.class <- class(fm) # keep track of fitted model class
+  if (inherits(fm, "lm")) {
+    fm.formula <- fm[["terms"]]
+  } else {
+    fm.formula <- NA
+  }
 
   if (tolower(tb.type) %in% c("fit.anova", "anova")) {
     tidy.args <- c(x = quote(stats::anova(fm)), tidy.args)
-    fm.tb <- do.call(keep_tidy, tidy.args)
+    fm.tb <- do.call(generics::tidy, tidy.args)
   } else if (tolower(tb.type) %in% c("fit.summary", "summary")) {
     tidy.args <- c(x = quote(fm), tidy.args)
-    fm.tb <- do.call(keep_tidy, tidy.args)
+    fm.tb <- do.call(generics::tidy, tidy.args)
   } else if (tolower(tb.type) %in% c("fit.coefs", "coefs")) {
     tidy.args <- c(x = quote(fm), tidy.args)
-    fm.tb <- do.call(keep_tidy, tidy.args)[c("term", "estimate")]
+    fm.tb <- do.call(generics::tidy, tidy.args)[c("term", "estimate")]
   }
 
   # reduce number of significant digits of all numeric columns
@@ -437,11 +514,12 @@ fit_tb_compute_panel_fun <- function(data,
     }
   }
 
-  # we need to enclose the tibble in a list to manually nest the table in
-  # data.
+  # enclose the tibble and the call in lists to make them acceptable as columns
   z <- tibble::tibble(fm.tb = list(fm.tb),
+                      fm.tb.type = tb.type,
                       fm.class = fm.class[1],
-                      fm.is.lm = "lm" %in% fm.class)
+                      fm.method = method.name,
+                      fm.formula.chr = format(formula))
 
   if (npc.used) {
     margin.npc <- 0.05
