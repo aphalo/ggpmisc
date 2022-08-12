@@ -177,22 +177,12 @@
 #'   stat_ma_line(method = "MA") +
 #'   stat_ma_eq(use_label(c("R2", "P", "theta", "method")))
 #'
-#' # using major axis regression
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_point() +
-#'   stat_ma_line(method = "SMA") +
-#'   stat_ma_eq(use_label(c("R2", "P", "theta", "method")), method = "SMA")
-#'
-#' # using standard major axis regression
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_point() +
-#'   stat_ma_line(method = "SMA") +
-#'   stat_ma_eq(use_label(c("eq", "R2")), method = "SMA")
-#'
 #' # using ranged major axis regression
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   stat_ma_line(method = "RMA", range.y = "interval", range.x = "interval") +
+#'   stat_ma_line(method = "RMA",
+#'                range.y = "interval",
+#'                range.x = "interval") +
 #'   stat_ma_eq(use_label(c("eq", "R2", "P")),
 #'              method = "RMA",
 #'              range.y = "interval",
@@ -213,24 +203,6 @@
 #'   stat_ma_eq(formula = x ~ y,
 #'              use_label(c("eq", "R2", "P")))
 #'
-#' # manually assemble and map a specific label using paste() and aes()
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_point() +
-#'   stat_ma_line() +
-#'   stat_ma_eq(aes(label =  paste(after_stat(eq.label),
-#'                                 after_stat(rr.label),
-#'                                 after_stat(p.value.label),
-#'                                 sep = "*\", \"*")))
-#'
-#' # manually assemble and map a specific label using sprintf() and aes()
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_point() +
-#'   stat_ma_line() +
-#'   stat_ma_eq(aes(label =  sprintf("%s*\" with \"*%s*\" and \"*%s",
-#'                                   after_stat(eq.label),
-#'                                   after_stat(p.value.label),
-#'                                   after_stat(rr.label))))
-#'
 #' # grouping
 #' ggplot(my.data, aes(x, y, color = group)) +
 #'   geom_point() +
@@ -238,20 +210,12 @@
 #'   stat_ma_eq()
 #'
 #' # labelling equations
-#' ggplot(my.data, aes(x, y,  shape = group, linetype = group,
-#'        grp.label = group)) +
+#' ggplot(my.data,
+#'        aes(x, y,  shape = group, linetype = group, grp.label = group)) +
 #'   geom_point() +
 #'   stat_ma_line(color = "black") +
 #'   stat_ma_eq(use_label(c("grp", "eq", "R2"))) +
 #'   theme_classic()
-#'
-#' # geom = "label"
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_point() +
-#'   stat_ma_line() +
-#'   stat_ma_eq(geom = "label",
-#'              label.x = "right", label.y = "bottom",
-#'              hjust = "inward", vjust = "inward")
 #'
 #' # Inspecting the returned data using geom_debug()
 #' \dontrun{

@@ -116,6 +116,7 @@
 #'   my.df <- data.frame(x, group, covariate)
 #' }
 #'
+#' ## covariate is a numeric or continuous variable
 #' # Linear regression fit summary, all defaults
 #' if (broom.installed)
 #'   ggplot(my.df, aes(covariate, x)) +
@@ -178,6 +179,7 @@
 #'                 tb.vars = c(Term = 1, Estimate = 2)) +
 #'     expand_limits(y = 67)
 #'
+#' ## x is also a numeric or continuous variable
 #' # Polynomial regression, with default formatting
 #' if (broom.installed)
 #'   ggplot(my.df, aes(covariate, x)) +
@@ -196,6 +198,7 @@
 #'                 parse = TRUE) +
 #'     expand_limits(y = 70)
 #'
+#' ## group is a factor or discrete variable
 #' # ANOVA summary, with default formatting
 #' if (broom.installed)
 #'   ggplot(my.df, aes(group, x)) +
@@ -238,6 +241,7 @@
 #'     stat_fit_tb() +
 #'     expand_limits(y = 70)
 #'
+#' ## covariate is a numeric variable and group is a factor
 #' # ANCOVA (covariate not plotted) ANOVA table, with default formatting
 #' if (broom.installed)
 #'   ggplot(my.df, aes(group, x, z = covariate)) +
@@ -259,6 +263,7 @@
 #'                               Error = 3),
 #'                 parse = TRUE)
 #'
+#' ## group is a factor or discrete variable
 #' # t-test, minimal output, with manual table formatting
 #' if (broom.installed)
 #'   ggplot(my.df, aes(group, x)) +
@@ -287,6 +292,7 @@
 #'                 tb.vars = c("italic(t)" = "statistic", "italic(P)" = "p.value"),
 #'                 parse = TRUE)
 #'
+#' ## covariate is a numeric or continuous variable
 #' # Linear regression using a table theme and non-default position
 #' if (broom.installed)
 #'   ggplot(my.df, aes(covariate, x)) +

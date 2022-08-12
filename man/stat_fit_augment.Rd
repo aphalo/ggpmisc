@@ -134,7 +134,7 @@ if (requireNamespace("broom", quietly = TRUE)) {
   if (requireNamespace("gginnards", quietly = TRUE)) {
     library(gginnards)
 
-# Regression by panel
+# Regression by panel, inspecting data
     ggplot(mtcars, aes(x = disp, y = mpg)) +
       geom_point(aes(colour = factor(cyl))) +
       stat_fit_augment(method = "lm",

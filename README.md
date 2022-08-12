@@ -44,7 +44,7 @@ unchanged from those implemented in package ‘**ggplot2**’.
 
 Statistics that help with reporting the results of model fits are:
 
-| Statistic               | `after_stat` values (*default geometry*)          | Methods                                      |
+| Statistic               | Returned values (*default geometry*) \| Met       | hods                                         |
 |-------------------------|---------------------------------------------------|----------------------------------------------|
 | `stat_poly_eq()`        | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lm, rlm (1, 2, 7)                            |
 | `stat_ma_eq()`          | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lmodel2 (6, 7)                               |
@@ -138,7 +138,8 @@ ggplot(lynx, as.numeric = FALSE) + geom_line() +
 In the second example we add the equation for a fitted polynomial plus
 the adjusted coefficient of determination to a plot showing the
 observations plus the fitted curve, deviations and confidence band. We
-use `stat_poly_eq()`.
+use `stat_poly_eq()` together with `use_label()` to assemble and map the
+desired annotations.
 
 ``` r
 formula <- y ~ x + I(x^2)

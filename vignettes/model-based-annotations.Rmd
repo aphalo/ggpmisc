@@ -63,11 +63,11 @@ Statistics made available by package 'ggpmisc' that help with reporting the resu
 
 All these statistics support grouping and faceting. In the case of those that return character strings to be mapped to the `label` aesthetic they also return suitable `x`, `y` , `hjust` and `vjust` values that minimize overlaps. The automatic computation of these positions can be adjusted through arguments passed to these statistics and also overridden by user-supplied manual positions.
 
-Table 1 below summarizes their use and the type plot layer geometries they are most useful to combine with. The four statistics at the bottom of the table require in their use more effort as the mapping to aesthetics and conversion of numeric values into character strings must be coded in the layer function call, but on the other hand they support all model fit objects catered by package 'broom' itself or any of the packages extending 'broom' such as 'broom.mixed'.
+Table 1 below summarizes their use and the type of plot-layer geometries they are most useful with them. The four statistics at the bottom of the table require in their use more effort as the mapping to aesthetics and conversion of numeric values into character strings must be coded in the layer function call, but on the other hand they support all model fit objects catered by package 'broom' itself or any of the packages extending 'broom' such as 'broom.mixed' (see next section).
 
-**Table 1.** Summary of features of the statistics.
+: **Table 1.** Summary of features of the statistics. Returned values can be accessed in `aes()` with function `after_stat(<variable name>)`, which has replaced `stat(<variable name>)` and the three dots notation (`...<variable name>...`) where `<variable name>` is the name of one of the variables in the data frame returned by the statistics. **Notes:** (1) *weight* aesthetic supported; (2) user defined fit functions that return an object of a class derived from `lm` are supported even if they override the statistic's *formula* argument; (3) unlimited quantiles supported; (4) user defined fit functions that return an object of a class derived from `rq` or `rqs` are supported even if they override the statistic's *formula* and/or *quantiles* argument; (5) two and three quantiles supported; (6) user defined fit functions that return an object of a class derived from `lmodel2` are supported; (7) `method` arguments support colon based notation; (8) various functions if method `residuals()` defined for returned value; (9) various functions if method `fitted()` defined for returned value.
 
-| Statistic               | `after_stat` values (*default geometry*)          | Methods                                      |
+| Statistic               | Returned values (*default geometry*)          | Methods                                      |
 |-----------------|-----------------------------|--------------------------|
 | `stat_poly_eq()`        | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lm, rlm (1, 2, 7)                            |
 | `stat_ma_eq()`          | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lmodel2 (6, 7)                               |
@@ -84,13 +84,11 @@ Table 1 below summarizes their use and the type plot layer geometries they are m
 | `stat_fit_tidy()`       | fit results, e.g., for equation (`text_npc`)      | all those supported by 'broom'               |
 | `stat_fit_tb()`         | ANOVA and summary tables (`table_npc`)            | all those supported by 'broom'               |
 
-: **Notes:** (1) *weight* aesthetic supported; (2) user defined fit functions that return an object of a class derived from `lm` are supported even if they override the statistic's *formula* argument; (3) unlimited quantiles supported; (4) user defined fit functions that return an object of a class derived from `rq` or `rqs` are supported even if they override the statistic's *formula* and/or *quantiles* argument; (5) two and three quantiles supported; (6) user defined fit functions that return an object of a class derived from `lmodel2` are supported; (7) `method` arguments support colon based notation; (8) various functions if method `residuals()` defined for returned value; (9) various functions if method `fitted()` defined for returned value.
-
 ### Model equations and other annotations
 
 Statistics `stat_poly_eq()` , `stat_ma_eq()` , `stat_quant_eq()` and `stat_correlation()` return by default ready formatted character strings that can be mapped to the `label` aesthetic individually or concatenated. The convenience function `use_label()` makes this easier by accepting abbreviated/common names for the component labels, and handling both the concatenation and mapping to the `label` aesthetics. For full flexibility in the assembly of concatenated labels `paste()` or `sprintf()` functions can the used within a call to `aes()`. By default the character strings are formatted ready to be parsed as R expressions. Optionally they can be formatted as R Markdown, $\LaTeX$ or plain text as shown in the table below.
 
-The returned values for `output.type` different from `numeric` are shown below. The variable mapped by default to the label aesthetics is indicated with an asterisk. The returned values for `x` and `y` are for the default computed location for the labels. The returned data frame has one row per group of observations in each panel of the plot.
+The returned values for `output.type` different from `numeric` are shown below in Table 2. The variable mapped by default to the `label` aesthetics is indicated with an asterisk. The returned values for `x` and `y` are for the default computed location of the labels. The returned data frame has one row per group of observations in each panel of the plot.
 
 ------------------------------------------------------------------------
 
@@ -98,10 +96,11 @@ Function `use_label()` provides an easy way of selecting, possibly combining and
 
 ------------------------------------------------------------------------
 
-**Table 2.** Values returned by `stat_poly_eq()` , `stat_ma_eq()` , `stat_quant_eq()` and `stat_correlation()` for `output.type` different from `numeric`. Variable gives the variable name in the returned `data` and should be used together with `after_stat()` when mapping to aesthetics using `aes()`. When using function `use_label()` , the short abbreviation shown in column Key can be used as a synonym, although full names are also supported.
+: **Table 2.** Values returned by `stat_poly_eq()` , `stat_ma_eq()` , `stat_quant_eq()` and `stat_correlation()` for `output.type` different from `numeric`. Variable gives the variable name in the returned `data` and should be used together with `after_stat()` when mapping to aesthetics using `aes()`. When using function `use_label()` , the short abbreviation shown in column Key can be used as a synonym, although full names are also supported.
+**Notes:** (1) Inclusion of the variable in the returned `data` depends on the argument passed to parameter `method`. (2) Depending on the geometry in use either `x` and `y` or `npcx` and `npcy` are set to `NA`. **\*** Indicates the default mapping to `label` aesthetic.
 
-| Variable          | Key    | Mode      | stat_poly_eq() | stat_ma_eq() | stat_quant_eq() | stat_correlation() |
-|-----------|-----------|-----------|-----------|-----------|-----------|-----------|
+| Variable          | Key    | Mode      | `stat_poly_eq()` | `stat_ma_eq()` | `stat_quant_eq()` | `stat_correlation()` |
+|-------------------|:------:|:---------:|:--------------:|:------------:|:---------------:|:------------------:|
 | eq.label          | eq     | character | y              | y            | y\*             | n                  |
 | rr.label          | R2     | character | y\*            | y\*          | n               | y(1)               |
 | rr.confint.label  | R2.CI  | character | y              | n            | n               | n                  |
@@ -123,6 +122,7 @@ Function `use_label()` provides an easy way of selecting, possibly combining and
 | BIC.label         | BIC    | character | y              | n            | n               | n                  |
 | n.label           | n      | character | y              | y            | y               | y                  |
 | grp.label         | grp    | character | y              | y            | y               | y                  |
+| method.label      | method | character | y              | y            | y               | y                  |
 | r.squared         |        | numeric   | y              | y            | n               | n                  |
 | adj.r.squared     |        | numeric   | y              | n            | n               | n                  |
 | rho               |        | numeric   | n              | n            | y               | y(1)               |
@@ -135,17 +135,20 @@ Function `use_label()` provides an easy way of selecting, possibly combining and
 | test              |        | character | n              | n            | n               | y                  |
 | quantile          |        | numeric   | n              | n            | y               | n                  |
 | quantile.f        |        | factor    | n              | n            | y               | n                  |
-| x                 |        | numeric   | y              | y            | y               | y                  |
-| y                 |        | numeric   | y              | y            | y               | y                  |
+| x(2)              |        | numeric   | y              | y            | y               | y                  |
+| y(2)              |        | numeric   | y              | y            | y               | y                  |
+| npcx(2)           |        | numeric   | y              | y            | y               | y                  |
+| npcy(2)           |        | numeric   | y              | y            | y               | y                  |
+| fm.method         |        | character | y              | y            | y               | y                  |
+| fm.class          |        | character | y              | y            | y               | y                  |
+| fm.formula.chr    |        | character | y              | y            | y               | y                  |
 
-: **Notes:** (1) Inclusion of the variable in the returned `data` depends on the argument passed to parameter `method`. **\*** Indicates the default mapping to `label` aesthetic.
+Even though the number of significant digits and some other formatting can be adjusted by passing arguments, in some cases it maybe necessary for the user to do the conversion to character strings. For these special cases, the statistics can return all values as `numeric`. The values returned for `output.type` equal to `numeric` are shown below in Table 3. The returned data frame has one row per group of observations in each panel of the plot.
 
-Even though the number of significant digits and some other formatting can be adjusted by passing arguments, in some cases it maybe necessary for the user to do the conversion to character strings. For these special cases, the statistics can return all values as `numeric`. The values returned for `output.type` equal to `numeric` are shown below. The returned data frame has one row per group of observations in each panel of the plot.
+: **Table 3.** Values returned by `stat_poly_eq()` , `stat_ma_eq()` , `stat_quant_eq()` and `stat_correlation()` for `output.type` equal to `numeric`. **Note:** (1) depends on the argument passed to method.
 
-**Table 3.** Values returned by `stat_poly_eq()` , `stat_ma_eq()` , `stat_quant_eq()` and `stat_correlation()` for `output.type` equal to `numeric`.
-
-| Variable      | Mode      | stat_poly_eq() | stat_ma_eq() | stat_quant_eq() | stat_correlation() |
-|------------|------------|------------|------------|------------|------------|
+| Variable      | Mode      | `stat_poly_eq()` | `stat_ma_eq()` | `stat_quant_eq()` | `stat_correlation()` |
+|---------------|:---------:|:--------------:|:------------:|:---------------:|:------------------:|
 | coef.ls       | list      | y              | y            | y               | n                  |
 | r.squared     | numeric   | y              | y            | n               | n                  |
 | adj.r.squared | numeric   | y              | n            | n               | n                  |
@@ -174,8 +177,28 @@ Even though the number of significant digits and some other formatting can be ad
 | quantile.f    | factor    | n              | n            | y               | n                  |
 | x             | numeric   | y              | y            | y               | y                  |
 | y             | numeric   | y              | y            | y               | y                  |
+| fm.method     | character | y              | y            | y               | y                  |
+| fm.class      | character | y              | y            | y               | y                  |
+| fm.formula.chr| character | y              | y            | y               | y                  |
 
-: **Note:** (1) depends on the argument passed to method.
+In the cases of the statistics based on the methods from package 'broom' and its extensions, the returned value depends on that of the method specialization that is automatically dispatched based on the class of the model fit method (Table 4). The expectation is that these statistics will be used only in cases when those described in Tables 2 and 3 cannot be used. Implementation based on generic methods from package 'broom' and its extensions provides provides support for very many different model fit procedures, but at the same time requires that the user consults the documentation of these broom methods and that the user builds the character strings for labels in his own code. The simplest way of discovering what variables are returned is to use `gginnards::geom_debug()` to explore the returned data frame. Examples are provided in the help to the statistics.
+
+: **Table 4.** Values always returned by `stat_fit_tb()`, `stat_fit_tidy()`, `stat_fit_glance()` and `stat_fit_augment()`. As these statistics call generic methods and return their output, only a few variables are guaranteed to be consistently present in the returned `data`. **Note:** (1) Depending on the geometry in use either `x` and `y` or `npcx` and `npcy` are set to `NA`.
+
+| Variable       | Mode       | `stat_fit_tb()`  | `stat_fit_tidy()` | `stat_fit_glance()` | `stat_fit_augment()` |
+|----------------|:----------:|:--------------:|:---------------:|:-----------------:|:-----------------:|
+| _broom method_ |            |  `tidy()`      |  `tidy()`       |  `glance()`       |  `augment()`      |
+| x(1)           | numeric    | y              | y               | y                 | y                 |
+| y(1)           | numeric    | y              | y               | y                 | y                 |
+| npcx(1)        | numeric    | y              | y               | y                 | n                 |
+| npcy(1)        | numeric    | y              | y               | y                 | n                 |
+| fm.tb          | data.frame | y              | n               | n                 | n                 |
+| fm.tb.type     | character  | y              | n               | n                 | n                 |
+| fm.method      | character  | y              | y               | y                 | y                 |
+| fm.class       | character  | y              | y               | y                 | y                 |
+| fm.formula.chr | character  | y              | y               | y                 | y                 |
+
+Statistics `stat_poly_line()`, `stat_ma_line()`, `stat_quant_line()` and `stat_quant_band()` return objects similar to those returned by `ggplot2:stat_smooth()`.
 
 ### Fitted lines, confidence bands and residuals
 
@@ -258,7 +281,7 @@ Statistic `stat_correlation()` generates multiple labels as listed in the tables
 ```{r}
 ggplot(my.data, aes(x, y, color = group)) +
   geom_point() +
-  stat_correlation(use_label(c("R", "t", "P", "n")))
+  stat_correlation(mapping = use_label(c("R", "t", "P", "n")))
 ```
 
 Facets are also supported.
@@ -345,8 +368,8 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(use_label("adj.R2"), formula = formula) +
-  stat_poly_eq(use_label("AIC"), label.x = "right", label.y = "bottom", size = 3,
+  stat_poly_eq(mapping = use_label("adj.R2"), formula = formula) +
+  stat_poly_eq(mapping = use_label("AIC"), label.x = "right", label.y = "bottom", size = 3,
                formula = formula)
 ```
 
@@ -357,7 +380,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(use_label(c("eq", "adj.R2")),
+  stat_poly_eq(mapping = use_label(c("eq", "adj.R2")),
                formula = formula) +
   labs(x = expression(italic(x)), y = expression(italic(y)))
 ```
@@ -384,7 +407,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(use_label(c("eq", "adj.R2"), sep = "~~italic(\"with\")~~"),
+  stat_poly_eq(mapping = use_label(c("eq", "adj.R2"), sep = "~~italic(\"with\")~~"),
                formula = formula)
 ```
 
@@ -406,7 +429,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(use_label("eq"),
+  stat_poly_eq(mapping = use_label("eq"),
                eq.with.lhs = FALSE,
                formula = formula)
 ```
@@ -418,7 +441,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(use_label("eq"),
+  stat_poly_eq(mapping = use_label("eq"),
                eq.with.lhs = "italic(hat(y))~`=`~",
                formula = formula)
 ```
@@ -430,7 +453,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(use_label(c("eq", "R2")),
+  stat_poly_eq(mapping = use_label(c("eq", "R2")),
                eq.with.lhs = "italic(h)~`=`~",
                eq.x.rhs = "~italic(z)",
                formula = formula) +
@@ -444,7 +467,7 @@ formula <- y ~ poly(x, 2, raw = TRUE)
 ggplot(my.data, aes(x, log10(y + 1e6))) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(use_label("eq"),
+  stat_poly_eq(mapping = use_label("eq"),
                eq.with.lhs = "plain(log)[10](italic(delta)+10^6)~`=`~",
                eq.x.rhs = "~Omega",
                formula = formula) +
@@ -458,7 +481,7 @@ formula <- y ~ poly(x, 5, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(use_label("eq"), formula = formula)
+  stat_poly_eq(mapping = use_label("eq"), formula = formula)
 ```
 
 Intercept forced to zero for a third degree polynomial defined explicitly, as this case is not supported by `poly()`.
@@ -632,9 +655,9 @@ As is the case for model fitting functions themselves, which variable is depende
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = y ~ x, color = "blue") +
-  stat_poly_eq(use_label(c("R2", "eq")), color = "blue") +
+  stat_poly_eq(mapping = use_label(c("R2", "eq")), color = "blue") +
   stat_poly_line(formula = y ~ x, color = "red", orientation = "y") +
-  stat_poly_eq(use_label(c("R2", "eq")), color = "red", orientation = "y",
+  stat_poly_eq(mapping = use_label(c("R2", "eq")), color = "red", orientation = "y",
                label.y = 0.9)
 ```
 
@@ -648,16 +671,16 @@ In the figure above we see that the ordinary least squares (OLS) linear regressi
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_ma_line() +
-  stat_ma_eq(use_label("eq"))
+  stat_ma_eq(mapping = use_label("eq"))
 ```
 
 ```{r}
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_ma_line(color = "blue") +
-  stat_ma_eq(use_label(c("R2", "eq")), color = "blue") +
+  stat_ma_eq(mapping = use_label(c("R2", "eq")), color = "blue") +
   stat_ma_line(color = "red", orientation = "y") +
-  stat_ma_eq(use_label(c("R2", "eq")), color = "red", orientation = "y",
+  stat_ma_eq(mapping = use_label(c("R2", "eq")), color = "red", orientation = "y",
              label.y = 0.9)
 ```
 
@@ -739,10 +762,10 @@ In some cases *double quantile regression* is an informative method to assess re
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_quant_line(formula = y ~ x, color = "blue", quantiles = 0.05) +
-  stat_quant_eq(use_label("eq"), formula = y ~ x, color = "blue",
+  stat_quant_eq(mapping = use_label("eq"), formula = y ~ x, color = "blue",
                 quantiles = 0.05) +
   stat_quant_line(formula = x ~ y, color = "red", quantiles = 0.95) +
-  stat_quant_eq(use_label("eq"), formula = x ~ y, color = "red", 
+  stat_quant_eq(mapping = use_label("eq"), formula = x ~ y, color = "red", 
                 quantiles = 0.95, label.y = 0.9)
 ```
 

@@ -15,7 +15,7 @@ editor_options:
 -   Add &theta; (theta) to the values and labels returned by `stat_ma_eq()`.
 -   Add `method.label` to the data returned by `stat_correlation()`, `stat_poly_eq()`, `stat_ma_eq()` and `stat_quant_eq()`.
 -   Add _experimental_ functions `keep_tidy()`, `keep_glance()` and `keep_augment()` as wrappers on methods `tidy()`, `glance()` and `augment()` from package 'broom'. These new functions make it possible to keep a trace of the origin of the _"broom-tidied"_ outputs.
-
+-   Update documentation and User Guide.
 
 # ggpmisc 0.4.7
 
