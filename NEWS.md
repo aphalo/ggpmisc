@@ -4,6 +4,10 @@ editor_options:
     wrap: 72
 ---
 
+# ggpmisc 0.5.1
+
+-   Revise User Guide.
+
 # ggpmisc 0.5.0
 
 -   Differently to the use in the R literature `mf` has been used in this package, instead of `fm`, to signify _fitted model_. This has changed in this version as formal parameter `mf.values` has been renamed `fm.values` and variable `mf_tb` in values returned by statistics renamed `fm.value`. Although _these are code breaking changes_, they are likely to cause difficulties only in isolated cases as defaults rarely need to be overridden.

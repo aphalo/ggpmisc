@@ -1,5 +1,5 @@
 ---
-title: "Model-Based Plot Annotations"
+title: "Fitted-Model-Based Annotations"
 subtitle: "'ggpmisc' `r packageVersion('ggpmisc')`"
 author: "Pedro J. Aphalo"
 date: "`r Sys.Date()`"
@@ -7,7 +7,7 @@ output:
   rmarkdown::html_vignette:
     toc: yes
 vignette: >
-  %\VignetteIndexEntry{Model-Based Plot Annotations}
+  %\VignetteIndexEntry{Fited-Model-Based Annotations}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 ---
@@ -61,9 +61,9 @@ In user interfaces there is always a compromise between simplicity and flexibili
 
 ## Statistics
 
-Currently, the core statistics made available by package 'ggpmisc' help with reporting parameter- and other estimates from fitted models, both as equations and numbers in annottaions and by plotting. Similarly to `ggplot2::stat_smooth()` they call model-fit-functions to fit a model-formula to the plot-layer data and, as all ggplot statistics, return new `data` as a data frame that is in turn passed to a geometry. The statistics are `stat_poly_line()`, `stat_poly_eq()`, `stat_ma_line()`, `stat_ma_eq()`, `stat_quant_line()`, `stat_quant_band()`, `stat_quant_eq()`, `stat_fit_residuals()`, `stat_fit_deviations()`, `stat_fit_glance()`, `stat_fit_augment()`, `stat_fit_tidy()` and `stat_fit_tb()`. In addition, `stat_correlation()` helps with the reporting of Pearson, Kendall and Spearman correlations. Most of these statistics support orientation flipping, both using parameter `orientation` similarly to package 'ggplot2' in recent versions or through a model `formula` with `x` as response variable and `y` as explanatory variable.
+Currently, the core statistics made available by package 'ggpmisc' help with reporting parameter- and other estimates from fitted models, both as equations and numbers in annotations and by plotting. Similarly to `ggplot2::stat_smooth()` they call model-fit-functions to fit a model-formula to the plot-layer data and, as all ggplot statistics, return new `data` as a data frame that is in turn passed to a geometry. The statistics are `stat_poly_line()`, `stat_poly_eq()`, `stat_ma_line()`, `stat_ma_eq()`, `stat_quant_line()`, `stat_quant_band()`, `stat_quant_eq()`, `stat_fit_residuals()`, `stat_fit_deviations()`, `stat_fit_glance()`, `stat_fit_augment()`, `stat_fit_tidy()` and `stat_fit_tb()`. In addition, `stat_correlation()` helps with the reporting of Pearson, Kendall and Spearman correlations. Most of these statistics support orientation flipping, both using parameter `orientation` similarly to package 'ggplot2' in recent versions or through a model `formula` with `x` as response variable and `y` as explanatory variable.
 
-These statistics support grouping and faceting. In the case of those that return character strings to be mapped to the `label` aesthetic they also return suitable `x` and `y`, or `npcx` and `npcy` values as well as `hjust` and `vjust` values. These default values ensure that the annotaions do not spill out the borders of the plotting area that also minimize overlaps among labels. The automatic computation of these positions can be adjusted through arguments passed to these statistics and also overridden by user-supplied manual positions.
+These statistics support grouping and faceting. In the case of those that return character strings to be mapped to the `label` aesthetic they also return suitable `x` and `y`, or `npcx` and `npcy` values as well as `hjust` and `vjust` values. These default values ensure that the annotations do not spill out the borders of the plotting area that also minimize overlaps among labels. The automatic computation of these positions can be adjusted through arguments passed to these statistics and also overridden by user-supplied manual positions.
 
 Table 1 below summarizes the use of the model-fittings statistics and the type of plot-layer geometries they are most useful with them. The four statistics at the bottom of the table require in their use more effort as the mapping to aesthetics and conversion of numeric values into character strings must be coded in the layer function call, but on the other hand they support all model fit objects catered by package 'broom' itself or any of the packages extending 'broom' such as 'broom.mixed' (see next section).
 
@@ -217,7 +217,7 @@ Which columns from the objects returned by R's `anova()` and `summary()` methods
 
 ### Annotations based on package 'broom'
 
-Package 'broom' provides a *translation layer* between various model fit functions and a consistent naming and organization for the returned values. This made it possible to design statistics `stat_fit_glance()` and `stat_fit_augment()` that provide similar capabilities as those described above and that work with any of the many model fit functions supported by pacakge 'broom' and its extensions. This means that the returned data are in columns with generic names. Consequently, when using `stat_fit_glance()` text labels need to be created in user code and then mapped to the `label` aesthetic and when using `stat_fit_augment()` with complex fitted models know the details of the model fitting functions used.
+Package 'broom' provides a *translation layer* between various model fit functions and a consistent naming and organization for the returned values. This made it possible to design statistics `stat_fit_glance()` and `stat_fit_augment()` that provide similar capabilities as those described above and that work with any of the many model fit functions supported by package 'broom' and its extensions. This means that the returned data are in columns with generic names. Consequently, when using `stat_fit_glance()` text labels need to be created in user code and then mapped to the `label` aesthetic and when using `stat_fit_augment()` with complex fitted models know the details of the model fitting functions used.
 
 ### Other data features
 
@@ -229,13 +229,13 @@ When plotting *omics* data we usually want to highlight observations based on th
 
 Scales `scale_x_logFC()` and `scale_y_logFC()` are suitable for plotting of log fold change data. Scales `scale_x_Pvalue()`, `scale_y_Pvalue()`, `scale_x_FDR()` and `scale_y_FDR()` are suitable for plotting *p*-values and adjusted *p*-values or false discovery rate (FDR). Default arguments are suitable for volcano and quadrant plots as used for transcriptomics, metabolomics and similar data.
 
-Encoding of test outcomes into binary and ternary colour scales is also frequent when plotting omics data, so as a convenience we define wrappers on the color, fill and shape scales from 'ggplot2' as well as defined functions suitable for converting binary and ternary outcomes and numeric *P*-values into factors.
+Encoding of test outcomes into binary and ternary colour scales is also frequent when plotting omics data, so as a convenience we define wrappers on the colour, fill and shape scales from 'ggplot2' as well as defined functions suitable for converting binary and ternary outcomes and numeric *P*-values into factors.
 
-Scales `scale_colour_outcome()`, `scale_fill_outcome()` and `scale_shape_outcome()` and functions `outome2factor()`, `threshold2factor()`, `xy_outcomes2factor()` and `xy_thresholds2factor()` used together make it easy to map ternary numeric outputs and logical binary outcomes to color, fill and shape aesthetics. Default arguments are suitable for volcano, quadrant and other plots as used for genomics, metabolomics and similar data.
+Scales `scale_colour_outcome()`, `scale_fill_outcome()` and `scale_shape_outcome()` and functions `outome2factor()`, `threshold2factor()`, `xy_outcomes2factor()` and `xy_thresholds2factor()` used together make it easy to map ternary numeric outputs and logical binary outcomes to colour, fill and shape aesthetics. Default arguments are suitable for volcano, quadrant and other plots as used for genomics, metabolomics and similar data.
 
 ## Packages 'ggpmisc' and 'ggpubr'
 
-Package 'ggpubr' provides several "canned" functions that produce whole plots as well as several statistics. One of the statistics is almost identical to an old version of a statistic in package 'ggpmisc'. The reason is that it was copied into 'ggpubr' and renamed, without acknowledging the source or authorship. The current version in 'ggpmisc' has been significantly improved with bug fixes and enhancements, several of them based on issues raised in the the GitHub repositories of 'ggpmisc' as well as of 'ggpubbr' or in Stackoverflow in connection to both packages. 'ggpubr' is a large package built in part from bits and pieces taken from other packages, with authors only sometimes acknowledged. 
+Package 'ggpubr' provides several "canned" functions that produce whole plots as well as several statistics. One of the statistics is almost identical to an old version of a statistic in package 'ggpmisc'. The reason is that it was copied into 'ggpubr' and renamed, without acknowledging the source or authorship. The current version in 'ggpmisc' has been significantly improved with bug fixes and enhancements, several of them based on issues raised in the the GitHub repositories of 'ggpmisc' as well as of 'ggpubr' or in Stackoverflow in connection to both packages. 'ggpubr' is a large package built in part from bits and pieces taken from other packages, with authors only sometimes acknowledged. 
 
 I recommend you use the current versions of the statistics from 'ggpmisc' and other packages rather than the old versions included in 'ggpubr' as they are not being maintained. If you use functions from 'ggpubr' in scientific publications, please, use and cite the original sources. In the case of 'ggpmisc', the versions in this package rather than those from 'ggpubr'. `ggpubr::stat_regline_equation()` is a copy of `ggpmisc::stat_poly_eq()` from 2018 or earlier. `ggpubr::stat_cor()` was directly based on `ggpmisc::stat_poly_eq()` but developed independently of `ggpmisc::stat_correlation()`, which is newer and has additional features. The copying of `ggpmisc::stat_poly_eq()` took place in 2018, and in the meantime I have published in CRAN more than 20 updates to package 'ggpmisc'.
 
@@ -570,7 +570,7 @@ ggplot(my.data, aes(x, y2)) +
   facet_wrap(~group, scales = "free_y")
 ```
 
-_Grouping works as expected._ In this example we create groups using the colour aesthetic, but factors or descrete variables mapped to other aesthetics inlucing the "invisible" `group` aesthetic. We can use justification and supply an absolute location for the equation, but the default frequently works well as in the example below.
+_Grouping works as expected._ In this example we create groups using the colour aesthetic, but factors or discrete variables mapped to other aesthetics including the "invisible" `group` aesthetic. We can use justification and supply an absolute location for the equation, but the default frequently works well as in the example below.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -658,7 +658,7 @@ ggplot(my.data, aes(x, y2, colour = group)) +
 
 Occasionally, possibly as a demonstration in teaching, we may want to compare a fit of *x* on *y* and one of *y* on *x* in the same plot. Here, this example also serves as introduction to the next section, which describes the use of _major axis regression_ or _Model II_ regression. 
 
-As is the case for model fitting functions themselves, which variable is dependent (reponse) and which is independent (explanatory) is simply indicated by the model equation passed as argument to `formula`, or consistently with `stat_smooth()` through parameter `orientation` as show below.
+As is the case for model fitting functions themselves, which variable is dependent (response) and which is independent (explanatory) is simply indicated by the model equation passed as argument to `formula`, or consistently with `stat_smooth()` through parameter `orientation` as show below.
 
 ```{r}
 ggplot(my.data, aes(x, y)) +
@@ -948,7 +948,7 @@ ggplot(my.data, aes(x, y)) +
               label.y = "center", label.x = "left")
 ```
 
-Faceting works as expected, but grouping is ignored as mentioned above. In this case, the color aesthetic is not applied to the text of the tables. Furthermore, if `label.x.npc` or `label.y.npc` are passed numeric vectors of length \> 1, the corresponding values are obeyed by the different panels.
+Faceting works as expected, but grouping is ignored as mentioned above. In this case, the colour aesthetic is not applied to the text of the tables. Furthermore, if `label.x.npc` or `label.y.npc` are passed numeric vectors of length \> 1, the corresponding values are obeyed by the different panels.
 
 ```{r, eval=eval_broom}
 micmen.formula <- y ~ SSmicmen(x, Vm, K)
@@ -1140,7 +1140,7 @@ ggplot(mpg, aes(displ, 1 / hwy)) +
 
 Use `ggplot2::stat_smooth`, `stat_poly_line()`, `stat_ma_line()`, `stat_quant_line()`, `stat_deviations()` or `stat_residuals()` instead of `stat_fit_augment` if possible.
 
-When statistics specific to the type of model fitted are available, their use is in general simpler that the use of `stat_fit_augment()`. On the other hand, `stat_fit_augment()` can handle any fitted model that is supported by package 'broom' or its extensssions. All these statistics support grouping and faacets.
+When statistics specific to the type of model fitted are available, their use is in general simpler that the use of `stat_fit_augment()`. On the other hand, `stat_fit_augment()` can handle any fitted model that is supported by package 'broom' or its extensions. All these statistics support grouping and facets.
 
 ```{r, eval=eval_broom}
 # formula <- y ~ poly(x, 3, raw = TRUE)
@@ -1217,9 +1217,9 @@ ggplot(Orange, aes(age, circumference, colour = Tree)) +
 
 ### How to find out what variables are computed
 
-When using `stat_fit_glance()`, `stat_fit_tidy()`, `stat_fit_augment()` and `stat_fit_tb()` the documentation cannot describe the variables present in the returned `data` because they call methods using their generic interface and the exact variat used depends on the argument passed to method, which can be even one that I have not been aware of and never tested. Thanks to package 'gginnards' and its `geom_debug()` we can find this out with a temporary chnage to the plot code.
+When using `stat_fit_glance()`, `stat_fit_tidy()`, `stat_fit_augment()` and `stat_fit_tb()` the documentation cannot describe the variables present in the returned `data` because they call methods using their generic interface and the exact especialization used depends on the argument passed to method, which can be even one that I have not been aware of and never tested. Thanks to package 'gginnards' and its `geom_debug()` we can find this out with a temporary change to the plot code.
 
-`geom_debug()` uses by default `head()` to echo the data it receives as input. It ignores the aesthetic mappings so it can be used with any statistics or directly as a layer function. However, unrecognized aesthetic trigger irrelevant warnings during plot rendering. 
+`geom_debug()` uses by default `head()` to echo to the R console the data it receives as input. It ignores the aesthetic mappings so it can be used with any statistics or directly as a layer function. However, unrecognised aesthetics can trigger warnings during plot rendering. These warnings can be ignored in most cases.
 
 ```{r, eval=(eval_broom && eval_gginnards)}
 # formula <- y ~ poly(x, 3, raw = TRUE)
@@ -1237,6 +1237,8 @@ ggplot(my.data, aes(x, y, colour = group)) +
                                       after_stat(p.value))),
                   parse = TRUE)
 ```
+
+In the case of `stat_fit_tb()` the computed variables returned include a list column containing embedded data frames. In this case, function `str()` is more informative than `head()`, so we can pass it as argument overriding the default.
 
 ```{r, eval=(eval_broom && eval_gginnards)}
 formula <- y ~ x + I(x^2) + I(x^3)
@@ -1256,6 +1258,7 @@ ggplot(my.data, aes(x, y)) +
               parse = TRUE)
 ```
 
+`geom_debug()` can be used with 'ggplot2' itself any of its extensions. More examples are given in the [documentation of package 'gginnards'](https://docs.r4photobiology.info/gginnards/).
 
 ## Scales
 
@@ -1263,7 +1266,7 @@ Volcano and quadrant plots are scatter plots with some peculiarities. Creating t
 
 ### scale_color_outcome, scale_fill_outcome
 
-Manual scales for color and fill aesthetics with defaults suitable for the three way outcomes from statistical tests.
+Manual scales for colour and fill aesthetics with defaults suitable for the three way outcomes from statistical tests.
 
 ### scale_x\_FDR, scale_y\_FDR, scale_x\_logFC, scale_y\_logFC, scale_x\_Pvalue, scale_y\_Pvalue
 
@@ -1275,7 +1278,7 @@ A simple function to expand scale limits to be symmetric around zero. Can be pas
 
 ### Volcano-plot examples
 
-Volcano plots are frequently used for transcriptomics and metabolomics. They are used to show *P*-values or FDR (false discovery rate) as a function of effect size, which can be either an increase or a decrease. Effect sizes are expressed as fold-changes compared to a control or reference condition. Colors are frequently used to highlight significant responses. Counts of significant increases and decreases are frequently also added.
+Volcano plots are frequently used for transcriptomics and metabolomics. They are used to show *P*-values or FDR (false discovery rate) as a function of effect size, which can be either an increase or a decrease. Effect sizes are expressed as fold-changes compared to a control or reference condition. Colours are frequently used to highlight significant responses. Counts of significant increases and decreases are frequently also added.
 
 Outcomes encoded as -1, 0 or 1, as seen in the tibble below need to be converted into factors with suitable labels for levels. This can be easily achieved with function `outcome2factor()`.
 
@@ -1287,7 +1290,7 @@ Most frequently fold-change data is available log-transformed, using either 2 or
 
 By default `scale_x_logFC()` and `scale_y_logFC()` expect the logFC data log2-transformed, but this can be overridden. The default use of untransformed fold-change for tick labels can also be overridden. Scale `scale_x_logFC()` in addition by default expands the scale limits to make them symmetric around zero. If `%unit` is included in the name character string, suitable units are appended as shown in the example below.
 
-Scales `scale_y_Pvalue()` and `scale_x_Pvalue()` have suitable defaults for name and labels, while `scale_colour_outcome()` provides suitable defaults for the colors mapped to the outcomes. To change the labels and title of the `key` or `guide` pass suitable arguments to parameters `name` and `labels` of these scales. These x and y scales by default *squish* off-limits (out-of-bounds) observations towards the limits.
+Scales `scale_y_Pvalue()` and `scale_x_Pvalue()` have suitable defaults for name and labels, while `scale_colour_outcome()` provides suitable defaults for the colours mapped to the outcomes. To change the labels and title of the `key` or `guide` pass suitable arguments to parameters `name` and `labels` of these scales. These x and y scales by default *squish* off-limits (out-of-bounds) observations towards the limits.
 
 ```{r}
 volcano_example.df %>%
@@ -1317,7 +1320,7 @@ volcano_example.df %>%
 
 Quadrant plots are scatter plots with comparable variables on both axes and usually include the four quadrants. When used for transcriptomics and metabolomics, they are used to compare responses expressed as fold-change to two different conditions or treatments. They are useful when many responses are measured as in transcriptomics (many different genes) or metabolomics (many different metabolites).
 
-A single panel quadrant plot is as easy to produce as a volcano plot using scales `scale_x_logFC()` and `scale_y_logFC()`. The data includes two different outcomes and two different log fold-change variables. See the previous section on volcano plots for details. In this example we use as shape a filled circle and map one of the outcomes to color and the other to fill, using the two matched scales `scale_colour_outcome()` and `scale_fill_outcome()`.
+A single panel quadrant plot is as easy to produce as a volcano plot using scales `scale_x_logFC()` and `scale_y_logFC()`. The data includes two different outcomes and two different log fold-change variables. See the previous section on volcano plots for details. In this example we use as shape a filled circle and map one of the outcomes to colour and the other to fill, using the two matched scales `scale_colour_outcome()` and `scale_fill_outcome()`.
 
 ```{r}
 head(quadrant_example.df)

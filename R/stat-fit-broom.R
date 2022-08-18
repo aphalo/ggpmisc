@@ -276,29 +276,21 @@ fit_glance_compute_group_fun <- function(data,
 #    method.args <- c(method.args, list(data = quote(data)))  works in most cases and avoids copying data
     method.args <- c(method.args, list(data = data)) # cor.test() needs the actual data
   } else {
-    message("Only the 'formula' interface of methods is well supported.")
-    if ("x" %in% names(method.args)) {
-      message("Passing data$x as 'x'.")
-      method.args[["x"]] <- data[["x"]]
-    }
-    if ("y" %in% names(method.args)) {
-      message("Passing data$y as 'y'.")
-      method.args[["y"]] <- data[["y"]]
+    warning("Only the 'formula' interface of methods is supported. No formula found, using 'y ~ x'")
+    if (method.name == "cor.test") {
+      method.args <- c(method.args, list(formula = ~ x + y, data = data)) # cor.test() needs the actual data
+    } else {
+      method.args <- c(method.args, list(formula = y ~ x, data = data)) # cor.test() needs the actual data
     }
   }
   fm <- do.call(method, method.args)
   fm.class <- class(fm) # keep track of fitted model class
-  if (inherits(fm, "lm")) {
-    fm.formula <- fm[["terms"]]
-  } else {
-    fm.formula <- NA
-  }
 
   glance.args <- c(list(x = quote(fm), glance.args))
   z <- do.call(generics::glance, glance.args)
   z[["fm.class"]] <- fm.class[1]
   z[["fm.method"]] <- method.name
-  z[["fm.formula.chr"]] <- format(fm.formula)
+  z[["fm.formula"]] <- stats::formula(fm)
 
   n.labels <- nrow(z)
   if (length(label.x) != n.labels) {
@@ -639,11 +631,6 @@ fit_augment_compute_group_fun <- function(data,
   }
   fm <- do.call(method, method.args)
   fm.class <- class(fm) # keep track of fitted model class
-  if (inherits(fm, "lm")) {
-    fm.formula <- fm[["terms"]]
-  } else {
-    fm.formula <- NA
-  }
 
   augment.args <- c(list(x = fm), augment.args)
   z <- do.call(generics::augment, augment.args)
@@ -662,7 +649,7 @@ fit_augment_compute_group_fun <- function(data,
   }
   z[["fm.class"]] <- rep_len(fm.class[1], nrow(z))
   z[["fm.method"]] <- rep_len(method.name, nrow(z))
-  z[["fm.formula.chr"]] <- rep_len(format(fm.formula), nrow(z))
+  z[["fm.formula"]] <- rep_len(list(formula = stats::formula(fm)), nrow(z))
 
   z
 }
@@ -995,11 +982,6 @@ fit_tidy_compute_group_fun <- function(data,
   }
   fm <- do.call(method, method.args)
   fm.class <- class(fm) # keep track of fitted model class
-  if (inherits(fm, "lm")) {
-    fm.formula <- fm[["terms"]]
-  } else {
-    fm.formula <- NA
-  }
 
   tidy.args <- c(list(x = quote(fm)), tidy.args)
   fm.td <- do.call(generics::tidy, tidy.args)
@@ -1078,7 +1060,7 @@ fit_tidy_compute_group_fun <- function(data,
   }
   z[["fm.class"]] <-rep_len(fm.class[1], nrow(z))
   z[["fm.method"]] <- rep_len(method.name, nrow(z))
-  z[["fm.formula.chr"]] <- rep_len(format(fm.formula), nrow(z))
+  z[["fm.formula"]] <- rep_len(list(stats::formula(fm)), nrow(z))
 
   z
 }

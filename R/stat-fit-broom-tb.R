@@ -333,24 +333,25 @@ stat_fit_tb <- function(mapping = NULL, data = NULL, geom = "table_npc",
   ggplot2::layer(
     stat = StatFitTb, data = data, mapping = mapping, geom = geom,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
-    params = rlang::list2(method = method,
-                          method.args = method.args,
-                          tidy.args = tidy.args,
-                          tb.type = tb.type,
-                          tb.vars = tb.vars,
-                          tb.params = tb.params,
-                          digits = digits,
-                          p.digits = p.digits,
-                          label.x = label.x,
-                          label.y = label.y,
-                          npc.used = grepl("_npc", geom),
-                          table.theme = table.theme,
-                          table.rownames = table.rownames,
-                          table.colnames = table.colnames,
-                          table.hjust = table.hjust,
-                          parse = parse,
-                          na.rm = na.rm,
-                          ...)
+    params =
+      rlang::list2(method = method,
+                   method.args = method.args,
+                   tidy.args = tidy.args,
+                   tb.type = tb.type,
+                   tb.vars = tb.vars,
+                   tb.params = tb.params,
+                   digits = digits,
+                   p.digits = p.digits,
+                   label.x = label.x,
+                   label.y = label.y,
+                   npc.used = grepl("_npc", geom),
+                   table.theme = table.theme,
+                   table.rownames = table.rownames,
+                   table.colnames = table.colnames,
+                   table.hjust = table.hjust,
+                   parse = parse,
+                   na.rm = na.rm,
+                   ...)
   )
 }
 
@@ -374,8 +375,8 @@ fit_tb_compute_panel_fun <- function(data,
                                      npc.used = TRUE,
                                      label.x,
                                      label.y) {
+  print("'compute_panel_fun()' called")
   force(data)
-
   if (length(unique(data$x)) < 2) {
     # Not enough data to perform fit
     return(data.frame())
@@ -420,11 +421,6 @@ fit_tb_compute_panel_fun <- function(data,
   }
   fm <- do.call(method, method.args)
   fm.class <- class(fm) # keep track of fitted model class
-  if (inherits(fm, "lm")) {
-    fm.formula <- fm[["terms"]]
-  } else {
-    fm.formula <- NA
-  }
 
   if (tolower(tb.type) %in% c("fit.anova", "anova")) {
     tidy.args <- c(x = quote(stats::anova(fm)), tidy.args)
@@ -504,7 +500,8 @@ fit_tb_compute_panel_fun <- function(data,
         tb.vars <- tb.vars[idxs]
       }
     }
-    if (!(1L %in% idxs)) {
+    if (!(1L %in% idxs) && nrow(fm.tb > 1L)) {
+      # we warn only if params are two or more
       message("Dropping param names from table!")
     }
     if (length(idxs) < 1L) {
@@ -525,7 +522,7 @@ fit_tb_compute_panel_fun <- function(data,
                       fm.tb.type = tb.type,
                       fm.class = fm.class[1],
                       fm.method = method.name,
-                      fm.formula.chr = format(formula))
+                      fm.formula = list(formula(fm)))
 
   if (npc.used) {
     margin.npc <- 0.05

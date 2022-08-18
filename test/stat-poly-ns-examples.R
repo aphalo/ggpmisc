@@ -11,7 +11,7 @@ ggplot(mpg, aes(displ, hwy)) +
                                                          alpha(colour, 1),
                                                          alpha(colour, 0.25)))),
                  se = TRUE,
-                 mf.values = T) +
+                 fm.values = T) +
   facet_wrap(~class, ncol = 2) +
   theme_bw()
 
@@ -28,7 +28,7 @@ ggplot(mpg, aes(displ, hwy)) +
                                                          alpha(colour, 1),
                                                          alpha(colour, 0.25)))),
                  se = FALSE,
-                 mf.values = T) +
+                 fm.values = T) +
   facet_wrap(~class, ncol = 2) +
   theme_bw()
 
@@ -49,7 +49,7 @@ ggplot(mpg, aes(displ, hwy)) +
                                                        fill,
                                                        NA))),
                  se = TRUE,
-                 mf.values = T) +
+                 fm.values = T) +
   facet_wrap(~class, ncol = 2) +
   theme_bw()
 
@@ -64,7 +64,7 @@ ggplot(mpg, aes(displ, hwy, colour = class, grp.label = class)) +
                                                          alpha(colour, 1),
                                                          alpha(colour, 0.25)))),
                  se = FALSE,
-                 mf.values = T) +
+                 fm.values = T) +
   theme_bw()
 
 ggplot(mpg, aes(displ, hwy, colour = class, grp.label = class)) +
@@ -78,7 +78,7 @@ ggplot(mpg, aes(displ, hwy, colour = class, grp.label = class)) +
                                                          alpha(colour, 1),
                                                          alpha(colour, 0.25)))),
                  se = FALSE,
-                 mf.values = T) +
+                 fm.values = T) +
   theme_bw()
 
 ggplot(mpg, aes(displ, hwy)) +

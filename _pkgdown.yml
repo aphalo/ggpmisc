@@ -75,9 +75,9 @@ navbar:
       icon: fab fa-github fa-lg
       href: https://github.com/aphalo/ggpmisc/
     articles:
-      text: Articles
+      text: User Guide
       menu:
-      - text: 'Model-Based Plot Annotations'
+      - text: 'Fitted-model-based Annotations'
         href: articles/model-based-annotations.html
     tutorials:
       text: Resources
