@@ -179,14 +179,15 @@ stat_fit_residuals <- function(mapping = NULL,
   ggplot2::layer(
     stat = StatFitResiduals, data = data, mapping = mapping, geom = geom,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
-    params = list(method = method,
-                  method.args = method.args,
-                  formula = formula,
-                  resid.type = resid.type,
-                  weighted = weighted,
-                  na.rm = na.rm,
-                  orientation = orientation,
-                  ...)
+    params =
+      rlang::list2(method = method,
+                   method.args = method.args,
+                   formula = formula,
+                   resid.type = resid.type,
+                   weighted = weighted,
+                   na.rm = na.rm,
+                   orientation = orientation,
+                   ...)
   )
 }
 

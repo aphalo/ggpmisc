@@ -270,21 +270,22 @@ stat_quant_line <- function(mapping = NULL,
     position = position,
     show.legend = show.legend,
     inherit.aes = inherit.aes,
-    params = list(
-      quantiles = quantiles,
-      formula = formula,
-      se = se,
-      fm.values = fm.values,
-      n = n,
-      method = method,
-      method.args = method.args,
-      na.rm = na.rm,
-      orientation = orientation,
-      level = level,
-      type = type,
-      interval = interval,
-      ...
-    )
+    params =
+      rlang::list2(
+        quantiles = quantiles,
+        formula = formula,
+        se = se,
+        fm.values = fm.values,
+        n = n,
+        method = method,
+        method.args = method.args,
+        na.rm = na.rm,
+        orientation = orientation,
+        level = level,
+        type = type,
+        interval = interval,
+        ...
+      )
   )
 }
 

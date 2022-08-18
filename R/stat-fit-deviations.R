@@ -178,12 +178,13 @@ stat_fit_deviations <- function(mapping = NULL, data = NULL, geom = "segment",
   ggplot2::layer(
     stat = StatFitDeviations, data = data, mapping = mapping, geom = geom,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
-    params = list(method = method,
-                  method.args = method.args,
-                  formula = formula,
-                  na.rm = na.rm,
-                  orientation = orientation,
-                  ...)
+    params =
+      rlang::list2(method = method,
+                   method.args = method.args,
+                   formula = formula,
+                   na.rm = na.rm,
+                   orientation = orientation,
+                   ...)
   )
 }
 

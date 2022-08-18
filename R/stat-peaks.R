@@ -255,17 +255,18 @@ stat_peaks <- function(mapping = NULL,
     position = position,
     show.legend = show.legend,
     inherit.aes = inherit.aes,
-    params = list(
-      span = span,
-      ignore_threshold = ignore_threshold,
-      strict = strict,
-      label.fmt = label.fmt,
-      x.label.fmt = x.label.fmt,
-      y.label.fmt = y.label.fmt,
-      orientation = orientation,
-      na.rm = na.rm,
-      ...
-    )
+    params =
+      rlang::list2(
+        span = span,
+        ignore_threshold = ignore_threshold,
+        strict = strict,
+        label.fmt = label.fmt,
+        x.label.fmt = x.label.fmt,
+        y.label.fmt = y.label.fmt,
+        orientation = orientation,
+        na.rm = na.rm,
+        ...
+      )
   )
 }
 
@@ -485,17 +486,18 @@ stat_valleys <- function(mapping = NULL,
     position = position,
     show.legend = show.legend,
     inherit.aes = inherit.aes,
-    params = list(
-      span = span,
-      ignore_threshold = ignore_threshold,
-      strict = strict,
-      label.fmt = label.fmt,
-      x.label.fmt = x.label.fmt,
-      y.label.fmt = y.label.fmt,
-      orientation = orientation,
-      na.rm = na.rm,
-      ...
-    )
+    params =
+      rlang::list2(
+        span = span,
+        ignore_threshold = ignore_threshold,
+        strict = strict,
+        label.fmt = label.fmt,
+        x.label.fmt = x.label.fmt,
+        y.label.fmt = y.label.fmt,
+        orientation = orientation,
+        na.rm = na.rm,
+        ...
+      )
   )
 }
 

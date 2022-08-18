@@ -194,7 +194,7 @@ stat_poly_line <- function(mapping = NULL, data = NULL,
     position = position,
     show.legend = show.legend,
     inherit.aes = inherit.aes,
-    params = list(
+    params = rlang::list2(
       method = method,
       formula = formula,
       se = se,

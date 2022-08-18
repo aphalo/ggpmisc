@@ -206,18 +206,19 @@ stat_quant_band <- function(mapping = NULL,
     position = position,
     show.legend = show.legend,
     inherit.aes = inherit.aes,
-    params = list(
-      quantiles = quantiles,
-      formula = formula,
-      fm.values = fm.values,
-      n = n,
-      method = method,
-      method.args = method.args,
-      na.rm = na.rm,
-      orientation = orientation,
-      se = TRUE, # passed to geom_smooth
-      ...
-    )
+    params =
+      rlang::list2(
+        quantiles = quantiles,
+        formula = formula,
+        fm.values = fm.values,
+        n = n,
+        method = method,
+        method.args = method.args,
+        na.rm = na.rm,
+        orientation = orientation,
+        se = TRUE, # passed to geom_smooth
+        ...
+      )
   )
 }
 

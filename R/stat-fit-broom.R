@@ -200,16 +200,17 @@ stat_fit_glance <- function(mapping = NULL, data = NULL, geom = "text_npc",
   ggplot2::layer(
     stat = StatFitGlance, data = data, mapping = mapping, geom = geom,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
-    params = list(method = method,
-                  method.args = method.args,
-                  glance.args = glance.args,
-                  label.x = label.x,
-                  label.y = label.y,
-                  hstep = hstep,
-                  vstep = vstep,
-                  npc.used = grepl("_npc", geom),
-                  na.rm = na.rm,
-                  ...)
+    params =
+      rlang::list2(method = method,
+                   method.args = method.args,
+                   glance.args = glance.args,
+                   label.x = label.x,
+                   label.y = label.y,
+                   hstep = hstep,
+                   vstep = vstep,
+                   npc.used = grepl("_npc", geom),
+                   na.rm = na.rm,
+                   ...)
   )
 }
 
@@ -571,13 +572,14 @@ stat_fit_augment <- function(mapping = NULL, data = NULL, geom = "smooth",
   ggplot2::layer(
     stat = StatFitAugment, data = data, mapping = mapping, geom = geom,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
-    params = list(method = method,
-                  method.args = method.args,
-                  augment.args = augment.args,
-                  level = level,
-                  y.out = y.out,
-                  na.rm = na.rm,
-                  ...)
+    params =
+      rlang::list2(method = method,
+                   method.args = method.args,
+                   augment.args = augment.args,
+                   level = level,
+                   y.out = y.out,
+                   na.rm = na.rm,
+                   ...)
   )
 }
 
@@ -901,21 +903,22 @@ stat_fit_tidy <- function(mapping = NULL, data = NULL, geom = "text_npc",
   ggplot2::layer(
     stat = StatFitTidy, data = data, mapping = mapping, geom = geom,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
-    params = list(method = method,
-                  method.args = method.args,
-                  tidy.args = tidy.args,
-                  label.x = label.x,
-                  label.y = label.y,
-                  hstep = hstep,
-                  vstep = ifelse(is.null(vstep),
-                                 ifelse(grepl("label", geom),
-                                        0.125,
-                                        0.075),
-                                 vstep),
-                  sanitize.names = sanitize.names,
-                  npc.used = grepl("_npc", geom),
-                  na.rm = na.rm,
-                  ...)
+    params =
+      rlang::list2(method = method,
+                   method.args = method.args,
+                   tidy.args = tidy.args,
+                   label.x = label.x,
+                   label.y = label.y,
+                   hstep = hstep,
+                   vstep = ifelse(is.null(vstep),
+                                  ifelse(grepl("label", geom),
+                                         0.125,
+                                         0.075),
+                                  vstep),
+                   sanitize.names = sanitize.names,
+                   npc.used = grepl("_npc", geom),
+                   na.rm = na.rm,
+                   ...)
   )
 }
 
