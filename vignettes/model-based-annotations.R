@@ -377,7 +377,7 @@ ggplot(my.data, aes(x, y, color = group)) +
 ggplot(my.data, aes(x, y, group = group, linetype = group, 
                     shape = group, grp.label = group)) +
   geom_point() +
-  stat_quantile(formula = formula, color = "black") +
+  stat_quant_line(formula = formula, quantiles = c(0.05, 0.95), color = "black") +
   stat_quant_eq(aes(label = paste(after_stat(grp.label), "*\": \"*",
                                   after_stat(eq.label), sep = "")),
                 formula = formula, quantiles = c(0.05, 0.95)) +

@@ -379,7 +379,10 @@ quant_line_compute_group_fun <- function(data,
 
   if (fm.values) {
       z[["n"]] <- nrow(na.omit(data[, c("x", "y")]))
-      z[["method"]] <- method.name
+#      z[["fm.class"]] <- class(fm)[1] # fm gets dropped in quant_pred()
+      z[["fm.method"]] <- method.name
+      z[["fm.formula"]] <- list(formula) # fm gets dropped in quant_pred()
+      z[["fm.formula.chr"]] <- format(z[["fm.formula"]])
   }
 
   # a factor with nicely formatted labels for levels is helpful
@@ -413,6 +416,9 @@ StatQuantLine <-
   )
 
 # modified from 'ggplot2'
+# !!!
+# !!! fitting and prediction should be split so that metadata from fm can be recovered
+# !!!
 quant_pred <- function(quantile, data, method, formula, weight, grid,
                        method.args = method.args, orientation = "x",
                        level = 0.95, type = "none", interval = "none",
@@ -422,7 +428,7 @@ quant_pred <- function(quantile, data, method, formula, weight, grid,
   # quantreg contains code with partial matching of names!
   # so we silence selectively only these warnings
   withCallingHandlers({
-    model <- do.call(method, args)
+    fm <- do.call(method, args)
   }, warning = function(w) {
     if (startsWith(conditionMessage(w), "partial match of") ||
         startsWith(conditionMessage(w), "partial argument match of")) {
@@ -431,10 +437,10 @@ quant_pred <- function(quantile, data, method, formula, weight, grid,
   })
 
   if (orientation == "x") {
-    grid[["y"]] <- stats::predict(model, newdata = grid, level = level,
+    grid[["y"]] <- stats::predict(fm, newdata = grid, level = level,
                                   type = type, interval = interval)
   } else {
-    grid[["x"]] <- stats::predict(model, newdata = grid, level = level,
+    grid[["x"]] <- stats::predict(fm, newdata = grid, level = level,
                                   type = type, interval = interval)
   }
   grid[["quantile"]] <- quantile

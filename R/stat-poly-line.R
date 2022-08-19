@@ -329,7 +329,10 @@ poly_line_compute_group_fun <-
       } else {
         prediction[["n"]] <- NA_real_
       }
-      prediction[["method"]] <- method.name
+      prediction[["fm.class"]] <- class(fm)[1]
+      prediction[["fm.method"]] <- method.name
+      prediction[["fm.formula"]] <- fail_safe_formula(fm, method.args)
+      prediction[["fm.formula.chr"]] <- format(prediction[["fm.formula"]])
     }
 
     prediction$flipped_aes <- flipped_aes

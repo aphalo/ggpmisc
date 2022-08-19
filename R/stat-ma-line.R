@@ -385,7 +385,10 @@ ma_line_compute_group_fun <-
       prediction[["p.value"]] <- fm[["regression.results"]][["P-perm (1-tailed)"]][idx]
       prediction[["r.squared"]] <- fm[["rsquare"]]
       prediction[["n"]] <- fm[["n"]]
-      prediction[["method"]] <- method.name
+      prediction[["fm.class"]] <- class(fm)[1]
+      prediction[["fm.method"]] <- method.name
+      prediction[["fm.formula"]] <- fail_safe_formula(fm, method.args)
+      prediction[["fm.formula.chr"]] <- format(prediction[["fm.formula"]])
     }
     prediction$flipped_aes <- flipped_aes
     ggplot2::flip_data(prediction, flipped_aes)

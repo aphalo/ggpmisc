@@ -517,11 +517,13 @@ fit_tb_compute_panel_fun <- function(data,
   }
 
   # enclose the tibble and the call in lists to make them acceptable as columns
+  formula.ls <- fail_safe_formula(fm, method.args)
   z <- tibble::tibble(fm.tb = list(fm.tb),
                       fm.tb.type = tb.type,
                       fm.class = fm.class[1],
                       fm.method = method.name,
-                      fm.formula = fail_safe_formula(fm, method.args))
+                      fm.formula = formula.ls,
+                      fm.formula.chr = format(formula.ls))
 
   if (npc.used) {
     margin.npc <- 0.05

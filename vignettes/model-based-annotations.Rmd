@@ -7,7 +7,7 @@ output:
   rmarkdown::html_vignette:
     toc: yes
 vignette: >
-  %\VignetteIndexEntry{Fited-Model-Based Annotations}
+  %\VignetteIndexEntry{Fitted-Model-Based Annotations}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 ---
@@ -758,7 +758,7 @@ Grouping can be combined with a group label by mapping in `aes()` a character va
 ggplot(my.data, aes(x, y, group = group, linetype = group, 
                     shape = group, grp.label = group)) +
   geom_point() +
-  stat_quantile(formula = formula, color = "black") +
+  stat_quant_line(formula = formula, quantiles = c(0.05, 0.95), color = "black") +
   stat_quant_eq(aes(label = paste(after_stat(grp.label), "*\": \"*",
                                   after_stat(eq.label), sep = "")),
                 formula = formula, quantiles = c(0.05, 0.95)) +
