@@ -232,16 +232,18 @@ ggplot(mpg, aes(displ, hwy)) +
   facet_wrap(~drv)
 
 # Inspecting the returned data using geom_debug()
-if (requireNamespace("gginnards", quietly = TRUE)) {
+gginnards.installed <- requireNamespace("gginnards", quietly = TRUE)
+
+if (gginnards.installed)
   library(gginnards)
 
+if (gginnards.installed)
   ggplot(mpg, aes(displ, hwy)) +
     stat_quant_line(geom = "debug")
 
+if (gginnards.installed)
   ggplot(mpg, aes(displ, hwy)) +
     stat_quant_line(geom = "debug", fm.values = TRUE)
-
-}
 
 }
 \references{

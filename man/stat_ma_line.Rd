@@ -208,18 +208,18 @@ ggplot(my.data, aes(x, y)) +
   facet_wrap(~group)
 
 # Inspecting the returned data using geom_debug()
-\dontrun{
-if (requireNamespace("gginnards", quietly = TRUE)) {
+gginnards.installed <- requireNamespace("gginnards", quietly = TRUE)
+
+if (gginnards.installed)
   library(gginnards)
 
+if (gginnards.installed)
   ggplot(my.data, aes(x, y)) +
     stat_ma_line(geom = "debug")
 
+if (gginnards.installed)
   ggplot(my.data, aes(x, y)) +
     stat_ma_line(geom = "debug", fm.values = TRUE)
-
-}
-}
 
 }
 \seealso{

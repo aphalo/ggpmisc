@@ -371,41 +371,48 @@ ggplot(my.data, aes(x, y)) +
                 quantiles = 0.5)
 
 # Inspecting the returned data using geom_debug()
-\dontrun{
-if (requireNamespace("gginnards", quietly = TRUE)) {
+# This provides a quick way of finding out the names of the variables that
+# are available for mapping to aesthetics using after_stat().
+
+gginnards.installed <- requireNamespace("gginnards", quietly = TRUE)
+
+if (gginnards.installed)
   library(gginnards)
 
-# This provides a quick way of finding out the names of the variables that
-# are available for mapping to aesthetics.
-
+if (gginnards.installed)
   ggplot(my.data, aes(x, y)) +
     geom_point() +
     stat_quant_eq(formula = formula, geom = "debug")
 
+\dontrun{
+if (gginnards.installed)
   ggplot(my.data, aes(x, y)) +
     geom_point() +
     stat_quant_eq(aes(label = after_stat(eq.label)),
                   formula = formula, geom = "debug",
                   output.type = "markdown")
 
+if (gginnards.installed)
   ggplot(my.data, aes(x, y)) +
     geom_point() +
     stat_quant_eq(formula = formula, geom = "debug", output.type = "text")
 
+if (gginnards.installed)
   ggplot(my.data, aes(x, y)) +
     geom_point() +
     stat_quant_eq(formula = formula, geom = "debug", output.type = "numeric")
 
+if (gginnards.installed)
   ggplot(my.data, aes(x, y)) +
     geom_point() +
     stat_quant_eq(formula = formula, quantiles = c(0.25, 0.5, 0.75),
                   geom = "debug", output.type = "text")
 
+if (gginnards.installed)
   ggplot(my.data, aes(x, y)) +
     geom_point() +
     stat_quant_eq(formula = formula, quantiles = c(0.25, 0.5, 0.75),
                   geom = "debug", output.type = "numeric")
-}
 }
 
 }

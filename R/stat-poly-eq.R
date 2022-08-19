@@ -317,24 +317,28 @@
 #'                                     after_stat(b_2), after_stat(b_3))))
 #'
 #' # Inspecting the returned data using geom_debug()
-#' if (requireNamespace("gginnards", quietly = TRUE)) {
+#' # This provides a quick way of finding out the names of the variables that
+#' # are available for mapping to aesthetics with after_stat().
+#'
+#' gginnards.installed <- requireNamespace("gginnards", quietly = TRUE)
+#'
+#' if (gginnards.installed)
 #'   library(gginnards)
 #'
-#' # This provides a quick way of finding out the names of the variables that
-#' # are available for mapping to aesthetics.
-#'
-#' # the whole of data
+#' if (gginnards.installed)
 #'   ggplot(my.data, aes(x, y)) +
 #'     geom_point() +
 #'     stat_poly_line(formula = formula) +
 #'     stat_poly_eq(formula = formula, geom = "debug")
 #'
+#' if (gginnards.installed)
 #'   ggplot(my.data, aes(x, y)) +
 #'     geom_point() +
 #'     stat_poly_line(formula = formula) +
 #'     stat_poly_eq(formula = formula, geom = "debug", output.type = "numeric")
 #'
 #' # names of the variables
+#' if (gginnards.installed)
 #'   ggplot(my.data, aes(x, y)) +
 #'     geom_point() +
 #'     stat_poly_line(formula = formula) +
@@ -342,6 +346,7 @@
 #'                  summary.fun = colnames)
 #'
 #' # only data$eq.label
+#' if (gginnards.installed)
 #'   ggplot(my.data, aes(x, y)) +
 #'     geom_point() +
 #'     stat_poly_line(formula = formula) +
@@ -350,6 +355,7 @@
 #'                  summary.fun = function(x) {x[["eq.label"]]})
 #'
 #' # only data$eq.label
+#' if (gginnards.installed)
 #'   ggplot(my.data, aes(x, y)) +
 #'     geom_point() +
 #'     stat_poly_line(formula = formula) +
@@ -359,6 +365,7 @@
 #'                  summary.fun = function(x) {x[["eq.label"]]})
 #'
 #' # only data$eq.label
+#' if (gginnards.installed)
 #'   ggplot(my.data, aes(x, y)) +
 #'     geom_point() +
 #'     stat_poly_line(formula = formula) +
@@ -367,6 +374,7 @@
 #'                  summary.fun = function(x) {x[["eq.label"]]})
 #'
 #' # only data$eq.label
+#' if (gginnards.installed)
 #'   ggplot(my.data, aes(x, y)) +
 #'     geom_point() +
 #'     stat_poly_line(formula = formula) +
@@ -375,12 +383,12 @@
 #'                  summary.fun = function(x) {x[["eq.label"]]})
 #'
 #' # show the content of a list column
+#' if (gginnards.installed)
 #'   ggplot(my.data, aes(x, y)) +
 #'     geom_point() +
 #'     stat_poly_line(formula = formula) +
 #'     stat_poly_eq(formula = formula, geom = "debug", output.type = "numeric",
 #'                  summary.fun = function(x) {x[["coef.ls"]][[1]]})
-#' }
 #'
 #' @export
 #'

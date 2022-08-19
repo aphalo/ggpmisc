@@ -182,21 +182,24 @@ ggplot(my.data, aes(x, y)) +
                       method = "rq", method.args = list(tau = 0.75)) +
   geom_point()
 
-# inspecting the returned data
-if (requireNamespace("gginnards", quietly = TRUE)) {
+# inspecting the returned data with geom_debug()
+gginnards.installed <- requireNamespace("gginnards", quietly = TRUE)
+
+if (gginnards.installed)
   library(gginnards)
 
 # plot, using geom_debug() to explore the after_stat data
+if (gginnards.installed)
   ggplot(my.data, aes(x, y)) +
     geom_smooth(method = "lm", formula = my.formula) +
     stat_fit_deviations(formula = my.formula, geom = "debug") +
     geom_point()
 
+if (gginnards.installed)
   ggplot(my.data.outlier, aes(x, y)) +
     stat_smooth(method = MASS::rlm, formula = my.formula) +
     stat_fit_deviations(formula = my.formula, method = "rlm", geom = "debug") +
     geom_point()
-}
 
 }
 \seealso{

@@ -104,9 +104,9 @@
 #' @examples
 #' # Package 'broom' needs to be installed to run these examples.
 #' # We check availability before running them to avoid errors.
+#' broom.installed <- requireNamespace("broom", quietly = TRUE)
 #'
-#' if (requireNamespace("broom", quietly = TRUE)) {
-#'   broom.installed <- TRUE
+#' if (broom.installed)
 #'   library(broom)
 #'
 #' # data for examples
@@ -114,7 +114,11 @@
 #'   covariate <- sqrt(x) + rnorm(9)
 #'   group <- factor(c(rep("A", 4), rep("B", 5)))
 #'   my.df <- data.frame(x, group, covariate)
-#' }
+#'
+#' gginnards.installed  <- requireNamespace("gginnards", quietly = TRUE)
+#'
+#' if (gginnards.installed)
+#'   library(gginnards)
 #'
 #' ## covariate is a numeric or continuous variable
 #' # Linear regression fit summary, all defaults
@@ -122,6 +126,15 @@
 #'   ggplot(my.df, aes(covariate, x)) +
 #'     geom_point() +
 #'     stat_fit_tb() +
+#'     expand_limits(y = 70)
+#'
+#' # we can use geom_debug() and str() to inspect the returned value
+#' # and discover the variables that can be mapped to aesthetics with
+#' # after_stat()
+#' if (broom.installed && gginnards.installed)
+#'   ggplot(my.df, aes(covariate, x)) +
+#'     geom_point() +
+#'     stat_fit_tb(geom = "debug", summary.fun = str) +
 #'     expand_limits(y = 70)
 #'
 #' # Linear regression fit summary, with default formatting

@@ -187,17 +187,20 @@ ggplot(my.data, aes(x, y)) +
   method.args = list(tau = 0.75))
 
 # inspecting the returned data
-if (requireNamespace("gginnards", quietly = TRUE)) {
+gginnards.installed <- requireNamespace("gginnards", quietly = TRUE)
+
+if (gginnards.installed)
   library(gginnards)
 
+if (gginnards.installed)
   ggplot(my.data, aes(x, y)) +
    stat_fit_residuals(formula = my.formula, resid.type = "working",
                       geom = "debug")
 
+if (gginnards.installed)
   ggplot(my.data, aes(x, y)) +
     stat_fit_residuals(formula = my.formula, method = "rlm",
                        geom = "debug")
-}
 
 }
 \seealso{

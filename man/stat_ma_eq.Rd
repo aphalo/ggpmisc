@@ -272,33 +272,37 @@ ggplot(my.data,
   theme_classic()
 
 # Inspecting the returned data using geom_debug()
-\dontrun{
-if (requireNamespace("gginnards", quietly = TRUE)) {
+# This provides a quick way of finding out the names of the variables that
+# are available for mapping to aesthetics with after_stat().
+
+gginnards.installed <- requireNamespace("gginnards", quietly = TRUE)
+
+if (gginnards.installed)
   library(gginnards)
 
-# This provides a quick way of finding out the names of the variables that
-# are available for mapping to aesthetics.
-
 # default is output.type = "expression"
+if (gginnards.installed)
   ggplot(my.data, aes(x, y)) +
     geom_point() +
     stat_ma_eq(geom = "debug")
 
+\dontrun{
+if (gginnards.installed)
   ggplot(my.data, aes(x, y)) +
     geom_point() +
     stat_ma_eq(aes(label = after_stat(eq.label)),
                geom = "debug",
                output.type = "markdown")
 
+if (gginnards.installed)
   ggplot(my.data, aes(x, y)) +
     geom_point() +
     stat_ma_eq(geom = "debug", output.type = "text")
 
+if (gginnards.installed)
   ggplot(my.data, aes(x, y)) +
     geom_point() +
     stat_ma_eq(geom = "debug", output.type = "numeric")
-
-}
 }
 
 }
