@@ -611,7 +611,9 @@ quant_eq_compute_group_fun <- function(data,
 
   # allow model formula and tau selection by method functions
   if (inherits(fm, "rq") || inherits(fm, "rqs")) {
-    formula <- fm[["formula"]]
+    # allow model formula selection by the model fit method
+    # extract formula from fitted model if possible, but fall back on argument if needed
+    formula.ls <- fail_safe_formula(fm, fun.args, verbose = TRUE)
     quantiles <- fm[["tau"]]
   } else {
     stop("Fitted model object does not inherit from class \"rq\" or \"rqs\" as expected")
@@ -633,6 +635,10 @@ quant_eq_compute_group_fun <- function(data,
     coefs.mt <- as.matrix(coefs.mt)
     colnames(coefs.mt) <- paste("tau=", fm[["tau"]], sep = "")
   }
+
+  formula <- formula.ls[[1]]
+  stopifnot(isa(formula, "formula"))
+
   formula.rhs.chr <- as.character(formula)[3]
   forced.origin <- grepl("-[[:space:]]*1|+[[:space:]]*0", formula.rhs.chr)
   if (forced.origin) {
@@ -744,7 +750,8 @@ quant_eq_compute_group_fun <- function(data,
 
   z[["fm.method"]] <- method.name
   z[["fm.class"]] <- fm.class[1]
-  z[["fm.formula,chr"]] <- format(formula)
+  z[["fm.formula"]] <- formula.ls
+  z[["fm.formula.chr"]] <- format(formula.ls)
 
   # Compute label positions
   if (is.character(label.x)) {

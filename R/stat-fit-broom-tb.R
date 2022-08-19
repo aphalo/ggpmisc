@@ -375,7 +375,7 @@ fit_tb_compute_panel_fun <- function(data,
                                      npc.used = TRUE,
                                      label.x,
                                      label.y) {
-  print("'compute_panel_fun()' called")
+
   force(data)
   if (length(unique(data$x)) < 2) {
     # Not enough data to perform fit
@@ -409,14 +409,13 @@ fit_tb_compute_panel_fun <- function(data,
     #    method.args <- c(method.args, list(data = quote(data)))  works in most cases and avoids copying data
     method.args <- c(method.args, list(data = data)) # cor.test() needs the actual data
   } else {
-    message("Only the 'formula' interface of methods is well supported.")
-    if ("x" %in% names(method.args)) {
-      message("Passing data$x as 'x'.")
-      method.args[["x"]] <- data[["x"]]
-    }
-    if ("y" %in% names(method.args)) {
-      message("Passing data$y as 'y'.")
-      method.args[["y"]] <- data[["y"]]
+    if (method.name == "cor.test" ) {
+      warning("Only the 'formula' interface of methods is supported. No formula found, using '~ x + y'")
+      selector <- setdiff(names(method.args), c("x", "y"))
+      method.args <- c(method.args[selector], list(formula = ~ x + y, data = data)) # cor.test() needs the actual data
+    } else {
+      warning("Only the 'formula' interface of methods is supported. No formula found, using 'y ~ x' default")
+      method.args <- c(method.args, list(formula = y ~ x, data = data)) # cor.test() needs the actual data
     }
   }
   fm <- do.call(method, method.args)
@@ -522,7 +521,7 @@ fit_tb_compute_panel_fun <- function(data,
                       fm.tb.type = tb.type,
                       fm.class = fm.class[1],
                       fm.method = method.name,
-                      fm.formula = list(formula(fm)))
+                      fm.formula = fail_safe_formula(fm, method.args))
 
   if (npc.used) {
     margin.npc <- 0.05

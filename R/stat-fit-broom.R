@@ -276,10 +276,12 @@ fit_glance_compute_group_fun <- function(data,
 #    method.args <- c(method.args, list(data = quote(data)))  works in most cases and avoids copying data
     method.args <- c(method.args, list(data = data)) # cor.test() needs the actual data
   } else {
-    warning("Only the 'formula' interface of methods is supported. No formula found, using 'y ~ x'")
-    if (method.name == "cor.test") {
-      method.args <- c(method.args, list(formula = ~ x + y, data = data)) # cor.test() needs the actual data
+    if (method.name == "cor.test" ) {
+      warning("Only the 'formula' interface of methods is supported. No formula found, using '~ x + y'")
+      selector <- setdiff(names(method.args), c("x", "y"))
+      method.args <- c(method.args[selector], list(formula = ~ x + y, data = data)) # cor.test() needs the actual data
     } else {
+      warning("Only the 'formula' interface of methods is supported. No formula found, using 'y ~ x' default")
       method.args <- c(method.args, list(formula = y ~ x, data = data)) # cor.test() needs the actual data
     }
   }
@@ -290,7 +292,8 @@ fit_glance_compute_group_fun <- function(data,
   z <- do.call(generics::glance, glance.args)
   z[["fm.class"]] <- fm.class[1]
   z[["fm.method"]] <- method.name
-  z[["fm.formula"]] <- stats::formula(fm)
+  z[["fm.formula"]] <- fail_safe_formula(fm, method.args)
+  z[["fm.formula.chr"]] <- format(z[["fm.formula"]])
 
   n.labels <- nrow(z)
   if (length(label.x) != n.labels) {
@@ -611,22 +614,20 @@ fit_augment_compute_group_fun <- function(data,
     method.name <- deparse(substitute(method))
   }
 
-  #  data <- data[order(data[["x"]]), ]
   if ("data" %in% names(method.args)) {
     message("External 'data' passed can be inconsistent with plot!\n",
             "These data must be available at the time of printing!!!")
   } else if (any(grepl("formula|fixed|random|model", names(method.args)))) {
-#    method.args <- c(method.args, list(data = quote(data)))
-    method.args <- c(method.args, list(data = data))
+    #    method.args <- c(method.args, list(data = quote(data)))  works in most cases and avoids copying data
+    method.args <- c(method.args, list(data = data)) # cor.test() needs the actual data
   } else {
-    message("Only the 'formula' interface of methods is well supported.")
-    if ("x" %in% names(method.args)) {
-      message("Passing data$x as 'x'.")
-      method.args[["x"]] <- data[["x"]]
-    }
-    if ("y" %in% names(method.args)) {
-      message("Passing data$y as 'y'.")
-      method.args[["y"]] <- data[["y"]]
+    if (method.name == "cor.test" ) {
+      warning("Only the 'formula' interface of methods is supported. No formula found, using '~ x + y'")
+      selector <- setdiff(names(method.args), c("x", "y"))
+      method.args <- c(method.args[selector], list(formula = ~ x + y, data = data)) # cor.test() needs the actual data
+    } else {
+      warning("Only the 'formula' interface of methods is supported. No formula found, using 'y ~ x' default")
+      method.args <- c(method.args, list(formula = y ~ x, data = data)) # cor.test() needs the actual data
     }
   }
   fm <- do.call(method, method.args)
@@ -649,7 +650,8 @@ fit_augment_compute_group_fun <- function(data,
   }
   z[["fm.class"]] <- rep_len(fm.class[1], nrow(z))
   z[["fm.method"]] <- rep_len(method.name, nrow(z))
-  z[["fm.formula"]] <- rep_len(list(formula = stats::formula(fm)), nrow(z))
+  z[["fm.formula"]] <- rep_len(fail_safe_formula(fm, method.args), nrow(z))
+  z[["fm.formula.chr"]] <- format(z[["fm.formula"]])
 
   z
 }
@@ -967,17 +969,16 @@ fit_tidy_compute_group_fun <- function(data,
     message("External 'data' passed can be inconsistent with plot!\n",
             "These data must be available at the time of printing!!!")
   } else if (any(grepl("formula|fixed|random|model", names(method.args)))) {
-#    method.args <- c(method.args, list(data = quote(data)))
-    method.args <- c(method.args, list(data = data))
+    #    method.args <- c(method.args, list(data = quote(data)))  works in most cases and avoids copying data
+    method.args <- c(method.args, list(data = data)) # cor.test() needs the actual data
   } else {
-    message("Only the 'formula' interface of methods is well supported.")
-    if ("x" %in% names(method.args)) {
-      message("Passing data$x as 'x'.")
-      method.args[["x"]] <- quote(data[["x"]])
-    }
-    if ("y" %in% names(method.args)) {
-      message("Passing data$y as 'y'.")
-      method.args[["y"]] <- quote(data[["y"]])
+    if (method.name == "cor.test" ) {
+      warning("Only the 'formula' interface of methods is supported. No formula found, using '~ x + y'")
+      selector <- setdiff(names(method.args), c("x", "y"))
+      method.args <- c(method.args[selector], list(formula = ~ x + y, data = data)) # cor.test() needs the actual data
+    } else {
+      warning("Only the 'formula' interface of methods is supported. No formula found, using 'y ~ x' default")
+      method.args <- c(method.args, list(formula = y ~ x, data = data)) # cor.test() needs the actual data
     }
   }
   fm <- do.call(method, method.args)
@@ -1060,7 +1061,8 @@ fit_tidy_compute_group_fun <- function(data,
   }
   z[["fm.class"]] <-rep_len(fm.class[1], nrow(z))
   z[["fm.method"]] <- rep_len(method.name, nrow(z))
-  z[["fm.formula"]] <- rep_len(list(stats::formula(fm)), nrow(z))
+  z[["fm.formula"]] <- rep_len(fail_safe_formula(fm, method.args), nrow(z))
+  z[["fm.formula.chr"]] <- format(z[["fm.formula"]])
 
   z
 }

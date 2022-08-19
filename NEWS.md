@@ -6,6 +6,9 @@ editor_options:
 
 # ggpmisc 0.5.1
 
+-   Revise approach used to extract the formula from the fitted model object. Use `formula()` method on fitted model but fall-back onto the 'formula' argument in case of error or return `NA` if everything fails, without triggering an error condition.
+-   Add variables `fm.tb.type`, `fm.class`, `fm.method`, and `fm.formula.chr` to the data returned by `stat_fit_tb()`, and rename `mf_tb` into `fm.tb` for naming consistency.
+-   Add variable `fm.formula` to the data returned by all other textual-annotation statistics based on model fitting. 
 -   Revise User Guide.
 
 # ggpmisc 0.5.0
@@ -13,7 +16,7 @@ editor_options:
 -   Differently to the use in the R literature `mf` has been used in this package, instead of `fm`, to signify _fitted model_. This has changed in this version as formal parameter `mf.values` has been renamed `fm.values` and variable `mf_tb` in values returned by statistics renamed `fm.value`. Although _these are code breaking changes_, they are likely to cause difficulties only in isolated cases as defaults rarely need to be overridden.
 -   Add function `use_label()` that greatly simplifies assembling and mapping combined labels from the values returned by `stat_poly_eq()`, `stat_ma_eq()`, `stat_quant_eq()` and `stat_correlation()`.
 -   Add variables `fm.tb.type`, `fm.class`, `fm.method`, and `fm.formula.chr` to the data returned by `stat_fit_tb()`, and rename `mf_tb` into `fm.tb` for naming consistency.
--   Add variables `fm.class`, `fm.method`, and `fm.formula.chr` to the data returned by all other statistics based on model fitting.
+-   Add variables `fm.class`, `fm.method`, and `fm.formula.chr` to the data returned by all other textual-annotation statistics statistics based on model fitting.
 -   Add confidence intervals for _R_ (Pearson's OLS correlation), &tau; (Kendall's rank correlation) and &rho; (Spearman's rank correlation) to the values and labels returned by `stat_correlation()`. In the case of `method = "pearson"` assuming Normal distribution or estimated by bootstrap. For `method = "kendall"` and `method = "spearman"` only bootstrap estimates. These are implemented using package 'confintr'.
 -   Add confidence interval for R<sup>2</sup> to the values and labels returned by `stat_poly_eq()` (implemented using package 'confintr').
 -   Add &theta; (theta) to the values and labels returned by `stat_ma_eq()`.

@@ -164,16 +164,17 @@ test_that("glance_methods", {
    )
   options(old.options)
 
-  vdiffr::expect_doppelganger("glance_method_cortest_xy",
-                              ggplot(my.data, aes(x, y)) +
-                                geom_point() +
-                                stat_fit_glance(method = "cor.test",
-                                                method.args = list(x = "x", y = "y"),
-                                                mapping =
-                                                  aes(label = sprintf("%.3g, %.3g",
-                                                                      after_stat(estimate),
-                                                                      after_stat(p.value))))
-  )
+  # triggers an expected warning but supressWarnings
+  # vdiffr::expect_doppelganger("glance_method_cortest_xy",
+  #                               ggplot(my.data, aes(x, y)) +
+  #                                 geom_point() +
+  #                                 stat_fit_glance(method = "cor.test",
+  #                                                 method.args = list(x = "x", y = "y"),
+  #                                                 mapping =
+  #                                                   aes(label = sprintf("%.3g, %.3g",
+  #                                                                       after_stat(estimate),
+  #                                                                       after_stat(p.value))))
+  # )
 
   vdiffr::expect_doppelganger("glance_method_cortest_formula",
                               ggplot(my.data, aes(x, y)) +

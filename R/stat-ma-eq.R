@@ -514,6 +514,9 @@ ma_eq_compute_group_fun <- function(data,
     stop("Method \"", method.name, "\" did not return a \"lmodel2\" object")
   }
   fm.class <- class(fm)
+  # allow model formula selection by the model fit method
+  # extract formula from fitted model if possible, but fall back on argument if needed
+  formula.ls <- fail_safe_formula(fm, fit.args, verbose = TRUE)
 
   n <- fm[["n"]]
   coefs <- stats::coefficients(fm, method = fun.method)
@@ -521,6 +524,9 @@ ma_eq_compute_group_fun <- function(data,
   theta <- fm[["theta"]]
   idx <- which(fm[["regression.results"]][["Method"]] == fun.method)
   p.value <- fm[["regression.results"]][["P-perm (1-tailed)"]][idx]
+
+  formula <- formula.ls[[1]]
+  stopifnot(isa(formula, "formula"))
 
   formula.rhs.chr <- as.character(formula)[3]
   forced.origin <- grepl("-[[:space:]]*1|+[[:space:]]*0", formula.rhs.chr)
@@ -665,7 +671,8 @@ ma_eq_compute_group_fun <- function(data,
 
   z[["fm.method"]] <- method.name
   z[["fm.class"]] <- fm.class[1]
-  z[["fm.formula.char"]] <- format(formula)
+  z[["fm.formula"]] <- formula.ls
+  z[["fm.formula.chr"]] <- format(formula.ls)
 
   # Compute label positions
   if (is.character(label.x)) {
