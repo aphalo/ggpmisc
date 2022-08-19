@@ -67,7 +67,7 @@ These statistics support grouping and faceting. In the case of those that return
 
 Table 1 below summarizes the use of the model-fittings statistics and the type of plot-layer geometries they are most useful with them. The four statistics at the bottom of the table require in their use more effort as the mapping to aesthetics and conversion of numeric values into character strings must be coded in the layer function call, but on the other hand they support all model fit objects catered by package 'broom' itself or any of the packages extending 'broom' such as 'broom.mixed' (see next section).
 
-: **Table 1. Summary of features of the statistics.** Returned values can be accessed in `aes()` with function `after_stat(<variable name>)`, which has replaced `stat(<variable name>)` and the three dots notation (`...<variable name>...`) where `<variable name>` is the name of one of the variables in the data frame returned by the statistics. **Notes:** (1) *weight* aesthetic supported; (2) user defined fit functions that return an object of a class derived from `lm` are supported even if they override the statistic's *formula* argument; (3) unlimited quantiles supported; (4) user defined fit functions that return an object of a class derived from `rq` or `rqs` are supported even if they override the statistic's *formula* and/or *quantiles* argument; (5) two and three quantiles supported; (6) user defined fit functions that return an object of a class derived from `lmodel2` are supported; (7) `method` arguments support colon based notation; (8) various functions if method `residuals()` defined for returned value; (9) various functions if method `fitted()` defined for returned value.
+: **Table 1. Summary of features of the statistics.** Returned values can be accessed in `ggplot2::aes()` with function `ggplot2::after_stat(<variable name>)`, which has replaced `ggplot2::stat(<variable name>)` and the three dots notation (`...<variable name>...`) where `<variable name>` is the name of one of the variables in the data frame returned by the statistics. **Notes:** (1) *weight* aesthetic supported; (2) user defined fit functions that return an object of a class derived from `lm` are supported even if they override the statistic's *formula* argument; (3) unlimited quantiles supported; (4) user defined fit functions that return an object of a class derived from `rq` or `rqs` are supported even if they override the statistic's *formula* and/or *quantiles* argument; (5) two and three quantiles supported; (6) user defined fit functions that return an object of a class derived from `lmodel2` are supported; (7) `method` arguments support colon based notation; (8) various functions if method `residuals()` defined for returned value; (9) various functions if method `fitted()` defined for returned value.
 
 | Statistic               | Returned values (*default geometry*)          | Methods                                      |
 |-----------------|-----------------------------|--------------------------|
@@ -88,7 +88,7 @@ Table 1 below summarizes the use of the model-fittings statistics and the type o
 
 ### Model equations and other annotations
 
-Statistics `stat_poly_eq()` , `stat_ma_eq()` , `stat_quant_eq()` and `stat_correlation()` return by default ready formatted character strings that can be mapped to the `label` aesthetic individually or concatenated. The convenience function `use_label()` makes this easier by accepting abbreviated/common names for the component labels, and handling both the concatenation and mapping to the `label` aesthetics. For full flexibility in the assembly of concatenated labels `paste()` or `sprintf()` functions can the used within a call to `aes()`. By default the character strings are formatted ready to be parsed as R expressions. Optionally they can be formatted as R Markdown, $\LaTeX$ or plain text as shown in the table below.
+Statistics `stat_poly_eq()` , `stat_ma_eq()` , `stat_quant_eq()` and `stat_correlation()` return by default ready formatted character strings that can be mapped to the `label` aesthetic individually or concatenated. The convenience function `use_label()` makes this easier by accepting abbreviated/common names for the component labels, and handling both the concatenation and mapping to the `label` aesthetics. For full flexibility in the assembly of concatenated labels `paste()` or `sprintf()` functions can the used within a call to `ggplot2::aes()`. By default the character strings are formatted ready to be parsed as R expressions. Optionally they can be formatted as R Markdown, $\LaTeX$ or plain text as shown in the table below.
 
 These statistics as of 'ggpmisc' (>= 0.5.0) allow additional flexibility in the model fit `method` functions: they can be any function with a suitable interface, as long as they return a fitted model object of the expected class, or that inherits from the expected class. When possible, as in `stat_poly_eq()`, the model formula is retrieved from the model fit object, and this retrieved model formula overrides, only in the returned value, the one supplied as argument by the user. In practice, this means that `method` can be a function that does model selection. This is specially useful with grouped data and facets, making it possible for model formula to vary from group to group or from panel to panel within a single ggplot object.
 
@@ -337,7 +337,7 @@ my.data <- data.frame(x,
                       wt = sqrt(x))
 ```
 
-First, one example using defaults except for the model `formula`. The best practice, ensuring that the formula used in both *statistics* is the same is to assign the formula to a variable, as shown here. This is because the same model is fit twice to the same `data`, once in `stat_smooth` and once in `stat_poly_eq`.
+First, one example using defaults except for the model `formula`. The best practice, ensuring that the formula used in both *statistics* is the same is to assign the formula to a variable, as shown here. This is because the same model is fit twice to the same `data`, once in `stat_poly_line()` and once in `stat_poly_eq()`.
 
 We can write the model formula for a polynomial explicitly or using function `poly()`. When using function `poly()` it is in most cases necessary to set `raw = TRUE` as the default is to use orthogonal polynomials which although fitting the same line will have different estimates for the coefficients than those in the usual *raw* polynomials.
 
@@ -359,7 +359,7 @@ ggplot(my.data, aes(x, y)) +
   stat_poly_eq(mapping = use_label("eq"), formula = formula)
 ```
 
-The mapping can also be done with `aes()` using the name of the variable in the returned `data` containing the desired label and enclosing it in `after_stat()` to signal that it is a variable returned by the statistic.
+The mapping can also be done with `ggplot2::aes()` using the name of the variable in the returned `data` containing the desired label and enclosing it in `ggplot2::after_stat()` to signal that it is a variable returned by the statistic.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -382,7 +382,7 @@ ggplot(my.data, aes(x, y)) +
                formula = formula)
 ```
 
-Within `aes()` it is also possible to *compute* new labels based on those returned plus "arbitrary" text. The labels returned by default are meant to be *parsed* into expressions, so any text added should be valid for a string that will be parsed. Inserting a comma plus white space in an expression requires some trickery in the argument passed to parameter `sep` of `paste()`, or `use_label()`. Do note the need to *escape* the embedded quotation marks as `\"`. Combining the labels in this way ensures correct alignment. To insert only white space `sep = "~~~~~"` can be used, with each tilde character, `~`, adding a rather small amount of white space. We show here how to change the axis labels to ensure consistency with the typesetting of the equation.
+Within `ggplot2::aes()` it is also possible to *compute* new labels based on those returned plus "arbitrary" text. The labels returned by default are meant to be *parsed* into expressions, so any text added should be valid for a string that will be parsed. Inserting a comma plus white space in an expression requires some trickery in the argument passed to parameter `sep` of `paste()`, or `use_label()`. Do note the need to *escape* the embedded quotation marks as `\"`. Combining the labels in this way ensures correct alignment. To insert only white space `sep = "~~~~~"` can be used, with each tilde character, `~`, adding a rather small amount of white space. We show here how to change the axis labels to ensure consistency with the typesetting of the equation.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -394,7 +394,7 @@ ggplot(my.data, aes(x, y)) +
   labs(x = expression(italic(x)), y = expression(italic(y)))
 ```
 
-Above we combined two character-string labels, but it is possible to add additional ones and even character strings constants. In the next example we use several labels instead of just two, and separate them with various character strings. In this case we need to use `paste()` and `aes()` as `use_label()` uses a single value for `sep`. We also change the size of the text in the label.
+Above we combined two character-string labels, but it is possible to add additional ones and even character strings constants. In the next example we use several labels instead of just two, and separate them with various character strings. In this case we need to use `paste()` and `ggplot2::aes()` as `use_label()` uses a single value for `sep`. We also change the size of the text in the label.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -503,7 +503,7 @@ ggplot(my.data, aes(x, y)) +
   stat_poly_eq(aes(label = after_stat(eq.label)), formula = formula)
 ```
 
-Even when labels are returned, numeric values are also returned for `r.squared`, `adj.r.squared`, `p.value` and `n`. This can be used in `aes()` for example to show the equation only if a certain condition like a minimum value for `r.square` or `p.value` has been reached.
+Even when labels are returned, numeric values are also returned for `r.squared`, `adj.r.squared`, `p.value` and `n`. This can be used in `ggplot2::aes()` for example to show the equation only if a certain condition like a minimum value for `r.square` or `p.value` has been reached.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -520,7 +520,7 @@ ggplot(my.data, aes(x, y)) +
 
 _Fitting different models to different panels is supported._ User-defined method functions are required to return an object that inherits from class `"lm"`. The function is applied per group and panel, and the model `formula` fitted can differ among them, as it is retrieved from this object to construct the equation label.
 
-In the example below instead of using `lm()` as method, we define a wrapper function that tests for the significance of the slope in linear regression, and if not significant, fits the mean instead. 
+In the example below instead of using `stats::lm()` as method, we define a wrapper function that tests for the significance of the slope in linear regression, and if not significant, fits the mean instead. 
 
 ```{r}
 poly_or_mean <- function(formula, data, ...) {
@@ -604,7 +604,7 @@ ggplot(my.data, aes(x, y2, linetype = group, grp.label = group)) +
                formula = formula)
 ```
 
-User supplied label positions relative to the ranges of the *x* and *y* scales are also supported, both through string constants and numeric values in the range 0 to 1, when using the default `geom_text_npc()`.
+User supplied label positions relative to the ranges of the *x* and *y* scales are also supported, both through string constants and numeric values in the range 0 to 1, when using the default `ggpp::geom_text_npc()`.
 
 ```{r, eval=eval_flag}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -642,7 +642,7 @@ ggplot(my.data, aes(x, y2, colour = group, fill = block)) +
   facet_wrap(~group, scales = "free_y")
 ```
 
-It is possible to use `geom_text()` and `geom_label()` instead of the default `geom_text_npc()` (or `geom_label_npc()`)  but in this case, if label coordinates are given explicitly they should be expressed in native data coordinates. When multiple labels need to be positioned a vector of coordinates can be used as shown here for `label.x` and `label.y`.
+It is possible to use `ggplot2::geom_text()` and `ggplot2::geom_label()` instead of the default `ggpp::geom_text_npc()` (or `ggpp::geom_label_npc()`)  but in this case, if label coordinates are given explicitly they should be expressed in native data coordinates. When multiple labels need to be positioned a vector of coordinates can be used as shown here for `label.x` and `label.y`.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -654,11 +654,11 @@ ggplot(my.data, aes(x, y2, colour = group)) +
                formula = formula)
 ```
 
-**Note:** Automatic positioning using `geom_text()` and `geom_label()` is supported except when faceting uses free scales. In this case `geom_text_npc()` and/or `geom_label_npc()` or positions supplied by the user must be used.
+**Note:** Automatic positioning using `ggplot2::geom_text()` and `ggplot2::geom_label()` is supported except when faceting uses free scales. In this case `ggpp::geom_text_npc()` and/or `ggpp::geom_label_npc()` or positions supplied by the user must be used.
 
 Occasionally, possibly as a demonstration in teaching, we may want to compare a fit of *x* on *y* and one of *y* on *x* in the same plot. Here, this example also serves as introduction to the next section, which describes the use of _major axis regression_ or _Model II_ regression. 
 
-As is the case for model fitting functions themselves, which variable is dependent (response) and which is independent (explanatory) is simply indicated by the model equation passed as argument to `formula`, or consistently with `stat_smooth()` through parameter `orientation` as show below.
+As is the case for model fitting functions themselves, which variable is dependent (response) and which is independent (explanatory) is simply indicated by the model equation passed as argument to `formula`, or consistently with `ggplot2::stat_smooth()` through parameter `orientation` as show below.
 
 ```{r}
 ggplot(my.data, aes(x, y)) +
@@ -695,7 +695,7 @@ ggplot(my.data, aes(x, y)) +
 
 ### stat_quant_eq(), stat_quant_line() and stat_quant_band()
 
-Package 'quantreg' implements quantile regression for multiple types of models: linear models with function `rq()`, non-linear models with function `nlreg()`, and additive models with function `rqss()`. Each of these functions supports different methods of estimation which can be passed through parameter `method.args` or more easily using a character string such as `"rq:br"` argument to parameter `method` of the statistic, where `rq()` is the model fit function and `"br"` the argument passed to the `method` parameter of `rq()`. As with the statistics for polynomials described in the previous section, all the statistics described in the current section support linear models while `stat_quant_line()` and `stat_quant_band()` also support additive models. (Support for `nlreg()` is not yet implemented.)
+Package 'quantreg' implements quantile regression for multiple types of models: linear models with function `quantreg::rq()`, non-linear models with function `quantreg::nlreg()`, and additive models with function `quantreg::rqss()`. Each of these functions supports different methods of estimation which can be passed through parameter `method.args` or more easily using a character string such as `"rq:br"` argument to parameter `method` of the statistic, where `quantreg::rq()` is the model fit function and `"br"` the argument passed to the `method` parameter of `quantreg::rq()`. As with the statistics for polynomials described in the previous section, all the statistics described in the current section support linear models while `stat_quant_line()` and `stat_quant_band()` also support additive models. (Support for `quantreg::nlreg()` is not yet implemented.)
 
 In the case of quantile regression it is frequently the case that multiple quantile regressions are fitted. This case is not supported by `stat_poly_eq()` and we need to use `stat_quant_eq()`. This statistics is very similar to `stat_poly_eq()` both in behaviour and parameters. It supports quantile regression of *y* on *x* or *x* on *y* fitted with function `quantreg::rq`.
 
@@ -783,7 +783,7 @@ Please, see the section on `stat_poly_eq()` for additional examples, as here we 
 ### stat_fit_residuals
 
 Sometimes we need to quickly plot residuals matching fits plotted with `stat_poly_line()`, `stat_quant_line()`,
-`stat_ma_line()` or `stat_smooth()` (e.g., using grouping and facets). Function `stat_fit_residuals()` makes this easy. In teaching it is specially important to avoid distractions and plots residuals from different types of models consistently.
+`stat_ma_line()` or `ggplot2::stat_smooth()` (e.g., using grouping and facets). Function `stat_fit_residuals()` makes this easy. In teaching it is specially important to avoid distractions and plots residuals from different types of models consistently.
 
 `stat_fit_residuals()` can be used to plot the residuals from models of *y* on *x* or *x* on *y* fitted with function `lm`, `MASS:rlm`, `quantreg::rq` (only median regression) or a user-supplied model fitting function and arguments. In the data frame returned by the statistic the response variable, *y* or *x*, is replaced by the residuals from the fit and thus also by default mapped to the aesthetic of the same name. The default geom is `"point"`.
 
@@ -806,7 +806,7 @@ ggplot(my.data, aes(x, y, colour = group)) +
                      alpha = 2/3)
 ```
 
-Weighted residuals are available, but in this case they do not differ as we have not mapped any variable to the \code{weight} aesthetic in the input to the statistic.
+Weighted residuals are available, but in this case they do not differ as we have not mapped any variable to the `weight` aesthetic in the input to the statistic.
 
 ```{r, eval = FALSE}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -827,7 +827,7 @@ ggplot(my.data, aes(x, y)) +
   geom_point()
 ```
 
-The geometry used by default is `geom_segment()` and additional aesthetics can be mapped or set to constant values. Here we add arrowheads.
+The geometry used by default is `ggplot2::geom_segment()` and additional aesthetics can be mapped or set to constant values. Here we add arrowheads.
 
 ```{r, eval=eval_flag}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -839,7 +839,7 @@ ggplot(my.data, aes(x, y)) +
                                    ends = "both"))
 ```
 
-When weights are available, either supplied by the user, or computed as part of the fit, they are returned in `data`. Having weights available allows encoding them using colour. We here use a robust regression fit with `MASS::rlm`.
+When weights are available, either supplied by the user, or computed as part of the fit, they are returned in `data`. Having weights available allows encoding them using colour. We here use a robust regression fit with `MASS::rlm()`.
 
 ```{r}
 my.data.outlier <- my.data
@@ -875,7 +875,7 @@ ggplot(my.data, aes(x, y, colour = group)) +
                   parse = TRUE)
 ```
 
-It is also possible to fit a non-linear model with `method = "nls"`, and any other model for which a `glance()` method exists. Do consult the documentation for package 'broom'. Here we fit the Michaelis-Menten equation to reaction rate versus concentration data.
+It is also possible to fit a non-linear model with `method = "nls"`, and any other model for which a `broom::glance()` method exists. Do consult the documentation for package 'broom'. Here we fit the Michaelis-Menten equation to reaction rate versus concentration data.
 
 ```{r, eval=eval_broom}
 micmen.formula <- y ~ SSmicmen(x, Vm, K) 
@@ -894,9 +894,9 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
 
 ### stat_fit_tb
 
-This ggplot statistic makes it possible to add summary or ANOVA tables for any fitted model for which `broom::tidy()` is implemented. The output from `tidy()` is embedded as a single list value within the returned `data`, as an object of class `tibble`. 
+This ggplot statistic makes it possible to add summary or ANOVA tables for any fitted model for which `broom::tidy()` is implemented. The output from `broom::tidy()` is embedded as a single list value within the returned `data`, as an object of class `tibble::tibble`. 
 
-This statistic **ignores grouping** based on aesthetics, i.e., uses a _panel function_ to fit the model. Fitting the model by panel allows fitting models when `x` or `y` is a `factor` (as in such cases `ggplot` splits the data into groups, one for each level of the factor, which is needed for example for `stat_summary()` to work as expected). By default, the `"table"` geometry is used. The use of `geom_table()` is described in the User Guide of package 'ggpp'. Table themes and mapped aesthetics are supported.
+This statistic **ignores grouping** based on aesthetics, i.e., uses a _panel function_ to fit the model. Fitting the model by panel allows fitting models when `x` or `y` is a `factor` (as in such cases `ggplot` splits the data into groups, one for each level of the factor, which is needed for example for `stat_summary()` to work as expected). By default, the `"table"` geometry is used. The use of `ggpp::geom_table()` is described in the User Guide of package 'ggpp'. Table themes and mapped aesthetics are supported.
 
 The default output of `stat_fit_tb()` is the default output from `tidy(fm)` where `fm` is the fitted model.
 
@@ -967,7 +967,7 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
   labs(x = "C", y = "V")
 ```
 
-The data in the example below are split by `ggplot` into six groups based on the levels of the `feed` factor. However, as `stat_fit_tb()` ignores groupings, we can still fit a linear model to all the data in the panel.
+The data in the example below are split by ggplot into six groups based on the levels of the `feed` factor. However, as `stat_fit_tb()` ignores groupings, we can still fit a linear model to all the data in the panel.
 
 ```{r, eval=eval_broom}
 ggplot(chickwts, aes(factor(feed), weight)) +
@@ -1009,9 +1009,9 @@ ggplot(chickwts, aes(factor(feed), weight)) +
 
 ### stat_fit_tidy
 
-This stat makes it possible to add the equation for any fitted model for which `broom::tidy()` is implemented. Alternatively, individual values such as estimates for the fitted parameters, standard errors, or *P*-values can be added to a plot. However, the user has to explicitly construct the labels within `aes()`. This statistic respects grouping based on aesthetics, and reshapes the output of `tidy()` so that the values for a given group are in a single row in the returned `data`.
+This stat makes it possible to add the equation for any fitted model for which `broom::tidy()` is implemented. Alternatively, individual values such as estimates for the fitted parameters, standard errors, or *P*-values can be added to a plot. However, the user has to explicitly construct the labels within `ggplot2::aes()`. This statistic respects grouping based on aesthetics, and reshapes the output of `broom::tidy()` so that the values for a given group are in a single row in the returned `data`.
 
-As first example we fit a non-linear model, the Michaelis-Menten equation of reaction kinetics, using `nls()`. We use the self-starting function `SSmicmen()` available in R.
+As first example we fit a non-linear model, the Michaelis-Menten equation of reaction kinetics, using `stats::nls()`. We use the self-starting function `stats::SSmicmen()` available in R.
 
 ```{r, eval=eval_broom}
 micmen.formula <- y ~ SSmicmen(x, Vm, K) 
@@ -1086,7 +1086,7 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
   labs(x = "C", y = "V")
 ```
 
--   As a second example we show a quantile regression fit using function `rq()` from package 'quantreg'.
+-   As a second example we show a quantile regression fit using function `quantreg::rq()` from package 'quantreg'.
 
 ```{r, eval=eval_broom}
 my_formula <- y ~ x
@@ -1160,7 +1160,7 @@ ggplot(my.data, aes(x, y, colour = group)) +
                    method.args = list(formula = formula))
 ```
 
-We can override the variable returned as `y` to be any of the variables in the data frame returned by `broom::augment` while still preserving the original `y` values.
+We can override the variable returned as `y` to be any of the variables in the data frame returned by `broom::augment()` while still preserving the original `y` values.
 
 ```{r, eval=(eval_flag && eval_broom)}
 formula <- y ~ x + I(x^2) + I(x^3)
@@ -1180,7 +1180,7 @@ ggplot(my.data, aes(x, y, colour = group)) +
                    y.out = ".std.resid")
 ```
 
-We can use any model fitting method for which `augment` is implemented.
+We can use any model fitting method for which `broom::augment()` is implemented.
 
 ```{r, eval=(eval_flag && eval_broom)}
 args <- list(formula = y ~ k * e ^ x,
@@ -1217,9 +1217,9 @@ ggplot(Orange, aes(age, circumference, colour = Tree)) +
 
 ### How to find out what variables are computed
 
-When using `stat_fit_glance()`, `stat_fit_tidy()`, `stat_fit_augment()` and `stat_fit_tb()` the documentation cannot describe the variables present in the returned `data` because they call methods using their generic interface and the exact especialization used depends on the argument passed to method, which can be even one that I have not been aware of and never tested. Thanks to package 'gginnards' and its `geom_debug()` we can find this out with a temporary change to the plot code.
+When using `stat_fit_glance()`, `stat_fit_tidy()`, `stat_fit_augment()` and `stat_fit_tb()` the documentation cannot describe the variables present in the returned `data` because they call methods using their generic interface and the exact especialization used depends on the argument passed to method, which can be even one that I have not been aware of and never tested. Thanks to package 'gginnards' and its `gginnards::geom_debug()` we can find this out with a temporary change to the plot code.
 
-`geom_debug()` uses by default `head()` to echo to the R console the data it receives as input. It ignores the aesthetic mappings so it can be used with any statistics or directly as a layer function. However, unrecognised aesthetics can trigger warnings during plot rendering. These warnings can be ignored in most cases.
+`gginnards::geom_debug()` uses by default `head()` to echo to the R console the data it receives as input. It ignores the aesthetic mappings so it can be used with any statistics or directly as a layer function. However, unrecognised aesthetics can trigger warnings during plot rendering. These warnings can be ignored in most cases.
 
 ```{r, eval=(eval_broom && eval_gginnards)}
 # formula <- y ~ poly(x, 3, raw = TRUE)
@@ -1258,7 +1258,7 @@ ggplot(my.data, aes(x, y)) +
               parse = TRUE)
 ```
 
-`geom_debug()` can be used with 'ggplot2' itself any of its extensions. More examples are given in the [documentation of package 'gginnards'](https://docs.r4photobiology.info/gginnards/).
+`gginnards::geom_debug()` can be used with 'ggplot2' and its extensions. More examples are given in the [documentation of package 'gginnards'](https://docs.r4photobiology.info/gginnards/).
 
 ## Scales
 
