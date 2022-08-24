@@ -4,14 +4,14 @@
 \alias{fail_safe_formula}
 \title{Safely extract the formula from an object}
 \usage{
-fail_safe_formula(fm, method.args = list(), verbose = FALSE)
+fail_safe_formula(fm, method.args = list(), verbose = TRUE)
 }
 \arguments{
 \item{fm}{Fitted model object or a call object.}
 
 \item{method.args}{List of arguments to check for the formula.}
 
-\item{verbose}{logical If \code{TRUE} message triggered in call to
+\item{verbose}{logical If \code{TRUE} message triggered if call to
 \code{formula()} fails.}
 }
 \value{

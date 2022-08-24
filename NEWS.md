@@ -7,9 +7,9 @@ editor_options:
 # ggpmisc 0.5.1
 
 -   Revise approach used to extract the formula from the fitted model object. Use `formula()` method on fitted model but fall-back onto the 'formula' argument in case of error or return `NA` if everything fails, without triggering an error condition.
--   Add variables `fm.tb.type`, `fm.class`, `fm.method`, and `fm.formula.chr` to the data always returned by `stat_fit_tb()`, and rename `mf_tb` into `fm.tb` for naming consistency.
+-   Add variables `fm.tb.type`, `fm.class`, `fm.method`, `fm.formula`, and `fm.formula.chr` to the data always returned by `stat_fit_tb()`, and rename `mf_tb` into `fm.tb` for naming consistency.
 -   Add variable `fm.formula` to the data returned by all other textual-annotation statistics based on model fitting. 
--   Add variables `fm.class`, `fm.method`, `fm.formula` and `fm.formula.chr` to the data returned by line plotting statistics statistics based on model fitting when passed `fm.values = TRUE`.
+-   Add variables `fm.class`, `fm.method`, `fm.formula`, and `fm.formula.chr` to the data returned by line plotting statistics statistics based on model fitting when passed `fm.values = TRUE`.
 -   Revise _User Guide_.
 
 # ggpmisc 0.5.0

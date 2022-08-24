@@ -75,7 +75,7 @@ parse_safe <- function(text) {
 #'
 #' @param fm Fitted model object or a call object.
 #' @param method.args List of arguments to check for the formula.
-#' @param verbose logical If \code{TRUE} message triggered in call to
+#' @param verbose logical If \code{TRUE} message triggered if call to
 #'   \code{formula()} fails.
 #'
 #' @details Method \code{\link{formula}} is not implemented for all fitted
@@ -83,13 +83,15 @@ parse_safe <- function(text) {
 #'   exectution. Function \code{fail_safe_formula()} wraps the call to
 #'   \code{formula()} and handles the error conditions by attempting to
 #'   extract the formula from a list of arguments. If this fails, it returns
-#'   \code{NA}, with a mesage.
+#'   \code{NA}, with a message.
 #'
 #' @return A named list with objects of class formula or NA as member(s).
 #'
 #' @keywords internal
 #'
-fail_safe_formula <- function(fm, method.args = list(), verbose = FALSE) {
+fail_safe_formula <- function(fm,
+                              method.args = list(),
+                              verbose = TRUE) {
   withCallingHandlers({
     withRestarts({
       z <- stats::formula(fm)
