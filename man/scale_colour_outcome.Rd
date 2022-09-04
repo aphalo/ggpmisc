@@ -14,6 +14,8 @@ scale_colour_outcome(
   down.colour = "dodgerblue2",
   de.colour = "goldenrod",
   na.colour = "black",
+  values = "outcome:updown",
+  drop = TRUE,
   aesthetics = "colour"
 )
 
@@ -25,6 +27,8 @@ scale_color_outcome(
   down.colour = "dodgerblue2",
   de.colour = "goldenrod",
   na.colour = "black",
+  values = "outcome:updown",
+  drop = TRUE,
   aesthetics = "colour"
 )
 
@@ -36,18 +40,32 @@ scale_fill_outcome(
   down.colour = "dodgerblue2",
   de.colour = "goldenrod",
   na.colour = "black",
+  values = "outcome:both",
+  drop = TRUE,
   aesthetics = "fill"
 )
 }
 \arguments{
-\item{...}{other named arguments passed to \code{scale_manual}.}
+\item{...}{other named arguments passed to \code{scale_colour_manual}.}
 
 \item{name}{The name of the scale, used for the axis-label.}
 
-\item{ns.colour, down.colour, up.colour, de.colour}{The colour definitions to use for each
-of the three possible outcomes.}
+\item{ns.colour, down.colour, up.colour, de.colour}{The colour definitions to
+use for each of the three possible outcomes.}
 
 \item{na.colour}{colour definition used for NA.}
+
+\item{values}{a set of aesthetic values to map data values to. The values
+will be matched in order (usually alphabetical) with the limits of the
+scale, or with breaks if provided. If this is a named vector, then the
+values will be matched based on the names instead. Data values that don't
+match will be given na.value. In addition the special values
+\code{"outcome:updown"}, \code{"outcome:de"} and \code{"outcome:both"} set
+predefined values, with \code{"outcome:both"} as default.}
+
+\item{drop}{logical Should unused factor levels be omitted from the scale?
+The default, TRUE, uses the levels that appear in the data; FALSE uses all
+the levels in the factor.}
 
 \item{aesthetics}{Character string or vector of character strings listing the
 name(s) of the aesthetic(s) that this scale works with. This can be useful,
@@ -60,9 +78,16 @@ three way outcome from some statistical tests.
 }
 \details{
 These scales only alter the \code{breaks}, \code{values}, and
-  \code{na.value} default arguments of
-  \code{scale_colour_manual()} and \code{scale_fill_manual()}. Please, see
-  documentation for \code{\link[ggplot2]{scale_manual}} for details.
+  \code{na.value} default arguments of \code{scale_colour_manual()} and
+  \code{scale_fill_manual()}. Please, see documentation for
+  \code{\link[ggplot2]{scale_manual}} for details.
+}
+\note{
+In 'ggplot2' (3.3.4, 3.3.5, 3.3.6) \code{scale_colour_manual()} and
+  \code{scale_fill_manual()} do not obey \code{drop}, most likely due to a
+  bug as this worked in version 3.3.3 and earlier. This results in spureous
+  levels in the plot legend when using versions 3.3.4, 3.3.5, 3.3.6 of
+  'ggplot2'.
 }
 \examples{
 

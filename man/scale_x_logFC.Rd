@@ -11,7 +11,7 @@ scale_x_logFC(
   labels = NULL,
   limits = symmetric_limits,
   oob = scales::squish,
-  expand = expansion(mult = 0.15, add = 0),
+  expand = expansion(mult = 0.05, add = 0),
   log.base.labels = FALSE,
   log.base.data = 2L,
   ...
@@ -23,7 +23,7 @@ scale_y_logFC(
   labels = NULL,
   limits = symmetric_limits,
   oob = scales::squish,
-  expand = expansion(mult = 0.15, add = 0),
+  expand = expansion(mult = 0.05, add = 0),
   log.base.labels = FALSE,
   log.base.data = 2L,
   ...
@@ -74,17 +74,20 @@ axis labels passed as argument to the \code{name} formal parameter.
 These scales only alter default arguments of
   \code{scale_x_continuous()} and \code{scale_y_continuous()}. Please, see
   documentation for \code{\link[ggplot2]{scale_continuous}} for details. The
-  name argument supports the use of \code{"\%unit"} at the end of the string to
-  automatically add a units string, otherwise user-supplied values for
-  names, breaks, and labels work as usual. Tick labels are built based on
-  the transformation already applied to the data (log2 by default) and
-  a possibly different log transformation (default is fold-change with no
-  transformation).
+  name argument supports the use of \code{"\%unit"} at the end of the string
+  to automatically add a units string, otherwise user-supplied values for
+  names, breaks, and labels work as usual. Tick labels are built based on the
+  transformation already applied to the data (log2 by default) and a possibly
+  different log transformation (default is fold-change with no
+  transformation). The default for handling out of bounds values is to
+  "squish" them to the extreme of the scale, which is different from the
+  default used in 'ggplot2'.
 }
 \examples{
 
 set.seed(12346)
 my.df <- data.frame(x = rnorm(50, sd = 4), y = rnorm(50, sd = 4))
+# we assume that both x and y values are expressed as log2 fold change
 
 ggplot(my.df, aes(x, y)) +
   geom_point() +
@@ -147,6 +150,7 @@ ggplot(my.df, aes(x, y)) +
 \seealso{
 Other scales for omics data: 
 \code{\link{outcome2factor}()},
+\code{\link{scale_colour_logFC}()},
 \code{\link{scale_shape_outcome}()},
 \code{\link{xy_outcomes2factor}()}
 }

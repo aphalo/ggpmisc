@@ -26,6 +26,6 @@ Method \code{\link{formula}} is not implemented for all fitted
   exectution. Function \code{fail_safe_formula()} wraps the call to
   \code{formula()} and handles the error conditions by attempting to
   extract the formula from a list of arguments. If this fails, it returns
-  \code{NA}, with a mesage.
+  \code{NA}, with a message.
 }
 \keyword{internal}

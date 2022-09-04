@@ -10,6 +10,8 @@ editor_options:
 -   Add variables `fm.tb.type`, `fm.class`, `fm.method`, `fm.formula`, and `fm.formula.chr` to the data always returned by `stat_fit_tb()`, and rename `mf_tb` into `fm.tb` for naming consistency.
 -   Add variable `fm.formula` to the data returned by all other textual-annotation statistics based on model fitting. 
 -   Add variables `fm.class`, `fm.method`, `fm.formula`, and `fm.formula.chr` to the data returned by line plotting statistics statistics based on model fitting when passed `fm.values = TRUE`.
+-   Add `scale_colour_logFC()`, `scale_color_logFC()` and `scale_fill_logFC()`.
+-   Revise `scale_colour_outcome()` and `scale_fill_outcome()` adding flexibility to the `value` names and allowing a work-around for non-functional `drop` in manual scales due to a bug present in 'ggplot2' (3.3.4, 3.3.5, 3.3.6).
 -   Revise _User Guide_.
 
 # ggpmisc 0.5.0

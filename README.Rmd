@@ -52,7 +52,7 @@ rendering remain unchanged from those implemented in package '**ggplot2**'.
 Statistics that help with reporting the results of model fits are:
 
 +--------------------------+---------------------------------------------------+------------------------------------------------+
-| Statistic                | Returned values (_default geometry_)          | Methods                                        |
+| Statistic                | Returned values (_default geometry_)              | Methods                                        |
 +==========================+===================================================+================================================+
 | `stat_poly_eq()`         | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lm, rlm (1, 2, 7)                              |
 +--------------------------+---------------------------------------------------+------------------------------------------------+
@@ -83,19 +83,28 @@ Statistics that help with reporting the results of model fits are:
 | `stat_fit_tb()`          | ANOVA and summary tables (`table_npc`)            | all those supported by 'broom'                 |
 +--------------------------+---------------------------------------------------+------------------------------------------------+
 
-: Notes:  (1) *weight* aesthetic supported; (2) user defined fit functions that return an object of a class derived from `lm` are supported even if they override the statistic's *formula*  argument; (3) unlimited quantiles supported; (4) user defined fit functions that return an object of a class derived from `rq` or `rqs` are supported even if they override the statistic's *formula* and/or *quantiles* argument; (5) two and three quantiles supported; (6) user defined fit functions that return an object of a class derived from `lmodel2` are supported; (7) `method` arguments support colon based notation;
-(8) various functions if method `residuals()` defined for returned value; (9) various functions if method `fitted()` defined for returned value.
+: Notes:  (1) *weight* aesthetic supported; (2) user defined fit functions that
+return an object of a class derived from `lm` are supported even if they
+override the statistic's *formula*  argument; (3) unlimited quantiles supported;
+(4) user defined fit functions that return an object of a class derived from
+`rq` or `rqs` are supported even if they override the statistic's *formula*
+and/or *quantiles* argument; (5) two and three quantiles supported; (6) user
+defined fit functions that return an object of a class derived from `lmodel2`
+are supported; (7) `method` arguments support colon based notation; (8) various
+functions if method `residuals()` defined for returned value; (9) various
+functions if method `fitted()` defined for returned value.
 
 Statistics `stat_peaks()` and `stat_valleys()` can be used to highlight and/or
 label maxima and minima in a plot.
 
 ## Aesthetics and scales
 
-Scales `scale_x_logFC()` and `scale_y_logFC()` are suitable for plotting of log
-fold change data. Scales `scale_x_Pvalue()`, `scale_y_Pvalue()`, `scale_x_FDR()`
-and `scale_y_FDR()` are suitable for plotting _p_-values and adjusted _p_-values
-or false discovery rate (FDR). Default arguments are suitable for volcano and
-quadrant plots as used for transcriptomics, metabolomics and similar data. 
+Scales `scale_x_logFC()`, `scale_y_logFC()`, `scale_colour_logFC()` and
+`scale_fill_logFC()` easy the plotting of log fold change data. Scales
+`scale_x_Pvalue()`, `scale_y_Pvalue()`, `scale_x_FDR()` and `scale_y_FDR()` are
+suitable for plotting _p_-values and adjusted _p_-values or false discovery rate
+(FDR). Default arguments are suitable for volcano and quadrant plots as used for
+transcriptomics, metabolomics and similar data.
 
 Scales `scale_colour_outcome()`, `scale_fill_outcome()` and 
 `scale_shape_outcome()` and functions `outome2factor()`, `threshold2factor()`,

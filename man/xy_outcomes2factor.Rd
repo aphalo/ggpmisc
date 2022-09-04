@@ -48,6 +48,7 @@ Other Functions for quadrant and volcano plots:
 
 Other scales for omics data: 
 \code{\link{outcome2factor}()},
+\code{\link{scale_colour_logFC}()},
 \code{\link{scale_shape_outcome}()},
 \code{\link{scale_x_logFC}()}
 }

@@ -44,7 +44,7 @@ unchanged from those implemented in package ‘**ggplot2**’.
 
 Statistics that help with reporting the results of model fits are:
 
-| Statistic               | Returned values (*default geometry*) \| Met       | hods                                         |
+| Statistic               | Returned values (*default geometry*)              | Methods                                      |
 |-------------------------|---------------------------------------------------|----------------------------------------------|
 | `stat_poly_eq()`        | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lm, rlm (1, 2, 7)                            |
 | `stat_ma_eq()`          | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lmodel2 (6, 7)                               |
@@ -78,12 +78,13 @@ and/or label maxima and minima in a plot.
 
 ## Aesthetics and scales
 
-Scales `scale_x_logFC()` and `scale_y_logFC()` are suitable for plotting
-of log fold change data. Scales `scale_x_Pvalue()`, `scale_y_Pvalue()`,
-`scale_x_FDR()` and `scale_y_FDR()` are suitable for plotting *p*-values
-and adjusted *p*-values or false discovery rate (FDR). Default arguments
-are suitable for volcano and quadrant plots as used for transcriptomics,
-metabolomics and similar data.
+Scales `scale_x_logFC()`, `scale_y_logFC()`, `scale_colour_logFC()` and
+`scale_fill_logFC()` easy the plotting of log fold change data. Scales
+`scale_x_Pvalue()`, `scale_y_Pvalue()`, `scale_x_FDR()` and
+`scale_y_FDR()` are suitable for plotting *p*-values and adjusted
+*p*-values or false discovery rate (FDR). Default arguments are suitable
+for volcano and quadrant plots as used for transcriptomics, metabolomics
+and similar data.
 
 Scales `scale_colour_outcome()`, `scale_fill_outcome()` and
 `scale_shape_outcome()` and functions `outome2factor()`,

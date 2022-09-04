@@ -7,7 +7,14 @@
 \usage{
 FC_format(log.base.data = 2, log.base.labels = 10, digits = 3, ...)
 
-FC_plain(x, log.base.data = 2, log.base.labels = 10, digits = 3, ...)
+FC_plain(
+  x,
+  log.base.data = 2,
+  log.base.labels = 10,
+  digits = 3,
+  fmt = "\%+.*g",
+  ...
+)
 }
 \arguments{
 \item{log.base.data}{of data.}
@@ -19,6 +26,9 @@ FC_plain(x, log.base.data = 2, log.base.labels = 10, digits = 3, ...)
 \item{...}{other arguments passed on to \code{\link{format}}.}
 
 \item{x}{a numeric vector to format.}
+
+\item{fmt}{character string containing the format for one number using
+\code{*} for the precision.}
 }
 \value{
 a function with single parameter x, a numeric vector, that

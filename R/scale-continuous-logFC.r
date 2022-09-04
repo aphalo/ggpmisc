@@ -25,7 +25,10 @@
 #' FC_format(10, 0)(-1:3)
 #' FC_format(0, 10)(c(0.1, 1, 10, 100, 100))
 #'
-FC_format <- function(log.base.data = 2, log.base.labels = 10, digits = 3, ...) {
+FC_format <- function(log.base.data = 2,
+                      log.base.labels = 10,
+                      digits = 3,
+                      ...) {
   function(x) FC_plain(x,
                        log.base.data = log.base.data,
                        log.base.labels = log.base.labels,
@@ -34,9 +37,17 @@ FC_format <- function(log.base.data = 2, log.base.labels = 10, digits = 3, ...) 
 
 #' @export
 #'
+#' @param fmt character string containing the format for one number using
+#'    \code{*} for the precision.
+#'
 #' @rdname FC_format
 #'
-FC_plain <- function(x, log.base.data = 2, log.base.labels = 10, digits = 3, ...) {
+FC_plain <- function(x,
+                     log.base.data = 2,
+                     log.base.labels = 10,
+                     digits = 3,
+                     fmt = "%+.*g",
+                     ...) {
   if (log.base.data != log.base.labels) {
     if (log.base.data %in% c(2, exp(1), 10)) {
       x <- log.base.data^x
@@ -50,8 +61,7 @@ FC_plain <- function(x, log.base.data = 2, log.base.labels = 10, digits = 3, ...
     }
   }
   if (log.base.labels) { # log fold change
-    x <- signif(x, max(digits, 1))
-    format(x, trim = TRUE, scientific = FALSE, ...)
+    sprintf(fmt, max(digits, 1), x)
   } else { # fold change
     as.character(
       ifelse(x < 1,
@@ -183,12 +193,14 @@ symmetric_limits <- function(x) {
 #' @details These scales only alter default arguments of
 #'   \code{scale_x_continuous()} and \code{scale_y_continuous()}. Please, see
 #'   documentation for \code{\link[ggplot2]{scale_continuous}} for details. The
-#'   name argument supports the use of \code{"\%unit"} at the end of the string to
-#'   automatically add a units string, otherwise user-supplied values for
-#'   names, breaks, and labels work as usual. Tick labels are built based on
-#'   the transformation already applied to the data (log2 by default) and
-#'   a possibly different log transformation (default is fold-change with no
-#'   transformation).
+#'   name argument supports the use of \code{"\%unit"} at the end of the string
+#'   to automatically add a units string, otherwise user-supplied values for
+#'   names, breaks, and labels work as usual. Tick labels are built based on the
+#'   transformation already applied to the data (log2 by default) and a possibly
+#'   different log transformation (default is fold-change with no
+#'   transformation). The default for handling out of bounds values is to
+#'   "squish" them to the extreme of the scale, which is different from the
+#'   default used in 'ggplot2'.
 #'
 #' @export
 #'
@@ -198,6 +210,7 @@ symmetric_limits <- function(x) {
 #'
 #' set.seed(12346)
 #' my.df <- data.frame(x = rnorm(50, sd = 4), y = rnorm(50, sd = 4))
+#' # we assume that both x and y values are expressed as log2 fold change
 #'
 #' ggplot(my.df, aes(x, y)) +
 #'   geom_point() +
@@ -261,7 +274,7 @@ scale_x_logFC <- function(name = "Abundance of x%unit",
                           labels = NULL,
                           limits = symmetric_limits,
                           oob = scales::squish,
-                          expand = expansion(mult = 0.15, add = 0),
+                          expand = expansion(mult = 0.05, add = 0),
                           log.base.labels = FALSE,
                           log.base.data = 2L,
                           ...) {
@@ -270,7 +283,7 @@ scale_x_logFC <- function(name = "Abundance of x%unit",
     if (!log.base.labels) {
       breaks <- 10^seq(from = -4, to = 4, by = 1)
     } else if (log.base.labels == 2L) {
-      breaks <- 2^seq(from = -10, to = 10, by = 3)
+      breaks <- 2^seq(from = -12, to = 12, by = 2)
     } else if (log.base.labels == 10L) {
       breaks <- 10^seq(from = -4, to = 4, by = 1)
     }
@@ -302,7 +315,7 @@ scale_y_logFC <- function(name = "Abundance of y%unit",
                           labels = NULL,
                           limits = symmetric_limits,
                           oob = scales::squish,
-                          expand = expansion(mult = 0.15, add = 0),
+                          expand = expansion(mult = 0.05, add = 0),
                           log.base.labels = FALSE,
                           log.base.data = 2L,
                           ...) {
@@ -311,7 +324,7 @@ scale_y_logFC <- function(name = "Abundance of y%unit",
     if (!log.base.labels) {
       breaks <- 10^seq(from = -4, to = 4, by = 1)
     } else if (log.base.labels == 2L) {
-      breaks <- 2^seq(from = -10, to = 10, by = 3)
+      breaks <- 2^seq(from = -12, to = 12, by = 2)
     } else if (log.base.labels == 10L) {
       breaks <- 10^seq(from = -4, to = 4, by = 1)
     }
@@ -332,4 +345,238 @@ scale_y_logFC <- function(name = "Abundance of y%unit",
                               expand = expand,
                               limits = limits,
                               ...)
+}
+
+
+#' Colour and fill scales for log fold change data
+#'
+#' Continuous scales for \code{colour} and \code{fill} aesthetics with defaults
+#' suitable for values expressed as log2 fold change in \code{data} and
+#' fold-change in tick labels. Supports tick labels and data expressed in any
+#' combination of fold-change, log2 fold-change and log10 fold-change. Supports
+#' addition of units to legend title passed as argument to the \code{name}
+#' formal parameter.
+#'
+#' @param name The name of the scale without units, used for the legend title.
+#' @param breaks The positions of ticks or a function to generate them. Default
+#'   varies depending on argument passed to \code{log.base.labels}. if supplied
+#'   as a numeric vector they should be given using the data as passed to
+#'   parameter \code{data}.
+#' @param labels The tick labels or a function to generate them from the tick
+#'   positions. The default is function that uses the arguments passed to
+#'   \code{log.base.data} and \code{log.base.labels} to generate suitable
+#'   labels.
+#' @param limits limits	One of: NULL to use the default scale range from
+#'   ggplot2. A numeric vector of length two providing limits of the scale,
+#'   using NA to refer to the existing minimum or maximum. A function that
+#'   accepts the existing (automatic) limits and returns new limits. The default
+#'   is function \code{symmetric_limits()} which keep 1 at the middle of the
+#'   axis..
+#' @param oob Function that handles limits outside of the scale limits (out of
+#'   bounds). The default squishes out-of-bounds values to the boundary.
+#' @param expand Vector of range expansion constants used to add some padding
+#'   around the data, to ensure that they are placed some distance away from
+#'   the axes. The default is to expand the scale by 15\% on each end for
+#'   log-fold-data, so as to leave space for counts annotations.
+#' @param log.base.labels,log.base.data integer or logical Base of logarithms used to
+#'   express fold-change values in tick labels and in \code{data}. Use \code{FALSE}
+#'   for no logarithm transformation.
+#' @param low.colour,mid.colour,high.colour,na.colour character Colour
+#'   definitions to use for the gradient extremes and middle.
+#' @param midpoint numeric Value at the middle of the colour gradient, defaults
+#'   to FC = 1, assuming data is expressed as logarithm.
+#' @param aesthetics Character string or vector of character strings listing the
+#'   name(s) of the aesthetic(s) that this scale works with. This can be useful,
+#'   for example, to apply colour settings to the colour and fill aesthetics at
+#'   the same time, via aesthetics = c("colour", "fill").
+#' @param ... other named arguments passed to \code{scale_y_continuous}.
+#'
+#' @details These scales only alter default arguments of
+#'   \code{scale_colour_gradient2()} and \code{scale_fill_gradient2()}. Please,
+#'   see documentation for \code{\link[ggplot2]{scale_continuous}} for details.
+#'   The name argument supports the use of \code{"\%unit"} at the end of the
+#'   string to automatically add a units string, otherwise user-supplied values
+#'   for names, breaks, and labels work as usual. Tick labels in the legend are
+#'   built based on the transformation already applied to the data (log2 by
+#'   default) and a possibly different log transformation (default is
+#'   fold-change with no transformation). The default for handling out of
+#'   bounds values is to "squish" them to the extreme of the scale, which is
+#'   different from the default used in 'ggplot2'.
+#'
+#' @export
+#'
+#' @family scales for omics data
+#'
+#' @examples
+#'
+#' set.seed(12346)
+#' my.df <- data.frame(x = rnorm(50, sd = 4), y = rnorm(50, sd = 4))
+#' # we assume that both x and y values are expressed as log2 fold change
+#'
+#' ggplot(my.df, aes(x, y, colour = y)) +
+#'   geom_point(shape = "circle", size = 2.5) +
+#'   scale_x_logFC() +
+#'   scale_y_logFC() +
+#'   scale_colour_logFC()
+#'
+#' ggplot(my.df, aes(x, y, fill = y)) +
+#'   geom_point(shape = "circle filled", colour = "black", size = 2.5) +
+#'   scale_x_logFC() +
+#'   scale_y_logFC() +
+#'   scale_fill_logFC()
+#'
+#' my.labels <-
+#'   scales::trans_format(function(x) {log10(2^x)}, scales::math_format())
+#' ggplot(my.df, aes(x, y, colour = y)) +
+#'   geom_point() +
+#'   scale_x_logFC(labels = my.labels) +
+#'   scale_y_logFC(labels = my.labels) +
+#'   scale_colour_logFC(labels = my.labels)
+#'
+#' ggplot(my.df, aes(x, y, colour = y)) +
+#'   geom_point() +
+#'   scale_x_logFC(log.base.labels = 2) +
+#'   scale_y_logFC(log.base.labels = 2) +
+#'   scale_colour_logFC(log.base.labels = 2)
+#'
+#' ggplot(my.df, aes(x, y, colour = y)) +
+#'   geom_point() +
+#'   scale_x_logFC(log.base.labels = 10) +
+#'   scale_y_logFC(log.base.labels = 10) +
+#'   scale_colour_logFC(log.base.labels = 10)
+#'
+#' ggplot(my.df, aes(x, y, colour = y)) +
+#'   geom_point() +
+#'   scale_x_logFC(log.base.labels = 10) +
+#'   scale_y_logFC(log.base.labels = 10) +
+#'   scale_colour_logFC(log.base.labels = 10,
+#'                      labels = FC_format(log.base.labels = 10,
+#'                                         log.base.data = 2L,
+#'                                         fmt = "% .*g"))
+#'
+#' # override default arguments.
+#' ggplot(my.df, aes(x, y, colour = y)) +
+#'   geom_point() +
+#'   scale_x_logFC() +
+#'   scale_y_logFC() +
+#'   scale_colour_logFC(name = "Change",
+#'                      labels = function(x) {paste(2^x, "fold")})
+#'
+scale_colour_logFC <- function(name = "Abundance of y%unit",
+                               breaks = NULL,
+                               labels = NULL,
+                               limits = symmetric_limits,
+                               oob = scales::squish,
+                               expand = expansion(mult = 0.05, add = 0),
+                               log.base.labels = FALSE,
+                               log.base.data = 2L,
+                               midpoint = NULL,
+                               low.colour = "dodgerblue2",
+                               mid.colour = "grey50",
+                               high.colour = "red",
+                               na.colour = "black",
+                               aesthetics = "colour",
+                               ...) {
+
+  if (is.null(breaks)) {
+    if (!log.base.labels) {
+      breaks <- 10^seq(from = -4, to = 4, by = 1)
+      midpoint <- 1 # 10^0
+    } else if (log.base.labels == 2L) {
+      breaks <- 2^seq(from = -12, to = 12, by = 4)
+      midpoint <- 1 # 2^0
+    } else if (log.base.labels == 10L) {
+      breaks <- 10^seq(from = -4, to = 4, by = 1)
+      midpoint <- 1 # 10^0
+    }
+    if (log.base.data) {
+      breaks <- log(breaks, base = log.base.data)
+      midpoint <- log(midpoint, base = log.base.data)
+    }
+  }
+
+  if (is.null(labels)) {
+    labels <- FC_format(log.base.labels = log.base.labels,
+                        log.base.data = log.base.data)
+  }
+
+  ggplot2::scale_colour_gradient2(name = FC_name(name = name,
+                                                 log.base = log.base.labels),
+                                  breaks = breaks,
+                                  labels = labels,
+                                  low = low.colour,
+                                  mid = mid.colour,
+                                  high = high.colour,
+                                  midpoint = midpoint,
+                                  oob = oob,
+                                  expand = expand,
+                                  limits = limits,
+                                  aesthetics = aesthetics,
+                                  ...
+  )
+}
+
+#' @rdname scale_colour_logFC
+#'
+#' @export
+#'
+scale_color_logFC <- scale_colour_logFC
+
+
+#' @rdname scale_colour_logFC
+#'
+#' @export
+#'
+scale_fill_logFC <- function(name = "Abundance of y%unit",
+                             breaks = NULL,
+                             labels = NULL,
+                             limits = symmetric_limits,
+                             oob = scales::squish,
+                             expand = expansion(mult = 0.05, add = 0),
+                             log.base.labels = FALSE,
+                             log.base.data = 2L,
+                             midpoint = 1,
+                             low.colour = "dodgerblue2",
+                             mid.colour = "grey50",
+                             high.colour = "red",
+                             na.colour = "black",
+                             aesthetics = "fill",
+                             ...) {
+
+  if (is.null(breaks)) {
+    if (!log.base.labels) {
+      breaks <- 10^seq(from = -4, to = 4, by = 1)
+      midpoint <- 1 # 10^0
+    } else if (log.base.labels == 2L) {
+      breaks <- 2^seq(from = -12, to = 12, by = 4)
+      midpoint <- 1 # 2^0
+    } else if (log.base.labels == 10L) {
+      breaks <- 10^seq(from = -4, to = 4, by = 1)
+      midpoint <- 1 # 10^0
+    }
+    if (log.base.data) {
+      breaks <- log(breaks, base = log.base.data)
+      midpoint <- log(midpoint, base = log.base.data)
+    }
+  }
+
+  if (is.null(labels)) {
+    labels <- FC_format(log.base.labels = log.base.labels,
+                        log.base.data = log.base.data)
+  }
+
+  ggplot2::scale_fill_gradient2(name = FC_name(name = name,
+                                               log.base = log.base.labels),
+                                breaks = breaks,
+                                labels = labels,
+                                low = low.colour,
+                                mid = mid.colour,
+                                high = high.colour,
+                                midpoint = midpoint,
+                                oob = oob,
+                                expand = expand,
+                                limits = limits,
+                                aesthetics = aesthetics,
+                                ...
+  )
 }

@@ -56,6 +56,7 @@ Other Functions for quadrant and volcano plots:
 \code{\link{xy_outcomes2factor}()}
 
 Other scales for omics data: 
+\code{\link{scale_colour_logFC}()},
 \code{\link{scale_shape_outcome}()},
 \code{\link{scale_x_logFC}()},
 \code{\link{xy_outcomes2factor}()}
