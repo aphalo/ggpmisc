@@ -759,36 +759,32 @@ ggplot(my.data, aes(x, y)) +
 head(volcano_example.df) 
 
 ## -----------------------------------------------------------------------------
-volcano_example.df %>%
-  mutate(., outcome.fct = outcome2factor(outcome)) %>%
-  ggplot(., aes(logFC, PValue, colour = outcome.fct)) +
+ggplot(volcano_example.df, 
+       aes(logFC, PValue, colour = outcome2factor(outcome))) +
   geom_point() +
   scale_x_logFC(name = "Transcript abundance%unit") +
   scale_y_Pvalue() +
   scale_colour_outcome() +
-  stat_quadrant_counts(data = . %>% filter(outcome != 0))
+  stat_quadrant_counts(data = function(x) {subset(x, outcome != 0)})
 
 ## -----------------------------------------------------------------------------
-volcano_example.df %>%
-  mutate(., outcome.fct = outcome2factor(outcome, n.levels = 2)) %>%
-  ggplot(., aes(logFC, PValue, colour = outcome.fct)) +
+ggplot(volcano_example.df, 
+       aes(logFC, PValue, colour = outcome2factor(outcome, n.levels = 2))) +
   geom_point() +
   scale_x_logFC(name = "Transcript abundance%unit") +
   scale_y_Pvalue() +
   scale_colour_outcome() +
-  stat_quadrant_counts(data = . %>% filter(outcome != 0))
+  stat_quadrant_counts(data = function(x) {subset(x, outcome != 0)})
 
 ## -----------------------------------------------------------------------------
 head(quadrant_example.df)
 
 ## -----------------------------------------------------------------------------
-quadrant_example.df %>%
-  mutate(.,
-         outcome.x.fct = outcome2factor(outcome.x),
-         outcome.y.fct = outcome2factor(outcome.y),
-         outcome.xy.fct = xy_outcomes2factor(outcome.x, outcome.y)) %>%
-         filter(outcome.xy.fct != "none") %>%
-  ggplot(., aes(logFC.x, logFC.y, colour = outcome.x.fct, fill = outcome.y.fct)) +
+  ggplot(subset(quadrant_example.df, 
+                xy_outcomes2factor(outcome.x, outcome.y) != "none"),
+         aes(logFC.x, logFC.y, 
+             colour = outcome2factor(outcome.x), 
+             fill = outcome2factor(outcome.y))) +
   geom_quadrant_lines(linetype = "dotted") +
   stat_quadrant_counts(size = 3, colour = "white") +
   geom_point(shape = "circle filled") +
@@ -814,13 +810,13 @@ all_quadrant_lines <- function(...) {
     geom_hline(data =  data.frame(outcome.xy.fct = factor(c("xy", "x", "y", "none"),
                                                           levels = c("xy", "x", "y", "none")),
                                   yintercept = c(0, NA, 0, NA)),
-               aes_(yintercept = ~yintercept),
+               aes(yintercept = yintercept),
                na.rm = TRUE,
                ...),
     geom_vline(data =  data.frame(outcome.xy.fct = factor(c("xy", "x", "y", "none"),
                                                           levels = c("xy", "x", "y", "none")),
                                   xintercept = c(0, 0, NA, NA)),
-               aes_(xintercept = ~xintercept),
+               aes(xintercept = xintercept),
                na.rm = TRUE,
                ...)
   )

@@ -7,7 +7,7 @@
 #'   determination (R^2) for method "pearson" and number of observations.
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
-#'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs to be
+#'   \code{\link[ggplot2]{aes}}. Only needs to be
 #'   set at the layer level if you are overriding the plot defaults.
 #' @param data A layer specific dataset, only needed if you want to override the
 #'   plot defaults.

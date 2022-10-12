@@ -1361,13 +1361,13 @@ all_quadrant_lines <- function(...) {
     geom_hline(data =  data.frame(outcome.xy.fct = factor(c("xy", "x", "y", "none"),
                                                           levels = c("xy", "x", "y", "none")),
                                   yintercept = c(0, NA, 0, NA)),
-               aes_(yintercept = ~yintercept),
+               aes(yintercept = yintercept),
                na.rm = TRUE,
                ...),
     geom_vline(data =  data.frame(outcome.xy.fct = factor(c("xy", "x", "y", "none"),
                                                           levels = c("xy", "x", "y", "none")),
                                   xintercept = c(0, 0, NA, NA)),
-               aes_(xintercept = ~xintercept),
+               aes(xintercept = xintercept),
                na.rm = TRUE,
                ...)
   )

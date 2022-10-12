@@ -215,7 +215,8 @@ test_that("many_layers", {
                                              mapping = aes(label = paste(after_stat(y.label), after_stat(x.label))),
                                              x.label.fmt = "at %.0f mpg",
                                              y.label.fmt = "hp = %.0f\n",
-                                             segment.colour = "red",
+                                             colour = "red",
+                                             colour.target = "segment",
                                              arrow = grid::arrow(length = unit(0.1, "inches")),
                                              position = position_nudge_keep(x = 1, y = 0),
                                              hjust = 0) +
@@ -225,7 +226,8 @@ test_that("many_layers", {
                                                mapping = aes(label = paste(after_stat(y.label), after_stat(x.label))),
                                                x.label.fmt = "at %.0f mpg ",
                                                y.label.fmt = "hp = %.0f",
-                                               segment.colour = "blue",
+                                               colour = "blue",
+                                               colour.target = "segment",
                                                arrow = grid::arrow(length = unit(0.1, "inches")),
                                                position = position_nudge_keep(x = -1, y = -20),
                                                hjust = 1) +
