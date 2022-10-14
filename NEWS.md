@@ -13,6 +13,7 @@ editor_options:
 -   Add `scale_colour_logFC()`, `scale_color_logFC()` and `scale_fill_logFC()`.
 -   Revise `scale_colour_outcome()` and `scale_fill_outcome()` adding flexibility to the `value` names and allowing a work-around for non-functional `drop` in manual scales due to a bug present in 'ggplot2' (only in versions 3.3.4, 3.3.5, 3.3.6). 
 -   Revise _User Guide_.
+-   Update for compatibility with upcoming 'ggplot2' 3.4.0 (tested with v3.4.0-rc).
 
 # ggpmisc 0.5.0
 
