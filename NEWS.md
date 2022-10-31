@@ -4,6 +4,11 @@ editor_options:
     wrap: 72
 ---
 
+# ggpmisc 0.5.2
+
+-   Fix bug casued by the use of `isa()` instead of `base::isa()` (reported by 
+Johnny Le).
+
 # ggpmisc 0.5.1
 
 -   Revise approach used to extract the formula from the fitted model object. Use `formula()` method on fitted model but fall-back onto the 'formula' argument in case of error or return `NA` if everything fails, without triggering an error condition.

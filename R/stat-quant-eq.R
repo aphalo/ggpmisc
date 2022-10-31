@@ -644,7 +644,7 @@ quant_eq_compute_group_fun <- function(data,
   }
 
   formula <- formula.ls[[1]]
-  stopifnot(isa(formula, "formula"))
+  stopifnot(base::isa(formula, "formula"))
 
   formula.rhs.chr <- as.character(formula)[3]
   forced.origin <- grepl("-[[:space:]]*1|+[[:space:]]*0", formula.rhs.chr)
