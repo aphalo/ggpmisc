@@ -6,7 +6,7 @@ editor_options:
 
 # ggpmisc 0.5.2
 
--   Fix bug casued by the use of `isa()` instead of `base::isa()` (reported by 
+-   Fix bug caused by the use of `base::isa()` which is not supported for `"formula"` in R < 4.1.0 (reported by 
 Johnny Le).
 
 # ggpmisc 0.5.1
