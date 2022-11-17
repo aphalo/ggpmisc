@@ -1,6 +1,5 @@
 context("stat_valleys")
 
-library(tibble)
 library(lubridate)
 
 make_data_tbl <- function(nrow = 100, rfun = rnorm, ...) {
@@ -10,10 +9,10 @@ make_data_tbl <- function(nrow = 100, rfun = rnorm, ...) {
 
   set.seed(101)
 
-  tibble::tibble(
-    x = 1:nrow,
-    x.date = ydm("2000-01-01") + days(x),
-    x.datetime = ydm_hms("2000-01-01 00:00:01") + days(x),
+  data.frame(
+    x = 0:(nrow - 1),
+    x.date = ydm("2000-01-01") + days(0:(nrow - 1)),
+    x.datetime = ydm_hms("2000-01-01 00:00:01") + days(0:(nrow - 1)),
     y = rfun(nrow, ...),
     group = rep(c("A", "B"), nrow / 2)
   )
@@ -213,8 +212,8 @@ test_that("many_layers", {
                                              strict = TRUE,
                                              geom = "text_s",
                                              mapping = aes(label = paste(after_stat(y.label), after_stat(x.label))),
-                                             x.label.fmt = "at %.0f mpg",
-                                             y.label.fmt = "hp = %.0f\n",
+                                             x.label.fmt = "at %.1f mpg",
+                                             y.label.fmt = "hp = %.1f\n",
                                              colour = "red",
                                              colour.target = "segment",
                                              arrow = grid::arrow(length = unit(0.1, "inches")),
@@ -224,8 +223,8 @@ test_that("many_layers", {
                                                strict = TRUE,
                                                geom = "text_s",
                                                mapping = aes(label = paste(after_stat(y.label), after_stat(x.label))),
-                                               x.label.fmt = "at %.0f mpg ",
-                                               y.label.fmt = "hp = %.0f",
+                                               x.label.fmt = "at %.1f mpg ",
+                                               y.label.fmt = "hp = %.1f",
                                                colour = "blue",
                                                colour.target = "segment",
                                                arrow = grid::arrow(length = unit(0.1, "inches")),

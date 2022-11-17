@@ -223,12 +223,12 @@ find_peaks <-
 #'   geom_line() +
 #'   stat_peaks(colour = "red",
 #'              geom = "text_s",
-#'              position = position_nudge_to(y = 7200),
+#'              position = position_nudge_to(y = 7600),
 #'              arrow = arrow(length = grid::unit(1.5, "mm")),
-#'              hjust = -0.1,
+#'              point.padding = 0.7,
 #'              x.label.fmt = "%Y",
 #'              angle = 90) +
-#'   expand_limits(y = 8000)
+#'   expand_limits(y = 9000)
 #'
 #' @export
 #'
@@ -300,17 +300,23 @@ peaks_compute_group_fun <- function(data,
     y.label.fmt <- "%.4g"
   }
   if (inherits(scales$x, "ScaleContinuousDatetime")) {
-    as_label <- function(fmt, x) {
+    tzone <- scales$x$timezone
+    if (is.null(tzone) || is.na(tzone)) {
+      tzone <- ""
+    }
+    as_label <- function(fmt, x, tz = tzone) {
       x <- as.POSIXct(x,
-                      origin = lubridate::origin)
-      strftime(x, fmt)
+                      origin = lubridate::origin,
+                      tz = tz)
+      strftime(x, fmt, tz = tz)
     }
     if (is.null(x.label.fmt)) {
       x.label.fmt <- "%Y-%m-%d"
     }
   } else if (inherits(scales$x, "ScaleContinuousDate")) {
-    as_label <- function(fmt, x) {
-      x <- as.Date(x, origin = lubridate::origin)
+    as_label <- function(fmt, x, tz = NULL) {
+      x <- as.Date(x,
+                   origin = lubridate::origin)
       strftime(x, fmt)
     }
     if (is.null(x.label.fmt)) {
@@ -375,16 +381,21 @@ valleys_compute_group_fun <- function(data,
     y.label.fmt <- "%.4g"
   }
   if (inherits(scales$x, "ScaleContinuousDatetime")) {
-    as_label <- function(fmt, x) {
+    tzone <- scales$x$timezone
+    if (is.null(tzone) || is.na(tzone)) {
+      tzone <- ""
+    }
+    as_label <- function(fmt, x, tz = tzone) {
       x <- as.POSIXct(x,
-                      origin = lubridate::origin)
-      strftime(x, fmt)
+                      origin = lubridate::origin,
+                      tz = tz)
+      strftime(x, fmt, tz = tz)
     }
     if (is.null(x.label.fmt)) {
       x.label.fmt <- "%Y-%m-%d"
     }
   } else if (inherits(scales$x, "ScaleContinuousDate")) {
-    as_label <- function(fmt, x) {
+    as_label <- function(fmt, x, tz = NULL) {
       x <- as.Date(x, origin = lubridate::origin)
       strftime(x, fmt)
     }
