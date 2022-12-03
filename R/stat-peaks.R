@@ -314,7 +314,7 @@ peaks_compute_group_fun <- function(data,
       x.label.fmt <- "%Y-%m-%d"
     }
   } else if (inherits(scales$x, "ScaleContinuousDate")) {
-    as_label <- function(fmt, x, tz = NULL) {
+    as_label <- function(fmt, x, tz = tzone) { # avoid note from tz = NULL
       x <- as.Date(x,
                    origin = lubridate::origin)
       strftime(x, fmt)
@@ -323,7 +323,7 @@ peaks_compute_group_fun <- function(data,
       x.label.fmt <- "%Y-%m-%d"
     }
   } else {
-    as_label <- function(fmt, x) {
+    as_label <- function(fmt, x, tz = tzone) { # avoid note from tz = NULL
       sprintf(fmt, x)
     }
     if (is.null(x.label.fmt)) {
@@ -395,7 +395,7 @@ valleys_compute_group_fun <- function(data,
       x.label.fmt <- "%Y-%m-%d"
     }
   } else if (inherits(scales$x, "ScaleContinuousDate")) {
-    as_label <- function(fmt, x, tz = NULL) {
+    as_label <- function(fmt, x, tz = tzone) { # avoid note from tz = NULL
       x <- as.Date(x, origin = lubridate::origin)
       strftime(x, fmt)
     }
@@ -403,7 +403,7 @@ valleys_compute_group_fun <- function(data,
       x.label.fmt <- "%Y-%m-%d"
     }
   } else {
-    as_label <- function(fmt, x) {
+    as_label <- function(fmt, x, tz = tzone) { # avoid note from tz = NULL
       sprintf(fmt, x)
     }
     if (is.null(x.label.fmt)) {
