@@ -217,11 +217,11 @@ ggplot(lynx_datetime.df, aes(year, lynx)) +
   geom_line() +
   stat_peaks(colour = "red",
              geom = "text_s",
-             position = position_nudge_to(y = 7200),
+             position = position_nudge_to(y = 7600),
              arrow = arrow(length = grid::unit(1.5, "mm")),
-             hjust = -0.1,
+             point.padding = 0.7,
              x.label.fmt = "\%Y",
              angle = 90) +
-  expand_limits(y = 8000)
+  expand_limits(y = 9000)
 
 }
