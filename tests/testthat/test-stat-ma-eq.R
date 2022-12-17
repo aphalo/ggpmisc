@@ -1,5 +1,8 @@
 context("stat_ma_eq")
 
+old.out.dec <- options(OutDec = ".")
+on.exit(options(old.out.dec), add = TRUE, after = FALSE)
+
 set.seed(4321)
 # generate artificial data
 my.data <- data.frame(x = (1:100) / 10 + rnorm(n = 100),

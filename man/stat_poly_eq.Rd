@@ -177,6 +177,10 @@ For backward compatibility a logical is accepted as argument for
   Parameter \code{orientation} is redundant as it only affects the default
   for \code{formula} but is included for consistency with
   \code{ggplot2::stat_smooth()}.
+
+  R option \code{OutDec} is obeyed based on its value at the time the plot
+  is rendered, i.e., displayed or printed. Set \code{options(OutDec = ",")}
+  for languages like Spanish or French.
 }
 \section{IMPORTANT}{
  \code{stat_regline_equation()} in package 'ggpubr' is

@@ -9,6 +9,7 @@ editor_options:
 -   Fix bug caused by the use of `base::isa()` which is not supported for `"formula"` in R < 4.1.0 (reported by 
 Johnny Le).
 -   Fix bug in `stat_peaks()` and `stat_valleys()` that made peak and valley labels for datetime variables mapped to _x_ to be always formatted in the local system's timezone instead of in the timezone of the _x_ scale of the ggplot.
+-   Fix bug in `stat_poly_eq()`, `stat_ma_eq()`, `stat_quant_eq()`, and `stat_correlation()` that caused some labels not to obey R option `OutDec`.
 
 # ggpmisc 0.5.1
 

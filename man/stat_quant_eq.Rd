@@ -173,6 +173,10 @@ For backward compatibility a logical is accepted as argument for
   for \code{formula} but is included for consistency with
   \code{ggplot2::stat_smooth()}.
 
+  R option \code{OutDec} is obeyed based on its value at the time the plot
+  is rendered, i.e., displayed or printed. Set \code{options(OutDec = ",")}
+  for languages like Spanish or French.
+
 Support for the \code{angle} aesthetic is not automatic and requires
   that the user passes as argument suitable numeric values to override the
   defaults for label positions.
@@ -276,7 +280,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  stat_quant_line(formula = formula, size = 0.5) +
+  stat_quant_line(formula = formula, linewidth = 0.5) +
   stat_quant_eq(formula = formula)
 
 # angle

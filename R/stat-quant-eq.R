@@ -82,6 +82,10 @@
 #'   for \code{formula} but is included for consistency with
 #'   \code{ggplot2::stat_smooth()}.
 #'
+#'   R option \code{OutDec} is obeyed based on its value at the time the plot
+#'   is rendered, i.e., displayed or printed. Set \code{options(OutDec = ",")}
+#'   for languages like Spanish or French.
+#'
 #' @details This stat can be used to automatically annotate a plot with rho or
 #'   the fitted model equation. The model fitting is done using package
 #'  'quantreg', please, consult its documentation for the
@@ -231,7 +235,7 @@
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   stat_quant_line(formula = formula, size = 0.5) +
+#'   stat_quant_line(formula = formula, linewidth = 0.5) +
 #'   stat_quant_eq(formula = formula)
 #'
 #' # angle
@@ -481,6 +485,17 @@ quant_eq_compute_group_fun <- function(data,
 
   force(data)
   force(method)
+
+  # parse obeys this option, but as for some labels or output types we do not
+  # use parse() to avoid dropping of trailing zeros, we need to manage this in
+  # our code in this case.
+  decimal.mark <- getOption("OutDec", default = ".")
+  if (!decimal.mark %in% c(".", ",")) {
+    warning("Decimal mark must be one of '.' or ',', not: '", decimal.mark, "'")
+    decimal.mark <- "."
+  }
+#  range.sep <- c("." = ", ", "," = "; ")[decimal.mark]
+
   num.quantiles <- length(quantiles)
 
   # make sure quantiles are ordered
@@ -489,7 +504,7 @@ quant_eq_compute_group_fun <- function(data,
   # factor with nicely formatted labels
   quant.digits <- ifelse(min(quantiles) < 0.01 || max(quantiles) > 0.99, 3, 2)
   quant.levels <- sort(unique(quantiles), decreasing = TRUE)
-  quant.labels <- sprintf("%#.*f", quant.digits, quant.levels)
+  quant.labels <- sprintf_dm("%#.*f", quant.digits, quant.levels, decimal.mark = decimal.mark)
   quantiles.f <- factor(quantiles,
                         levels = quant.levels,
                         labels = quant.labels)
@@ -698,14 +713,15 @@ quant_eq_compute_group_fun <- function(data,
                                   coef.keep.zeros = coef.keep.zeros,
                                   eq.x.rhs = eq.x.rhs,
                                   lhs = lhs,
-                                  output.type = output.type)
+                                  output.type = output.type,
+                                  decimal.mark = decimal.mark)
 
       if (output.type == "expression" && coef.keep.zeros) {
-        AIC.char[q] <- sprintf("\"%.4g\"", AIC[q])
-        rho.char[q] <- sprintf("\"%#.3g\"", rho[q])
+        AIC.char[q] <- sprintf_dm("\"%.4g\"", AIC[q], decimal.mark = decimal.mark)
+        rho.char[q] <- sprintf_dm("\"%#.3g\"", rho[q], decimal.mark = decimal.mark)
       } else {
-        AIC.char[q] <- sprintf("%.4g", AIC[q])
-        rho.char[q] <- sprintf("%#.3g", rho[q])
+        AIC.char[q] <- sprintf_dm("%.4g", AIC[q], decimal.mark = decimal.mark)
+        rho.char[q] <- sprintf_dm("%#.3g", rho[q], decimal.mark = decimal.mark)
       }
     }
 
@@ -717,10 +733,10 @@ quant_eq_compute_group_fun <- function(data,
                           n.label = paste("italic(n)~`=`~", n, sep = ""),
                           grp.label = if (any(grp.label != ""))
                                          paste(grp.label,
-                                            sprintf("italic(q)~`=`~\"%.2f\"", quantiles),
+                                            sprintf_dm("italic(q)~`=`~\"%.2f\"", quantiles, decimal.mark = decimal.mark),
                                             sep = "*\", \"*")
                                       else
-                                        sprintf("italic(q)~`=`~\"%.2f\"", quantiles),
+                                        sprintf_dm("italic(q)~`=`~\"%.2f\"", quantiles, decimal.mark = decimal.mark),
                           method.label = paste("\"method: ", method.name, "\"", sep = ""),
                           rq.method = rq.method,
                           quantile = quantiles,
@@ -732,7 +748,7 @@ quant_eq_compute_group_fun <- function(data,
                           rho.label = paste("rho", AIC.char, sep = " = "),
                           n.label = paste("n = ", n, sep = ""),
                           grp.label = paste(grp.label,
-                                            sprintf("q = %.2f", quantiles)),
+                                            sprintf_dm("q = %.2f", quantiles, decimal.mark = decimal.mark)),
                           method.label = paste("method: ", method.name, sep = ""),
                           rq.method = rq.method,
                           quantile = quantiles,
@@ -744,7 +760,7 @@ quant_eq_compute_group_fun <- function(data,
                           rho.label = paste("rho", AIC.char, sep = " = "),
                           n.label = paste("_n_ = ", n, sep = ""),
                           grp.label = paste(grp.label,
-                                            sprintf("q = %.2f", quantiles)),
+                                            sprintf_dm("q = %.2f", quantiles, decimal.mark = decimal.mark)),
                           method.label = paste("method: ", method.name, sep = ""),
                           rq.method = rq.method,
                           quantile = quantiles,

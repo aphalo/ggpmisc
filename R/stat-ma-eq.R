@@ -83,6 +83,10 @@
 #'   passed as a character string together with the \code{lmodel2}-supported
 #'   method.
 #'
+#'   R option \code{OutDec} is obeyed based on its value at the time the plot
+#'   is rendered, i.e., displayed or printed. Set \code{options(OutDec = ",")}
+#'   for languages like Spanish or French.
+#'
 #' @details This stat can be used to automatically annotate a plot with \eqn{R^2},
 #'   \eqn{P}-value, \eqn{n} and/or the fitted model equation. It supports linear major axis
 #'   (MA), standard major axis (SMA) and ranged major axis (RMA) regression by
@@ -379,6 +383,17 @@ ma_eq_compute_group_fun <- function(data,
                                     na.rm,
                                     orientation) {
   force(data)
+
+  # parse uses this option, but as for some labels or output types we do not use
+  # parse() to avoid dropping of trailing zeros, we need to manage this in our
+  # code in this case.
+  decimal.mark <- getOption("OutDec", default = ".")
+  if (!decimal.mark %in% c(".", ",")) {
+    warning("Decimal mark must be one of '.' or ',', not: '", decimal.mark, "'")
+    decimal.mark <- "."
+  }
+#  range.sep <- c("." = ", ", "," = "; ")[decimal.mark]
+
   # we guess formula from orientation
   if (is.null(formula)) {
     if (is.na(orientation) || orientation == "x") {
@@ -570,7 +585,8 @@ ma_eq_compute_group_fun <- function(data,
                              coef.keep.zeros = coef.keep.zeros,
                              eq.x.rhs = eq.x.rhs,
                              lhs = lhs,
-                             output.type = output.type)
+                             output.type = output.type,
+                             decimal.mark = decimal.mark)
 
     # build the other character strings
     stopifnot(rr.digits > 0)
@@ -587,13 +603,13 @@ ma_eq_compute_group_fun <- function(data,
     }
 
     if (output.type == "expression") {
-      rr.char <- sprintf("\"%#.*f\"", rr.digits, rr)
-      theta.char <- sprintf("\"%#.*f\"", theta.digits, theta)
-      p.value.char <- sprintf("\"%#.*f\"", p.digits, p.value)
+      rr.char <- sprintf_dm("\"%#.*f\"", rr.digits, rr, decimal.mark = decimal.mark)
+      theta.char <- sprintf_dm("\"%#.*f\"", theta.digits, theta, decimal.mark = decimal.mark)
+      p.value.char <- sprintf_dm("\"%#.*f\"", p.digits, p.value, decimal.mark = decimal.mark)
     } else {
-      rr.char <- sprintf("%#.*f", rr.digits, rr)
-      theta.char <- sprintf("%#.*f", theta.digits, theta)
-      p.value.char <- sprintf("%#.*f", p.digits, p.value)
+      rr.char <- sprintf_dm("%#.*f", rr.digits, rr, decimal.mark = decimal.mark)
+      theta.char <- sprintf_dm("%#.*f", theta.digits, theta, decimal.mark = decimal.mark)
+      p.value.char <- sprintf_dm("%#.*f", p.digits, p.value, decimal.mark = decimal.mark)
     }
 
     # build the data frames to return
@@ -604,7 +620,7 @@ ma_eq_compute_group_fun <- function(data,
                             ifelse(is.na(rr), character(0L),
                                    paste(ifelse(small.r, "italic(r)^2", "italic(R)^2"),
                                          ifelse(rr < 10^(-rr.digits) & rr != 0,
-                                                sprintf("\"%.*f\"", rr.digits, 10^(-rr.digits)),
+                                                sprintf_dm("\"%.*f\"", rr.digits, 10^(-rr.digits), decimal.mark = decimal.mark),
                                                 rr.char),
                                          sep = ifelse(rr < 10^(-rr.digits) & rr != 0,
                                                       "~`<`~",
@@ -613,7 +629,7 @@ ma_eq_compute_group_fun <- function(data,
                             ifelse(is.na(p.value), character(0L),
                                    paste(ifelse(small.p, "italic(p)[perm]",  "italic(P)[perm]"),
                                          ifelse(p.value < 10^(-p.digits),
-                                                sprintf("\"%.*f\"", p.digits, 10^(-p.digits)),
+                                                sprintf_dm("\"%.*f\"", p.digits, 10^(-p.digits), decimal.mark = decimal.mark),
                                                 p.value.char),
                                          sep = ifelse(p.value < 10^(-p.digits),
                                                       "~`<`~",

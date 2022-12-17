@@ -79,6 +79,10 @@
 #'   for \code{formula} but is included for consistency with
 #'   \code{ggplot2::stat_smooth()}.
 #'
+#'   R option \code{OutDec} is obeyed based on its value at the time the plot
+#'   is rendered, i.e., displayed or printed. Set \code{options(OutDec = ",")}
+#'   for languages like Spanish or French.
+#'
 #' @details This statistic can be used to automatically annotate a plot with
 #'   \eqn{R^2}, adjusted \eqn{R^2} or the fitted model equation. It supports
 #'   linear regression, robust linear regression and median regression fitted
@@ -526,6 +530,16 @@ poly_eq_compute_group_fun <- function(data,
                                       orientation) {
   force(data)
 
+  # parse obeys this option, but as for some labels or output types we do not
+  # use parse() to avoid dropping of trailing zeros, we need to manage this in
+  # our code in this case.
+  decimal.mark <- getOption("OutDec", default = ".")
+  if (!decimal.mark %in% c(".", ",")) {
+    warning("Decimal mark must be one of '.' or ',', not: '", decimal.mark, "'")
+    decimal.mark <- "."
+  }
+  range.sep <- c("." = ", ", "," = "; ")[decimal.mark]
+
   stopifnot(!any(c("formula", "data") %in% names(method.args)))
   # we guess formula from orientation
   if (is.null(formula)) {
@@ -726,7 +740,8 @@ poly_eq_compute_group_fun <- function(data,
                              coef.keep.zeros = coef.keep.zeros,
                              eq.x.rhs = eq.x.rhs,
                              lhs = lhs,
-                             output.type = output.type)
+                             output.type = output.type,
+                             decimal.mark = decimal.mark)
 
     # build the other character strings
     stopifnot(rr.digits > 0)
@@ -743,41 +758,45 @@ poly_eq_compute_group_fun <- function(data,
     }
 
     if (output.type == "expression") {
-      rr.char <- sprintf("\"%#.*f\"", rr.digits, rr)
-      adj.rr.char <- sprintf("\"%#.*f\"", rr.digits, adj.rr)
-      rr.confint.chr <- sprintf("%#.*f, %#.*f",
-                                rr.digits, rr.confint.low,
-                                rr.digits, rr.confint.high)
+      rr.char <- sprintf_dm("\"%#.*f\"", rr.digits, rr, decimal.mark = decimal.mark)
+      adj.rr.char <- sprintf_dm("\"%#.*f\"", rr.digits, adj.rr, decimal.mark = decimal.mark)
+      rr.confint.chr <- paste(sprintf_dm("%#.*f",
+                                rr.digits, rr.confint.low, decimal.mark = decimal.mark),
+                              sprintf_dm("%#.*f",
+                                         rr.digits, rr.confint.high, decimal.mark = decimal.mark),
+                              sep = range.sep)
       if (as.logical((rsquared.conf.level * 100) %% 1)) {
         conf.level.digits = 1L
       } else {
         conf.level.digits = 0L
       }
-      conf.level.chr <- sprintf("%.*f", conf.level.digits, rsquared.conf.level * 100)
-      AIC.char <- sprintf("\"%.4g\"", AIC)
-      BIC.char <- sprintf("\"%.4g\"", BIC)
-      f.value.char <- sprintf("\"%#.*g\"", f.digits, f.value)
+      conf.level.chr <- sprintf_dm("%.*f", conf.level.digits, rsquared.conf.level * 100, decimal.mark = decimal.mark)
+      AIC.char <- sprintf_dm("\"%.4g\"", AIC, decimal.mark = decimal.mark)
+      BIC.char <- sprintf_dm("\"%.4g\"", BIC, decimal.mark = decimal.mark)
+      f.value.char <- sprintf_dm("\"%#.*g\"", f.digits, f.value, decimal.mark = decimal.mark)
       f.df1.char <- as.character(f.df1)
       f.df2.char <- as.character(f.df2)
-      p.value.char <- sprintf("\"%#.*f\"", p.digits, p.value)
+      p.value.char <- sprintf_dm("\"%#.*f\"", p.digits, p.value, decimal.mark = decimal.mark)
     } else {
-      rr.char <- sprintf("%#.*f", rr.digits, rr)
-      adj.rr.char <- sprintf("%#.*f", rr.digits, adj.rr)
-      rr.confint.chr <- sprintf("%#.*f, %#.*f",
-                               rr.digits, rr.confint.low,
-                               rr.digits, rr.confint.high)
+      rr.char <- sprintf_dm("%#.*f", rr.digits, rr, decimal.mark = decimal.mark)
+      adj.rr.char <- sprintf_dm("%#.*f", rr.digits, adj.rr, decimal.mark = decimal.mark)
+      rr.confint.chr <- paste(sprintf_dm("%#.*f",
+                                         rr.digits, rr.confint.low, decimal.mark = decimal.mark),
+                              sprintf_dm("%#.*f",
+                                         rr.digits, rr.confint.high, decimal.mark = decimal.mark),
+                              sep = range.sep)
       if (as.logical((rsquared.conf.level * 100) %% 1)) {
         conf.level.digits = 1L
       } else {
         conf.level.digits = 0L
       }
-      conf.level.chr <- sprintf("%.*f", conf.level.digits, rsquared.conf.level * 100)
-      AIC.char <- sprintf("%.4g", AIC)
-      BIC.char <- sprintf("%.4g", BIC)
-      f.value.char <- sprintf("%#.*g", f.digits, f.value)
+      conf.level.chr <- sprintf_dm("%.*f", conf.level.digits, rsquared.conf.level * 100, decimal.mark = decimal.mark)
+      AIC.char <- sprintf_dm("%.4g", AIC, decimal.mark = decimal.mark)
+      BIC.char <- sprintf_dm("%.4g", BIC, decimal.mark = decimal.mark)
+      f.value.char <- sprintf_dm("%#.*g", f.digits, f.value, decimal.mark = decimal.mark)
       f.df1.char <- as.character(f.df1)
       f.df2.char <- as.character(f.df2)
-      p.value.char <- sprintf("%#.*f", p.digits, p.value)
+      p.value.char <- sprintf_dm("%#.*f", p.digits, p.value, decimal.mark = decimal.mark)
     }
 
     # build the data frames to return
@@ -788,7 +807,7 @@ poly_eq_compute_group_fun <- function(data,
                             ifelse(is.na(rr), character(0L),
                                    paste(ifelse(small.r, "italic(r)^2", "italic(R)^2"),
                                          ifelse(rr < 10^(-rr.digits) & rr != 0,
-                                                sprintf("\"%.*f\"", rr.digits, 10^(-rr.digits)),
+                                                sprintf_dm("\"%.*f\"", rr.digits, 10^(-rr.digits), decimal.mark = decimal.mark),
                                                 rr.char),
                                          sep = ifelse(rr < 10^(-rr.digits) & rr != 0,
                                                       "~`<`~",
@@ -797,7 +816,7 @@ poly_eq_compute_group_fun <- function(data,
                             ifelse(is.na(adj.rr), character(0L),
                                    paste(ifelse(small.r, "italic(r)[adj]^2", "italic(R)[adj]^2"),
                                          ifelse(adj.rr < 10^(-rr.digits) & adj.rr != 0,
-                                                sprintf("\"%.*f\"", rr.digits, 10^(-rr.digits)),
+                                                sprintf_dm("\"%.*f\"", rr.digits, 10^(-rr.digits), decimal.mark = decimal.mark),
                                                 adj.rr.char),
                                          sep = ifelse(adj.rr < 10^(-rr.digits) & adj.rr != 0,
                                                       "~`<`~",
@@ -819,7 +838,7 @@ poly_eq_compute_group_fun <- function(data,
                             ifelse(is.na(p.value), character(0L),
                                    paste(ifelse(small.p, "italic(p)",  "italic(P)"),
                                          ifelse(p.value < 10^(-p.digits),
-                                                sprintf("\"%.*f\"", p.digits, 10^(-p.digits)),
+                                                sprintf_dm("\"%.*f\"", p.digits, 10^(-p.digits), decimal.mark = decimal.mark),
                                                 p.value.char),
                                          sep = ifelse(p.value < 10^(-p.digits),
                                                       "~`<`~",
@@ -1030,7 +1049,8 @@ coefs2poly_eq <- function(coefs,
                           coef.keep.zeros = TRUE,
                           eq.x.rhs = "x",
                           lhs = "y~`=`~",
-                          output.type = "expression") {
+                          output.type = "expression",
+                          decimal.mark = ".") {
   # build equation as a character string from the coefficient estimates
   stopifnot(coef.digits > 0)
   if (coef.digits < 3) {
@@ -1040,6 +1060,13 @@ coefs2poly_eq <- function(coefs,
                           digits = coef.digits,
                           keep.zeros = coef.keep.zeros)
   eq.char <- typeset_numbers(eq.char, output.type)
+  if (output.type != "expression") { # parse() does the conversion
+    if (decimal.mark == ".") {
+      eq.char <- gsub(",", decimal.mark, eq.char, fixed = TRUE)
+    } else {
+      eq.char <- gsub(".", decimal.mark, eq.char, fixed = TRUE)
+    }
+  }
 
   if (eq.x.rhs != "x") {
     eq.char <- gsub("x", eq.x.rhs, eq.char, fixed = TRUE)
@@ -1098,15 +1125,25 @@ typeset_numbers <- function(eq.char, output.type) {
     eq.char <- gsub("*", "&nbsp;", eq.char, fixed = TRUE)
     eq.char <- gsub(" ", "", eq.char, fixed = TRUE)
   } else {
-    eq.char <- gsub("e([+-]?[0-9]*)", "%*%10^{\\1}", eq.char)
+    eq.char <- gsub("e([+-]?[0-9]*)", "%*% 10^{\\1}", eq.char)
     # muliplication symbol
     if (output.type %in% c("latex", "tikz")) {
       eq.char <- gsub("%*%", "\\times{}", eq.char, fixed = TRUE)
       eq.char <- gsub("*", "", eq.char, fixed = TRUE)
-    }else if (output.type == "text") {
+    } else if (output.type == "text") {
       eq.char <- gsub("[*][:space:]", " ", eq.char, fixed = TRUE)
       eq.char <- gsub("%*%", " * ", eq.char, fixed = TRUE)
     }
   }
   eq.char
+}
+
+# replace decimal mark used by sprintf() if needed
+sprintf_dm <- function(fmt, ..., decimal.mark = ".") {
+  if (decimal.mark != ".") {
+    gsub(".", decimal.mark, sprintf(fmt, ...), fixed = TRUE)
+  } else {
+    # in case OS locale uses ","
+    gsub(",", ".", sprintf(fmt, ...), fixed = TRUE)
+  }
 }

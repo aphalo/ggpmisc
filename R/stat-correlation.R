@@ -358,6 +358,16 @@ cor_test_compute_fun <- function(data,
 
   force(data)
 
+  # parse obeys this option, but as for some labels or output types we do not
+  # use parse() to avoid dropping of trailing zeros, we need to manage this in
+  # our code in this case.
+  decimal.mark <- getOption("OutDec", default = ".")
+  if (!decimal.mark %in% c(".", ",")) {
+    warning("Decimal mark must be one of '.' or ',', not: '", decimal.mark, "'")
+    decimal.mark <- "."
+  }
+  range.sep <- c("." = ", ", "," = "; ")[decimal.mark]
+
   formula = ~ y + x
 
   output.type <- tolower(output.type)
@@ -461,48 +471,52 @@ cor_test_compute_fun <- function(data,
 
     # build the character strings
     if (output.type == "expression") {
-      p.value.char <- sprintf("\"%#.*f\"", p.digits, z[["p.value"]])
+      p.value.char <- sprintf_dm("\"%#.*f\"", p.digits, z[["p.value"]], decimal.mark = decimal.mark)
       r <- z[[unname(c(pearson = "cor", kendall = "tau", spearman = "rho")[method])]]
-      r.char <- sprintf("\"%#.*f\"", r.digits, r)
-      r.confint.chr <- sprintf("%#.*f, %#.*f",
-                               r.digits, z[["r.confint.low"]],
-                               r.digits, z[["r.confint.high"]])
+      r.char <- sprintf_dm("\"%#.*f\"", r.digits, r, decimal.mark = decimal.mark)
+      r.confint.chr <- paste(sprintf_dm("%#.*f",
+                                        r.digits, z[["r.confint.low"]], decimal.mark = decimal.mark),
+                             sprintf_dm("%#.*f",
+                                        r.digits, z[["r.confint.high"]], decimal.mark = decimal.mark),
+                             sep = range.sep)
       if (as.logical((z[["r.conf.level"]] * 100) %% 1)) {
         conf.level.digits = 1L
       } else {
         conf.level.digits = 0L
       }
-      conf.level.chr <- sprintf("%.*f", conf.level.digits, z[["r.conf.level"]] * 100)
+      conf.level.chr <- sprintf_dm("%.*f", conf.level.digits, z[["r.conf.level"]] * 100, decimal.mark = decimal.mark)
       if (method == "pearson") {
-        rr.char <- sprintf("\"%#.*f\"", r.digits, r^2)
-        t.value.char <- sprintf("\"%#.*g\"", t.digits, z[["t.value"]])
+        rr.char <- sprintf_dm("\"%#.*f\"", r.digits, r^2, decimal.mark = decimal.mark)
+        t.value.char <- sprintf_dm("\"%#.*g\"", t.digits, z[["t.value"]], decimal.mark = decimal.mark)
         df.char <- as.character(z[["df"]])
       } else if (method == "kendall") {
-        z.value.char <- sprintf("\"%#.*g\"", t.digits, z[["z.value"]])
+        z.value.char <- sprintf_dm("\"%#.*g\"", t.digits, z[["z.value"]], decimal.mark = decimal.mark)
       } else if (method == "spearman") {
-        S.value.char <- sprintf("\"%#.*g\"", t.digits, z[["S.value"]])
+        S.value.char <- sprintf_dm("\"%#.*g\"", t.digits, z[["S.value"]], decimal.mark = decimal.mark)
       }
     } else {
-      p.value.char <- sprintf("%#.*f", p.digits, z[["p.value"]])
+      p.value.char <- sprintf_dm("%#.*f", p.digits, z[["p.value"]], decimal.mark = decimal.mark)
       r <- z[[unname(c(pearson = "cor", kendall = "tau", spearman = "rho")[method])]]
-      r.char <- sprintf("%#.*f", r.digits, r)
-      r.confint.chr <- sprintf("%#.*f, %#.*f",
-                               r.digits, z[["conf.int.low"]],
-                               r.digits, z[["conf.int.high"]])
+      r.char <- sprintf_dm("%#.*f", r.digits, r, decimal.mark = decimal.mark)
+      r.confint.chr <- paste(sprintf_dm("%#.*f",
+                                        r.digits, z[["conf.int.low"]], decimal.mark = decimal.mark),
+                             sprintf_dm("%#.*f",
+                                        r.digits, z[["conf.int.high"]], decimal.mark = decimal.mark),
+                             sep = range.sep)
       if (as.logical((z[["r.conf.level"]] * 100) %% 1)) {
         conf.level.digits = 1L
       } else {
         conf.level.digits = 0L
       }
-      conf.level.chr <- sprintf("%.*f", conf.level.digits, z[["r.conf.level"]] * 100)
+      conf.level.chr <- sprintf_dm("%.*f", conf.level.digits, z[["r.conf.level"]] * 100, decimal.mark = decimal.mark)
       if (method == "pearson") {
-        rr.char <- sprintf("\"%#.*f\"", r.digits, r^2)
-        t.value.char <- sprintf("%#.*g", t.digits, z[["t.value"]])
+        rr.char <- sprintf_dm("\"%#.*f\"", r.digits, r^2, decimal.mark = decimal.mark)
+        t.value.char <- sprintf_dm("%#.*g", t.digits, z[["t.value"]], decimal.mark = decimal.mark)
         df.char <- as.character(z[["df"]])
       } else if (method == "kendall") {
-        z.value.char <- sprintf("%#.*g", t.digits, z[["z.value"]])
+        z.value.char <- sprintf_dm("%#.*g", t.digits, z[["z.value"]], decimal.mark = decimal.mark)
       } else if (method == "spearman") {
-        S.value.char <- sprintf("%#.*g", t.digits, z[["S.value"]])
+        S.value.char <- sprintf_dm("%#.*g", t.digits, z[["S.value"]], decimal.mark = decimal.mark)
       }
     }
 
@@ -513,7 +527,7 @@ cor_test_compute_fun <- function(data,
         ifelse(is.na(z[["p.value"]]), character(0L),
                paste(ifelse(small.p, "italic(p)",  "italic(P)"),
                      ifelse(z[["p.value"]] < 10^(-p.digits),
-                            sprintf("\"%.*f\"", p.digits, 10^(-p.digits)),
+                            sprintf_dm("\"%.*f\"", p.digits, 10^(-p.digits), decimal.mark = decimal.mark),
                             p.value.char),
                      sep = ifelse(z[["p.value"]] < 10^(-p.digits),
                                   "~`<`~",
@@ -526,7 +540,7 @@ cor_test_compute_fun <- function(data,
           ifelse(is.na(z[["cor"]]), character(0L),
                  paste(ifelse(small.r, "italic(r)", "italic(R)"),
                        ifelse(abs(z[["cor"]]) < 10^(-r.digits),
-                              sprintf("\"%.*f\"", r.digits, 10^(-r.digits) * sign(z[["cor"]])),
+                              sprintf_dm("\"%.*f\"", r.digits, 10^(-r.digits) * sign(z[["cor"]]), decimal.mark = decimal.mark),
                               r.char),
                        sep = ifelse(abs(z[["cor"]]) < 10^(-r.digits),
                                     c("~`>`~", "~`=`~", "~`<`~")[sign(z[["cor"]]) + 2],
@@ -534,7 +548,7 @@ cor_test_compute_fun <- function(data,
         z[["rr.label"]] <-
            paste(ifelse(small.r, "italic(r)^2", "italic(R)^2"),
                 ifelse(r^2 < 10^(-r.digits) & r^2 != 0,
-                       sprintf("\"%.*f\"", r.digits, 10^(-r.digits)),
+                       sprintf_dm("\"%.*f\"", r.digits, 10^(-r.digits), decimal.mark = decimal.mark),
                        rr.char),
                 sep = ifelse(r^2 < 10^(-r.digits) & r^2 != 0,
                              "~`<`~",
@@ -549,7 +563,7 @@ cor_test_compute_fun <- function(data,
           ifelse(is.na(z[["tau"]]), character(0L),
                  paste("italic(tau)",
                        ifelse(abs(z[["tau"]]) < 10^(-r.digits),
-                              sprintf("\"%.*f\"", r.digits, 10^(-r.digits) * sign(z[["tau"]])),
+                              sprintf_dm("\"%.*f\"", r.digits, 10^(-r.digits) * sign(z[["tau"]]), decimal.mark = decimal.mark),
                               r.char),
                        sep = ifelse(abs(z[["tau"]]) < 10^(-r.digits),
                                     c("~`>`~", "~`=`~", "~`<`~")[sign(z[["tau"]]) + 2],
@@ -564,7 +578,7 @@ cor_test_compute_fun <- function(data,
           ifelse(is.na(z[["rho"]]), character(0L),
                  paste("italic(rho)",
                        ifelse(abs(z[["rho"]]) < 10^(-r.digits),
-                              sprintf("\"%.*f\"", r.digits, 10^(-r.digits) * sign(z[["rho"]])),
+                              sprintf_dm("\"%.*f\"", r.digits, 10^(-r.digits) * sign(z[["rho"]]), decimal.mark = decimal.mark),
                               r.char),
                        sep = ifelse(abs(z[["rho"]]) < 10^(-r.digits),
                                     c("~`>`~", "~`=`~", "~`<`~")[sign(z[["rho"]]) + 2],
@@ -582,7 +596,7 @@ cor_test_compute_fun <- function(data,
         ifelse(is.na(z[["p.value"]]), character(0L),
                paste(ifelse(small.p, "p",  "P"),
                      ifelse(z[["p.value"]] < 10^(-p.digits),
-                            sprintf("\"%.*f\"", p.digits, 10^(-p.digits)),
+                            sprintf_dm("\"%.*f\"", p.digits, 10^(-p.digits), decimal.mark = decimal.mark),
                             p.value.char),
                      sep = ifelse(z[["p.value"]] < 10^(-p.digits),
                                   " < ",
@@ -595,7 +609,7 @@ cor_test_compute_fun <- function(data,
           ifelse(is.na(z[["cor"]]), character(0L),
                  paste(ifelse(small.r, "r", "R"),
                        ifelse(abs(z[["cor"]]) < 10^(-r.digits),
-                              sprintf("\"%.*f\"", r.digits, 10^(-r.digits) * sign(z[["cor"]])),
+                              sprintf_dm("\"%.*f\"", r.digits, 10^(-r.digits) * sign(z[["cor"]]), decimal.mark = decimal.mark),
                               r.char),
                        sep = ifelse(abs(z[["cor"]]) < 10^(-r.digits),
                                     c(" > ", " = ", " < ")[sign(z[["cor"]]) + 2],
@@ -603,7 +617,7 @@ cor_test_compute_fun <- function(data,
         z[["rr.label"]] <-
           paste(ifelse(small.r, "italic(r)^2", "italic(R)^2"),
                 ifelse(r^2 < 10^(-r.digits) & r^2 != 0,
-                       sprintf("\"%.*f\"", r.digits, 10^(-r.digits)),
+                       sprintf_dm("\"%.*f\"", r.digits, 10^(-r.digits), decimal.mark = decimal.mark),
                        rr.char),
                 sep = ifelse(r^2 < 10^(-r.digits) & r^2 != 0,
                              "~`<`~",
@@ -618,7 +632,7 @@ cor_test_compute_fun <- function(data,
                  paste(ifelse(output.type == "text",
                               "tau", "\tau"),
                        ifelse(abs(z[["tau"]]) < 10^(-r.digits),
-                              sprintf("\"%.*f\"", r.digits, 10^(-r.digits) * sign(z[["tau"]])),
+                              sprintf_dm("\"%.*f\"", r.digits, 10^(-r.digits) * sign(z[["tau"]]), decimal.mark = decimal.mark),
                               r.char),
                        sep = ifelse(abs(z[["tau"]]) < 10^(-r.digits),
                                     c(" > ", " = ", " < ")[sign(z[["tau"]]) + 2],
@@ -633,7 +647,7 @@ cor_test_compute_fun <- function(data,
                  paste(ifelse(output.type == "text",
                               "rho", "\rho"),
                        ifelse(abs(z[["rho"]]) < 10^(-r.digits),
-                              sprintf("\"%.*f\"", r.digits, 10^(-r.digits) * sign(z[["rho"]])),
+                              sprintf_dm("\"%.*f\"", r.digits, 10^(-r.digits) * sign(z[["rho"]]), decimal.mark = decimal.mark),
                               r.char),
                        sep = ifelse(abs(z[["rho"]]) < 10^(-r.digits),
                                     c(" > ", " = ", " < ")[sign(z[["rho"]]) + 2],
@@ -649,7 +663,7 @@ cor_test_compute_fun <- function(data,
         ifelse(is.na(z[["p.value"]]), character(0L),
                paste(ifelse(small.p, "_p_",  "_P_"),
                      ifelse(z[["p.value"]] < 10^(-p.digits),
-                            sprintf("\"%.*f\"", p.digits, 10^(-p.digits)),
+                            sprintf_dm("\"%.*f\"", p.digits, 10^(-p.digits), decimal.mark = decimal.mark),
                             p.value.char),
                      sep = ifelse(z[["p.value"]] < 10^(-p.digits),
                                   " < ",
@@ -662,7 +676,7 @@ cor_test_compute_fun <- function(data,
           ifelse(is.na(z[["cor"]]), character(0L),
                  paste(ifelse(small.r, "_r_", "_R_"),
                        ifelse(abs(z[["cor"]]) < 10^(-r.digits),
-                              sprintf("\"%.*f\"", r.digits, 10^(-r.digits) * sign(z[["cor"]])),
+                              sprintf_dm("\"%.*f\"", r.digits, 10^(-r.digits) * sign(z[["cor"]]), decimal.mark = decimal.mark),
                               r.char),
                        sep = ifelse(abs(z[["cor"]]) < 10^(-r.digits),
                                     c(" > ", " = ", " < ")[sign(z[["cor"]]) + 2],
@@ -670,7 +684,7 @@ cor_test_compute_fun <- function(data,
         z[["rr.label"]] <-
           paste(ifelse(small.r, "_r_<sup>2</sup>", "_R_<sup>2</sup>"),
                 ifelse(r^2 < 10^(-r.digits) & r^2 != 0,
-                       sprintf("\"%.*f\"", r.digits, 10^(-r.digits)),
+                       sprintf_dm("\"%.*f\"", r.digits, 10^(-r.digits), decimal.mark = decimal.mark),
                        rr.char),
                 sep = ifelse(r^2 < 10^(-r.digits) & r^2 != 0,
                              " < ",
@@ -684,7 +698,7 @@ cor_test_compute_fun <- function(data,
           ifelse(is.na(z[["tau"]]), character(0L),
                  paste("_&tau;_",
                        ifelse(abs(z[["tau"]]) < 10^(-r.digits),
-                              sprintf("\"%.*f\"", r.digits, 10^(-r.digits) * sign(z[["tau"]])),
+                              sprintf_dm("\"%.*f\"", r.digits, 10^(-r.digits) * sign(z[["tau"]]), decimal.mark = decimal.mark),
                               r.char),
                        sep = ifelse(abs(z[["tau"]]) < 10^(-r.digits),
                                     c(" > ", " = ", " < ")[sign(z[["tau"]]) + 2],
@@ -698,7 +712,7 @@ cor_test_compute_fun <- function(data,
           ifelse(is.na(z[["rho"]]), character(0L),
                  paste("_&rho;_",
                        ifelse(abs(z[["rho"]]) < 10^(-r.digits),
-                              sprintf("\"%.*f\"", r.digits, 10^(-r.digits) * sign(z[["rho"]])),
+                              sprintf_dm("\"%.*f\"", r.digits, 10^(-r.digits) * sign(z[["rho"]]), decimal.mark = decimal.mark),
                               r.char),
                        sep = ifelse(abs(z[["rho"]]) < 10^(-r.digits),
                                     c(" > ", " = ", " < ")[sign(z[["rho"]]) + 2],

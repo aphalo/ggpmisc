@@ -2,6 +2,9 @@ context("stat_poly_eq")
 
 library(tibble)
 
+old.out.dec <- options(OutDec = ".")
+on.exit(options(old.out.dec), add = TRUE, after = FALSE)
+
 set.seed(4321)
 # generate artificial data
 x <- 1:100
@@ -40,6 +43,8 @@ test_that("poly_eq_noload", {
                                                                                    ggplot2::after_stat(adj.rr.label),
                                                                                    ggplot2::after_stat(f.value.label),
                                                                                    ggplot2::after_stat(p.value.label),
+                                                                                   ggplot2::after_stat(n.label),
+                                                                                   ggplot2::after_stat(method.label),
                                                                                    sep = "~~")))
   )
   vdiffr::expect_doppelganger("stat_poly_eq_noload_use_label",
@@ -82,6 +87,8 @@ test_that("poly_formulas", {
                                                                  after_stat(adj.rr.label),
                                                                  after_stat(f.value.label),
                                                                  after_stat(p.value.label),
+                                                                 after_stat(n.label),
+                                                                 after_stat(method.label),
                                                                  sep = "~~")))
   )
 
@@ -253,6 +260,32 @@ test_that("poly_formulas", {
                                                                  sep = "~~")))
   )
 
+  old.out.dec <- options(OutDec = ",")
+  vdiffr::expect_doppelganger("stat_poly_eq_formula_poly3_comma",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_eq(formula = y ~ poly(x, 3), parse = TRUE,
+                                             mapping =
+                                               aes(label = paste(after_stat(eq.label),
+                                                                 after_stat(adj.rr.label),
+                                                                 after_stat(rr.confint.label),
+                                                                 after_stat(f.value.label),
+                                                                 after_stat(p.value.label),
+                                                                 sep = "~~")))
+  )
+  vdiffr::expect_doppelganger("stat_poly_eq_more_comma",
+                              ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
+                                ggplot2::geom_point() +
+                                ggpmisc::stat_poly_eq(formula = y ~ x, parse = TRUE,
+                                                      mapping =
+                                                        ggplot2::aes(label = paste(after_stat(rr.label),
+                                                                                   after_stat(f.value.label),
+                                                                                   after_stat(p.value.label),
+                                                                                   after_stat(n.label),
+                                                                                   after_stat(method.label),
+                                                                                   sep = "~~")))
+  )
+  options(old.out.dec)
 })
 
 test_that("poly_methods", {

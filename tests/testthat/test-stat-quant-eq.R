@@ -2,6 +2,9 @@ context("stat_quant_eq")
 
 library(tibble)
 
+old.out.dec <- options(OutDec = ".")
+on.exit(options(old.out.dec), add = TRUE, after = FALSE)
+
 set.seed(4321)
 # generate artificial data
 x <- 1:100

@@ -165,6 +165,10 @@ For backward compatibility a logical is accepted as argument for
   as member \code{method}. More easily, the name of the function can be
   passed as a character string together with the \code{lmodel2}-supported
   method.
+
+  R option \code{OutDec} is obeyed based on its value at the time the plot
+  is rendered, i.e., displayed or printed. Set \code{options(OutDec = ",")}
+  for languages like Spanish or French.
 }
 \section{Aesthetics}{
  \code{stat_ma_eq} understands \code{x} and \code{y}, to
