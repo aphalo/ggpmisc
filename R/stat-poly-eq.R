@@ -995,6 +995,7 @@ StatPolyEq <-
                                   label = after_stat(rr.label),
                                   hjust = "inward", vjust = "inward",
                                   weight = 1),
+                   dropped_aes = "weight",
                    required_aes = c("x", "y"),
                    optional_aes = "grp.label"
   )
@@ -1131,8 +1132,10 @@ typeset_numbers <- function(eq.char, output.type) {
       eq.char <- gsub("%*%", "\\times{}", eq.char, fixed = TRUE)
       eq.char <- gsub("*", "", eq.char, fixed = TRUE)
     } else if (output.type == "text") {
-      eq.char <- gsub("[*][:space:]", " ", eq.char, fixed = TRUE)
-      eq.char <- gsub("%*%", " * ", eq.char, fixed = TRUE)
+      eq.char <- gsub("[{]|[}]", "", eq.char, fixed = FALSE)
+      eq.char <- gsub("%*%", "", eq.char, fixed = TRUE)
+      eq.char <- gsub("*", " ", eq.char, fixed = TRUE)
+      eq.char <- gsub("  ", " ", eq.char, fixed = TRUE)
     }
   }
   eq.char

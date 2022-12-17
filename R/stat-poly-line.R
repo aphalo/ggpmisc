@@ -358,6 +358,7 @@ StatPolyLine <-
 
                    compute_group = poly_line_compute_group_fun,
 
+                   dropped_aes = c("weight"),
                    required_aes = c("x", "y")
   )
 

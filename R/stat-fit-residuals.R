@@ -332,5 +332,6 @@ residuals_compute_group_fun <- function(data,
 StatFitResiduals <-
   ggplot2::ggproto("StatFitResiduals", ggplot2::Stat,
                    compute_group = residuals_compute_group_fun,
+                   dropped_aes = "weight",
                    required_aes = c("x", "y")
   )

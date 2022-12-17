@@ -1,7 +1,7 @@
 Package: ggpmisc
 Type: Package
 Title: Miscellaneous Extensions to 'ggplot2'
-Version: 0.5.1.9001
+Version: 0.5.2
 Date: 2022-12-17
 Authors@R:
     c(
@@ -29,7 +29,7 @@ Depends:
 Imports:
     grid,
     stats,
-    ggplot2 (>= 3.3.5),
+    ggplot2 (>= 3.4.0),
     scales (>= 1.2.0),
     rlang (>= 1.0.0),
     generics (>= 0.1.2),

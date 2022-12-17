@@ -312,6 +312,7 @@ deviations_compute_group_fun <- function(data,
 StatFitDeviations <-
   ggplot2::ggproto("StatFitDeviations", ggplot2::Stat,
                    compute_group = deviations_compute_group_fun,
+                   dropped_aes = "weight",
                    default_aes =
                      ggplot2::aes(xend = after_stat(x.fitted),
                                   yend = after_stat(y.fitted)),

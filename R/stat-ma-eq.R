@@ -364,7 +364,6 @@ ma_eq_compute_group_fun <- function(data,
                                     range.y,
                                     range.x,
                                     nperm,
-                                    weight,
                                     eq.with.lhs,
                                     eq.x.rhs,
                                     small.r,
@@ -753,8 +752,7 @@ StatMaEq <-
                      ggplot2::aes(npcx = after_stat(npcx),
                                   npcy = after_stat(npcy),
                                   label = after_stat(rr.label),
-                                  hjust = "inward", vjust = "inward",
-                                  weight = 1),
+                                  hjust = "inward", vjust = "inward"),
                    required_aes = c("x", "y"),
                    optional_aes = "grp.label"
   )

@@ -326,6 +326,7 @@ StatQuantBand <-
                    },
                    extra_params = c("na.rm", "orientation"),
                    compute_group = quant_band_compute_group_fun,
+                   dropped_aes = "weight",
                    required_aes = c("x", "y")
   )
 

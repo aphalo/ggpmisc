@@ -286,7 +286,7 @@ ggplot(my.data, aes(x, y)) +
 # angle
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  stat_quant_line(formula = formula) +
+  stat_quant_line(formula = formula, linewidth = 0.5) +
   stat_quant_eq(formula = formula, angle = 90, hstep = 0.05, vstep = 0,
                 label.y = 0.98, hjust = 1)
 
@@ -313,12 +313,12 @@ ggplot(my.data, aes(x, y)) +
 # grouping
 ggplot(my.data, aes(x, y2, color = group)) +
   geom_point() +
-  stat_quant_line(formula = formula, size = 0.5) +
+  stat_quant_line(formula = formula, linewidth = 0.5) +
   stat_quant_eq(formula = formula)
 
 ggplot(my.data, aes(x, y2, color = group)) +
   geom_point() +
-  stat_quant_band(formula = formula, size = 0.75) +
+  stat_quant_band(formula = formula, linewidth = 0.75) +
   stat_quant_eq(formula = formula) +
   theme_bw()
 
@@ -326,7 +326,7 @@ ggplot(my.data, aes(x, y2, color = group)) +
 ggplot(my.data, aes(x, y2,  shape = group, linetype = group,
        grp.label = group)) +
   geom_point() +
-  stat_quant_band(formula = formula, color = "black", size = 0.75) +
+  stat_quant_band(formula = formula, color = "black", linewidth = 0.75) +
   stat_quant_eq(use_label(c("grp", "eq"), sep = "*\": \"*"),
                 formula = formula) +
   expand_limits(y = 3) +
@@ -335,7 +335,7 @@ ggplot(my.data, aes(x, y2,  shape = group, linetype = group,
 # using weights
 ggplot(my.data, aes(x, y, weight = w)) +
   geom_point() +
-  stat_quant_line(formula = formula, size = 0.5) +
+  stat_quant_line(formula = formula, linewidth = 0.5) +
   stat_quant_eq(formula = formula)
 
 # no weights, quantile set to upper boundary
@@ -349,7 +349,7 @@ ggplot(my.data, aes(x, y2, color = group, grp.label = group)) +
   geom_point() +
   stat_quant_line(method = "rq", formula = formula,
                 quantiles = c(0.05, 0.5, 0.95),
-                size = 0.5) +
+                linewidth = 0.5) +
   stat_quant_eq(aes(label = paste(after_stat(grp.label), "*\": \"*",
                                    after_stat(eq.label), sep = "")),
                 quantiles = c(0.05, 0.5, 0.95),
