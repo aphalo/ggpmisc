@@ -3,10 +3,12 @@
 
 # ggpmisc <img src="man/figures/logo-ggpmisc.png" align="right" width="150" />
 
+<!-- badges: start -->
+
 [![cran
 version](https://www.r-pkg.org/badges/version/ggpmisc)](https://cran.r-project.org/package=ggpmisc)
-[![R build
-status](https://github.com/aphalo/ggpmisc/workflows/R-CMD-check/badge.svg)](https://github.com/aphalo/ggpmisc/actions)
+[![R-CMD-check](https://github.com/aphalo/ggpmisc/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/aphalo/ggpmisc/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
 
 ## Purpose
 
