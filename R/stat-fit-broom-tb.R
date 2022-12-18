@@ -594,6 +594,7 @@ fit_tb_compute_panel_fun <- function(data,
 StatFitTb <-
   ggplot2::ggproto("StatFitTb", ggplot2::Stat,
                    compute_panel = fit_tb_compute_panel_fun,
+                   dropped_aes = "weight",
                    default_aes =
                      ggplot2::aes(hjust = "inward",
                                   vjust = "inward",

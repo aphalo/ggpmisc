@@ -377,6 +377,7 @@ fit_glance_compute_group_fun <- function(data,
 StatFitGlance <-
   ggplot2::ggproto("StatFitGlance", ggplot2::Stat,
                    compute_group = fit_glance_compute_group_fun,
+                   dropped_aes = "weight",
                    default_aes =
                      ggplot2::aes(npcx = after_stat(npcx),
                                   npcy = after_stat(npcy),
@@ -664,6 +665,7 @@ StatFitAugment <-
   ggplot2::ggproto("StatFitAugment",
                    ggplot2::Stat,
                    compute_group = fit_augment_compute_group_fun,
+                   dropped_aes = "weight",
                    default_aes =
                      ggplot2::aes(ymax = after_stat(y + .se.fit * t.value),
                                   ymin = after_stat(y - .se.fit * t.value)),
@@ -820,7 +822,7 @@ StatFitAugment <-
 #' # Regression by panel example
 #' if (broom.installed)
 #'   ggplot(mtcars, aes(x = disp, y = mpg)) +
-#'     stat_smooth(method = "lm") +
+#'     stat_smooth(method = "lm", formula = y ~ x) +
 #'     geom_point(aes(colour = factor(cyl))) +
 #'     stat_fit_tidy(method = "lm",
 #'                   label.x = "right",
@@ -832,7 +834,7 @@ StatFitAugment <-
 #' # Regression by group example
 #' if (broom.installed)
 #'   ggplot(mtcars, aes(x = disp, y = mpg, colour = factor(cyl))) +
-#'     stat_smooth(method = "lm") +
+#'     stat_smooth(method = "lm", formula = y ~ x) +
 #'     geom_point() +
 #'     stat_fit_tidy(method = "lm",
 #'                   label.x = "right",
@@ -844,7 +846,7 @@ StatFitAugment <-
 #' # Weighted regression example
 #' if (broom.installed)
 #'   ggplot(mtcars, aes(x = disp, y = mpg, weight = cyl)) +
-#'     stat_smooth(method = "lm") +
+#'     stat_smooth(method = "lm", formula = y ~ x) +
 #'     geom_point(aes(colour = factor(cyl))) +
 #'     stat_fit_tidy(method = "lm",
 #'                   label.x = "right",
@@ -853,22 +855,10 @@ StatFitAugment <-
 #'                                                 after_stat(x_estimate),
 #'                                                 after_stat(x_p.value))))
 #'
-#' # Correlation test
-#' if (broom.installed)
-#'   ggplot(mtcars, aes(x = disp, y = mpg)) +
-#'     stat_smooth(method = "lm") +
-#'     geom_point() +
-#'     stat_fit_tidy(method = "cor.test",
-#'                   label.y = "bottom",
-#'                   method.args = list(formula = ~ x + y),
-#'                   mapping = aes(label = sprintf("R = %.3g\np-value = %.3g",
-#'                                                 after_stat(`_estimate`),
-#'                                                 after_stat(`_p.value`))))
-#'
 #' # Quantile regression
 #' if (broom.installed)
 #'   ggplot(mtcars, aes(x = disp, y = mpg)) +
-#'     stat_smooth(method = "lm") +
+#'     stat_smooth(method = "lm", formula = y ~ x) +
 #'     geom_point() +
 #'     stat_fit_tidy(method = "rq",
 #'                   label.y = "bottom",
@@ -1074,6 +1064,7 @@ fit_tidy_compute_group_fun <- function(data,
 StatFitTidy <-
   ggplot2::ggproto("StatFitTidy", ggplot2::Stat,
                    compute_group = fit_tidy_compute_group_fun,
+                   dropped_aes = "weight",
                    default_aes =
                      ggplot2::aes(npcx = after_stat(npcx),
                                   npcy = after_stat(npcy),
