@@ -196,8 +196,7 @@ if (broom.installed)
 if (broom.installed)
   ggplot(mtcars, aes(x = disp, y = mpg)) +
     geom_point() +
-    stat_fit_augment(method = "rq",
-                    label.y = "bottom")
+    stat_fit_augment(method = "rq")
 
 
 }

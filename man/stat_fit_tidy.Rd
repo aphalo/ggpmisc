@@ -183,7 +183,7 @@ if (requireNamespace("broom", quietly = TRUE)) {
 # Regression by panel example
 if (broom.installed)
   ggplot(mtcars, aes(x = disp, y = mpg)) +
-    stat_smooth(method = "lm") +
+    stat_smooth(method = "lm", formula = y ~ x) +
     geom_point(aes(colour = factor(cyl))) +
     stat_fit_tidy(method = "lm",
                   label.x = "right",
@@ -195,7 +195,7 @@ if (broom.installed)
 # Regression by group example
 if (broom.installed)
   ggplot(mtcars, aes(x = disp, y = mpg, colour = factor(cyl))) +
-    stat_smooth(method = "lm") +
+    stat_smooth(method = "lm", formula = y ~ x) +
     geom_point() +
     stat_fit_tidy(method = "lm",
                   label.x = "right",
@@ -207,7 +207,7 @@ if (broom.installed)
 # Weighted regression example
 if (broom.installed)
   ggplot(mtcars, aes(x = disp, y = mpg, weight = cyl)) +
-    stat_smooth(method = "lm") +
+    stat_smooth(method = "lm", formula = y ~ x) +
     geom_point(aes(colour = factor(cyl))) +
     stat_fit_tidy(method = "lm",
                   label.x = "right",
@@ -216,22 +216,10 @@ if (broom.installed)
                                                 after_stat(x_estimate),
                                                 after_stat(x_p.value))))
 
-# Correlation test
-if (broom.installed)
-  ggplot(mtcars, aes(x = disp, y = mpg)) +
-    stat_smooth(method = "lm") +
-    geom_point() +
-    stat_fit_tidy(method = "cor.test",
-                  label.y = "bottom",
-                  method.args = list(formula = ~ x + y),
-                  mapping = aes(label = sprintf("R = \%.3g\np-value = \%.3g",
-                                                after_stat(`_estimate`),
-                                                after_stat(`_p.value`))))
-
 # Quantile regression
 if (broom.installed)
   ggplot(mtcars, aes(x = disp, y = mpg)) +
-    stat_smooth(method = "lm") +
+    stat_smooth(method = "lm", formula = y ~ x) +
     geom_point() +
     stat_fit_tidy(method = "rq",
                   label.y = "bottom",

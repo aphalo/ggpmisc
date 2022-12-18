@@ -552,8 +552,7 @@ StatFitGlance <-
 #' if (broom.installed)
 #'   ggplot(mtcars, aes(x = disp, y = mpg)) +
 #'     geom_point() +
-#'     stat_fit_augment(method = "rq",
-#'                     label.y = "bottom")
+#'     stat_fit_augment(method = "rq")
 #'
 #'
 stat_fit_augment <- function(mapping = NULL, data = NULL, geom = "smooth",
