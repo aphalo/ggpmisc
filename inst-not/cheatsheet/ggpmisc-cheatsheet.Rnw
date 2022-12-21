@@ -1,0 +1,88 @@
+\documentclass[DIV=25,a3,landscape,9pt]{scrartcl}
+\include{set-up-fonts-and-icons}
+
+\usepackage{multicol}
+\setlength{\columnseprule}{1pt}
+\usepackage{booktabs}
+
+\usepackage[olditem]{paralist}%,oldenum
+
+%\setlength{\parindent}{2em}
+\pagestyle{myheadings}
+
+
+\begin{document}
+
+\title{\huge Fitted models and statistical annotations with \textcolor{purple}{ggpmisc}\ :\,:\ CHEAT SHEET\hfill\includegraphics[width=3cm]{logo-ggpmisc.png}}
+%\subtitle{Enhancements to the grammar of layered graphics}
+%\author{Pedro J. Aphalo}
+%\institute{University of Helsinki}
+%\email{https://www.r4photobiology.info/}
+%\conference{CHEAT SHEET.}
+\date{\null}
+
+<<setup-knitr, include=FALSE, cache=FALSE>>=
+library(knitr)
+opts_chunk$set(fig.path='figure/pos-', fig.align='center', fig.show='hold', size="small",
+               fig.width=7, fig.height=4.2, out.width='0.97\\textwidth')
+@
+
+\maketitle\vspace{-20mm}
+
+\begin{multicols}{3}
+
+\section*{Basics}
+
+\textbf{ggpmisc} extends \textbf{ggplot2} and the \textbf{grammar of graphics} that it is based on. Plot construction remains unchanged but new \textbf{statistics} and \textbf{scales} support plot annotations and smoothers based on model fits. Layer functions and scales that easy the creation of volcano and quadrant plots are also included.
+
+<<setup-ggpmisc, message=FALSE, echo=FALSE>>=
+library(ggpmisc)
+@
+
+\section*{Fitted-model equations and parameter estimates as labels}
+
+\noindent
+\textbf{stat\_poly\_eq()}\\
+\textbf{stat\_ma\_eq()}\\
+\textbf{stat\_quant\_eq()}\\
+\textbf{stat\_correlation()}\\
+\textbf{use\_label()}\\
+\textbf{stat\_fit\_tidy()}\\
+\textbf{stat\_fit\_glance()}
+
+\section*{Predicted, fitted and residuals}
+
+\noindent
+\textbf{stat\_poly\_line()}\\
+\textbf{stat\_ma\_line()}\\
+\textbf{stat\_quant\_line()}\\
+\textbf{stat\_quant\_band()}\\
+\textbf{stat\_fit\_augment()}\\
+\textbf{stat\_fit\_deviations()}\\
+\textbf{stat\_fit\_residuals()}
+
+\section*{ANOVA and summary tables}
+
+\noindent
+\textbf{stat\_fit\_tb()}
+
+\section*{Data features}
+
+\noindent
+\textbf{stat\_peaks()}\\
+\textbf{stat\_valleys()}\\
+
+\section*{Scales}
+
+
+\end{multicols}
+\vfill
+\centering
+\noindent
+\copyright 2022 Pedro J. Aphalo. More information at \texttt{https://www.r4photobiology.info}. Last updated for `ggpmisc' (==0.5.2).
+
+\end{document}
+
+%\noindent\raggedright\sloppy
+
+

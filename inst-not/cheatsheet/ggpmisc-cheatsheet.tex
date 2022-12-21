@@ -1,0 +1,131 @@
+\documentclass[DIV=25,a3,landscape,9pt]{scrartcl}\usepackage[]{graphicx}\usepackage[]{xcolor}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+\include{set-up-fonts-and-icons}
+
+\usepackage{multicol}
+\setlength{\columnseprule}{1pt}
+\usepackage{booktabs}
+
+\usepackage[olditem]{paralist}%,oldenum
+
+%\setlength{\parindent}{2em}
+\pagestyle{myheadings}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+\title{\huge Fitted models and statistical annotations with \textcolor{purple}{ggpmisc}\ :\,:\ CHEAT SHEET\hfill\includegraphics[width=3cm]{logo-ggpmisc.png}}
+%\subtitle{Enhancements to the grammar of layered graphics}
+%\author{Pedro J. Aphalo}
+%\institute{University of Helsinki}
+%\email{https://www.r4photobiology.info/}
+%\conference{CHEAT SHEET.}
+\date{\null}
+
+
+
+\maketitle\vspace{-20mm}
+
+\begin{multicols}{3}
+
+\section*{Basics}
+
+\textbf{ggpmisc} extends \textbf{ggplot2} and the \textbf{grammar of graphics} that it is based on. Plot construction remains unchanged but new \textbf{statistics} and \textbf{scales} support plot annotations and smoothers based on model fits. Layer functions and scales that easy the creation of volcano and quadrant plots are also included.
+
+
+
+\section*{Fitted-model equations and parameter estimates as labels}
+
+\noindent
+\textbf{stat\_poly\_eq()}\\
+\textbf{stat\_ma\_eq()}\\
+\textbf{stat\_quant\_eq()}\\
+\textbf{stat\_correlation()}\\
+\textbf{use\_label()}\\
+\textbf{stat\_fit\_tidy()}\\
+\textbf{stat\_fit\_glance()}
+
+\section*{Predicted, fitted and residuals}
+
+\noindent
+\textbf{stat\_poly\_line()}\\
+\textbf{stat\_ma\_line()}\\
+\textbf{stat\_quant\_line()}\\
+\textbf{stat\_quant\_band()}\\
+\textbf{stat\_fit\_augment()}\\
+\textbf{stat\_fit\_deviations()}\\
+\textbf{stat\_fit\_residuals()}
+
+\section*{ANOVA and summary tables}
+
+\noindent
+\textbf{stat\_fit\_tb()}
+
+\section*{Data features}
+
+\noindent
+\textbf{stat\_peaks()}\\
+\textbf{stat\_valleys()}\\
+
+\section*{Scales}
+
+
+\end{multicols}
+\vfill
+\centering
+\noindent
+\copyright 2022 Pedro J. Aphalo. More information at \texttt{https://www.r4photobiology.info}. Last updated for `ggpp' (==0.5.0).
+
+\end{document}
+
+%\noindent\raggedright\sloppy
+
+
