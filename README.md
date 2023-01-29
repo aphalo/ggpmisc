@@ -7,6 +7,8 @@
 
 [![cran
 version](https://www.r-pkg.org/badges/version/ggpmisc)](https://cran.r-project.org/package=ggpmisc)
+[![cran
+checks](https://badges.cranchecks.info/worst/ggpmisc.svg)](https://cran.r-project.org/web/checks/check_results_ggpmisc.html)
 [![R-CMD-check](https://github.com/aphalo/ggpmisc/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/aphalo/ggpmisc/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
@@ -268,7 +270,7 @@ citation("ggpmisc")
 #> 
 #> To cite package 'ggpmisc' in publications use:
 #> 
-#>   Aphalo P (2022). _ggpmisc: Miscellaneous Extensions to 'ggplot2'_.
+#>   Aphalo P (2023). _ggpmisc: Miscellaneous Extensions to 'ggplot2'_.
 #>   https://docs.r4photobiology.info/ggpmisc/,
 #>   https://github.com/aphalo/ggpmisc.
 #> 
@@ -277,7 +279,7 @@ citation("ggpmisc")
 #>   @Manual{,
 #>     title = {ggpmisc: Miscellaneous Extensions to 'ggplot2'},
 #>     author = {Pedro J. Aphalo},
-#>     year = {2022},
+#>     year = {2023},
 #>     note = {https://docs.r4photobiology.info/ggpmisc/,
 #> https://github.com/aphalo/ggpmisc},
 #>   }
@@ -307,6 +309,6 @@ Computational and Graphical Statistics 19 (1): 3–28.
 
 ## License
 
-© 2016-2022 Pedro J. Aphalo (<pedro.aphalo@helsinki.fi>). Released under
+© 2016-2023 Pedro J. Aphalo (<pedro.aphalo@helsinki.fi>). Released under
 the GPL, version 2 or greater. This software carries no warranty of any
 kind.

@@ -4,6 +4,11 @@ editor_options:
     wrap: 72
 ---
 
+# ggpmisc 0.5.3
+
+-   Fix bug in `stat_ma_line()`: error triggered when computation confidence
+band was not available. (Reported by rakelrpf as issue #36.)
+
 # ggpmisc 0.5.2
 
 -   Fix bug caused by the use of `base::isa()` which is not supported for `"formula"` in R < 4.1.0 (reported by Johnny Le).

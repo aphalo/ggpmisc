@@ -160,6 +160,7 @@ predict.lmodel2 <-function(object,
       y1.predicted <- a1 + b1 * new.x
       y2.predicted <- a2 + b2 * new.x
     }
+
     data.frame(fit = y.predicted,
                lwr = ifelse(y1.predicted < y2.predicted,
                             y1.predicted,

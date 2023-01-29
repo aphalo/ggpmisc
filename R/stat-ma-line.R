@@ -378,8 +378,15 @@ ma_line_compute_group_fun <-
                                  newdata = newdata,
                                  interval = "confidence"
     )
+
     names(prediction) <- c("y", "ymin", "ymax")
+    if (any(is.na(prediction$ymin)) || any(is.na(prediction$ymax))) {
+      warning("Confidence band not available; see 'lmoldel2::lmodel2()'")
+      prediction$ymin <- NULL
+      prediction$ymax <- NULL
+    }
     prediction <- cbind(newdata, prediction)
+
     if (fm.values) {
       idx <- which(fm[["regression.results"]][["Method"]] == fun.method)
       prediction[["p.value"]] <- fm[["regression.results"]][["P-perm (1-tailed)"]][idx]
