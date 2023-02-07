@@ -6,8 +6,8 @@ editor_options:
 
 # ggpmisc 0.5.3
 
--   Fix bug in `stat_ma_line()`: error triggered when computation confidence
-band was not available. (Reported by rakelrpf as issue #36.)
+-   Fix bug in `stat_ma_line()`: error triggered when returned values from computation of confidence
+band are not available. (Reported by rakelrpf as issue #36.)
 
 # ggpmisc 0.5.2
 
