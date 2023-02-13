@@ -1,6 +1,4 @@
 .Rproj.user
 .Rhistory
 .RData
-tests/figs
-*.log
-revdep
+.Ruserdata
