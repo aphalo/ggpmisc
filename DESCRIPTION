@@ -1,8 +1,8 @@
 Package: ggpmisc
 Type: Package
 Title: Miscellaneous Extensions to 'ggplot2'
-Version: 0.5.2.9000
-Date: 2023-01-29
+Version: 0.5.2.9001
+Date: 2023-02-15
 Authors@R:
     c(
     person("Pedro J.", "Aphalo", email = "pedro.aphalo@helsinki.fi", role = c("aut", "cre"), comment = c(ORCID = "0000-0003-3385-972X")),
@@ -50,7 +50,9 @@ Suggests:
     broom (>= 0.8.0),
     broom.mixed (>= 0.2.9.4),
     nlme (>= 3.1-152),
-    gginnards (>= 0.1.0-1)
+    gginnards (>= 0.1.0-1),
+    testthat,
+    vdiffr
 URL: https://docs.r4photobiology.info/ggpmisc/, 
      https://github.com/aphalo/ggpmisc
 BugReports: https://github.com/aphalo/ggpmisc/issues

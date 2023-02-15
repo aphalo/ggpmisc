@@ -2,7 +2,7 @@
 ^\.Rproj\.user$
 vignettes/figure
 inst-not
-test
+^test$
 data-raw
 ^CONDUCT\.md$
 ^_pkgdown\.yml$
