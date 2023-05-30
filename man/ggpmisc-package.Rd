@@ -75,8 +75,8 @@ stat_peaks(colour = "red") +
 formula <- y ~ poly(x, 2, raw = TRUE)
 ggplot(cars, aes(speed, dist)) +
   geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
-  stat_poly_eq(aes(label = after_stat(eq.label)),
+  stat_poly_line(formula = formula) +
+  stat_poly_eq(use_label(c("eq", "R2", "P")),
                formula = formula,
                parse = TRUE) +
   labs(x = expression("Speed, "*x~("mph")),

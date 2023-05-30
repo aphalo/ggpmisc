@@ -8,6 +8,7 @@ editor_options:
 
 -   Fix bug in `stat_ma_line()`: error triggered when returned values from computation of confidence
 band are not available. (Reported by rakelrpf as issue #36.)
+-   Add `stat_fit_fitted()`.
 
 # ggpmisc 0.5.2
 
