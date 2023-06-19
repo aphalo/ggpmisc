@@ -60,6 +60,7 @@ Statistics that help with reporting the results of model fits are:
 | `stat_quant_band()`     | median + quartiles (`smooth`)                     | rq, rqss (1, 4, 5, 7)                        |
 | `stat_fit_residuals()`  | residuals (`point`)                               | lm, rlm, rq (1, 2, 4, 7, 8)                  |
 | `stat_fit_deviations()` | deviations from observations (`segment`)          | lm, rlm, lqs, rq (1, 2, 4, 7, 9)             |
+| `stat_fit_fitted()`     | fitted values (`point`)                           | lm, rlm, lqs, rq (1, 2, 4, 7, 9)             |
 | `stat_fit_glance()`     | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | all those supported by ‘broom’               |
 | `stat_fit_augment()`    | predicted and other values (`smooth`)             | all those supported by ‘broom’               |
 | `stat_fit_tidy()`       | fit results, e.g., for equation (`text_npc`)      | all those supported by ‘broom’               |
@@ -267,7 +268,6 @@ publications, please cite according to:
 
 ``` r
 citation("ggpmisc")
-#> 
 #> To cite package 'ggpmisc' in publications use:
 #> 
 #>   Aphalo P (2023). _ggpmisc: Miscellaneous Extensions to 'ggplot2'_.
