@@ -18,6 +18,8 @@
 \alias{StatFitTidy}
 \alias{deviations_compute_group_fun}
 \alias{StatFitDeviations}
+\alias{fitted_compute_group_fun}
+\alias{StatFitFitted}
 \alias{residuals_compute_group_fun}
 \alias{StatFitResiduals}
 \alias{ma_eq_compute_group_fun}

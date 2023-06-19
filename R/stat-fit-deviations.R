@@ -57,7 +57,7 @@
 #'
 #' @section Computed variables: Data frame with same \code{nrow} as \code{data}
 #'   as subset for each group containing five numeric variables. \describe{
-#'   \item{x}{x coordinates of observations} \item{y.fitted}{x coordinates of
+#'   \item{x}{x coordinates of observations} \item{x.fitted}{x coordinates of
 #'   fitted values} \item{y}{y coordinates of observations} \item{y.fitted}{y
 #'   coordinates of fitted values}}
 #'
@@ -316,5 +316,142 @@ StatFitDeviations <-
                    default_aes =
                      ggplot2::aes(xend = after_stat(x.fitted),
                                   yend = after_stat(y.fitted)),
+                   required_aes = c("x", "y")
+  )
+
+#' @rdname stat_fit_deviations
+#'
+#' @export
+#'
+stat_fit_fitted <- function(mapping = NULL, data = NULL, geom = "point",
+                            method = "lm",
+                            method.args = list(),
+                            formula = NULL,
+                            position = "identity",
+                            na.rm = FALSE,
+                            orientation = NA,
+                            show.legend = FALSE,
+                            inherit.aes = TRUE, ...) {
+  ggplot2::layer(
+    stat = StatFitFitted, data = data, mapping = mapping, geom = geom,
+    position = position, show.legend = show.legend, inherit.aes = inherit.aes,
+    params =
+      rlang::list2(method = method,
+                   method.args = method.args,
+                   formula = formula,
+                   na.rm = na.rm,
+                   orientation = orientation,
+                   ...)
+  )
+}
+
+# Define here to avoid a note in check as the imports are not seen by checks
+# when the function is defined in-line in the ggproto object.
+#' @rdname ggpmisc-ggproto
+#'
+#' @format NULL
+#' @usage NULL
+#'
+fitted_compute_group_fun <- function(data,
+                                     scales,
+                                     method,
+                                     method.args,
+                                     formula,
+                                     orientation,
+                                     return.fitted = FALSE) {
+  stopifnot(!any(c("formula", "data") %in% names(method.args)))
+  if (is.null(data$weight)) {
+    data$weight <- 1
+  }
+
+  # we guess formula from orientation
+  if (is.null(formula)) {
+    if (is.na(orientation) || orientation == "x") {
+      formula = y ~ x
+    } else if (orientation == "y") {
+      formula = x ~ y
+    }
+  }
+  # we guess orientation from formula
+  if (is.na(orientation)) {
+    orientation <- unname(c(x = "y", y = "x")[as.character(formula)[2]])
+  }
+
+  # If method was specified as a character string, replace with
+  # the corresponding function. Some model fit functions themselves have a
+  # method parameter accepting character strings as argument. We support
+  # these by splitting strings passed as argument at a colon.
+  if (is.character(method)) {
+    method <- switch(method,
+                     lm = "lm:qr",
+                     rlm = "rlm:M",
+                     lqs = "lqs:lts",
+                     rq = "rq:br",
+                     method)
+    method.name <- method
+    method <- strsplit(x = method, split = ":", fixed = TRUE)[[1]]
+    if (length(method) > 1L) {
+      fun.method <- method[2]
+      method <- method[1]
+    } else {
+      fun.method <- character()
+    }
+    if (method == "rq") {
+      rlang::check_installed("quantreg", reason = "for `stat_fit_deviations()` with method `rq()`")
+    }
+
+    method <- switch(method,
+                     lm = stats::lm,
+                     rlm = MASS::rlm,
+                     lqs = MASS::lqs,
+                     rq = quantreg::rq,
+                     match.fun(method))
+  } else if (is.function(method)) {
+    fun.method <- character()
+    if (is.name(quote(method))) {
+      method.name <- as.character(quote(method))
+    } else {
+      method.name <- "function"
+    }
+  }
+
+  fun.args <- list(quote(formula),
+                   data = quote(data),
+                   weights = data[["weight"]])
+  fun.args <- c(fun.args, method.args)
+  if (length(fun.method)) {
+    fun.args[["method"]] <- fun.method
+  }
+
+  # quantreg contains code with partial matching of names!
+  # so we silence selectively only these warnings
+  withCallingHandlers({
+    fm <- do.call(method, args = fun.args)
+  }, warning = function(w) {
+    if (startsWith(conditionMessage(w), "partial match of") ||
+        startsWith(conditionMessage(w), "partial argument match of")) {
+      invokeRestart("muffleWarning")
+    }
+  })
+
+  fitted.vals <- stats::fitted(fm)
+  if (orientation == "y") {
+    data.frame(x = fitted.vals,
+               y = data$y)
+  } else {
+    data.frame(x = data$x,
+               y = fitted.vals)
+  }
+}
+
+#' @rdname ggpmisc-ggproto
+#' @format NULL
+#' @usage NULL
+#'
+#' @export
+#'
+StatFitFitted <-
+  ggplot2::ggproto("StatFitFitted", ggplot2::Stat,
+                   compute_group = fitted_compute_group_fun,
                    required_aes = c("x", "y")
   )
