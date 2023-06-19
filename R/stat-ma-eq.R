@@ -426,12 +426,22 @@ ma_eq_compute_group_fun <- function(data,
     grp.label <- as.character(data[["group"]][1])
   }
 
-  group.idx <- abs(data$group[1])
+  if (is.integer(data$group)) {
+    group.idx <- abs(data$group[1])
+  } else if (is.character(data$group) &&
+             grepl("<[0-9]*>$", data$group[1])) {
+    # 'gganimate' has set the groups
+    group.idx <- abs(as.numeric(gsub("<[0-9]*>", "", data$group[1])))
+  } else {
+    group.idx <- NA_integer_
+  }
+
   if (length(label.x) >= group.idx) {
     label.x <- label.x[group.idx]
   } else if (length(label.x) > 0) {
     label.x <- label.x[1]
   }
+
   if (length(label.y) >= group.idx) {
     label.y <- label.y[group.idx]
   } else if (length(label.y) > 0) {

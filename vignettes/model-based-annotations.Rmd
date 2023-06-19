@@ -23,6 +23,16 @@ options(warnPartialMatchArgs = FALSE,
 eval_flag <- TRUE # evaluate all code chunks
 ```
 
+# Purpose
+
+Package 'ggpmisc' makes it easier to add to plots created using 'ggplot2' annotations based on fitted models and other statistics. It does this by wrapping existing model fit and other functions. The same annotations can be produced by calling the model fit functions, extracting the desired estimates and adding them to plots. There are two advantages in wrapping these functions in an extension to package 'ggplot2': 1) we ensure the coupling of graphical elements and the annotations by building all elements of the plot using the same data and a consistent grammar and 2) we make it easier to annotate plots to the casual user of R, within the grammar of graphics.
+
+_To avoid confusion it is good to make clear what may seem obvious to some: if no plot is needed, then there is no reason to use this package. The values shown as annotations are not computed by 'ggpmisc' but instead by the usual model-fit and statistical functions from R and other packages. The same is true for model predictions, residuals, etc. that some of the functions in 'ggpmisc' display as lines, segments, or other graphical elements._
+
+It is also important to remember that in most cases data analysis proper should take place before annotated plots for publication are produced. Even though data analysis can benefit from combined numerical and graphical representation of the results, the use I envision for 'ggpmisc' is mainly for the production of plots for publication or communication.
+
+Attaching package 'ggpmisc' also attaches package 'ggpp' as this package was created as a spin-off from 'ggpmisc'. 'ggpp' provides several of the geometries used by default in the statistics described below. Package 'ggpp' can be loaded and attached on its own, and has [its own documentation](https://docs.r4photobiology.info/ggpp).
+
 ## Preliminaries
 
 We load all the packages used in the examples.
@@ -235,9 +245,7 @@ Scales `scale_colour_outcome()`, `scale_fill_outcome()` and `scale_shape_outcome
 
 ## Packages 'ggpmisc' and 'ggpubr'
 
-Package 'ggpubr' provides several "canned" functions that produce whole plots as well as several statistics. One of the statistics is almost identical to an old version of a statistic in package 'ggpmisc'. The reason is that it was copied into 'ggpubr' and renamed, without acknowledging the source or authorship. The current version in 'ggpmisc' has been significantly improved with bug fixes and enhancements, several of them based on issues raised in the the GitHub repositories of 'ggpmisc' as well as of 'ggpubr' or in Stackoverflow in connection to both packages. 'ggpubr' is a large package built in part from bits and pieces taken from other packages, with authors only sometimes acknowledged. 
-
-I recommend you use the current versions of the statistics from 'ggpmisc' and other packages rather than the old versions included in 'ggpubr' as they are not being maintained. If you use functions from 'ggpubr' in scientific publications, please, use and cite the original sources. In the case of 'ggpmisc', the versions in this package rather than those from 'ggpubr'. `ggpubr::stat_regline_equation()` is a copy of `ggpmisc::stat_poly_eq()` from 2018 or earlier. `ggpubr::stat_cor()` was directly based on `ggpmisc::stat_poly_eq()` but developed independently of `ggpmisc::stat_correlation()`, which is newer and has additional features. The copying of `ggpmisc::stat_poly_eq()` took place in 2018, and in the meantime I have published in CRAN more than 20 updates to package 'ggpmisc'.
+Package 'ggpubr' provides several "canned" functions that produce whole plots as well as several statistics. Package 'ggpmisc' sticks to the grammar of graphics and extends it and does not provide "canned" functions to produce whole plots at once. Function `ggpubr::stat_regline_equation()` is a copy of `ggpmisc::stat_poly_eq()` from 2018 or earlier, renamed and used without acknowledging the source. Since the version in 'ggpmisc' has been significantly improved with bug fixes and enhancements, I suggest you use `ggpmisc::stat_poly_eq()`.
 
 # Examples
 
