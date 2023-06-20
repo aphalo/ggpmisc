@@ -35,6 +35,8 @@
 #'   \code{data}, \code{weights}, and \code{method}, and return a model fit
 #'   object of class \code{lm}.
 #' @param method.args named list with additional arguments.
+#' @param n.min integer Minimum number of observations needed for fiting a
+#'   the model.
 #' @param eq.with.lhs If \code{character} the string is pasted to the front of
 #'   the equation label before parsing or a \code{logical} (see note).
 #' @param eq.x.rhs \code{character} this string will be used as replacement for
@@ -116,7 +118,21 @@
 #'   statistics the model fits respect grouping, so the scales used for \code{x}
 #'   and \code{y} should both be continuous scales rather than discrete.
 #'
-#' @references Written as an answer to question 7549694 at Stackoverflow.
+#'   With method \code{"lm"}, singularity results in terms being dropped with a
+#'   message. In this case and if the model results in a perfect fit due to low
+#'   number of observation, estimates for various parameters are \code{NaN} or
+#'   \code{NA}. When this is the case the corresponding labels are set to
+#'   \code{character(0L)} and do not show in the plot.
+#'
+#'   With methods other than \code{"lm"}, the model fit functions simply fail
+#'   in case of singularity. In this case singularity is handled automatically
+#'   only in the case of linear regression. A minimum number of observations
+#'   required to fit a model can be set to a value suitable for the model being
+#'   fitted through parameter \code{n.min}.
+#'
+#' @references Oriinally written as an answer to question 7549694 at
+#'   Stackoverflow but enhanced based on suggestions from users and my own
+#'   needs.
 #'
 #' @section IMPORTANT: \code{stat_regline_equation()} in package 'ggpubr' is
 #'   a renamed but almost unchanged copy of \code{stat_poly_eq()} taken from an
@@ -403,6 +419,7 @@ stat_poly_eq <- function(mapping = NULL, data = NULL,
                          method = "lm",
                          method.args = list(),
                          formula = NULL,
+                         n.min = 2L,
                          eq.with.lhs = TRUE,
                          eq.x.rhs = NULL,
                          small.r = FALSE,
@@ -468,6 +485,7 @@ stat_poly_eq <- function(mapping = NULL, data = NULL,
       rlang::list2(method = method,
                   method.args = method.args,
                   formula = formula,
+                  n.min = n.min,
                   eq.with.lhs = eq.with.lhs,
                   eq.x.rhs = eq.x.rhs,
                   small.r = small.r,
@@ -508,6 +526,7 @@ poly_eq_compute_group_fun <- function(data,
                                       method,
                                       method.args,
                                       formula,
+                                      n.min,
                                       weight,
                                       eq.with.lhs,
                                       eq.x.rhs,
@@ -599,23 +618,6 @@ poly_eq_compute_group_fun <- function(data,
   } else if (length(label.y) > 0) {
     label.y <- label.y[1]
   }
-
-  if (orientation == "x") {
-    if (length(unique(data$x)) < 2) {
-      warning("Not enough data to perform fit for group ",
-              group.idx, "; computing mean instead.",
-              call. = FALSE)
-      formula = y ~ 1
-    }
-  } else if (orientation == "y") {
-    if (length(unique(data$y)) < 2) {
-      warning("Not enough data to perform fit for group ",
-              group.idx, "; computing mean instead.",
-              call. = FALSE)
-      formula = x ~ 1
-    }
-  }
-
   # If method was specified as a character string, replace with
   # the corresponding function. Some model fit functions themselves have a
   # method parameter accepting character strings as argument. We support
@@ -646,6 +648,25 @@ poly_eq_compute_group_fun <- function(data,
     }
   }
 
+  if (!grepl("^lm", method.name)) {
+    # lm handles overdetermined formula by returning NA as estimates
+     if (orientation == "x") {
+      if (length(unique(data$x)) < n.min) {
+        message("Not enough data to perform fit for group ",
+                group.idx, "; computing mean instead.",
+                call. = FALSE)
+        formula = y ~ 1
+      }
+    } else if (orientation == "y") {
+      if (length(unique(data$y)) < n.min) {
+        message("Not enough data to perform fit for group ",
+                group.idx, "; computing mean instead.",
+                call. = FALSE)
+        formula = x ~ 1
+      }
+    }
+  }
+
   fun.args <- list(quote(formula),
                    data = quote(data),
                    weights = data[["weight"]])
@@ -670,10 +691,30 @@ poly_eq_compute_group_fun <- function(data,
   # extract formula from fitted model if possible, but fall back on argument if needed
   formula.ls <- fail_safe_formula(fm, fun.args, verbose = TRUE)
 
+  if ("fstatistic" %in% names(fm.summary)) {
+    f.value <- fm.summary[["fstatistic"]]["value"]
+    f.df1 <- fm.summary[["fstatistic"]]["numdf"]
+    f.df2 <- fm.summary[["fstatistic"]]["dendf"]
+    p.value <- stats::pf(q = f.value, f.df1, f.df2, lower.tail = FALSE)
+  } else {
+    f.value <- f.df1 <- f.df2 <- p.value <- NA_real_
+  }
   if ("r.squared" %in% names(fm.summary)) {
     rr <- fm.summary[["r.squared"]]
+    if (length(unique(data$y)) < n.min  ||
+        !all(is.finite(c(f.value, f.df1, f.df2)))) {
+      rr.confint.low <- rr.confint.high <- NA_real_
+    } else {
+      rr.confint <-
+        confintr::ci_rsquared(x = f.value,
+                              df1 = f.df1,
+                              df2 = f.df2,
+                              probs = ((1 - rsquared.conf.level) / 2) * c(1, -1) + c(0, 1))
+      rr.confint.low  <- rr.confint[["interval"]][1]
+      rr.confint.high <- rr.confint[["interval"]][2]
+    }
   } else {
-    rr <- NA_real_
+    rr <- rr.confint.low <- rr.confint.high <- NA_real_
   }
   if ("adj.r.squared" %in% names(fm.summary)) {
     adj.rr <- fm.summary[["adj.r.squared"]]
@@ -683,21 +724,6 @@ poly_eq_compute_group_fun <- function(data,
   AIC <- AIC(fm)
   BIC <- BIC(fm)
   n <- length(fm.summary[["residuals"]])
-  if ("fstatistic" %in% names(fm.summary)) {
-    f.value <- fm.summary[["fstatistic"]]["value"]
-    f.df1 <- fm.summary[["fstatistic"]]["numdf"]
-    f.df2 <- fm.summary[["fstatistic"]]["dendf"]
-    p.value <- stats::pf(q = f.value, f.df1, f.df2, lower.tail = FALSE)
-    rr.confint <- confintr::ci_rsquared(x = f.value,
-                                        df1 = f.df1,
-                                        df2 = f.df2,
-                                        probs =  ((1 - rsquared.conf.level) / 2) * c(1, -1) + c(0, 1))
-    rr.confint.low  <- rr.confint[["interval"]][1]
-    rr.confint.high <- rr.confint[["interval"]][2]
-  } else {
-    f.value <- f.df1 <- f.df2 <- p.value <- NA_real_
-    rr.confint.low <- rr.confint.high <- NA_real_
-  }
   coefs <- stats::coefficients(fm)
 
   formula <- formula.ls[[1L]]
@@ -708,10 +734,15 @@ poly_eq_compute_group_fun <- function(data,
   if (forced.origin) {
     coefs <- c(0, coefs)
   }
-  names(coefs) <- paste("b", (1:length(coefs)) - 1, sep = "_")
-
+  selector <- !is.na(coefs)
+  coefs <- coefs[selector]
+  names(coefs) <- paste("b", (which(selector)) - 1, sep = "_")
+  if (!all(selector)) {
+    message("Terms dropped from model (singularity); n = ", nrow(data), " in group.")
+  }
   if (output.type == "numeric") {
     z <- tibble::tibble(coef.ls = list(summary(fm)[["coefficients"]]),
+                        coefs = list(coef(fm)),
                         r.squared = rr,
                         rr.confint.level = rsquared.conf.level,
                         rr.confint.low = rr.confint.low,
@@ -814,7 +845,7 @@ poly_eq_compute_group_fun <- function(data,
       z <- tibble::tibble(eq.label = eq.char,
                           rr.label =
                             # character(0) instead of "" avoids in paste() the insertion of sep for missing labels
-                            ifelse(is.na(rr), character(0L),
+                            ifelse(is.na(rr) || is.nan(rr), character(0L),
                                    paste(ifelse(small.r, "italic(r)^2", "italic(R)^2"),
                                          ifelse(rr < 10^(-rr.digits) & rr != 0,
                                                 sprintf_dm("\"%.*f\"", rr.digits, 10^(-rr.digits), decimal.mark = decimal.mark),
@@ -823,7 +854,7 @@ poly_eq_compute_group_fun <- function(data,
                                                       "~`<`~",
                                                       "~`=`~"))),
                           adj.rr.label =
-                            ifelse(is.na(adj.rr), character(0L),
+                            ifelse(is.na(adj.rr) || is.nan(adj.rr), character(0L),
                                    paste(ifelse(small.r, "italic(r)[adj]^2", "italic(R)[adj]^2"),
                                          ifelse(adj.rr < 10^(-rr.digits) & adj.rr != 0,
                                                 sprintf_dm("\"%.*f\"", rr.digits, 10^(-rr.digits), decimal.mark = decimal.mark),
@@ -834,18 +865,18 @@ poly_eq_compute_group_fun <- function(data,
                           rr.confint.label =
                             paste("\"", conf.level.chr, "% CI ", CI.brackets[1], rr.confint.chr, CI.brackets[2], "\"", sep = ""),
                           AIC.label =
-                            ifelse(is.na(AIC), character(0L),
+                            ifelse(is.na(AIC) || is.nan(AIC), character(0L),
                                    paste("AIC", AIC.char, sep = "~`=`~")),
                           BIC.label =
-                            ifelse(is.na(BIC), character(0L),
+                            ifelse(is.na(BIC) || is.nan(BIC), character(0L),
                                    paste("BIC", BIC.char, sep = "~`=`~")),
                           f.value.label =
-                            ifelse(is.na(f.value), character(0L),
+                            ifelse(is.na(f.value) || is.nan(f.value), character(0L),
                                    paste("italic(F)[", f.df1.char,
                                          "*\",\"*", f.df2.char,
                                          "]~`=`~", f.value.char, sep = "")),
                           p.value.label =
-                            ifelse(is.na(p.value), character(0L),
+                            ifelse(is.na(p.value) || is.nan(p.value), character(0L),
                                    paste(ifelse(small.p, "italic(p)",  "italic(P)"),
                                          ifelse(p.value < 10^(-p.digits),
                                                 sprintf_dm("\"%.*f\"", p.digits, 10^(-p.digits), decimal.mark = decimal.mark),
@@ -864,25 +895,25 @@ poly_eq_compute_group_fun <- function(data,
       z <- tibble::tibble(eq.label = eq.char,
                           rr.label =
                             # character(0) instead of "" avoids in paste() the insertion of sep for missing labels
-                            ifelse(is.na(rr), character(0L),
+                            ifelse(is.na(rr) || is.nan(rr), character(0L),
                                    paste(ifelse(small.r, "r^2", "R^2"),
                                          ifelse(rr < 10^(-rr.digits), as.character(10^(-rr.digits)), rr.char),
                                          sep = ifelse(rr < 10^(-rr.digits), " < ", " = "))),
                           adj.rr.label =
-                            ifelse(is.na(adj.rr), character(0L),
+                            ifelse(is.na(adj.rr) || is.nan(adj.rr), character(0L),
                                    paste(ifelse(small.r, "r_{adj}^2", "R_{adj}^2"),
                                          ifelse(adj.rr < 10^(-rr.digits), as.character(10^(-rr.digits)), adj.rr.char),
                                          sep = ifelse(adj.rr < 10^(-rr.digits), " < ", " = "))),
                           rr.confint.label =
                             paste(conf.level.chr, "% CI ", CI.brackets[1], rr.confint.chr, CI.brackets[2], sep = ""),
                           AIC.label =
-                            ifelse(is.na(AIC), character(0L),
+                            ifelse(is.na(AIC) || is.nan(AIC), character(0L),
                                    paste("AIC", AIC.char, sep = " = ")),
                           BIC.label =
-                            ifelse(is.na(BIC), character(0L),
+                            ifelse(is.na(BIC) || is.nan(BIC), character(0L),
                                    paste("BIC", BIC.char, sep = " = ")),
                           f.value.label =
-                            ifelse(is.na(f.value), character(0L),
+                            ifelse(is.na(f.value) || is.nan(f.value), character(0L),
                                    paste("F_{", f.df1.char, ",", f.df2.char,
                                          "} = ", f.value.char, sep = "")),
                           p.value.label =
@@ -901,29 +932,29 @@ poly_eq_compute_group_fun <- function(data,
       z <- tibble::tibble(eq.label = eq.char,
                           rr.label =
                             # character(0) instead of "" avoids in paste() the insertion of sep for missing labels
-                            ifelse(is.na(rr), character(0L),
+                            ifelse(is.na(rr) || is.nan(rr), character(0L),
                                    paste(ifelse(small.r, "_r_<sup>2</sup>", "_R_<sup>2</sup>"),
                                          ifelse(rr < 10^(-rr.digits), as.character(10^(-rr.digits)), rr.char),
                                          sep = ifelse(rr < 10^(-rr.digits), " < ", " = "))),
                           adj.rr.label =
-                            ifelse(is.na(adj.rr), character(0L),
+                            ifelse(is.na(adj.rr) || is.nan(adj.rr), character(0L),
                                    paste(ifelse(small.r, "_r_<sup>2</sup><sub>adj</sub>", "_R_<sup>2</sup><sub>adj</sub>"),
                                          ifelse(adj.rr < 10^(-rr.digits), as.character(10^(-rr.digits)), adj.rr.char),
                                          sep = ifelse(adj.rr < 10^(-rr.digits), " < ", " = "))),
                           rr.confint.label =
                             paste(conf.level.chr, "% CI ", CI.brackets[1], rr.confint.chr, CI.brackets[2], sep = ""),
                           AIC.label =
-                            ifelse(is.na(AIC), character(0L),
+                            ifelse(is.na(AIC) || is.nan(AIC), character(0L),
                                    paste("AIC", AIC.char, sep = " = ")),
                           BIC.label =
-                            ifelse(is.na(BIC), character(0L),
+                            ifelse(is.na(BIC) || is.nan(BIC), character(0L),
                                    paste("BIC", BIC.char, sep = " = ")),
                           f.value.label =
-                            ifelse(is.na(f.value), character(0L),
+                            ifelse(is.na(f.value) || is.nan(f.value), character(0L),
                                    paste("_F_<sub>", f.df1.char, ",", f.df2.char,
                                          "</sub> = ", f.value.char, sep = "")),
                           p.value.label =
-                            ifelse(is.na(p.value), character(0L),
+                            ifelse(is.na(p.value) || is.nan(p.value), character(0L),
                                    paste(ifelse(small.p, "_p_", "_P_"),
                                          ifelse(p.value < 10^(-p.digits), as.character(10^(-p.digits)), p.value.char),
                                          sep = ifelse(p.value < 10^(-p.digits), " < ", " = "))),

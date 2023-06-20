@@ -9,6 +9,7 @@ editor_options:
 -   Fix bug in `stat_ma_line()`: error triggered when returned values from computation of confidence
 band are not available. (Reported by rakelrpf as issue #36.)
 -   Fix incompatibility of `stat_poly_eq()`, `stat_ma_eq()` and `stat_quant_eq()` with package 'gganimate'. (Bug reported by EvoLandEco as issue #38.)
+-   Improve handling of singularity in model fitting in `stat_poly_eq()` (Use case from EvoLandEco in issue #38.).
 -   Add `stat_fit_fitted()`.
 
 # ggpmisc 0.5.2

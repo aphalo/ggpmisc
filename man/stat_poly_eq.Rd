@@ -13,6 +13,7 @@ stat_poly_eq(
   method = "lm",
   method.args = list(),
   formula = NULL,
+  n.min = 1,
   eq.with.lhs = TRUE,
   eq.x.rhs = NULL,
   small.r = FALSE,
@@ -67,6 +68,9 @@ object of class \code{lm}.}
 
 \item{formula}{a formula object. Using aesthetic names \code{x} and \code{y}
 instead of original variable names.}
+
+\item{n.min}{integer Minimum number of observations needed for fiting a
+the model.}
 
 \item{eq.with.lhs}{If \code{character} the string is pasted to the front of
 the equation label before parsing or a \code{logical} (see note).}
@@ -167,6 +171,18 @@ This statistic can be used to automatically annotate a plot with
   works, except that only polynomials can be fitted. Similarly to these
   statistics the model fits respect grouping, so the scales used for \code{x}
   and \code{y} should both be continuous scales rather than discrete.
+
+  With method \code{"lm"}, singularity results in terms being dropped with a
+  message. In this case and if the model results in a perfect fit due to low
+  number of observation, estimates for various parameters are \code{NaN} or
+  \code{NA}. When this is the case the corresponding labels are set to
+  \code{character(0L)} and do not show in the plot.
+
+  With methods other than \code{"lm"}, the model fit functions simply fail
+  in case of singularity. In this case singularity is handled automatically
+  only in the case of linear regression. A minimum number of observations
+  required to fit a model can be set to a value suitable for the model being
+  fitted through parameter \code{n.min}.
 }
 \note{
 For backward compatibility a logical is accepted as argument for
@@ -453,7 +469,9 @@ if (gginnards.installed)
 
 }
 \references{
-Written as an answer to question 7549694 at Stackoverflow.
+Oriinally written as an answer to question 7549694 at
+  Stackoverflow but enhanced based on suggestions from users and my own
+  needs.
 }
 \seealso{
 This \code{stat_poly_eq} statistic can return ready formatted labels
