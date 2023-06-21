@@ -13,7 +13,7 @@ stat_poly_eq(
   method = "lm",
   method.args = list(),
   formula = NULL,
-  n.min = 1,
+  n.min = 2L,
   eq.with.lhs = TRUE,
   eq.x.rhs = NULL,
   small.r = FALSE,
@@ -173,16 +173,19 @@ This statistic can be used to automatically annotate a plot with
   and \code{y} should both be continuous scales rather than discrete.
 
   With method \code{"lm"}, singularity results in terms being dropped with a
-  message. In this case and if the model results in a perfect fit due to low
+  message if more numerous that can be fitted with a singular (exact) fit.
+  In this case and if the model results in a perfect fit due to low
   number of observation, estimates for various parameters are \code{NaN} or
   \code{NA}. When this is the case the corresponding labels are set to
   \code{character(0L)} and do not show in the plot.
 
   With methods other than \code{"lm"}, the model fit functions simply fail
-  in case of singularity. In this case singularity is handled automatically
-  only in the case of linear regression. A minimum number of observations
-  required to fit a model can be set to a value suitable for the model being
-  fitted through parameter \code{n.min}.
+  in case of singularity, e.g., singular fits are not implemented in
+  \code{"rlm"}. The minimum number of observations with distinct values for
+  the explanatory variable required to fit a model can be set through
+  parameter \code{n.min}. The default \code{n.min = 2L} is suitable for
+  linear regression, but not for higher order polynomials: \code{n.min} must
+  be set to the order of the polynomial plus one.
 }
 \note{
 For backward compatibility a logical is accepted as argument for
@@ -469,21 +472,27 @@ if (gginnards.installed)
 
 }
 \references{
-Oriinally written as an answer to question 7549694 at
+Originally written as an answer to question 7549694 at
   Stackoverflow but enhanced based on suggestions from users and my own
   needs.
 }
 \seealso{
-This \code{stat_poly_eq} statistic can return ready formatted labels
+This statistics fits a model with function \code{\link[stats]{lm}},
+  function \code{\link[MASS]{rlm}} or a user supplied function returning an
+  object of class \code{"lm"}. Consult the documentation of these functions
+  for the details and additional arguments that can be passed to them by name
+  through parameter \code{method.args}.
+
+  This \code{stat_poly_eq} statistic can return ready formatted labels
   depending on the argument passed to \code{output.type}. This is possible
-  because only polynomial models are supported. For quantile regression
-  \code{\link{stat_quant_eq}} should be used instead of \code{stat_poly_eq}
-  while for model II or major axis regression \code{\link{stat_ma_eq}} should
-  be used. For other types of models such as non-linear models, statistics
-  \code{\link{stat_fit_glance}} and \code{\link{stat_fit_tidy}} should be
-  used and the code for construction of character strings from
-  numeric values and their mapping to aesthetic \code{label} needs to be
-  explicitly supplied by the user.
+  because only polynomial and quasy-polynomial models are supported. For
+  quantile regression \code{\link{stat_quant_eq}} should be used instead of
+  \code{stat_poly_eq} while for model II or major axis regression
+  \code{\link{stat_ma_eq}} should be used. For other types of models such as
+  non-linear models, statistics \code{\link{stat_fit_glance}} and
+  \code{\link{stat_fit_tidy}} should be used and the code for construction of
+  character strings from numeric values and their mapping to aesthetic
+  \code{label} needs to be explicitly supplied by the user.
 
 Other ggplot statistics for linear and polynomial regression: 
 \code{\link{stat_poly_line}()}

@@ -429,9 +429,10 @@ ma_eq_compute_group_fun <- function(data,
   if (is.integer(data$group)) {
     group.idx <- abs(data$group[1])
   } else if (is.character(data$group) &&
-             grepl("<[0-9]*>$", data$group[1])) {
-    # 'gganimate' has set the groups
-    group.idx <- abs(as.numeric(gsub("<[0-9]*>", "", data$group[1])))
+             grepl("^(-1|[0-9]+).*$", data$group[1])) {
+    # likely that 'gganimate' has set the groups for scenes
+    # we assume first characters give the original group
+    group.idx <- abs(as.numeric(gsub("^(-1|[0-9]+).*$", "\\1", data$group[1])))
   } else {
     group.idx <- NA_integer_
   }

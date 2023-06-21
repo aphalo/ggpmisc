@@ -65,81 +65,219 @@ test_that("poly_eq_noload", {
 
 library(ggpmisc)
 
-test_that("number_of_rows", {
-  # message works but is not seen by the test
-  # expect_message(
-  #   ggplot(my.data[1, ], aes(x, y)) +
-  #   geom_point() +
-  #   stat_poly_eq(formula = y ~ x, parse = TRUE,
-  #                mapping =
-  #                  aes(label = paste(after_stat(eq.label),
-  #                                    after_stat(adj.rr.label),
-  #                                    after_stat(AIC.label),
-  #                                    after_stat(BIC.label),
-  #                                    sep = "~~")))
-  #   )
+# testthat does not "see" the messages and warnings, so these tests play no role
 
-    expect_silent(
-      ggplot(my.data[1:2, ], aes(x, y)) +
-        geom_point() +
-        stat_poly_eq(formula = y ~ x, parse = TRUE,
-                     mapping =
-                       aes(label = paste(after_stat(eq.label),
-                                         after_stat(adj.rr.label),
-                                         after_stat(AIC.label),
-                                         after_stat(BIC.label),
-                                         sep = "~~")))
-      )
-
-    # expect_message(
-    #   ggplot(my.data[1:2, ], aes(x, y)) +
-    #     geom_point() +
-    #     stat_poly_eq(formula = y ~ x + I(x^2), parse = TRUE,
-    #                  mapping =
-    #                    aes(label = paste(after_stat(eq.label),
-    #                                      after_stat(adj.rr.label),
-    #                                      after_stat(AIC.label),
-    #                                      after_stat(BIC.label),
-    #                                      sep = "~~")))
-    # )
-
-    expect_silent(
-        ggplot(my.data[1:3, ], aes(x, y)) +
-          geom_point() +
-          stat_poly_eq(formula = y ~ x, parse = TRUE,
-                       mapping =
-                         aes(label = paste(after_stat(eq.label),
-                                           after_stat(adj.rr.label),
-                                           after_stat(AIC.label),
-                                           after_stat(BIC.label),
-                                           sep = "~~")))
-    )
-
-    expect_silent(
-      ggplot(my.data[1:3, ], aes(x, y)) +
-        geom_point() +
-        stat_poly_eq(formula = y ~ x + I(x^2), parse = TRUE,
-                     mapping =
-                       aes(label = paste(after_stat(eq.label),
-                                         after_stat(adj.rr.label),
-                                         after_stat(AIC.label),
-                                         after_stat(BIC.label),
-                                         sep = "~~")))
-    )
-
-    # expect_message(
-    #   ggplot(my.data[1:3, ], aes(x, y)) +
-    #     geom_point() +
-    #     stat_poly_eq(formula = y ~ x + I(x^2) + I(x^3), parse = TRUE,
-    #                  mapping =
-    #                    aes(label = paste(after_stat(eq.label),
-    #                                      after_stat(adj.rr.label),
-    #                                      after_stat(AIC.label),
-    #                                      after_stat(BIC.label),
-    #                                      sep = "~~")))
-    # )
-
-})
+# test_that("number_of_rows_lm", {
+#   # message works but is not seen by the test
+#   expect_message(
+#     ggplot(my.data[1, ], aes(x, y)) +
+#     geom_point() +
+#     stat_poly_eq(formula = y ~ x, parse = TRUE,
+#                  mapping =
+#                    aes(label = paste(after_stat(eq.label),
+#                                      after_stat(adj.rr.label),
+#                                      after_stat(AIC.label),
+#                                      after_stat(BIC.label),
+#                                      sep = "~~")))
+#     )
+#
+#     expect_silent(
+#       ggplot(my.data[1:2, ], aes(x, y)) +
+#         geom_point() +
+#         stat_poly_eq(formula = y ~ x, parse = TRUE,
+#                      mapping =
+#                        aes(label = paste(after_stat(eq.label),
+#                                          after_stat(adj.rr.label),
+#                                          after_stat(AIC.label),
+#                                          after_stat(BIC.label),
+#                                          sep = "~~")))
+#       )
+#
+#     expect_message(
+#       ggplot(my.data[1:2, ], aes(x, y)) +
+#         geom_point() +
+#         stat_poly_eq(formula = y ~ x + I(x^2), parse = TRUE,
+#                      mapping =
+#                        aes(label = paste(after_stat(eq.label),
+#                                          after_stat(adj.rr.label),
+#                                          after_stat(AIC.label),
+#                                          after_stat(BIC.label),
+#                                          sep = "~~")))
+#     )
+#
+#     expect_silent(
+#         ggplot(my.data[1:3, ], aes(x, y)) +
+#           geom_point() +
+#           stat_poly_eq(formula = y ~ x, parse = TRUE,
+#                        mapping =
+#                          aes(label = paste(after_stat(eq.label),
+#                                            after_stat(adj.rr.label),
+#                                            after_stat(AIC.label),
+#                                            after_stat(BIC.label),
+#                                            sep = "~~")))
+#     )
+#
+#     expect_silent(
+#       ggplot(my.data[1:3, ], aes(x, y)) +
+#         geom_point() +
+#         stat_poly_eq(formula = y ~ x + I(x^2), parse = TRUE,
+#                      mapping =
+#                        aes(label = paste(after_stat(eq.label),
+#                                          after_stat(adj.rr.label),
+#                                          after_stat(AIC.label),
+#                                          after_stat(BIC.label),
+#                                          sep = "~~")))
+#     )
+#
+#     expect_message(
+#       ggplot(my.data[1:3, ], aes(x, y)) +
+#         geom_point() +
+#         stat_poly_eq(formula = y ~ x + I(x^2) + I(x^3), parse = TRUE,
+#                      mapping =
+#                        aes(label = paste(after_stat(eq.label),
+#                                          after_stat(adj.rr.label),
+#                                          after_stat(AIC.label),
+#                                          after_stat(BIC.label),
+#                                          sep = "~~")))
+#     )
+#
+#     expect_message(
+#       ggplot(my.data[1:3, ], aes(x, y)) +
+#         geom_point() +
+#         stat_poly_eq(formula = x ~ y + I(y^2) + I(y^3), parse = TRUE,
+#                      mapping =
+#                        aes(label = paste(after_stat(eq.label),
+#                                          after_stat(adj.rr.label),
+#                                          after_stat(AIC.label),
+#                                          after_stat(BIC.label),
+#                                          sep = "~~")))
+#     )
+#
+#
+# })
+#
+# test_that("number_of_rows_rlm", {
+#   # message works but is not seen by the test
+#   expect_message(
+#     ggplot(my.data[1, ], aes(x, y)) +
+#     geom_point() +
+#     stat_poly_eq(formula = y ~ x, parse = TRUE,
+#                  method = "rlm",
+#                  mapping =
+#                    aes(label = paste(after_stat(eq.label),
+#                                      after_stat(adj.rr.label),
+#                                      after_stat(AIC.label),
+#                                      after_stat(BIC.label),
+#                                      sep = "~~")))
+#     )
+#
+#   expect_silent(
+#     ggplot(my.data[1:2, ], aes(x, y)) +
+#       geom_point() +
+#       stat_poly_eq(formula = y ~ x, parse = TRUE,
+#                    method = "rlm",
+#                    mapping =
+#                      aes(label = paste(after_stat(eq.label),
+#                                        after_stat(adj.rr.label),
+#                                        after_stat(AIC.label),
+#                                        after_stat(BIC.label),
+#                                        sep = "~~")))
+#   )
+#
+#   expect_warning(
+#     ggplot(my.data[1:2, ], aes(x, y)) +
+#       geom_point() +
+#       stat_poly_eq(formula = y ~ x + I(x^2), parse = TRUE,
+#                    method = "rlm",
+#                    mapping =
+#                      aes(label = paste(after_stat(eq.label),
+#                                        after_stat(adj.rr.label),
+#                                        after_stat(AIC.label),
+#                                        after_stat(BIC.label),
+#                                        sep = "~~")))
+#   )
+#   expect_message(
+#     ggplot(my.data[1:2, ], aes(x, y)) +
+#       geom_point() +
+#       stat_poly_eq(formula = y ~ x + I(x^2), parse = TRUE,
+#                    n.min = 3,
+#                    method = "rlm",
+#                    mapping =
+#                      aes(label = paste(after_stat(eq.label),
+#                                        after_stat(adj.rr.label),
+#                                        after_stat(AIC.label),
+#                                        after_stat(BIC.label),
+#                                        sep = "~~")))
+#   )
+#
+#   expect_warning(
+#     ggplot(my.data[3:5, ], aes(x, y)) +
+#       geom_point() +
+#       stat_poly_eq(formula = y ~ x, parse = TRUE,
+#                    method = "rlm",
+#                    mapping =
+#                      aes(label = paste(after_stat(eq.label),
+#                                        after_stat(adj.rr.label),
+#                                        after_stat(AIC.label),
+#                                        after_stat(BIC.label),
+#                                        sep = "~~")))
+#   )
+#
+#   expect_silent(
+#     ggplot(my.data[1:3, ], aes(x, y)) +
+#       geom_point() +
+#       stat_poly_eq(formula = y ~ x + I(x^2), parse = TRUE,
+#                    method = "rlm",
+#                    mapping =
+#                      aes(label = paste(after_stat(eq.label),
+#                                        after_stat(adj.rr.label),
+#                                        after_stat(AIC.label),
+#                                        after_stat(BIC.label),
+#                                        sep = "~~")))
+#   )
+#
+#   expect_warning(
+#     ggplot(my.data[1:3, ], aes(x, y)) +
+#       geom_point() +
+#       stat_poly_eq(formula = y ~ x + I(x^2) + I(x^3), parse = TRUE,
+#                    method = "rlm",
+#                    mapping =
+#                      aes(label = paste(after_stat(eq.label),
+#                                        after_stat(adj.rr.label),
+#                                        after_stat(AIC.label),
+#                                        after_stat(BIC.label),
+#                                        sep = "~~")))
+#   )
+#
+#   expect_message(
+#     ggplot(my.data[1:3, ], aes(x, y)) +
+#       geom_point() +
+#       stat_poly_eq(formula = y ~ x + I(x^2) + I(x^3), parse = TRUE,
+#                    n.min = 4,
+#                    method = "rlm",
+#                    mapping =
+#                      aes(label = paste(after_stat(eq.label),
+#                                        after_stat(adj.rr.label),
+#                                        after_stat(AIC.label),
+#                                        after_stat(BIC.label),
+#                                        sep = "~~")))
+#   )
+#
+#   expect_message(
+#     ggplot(my.data[1:3, ], aes(x, y)) +
+#       geom_point() +
+#       stat_poly_eq(formula = x ~ y + I(y^2) + I(y^3), parse = TRUE,
+#                    n.min = 4,
+#                    method = "rlm",
+#                    mapping =
+#                      aes(label = paste(after_stat(eq.label),
+#                                        after_stat(adj.rr.label),
+#                                        after_stat(AIC.label),
+#                                        after_stat(BIC.label),
+#                                        sep = "~~")))
+#   )
+#
+# })
 
 test_that("poly_formulas", {
   vdiffr::expect_doppelganger("stat_poly_eq_formula_1",
