@@ -36,6 +36,8 @@
 #'   \code{data}, \code{range.y}, \code{range.x} and \code{nperm} and return a
 #'   model fit object of class \code{lmodel2}.
 #' @param method.args named list with additional arguments.
+#' @param n.min integer Minimum number of distinct values in the explanatory
+#'   variable (on the rhs of formula) for fitting to the attempted.
 #' @param nperm integer Number of permutation used to estimate significance.
 #' @param eq.with.lhs If \code{character} the string is pasted to the front of
 #'   the equation label before parsing or a \code{logical} (see note).
@@ -105,6 +107,12 @@
 #'   works, except that only linear regression can be fitted. Similarly to these
 #'   statistics the model fits respect grouping, so the scales used for \code{x}
 #'   and \code{y} should both be continuous scales rather than discrete.
+#'
+#'   The minimum number of observations with distinct values can be set through
+#'   parameter \code{n.min}. The default \code{n.min = 2L} is the smallest
+#'   possible value. However, model fits with very few observations are of
+#'   little interest and using a larger number for \code{n.min} than the default
+#'   is usually wise.
 #'
 #' @section Aesthetics: \code{stat_ma_eq} understands \code{x} and \code{y}, to
 #'   be referenced in the \code{formula} while the \code{weight} aesthetic is
@@ -261,9 +269,10 @@ stat_ma_eq <- function(mapping = NULL, data = NULL,
                        geom = "text_npc",
                        position = "identity",
                        ...,
+                       formula = NULL,
                        method = "lmodel2:MA",
                        method.args = list(),
-                       formula = NULL,
+                       n.min = 2L,
                        range.y = NULL,
                        range.x = NULL,
                        nperm = 99,
@@ -320,6 +329,7 @@ stat_ma_eq <- function(mapping = NULL, data = NULL,
       rlang::list2(method = method,
                    method.args = method.args,
                    formula = formula,
+                   n.min = n.min,
                    range.y = range.y,
                    range.x = range.x,
                    nperm = nperm,
@@ -361,6 +371,7 @@ ma_eq_compute_group_fun <- function(data,
                                     method,
                                     method.args,
                                     formula,
+                                    n.min,
                                     range.y,
                                     range.x,
                                     nperm,
@@ -449,20 +460,13 @@ ma_eq_compute_group_fun <- function(data,
     label.y <- label.y[1]
   }
 
-  if (orientation == "x") {
-    if (length(unique(data$x)) < 2) {
-      warning("Not enough data to perform fit for group ",
-              group.idx, "; computing mean instead.",
-              call. = FALSE)
-      formula = y ~ 1
-    }
-  } else if (orientation == "y") {
-    if (length(unique(data$y)) < 2) {
-      warning("Not enough data to perform fit for group ",
-              group.idx, "; computing mean instead.",
-              call. = FALSE)
-      formula = x ~ 1
-    }
+  if (length(unique(data$x)) < n.min ||
+      length(unique(data$y)) < n.min) {
+    # message("Too few distinct 'x' or 'y' values for fit, n = ",
+    #         min(length(unique(data$x)), length(unique(data$y))),
+    #         " < ", n.min,  " in group ",
+    #         group.idx, "; skipping.")
+    return(data.frame())
   }
 
   # If method was specified as a character string, replace with

@@ -10,9 +10,10 @@ stat_ma_eq(
   geom = "text_npc",
   position = "identity",
   ...,
+  formula = NULL,
   method = "lmodel2:MA",
   method.args = list(),
-  formula = NULL,
+  n.min = 2L,
   range.y = NULL,
   range.x = NULL,
   nperm = 99,
@@ -54,6 +55,9 @@ layer}
 can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 
+\item{formula}{a formula object. Using aesthetic names \code{x} and \code{y}
+instead of original variable names.}
+
 \item{method}{function or character If character, "MA", "SMA" , "RMA" or
 "OLS", alternatively "lmodel2" or the name of a model fit function are
 accepted, possibly followed by the fit function's \code{method} argument
@@ -64,8 +68,8 @@ model fit object of class \code{lmodel2}.}
 
 \item{method.args}{named list with additional arguments.}
 
-\item{formula}{a formula object. Using aesthetic names \code{x} and \code{y}
-instead of original variable names.}
+\item{n.min}{integer Minimum number of distinct values in the explanatory
+variable (on the rhs of formula) for fitting to the attempted.}
 
 \item{range.y, range.x}{character Pass "relative" or "interval" if method
 "RMA" is to be computed.}
@@ -146,6 +150,12 @@ This stat can be used to automatically annotate a plot with \eqn{R^2},
   works, except that only linear regression can be fitted. Similarly to these
   statistics the model fits respect grouping, so the scales used for \code{x}
   and \code{y} should both be continuous scales rather than discrete.
+
+  The minimum number of observations with distinct values can be set through
+  parameter \code{n.min}. The default \code{n.min = 2L} is the smallest
+  possible value. However, model fits with very few observations are of
+  little interest and using a larger number for \code{n.min} than the default
+  is usually wise.
 }
 \note{
 For backward compatibility a logical is accepted as argument for

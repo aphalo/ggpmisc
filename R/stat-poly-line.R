@@ -25,6 +25,31 @@
 #' as they are not needed and conceptually transformations of \code{data} are
 #' statistics in the grammar of graphics.
 #'
+#'   A ggplot statistic receives as \code{data} a data frame that is not the one
+#'   passed as argument by the user, but instead a data frame with the variables
+#'   mapped to aesthetics. \code{stat_poly_eq()} mimics how \code{stat_smooth()}
+#'   works, except that only polynomials can be fitted. Similarly to these
+#'   statistics the model fits respect grouping, so the scales used for \code{x}
+#'   and \code{y} should both be continuous scales rather than discrete.
+#'
+#'   With method \code{"lm"}, singularity results in terms being dropped with a
+#'   message if more numerous than can be fitted with a singular (exact) fit.
+#'   In this case and if the model results in a perfect fit due to low
+#'   number of observation, estimates for various parameters are \code{NaN} or
+#'   \code{NA}.
+#'
+#'   With methods other than \code{"lm"}, the model fit functions simply fail
+#'   in case of singularity, e.g., singular fits are not implemented in
+#'   \code{"rlm"}.
+#'
+#'   In both cases the minimum number of observations with distinct values in
+#'   the explanatory variable can be set through parameter \code{n.min}. The
+#'   default \code{n.min = 2L} is the smallest suitable for method \code{"lm"}
+#'   but too small for method \code{"rlm"} for which \code{n.min = 3L} is
+#'   needed. Anyway, model fits with very few observations are of little
+#'   interest and using larger values of \code{n.min} than the default is
+#'   wise.
+#'
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}}. Only needs to be
 #'   set at the layer level if you are overriding the plot defaults.
@@ -54,6 +79,8 @@
 #'   \code{formula}, \code{data}, \code{weights}, and \code{method} and return a
 #'   model fit object of class \code{lm}.
 #' @param method.args named list with additional arguments.
+#' @param n.min integer Minimum number of distinct values in the explanatory
+#'   variable (on the rhs of formula) for fitting to the attempted.
 #' @param se Display confidence interval around smooth? (`TRUE` by default, see
 #'   `level` to control.)
 #' @param fm.values logical Add R2, adjusted R2, p-value and n as columns to
@@ -153,6 +180,7 @@ stat_poly_line <- function(mapping = NULL, data = NULL,
                            fullrange = FALSE,
                            level = 0.95,
                            method.args = list(),
+                           n.min = 2L,
                            na.rm = FALSE,
                            orientation = NA,
                            show.legend = NA,
@@ -208,6 +236,7 @@ stat_poly_line <- function(mapping = NULL, data = NULL,
       na.rm = na.rm,
       orientation = orientation,
       method.args = method.args,
+      n.min = n.min,
       ...
     )
   )
@@ -224,11 +253,12 @@ poly_line_compute_group_fun <-
            xseq = NULL,
            level = 0.95,
            method.args = list(),
+           n.min = 2L,
            na.rm = FALSE,
            flipped_aes = NA,
            orientation = "x") {
     data <- ggplot2::flip_data(data, flipped_aes)
-    if (length(unique(data$x)) < 2) {
+    if (length(unique(data$x)) < n.min) {
       # Not enough data to perform fit
       return(data.frame())
     }

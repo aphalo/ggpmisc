@@ -26,6 +26,12 @@
 #'   it is enough for the statistic to return suitable \code{x}, \code{y},
 #'   \code{ymin}, \code{ymax} and \code{group} values.
 #'
+#'   The minimum number of observations with distinct values in the explanatory
+#'   variable can be set through parameter \code{n.min}. The default \code{n.min
+#'   = 3L} is the smallest usable value. However, model fits with very few
+#'   observations are of little interest and using larger values of \code{n.min}
+#'   than the default is wise.
+#'
 #'   There are multiple uses for double regression on x and y. For example, when
 #'   two variables are subject to mutual constrains, it is useful to consider
 #'   both of them as explanatory and interpret the relationship based on them.
@@ -66,6 +72,8 @@
 #' @param method.args named list with additional arguments passed to
 #'   \code{rq()}, \code{rqss()} or to a function passed as argument to
 #'   \code{method}.
+#' @param n.min integer Minimum number of distinct values in the explanatory
+#'   variable (on the rhs of formula) for fitting to the attempted.
 #' @param n Number of points at which to evaluate smoother.
 #' @param orientation character Either "x" or "y" controlling the default for
 #'   \code{formula}.
@@ -219,6 +227,7 @@ stat_quant_line <- function(mapping = NULL,
                             n = 80,
                             method = "rq",
                             method.args = list(),
+                            n.min = 3L,
                             level = 0.95,
                             type = "direct",
                             interval = "confidence",
@@ -281,6 +290,7 @@ stat_quant_line <- function(mapping = NULL,
         n = n,
         method = method,
         method.args = method.args,
+        n.min = n.min,
         na.rm = na.rm,
         orientation = orientation,
         level = level,
@@ -305,6 +315,7 @@ quant_line_compute_group_fun <- function(data,
                                          n = 80,
                                          method = "rq",
                                          method.args = list(),
+                                         n.min = 3L,
                                          lambda = 1,
                                          level = 0.95,
                                          type = "none",
@@ -316,6 +327,10 @@ quant_line_compute_group_fun <- function(data,
   rlang::check_installed("quantreg", reason = "for `stat_quant_line()`")
 
   data <- ggplot2::flip_data(data, flipped_aes)
+  if (length(unique(data$x)) < n.min) {
+    # Not enough data to perform fit
+    return(data.frame())
+  }
 
   if (is.null(data[["weight"]])) {
     data[["weight"]] <- 1

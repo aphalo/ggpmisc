@@ -12,6 +12,7 @@ stat_ma_line(
   ...,
   method = "lmodel2:MA",
   method.args = list(),
+  n.min = 2L,
   formula = NULL,
   range.y = NULL,
   range.x = NULL,
@@ -53,6 +54,9 @@ separated by a colon (e.g. \code{"lmodel2:MA"}). If a function different to
 model fit object of class \code{lmodel2}.}
 
 \item{method.args}{named list with additional arguments.}
+
+\item{n.min}{integer Minimum number of distinct values in the explanatory
+variable (on the rhs of formula) for fitting to the attempted.}
 
 \item{formula}{a formula object. Using aesthetic names \code{x} and \code{y}
 instead of original variable names.}
@@ -102,26 +106,33 @@ except for fitting the model with \code{lmodel2::lmodel2()} with \code{"MA"}
 as default for \code{method}.
 }
 \details{
-This statistic fits major axis (\code{"MA"}) and other model II regressions
-with function \code{\link[lmodel2]{lmodel2}}. Model II regression is called
-for when both \code{x} and \code{y} are subject to random variation and the
-intention is not to predict \code{y} from \code{x} by means of the model
-but rather to study the relationship between two independent variables.
-A frequent case in biology are allometric relationships among body parts.
+This statistic fits major axis (\code{"MA"}) and other model II
+  regressions with function \code{\link[lmodel2]{lmodel2}}. Model II
+  regression is called for when both \code{x} and \code{y} are subject to
+  random variation and the intention is not to predict \code{y} from \code{x}
+  by means of the model but rather to study the relationship between two
+  independent variables. A frequent case in biology are allometric
+  relationships among body parts.
 
-As the fitted line is the same whether \code{x} or \code{y} is on the rhs of
-the model equation, \code{orientation} even is accepted does not have an
-effect on the fit. In contrast, \code{\link[ggplot2]{geom_smooth}} treats
-each axis differently and can thus have two orientations. The orientation is
-easy to deduce from the argument passed to \code{formula}. Thus,
-\code{stat_ma_line()} will by default guess which orientation the layer
-should have. If no argument is passed to \code{formula}, the orientation can
-be specified directly passing an argument to the \code{orientation}
-parameter, which can be either \code{"x"} or \code{"y"}. The value gives the
-axis that is on the rhs of the model equation, \code{"x"} being the default
-orientation. Package 'ggpmisc' does not define new geometries matching the
-new statistics as they are not needed and conceptually transformations of
-\code{data} are expressed as statistics.
+  As the fitted line is the same whether \code{x} or \code{y} is on the rhs
+  of the model equation, \code{orientation} even if accepted does not have an
+  effect on the fit. In contrast, \code{\link[ggplot2]{geom_smooth}} treats
+  each axis differently and can thus have two orientations. The orientation
+  is easy to deduce from the argument passed to \code{formula}. Thus,
+  \code{stat_ma_line()} will by default guess which orientation the layer
+  should have. If no argument is passed to \code{formula}, the orientation
+  can be specified directly passing an argument to the \code{orientation}
+  parameter, which can be either \code{"x"} or \code{"y"}. The value gives
+  the axis that is on the rhs of the model equation, \code{"x"} being the
+  default orientation. Package 'ggpmisc' does not define new geometries
+  matching the new statistics as they are not needed and conceptually
+  transformations of \code{data} are expressed as statistics.
+
+  The minimum number of observations with distinct values can be set through
+  parameter \code{n.min}. The default \code{n.min = 2L} is the smallest
+  possible value. However, model fits with very few observations are of
+  little interest and using a larger number for \code{n.min} than the default
+  is wise.
 }
 \section{Computed variables}{
  `stat_ma_line()` provides the following

@@ -66,6 +66,61 @@ test_that("ma_eq_noload", {
 
 library(ggpmisc)
 
+# testthat does not "see" the messages and warnings, so these tests play no role
+
+# test_that("number_of_rows_quantreg", {
+#   # message works but is not seen by the test
+#   expect_message(
+#     ggplot(my.data[1, ], aes(x, y)) +
+#       geom_point() +
+#       stat_ma_eq(formula = y ~ x, parse = TRUE,
+#                  mapping =
+#                    aes(label = paste(after_stat(eq.label),
+#                                      after_stat(rr.label),
+#                                      after_stat(p.value.label),
+#                                      after_stat(n.label),
+#                                      sep = "~~")))
+#   )
+#
+#   expect_silent(
+#     ggplot(my.data[1:2, ], aes(x, y)) +
+#       geom_point() +
+#       stat_ma_eq(formula = y ~ x, parse = TRUE,
+#                  mapping =
+#                    aes(label = paste(after_stat(eq.label),
+#                                      after_stat(rr.label),
+#                                      after_stat(p.value.label),
+#                                      after_stat(n.label),
+#                                      sep = "~~")))
+#   )
+#
+#   expect_silent(
+#     ggplot(my.data[1:3, ], aes(x, y)) +
+#       geom_point() +
+#       stat_ma_eq(formula = y ~ x, parse = TRUE,
+#                  mapping =
+#                    aes(label = paste(after_stat(eq.label),
+#                                      after_stat(rr.label),
+#                                      after_stat(p.value.label),
+#                                      after_stat(n.label),
+#                                      sep = "~~")))
+#   )
+#
+#   expect_silent(
+#     ggplot(my.data[1:3, ], aes(x, y)) +
+#       geom_point() +
+#       stat_ma_eq(formula = y ~ x, parse = TRUE,
+#                    mapping =
+#                    aes(label = paste(after_stat(eq.label),
+#                                      after_stat(rr.label),
+#                                      after_stat(p.value.label),
+#                                      after_stat(n.label),
+#                                      sep = "~~")))
+#   )
+#
+# })
+
+
 test_that("ma_formulas", {
   vdiffr::expect_doppelganger("stat_ma_eq_formula_x",
                               ggplot(my.data, aes(x, y)) +

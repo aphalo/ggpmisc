@@ -10,9 +10,9 @@ stat_poly_eq(
   geom = "text_npc",
   position = "identity",
   ...,
+  formula = NULL,
   method = "lm",
   method.args = list(),
-  formula = NULL,
   n.min = 2L,
   eq.with.lhs = TRUE,
   eq.x.rhs = NULL,
@@ -56,6 +56,9 @@ layer}
 can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 
+\item{formula}{a formula object. Using aesthetic names \code{x} and \code{y}
+instead of original variable names.}
+
 \item{method}{function or character If character, "lm", "rlm" or the name of
 a model fit function are accepted, possibly followed by the fit function's
 \code{method} argument separated by a colon (e.g. \code{"rlm:M"}). If a
@@ -66,11 +69,8 @@ object of class \code{lm}.}
 
 \item{method.args}{named list with additional arguments.}
 
-\item{formula}{a formula object. Using aesthetic names \code{x} and \code{y}
-instead of original variable names.}
-
-\item{n.min}{integer Minimum number of observations needed for fiting a
-the model.}
+\item{n.min}{integer Minimum number of distinct values in the explanatory
+variable (on the rhs of formula) for fitting to the attempted.}
 
 \item{eq.with.lhs}{If \code{character} the string is pasted to the front of
 the equation label before parsing or a \code{logical} (see note).}
@@ -173,7 +173,7 @@ This statistic can be used to automatically annotate a plot with
   and \code{y} should both be continuous scales rather than discrete.
 
   With method \code{"lm"}, singularity results in terms being dropped with a
-  message if more numerous that can be fitted with a singular (exact) fit.
+  message if more numerous than can be fitted with a singular (exact) fit.
   In this case and if the model results in a perfect fit due to low
   number of observation, estimates for various parameters are \code{NaN} or
   \code{NA}. When this is the case the corresponding labels are set to
@@ -181,11 +181,15 @@ This statistic can be used to automatically annotate a plot with
 
   With methods other than \code{"lm"}, the model fit functions simply fail
   in case of singularity, e.g., singular fits are not implemented in
-  \code{"rlm"}. The minimum number of observations with distinct values for
-  the explanatory variable required to fit a model can be set through
-  parameter \code{n.min}. The default \code{n.min = 2L} is suitable for
-  linear regression, but not for higher order polynomials: \code{n.min} must
-  be set to the order of the polynomial plus one.
+  \code{"rlm"}.
+
+  In both cases the minimum number of observations with distinct values in
+  the explanatory variable can be set through parameter \code{n.min}. The
+  default \code{n.min = 2L} is the smallest suitable for method \code{"lm"}
+  but too small for method \code{"rlm"} for which \code{n.min = 3L} is
+  needed. Anyway, model fits with very few observations are of little
+  interest and using larger values of \code{n.min} than the default is
+  usually wise.
 }
 \note{
 For backward compatibility a logical is accepted as argument for

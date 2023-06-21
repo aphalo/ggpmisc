@@ -17,6 +17,7 @@ stat_quant_line(
   n = 80,
   method = "rq",
   method.args = list(),
+  n.min = 3L,
   level = 0.95,
   type = "direct",
   interval = "confidence",
@@ -66,6 +67,9 @@ and return a model fit object of class \code{rq}, \code{rqs} or
 \item{method.args}{named list with additional arguments passed to
 \code{rq()}, \code{rqss()} or to a function passed as argument to
 \code{method}.}
+
+\item{n.min}{integer Minimum number of distinct values in the explanatory
+variable (on the rhs of formula) for fitting to the attempted.}
 
 \item{level}{numeric in range [0..1] Passed to \code{quantreg::predict.rq()}.}
 
@@ -129,6 +133,12 @@ and \code{stat_poly_line()}.
   Package 'ggpmisc' does not define a new geometry matching this statistic as
   it is enough for the statistic to return suitable \code{x}, \code{y},
   \code{ymin}, \code{ymax} and \code{group} values.
+
+  The minimum number of observations with distinct values in the explanatory
+  variable can be set through parameter \code{n.min}. The default \code{n.min
+  = 3L} is the smallest usable value. However, model fits with very few
+  observations are of little interest and using larger values of \code{n.min}
+  than the default is wise.
 
   There are multiple uses for double regression on x and y. For example, when
   two variables are subject to mutual constrains, it is useful to consider

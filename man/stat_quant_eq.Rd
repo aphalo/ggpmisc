@@ -14,6 +14,7 @@ stat_quant_eq(
   quantiles = c(0.25, 0.5, 0.75),
   method = "rq:br",
   method.args = list(),
+  n.min = 3L,
   eq.with.lhs = TRUE,
   eq.x.rhs = NULL,
   coef.digits = 3,
@@ -64,6 +65,9 @@ and return a model fit object of class \code{rq} or \code{rqs}.}
 
 \item{method.args}{named list with additional arguments passed to \code{rq()}
 or to a function passed as argument to \code{method}.}
+
+\item{n.min}{integer Minimum number of observations needed for fiting a
+the model.}
 
 \item{eq.with.lhs}{If \code{character} the string is pasted to the front of
 the equation label before parsing or a \code{logical} (see note).}
@@ -162,6 +166,15 @@ This stat can be used to automatically annotate a plot with rho or
   works, except that only polynomials can be fitted. In other words, it
   respects the grammar of graphics. This helps ensure that the model is
   fitted to the same data as plotted in other layers.
+
+  Function \code{\link[quantreg]{rq}} does not support singular fits, in
+  contrast to \code{lm}.
+
+  The minimum number of observations with distinct values in the explanatory
+  variable can be set through parameter \code{n.min}. The default \code{n.min
+  = 3L} is the smallest usable value. However, model fits with very few
+  observations are of little interest and using larger values of \code{n.min}
+  than the default is usually wise.
 }
 \note{
 For backward compatibility a logical is accepted as argument for

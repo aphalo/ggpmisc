@@ -35,8 +35,8 @@
 #'   \code{data}, \code{weights}, and \code{method}, and return a model fit
 #'   object of class \code{lm}.
 #' @param method.args named list with additional arguments.
-#' @param n.min integer Minimum number of observations needed for fiting a
-#'   the model.
+#' @param n.min integer Minimum number of distinct values in the explanatory
+#'   variable (on the rhs of formula) for fitting to the attempted.
 #' @param eq.with.lhs If \code{character} the string is pasted to the front of
 #'   the equation label before parsing or a \code{logical} (see note).
 #' @param eq.x.rhs \code{character} this string will be used as replacement for
@@ -119,7 +119,7 @@
 #'   and \code{y} should both be continuous scales rather than discrete.
 #'
 #'   With method \code{"lm"}, singularity results in terms being dropped with a
-#'   message if more numerous that can be fitted with a singular (exact) fit.
+#'   message if more numerous than can be fitted with a singular (exact) fit.
 #'   In this case and if the model results in a perfect fit due to low
 #'   number of observation, estimates for various parameters are \code{NaN} or
 #'   \code{NA}. When this is the case the corresponding labels are set to
@@ -127,11 +127,15 @@
 #'
 #'   With methods other than \code{"lm"}, the model fit functions simply fail
 #'   in case of singularity, e.g., singular fits are not implemented in
-#'   \code{"rlm"}. The minimum number of observations with distinct values for
-#'   the explanatory variable required to fit a model can be set through
-#'   parameter \code{n.min}. The default \code{n.min = 2L} is suitable for
-#'   linear regression, but not for higher order polynomials: \code{n.min} must
-#'   be set to the order of the polynomial plus one.
+#'   \code{"rlm"}.
+#'
+#'   In both cases the minimum number of observations with distinct values in
+#'   the explanatory variable can be set through parameter \code{n.min}. The
+#'   default \code{n.min = 2L} is the smallest suitable for method \code{"lm"}
+#'   but too small for method \code{"rlm"} for which \code{n.min = 3L} is
+#'   needed. Anyway, model fits with very few observations are of little
+#'   interest and using larger values of \code{n.min} than the default is
+#'   usually wise.
 #'
 #' @references Originally written as an answer to question 7549694 at
 #'   Stackoverflow but enhanced based on suggestions from users and my own
@@ -425,9 +429,9 @@ stat_poly_eq <- function(mapping = NULL, data = NULL,
                          geom = "text_npc",
                          position = "identity",
                          ...,
+                         formula = NULL,
                          method = "lm",
                          method.args = list(),
-                         formula = NULL,
                          n.min = 2L,
                          eq.with.lhs = TRUE,
                          eq.x.rhs = NULL,
@@ -491,35 +495,35 @@ stat_poly_eq <- function(mapping = NULL, data = NULL,
     show.legend = show.legend,
     inherit.aes = inherit.aes,
     params =
-      rlang::list2(method = method,
-                  method.args = method.args,
-                  formula = formula,
-                  n.min = n.min,
-                  eq.with.lhs = eq.with.lhs,
-                  eq.x.rhs = eq.x.rhs,
-                  small.r = small.r,
-                  small.p = small.p,
-                  CI.brackets = CI.brackets,
-                  rsquared.conf.level = rsquared.conf.level,
-                  coef.digits = coef.digits,
-                  coef.keep.zeros = coef.keep.zeros,
-                  rr.digits = rr.digits,
-                  f.digits = f.digits,
-                  p.digits = p.digits,
-                  label.x = label.x,
-                  label.y = label.y,
-                  hstep = hstep,
-                  vstep = ifelse(is.null(vstep),
-                                 ifelse(grepl("label", geom),
-                                        0.10,
-                                        0.05),
-                                 vstep),
-                  npc.used = grepl("_npc", geom),
-                  output.type = output.type,
-                  na.rm = na.rm,
-                  orientation = orientation,
-                  parse = parse,
-                  ...)
+      rlang::list2(formula = formula,
+                   method = method,
+                   method.args = method.args,
+                   n.min = n.min,
+                   eq.with.lhs = eq.with.lhs,
+                   eq.x.rhs = eq.x.rhs,
+                   small.r = small.r,
+                   small.p = small.p,
+                   CI.brackets = CI.brackets,
+                   rsquared.conf.level = rsquared.conf.level,
+                   coef.digits = coef.digits,
+                   coef.keep.zeros = coef.keep.zeros,
+                   rr.digits = rr.digits,
+                   f.digits = f.digits,
+                   p.digits = p.digits,
+                   label.x = label.x,
+                   label.y = label.y,
+                   hstep = hstep,
+                   vstep = ifelse(is.null(vstep),
+                                  ifelse(grepl("label", geom),
+                                         0.10,
+                                         0.05),
+                                  vstep),
+                   npc.used = grepl("_npc", geom),
+                   output.type = output.type,
+                   na.rm = na.rm,
+                   orientation = orientation,
+                   parse = parse,
+                   ...)
   )
 }
 
@@ -580,6 +584,22 @@ poly_eq_compute_group_fun <- function(data,
   # we guess orientation from formula
   if (is.na(orientation)) {
     orientation <- unname(c(x = "y", y = "x")[as.character(formula)[2]])
+  }
+
+  if (orientation == "x") {
+    if (length(unique(data$x)) < n.min) {
+      # message("Too few distinct 'x' values for fit, n = ",
+      #         length(unique(data$x)), " < ", n.min,  " in group ",
+      #         group.idx, "; skipping.")
+      return(data.frame())
+    }
+  } else if (orientation == "y") {
+    if (length(unique(data$y)) < n.min) {
+      # message("Too few distinct 'y' values for fit, n = ",
+      #         length(unique(data$y)), " < ", n.min, " in group ",
+      #         group.idx, "; skipping.")
+      return(data.frame())
+    }
   }
 
   output.type <- if (!length(output.type)) {
@@ -655,25 +675,6 @@ poly_eq_compute_group_fun <- function(data,
       method.name <- as.character(quote(method))
     } else {
       method.name <- "function"
-    }
-  }
-
-  if (!grepl("^lm", method.name)) {
-    # lm handles overdetermined formula by returning NA as estimates
-     if (orientation == "x") {
-      if (length(unique(data$x)) < n.min) {
-        message("Not enough distinct 'x' values for fit, n = ",
-                length(unique(data$x)), " < ", n.min,  " in group ",
-                group.idx, "; computing mean.")
-        formula = y ~ 1
-      }
-    } else if (orientation == "y") {
-      if (length(unique(data$y)) < n.min) {
-        message("Not enough distinct 'y' values for fit, n = ",
-                length(unique(data$y)), " < ", n.min, " in group ",
-                group.idx, "; computing mean.")
-        formula = x ~ 1
-      }
     }
   }
 

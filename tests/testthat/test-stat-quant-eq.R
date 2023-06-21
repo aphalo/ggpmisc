@@ -49,6 +49,102 @@ test_that("quant_eq_noload", {
 
 library(ggpmisc)
 
+# testthat does not "see" the messages and warnings, so these tests play no role
+
+# test_that("number_of_rows_quantreg", {
+#   # message works but is not seen by the test
+#   expect_message(
+#     ggplot(my.data[1, ], aes(x, y)) +
+#       geom_point() +
+#       stat_quant_eq(formula = y ~ x, parse = TRUE,
+#                     mapping =
+#                       aes(label = paste(after_stat(eq.label),
+#                                         after_stat(rho.label),
+#                                         after_stat(AIC.label),
+#                                         sep = "~~")))
+#   )
+#
+#   expect_silent(
+#     ggplot(my.data[1:2, ], aes(x, y)) +
+#       geom_point() +
+#       stat_quant_eq(formula = y ~ x, parse = TRUE,
+#                     mapping =
+#                       aes(label = paste(after_stat(eq.label),
+#                                         after_stat(rho.label),
+#                                         after_stat(AIC.label),
+#                                         sep = "~~")))
+#   )
+#
+#   expect_silent(
+#     ggplot(my.data[1:3, ], aes(x, y)) +
+#       geom_point() +
+#       stat_quant_eq(formula = y ~ x, parse = TRUE,
+#                     mapping =
+#                       aes(label = paste(after_stat(eq.label),
+#                                         after_stat(rho.label),
+#                                         after_stat(AIC.label),
+#                                         sep = "~~")))
+#   )
+#
+#   expect_message(
+#     ggplot(my.data[1:2, ], aes(x, y)) +
+#       geom_point() +
+#       stat_quant_eq(formula = y ~ x + I(x^2), parse = TRUE,
+#                     mapping =
+#                       aes(label = paste(after_stat(eq.label),
+#                                         after_stat(rho.label),
+#                                         after_stat(AIC.label),
+#                                         sep = "~~")))
+#   )
+#
+#   expect_silent(
+#     ggplot(my.data[1:3, ], aes(x, y)) +
+#       geom_point() +
+#       stat_quant_eq(formula = y ~ x, parse = TRUE,
+#                    mapping =
+#                      aes(label = paste(after_stat(eq.label),
+#                                        after_stat(rho.label),
+#                                        after_stat(AIC.label),
+#                                        sep = "~~")))
+#   )
+#
+#   expect_silent(
+#     ggplot(my.data[1:3, ], aes(x, y)) +
+#       geom_point() +
+#       stat_quant_eq(formula = y ~ x + I(x^2), parse = TRUE,
+#                    mapping =
+#                      aes(label = paste(after_stat(eq.label),
+#                                        aes(label = paste(after_stat(eq.label),
+#                                                          after_stat(rho.label),
+#                                                          after_stat(AIC.label),
+#                                                          sep = "~~")))))
+#   )
+#
+#   expect_message(
+#     ggplot(my.data[1:3, ], aes(x, y)) +
+#       geom_point() +
+#       stat_quant_eq(formula = y ~ x + I(x^2) + I(x^3), parse = TRUE,
+#                    mapping =
+#                      aes(label = paste(after_stat(eq.label),
+#                                        after_stat(rho.label),
+#                                        after_stat(AIC.label),
+#                                        sep = "~~")))
+#   )
+#
+#   expect_message(
+#     ggplot(my.data[1:3, ], aes(x, y)) +
+#       geom_point() +
+#       stat_quant_eq(formula = x ~ y + I(y^2) + I(y^3), parse = TRUE,
+#                    mapping =
+#                      aes(label = paste(after_stat(eq.label),
+#                                        after_stat(rho.label),
+#                                        after_stat(AIC.label),
+#                                        sep = "~~")))
+#   )
+#
+# })
+#
+
 test_that("quant_formulas", {
   withCallingHandlers({
     vdiffr::expect_doppelganger("stat_quant_eq_formula_1",

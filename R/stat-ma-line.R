@@ -5,27 +5,33 @@
 #' except for fitting the model with \code{lmodel2::lmodel2()} with \code{"MA"}
 #' as default for \code{method}.
 #'
-#' @details
-#' This statistic fits major axis (\code{"MA"}) and other model II regressions
-#' with function \code{\link[lmodel2]{lmodel2}}. Model II regression is called
-#' for when both \code{x} and \code{y} are subject to random variation and the
-#' intention is not to predict \code{y} from \code{x} by means of the model
-#' but rather to study the relationship between two independent variables.
-#' A frequent case in biology are allometric relationships among body parts.
+#' @details This statistic fits major axis (\code{"MA"}) and other model II
+#'   regressions with function \code{\link[lmodel2]{lmodel2}}. Model II
+#'   regression is called for when both \code{x} and \code{y} are subject to
+#'   random variation and the intention is not to predict \code{y} from \code{x}
+#'   by means of the model but rather to study the relationship between two
+#'   independent variables. A frequent case in biology are allometric
+#'   relationships among body parts.
 #'
-#' As the fitted line is the same whether \code{x} or \code{y} is on the rhs of
-#' the model equation, \code{orientation} even is accepted does not have an
-#' effect on the fit. In contrast, \code{\link[ggplot2]{geom_smooth}} treats
-#' each axis differently and can thus have two orientations. The orientation is
-#' easy to deduce from the argument passed to \code{formula}. Thus,
-#' \code{stat_ma_line()} will by default guess which orientation the layer
-#' should have. If no argument is passed to \code{formula}, the orientation can
-#' be specified directly passing an argument to the \code{orientation}
-#' parameter, which can be either \code{"x"} or \code{"y"}. The value gives the
-#' axis that is on the rhs of the model equation, \code{"x"} being the default
-#' orientation. Package 'ggpmisc' does not define new geometries matching the
-#' new statistics as they are not needed and conceptually transformations of
-#' \code{data} are expressed as statistics.
+#'   As the fitted line is the same whether \code{x} or \code{y} is on the rhs
+#'   of the model equation, \code{orientation} even if accepted does not have an
+#'   effect on the fit. In contrast, \code{\link[ggplot2]{geom_smooth}} treats
+#'   each axis differently and can thus have two orientations. The orientation
+#'   is easy to deduce from the argument passed to \code{formula}. Thus,
+#'   \code{stat_ma_line()} will by default guess which orientation the layer
+#'   should have. If no argument is passed to \code{formula}, the orientation
+#'   can be specified directly passing an argument to the \code{orientation}
+#'   parameter, which can be either \code{"x"} or \code{"y"}. The value gives
+#'   the axis that is on the rhs of the model equation, \code{"x"} being the
+#'   default orientation. Package 'ggpmisc' does not define new geometries
+#'   matching the new statistics as they are not needed and conceptually
+#'   transformations of \code{data} are expressed as statistics.
+#'
+#'   The minimum number of observations with distinct values can be set through
+#'   parameter \code{n.min}. The default \code{n.min = 2L} is the smallest
+#'   possible value. However, model fits with very few observations are of
+#'   little interest and using a larger number for \code{n.min} than the default
+#'   is wise.
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}}. Only needs to be set at the layer level if you
@@ -59,6 +65,8 @@
 #'   \code{data}, \code{range.y}, \code{range.x} and \code{nperm} and return a
 #'   model fit object of class \code{lmodel2}.
 #' @param method.args named list with additional arguments.
+#' @param n.min integer Minimum number of distinct values in the explanatory
+#'   variable (on the rhs of formula) for fitting to the attempted.
 #' @param nperm integer Number of permutation used to estimate significance.
 #' @param se logical Return confidence interval around smooth? (`TRUE` by
 #'   default, see `level` to control.)
@@ -182,6 +190,7 @@ stat_ma_line <- function(mapping = NULL,
                          ...,
                          method = "lmodel2:MA",
                          method.args = list(),
+                         n.min = 2L,
                          formula = NULL,
                          range.y = NULL,
                          range.x = NULL,
@@ -239,6 +248,7 @@ stat_ma_line <- function(mapping = NULL,
     params = rlang::list2(
       method = method,
       method.args = method.args,
+      n.min = n.min,
       formula = formula,
       range.y = range.y,
       range.x = range.x,
@@ -266,6 +276,7 @@ ma_line_compute_group_fun <-
   function(data, scales,
            method = NULL,
            method.args = list(),
+           n.min = 2L,
            formula = NULL,
            range.y = NULL, range.x = NULL,
            se = TRUE,
@@ -279,7 +290,7 @@ ma_line_compute_group_fun <-
            flipped_aes = NA,
            orientation = "x") {
     data <- ggplot2::flip_data(data, flipped_aes)
-    if (length(unique(data$x)) < 2) {
+    if (length(unique(data$x)) < n.min) {
       # Not enough data to perform fit
       return(data.frame())
     }

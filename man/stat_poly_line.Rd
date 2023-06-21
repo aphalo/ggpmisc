@@ -18,6 +18,7 @@ stat_poly_line(
   fullrange = FALSE,
   level = 0.95,
   method.args = list(),
+  n.min = 2L,
   na.rm = FALSE,
   orientation = NA,
   show.legend = NA,
@@ -66,6 +67,9 @@ the data?}
 
 \item{method.args}{named list with additional arguments.}
 
+\item{n.min}{integer Minimum number of distinct values in the explanatory
+variable (on the rhs of formula) for fitting to the attempted.}
+
 \item{na.rm}{a logical indicating whether NA values should be stripped before
 the computation proceeds.}
 
@@ -111,6 +115,31 @@ is taken as the explanatory variable or \code{x} in the model formula.
 Package 'ggpmisc' does not define new geometries matching the new statistics
 as they are not needed and conceptually transformations of \code{data} are
 statistics in the grammar of graphics.
+
+  A ggplot statistic receives as \code{data} a data frame that is not the one
+  passed as argument by the user, but instead a data frame with the variables
+  mapped to aesthetics. \code{stat_poly_eq()} mimics how \code{stat_smooth()}
+  works, except that only polynomials can be fitted. Similarly to these
+  statistics the model fits respect grouping, so the scales used for \code{x}
+  and \code{y} should both be continuous scales rather than discrete.
+
+  With method \code{"lm"}, singularity results in terms being dropped with a
+  message if more numerous than can be fitted with a singular (exact) fit.
+  In this case and if the model results in a perfect fit due to low
+  number of observation, estimates for various parameters are \code{NaN} or
+  \code{NA}.
+
+  With methods other than \code{"lm"}, the model fit functions simply fail
+  in case of singularity, e.g., singular fits are not implemented in
+  \code{"rlm"}.
+
+  In both cases the minimum number of observations with distinct values in
+  the explanatory variable can be set through parameter \code{n.min}. The
+  default \code{n.min = 2L} is the smallest suitable for method \code{"lm"}
+  but too small for method \code{"rlm"} for which \code{n.min = 3L} is
+  needed. Anyway, model fits with very few observations are of little
+  interest and using larger values of \code{n.min} than the default is
+  wise.
 }
 \section{Computed variables}{
  `stat_poly_line()` provides the following

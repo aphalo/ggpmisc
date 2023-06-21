@@ -44,6 +44,8 @@
 #'   and return a model fit object of class \code{rq} or \code{rqs}.
 #' @param method.args named list with additional arguments passed to \code{rq()}
 #'   or to a function passed as argument to \code{method}.
+#' @param n.min integer Minimum number of observations needed for fiting a
+#'   the model.
 #' @param eq.with.lhs If \code{character} the string is pasted to the front of
 #'   the equation label before parsing or a \code{logical} (see note).
 #' @param eq.x.rhs \code{character} this string will be used as replacement for
@@ -118,6 +120,15 @@
 #'   works, except that only polynomials can be fitted. In other words, it
 #'   respects the grammar of graphics. This helps ensure that the model is
 #'   fitted to the same data as plotted in other layers.
+#'
+#'   Function \code{\link[quantreg]{rq}} does not support singular fits, in
+#'   contrast to \code{lm}.
+#'
+#'   The minimum number of observations with distinct values in the explanatory
+#'   variable can be set through parameter \code{n.min}. The default \code{n.min
+#'   = 3L} is the smallest usable value. However, model fits with very few
+#'   observations are of little interest and using larger values of \code{n.min}
+#'   than the default is usually wise.
 #'
 #' @references Written as an answer to question 65695409 by Mark Neal at
 #'   Stackoverflow.
@@ -384,6 +395,7 @@ stat_quant_eq <- function(mapping = NULL, data = NULL,
                          quantiles = c(0.25, 0.5, 0.75),
                          method = "rq:br",
                          method.args = list(),
+                         n.min = 3L,
                          eq.with.lhs = TRUE,
                          eq.x.rhs = NULL,
                          coef.digits = 3,
@@ -432,6 +444,7 @@ stat_quant_eq <- function(mapping = NULL, data = NULL,
                    quantiles = quantiles,
                    method = method,
                    method.args = method.args,
+                   n.min = n.min,
                    eq.with.lhs = eq.with.lhs,
                    eq.x.rhs = eq.x.rhs,
                    coef.digits = coef.digits,
@@ -467,6 +480,7 @@ quant_eq_compute_group_fun <- function(data,
                                        quantiles,
                                        method,
                                        method.args,
+                                       n.min,
                                        weight,
                                        eq.with.lhs,
                                        eq.x.rhs,
@@ -569,18 +583,18 @@ quant_eq_compute_group_fun <- function(data,
   }
 
   if (orientation == "x") {
-    if (length(unique(data[["x"]])) < 2) {
-      warning("Not enough data to perform fit for group ",
-              group.idx, "; computing mean instead.",
-              call. = FALSE)
-      formula = y ~ 1
+    if (length(unique(data$x)) < n.min) {
+      # message("Not enough distinct 'x' values for fit, n = ",
+      #         length(unique(data$x)), " < ", n.min,  " in group ",
+      #         group.idx, "; skipping.")
+      return(data.frame())
     }
   } else if (orientation == "y") {
-    if (length(unique(data[["y"]])) < 2) {
-      warning("Not enough data to perform fit for group ",
-              group.idx, "; computing mean instead.",
-              call. = FALSE)
-      formula = x ~ 1
+    if (length(unique(data$y)) < n.min) {
+      # message("Not enough distinct 'y' values for fit, n = ",
+      #         length(unique(data$y)), " < ", n.min, " in group ",
+      #         group.idx, "; skipping.")
+      return(data.frame())
     }
   }
 
@@ -739,7 +753,7 @@ quant_eq_compute_group_fun <- function(data,
     if (output.type == "expression") {
       z <- tibble::tibble(eq.label = eq.char,
                           AIC.label = paste("AIC", AIC.char, sep = "~`=`~"),
-                          rho.label = paste("rho", AIC.char, sep = "~`=`~"),
+                          rho.label = paste("rho", rho.char, sep = "~`=`~"),
                           n.label = paste("italic(n)~`=`~", n, sep = ""),
                           grp.label = if (any(grp.label != ""))
                                          paste(grp.label,
@@ -755,7 +769,7 @@ quant_eq_compute_group_fun <- function(data,
     } else if (output.type %in% c("latex", "tex", "text", "tikz")) {
       z <- tibble::tibble(eq.label = eq.char,
                           AIC.label = paste("AIC", AIC.char, sep = " = "),
-                          rho.label = paste("rho", AIC.char, sep = " = "),
+                          rho.label = paste("rho", rho.char, sep = " = "),
                           n.label = paste("n = ", n, sep = ""),
                           grp.label = paste(grp.label,
                                             sprintf_dm("q = %.2f", quantiles, decimal.mark = decimal.mark)),
@@ -767,7 +781,7 @@ quant_eq_compute_group_fun <- function(data,
     } else if (output.type == "markdown") {
       z <- tibble::tibble(eq.label = eq.char,
                           AIC.label = paste("AIC", AIC.char, sep = " = "),
-                          rho.label = paste("rho", AIC.char, sep = " = "),
+                          rho.label = paste("rho", rho.char, sep = " = "),
                           n.label = paste("_n_ = ", n, sep = ""),
                           grp.label = paste(grp.label,
                                             sprintf_dm("q = %.2f", quantiles, decimal.mark = decimal.mark)),
