@@ -120,6 +120,11 @@
 #'   variables. In addition, the aesthetics understood by the geom
 #'   (\code{"text"} is the default) are understood and grouping respected.
 #'
+#' @return A data frame, with a single row and columns as described under
+#'   \strong{Computed variables}. In cases when the number of observations is
+#'   less than \code{n.min} a data frame with no rows or columns is returned
+#'   rendered as an empty/invisible plot layer.
+#'
 #' @section Computed variables:
 #' If output.type different from \code{"numeric"} the returned tibble contains
 #' columns listed below. If the fitted model does not contain a given value,

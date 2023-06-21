@@ -139,6 +139,11 @@
 #'   \code{numeric} variables. In addition, the aesthetics understood by the
 #'   geom used (\code{"text"} by default) are understood and grouping respected.
 #'
+#' @return A data frame, with one row per quantile and columns as described
+#'   under \strong{Computed variables}. In cases when the number of observations
+#'   is less than \code{n.min} a data frame with no rows or columns is returned
+#'   rendered as an empty/invisible plot layer.
+#'
 #' @section Computed variables:
 #' If output.type different from \code{"numeric"} the returned tibble contains
 #' columns below in addition to a modified version of the original \code{group}:

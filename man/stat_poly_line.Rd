@@ -86,9 +86,9 @@ define both data and aesthetics and shouldn't inherit behaviour from the
 default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
 }
 \value{
-The value returned by the statistic is a data frame, that will have
-  \code{n} rows of predicted values and their confidence limits. Optionally
-  it will also include additional values related to the model fit.
+The value returned by the statistic is a data frame, with \code{n}
+  rows of predicted values and their confidence limits. Optionally it will
+  also include additional values related to the model fit.
 }
 \description{
 Predicted values and a confidence band are computed and, by default, plotted.

@@ -92,9 +92,9 @@
 #' @param orientation character Either "x" or "y" controlling the default for
 #'   \code{formula}.
 #'
-#' @return The value returned by the statistic is a data frame, that will have
-#'   \code{n} rows of predicted values and their confidence limits. Optionally
-#'   it will also include additional values related to the model fit.
+#' @return The value returned by the statistic is a data frame, with \code{n}
+#'   rows of predicted values and their confidence limits. Optionally it will
+#'   also include additional values related to the model fit.
 #'
 #' @section Computed variables: `stat_poly_line()` provides the following
 #'   variables, some of which depend on the orientation: \describe{ \item{y *or*

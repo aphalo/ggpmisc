@@ -126,6 +126,12 @@ than combining with them. This is most useful for helper functions that
 define both data and aesthetics and shouldn't inherit behaviour from the
 default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
 }
+\value{
+A data frame, with a single row and columns as described under
+  \strong{Computed variables}. In cases when the number of observations is
+  less than \code{n.min} a data frame with no rows or columns is returned
+  rendered as an empty/invisible plot layer.
+}
 \description{
 \code{stat_ma_eq} fits model II regressions. From the fitted model it
 generates several labels including the equation, p-value,
