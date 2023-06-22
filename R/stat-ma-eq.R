@@ -399,6 +399,11 @@ ma_eq_compute_group_fun <- function(data,
                                     orientation) {
   force(data)
 
+  if (length(unique(data$x)) < n.min ||
+      length(unique(data$y)) < n.min) {
+    return(data.frame())
+  }
+
   # parse uses this option, but as for some labels or output types we do not use
   # parse() to avoid dropping of trailing zeros, we need to manage this in our
   # code in this case.
@@ -463,15 +468,6 @@ ma_eq_compute_group_fun <- function(data,
     label.y <- label.y[group.idx]
   } else if (length(label.y) > 0) {
     label.y <- label.y[1]
-  }
-
-  if (length(unique(data$x)) < n.min ||
-      length(unique(data$y)) < n.min) {
-    # message("Too few distinct 'x' or 'y' values for fit, n = ",
-    #         min(length(unique(data$x)), length(unique(data$y))),
-    #         " < ", n.min,  " in group ",
-    #         group.idx, "; skipping.")
-    return(data.frame())
   }
 
   # If method was specified as a character string, replace with

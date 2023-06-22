@@ -30,6 +30,8 @@
 #'   parameters \code{formula}, \code{data}, \code{weights} and \code{method}. A
 #'   \code{fitted()} method must exist for the returned model fit object class.
 #' @param method.args named list with additional arguments.
+#' @param n.min integer Minimum number of distinct values in the explanatory
+#'   variable (on the rhs of formula) for fitting to the attempted.
 #' @param formula a "formula" object. Using aesthetic names instead of
 #'   original variable names.
 #' @param orientation character Either "x" or "y" controlling the default for
@@ -172,6 +174,7 @@
 stat_fit_deviations <- function(mapping = NULL, data = NULL, geom = "segment",
                                method = "lm",
                                method.args = list(),
+                               n.min = 2L,
                                formula = NULL,
                                position = "identity",
                                na.rm = FALSE,
@@ -184,6 +187,7 @@ stat_fit_deviations <- function(mapping = NULL, data = NULL, geom = "segment",
     params =
       rlang::list2(method = method,
                    method.args = method.args,
+                   n.min = n.min,
                    formula = formula,
                    na.rm = na.rm,
                    orientation = orientation,
@@ -202,6 +206,7 @@ deviations_compute_group_fun <- function(data,
                                          scales,
                                          method,
                                          method.args,
+                                         n.min,
                                          formula,
                                          orientation) {
   stopifnot(!any(c("formula", "data") %in% names(method.args)))
@@ -220,6 +225,16 @@ deviations_compute_group_fun <- function(data,
   # we guess orientation from formula
   if (is.na(orientation)) {
     orientation <- unname(c(x = "y", y = "x")[as.character(formula)[2]])
+  }
+
+  if (orientation == "x") {
+    if (length(unique(data$x)) < n.min) {
+      return(data.frame())
+    }
+  } else if (orientation == "y") {
+    if (length(unique(data$y)) < n.min) {
+      return(data.frame())
+    }
   }
 
   # If method was specified as a character string, replace with
@@ -326,6 +341,7 @@ StatFitDeviations <-
 stat_fit_fitted <- function(mapping = NULL, data = NULL, geom = "point",
                             method = "lm",
                             method.args = list(),
+                            n.min = 2L,
                             formula = NULL,
                             position = "identity",
                             na.rm = FALSE,
@@ -338,6 +354,7 @@ stat_fit_fitted <- function(mapping = NULL, data = NULL, geom = "point",
     params =
       rlang::list2(method = method,
                    method.args = method.args,
+                   n.min = n.min,
                    formula = formula,
                    na.rm = na.rm,
                    orientation = orientation,
@@ -356,6 +373,7 @@ fitted_compute_group_fun <- function(data,
                                      scales,
                                      method,
                                      method.args,
+                                     n.min,
                                      formula,
                                      orientation,
                                      return.fitted = FALSE) {
@@ -375,6 +393,16 @@ fitted_compute_group_fun <- function(data,
   # we guess orientation from formula
   if (is.na(orientation)) {
     orientation <- unname(c(x = "y", y = "x")[as.character(formula)[2]])
+  }
+
+  if (orientation == "x") {
+    if (length(unique(data$x)) < n.min) {
+      return(data.frame())
+    }
+  } else if (orientation == "y") {
+    if (length(unique(data$y)) < n.min) {
+      return(data.frame())
+    }
   }
 
   # If method was specified as a character string, replace with

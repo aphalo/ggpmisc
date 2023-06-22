@@ -10,6 +10,7 @@ stat_fit_residuals(
   geom = "point",
   method = "lm",
   method.args = list(),
+  n.min = 2L,
   formula = NULL,
   resid.type = NULL,
   weighted = FALSE,
@@ -40,6 +41,9 @@ Functions implementing methods must accept arguments to parameters
 class.}
 
 \item{method.args}{named list with additional arguments.}
+
+\item{n.min}{integer Minimum number of distinct values in the explanatory
+variable (on the rhs of formula) for fitting to the attempted.}
 
 \item{formula}{a "formula" object. Using aesthetic names instead of
 original variable names.}

@@ -589,16 +589,10 @@ quant_eq_compute_group_fun <- function(data,
 
   if (orientation == "x") {
     if (length(unique(data$x)) < n.min) {
-      # message("Not enough distinct 'x' values for fit, n = ",
-      #         length(unique(data$x)), " < ", n.min,  " in group ",
-      #         group.idx, "; skipping.")
       return(data.frame())
     }
   } else if (orientation == "y") {
     if (length(unique(data$y)) < n.min) {
-      # message("Not enough distinct 'y' values for fit, n = ",
-      #         length(unique(data$y)), " < ", n.min, " in group ",
-      #         group.idx, "; skipping.")
       return(data.frame())
     }
   }

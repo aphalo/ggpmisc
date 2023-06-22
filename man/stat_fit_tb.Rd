@@ -10,6 +10,7 @@ stat_fit_tb(
   geom = "table_npc",
   method = "lm",
   method.args = list(formula = y ~ x),
+  n.min = 2L,
   tidy.args = list(),
   tb.type = "fit.summary",
   tb.vars = NULL,
@@ -46,6 +47,9 @@ plot defaults.}
 
 \item{method.args, tidy.args}{lists of arguments to pass to \code{method} and
 to \code{tidy()}.}
+
+\item{n.min}{integer Minimum number of distinct values in the explanatory
+variable (on the rhs of formula) for fitting to the attempted.}
 
 \item{tb.type}{character One of "fit.summary", "fit.anova" or "fit.coefs".}
 

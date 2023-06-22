@@ -30,6 +30,8 @@
 #' @param method character.
 #' @param method.args,tidy.args lists of arguments to pass to \code{method} and
 #'   to \code{tidy()}.
+#' @param n.min integer Minimum number of distinct values in the explanatory
+#'   variable (on the rhs of formula) for fitting to the attempted.
 #' @param tb.type character One of "fit.summary", "fit.anova" or "fit.coefs".
 #' @param digits integer indicating the number of significant digits to be used
 #'   for all numeric values in the table.
@@ -317,6 +319,7 @@
 stat_fit_tb <- function(mapping = NULL, data = NULL, geom = "table_npc",
                         method = "lm",
                         method.args = list(formula = y ~ x),
+                        n.min = 2L,
                         tidy.args = list(),
                         tb.type = "fit.summary",
                         tb.vars = NULL,
@@ -349,6 +352,7 @@ stat_fit_tb <- function(mapping = NULL, data = NULL, geom = "table_npc",
     params =
       rlang::list2(method = method,
                    method.args = method.args,
+                   n.min = n.min,
                    tidy.args = tidy.args,
                    tb.type = tb.type,
                    tb.vars = tb.vars,
@@ -379,6 +383,7 @@ fit_tb_compute_panel_fun <- function(data,
                                      scales,
                                      method,
                                      method.args,
+                                     n.min,
                                      tidy.args,
                                      tb.type,
                                      tb.vars,
@@ -390,7 +395,7 @@ fit_tb_compute_panel_fun <- function(data,
                                      label.y) {
 
   force(data)
-  if (length(unique(data$x)) < 2) {
+  if (length(unique(data$x)) < n.min) {
     # Not enough data to perform fit
     return(data.frame())
   }

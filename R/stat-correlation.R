@@ -27,6 +27,8 @@
 #' @param na.rm	a logical indicating whether NA values should be stripped before
 #'   the computation proceeds.
 #' @param method character One of "pearson", "kendall" or "spearman".
+#' @param n.min integer Minimum number of distinct values in the variables for
+#'   fitting to the attempted.
 #' @param alternative character One of "two.sided", "less" or "greater".
 #' @param exact logical Whether an exact p-value should be computed. Used for
 #'   Kendall's tau and Spearman's rho.
@@ -252,6 +254,7 @@ stat_correlation <- function(mapping = NULL,
                       position = "identity",
                       ...,
                       method = "pearson",
+                      n.min = 2L,
                       alternative = "two.sided",
                       exact = NULL,
                       r.conf.level = 0.95,
@@ -294,6 +297,7 @@ stat_correlation <- function(mapping = NULL,
     inherit.aes = inherit.aes,
     params =
       rlang::list2(method = method,
+                   n.min = n.min,
                    alternative = alternative,
                    exact = exact,
                    conf.level = r.conf.level,
@@ -332,6 +336,7 @@ stat_correlation <- function(mapping = NULL,
 cor_test_compute_fun <- function(data,
                                  scales,
                                  method,
+                                 n.min,
                                  alternative,
                                  exact,
                                  conf.level,
@@ -357,6 +362,11 @@ cor_test_compute_fun <- function(data,
   # strings within expressions, which is very cumbersome.
 
   force(data)
+
+  if (length(unique(data$x)) < n.min ||
+      length(unique(data$y)) < n.min) {
+    return(data.frame())
+  }
 
   # parse obeys this option, but as for some labels or output types we do not
   # use parse() to avoid dropping of trailing zeros, we need to manage this in
@@ -386,7 +396,17 @@ cor_test_compute_fun <- function(data,
     grp.label <- as.character(data[["group"]][1])
   }
 
-  group.idx <- abs(data$group[1])
+  if (is.integer(data$group)) {
+    group.idx <- abs(data$group[1])
+  } else if (is.character(data$group) &&
+             grepl("^(-1|[0-9]+).*$", data$group[1])) {
+    # likely that 'gganimate' has set the groups for scenes
+    # we assume first characters give the original group
+    group.idx <- abs(as.numeric(gsub("^(-1|[0-9]+).*$", "\\1", data$group[1])))
+  } else {
+    group.idx <- NA_integer_
+  }
+
   if (length(label.x) >= group.idx) {
     label.x <- label.x[group.idx]
   } else if (length(label.x) > 0) {

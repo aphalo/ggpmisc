@@ -11,6 +11,7 @@ stat_correlation(
   position = "identity",
   ...,
   method = "pearson",
+  n.min = 2L,
   alternative = "two.sided",
   exact = NULL,
   r.conf.level = 0.95,
@@ -52,6 +53,9 @@ can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 
 \item{method}{character One of "pearson", "kendall" or "spearman".}
+
+\item{n.min}{integer Minimum number of distinct values in the variables for
+fitting to the attempted.}
 
 \item{alternative}{character One of "two.sided", "less" or "greater".}
 

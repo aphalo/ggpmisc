@@ -594,16 +594,10 @@ poly_eq_compute_group_fun <- function(data,
 
   if (orientation == "x") {
     if (length(unique(data$x)) < n.min) {
-      # message("Too few distinct 'x' values for fit, n = ",
-      #         length(unique(data$x)), " < ", n.min,  " in group ",
-      #         group.idx, "; skipping.")
       return(data.frame())
     }
   } else if (orientation == "y") {
     if (length(unique(data$y)) < n.min) {
-      # message("Too few distinct 'y' values for fit, n = ",
-      #         length(unique(data$y)), " < ", n.min, " in group ",
-      #         group.idx, "; skipping.")
       return(data.frame())
     }
   }
@@ -718,8 +712,7 @@ poly_eq_compute_group_fun <- function(data,
   }
   if ("r.squared" %in% names(fm.summary)) {
     rr <- fm.summary[["r.squared"]]
-    if (length(unique(data$y)) < n.min  ||
-        !all(is.finite(c(f.value, f.df1, f.df2)))) {
+    if (!all(is.finite(c(f.value, f.df1, f.df2)))) {
       rr.confint.low <- rr.confint.high <- NA_real_
     } else {
       rr.confint <-

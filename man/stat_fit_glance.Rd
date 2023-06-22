@@ -10,6 +10,7 @@ stat_fit_glance(
   geom = "text_npc",
   method = "lm",
   method.args = list(formula = y ~ x),
+  n.min = 2L,
   glance.args = list(),
   label.x = "left",
   label.y = "top",
@@ -36,6 +37,9 @@ the plot defaults.}
 
 \item{method.args, glance.args}{list of arguments to pass to \code{method}
 and to [generics::glance()], respectively.}
+
+\item{n.min}{integer Minimum number of distinct values in the explanatory
+variable (on the rhs of formula) for fitting to the attempted.}
 
 \item{label.x, label.y}{\code{numeric} with range 0..1 "normalized parent
 coordinates" (npc units) or character if using \code{geom_text_npc()} or

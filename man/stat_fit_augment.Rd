@@ -10,6 +10,7 @@ stat_fit_augment(
   geom = "smooth",
   method = "lm",
   method.args = list(formula = y ~ x),
+  n.min = 2L,
   augment.args = list(),
   level = 0.95,
   y.out = ".fitted",
@@ -34,6 +35,9 @@ the plot defaults.}
 
 \item{method.args, augment.args}{list of arguments to pass to \code{method}
 and to to \code{broom:augment}.}
+
+\item{n.min}{integer Minimum number of distinct values in the explanatory
+variable (on the rhs of formula) for fitting to the attempted.}
 
 \item{level}{numeric Level of confidence interval to use (0.95 by default)}
 

@@ -11,6 +11,7 @@ stat_fit_deviations(
   geom = "segment",
   method = "lm",
   method.args = list(),
+  n.min = 2L,
   formula = NULL,
   position = "identity",
   na.rm = FALSE,
@@ -26,6 +27,7 @@ stat_fit_fitted(
   geom = "point",
   method = "lm",
   method.args = list(),
+  n.min = 2L,
   formula = NULL,
   position = "identity",
   na.rm = FALSE,
@@ -53,6 +55,9 @@ parameters \code{formula}, \code{data}, \code{weights} and \code{method}. A
 \code{fitted()} method must exist for the returned model fit object class.}
 
 \item{method.args}{named list with additional arguments.}
+
+\item{n.min}{integer Minimum number of distinct values in the explanatory
+variable (on the rhs of formula) for fitting to the attempted.}
 
 \item{formula}{a "formula" object. Using aesthetic names instead of
 original variable names.}

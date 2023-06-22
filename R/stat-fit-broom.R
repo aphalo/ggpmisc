@@ -29,6 +29,8 @@
 #' @param method character or function.
 #' @param method.args,glance.args list of arguments to pass to \code{method}
 #'   and to [generics::glance()], respectively.
+#' @param n.min integer Minimum number of distinct values in the explanatory
+#'   variable (on the rhs of formula) for fitting to the attempted.
 #' @param label.x,label.y \code{numeric} with range 0..1 "normalized parent
 #'   coordinates" (npc units) or character if using \code{geom_text_npc()} or
 #'   \code{geom_label_npc()}. If using \code{geom_text()} or \code{geom_label()}
@@ -190,6 +192,7 @@
 stat_fit_glance <- function(mapping = NULL, data = NULL, geom = "text_npc",
                             method = "lm",
                             method.args = list(formula = y ~ x),
+                            n.min = 2L,
                             glance.args = list(),
                             label.x = "left", label.y = "top",
                             hstep = 0,
@@ -204,6 +207,7 @@ stat_fit_glance <- function(mapping = NULL, data = NULL, geom = "text_npc",
       rlang::list2(method = method,
                    method.args = method.args,
                    glance.args = glance.args,
+                   n.min = n.min,
                    label.x = label.x,
                    label.y = label.y,
                    hstep = hstep,
@@ -225,6 +229,7 @@ fit_glance_compute_group_fun <- function(data,
                                          scales,
                                          method,
                                          method.args,
+                                         n.min,
                                          glance.args,
                                          label.x,
                                          label.y,
@@ -234,21 +239,20 @@ fit_glance_compute_group_fun <- function(data,
 
   force(data) # needed because it appears only wihtin quote()
 
-  if (length(unique(data$x)) < 2) {
+  if (length(unique(data$x)) < n.min) {
     # Not enough data to perform fit
     return(data.frame())
   }
 
-  group.idx <- abs(data$group[1])
-  if (length(label.x) >= group.idx) {
-    label.x <- label.x[group.idx]
-  } else if (length(label.x) > 0) {
-    label.x <- label.x[1]
-  }
-  if (length(label.y) >= group.idx) {
-    label.y <- label.y[group.idx]
-  } else if (length(label.y) > 0) {
-    label.y <- label.y[1]
+  if (is.integer(data$group)) {
+    group.idx <- abs(data$group[1])
+  } else if (is.character(data$group) &&
+             grepl("^(-1|[0-9]+).*$", data$group[1])) {
+    # likely that 'gganimate' has set the groups for scenes
+    # we assume first characters give the original group
+    group.idx <- abs(as.numeric(gsub("^(-1|[0-9]+).*$", "\\1", data$group[1])))
+  } else {
+    group.idx <- NA_integer_
   }
 
   if (length(label.x) >= group.idx) {
@@ -418,6 +422,8 @@ StatFitGlance <-
 #' @param method character or function.
 #' @param method.args,augment.args list of arguments to pass to \code{method}
 #'   and to to \code{broom:augment}.
+#' @param n.min integer Minimum number of distinct values in the explanatory
+#'   variable (on the rhs of formula) for fitting to the attempted.
 #' @param level numeric Level of confidence interval to use (0.95 by default)
 #' @param y.out character (or numeric) index to column to return as \code{y}.
 #'
@@ -558,6 +564,7 @@ StatFitGlance <-
 stat_fit_augment <- function(mapping = NULL, data = NULL, geom = "smooth",
                              method = "lm",
                              method.args = list(formula = y ~ x),
+                             n.min = 2L,
                              augment.args = list(),
                              level = 0.95,
                              y.out = ".fitted",
@@ -571,6 +578,7 @@ stat_fit_augment <- function(mapping = NULL, data = NULL, geom = "smooth",
       rlang::list2(method = method,
                    method.args = method.args,
                    augment.args = augment.args,
+                   n.min = n.min,
                    level = level,
                    y.out = y.out,
                    na.rm = na.rm,
@@ -589,6 +597,7 @@ fit_augment_compute_group_fun <- function(data,
                                     scales,
                                     method,
                                     method.args,
+                                    n.min,
                                     augment.args,
                                     level,
                                     y.out,
@@ -603,7 +612,7 @@ fit_augment_compute_group_fun <- function(data,
   force(data)
   data <- na.omit(data)
 
-  if (length(unique(data[["x"]])) < 2) {
+  if (length(unique(data[["x"]])) < n.min) {
     # Not enough data to perform fit
     return(data.frame())
   }
@@ -705,6 +714,8 @@ StatFitAugment <-
 #' @param method character or function.
 #' @param method.args,tidy.args list of arguments to pass to \code{method},
 #'   and to [generics::tidy], respectively.
+#' @param n.min integer Minimum number of distinct values in the explanatory
+#'   variable (on the rhs of formula) for fitting to the attempted.
 #' @param label.x,label.y \code{numeric} with range 0..1 or character.
 #'   Coordinates to be used for positioning the output, expressed in "normalized
 #'   parent coordinates" or character string. If too short they will be
@@ -870,6 +881,7 @@ StatFitAugment <-
 stat_fit_tidy <- function(mapping = NULL, data = NULL, geom = "text_npc",
                           method = "lm",
                           method.args = list(formula = y ~ x),
+                          n.min = 2L,
                           tidy.args = list(),
                           label.x = "left", label.y = "top",
                           hstep = 0,
@@ -884,6 +896,7 @@ stat_fit_tidy <- function(mapping = NULL, data = NULL, geom = "text_npc",
     params =
       rlang::list2(method = method,
                    method.args = method.args,
+                   n.min = n.min,
                    tidy.args = tidy.args,
                    label.x = label.x,
                    label.y = label.y,
@@ -911,6 +924,7 @@ fit_tidy_compute_group_fun <- function(data,
                                        scales,
                                        method,
                                        method.args,
+                                       n.min,
                                        tidy.args,
                                        label.x,
                                        label.y,
@@ -919,12 +933,22 @@ fit_tidy_compute_group_fun <- function(data,
                                        sanitize.names,
                                        npc.used) {
   force(data)
-  if (length(unique(data$x)) < 2) {
+  if (length(unique(data$x)) < n.min) {
     # Not enough data to perform fit
     return(data.frame())
   }
 
-  group.idx <- abs(data$group[1])
+  if (is.integer(data$group)) {
+    group.idx <- abs(data$group[1])
+  } else if (is.character(data$group) &&
+             grepl("^(-1|[0-9]+).*$", data$group[1])) {
+    # likely that 'gganimate' has set the groups for scenes
+    # we assume first characters give the original group
+    group.idx <- abs(as.numeric(gsub("^(-1|[0-9]+).*$", "\\1", data$group[1])))
+  } else {
+    group.idx <- NA_integer_
+  }
+
   if (length(label.x) >= group.idx) {
     label.x <- label.x[group.idx]
   } else if (length(label.x) > 0) {
