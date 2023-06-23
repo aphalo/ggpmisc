@@ -1135,7 +1135,11 @@ coefs2poly_eq <- function(coefs,
 #
 # This is an edit of the code in package 'polynom' so that trailing zeros are
 # retained during the conversion
-#
+#' @noRd
+#' @noMd
+#' @export
+#' @method as.character polynomial
+#'
 as.character.polynomial <- function (x,
                                      decreasing = FALSE,
                                      digits = 3,

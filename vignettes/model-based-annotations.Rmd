@@ -31,7 +31,7 @@ _To avoid confusion it is good to make clear what may seem obvious to some: if n
 
 It is also important to remember that in most cases data analysis proper should take place before annotated plots for publication are produced. Even though data analysis can benefit from combined numerical and graphical representation of the results, the use I envision for 'ggpmisc' is mainly for the production of plots for publication or communication.
 
-Attaching package 'ggpmisc' also attaches package 'ggpp' as this package was created as a spin-off from 'ggpmisc'. 'ggpp' provides several of the geometries used by default in the statistics described below. Package 'ggpp' can be loaded and attached on its own, and has [its own documentation](https://docs.r4photobiology.info/ggpp).
+Attaching package 'ggpmisc' also attaches package 'ggpp' as this package was created as a spin-off from 'ggpmisc'. 'ggpp' provides several of the geometries used by default in the statistics described below. Package 'ggpp' can be loaded and attached on its own, and has [its own documentation](https://docs.r4photobiology.info/ggpp/).
 
 ## Preliminaries
 
