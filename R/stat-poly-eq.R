@@ -1143,7 +1143,8 @@ coefs2poly_eq <- function(coefs,
 as.character.polynomial <- function (x,
                                      decreasing = FALSE,
                                      digits = 3,
-                                     keep.zeros = TRUE) {
+                                     keep.zeros = TRUE,
+                                     ...) {
   if (keep.zeros) {
     p <- sprintf("%#.*g", digits, x)
   } else {
