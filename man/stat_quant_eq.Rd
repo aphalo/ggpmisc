@@ -206,6 +206,15 @@ Support for the \code{angle} aesthetic is not automatic and requires
   to parameter \code{weights} of \code{rq()}. All three must be mapped to
   \code{numeric} variables. In addition, the aesthetics understood by the
   geom used (\code{"text"} by default) are understood and grouping respected.
+
+  \emph{If the model formula includes a transformation of \code{x}, a
+  matching argument should be passed to parameter \code{eq.x.rhs}
+  as its default value \code{"x"} will not reflect the applied
+  transformation. In plots, transformation should never be applied to the
+  left hand side of the model formula, but instead in the mapping of the
+  variable within \code{aes}, as otherwise plotted observations and fitted
+  curve will not match. In this case it may be necessary to also pass
+  a matching argument to parameter \code{eq.with.lhs}.}
 }
 
 \section{Computed variables}{
@@ -306,15 +315,9 @@ ggplot(my.data, aes(x, y)) +
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_quant_line(formula = formula, linewidth = 0.5) +
-  stat_quant_eq(formula = formula, angle = 90, hstep = 0.05, vstep = 0,
-                label.y = 0.98, hjust = 1)
-
-ggplot(my.data, aes(x, y)) +
-  geom_point() +
-  stat_quant_line(formula = formula) +
-  stat_quant_eq(formula = formula, angle = 90,
-                hstep = 0.05, vstep = 0, hjust = 0,
-                label.y = 0.25)
+  stat_quant_eq(formula = formula, angle = 90, hstep = 0.04, vstep = 0,
+                label.y = 0.02, hjust = 0) +
+  expand_limits(x = -15) # make space for equations
 
 # user set quantiles
 ggplot(my.data, aes(x, y)) +
@@ -350,6 +353,17 @@ ggplot(my.data, aes(x, y2,  shape = group, linetype = group,
                 formula = formula) +
   expand_limits(y = 3) +
   theme_classic()
+
+# modifying the explanatory variable within the model formula
+# modifying the response variable within aes()
+formula.trans <- y ~ I(x^2)
+ggplot(my.data, aes(x, y + 1)) +
+  geom_point() +
+  stat_quant_line(formula = formula.trans) +
+  stat_quant_eq(use_label("eq"),
+               formula = formula.trans,
+               eq.x.rhs = "~x^2",
+               eq.with.lhs = "y + 1~~`=`~~")
 
 # using weights
 ggplot(my.data, aes(x, y, weight = w)) +

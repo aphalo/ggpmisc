@@ -192,6 +192,11 @@ For backward compatibility a logical is accepted as argument for
   ignored. Both \code{x} and \code{y} must be mapped to \code{numeric}
   variables. In addition, the aesthetics understood by the geom
   (\code{"text"} is the default) are understood and grouping respected.
+
+  \emph{Transformation of \code{x} or \code{y} within the model formula
+  is not supported by \code{stat_ma_eq()}. In this case, transformations
+  should never be applied in the model formula, but instead in the mapping
+  of the variables within \code{aes}.}
 }
 
 \section{Computed variables}{
@@ -276,6 +281,14 @@ ggplot(my.data, aes(x, y)) +
   stat_ma_line(formula = x ~ y) +
   stat_ma_eq(formula = x ~ y,
              use_label(c("eq", "R2", "P")))
+
+# modifying both variables within aes()
+ggplot(my.data, aes(log(x + 10), log(y + 10))) +
+  geom_point() +
+  stat_poly_line() +
+  stat_poly_eq(use_label("eq"),
+               eq.x.rhs = "~~log(x+10)",
+               eq.with.lhs = "log(y+10)~~`=`~~")
 
 # grouping
 ggplot(my.data, aes(x, y, color = group)) +

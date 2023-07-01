@@ -4,13 +4,15 @@ editor_options:
     wrap: 72
 ---
 
+# ggpmisc 0.5.4
+
 # ggpmisc 0.5.3
 
 -   Fix bug in `stat_ma_line()`: error triggered when returned values from computation of confidence band are missing. (Reported by rakelrpf as issue #36.)
 -   Fix bug in `stat_quant_eq()`: `rho.label` showed the numeric value of AIC instead of rho.
 -   Fix incompatibility of `stat_poly_eq()` (and other statistics) with package 'gganimate' (Bug reported by EvoLandEco as issue #38).
 -   Improve handling of singular fits in model fitting in `stat_poly_eq()`, `stat_ma_eq()` and `stat_quant_eq()` (Use case from EvoLandEco in issue #38.).
--   Add parameter `n.min` to all statistics that fit a model or compute correlations. Default value is the previously hard coded value, except in one case where the previously hard-coded value was wrong.
+-   Add parameter `n.min` to all statistics that fit a model or compute correlations. Default value is the previously hard-coded value, except in one case where the previously hard-coded value was wrong.
 -   Add `stat_fit_fitted()`.
 
 # ggpmisc 0.5.2

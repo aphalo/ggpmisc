@@ -142,17 +142,20 @@
 #'   Stackoverflow but enhanced based on suggestions from users and my own
 #'   needs.
 #'
-#' @section IMPORTANT: \code{stat_regline_equation()} in package 'ggpubr' is
-#'   a renamed but almost unchanged copy of \code{stat_poly_eq()} taken from an
-#'   oldr version of this package (without acknowledgement of source and
-#'   authorship). \code{stat_regline_equation()} lacks important functionality
-#'   and contains bugs that have been fixed in \code{stat_poly_eq()}.
-#'
 #' @section Aesthetics: \code{stat_poly_eq()} understands \code{x} and \code{y},
 #'   to be referenced in the \code{formula} and \code{weight} passed as argument
 #'   to parameter \code{weights}. All three must be mapped to \code{numeric}
 #'   variables. In addition, the aesthetics understood by the geom
 #'   (\code{"text"} is the default) are understood and grouping respected.
+#'
+#'   \emph{If the model formula includes a transformation of \code{x}, a
+#'   matching argument should be passed to parameter \code{eq.x.rhs}
+#'   as its default value \code{"x"} will not reflect the applied
+#'   transformation. In plots, transformation should never be applied to the
+#'   left hand side of the model formula, but instead in the mapping of the
+#'   variable within \code{aes}, as otherwise plotted observations and fitted
+#'   curve will not match. In this case it may be necessary to also pass
+#'   a matching argument to parameter \code{eq.with.lhs}.}
 #'
 #' @return A data frame, with a single row and columns as described under
 #'   \strong{Computed variables}. In cases when the number of observations is
@@ -193,6 +196,12 @@
 #'
 #' To explore the computed values returned for a given input we suggest the use
 #' of \code{\link[gginnards]{geom_debug}} as shown in the last examples below.
+#'
+#' @section Alternatives: \code{stat_regline_equation()} in package 'ggpubr' is
+#'   a renamed but almost unchanged copy of \code{stat_poly_eq()} taken from an
+#'   old version of this package (without acknowledgement of source and
+#'   authorship). \code{stat_regline_equation()} lacks important functionality
+#'   and contains bugs that have been fixed in \code{stat_poly_eq()}.
 #'
 #' @seealso This statistics fits a model with function \code{\link[stats]{lm}},
 #'   function \code{\link[MASS]{rlm}} or a user supplied function returning an
@@ -283,6 +292,17 @@
 #'   geom_point() +
 #'   stat_poly_line(formula = formula) +
 #'   stat_poly_eq(formula = formula, label.y = 0.1, label.x = 0.9)
+#'
+#' # modifying the explanatory variable within the model formula
+#' # modifying the response variable within aes()
+#' formula.trans <- y ~ I(x^2)
+#' ggplot(my.data, aes(x, y + 1)) +
+#'   geom_point() +
+#'   stat_poly_line(formula = formula.trans) +
+#'   stat_poly_eq(use_label("eq"),
+#'                formula = formula.trans,
+#'                eq.x.rhs = "~x^2",
+#'                eq.with.lhs = "y + 1~~`=`~~")
 #'
 #' # using weights
 #' ggplot(my.data, aes(x, y, weight = w)) +
