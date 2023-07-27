@@ -45,7 +45,7 @@
 #' @param small.r,small.p logical Flags to switch use of lower case r and p for
 #'   coefficient of determination and p-value.
 #' @param rsquared.conf.level numeric Confidence level for the returned
-#'   confidence interval.
+#'   confidence interval. Set to NA to skip CI computation.
 #' @param CI.brackets character vector of length 2. The opening and closing
 #'   brackets used for the CI label.
 #' @param coef.digits,f.digits integer Number of significant digits to use for
@@ -512,6 +512,10 @@ stat_poly_eq <- function(mapping = NULL, data = NULL,
     }
   }
 
+  if (is.null(rsquared.conf.level) || !is.finite(rsquared.conf.level)) {
+    rsquared.conf.level <- 0
+  }
+
   ggplot2::layer(
     data = data,
     mapping = mapping,
@@ -730,16 +734,19 @@ poly_eq_compute_group_fun <- function(data,
   } else {
     f.value <- f.df1 <- f.df2 <- p.value <- NA_real_
   }
-  if ("r.squared" %in% names(fm.summary)) {
+  if ("r.squared" %in% names(fm.summary)
+  ) {
     rr <- fm.summary[["r.squared"]]
-    if (!all(is.finite(c(f.value, f.df1, f.df2)))) {
+    if (!all(is.finite(c(f.value, f.df1, f.df2))) ||
+        rsquared.conf.level <= 0
+        ) {
       rr.confint.low <- rr.confint.high <- NA_real_
     } else {
       rr.confint <-
         confintr::ci_rsquared(x = f.value,
                               df1 = f.df1,
                               df2 = f.df2,
-                              probs = ((1 - rsquared.conf.level) / 2) * c(1, -1) + c(0, 1))
+                              probs = ((1 - rsquared.conf.level) / 2) * c(1, -1) + c(0, 1) )
       rr.confint.low  <- rr.confint[["interval"]][1]
       rr.confint.high <- rr.confint[["interval"]][2]
     }

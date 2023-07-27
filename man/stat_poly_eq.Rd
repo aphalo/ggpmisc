@@ -86,7 +86,7 @@ coefficient of determination and p-value.}
 brackets used for the CI label.}
 
 \item{rsquared.conf.level}{numeric Confidence level for the returned
-confidence interval.}
+confidence interval. Set to NA to skip CI computation.}
 
 \item{coef.digits, f.digits}{integer Number of significant digits to use for
 the fitted coefficients and F-value.}
