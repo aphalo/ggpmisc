@@ -215,6 +215,7 @@ if (gginnards.installed)
 }
 \seealso{
 Other ggplot statistics for linear and polynomial regression: 
+\code{\link{stat_multcomp}()},
 \code{\link{stat_poly_eq}()}
 }
 \concept{ggplot statistics for linear and polynomial regression}

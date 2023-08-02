@@ -39,6 +39,7 @@ Imports:
     quantreg (>= 5.93),
     lmodel2 (>= 1.7-3),
     splus2R (>= 1.3-3),
+    multcomp (>= 1.4-25),
     tibble (>= 3.1.5),
     plyr (>= 1.8.6),
     dplyr (>= 1.0.6),
