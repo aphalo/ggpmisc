@@ -6,6 +6,8 @@ editor_options:
 
 # ggpmisc 0.5.4
 
+-   Add `stat_multcomp()` that creates labels to annotate plots with results from multiple comparisons based on "Tukey contrasts".
+
 # ggpmisc 0.5.3
 
 -   Fix bug in `stat_ma_line()`: error triggered when returned values from computation of confidence band are missing. (Reported by rakelrpf as issue #36.)

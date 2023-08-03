@@ -7,7 +7,7 @@
 stat_multcomp(
   mapping = NULL,
   data = NULL,
-  geom = "text_pairwise",
+  geom = NULL,
   position = "identity",
   ...,
   formula = NULL,
@@ -16,8 +16,10 @@ stat_multcomp(
   max.main.p.value = 0.05,
   small.p = FALSE,
   p.digits = 3,
+  label.type = "bars",
+  letters.p.value = 0.05,
   label.y = NULL,
-  vstep = 0,
+  vstep = 0.08,
   output.type = NULL,
   na.rm = FALSE,
   orientation = NA,
@@ -66,8 +68,14 @@ p-value.}
 \item{p.digits}{integer Number of digits after the decimal point to
 use for \eqn{R^2} and P-value in labels.}
 
-\item{label.y}{\code{numeric} in native data units. If too short they will
-be recycled.}
+\item{label.type}{character One of "bars", "letters" or "LETTERS", selects
+how the results of the multiple comparisons are displayed.}
+
+\item{letters.p.value}{numeric The critical P-value used for tests when
+when encoded as letters.}
+
+\item{label.y}{numeric in native data units or \code{character}.
+If too short they will be recycled.}
 
 \item{vstep}{numeric in native data units, the vertical step
 used between labels for comparisons.}
@@ -157,6 +165,52 @@ of \code{\link[gginnards]{geom_debug}} as shown in the last examples below.
   an earlier and independent implementation of pairwise tests.
 }
 
+\examples{
+
+my.cars <- mtcars
+my.cars$cyl <- factor(my.cars$cyl)
+
+p1 <- ggplot(my.cars, aes(cyl, mpg)) +
+  geom_boxplot(width = 0.33)
+
+p1 +
+  stat_multcomp() +
+  expand_limits(y = 40)
+
+p1 +
+  stat_multcomp(p.digits = 4) +
+  expand_limits(y = 40)
+
+p1 +
+  stat_multcomp(p.digits = 2, colour = "red") +
+  expand_limits(y = 40)
+
+p1 +
+  stat_multcomp(aes(colour = after_stat(p.value) < 0.01),
+                arrow = grid::arrow(angle = 90,
+                length = unit(1, "mm"),
+                ends = "both")) +
+  scale_colour_manual(values = c("black", "red")) +
+  expand_limits(y = 40)
+
+p1 +
+  stat_multcomp(aes(colour = after_stat(p.value) < 0.01),
+                arrow = grid::arrow(angle = 90,
+                length = unit(1, "mm"),
+                ends = "both"),
+                colour.target = "text") +
+  scale_colour_manual(values = c("black", "red")) +
+  expand_limits(y = 40)
+
+p1 +
+  stat_multcomp(label.y = c(1, 3, 5)) +
+  expand_limits(y = 0)
+
+p1 +
+  stat_multcomp(label.y = rev(c(1, 3, 5))) +
+  expand_limits(y = 0)
+
+}
 \seealso{
 This statistic uses the implementation of Tests of General Linear
   Hypotheses in function \code{\link[multcomp]{glht}}.
