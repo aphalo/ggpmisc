@@ -388,12 +388,6 @@ multcomp_compute_fun <-
                               rhs = 0)
     summary.fm.glht <- summary(fm.glht)
 
-    if (label.type == "bars") {
-      # Labelled bar representation of multiple contrast results.
-      #
-      # We build a data frame suitable for plotting with geom_text_pairwise()
-      # or geom_label_pairwise().
-      # use constants based on summary.glht() returned values ordering
       x.left.tip <- switch(num.levels,
                            NA_real_,
                            1,
@@ -410,7 +404,14 @@ multcomp_compute_fun <-
       )
 
       pairwise.p.values <- summary.fm.glht[["test"]][["pvalues"]]
-      z <- data.frame(p.value = pairwise.p.values,
+
+      if (label.type == "bars") {
+        # Labelled bar representation of multiple contrast results.
+        #
+        # We build a data frame suitable for plotting with geom_text_pairwise()
+        # or geom_label_pairwise().
+        # use constants based on summary.glht() returned values ordering
+        z <- data.frame(p.value = pairwise.p.values,
                       x.left.tip,
                       x.right.tip,
                       x = (x.left.tip + x.right.tip) / 2
@@ -492,6 +493,7 @@ multcomp_compute_fun <-
       #
       #
       message("Not yet implemented")
+      contrasts <- summary.fm.glht[["test"]][["pvalues"]]
       z <- data.frame()
     }
 
