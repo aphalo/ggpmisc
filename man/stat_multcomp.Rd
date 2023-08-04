@@ -2,7 +2,7 @@
 % Please edit documentation in R/stat-multcomp.R
 \name{stat_multcomp}
 \alias{stat_multcomp}
-\title{Multiple comparisons}
+\title{Labels for multiple comparisons}
 \usage{
 stat_multcomp(
   mapping = NULL,
@@ -13,13 +13,14 @@ stat_multcomp(
   formula = NULL,
   method = "lm",
   method.args = list(),
-  max.main.p.value = 0.05,
   small.p = FALSE,
   p.digits = 3,
   label.type = "bars",
+  main.cutoff.p.value = 0.05,
+  test.cutoff.p.value = 1,
   letters.p.value = 0.05,
   label.y = NULL,
-  vstep = 0.08,
+  vstep = NULL,
   output.type = NULL,
   na.rm = FALSE,
   orientation = NA,
@@ -36,7 +37,7 @@ set at the layer level if you are overriding the plot defaults.}
 \item{data}{A layer specific dataset, only needed if you want to override
 the plot defaults.}
 
-\item{geom}{The geometric object to use display the data.}
+\item{geom}{The geometric object to use to display the data.}
 
 \item{position}{The position adjustment to use for overlapping points on this
 layer.}
@@ -58,10 +59,6 @@ object accepted by function \code{glht()}.}
 
 \item{method.args}{named list with additional arguments.}
 
-\item{max.main.p.value}{numeric [0..1] The P-value for the main effect of _x_
-in ANOVA test above which no pairwise comparisons are run or labels
-generated.}
-
 \item{small.p}{logical Flags to switch use of lower case p for
 p-value.}
 
@@ -70,6 +67,13 @@ use for \eqn{R^2} and P-value in labels.}
 
 \item{label.type}{character One of "bars", "letters" or "LETTERS", selects
 how the results of the multiple comparisons are displayed.}
+
+\item{main.cutoff.p.value}{numeric [0..1] The P-value for the main effect of
+factor \code{x} in the ANOVA test above which no pairwise comparisons are
+computed or labels generated.}
+
+\item{test.cutoff.p.value}{numeric [0..1] The P-value for the individual
+contrasts above which no labelled bar is generated.}
 
 \item{letters.p.value}{numeric The critical P-value used for tests when
 when encoded as letters.}
@@ -102,8 +106,11 @@ never includes, and \code{TRUE} always includes.}
 than combining with them.}
 }
 \value{
-A data frame, with one row per comparison and columns as described
-  under \strong{Computed variables}.
+A data frame with one row per comparison for \code{label.type = "bars"}, or
+  a data frame with one row per factor \code{x} level for
+  \code{label.type = "letters"} and for
+  \code{label.type = "LETTERS"}. Columns as described under
+  \strong{Computed variables}.
 }
 \description{
 \code{stat_multcomp} fits a linear model by default with \code{stats::lm()} but
@@ -121,7 +128,8 @@ This statistic can be used to automatically annotate a plot with
   is set automatically based on \code{output-type}, but if you assemble
   labels that need parsing from \code{numeric} output, the default needs to
   be overridden. This stat only generates annotation labels and segments
-  connecting the compared factor levels.
+  connecting the compared factor levels, or letter labels that discriminate
+  significantly different groups.
 
   A ggplot statistic receives as \code{data} a data frame that is not the one
   passed as argument by the user, but instead a data frame with the variables
@@ -138,7 +146,9 @@ R option \code{OutDec} is obeyed based on its value at the time the plot
   as argument to parameter \code{weights}. A factor must be mapped to
   \code{x} and \code{numeric} variables to \code{y}, and if used to
   \code{weight}. In addition, the aesthetics understood by the geom
-  (\code{"text_pairwuse"} is the default) are understood and grouping
+  (\code{"text_pairwise"} is the default for \code{label.type = "bars"},
+  \code{"text"} is the default for \code{label.type = "letters"} and for
+  \code{label.type = "LETTERS"}) are understood and grouping
   respected.
 }
 
@@ -148,11 +158,12 @@ If output.type different from \code{"numeric"} the returned tibble contains
 columns listed below. If the model fit function used does not return a value,
 the label is set to \code{character(0L)}.
 \describe{
-  \item{xmin,xmax}{x position}
-  \item{y}{y position}
-  \item{p.value.label}{P-value for the F-value above.}
+  \item{x,xmin,xmax}{x position.}
+  \item{y}{y position.}
+  \item{default.label}{text label.}
+  \item{p.value.label}{P-value.}
   \item{method.label}{Set according \code{method} used.}
-  \item{p.value, n}{numeric values, from glht object}}
+  \item{p.value, coefficients, contrasts, tstat}{numeric values, from glht object}}
 
 If output.type is \code{"numeric"} the returned data frame lacks the labels.
 
@@ -178,6 +189,26 @@ p1 +
   expand_limits(y = 40)
 
 p1 +
+  stat_multcomp(use_label(c("Delta", "P")),
+                size = 2.75) +
+  expand_limits(y = 40)
+
+p1 +
+  stat_multcomp(use_label("stars")) +
+  expand_limits(y = 40)
+
+p1 +
+  stat_multcomp(label.type = "letters",
+                label.y = -1) +
+  expand_limits(y = 0)
+
+p1 +
+  stat_multcomp(label.type = "letters",
+                label.y = -1,
+                letters.p.value = 0.01) +
+  expand_limits(y = 0)
+
+p1 +
   stat_multcomp(p.digits = 4) +
   expand_limits(y = 40)
 
@@ -187,19 +218,18 @@ p1 +
 
 p1 +
   stat_multcomp(aes(colour = after_stat(p.value) < 0.01),
-                arrow = grid::arrow(angle = 90,
-                length = unit(1, "mm"),
-                ends = "both")) +
-  scale_colour_manual(values = c("black", "red")) +
-  expand_limits(y = 40)
+                size = 2.75) +
+  scale_colour_manual(values = c("grey60", "black")) +
+  expand_limits(y = 40) +
+  theme_bw()
 
 p1 +
-  stat_multcomp(aes(colour = after_stat(p.value) < 0.01),
+  stat_multcomp(aes(fill = after_stat(p.value) < 0.01),
                 arrow = grid::arrow(angle = 90,
                 length = unit(1, "mm"),
                 ends = "both"),
                 colour.target = "text") +
-  scale_colour_manual(values = c("black", "red")) +
+  scale_fill_manual(values = c("white", "green")) +
   expand_limits(y = 40)
 
 p1 +
@@ -209,6 +239,22 @@ p1 +
 p1 +
   stat_multcomp(label.y = rev(c(1, 3, 5))) +
   expand_limits(y = 0)
+
+p1 +
+  stat_multcomp(test.cutoff.p.value = 0.01) +
+  expand_limits(y = 40)
+
+p1 +
+  stat_multcomp(label.type = "LETTERS",
+                label.y = -1) +
+  expand_limits(y = 0)
+
+p1 +
+  stat_multcomp(label.type = "letters",
+                letters.p.value = 0.01,
+                geom = "label",
+                label.y = 9) +
+  expand_limits(y = 40)
 
 }
 \seealso{

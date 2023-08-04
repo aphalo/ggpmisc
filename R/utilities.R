@@ -1,3 +1,16 @@
+## Adapted from gtools::stars.pval
+#'
+#' Convenience function p.value -> stars consistent with R except for n.s.
+#'
+#' @noRd
+stars_pval <- function(p.value) {
+  unclass(stats::symnum(p.value,
+                        corr = FALSE,
+                        na = FALSE,
+                        cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),
+                        symbols = c("***", "**", "*", ".", "n.s.")))
+  }
+
 ## Copied from 'ggrepl'
 #'
 #' Name ggplot grid object

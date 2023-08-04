@@ -10,7 +10,7 @@
 #'   set at the layer level if you are overriding the plot defaults.
 #' @param data A layer specific dataset, only needed if you want to override
 #'   the plot defaults.
-#' @param geom The geometric object to use display the data.
+#' @param geom The geometric object to use to display the data.
 #' @param position The position adjustment to use for overlapping points on this
 #'   layer.
 #' @param show.legend logical. Should this layer be included in the legends?
@@ -33,15 +33,17 @@
 #'   \code{data}, \code{weights}, and \code{method}, and return a model fit
 #'   object accepted by function \code{glht()}.
 #' @param method.args named list with additional arguments.
-#' @param max.main.p.value numeric [0..1] The P-value for the main effect of _x_
-#'   in ANOVA test above which no pairwise comparisons are run or labels
-#'   generated.
 #' @param small.p logical Flags to switch use of lower case p for
 #'   p-value.
 #' @param p.digits integer Number of digits after the decimal point to
 #'   use for \eqn{R^2} and P-value in labels.
 #' @param label.type character One of "bars", "letters" or "LETTERS", selects
 #'   how the results of the multiple comparisons are displayed.
+#' @param main.cutoff.p.value numeric [0..1] The P-value for the main effect of
+#'   factor \code{x} in the ANOVA test above which no pairwise comparisons are
+#'   computed or labels generated.
+#' @param test.cutoff.p.value numeric [0..1] The P-value for the individual
+#'   contrasts above which no labelled bar is generated.
 #' @param letters.p.value numeric The critical P-value used for tests when
 #'   when encoded as letters.
 #' @param label.y numeric in native data units or \code{character}.
@@ -70,7 +72,8 @@
 #'   is set automatically based on \code{output-type}, but if you assemble
 #'   labels that need parsing from \code{numeric} output, the default needs to
 #'   be overridden. This stat only generates annotation labels and segments
-#'   connecting the compared factor levels.
+#'   connecting the compared factor levels, or letter labels that discriminate
+#'   significantly different groups.
 #'
 #'   A ggplot statistic receives as \code{data} a data frame that is not the one
 #'   passed as argument by the user, but instead a data frame with the variables
@@ -81,22 +84,28 @@
 #'   as argument to parameter \code{weights}. A factor must be mapped to
 #'   \code{x} and \code{numeric} variables to \code{y}, and if used to
 #'   \code{weight}. In addition, the aesthetics understood by the geom
-#'   (\code{"text_pairwuse"} is the default) are understood and grouping
+#'   (\code{"text_pairwise"} is the default for \code{label.type = "bars"},
+#'   \code{"text"} is the default for \code{label.type = "letters"} and for
+#'   \code{label.type = "LETTERS"}) are understood and grouping
 #'   respected.
 #'
-#' @return A data frame, with one row per comparison and columns as described
-#'   under \strong{Computed variables}.
+#' @return A data frame with one row per comparison for \code{label.type = "bars"}, or
+#'   a data frame with one row per factor \code{x} level for
+#'   \code{label.type = "letters"} and for
+#'   \code{label.type = "LETTERS"}. Columns as described under
+#'   \strong{Computed variables}.
 #'
 #' @section Computed variables:
 #' If output.type different from \code{"numeric"} the returned tibble contains
 #' columns listed below. If the model fit function used does not return a value,
 #' the label is set to \code{character(0L)}.
 #' \describe{
-#'   \item{xmin,xmax}{x position}
-#'   \item{y}{y position}
-#'   \item{p.value.label}{P-value for the F-value above.}
+#'   \item{x,xmin,xmax}{x position.}
+#'   \item{y}{y position.}
+#'   \item{default.label}{text label.}
+#'   \item{p.value.label}{P-value.}
 #'   \item{method.label}{Set according \code{method} used.}
-#'   \item{p.value, n}{numeric values, from glht object}}
+#'   \item{p.value, coefficients, contrasts, tstat}{numeric values, from glht object}}
 #'
 #' If output.type is \code{"numeric"} the returned data frame lacks the labels.
 #'
@@ -124,6 +133,26 @@
 #'   expand_limits(y = 40)
 #'
 #' p1 +
+#'   stat_multcomp(use_label(c("Delta", "P")),
+#'                 size = 2.75) +
+#'   expand_limits(y = 40)
+#'
+#' p1 +
+#'   stat_multcomp(use_label("stars")) +
+#'   expand_limits(y = 40)
+#'
+#' p1 +
+#'   stat_multcomp(label.type = "letters",
+#'                 label.y = -1) +
+#'   expand_limits(y = 0)
+#'
+#' p1 +
+#'   stat_multcomp(label.type = "letters",
+#'                 label.y = -1,
+#'                 letters.p.value = 0.01) +
+#'   expand_limits(y = 0)
+#'
+#' p1 +
 #'   stat_multcomp(p.digits = 4) +
 #'   expand_limits(y = 40)
 #'
@@ -133,19 +162,18 @@
 #'
 #' p1 +
 #'   stat_multcomp(aes(colour = after_stat(p.value) < 0.01),
-#'                 arrow = grid::arrow(angle = 90,
-#'                 length = unit(1, "mm"),
-#'                 ends = "both")) +
-#'   scale_colour_manual(values = c("black", "red")) +
-#'   expand_limits(y = 40)
+#'                 size = 2.75) +
+#'   scale_colour_manual(values = c("grey60", "black")) +
+#'   expand_limits(y = 40) +
+#'   theme_bw()
 #'
 #' p1 +
-#'   stat_multcomp(aes(colour = after_stat(p.value) < 0.01),
+#'   stat_multcomp(aes(fill = after_stat(p.value) < 0.01),
 #'                 arrow = grid::arrow(angle = 90,
 #'                 length = unit(1, "mm"),
 #'                 ends = "both"),
 #'                 colour.target = "text") +
-#'   scale_colour_manual(values = c("black", "red")) +
+#'   scale_fill_manual(values = c("white", "green")) +
 #'   expand_limits(y = 40)
 #'
 #' p1 +
@@ -156,6 +184,22 @@
 #'   stat_multcomp(label.y = rev(c(1, 3, 5))) +
 #'   expand_limits(y = 0)
 #'
+#' p1 +
+#'   stat_multcomp(test.cutoff.p.value = 0.01) +
+#'   expand_limits(y = 40)
+#'
+#' p1 +
+#'   stat_multcomp(label.type = "LETTERS",
+#'                 label.y = -1) +
+#'   expand_limits(y = 0)
+#'
+#' p1 +
+#'   stat_multcomp(label.type = "letters",
+#'                 letters.p.value = 0.01,
+#'                 geom = "label",
+#'                 label.y = 9) +
+#'   expand_limits(y = 40)
+#'
 #' @export
 #'
 stat_multcomp <- function(mapping = NULL, data = NULL,
@@ -165,28 +209,42 @@ stat_multcomp <- function(mapping = NULL, data = NULL,
                           formula = NULL,
                           method = "lm",
                           method.args = list(),
-                          max.main.p.value = 0.05,
                           small.p = FALSE,
                           p.digits = 3,
                           label.type = "bars",
+                          main.cutoff.p.value = 0.05,
+                          test.cutoff.p.value = 1.0,
                           letters.p.value = 0.05,
                           label.y = NULL,
-                          vstep = 0.08,
+                          vstep = NULL,
                           output.type = NULL,
                           na.rm = FALSE,
                           orientation = NA,
                           parse = NULL,
                           show.legend = FALSE,
                           inherit.aes = TRUE) {
+  force(geom)
+  # dynamic defaults
   if (is.null(geom)) {
     if (label.type == "bars") {
-      geom <- "text_pairwise"
-    } else if (label.type %in% c("letters", "LETTERS")) {
-      geom <- "text"
+      geom <- "label_pairwise" #"text_pairwise"
+    } else if (label.type %in% c("letters", "LETTERS", "numeric")) {
+      geom <- "text" # "label"
     } else {
       stop("Unrecognized 'label.type = ", label.type, "'.")
     }
   }
+
+  if (label.type == "bars") {
+    if (is.null(vstep)) {
+      vstep <- 0.08
+    }
+  } else if (label.type %in% c("letters", "LETTERS", "numeric")) {
+    if (is.null(vstep)) {
+      vstep <- 0
+    }
+  }
+
   if (is.null(output.type)) {
     if (geom %in% c("richtext", "textbox")) {
       output.type <- "markdown"
@@ -194,6 +252,7 @@ stat_multcomp <- function(mapping = NULL, data = NULL,
       output.type <- "expression"
     }
   }
+
   if (is.null(parse)) {
     parse <- output.type == "expression"
   }
@@ -210,11 +269,12 @@ stat_multcomp <- function(mapping = NULL, data = NULL,
       rlang::list2(formula = formula,
                    method = method,
                    method.args = method.args,
-                   max.main.p.value = max.main.p.value,
                    small.p = small.p,
                    p.digits = p.digits,
                    label.type = label.type,
                    label.y = label.y,
+                   main.cutoff.p.value = main.cutoff.p.value,
+                   test.cutoff.p.value = test.cutoff.p.value,
                    letters.p.value = letters.p.value,
                    vstep = vstep,
                    output.type = output.type,
@@ -237,12 +297,13 @@ multcomp_compute_fun <-
            scales,
            method,
            method.args,
-           max.main.p.value,
            formula,
            weight,
            small.p,
            p.digits,
            label.type,
+           main.cutoff.p.value,
+           test.cutoff.p.value,
            letters.p.value,
            label.y,
            vstep,
@@ -275,11 +336,11 @@ multcomp_compute_fun <-
     }
 
     if (orientation == "x") {
-      if (length(unique(data$x)) < 2) {
+      if (length(unique(data[["x"]])) < 2) {
         return(data.frame())
       }
     } else if (orientation == "y") {
-      if (length(unique(data$y)) < 2) {
+      if (length(unique(data[["y"]])) < 2) {
         return(data.frame())
       }
     }
@@ -298,17 +359,17 @@ multcomp_compute_fun <-
     stopifnot(output.type %in%
                 c("expression", "text", "markdown", "numeric", "latex", "tex", "tikz"))
 
-    if (is.null(data$weight)) {
-      data$weight <- 1
+    if (is.null(data[["weight"]])) {
+      data[["weight"]] <- 1
     }
 
-    if (is.integer(data$group)) {
-      group.idx <- abs(data$group[1])
-    } else if (is.character(data$group) &&
-               grepl("^(-1|[0-9]+).*$", data$group[1])) {
+    if (is.integer(data[["group"]])) {
+      group.idx <- abs(data[["group"]][1])
+    } else if (is.character(data[["group"]]) &&
+               grepl("^(-1|[0-9]+).*$", data[["group"]][1])) {
       # likely that 'gganimate' has set the groups for scenes
       # we assume first characters give the original group
-      group.idx <- abs(as.numeric(gsub("^(-1|[0-9]+).*$", "\\1", data$group[1])))
+      group.idx <- abs(as.numeric(gsub("^(-1|[0-9]+).*$", "\\1", data[["group"]][1])))
     } else {
       group.idx <- NA_integer_
     }
@@ -368,19 +429,18 @@ multcomp_compute_fun <-
       f.df1 <- fm.summary[["fstatistic"]]["numdf"]
       f.df2 <- fm.summary[["fstatistic"]]["dendf"]
       p.value <- stats::pf(q = f.value, f.df1, f.df2, lower.tail = FALSE)
-      if (p.value > max.main.p.value) {
-        warning(sprintf("P-value for main effect = %.3f > max = %.3f, skipping tests!",
-                        p.value, max.main.p.value))
+      if (p.value > main.cutoff.p.value) {
+        warning(sprintf("P-value for main effect = %.3f > cutoff = %.3f, skipping tests!",
+                        p.value, main.cutoff.p.value))
         return(data.frame())
       }
     } else {
       warning("Fitting of ", method, " model may have failed.")
-#      f.value <- f.df1 <- f.df2 <- p.value <- NA_real_
-      if (max.main.p.value < 1) {
+      if (main.cutoff.p.value < 1) {
         return(data.frame())
       }
     }
-    n <- residuals(fm)
+    n <- length(residuals(fm))
 
     # multiple comparisons test
     fm.glht <- multcomp::glht(model = fm,
@@ -388,113 +448,151 @@ multcomp_compute_fun <-
                               rhs = 0)
     summary.fm.glht <- summary(fm.glht)
 
-      x.left.tip <- switch(num.levels,
-                           NA_real_,
-                           1,
-                           c(1, 1, 2),
-                           c(1, 1, 1, 2, 2, 3),
-                           c(1, 1, 1, 1, 2, 2, 2, 3, 3, 4)
-      )
-      x.right.tip <- switch(num.levels,
-                            NA_real_,
-                            2,
-                            c(2, 3, 3),
-                            c(2, 3, 4, 3, 4, 4),
-                            c(2, 3, 4, 5, 3, 4, 5, 4, 5, 5)
-      )
+    x.left.tip <- switch(num.levels,
+                         NA_real_,
+                         1,
+                         c(1, 1, 2),
+                         c(1, 1, 1, 2, 2, 3),
+                         c(1, 1, 1, 1, 2, 2, 2, 3, 3, 4)
+    )
+    x.right.tip <- switch(num.levels,
+                          NA_real_,
+                          2,
+                          c(2, 3, 3),
+                          c(2, 3, 4, 3, 4, 4),
+                          c(2, 3, 4, 5, 3, 4, 5, 4, 5, 5)
+    )
 
-      pairwise.p.values <- summary.fm.glht[["test"]][["pvalues"]]
+    pairwise.p.values <- summary.fm.glht[["test"]][["pvalues"]]
+    pairwise.coefficients <- summary.fm.glht[["test"]][["coefficients"]]
+    pairwise.tstat <- summary.fm.glht[["test"]][["tstat"]]
+    pairwise.contrasts <- gsub(" ", "", names(pairwise.coefficients))
 
-      if (label.type == "bars") {
-        # Labelled bar representation of multiple contrast results.
-        #
-        # We build a data frame suitable for plotting with geom_text_pairwise()
-        # or geom_label_pairwise().
-        # use constants based on summary.glht() returned values ordering
-        z <- data.frame(p.value = pairwise.p.values,
+    if (label.type %in% c("bars")) {
+      # Labelled bar representation of multiple contrast results.
+      #
+      # We build a data frame suitable for plotting with geom_text_pairwise()
+      # or geom_label_pairwise(). We return multiple results, but map only
+      # some.
+      #
+      z <- data.frame(x = (x.left.tip + x.right.tip) / 2,
                       x.left.tip,
                       x.right.tip,
-                      x = (x.left.tip + x.right.tip) / 2
+                      coefficients = pairwise.coefficients,
+                      contrasts = pairwise.contrasts,
+                      tstat = pairwise.tstat,
+                      p.value = pairwise.p.values,
+                      method = method.name,
+                      n = n
       )
 
-      if (output.type != "numeric") {
-        # set defaults needed to assemble the equation as a character string
+      # Drop labels
+      z <- z[z[["p.value"]] <= test.cutoff.p.value, ]
 
-        # build the other character strings
-        stopifnot(p.digits > 0)
-        if (p.digits < 2) {
-          warning("'p.digits < 2' Likely information loss!")
+      if (nrow(z) == 0) {
+        return(data.frame())
+      }
+
+      # build character strings
+      stopifnot(p.digits > 0)
+      if (p.digits < 2) {
+        warning("'p.digits < 2' Likely information loss!")
+      }
+
+      if (output.type == "expression") {
+        p.value.char <- sprintf_dm("\"%#.*f\"", p.digits, z[["p.value"]], decimal.mark = decimal.mark)
+        stars.char <- paste("\"", stars_pval(z[["p.value"]]), "\"", sep = "")
+        coefficients.char <- sprintf_dm("\"%#.*g\"", 3L, z[["coefficients"]], decimal.mark = decimal.mark)
+        tstat.char <- sprintf_dm("\"%#.*g\"", 3L, z[["tstat"]], decimal.mark = decimal.mark)
+      } else {
+        p.value.char <- sprintf_dm("%#.*f", p.digits, z[["p.value"]], decimal.mark = decimal.mark)
+        stars.char <- stars_pval(z[["p.value"]])
+        coefficients.char <- sprintf_dm("%#.*g", 3L, z[["coefficients"]], decimal.mark = decimal.mark)
+        tstat.char <- sprintf_dm("%#.*g", 3L, z[["tstat"]], decimal.mark = decimal.mark)
+      }
+
+      # Build the labels
+      # We use a for loop because sep is not vectorized
+      # More elegantly, we could handle this in sprintf_dm()
+      z[["stars.label"]] <- stars.char
+      z[["p.value.label"]] <- NA_character_
+      if (output.type == "expression") {
+        for (i in seq_along(z[["p.value"]])) {
+          z[["p.value.label"]][i] <-
+            ifelse(is.na(z[["p.value"]][i]) || is.nan(z[["p.value"]][i]), "",
+                   paste(ifelse(small.p, "italic(p)",  "italic(P)"),
+                         ifelse(z[["p.value"]][i] < 10^(-p.digits),
+                                sprintf_dm("\"%.*f\"", p.digits, 10^(-p.digits), decimal.mark = decimal.mark),
+                                p.value.char[i]),
+                         sep = ifelse(z[["p.value"]][i] < 10^(-p.digits),
+                                      "~`<`~",
+                                      "~`=`~")))
         }
-
-        if (output.type == "expression") {
-          p.value.char <- sprintf_dm("\"%#.*f\"", p.digits, z$p.value, decimal.mark = decimal.mark)
-        } else {
-          p.value.char <- sprintf_dm("%#.*f", p.digits, p.value, decimal.mark = decimal.mark)
+        z[["delta.label"]] <- paste("Delta~`=`~", coefficients.char, sep = "")
+        z[["t.label"]] <- paste("italic(t)~`=`~", tstat.char, sep = "")
+      } else if (output.type %in% c("latex", "tex", "text", "tikz")) {
+        for (i in seq_along(z[["p.value"]])) {
+          z[["p.value.label"]][i] <-
+            ifelse(is.na(z[["p.value"]][i]) || is.nan(z[["p.value"]][i]), "",
+                   paste(ifelse(small.p, "p",  "P"),
+                         ifelse(z[["p.value"]][i] < 10^(-p.digits), as.character(10^(-p.digits)), p.value.char[i]),
+                         sep = ifelse(z[["p.value"]][i] < 10^(-p.digits), " < ", " = ")))
         }
-
-        # Build the labels
-        # We use a for loop because sep is not vectorized
-        # More elegantly, we could handle this in sprintf_dm()
-        z[["p.value.label"]] <- NA_character_
-        if (output.type == "expression") {
-          for (i in seq_along(z$p.value)) {
-            z[["p.value.label"]][i] <-
-              ifelse(is.na(z$p.value[i]) || is.nan(z$p.value[i]), "",
-                     paste(ifelse(small.p, "italic(p)",  "italic(P)"),
-                           ifelse(z$p.value[i] < 10^(-p.digits),
-                                  sprintf_dm("\"%.*f\"", p.digits, 10^(-p.digits), decimal.mark = decimal.mark),
-                                  p.value.char[i]),
-                           sep = ifelse(z$p.value[i] < 10^(-p.digits),
-                                        "~`<`~",
-                                        "~`=`~")))
-          }
-        } else if (output.type %in% c("latex", "tex", "text", "tikz")) {
-          for (i in seq_along(z$p.value)) {
-            z[["p.value.label"]][i] <-
-              ifelse(is.na(z$p.value[i]) || is.nan(z$p.value[i]), "",
-                     paste(ifelse(small.p, "p",  "P"),
-                           ifelse(z$p.value[i] < 10^(-p.digits), as.character(10^(-p.digits)), p.value.char[i]),
-                           sep = ifelse(z$p.value[i] < 10^(-p.digits), " < ", " = ")))
-          }
-        } else if (output.type == "markdown") {
-          for (i in seq_along(z$p.value)) {
-            z[["p.value.label"]][i] <-
-              ifelse(is.na(z$p.value[i]) | is.nan(z$p.value[i]), "",
-                     paste(ifelse(small.p, "_p_", "_P_"),
-                           ifelse(z$p.value[i] < 10^(-p.digits), as.character(10^(-p.digits)), p.value.char[i]),
-                           sep = ifelse(z$p.value[i] < 10^(-p.digits), " < ", " = ")))
-          }
-        } else {
+        z[["delta.label"]] <- paste("\\Delta = ", coefficients.char, sep = "")
+        z[["t.label"]] <- paste("t = ", tstat.char, sep = "")
+      } else if (output.type == "markdown") {
+        for (i in seq_along(z[["p.value"]])) {
+          z[["p.value.label"]][i] <-
+            ifelse(is.na(z[["p.value"]][i]) | is.nan(z[["p.value"]][i]), "",
+                   paste(ifelse(small.p, "_p_", "_P_"),
+                         ifelse(z[["p.value"]][i] < 10^(-p.digits), as.character(10^(-p.digits)), p.value.char[i]),
+                         sep = ifelse(z[["p.value"]][i] < 10^(-p.digits), " < ", " = ")))
+        }
+        z[["delta.label"]] <- paste("&Delta; = ", coefficients.char, sep = "")
+        z[["t.label"]] <- paste("_t_ = ", tstat.char, sep = "")
+      } else {
+        if (output.type != "numeric") {
           warning("Unknown 'output.type' argument: ", output.type)
         }
+        z[["p.value.label"]] <- NA_character_
       }
-
-      if (is.character(label.y)) {
-        # uses plotting area and fits labels within it, user should expand scale
-        # limits to make space for bars
-        z$y <- ggpp::compute_npcy(y = label.y, group = 1:nrow(z), v.step = vstep,
-                                  margin.npc = 0.1) * (max(data$y) - min(data$y))  ## This is buggy, we should use scale limits
-      } else if (is.numeric(label.y)) {
-        # manual locations
-        if (length(label.y) < nrow(z)) {
-          warning("Too short numeric vector in 'label.y' recycled!")
-        }
-        z$y <- label.y
-      } else {
-        # default is above top of data, will leave empty space with summaries,
-        # but will never overlap observations.
-        z$y <- max(data$y) + (max(data$y) - min(data$y)) * vstep * seq_along(z$p.value)
-      }
-    } else {
+      z$default.label <- z$p.value.label
+    } else if (label.type %in% c("letters", "LETTERS")) {
       # Letters encoding of multiple contrast results.
       #
       # We build a data frame suitable for plotting with geom_text()
       # or geom_label().
       #
-      #
-      message("Not yet implemented")
-      contrasts <- summary.fm.glht[["test"]][["pvalues"]]
-      z <- data.frame()
+      names(pairwise.p.values) <- pairwise.contrasts
+      letters <-
+        multcompView::multcompLetters(x = pairwise.p.values,
+                                      threshold = letters.p.value,
+                                      Letters = get(label.type),
+                                      reversed = TRUE)$Letters
+
+      z <- data.frame(x = 1:num.levels,
+                      x.left.tip = NA_real_,
+                      x.right.tip = NA_real_,
+                      critical.p.value = letters.p.value,
+                      method = method.name,
+                      n = n,
+                      letters = letters[order(names(letters))])
+      z[["default.label"]] <- z[["letters"]]
+    }
+
+    y.range <- scales$y$range$range
+
+    if (is.character(label.y)) {
+      # within existing plotting area
+      # limits to make space for bars or letters
+      z[["y"]] <- ggpp::compute_npcy(y = label.y, group = 1:nrow(z), v.step = vstep,
+                                margin.npc = 0) * (y.range[2] - y.range[1]) + y.range[1]
+    } else if (is.numeric(label.y)) {
+      # manual locations
+      z$y <- rep_len(label.y, nrow(z))
+    } else {
+      # default is at top of scale range
+      z$y <- y.range[2] + (y.range[2] - y.range[1]) * vstep * seq_along(z[["x"]])
     }
 
     z
@@ -508,11 +606,10 @@ StatMultcomp <-
   ggplot2::ggproto("StatMultcomp", ggplot2::Stat,
                    extra_params = c("na.rm", "parse"),
                    compute_panel = multcomp_compute_fun,
-                   default_aes =
-                     ggplot2::aes(xmin = after_stat(x.left.tip),
-                                  xmax = after_stat(x.right.tip),
-                                  label = after_stat(p.value.label),
-                                  weight = 1),
+                   default_aes = ggplot2::aes(xmin = after_stat(x.left.tip),
+                                              xmax = after_stat(x.right.tip),
+                                              label = after_stat(default.label),
+                                              weight = 1),
                    dropped_aes = "weight",
                    required_aes = c("x", "y"),
   )

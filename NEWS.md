@@ -6,7 +6,7 @@ editor_options:
 
 # ggpmisc 0.5.4
 
--   Add `stat_multcomp()` that creates labels to annotate plots with results from multiple comparisons based on "Tukey contrasts".
+-   Add `stat_multcomp()` that creates labels to annotate plots with results from multiple comparisons based on "Tukey"" contrasts.
 
 # ggpmisc 0.5.3
 
