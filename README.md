@@ -36,13 +36,13 @@ predefined design. Package ‘**ggpmisc**’ together with package
 In fact, these packages follow the tenets of the grammar even more
 strictly than ‘**ggplot2**’ in the distinction between geometries and
 statistics. The new statistics in ‘**ggpmisc**’ focus mainly on model
-fitting, but there is not yet support for multiple comparisons among
-groups. The default annotations are those most broadly valid and of
-easiest interpretation. We follow R’s approach of expecting that users
-know what they need or want, and will usually want to adjust how results
-from model fits are presented both graphically and textually. The
-approach and mechanics of plot construction and rendering remain
-unchanged from those implemented in package ‘**ggplot2**’.
+fitting, including multiple comparisons among groups. The default
+annotations are those most broadly valid and of easiest interpretation.
+We follow R’s approach of expecting that users know what they need or
+want, and will usually want to adjust how results from model fits are
+presented both graphically and textually. The approach and mechanics of
+plot construction and rendering remain unchanged from those implemented
+in package ‘**ggplot2**’.
 
 ## Statistics
 
@@ -65,6 +65,7 @@ Statistics that help with reporting the results of model fits are:
 | `stat_fit_augment()`    | predicted and other values (`smooth`)             | all those supported by ‘broom’               |
 | `stat_fit_tidy()`       | fit results, e.g., for equation (`text_npc`)      | all those supported by ‘broom’               |
 | `stat_fit_tb()`         | ANOVA and summary tables (`table_npc`)            | all those supported by ‘broom’               |
+| `stat_multcomp()`       | Multiple comparisons (`label_pairwise` or `text`) | all those supported by `multcomp::glht()`    |
 
 Notes: (1) *weight* aesthetic supported; (2) user defined fit functions
 that return an object of a class derived from `lm` are supported even if
