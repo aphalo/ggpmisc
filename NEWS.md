@@ -7,6 +7,7 @@ editor_options:
 # ggpmisc 0.5.4
 
 -   Add `stat_multcomp()` that creates labels to annotate plots with results from multiple comparisons based on "Tukey"" contrasts.
+-   Fix bug affecting position of labels when observations are not plotted: use scale range instead of data range.
 
 # ggpmisc 0.5.3
 

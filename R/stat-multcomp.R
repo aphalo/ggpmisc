@@ -128,7 +128,7 @@
 #' p1 <- ggplot(my.cars, aes(cyl, mpg)) +
 #'   geom_boxplot(width = 0.33)
 #'
-#' # labeleld bars
+#' ## labeleld bars
 #'
 #' p1 +
 #'   stat_multcomp()
@@ -137,25 +137,34 @@
 #'   stat_multcomp(geom = "text_pairwise")
 #'
 #' p1 +
-#'   stat_multcomp(label.y = "bottom") +
-#'   expand_limits(y = 0)
+#'   stat_multcomp(label.y = "top")
 #'
 #' p1 +
-#'   stat_multcomp(use_label(c("Delta", "P")),
-#'                 size = 2.75)
+#'   stat_multcomp(label.y = "bottom")
 #'
+#' p1 +
+#'   stat_multcomp(label.y = 12)
+#'
+#' # use different labels: difference and P-value from hypothesis tests
+#' p1 +
+#'   stat_multcomp(use_label(c("Delta", "P")), size = 2.75)
+#'
+#' # use different labels: P-values encoded as stars
 #' p1 +
 #'   stat_multcomp(use_label("stars"))
 #'
+#' # control smallest value displayed and number of digits
 #' p1 +
 #'   stat_multcomp(p.digits = 4)
 #'
+#' # use colour to show significance
 #' p1 +
 #'   stat_multcomp(aes(colour = after_stat(p.value) < 0.01),
 #'                 size = 2.75) +
 #'   scale_colour_manual(values = c("grey60", "black")) +
 #'   theme_bw()
 #'
+#' # add arrow heads to segments and use fill to show significance
 #' p1 +
 #'   stat_multcomp(aes(fill = after_stat(p.value) < 0.01),
 #'                 arrow = grid::arrow(angle = 90,
@@ -163,41 +172,49 @@
 #'                                     ends = "both")) +
 #'   scale_fill_manual(values = c("white", "green"))
 #'
+#' # manual positioning of bars (= segments)
 #' p1 +
 #'   stat_multcomp(label.y = c(1, 3, 5)) +
 #'   expand_limits(y = 0)
 #'
 #' p1 +
-#'   stat_multcomp(label.y = rev(c(1, 3, 5))) +
+#'   stat_multcomp(label.y = c(3, 1, 5)) +
 #'   expand_limits(y = 0)
 #'
+#' # label only significant differences
 #' p1 +
 #'   stat_multcomp(test.cutoff.p.value = 0.01)
 #'
-#' # letters as labels for test results
+#' ## letters as labels for test results
 #'
 #' p1 +
 #'   stat_multcomp(label.type = "letters")
 #'
+#' # use capital letters
 #' p1 +
 #'   stat_multcomp(label.type = "LETTERS")
 #'
+#' # location
 #' p1 +
-#'   stat_multcomp(label.type = "letters", label.y = 0)
+#'   stat_multcomp(label.type = "letters", label.y = "top")
 #'
 #' p1 +
 #'   stat_multcomp(label.type = "letters", label.y = 36)
 #'
+#' medians <-
+#'   aggregate(my.cars$mpg, by = list(my.cars$cyl), FUN = median)[["x"]]
+#' p1 +
+#'   stat_multcomp(label.type = "letters",
+#'                 label.y = medians,
+#'                 position = position_nudge(x = 0.22))
+#'
+#' # geometry
 #' p1 +
 #'   stat_multcomp(label.type = "letters", geom = "label")
 #'
+#' # stricter critical p-value than default used for test
 #' p1 +
 #'   stat_multcomp(label.type = "letters", letters.p.value = 0.01)
-#'
-#' p1 +
-#'   stat_multcomp(label.type = "letters",
-#'                 label.y = -1) +
-#'   expand_limits(y = 0)
 #'
 #' @export
 #'
@@ -234,13 +251,24 @@ stat_multcomp <- function(mapping = NULL, data = NULL,
     }
   }
 
+  if (grepl("_npc", geom)) {
+    geom <- gsub("_npc", "", geom)
+    warning("\"npc\"-based geometries not supported, using\"", geom, "\" instead.")
+  }
+
   if (label.type == "bars") {
     if (is.null(vstep)) {
       vstep <- 0.08
     }
+    if (is.null(label.y)) {
+      label.y <- "top"
+    }
   } else if (label.type %in% c("letters", "LETTERS", "numeric")) {
     if (is.null(vstep)) {
       vstep <- 0
+    }
+    if (is.null(label.y)) {
+      label.y <- "bottom"
     }
   }
 
@@ -555,7 +583,7 @@ multcomp_compute_fun <-
         }
         z[["p.value.label"]] <- NA_character_
       }
-      z$default.label <- z$p.value.label
+      z[["default.label"]] <- z[["p.value.label"]]
     } else if (label.type %in% c("letters", "LETTERS")) {
       # Letters encoding of multiple contrast results.
       #
@@ -567,7 +595,7 @@ multcomp_compute_fun <-
         multcompView::multcompLetters(x = pairwise.p.values,
                                       threshold = letters.p.value,
                                       Letters = get(label.type),
-                                      reversed = TRUE)$Letters
+                                      reversed = TRUE)[["Letters"]]
 
       z <- data.frame(x = 1:num.levels,
                       x.left.tip = NA_real_,
@@ -580,21 +608,31 @@ multcomp_compute_fun <-
     }
 
     y.range <- scales$y$range$range
-
     if (is.character(label.y)) {
-      # within existing plotting area
-      # limits to make space for bars or letters
-      z[["y"]] <- ggpp::compute_npcy(y = label.y, group = 1:nrow(z), v.step = vstep,
-                                margin.npc = 0) * (y.range[2] - y.range[1]) + y.range[1]
+      # we need to use scale limits as observations are not necessarily plotted
+      if (!label.y %in% c("top", "bottom")) {
+        warning("'label.y' must be one of \"top\", \"bottom\", or numeric, not: \"", label.y, "\"")
+        label.y <- "top"
+      }
+      if (label.y == "top") {
+        if (vstep == 0) {
+          z[["y"]] <- y.range[2] + (y.range[2] - y.range[1]) * 0.08
+        } else {
+          z[["y"]] <- y.range[2] + (y.range[2] - y.range[1]) * vstep * seq_along(z[["x"]])
+        }
+      } else {
+        if (vstep == 0) {
+          z[["y"]] <- y.range[1] - (y.range[2] - y.range[1]) * 0.08
+        } else {
+          z[["y"]] <- y.range[1] - (y.range[2] - y.range[1]) * vstep * seq_along(z[["x"]])
+        }
+      }
     } else if (is.numeric(label.y)) {
       # manual locations
-      z$y <- rep_len(label.y, nrow(z))
-    } else {
-      # default is at top of scale range
-      if (vstep == 0) {
-        z$y <- y.range[2] + (y.range[2] - y.range[1]) * 0.08
+      if (label.type == "bars" && length(label.y) == 1) {
+        z[["y"]] <- label.y + (y.range[2] - y.range[1]) * vstep * seq_along(z[["x"]]) * sign(0.5 - label.y)
       } else {
-        z$y <- y.range[2] + (y.range[2] - y.range[1]) * vstep * seq_along(z[["x"]])
+        z[["y"]] <- rep_len(label.y, nrow(z))
       }
     }
 
