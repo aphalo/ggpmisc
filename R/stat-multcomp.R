@@ -128,53 +128,40 @@
 #' p1 <- ggplot(my.cars, aes(cyl, mpg)) +
 #'   geom_boxplot(width = 0.33)
 #'
+#' # labeleld bars
+#'
 #' p1 +
-#'   stat_multcomp() +
-#'   expand_limits(y = 40)
+#'   stat_multcomp()
+#'
+#' p1 +
+#'   stat_multcomp(geom = "text_pairwise")
+#'
+#' p1 +
+#'   stat_multcomp(label.y = "bottom") +
+#'   expand_limits(y = 0)
 #'
 #' p1 +
 #'   stat_multcomp(use_label(c("Delta", "P")),
-#'                 size = 2.75) +
-#'   expand_limits(y = 40)
+#'                 size = 2.75)
 #'
 #' p1 +
-#'   stat_multcomp(use_label("stars")) +
-#'   expand_limits(y = 40)
+#'   stat_multcomp(use_label("stars"))
 #'
 #' p1 +
-#'   stat_multcomp(label.type = "letters",
-#'                 label.y = -1) +
-#'   expand_limits(y = 0)
-#'
-#' p1 +
-#'   stat_multcomp(label.type = "letters",
-#'                 label.y = -1,
-#'                 letters.p.value = 0.01) +
-#'   expand_limits(y = 0)
-#'
-#' p1 +
-#'   stat_multcomp(p.digits = 4) +
-#'   expand_limits(y = 40)
-#'
-#' p1 +
-#'   stat_multcomp(p.digits = 2, colour = "red") +
-#'   expand_limits(y = 40)
+#'   stat_multcomp(p.digits = 4)
 #'
 #' p1 +
 #'   stat_multcomp(aes(colour = after_stat(p.value) < 0.01),
 #'                 size = 2.75) +
 #'   scale_colour_manual(values = c("grey60", "black")) +
-#'   expand_limits(y = 40) +
 #'   theme_bw()
 #'
 #' p1 +
 #'   stat_multcomp(aes(fill = after_stat(p.value) < 0.01),
 #'                 arrow = grid::arrow(angle = 90,
-#'                 length = unit(1, "mm"),
-#'                 ends = "both"),
-#'                 colour.target = "text") +
-#'   scale_fill_manual(values = c("white", "green")) +
-#'   expand_limits(y = 40)
+#'                                     length = unit(1, "mm"),
+#'                                     ends = "both")) +
+#'   scale_fill_manual(values = c("white", "green"))
 #'
 #' p1 +
 #'   stat_multcomp(label.y = c(1, 3, 5)) +
@@ -185,20 +172,32 @@
 #'   expand_limits(y = 0)
 #'
 #' p1 +
-#'   stat_multcomp(test.cutoff.p.value = 0.01) +
-#'   expand_limits(y = 40)
+#'   stat_multcomp(test.cutoff.p.value = 0.01)
+#'
+#' # letters as labels for test results
 #'
 #' p1 +
-#'   stat_multcomp(label.type = "LETTERS",
-#'                 label.y = -1) +
-#'   expand_limits(y = 0)
+#'   stat_multcomp(label.type = "letters")
+#'
+#' p1 +
+#'   stat_multcomp(label.type = "LETTERS")
+#'
+#' p1 +
+#'   stat_multcomp(label.type = "letters", label.y = 0)
+#'
+#' p1 +
+#'   stat_multcomp(label.type = "letters", label.y = 36)
+#'
+#' p1 +
+#'   stat_multcomp(label.type = "letters", geom = "label")
+#'
+#' p1 +
+#'   stat_multcomp(label.type = "letters", letters.p.value = 0.01)
 #'
 #' p1 +
 #'   stat_multcomp(label.type = "letters",
-#'                 letters.p.value = 0.01,
-#'                 geom = "label",
-#'                 label.y = 9) +
-#'   expand_limits(y = 40)
+#'                 label.y = -1) +
+#'   expand_limits(y = 0)
 #'
 #' @export
 #'
@@ -592,7 +591,11 @@ multcomp_compute_fun <-
       z$y <- rep_len(label.y, nrow(z))
     } else {
       # default is at top of scale range
-      z$y <- y.range[2] + (y.range[2] - y.range[1]) * vstep * seq_along(z[["x"]])
+      if (vstep == 0) {
+        z$y <- y.range[2] + (y.range[2] - y.range[1]) * 0.08
+      } else {
+        z$y <- y.range[2] + (y.range[2] - y.range[1]) * vstep * seq_along(z[["x"]])
+      }
     }
 
     z

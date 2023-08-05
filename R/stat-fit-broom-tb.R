@@ -558,9 +558,9 @@ fit_tb_compute_panel_fun <- function(data,
                       left = (0 + margin.npc)
     )
     if (!npc.used) {
-      x.delta <- abs(diff(range(data$x)))
-      x.min <- min(data$x)
-      label.x <- label.x * x.delta + x.min
+      # we need to use scale limits as observations are not necessarily plotted
+      x.range <- scales$x$range$range
+      label.x <- label.x * diff(x.range) + x.range[1]
     }
   }
   if (is.character(label.y)) {
@@ -572,11 +572,12 @@ fit_tb_compute_panel_fun <- function(data,
                       bottom = (0 + margin.npc)
     )
     if (!npc.used) {
-        y.delta <- abs(diff(range(data$y)))
-        y.min <- min(data$y)
-        label.y <- label.y * y.delta + y.min
-      }
+      # we need to use scale limits as observations are not necessarily plotted
+      y.range <- scales$y$range$range
+      label.y <- label.y * diff(y.range) + y.range[1]
+    }
   }
+
   if (npc.used) {
     z$npcx <- label.x
     z$x <- NA_real_
