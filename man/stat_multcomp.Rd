@@ -13,6 +13,7 @@ stat_multcomp(
   formula = NULL,
   method = "lm",
   method.args = list(),
+  contrast.type = "Tukey",
   small.p = FALSE,
   p.digits = 3,
   label.type = "bars",
@@ -58,6 +59,8 @@ formula through its first parameter, and have formal parameters named
 object accepted by function \code{glht()}.}
 
 \item{method.args}{named list with additional arguments.}
+
+\item{contrast.type}{character One of "Tukey" or "Dunnet".}
 
 \item{small.p}{logical Flags to switch use of lower case p for
 p-value.}
@@ -113,27 +116,32 @@ A data frame with one row per comparison for \code{label.type = "bars"}, or
   \strong{Computed variables}.
 }
 \description{
-\code{stat_multcomp} fits a linear model by default with \code{stats::lm()} but
-alternatively using other model fit functions. The model is passed to
-function \code{glht()} from package 'multcomp' to fit Tukey contrasts and generates
-labels for \emph{P}-values.
+\code{stat_multcomp} fits a linear model by default with \code{stats::lm()}
+but alternatively using other model fit functions. The model is passed to
+function \code{glht()} from package 'multcomp' to fit Tukey or Dunnet
+contrasts and generates labels for \emph{P}-values.
 }
 \details{
 This statistic can be used to automatically annotate a plot with
-  \emph{P}-values for multiple comparison tests. The explanatory variable
-  must be a factor as this creates a grouping. This statistic
-  generates labels as R expressions by default but LaTeX (use TikZ device),
-  markdown (use package 'ggtext') and plain text are also supported, as well
-  as numeric values for user-generated text labels. The value of \code{parse}
-  is set automatically based on \code{output-type}, but if you assemble
-  labels that need parsing from \code{numeric} output, the default needs to
-  be overridden. This stat only generates annotation labels and segments
-  connecting the compared factor levels, or letter labels that discriminate
-  significantly different groups.
+  \emph{P}-values for multiple comparison tests, based on Tukey contrasts
+  (all pairwise) or Dunnet contrasts (other levels against the first one).
+  The explanatory variable must be a factor as this creates the required
+  grouping.
+
+  This statistic generates labels as R expressions by default but LaTeX (use
+  TikZ device), markdown (use package 'ggtext') and plain text are also
+  supported, as well as numeric values for user-generated text labels. The
+  value of \code{parse} is set automatically based on \code{output-type}, but
+  if you assemble labels that need parsing from \code{numeric} output, the
+  default needs to be overridden. This statistic only generates annotation
+  labels and segments connecting the compared factor levels, or letter labels
+  that discriminate significantly different groups.
 
   A ggplot statistic receives as \code{data} a data frame that is not the one
   passed as argument by the user, but instead a data frame with the variables
-  mapped to aesthetics.
+  mapped to aesthetics. Consequently, the model formula must be based on
+  \code{x} and \code{y} variables, not the original names of the variables
+  mapped to these aesthetics.
 }
 \note{
 R option \code{OutDec} is obeyed based on its value at the time the plot
@@ -190,16 +198,23 @@ p1 +
   stat_multcomp()
 
 p1 +
+  stat_multcomp(contrast.type = "Dunnet")
+
+p1 +
   stat_multcomp(geom = "text_pairwise")
 
 p1 +
-  stat_multcomp(label.y = "bottom") +
-  expand_limits(y = 0)
+  stat_multcomp(label.y = "top")
+
+p1 +
+  stat_multcomp(label.y = "bottom")
+
+p1 +
+  stat_multcomp(label.y = 12)
 
 # use different labels: difference and P-value from hypothesis tests
 p1 +
-  stat_multcomp(use_label(c("Delta", "P")),
-                size = 2.75)
+  stat_multcomp(use_label(c("Delta", "P")), size = 2.75)
 
 # use different labels: P-values encoded as stars
 p1 +
@@ -246,23 +261,27 @@ p1 +
 p1 +
   stat_multcomp(label.type = "LETTERS")
 
+# location
 p1 +
-  stat_multcomp(label.type = "letters", label.y = 0)
+  stat_multcomp(label.type = "letters", label.y = "top")
 
 p1 +
   stat_multcomp(label.type = "letters", label.y = 36)
 
+medians <-
+  aggregate(my.cars$mpg, by = list(my.cars$cyl), FUN = median)[["x"]]
+p1 +
+  stat_multcomp(label.type = "letters",
+                label.y = medians,
+                position = position_nudge(x = 0.22))
+
+# geometry
 p1 +
   stat_multcomp(label.type = "letters", geom = "label")
 
 # stricter critical p-value than default used for test
 p1 +
   stat_multcomp(label.type = "letters", letters.p.value = 0.01)
-
-p1 +
-  stat_multcomp(label.type = "letters",
-                label.y = -1) +
-  expand_limits(y = 0)
 
 }
 \seealso{

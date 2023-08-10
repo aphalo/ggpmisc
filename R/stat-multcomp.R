@@ -1,9 +1,9 @@
 #' Labels for multiple comparisons
 #'
-#' \code{stat_multcomp} fits a linear model by default with \code{stats::lm()} but
-#' alternatively using other model fit functions. The model is passed to
-#' function \code{glht()} from package 'multcomp' to fit Tukey contrasts and generates
-#' labels for \emph{P}-values.
+#' \code{stat_multcomp} fits a linear model by default with \code{stats::lm()}
+#' but alternatively using other model fit functions. The model is passed to
+#' function \code{glht()} from package 'multcomp' to fit Tukey or Dunnet
+#' contrasts and generates labels for \emph{P}-values.
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}}. Only needs to be
@@ -33,6 +33,7 @@
 #'   \code{data}, \code{weights}, and \code{method}, and return a model fit
 #'   object accepted by function \code{glht()}.
 #' @param method.args named list with additional arguments.
+#' @param contrast.type character One of "Tukey" or "Dunnet".
 #' @param small.p logical Flags to switch use of lower case p for
 #'   p-value.
 #' @param p.digits integer Number of digits after the decimal point to
@@ -64,20 +65,25 @@
 #'   for languages like Spanish or French.
 #'
 #' @details This statistic can be used to automatically annotate a plot with
-#'   \emph{P}-values for multiple comparison tests. The explanatory variable
-#'   must be a factor as this creates a grouping. This statistic
-#'   generates labels as R expressions by default but LaTeX (use TikZ device),
-#'   markdown (use package 'ggtext') and plain text are also supported, as well
-#'   as numeric values for user-generated text labels. The value of \code{parse}
-#'   is set automatically based on \code{output-type}, but if you assemble
-#'   labels that need parsing from \code{numeric} output, the default needs to
-#'   be overridden. This stat only generates annotation labels and segments
-#'   connecting the compared factor levels, or letter labels that discriminate
-#'   significantly different groups.
+#'   \emph{P}-values for multiple comparison tests, based on Tukey contrasts
+#'   (all pairwise) or Dunnet contrasts (other levels against the first one).
+#'   The explanatory variable must be a factor as this creates the required
+#'   grouping.
+#'
+#'   This statistic generates labels as R expressions by default but LaTeX (use
+#'   TikZ device), markdown (use package 'ggtext') and plain text are also
+#'   supported, as well as numeric values for user-generated text labels. The
+#'   value of \code{parse} is set automatically based on \code{output-type}, but
+#'   if you assemble labels that need parsing from \code{numeric} output, the
+#'   default needs to be overridden. This statistic only generates annotation
+#'   labels and segments connecting the compared factor levels, or letter labels
+#'   that discriminate significantly different groups.
 #'
 #'   A ggplot statistic receives as \code{data} a data frame that is not the one
 #'   passed as argument by the user, but instead a data frame with the variables
-#'   mapped to aesthetics.
+#'   mapped to aesthetics. Consequently, the model formula must be based on
+#'   \code{x} and \code{y} variables, not the original names of the variables
+#'   mapped to these aesthetics.
 #'
 #' @section Aesthetics: \code{stat_multcomp()} understands \code{x} and
 #'   \code{y}, to be referenced in the \code{formula} and \code{weight} passed
@@ -132,6 +138,9 @@
 #'
 #' p1 +
 #'   stat_multcomp()
+#'
+#' p1 +
+#'   stat_multcomp(contrast.type = "Dunnet")
 #'
 #' p1 +
 #'   stat_multcomp(geom = "text_pairwise")
@@ -225,6 +234,7 @@ stat_multcomp <- function(mapping = NULL, data = NULL,
                           formula = NULL,
                           method = "lm",
                           method.args = list(),
+                          contrast.type = "Tukey",
                           small.p = FALSE,
                           p.digits = 3,
                           label.type = "bars",
@@ -239,6 +249,7 @@ stat_multcomp <- function(mapping = NULL, data = NULL,
                           parse = NULL,
                           show.legend = FALSE,
                           inherit.aes = TRUE) {
+  stopifnot(contrast.type %in% c("Tukey", "Dunnet"))
   force(geom)
   # dynamic defaults
   if (is.null(geom)) {
@@ -296,6 +307,7 @@ stat_multcomp <- function(mapping = NULL, data = NULL,
       rlang::list2(formula = formula,
                    method = method,
                    method.args = method.args,
+                   contrast.type = contrast.type,
                    small.p = small.p,
                    p.digits = p.digits,
                    label.type = label.type,
@@ -324,6 +336,7 @@ multcomp_compute_fun <-
            scales,
            method,
            method.args,
+           contrast.type,
            formula,
            weight,
            small.p,
@@ -471,24 +484,29 @@ multcomp_compute_fun <-
 
     # multiple comparisons test
     fm.glht <- multcomp::glht(model = fm,
-                              linfct = multcomp::mcp(`factor(x)` = "Tukey"),
+                              linfct = multcomp::mcp(`factor(x)` = contrast.type),
                               rhs = 0)
     summary.fm.glht <- summary(fm.glht)
 
-    x.left.tip <- switch(num.levels,
-                         NA_real_,
-                         1,
-                         c(1, 1, 2),
-                         c(1, 1, 1, 2, 2, 3),
-                         c(1, 1, 1, 1, 2, 2, 2, 3, 3, 4)
-    )
-    x.right.tip <- switch(num.levels,
-                          NA_real_,
-                          2,
-                          c(2, 3, 3),
-                          c(2, 3, 4, 3, 4, 4),
-                          c(2, 3, 4, 5, 3, 4, 5, 4, 5, 5)
-    )
+    if (contrast.type == "Tukey") {
+      x.left.tip <- switch(num.levels,
+                           NA_real_,
+                           1,
+                           c(1, 1, 2),
+                           c(1, 1, 1, 2, 2, 3),
+                           c(1, 1, 1, 1, 2, 2, 2, 3, 3, 4)
+      )
+      x.right.tip <- switch(num.levels,
+                            NA_real_,
+                            2,
+                            c(2, 3, 3),
+                            c(2, 3, 4, 3, 4, 4),
+                            c(2, 3, 4, 5, 3, 4, 5, 4, 5, 5)
+      )
+    } else if (contrast.type == "Dunnet") {
+      x.left.tip <- rep(1, num.levels - 1)
+      x.right.tip <- 2:num.levels
+    }
 
     pairwise.p.values <- summary.fm.glht[["test"]][["pvalues"]]
     pairwise.coefficients <- summary.fm.glht[["test"]][["coefficients"]]
