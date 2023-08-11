@@ -57,10 +57,11 @@
 #'   labelling all pairwise contrasts tested.
 #' @param mc.critical.p.value numeric The critical \emph{P}-value used for tests when
 #'   when encoded as letters.
-#' @param label.y numeric in native data units or \code{character}.
-#'   If too short they will be recycled.
-#' @param vstep numeric in native data units, the vertical step
-#'   used between labels for comparisons.
+#' @param label.y numeric vector Values in native data units or if
+#'   \code{character}, one of "top" or "bottom". Recycled if too short and
+#'   truncated if too long.
+#' @param vstep numeric in npc units, the horizontal displacement step-size
+#'   used between labels for different contrasts when \code{label.type = "bars"}.
 #' @param output.type character One of "expression", "LaTeX", "text",
 #'   "markdown" or "numeric".
 #' @param orientation character Either "x" or "y" controlling the default for
@@ -140,7 +141,7 @@
 #' \describe{
 #'   \item{p.value.label}{\emph{P}-value for the pairwise contrasts, character.}
 #'   \item{delta.label}{The coefficient or estimate for the difference between compared pairs of levels.}
-#'   \item{t.label}{\emph{t}-statistic estimates for the pairwise contrasts, character.}
+#'   \item{t.value.label}{\emph{t}-statistic estimates for the pairwise contrasts, character.}
 #'   }
 #'
 #' If \code{label.type = "letters"} or \code{label.type = "LETTERS"} the returned tibble contains
@@ -693,7 +694,7 @@ multcomp_compute_fun <-
                                       "~`=`~")))
         }
         z[["delta.label"]] <- paste("Delta~`=`~", coefficients.char, sep = "")
-        z[["t.label"]] <- paste("italic(t)~`=`~", tstat.char, sep = "")
+        z[["t.value.label"]] <- paste("italic(t)~`=`~", tstat.char, sep = "")
       } else if (output.type %in% c("latex", "tex", "text", "tikz")) {
         for (i in seq_along(z[["p.value"]])) {
           z[["p.value.label"]][i] <-
@@ -703,7 +704,7 @@ multcomp_compute_fun <-
                          sep = ifelse(z[["p.value"]][i] < 10^(-p.digits), " < ", " = ")))
         }
         z[["delta.label"]] <- paste("\\Delta = ", coefficients.char, sep = "")
-        z[["t.label"]] <- paste("t = ", tstat.char, sep = "")
+        z[["t.value.label"]] <- paste("t = ", tstat.char, sep = "")
       } else if (output.type == "markdown") {
         for (i in seq_along(z[["p.value"]])) {
           z[["p.value.label"]][i] <-
@@ -713,7 +714,7 @@ multcomp_compute_fun <-
                          sep = ifelse(z[["p.value"]][i] < 10^(-p.digits), " < ", " = ")))
         }
         z[["delta.label"]] <- paste("&Delta; = ", coefficients.char, sep = "")
-        z[["t.label"]] <- paste("_t_ = ", tstat.char, sep = "")
+        z[["t.value.label"]] <- paste("_t_ = ", tstat.char, sep = "")
       } else {
         if (output.type != "numeric") {
           stop("Unknown 'output.type' argument: ", output.type)

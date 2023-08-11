@@ -50,8 +50,8 @@
 #'   coordinates" (npc units) or character if using \code{geom_text_npc()} or
 #'   \code{geom_label_npc()}. If using \code{geom_text()} or \code{geom_label()}
 #'   numeric in native data units. If too short they will be recycled.
-#' @param hstep,vstep numeric in npc units, the horizontal and vertical step
-#'   used between labels for different groups.
+#' @param hstep,vstep numeric in npc units, the horizontal and vertical
+#'   displacement step-size used between labels for different groups.
 #' @param output.type character One of "expression", "LaTeX", "text", "markdown"
 #'   or "numeric".
 #' @param boot.R interger The number of bootstrap resamples. Set to zero for no
@@ -471,13 +471,15 @@ cor_test_compute_fun <- function(data,
     z[["r.confint.low"]]  <- confint.boot[["interval"]][1]
     z[["r.confint.high"]] <- confint.boot[["interval"]][2]
   } else {
-    if (boot.R > 0) {
-      warning("Skipping bootstrap estimation as boot.R < 50")
-    }
     if (method == "pearson") {
       z[["r.confint.low"]]  <-  htest.ls[["conf.int"]][1]
       z[["r.confint.high"]] <-  htest.ls[["conf.int"]][2]
     } else {
+      if (conf.level <= 0) {
+        message("Skipping bootstrap estimation as 'conf.level' <= 0")
+      } else if (boot.R > 0) {
+        warning("Skipping bootstrap estimation as 'boot.R' < 50")
+      }
       z[["r.confint.low"]]  <- NA_real_
       z[["r.confint.high"]] <- NA_real_
     }

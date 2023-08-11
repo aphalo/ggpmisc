@@ -8,11 +8,10 @@ editor_options:
 
 -   Add `stat_multcomp()` that computes adjusted p-values and constructs labels to annotate plots with results from multiple comparisons based on "Tukey" or "Dunnet" contrasts.
 -   Fix bug affecting position of labels, e.g., when observations are not plotted: use scale range instead of data range.
--   Confidence intervals for _R_<sup>2</sup> and _r_ in `stat_poly_eq()`
-and `stat_correlation()` are no longer computed by default, because when 
+-   Confidence intervals for _r_ in `stat_correlation()` are no longer computed by default for methods other than Pearson, as when 
 using bootstrap the computation can be time-consuming and occasionally 
 fail. Previous default can be restored by passing `0.95` as argument to
-`rsquared.conf.level` and `r.conf.level`, respectively.
+`r.conf.level`.
 
 # ggpmisc 0.5.3
 

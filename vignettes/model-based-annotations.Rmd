@@ -91,10 +91,11 @@ Table 1 below summarizes the use of the model-fittings statistics and the type o
 | `stat_quant_band()`     | median + quartiles (`smooth`)                     | rq, rqss (1, 4, 5, 7)                        |
 | `stat_fit_residuals()`  | residuals (`point`)                               | lm, rlm, rq (1, 2, 4, 7, 8)                  |
 | `stat_fit_deviations()` | deviations from observations (`segment`)          | lm, rlm, lqs, rq (1, 2, 4, 7, 9)             |
-| `stat_fit_glance()`     | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | all those supported by 'broom'               |
-| `stat_fit_augment()`    | predicted and other values (`smooth`)             | all those supported by 'broom'               |
-| `stat_fit_tidy()`       | fit results, e.g., for equation (`text_npc`)      | all those supported by 'broom'               |
-| `stat_fit_tb()`         | ANOVA and summary tables (`table_npc`)            | all those supported by 'broom'               |
+| `stat_fit_glance()`     | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | those supported by 'broom'               |
+| `stat_fit_augment()`    | predicted and other values (`smooth`)             | those supported by 'broom'               |
+| `stat_fit_tidy()`       | fit results, e.g., for equation (`text_npc`)      | those supported by 'broom'               |
+| `stat_fit_tb()`         | ANOVA and summary tables (`table_npc`)            | those supported by 'broom'               |
+| `stat_multcomp()`       | Multiple comparisons (`label_pairwise`, `table_npc`) | those supported by `glht`             |
 
 ### Model equations and other annotations
 
@@ -110,64 +111,65 @@ Function `use_label()` provides an easy way of selecting, possibly combining and
 
 ------------------------------------------------------------------------
 
-: **Table 2. Values returned by `stat_poly_eq()`, `stat_ma_eq()`, `stat_quant_eq()` and `stat_correlation()` for `output.type` different from `numeric`.** Column _variable_ gives the variable name in the returned `data` and should be used together with `after_stat()` when mapping to aesthetics using `aes()`. When using function `use_label()`, the short abbreviation shown in column _Key_ can be used as a synonym, although full names are also supported. Column _Mode_ describes the type of the values in each variable. **Notes:** (1) Inclusion of the variable in the returned `data` depends on the argument passed to parameter `method`. (2) Depending on the geometry in use either `x` and `y` or `npcx` and `npcy` are set to `NA`. **\*** Indicates the default mapping to `label` aesthetic.
+: **Table 2. Values returned by `stat_poly_eq()`, `stat_ma_eq()`, `stat_quant_eq()`, `stat_correlation()` and `stat_multcomp()` for `output.type` different from `numeric`.** Column _variable_ gives the variable name in the returned `data` and should be used together with `after_stat()` when mapping to aesthetics using `aes()`. When using function `use_label()`, the short abbreviation shown in column _Key_ can be used as a synonym, although full names are also supported. Column _Mode_ describes the type of the values in each variable. **Notes:** (1) Inclusion of the variable in the returned `data` depends on the argument passed to parameter `method`. (2) Depending on the geometry in use either `x` and `y` or `npcx` and `npcy` are set to `NA`. (3) Depends on `label.type`. **\*** Indicates the default mapping to `label` aesthetic.
 
-| Variable          | Key    | Mode      | `stat_poly_eq()` | `stat_ma_eq()` | `stat_quant_eq()` | `stat_correlation()` |
-|-------------------|:------:|:---------:|:--------------:|:------------:|:---------------:|:------------------:|
-| eq.label          | eq     | character | y              | y            | y\*             | n                  |
-| rr.label          | R2     | character | y\*            | y\*          | n               | y(1)               |
-| rr.confint.label  | R2.CI  | character | y              | n            | n               | n                  |
-| adj.rr.label      | adj.R2 | character | y              | n            | n               | n                  |
-| cor.label         | cor    | character | n              | n            | n               | y(1)               |
-| rho.label         | rho    | character | n              | n            | y               | y(1)               |
-| tau.label         | tau    | character | n              | n            | n               | y(1)               |
-| r.label           | R      | character | n              | n            | n               | y\*                |
-| cor.confint.label | cor.CI | character | n              | n            | n               | y(1)               |
-| rho.confint.label | rho.CI | character | n              | n            | y               | y(1)               |
-| tau.confint.label | tau.CI | character | n              | n            | n               | y(1)               |
-| r.confint.label   | R.CI   | character | n              | n            | n               | y                  |
-| f.value.label     | F      | character | y              | n            | n               | n                  |
-| t.value.label     | t      | character | n              | n            | n               | y(1)               |
-| z.value.label     | z      | character | n              | n            | n               | y(1)               |
-| S.value.label     | S      | character | n              | n            | n               | y(1)               |
-| p.value.label     | P      | character | y              | y            | n               | y                  |
-| AIC.label         | AIC    | character | y              | n            | y               | n                  |
-| BIC.label         | BIC    | character | y              | n            | n               | n                  |
-| n.label           | n      | character | y              | y            | y               | y                  |
-| grp.label         | grp    | character | y              | y            | y               | y                  |
-| method.label      | method | character | y              | y            | y               | y                  |
-| r.squared         |        | numeric   | y              | y            | n               | n                  |
-| adj.r.squared     |        | numeric   | y              | n            | n               | n                  |
-| rho               |        | numeric   | n              | n            | y               | y(1)               |
-| tau               |        | numeric   | n              | n            | n               | y(1)               |
-| cor               |        | numeric   | n              | n            | n               | y(1)               |
-| p.value           |        | numeric   | y              | y            | n               | y                  |
-| n                 |        | numeric   | y              | y            | y               | y                  |
-| rq.method         |        | character | n              | n            | y               | n                  |
-| method            |        | character | y              | y            | y               | y                  |
-| test              |        | character | n              | n            | n               | y                  |
-| quantile          |        | numeric   | n              | n            | y               | n                  |
-| quantile.f        |        | factor    | n              | n            | y               | n                  |
-| x(2)              |        | numeric   | y              | y            | y               | y                  |
-| y(2)              |        | numeric   | y              | y            | y               | y                  |
-| npcx(2)           |        | numeric   | y              | y            | y               | y                  |
-| npcy(2)           |        | numeric   | y              | y            | y               | y                  |
-| fm.method         |        | character | y              | y            | y               | y                  |
-| fm.class          |        | character | y              | y            | y               | y                  |
-| fm.formula.chr    |        | character | y              | y            | y               | y                  |
+| Variable          | Key    | Mode      | `poly_eq` | `ma_eq` | `quant_eq` | `correlation` | `multcomp` |
+|-------------------|:------:|:---------:|:---------:|:-------:|:--------- :|:-------------:|:----------:|
+| eq.label          | eq     | character | y         | y       | y\*        | n             | n          |
+| rr.label          | R2     | character | y\*       | y\*     | n          | y(1)          | n          |
+| rr.confint.label  | R2.CI  | character | y         | n       | n          | n             | n          |
+| adj.rr.label      | adj.R2 | character | y         | n       | n          | n             | n          |
+| cor.label         | cor    | character | n         | n       | n          | y(1)          | n          |
+| rho.label         | rho    | character | n         | n       | y          | y(1)          | n          |
+| tau.label         | tau    | character | n         | n       | n          | y(1)          | n          |
+| r.label           | R      | character | n         | n       | n          | y\*           | n          |
+| cor.confint.label | cor.CI | character | n         | n       | n          | y(1)          | n          |
+| rho.confint.label | rho.CI | character | n         | n       | y          | y(1)          | n          |
+| tau.confint.label | tau.CI | character | n         | n       | n          | y(1)          | n          |
+| r.confint.label   | R.CI   | character | n         | n       | n          | y             | n          |
+| f.value.label     | F      | character | y         | n       | n          | n             | n          |
+| t.value.label     | t      | character | n         | n       | n          | y(1)          | y          |
+| z.value.label     | z      | character | n         | n       | n          | y(1)          | n          |
+| S.value.label     | S      | character | n         | n       | n          | y(1)          | n          |
+| p.value.label     | P      | character | y         | y       | n          | y             | y          |
+| delta.label       | delta  | character | n         | n       | n          | n             | y (3)      |
+| letters.label     | delta  | character | n         | n       | n          | n             | y (3)      |
+| AIC.label         | AIC    | character | y         | n       | y          | n             | n          |
+| BIC.label         | BIC    | character | y         | n       | n          | n             | n          |
+| n.label           | n      | character | y         | y       | y          | y             | y          |
+| grp.label         | grp    | character | y         | y       | y          | y             | y          |
+| method.label      | method | character | y         | y       | y          | y             | n          |
+| r.squared         |        | numeric   | y         | y       | n          | n             | n          |
+| adj.r.squared     |        | numeric   | y         | n       | n          | n             | n          |
+| rho               |        | numeric   | n         | n       | y          | y(1)          | n          |
+| tau               |        | numeric   | n         | n       | n          | y(1)          | n          |
+| cor               |        | numeric   | n         | n       | n          | y(1)          | n          |
+| p.value           |        | numeric   | y         | y       | n          | y             | y          |
+| n                 |        | numeric   | y         | y       | y          | y             | y          |
+| rq.method         |        | character | n         | n       | y          | n             | n          |
+| method            |        | character | y         | y       | y          | y             | n          |
+| test              |        | character | n         | n       | n          | y             | n          |
+| quantile          |        | numeric   | n         | n       | y          | n             | n          |
+| quantile.f        |        | factor    | n         | n       | y          | n             | n          |
+| fm.method         |        | character | y         | y       | y          | y             | y          |
+| fm.class          |        | character | y         | y       | y          | y             | y          |
+| fm.formula.chr    |        | character | y         | y       | y          | y             | y          |
+| mc.adjusted       |        | character | n         | n       | n          | n             | y          |
+| mc.contrast       |        | character | n         | n       | n          | n             | y          |
+| x.left.tip        |        | numeric   | n         | n       | n          | n             | y (3)      |
+| x.right.tip       |        | numeric   | n         | n       | n          | n             | y (3)      |
+| x(2)              |        | numeric   | y         | y       | y          | y             | y          |
+| y(2)              |        | numeric   | y         | y       | y          | y             | y          |
+| npcx(2)           |        | numeric   | y         | y       | y          | y             | n          |
+| npcy(2)           |        | numeric   | y         | y       | y          | y             | n          |
 
 Even though the number of significant digits and some other formatting can be adjusted by passing arguments when calling the statistics function, in some cases it maybe necessary for the user to do the conversion of numeric values into character strings. For these special cases, the statistics can return all values as `numeric`. The values returned for `output.type` equal to `numeric` are shown below in Table 3. The returned data frame has one row per group of observations in each panel of the plot.
 
-: **Table 3.** Values returned by `stat_poly_eq()` , `stat_ma_eq()` , `stat_quant_eq()` and `stat_correlation()` for `output.type` equal to `numeric`. **Note:** (1) depends on the argument passed to method.
+: **Table 3.** Values returned by `stat_poly_eq()` , `stat_ma_eq()` , `stat_quant_eq()`, and`stat_correlation()` for `output.type` equal to `numeric`. All the same numeric variables as for other output types are returned together with those with names starting with `fm.` and `mc.`, and those in this table.
 
-| Variable      | Mode      | `stat_poly_eq()` | `stat_ma_eq()` | `stat_quant_eq()` | `stat_correlation()` |
+| Variable      | Mode      | `poly_eq` | `ma_eq` | `quant_eq` | `correlation` |
 |---------------|:---------:|:--------------:|:------------:|:---------------:|:------------------:|
 | coef.ls       | list      | y              | y            | y               | n                  |
-| r.squared     | numeric   | y              | y            | n               | n                  |
-| adj.r.squared | numeric   | y              | n            | n               | n                  |
-| rho           | numeric   | n              | n            | y               | y(1)               |
-| tau           | numeric   | n              | n            | n               | y(1)               |
-| cor           | numeric   | n              | n            | n               | y(1)               |
 | f.value       | numeric   | y              | n            | n               | n                  |
 | f.df1         | numeric   | y              | n            | n               | n                  |
 | f.df2         | numeric   | y              | n            | n               | n                  |
@@ -178,27 +180,16 @@ Even though the number of significant digits and some other formatting can be ad
 | p.value       | numeric   | y              | y            | n               | y                  |
 | AIC           | numeric   | y              | y            | y               | n                  |
 | BIC           | numeric   | y              | y            | n               | n                  |
-| n             | numeric   | y              | y            | y               | y                  |
 | b_0.constant  | numeric   | y              | y            | y               | n                  |
 | b_0           | numeric   | y              | y            | y               | n                  |
 | b_1           | numeric   | y              | y            | y               | n                  |
 | b_2...b_n     | numeric   | y              | y            | y               | n                  |
-| rq.method     | character | n              | n            | y               | n                  |
-| method        | character | n              | n            | n               | y                  |
-| test          | character | n              | n            | n               | y                  |
-| quantile      | numeric   | n              | n            | y               | n                  |
-| quantile.f    | factor    | n              | n            | y               | n                  |
-| x             | numeric   | y              | y            | y               | y                  |
-| y             | numeric   | y              | y            | y               | y                  |
-| fm.method     | character | y              | y            | y               | y                  |
-| fm.class      | character | y              | y            | y               | y                  |
-| fm.formula.chr| character | y              | y            | y               | y                  |
 
 In the cases of the statistics based on the methods from package 'broom' and its extensions, the returned value depends on that of the method specialization that is automatically dispatched based on the class of the model fit object returned by the `method` function (Table 4). The expectation is that these statistics will be used only in cases when those described in Tables 2 and 3 cannot be used. Implementation based on generic methods from package 'broom' and its extensions provides support for very many different model fit procedures, but at the same time requires that the user consults the documentation of these broom methods and that the user builds the character strings for labels in his own code. The simplest way of discovering what variables are returned is to use `gginnards::geom_debug()` to explore the returned data frame. Examples are included in the help to some of the statistics and in a later section of this User Guide.
 
 : **Table 4.** Values always returned by `stat_fit_tb()`, `stat_fit_tidy()`, `stat_fit_glance()` and `stat_fit_augment()`. As these statistics call generic methods and return their output, only a few variables are guaranteed to be consistently present in the returned `data`. **Note:** (1) Depending on the geometry in use either `x` and `y` or `npcx` and `npcy` are set to `NA`.
 
-| Variable       | Mode       | `stat_fit_tb()`  | `stat_fit_tidy()` | `stat_fit_glance()` | `stat_fit_augment()` |
+| Variable       | Mode       | `fit_tb`  | `fit_tidy` | `fit_glance` | `fit_augment` |
 |----------------|:----------:|:--------------:|:---------------:|:-----------------:|:-----------------:|
 | _broom method_ |            |  `tidy()`      |  `tidy()`       |  `glance()`       |  `augment()`      |
 | x(1)           | numeric    | y              | y               | y                 | y                 |

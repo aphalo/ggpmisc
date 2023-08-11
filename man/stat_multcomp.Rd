@@ -69,8 +69,8 @@ function \code{adjusted()} passed as argument to parameter \code{test} of
 "Shaffer", "Westfall", "free", "holm", "hochberg", "hommel", "bonferroni",
 "BH", "BY", "fdr", "none".}
 
-\item{small.p}{logical Flags switching on use of lower case \emph{p} instead
-of capital \emph{P} as the symbol for \emph{P}-value in labels.}
+\item{small.p}{logical If true, use of lower case \emph{p} instead of capital
+\emph{P} as the symbol for \emph{P}-value in labels.}
 
 \item{p.digits}{integer Number of digits after the decimal point to
 use for \eqn{R^2} and \emph{P}-value in labels.}
@@ -93,11 +93,12 @@ labelling all pairwise contrasts tested.}
 \item{mc.critical.p.value}{numeric The critical \emph{P}-value used for tests when
 when encoded as letters.}
 
-\item{label.y}{numeric in native data units or \code{character}.
-If too short they will be recycled.}
+\item{label.y}{numeric vector Values in native data units or if
+\code{character}, one of "top" or "bottom". Recycled if too short and
+truncated if too long.}
 
-\item{vstep}{numeric in native data units, the vertical step
-used between labels for comparisons.}
+\item{vstep}{numeric in npc units, the horizontal displacement step-size
+used between labels for different contrasts when \code{label.type = "bars"}.}
 
 \item{output.type}{character One of "expression", "LaTeX", "text",
 "markdown" or "numeric".}
@@ -202,7 +203,7 @@ addition the following labels:
 \describe{
   \item{p.value.label}{\emph{P}-value for the pairwise contrasts, character.}
   \item{delta.label}{The coefficient or estimate for the difference between compared pairs of levels.}
-  \item{t.label}{\emph{t}-statistic estimates for the pairwise contrasts, character.}
+  \item{t.value.label}{\emph{t}-statistic estimates for the pairwise contrasts, character.}
   }
 
 If \code{label.type = "letters"} or \code{label.type = "LETTERS"} the returned tibble contains

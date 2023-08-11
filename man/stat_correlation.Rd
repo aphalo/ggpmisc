@@ -14,7 +14,7 @@ stat_correlation(
   n.min = 2L,
   alternative = "two.sided",
   exact = NULL,
-  r.conf.level = 0.95,
+  r.conf.level = ifelse(method == "pearson", 0.95, NA),
   continuity = FALSE,
   small.r = FALSE,
   small.p = FALSE,
@@ -63,7 +63,7 @@ fitting to the attempted.}
 Kendall's tau and Spearman's rho.}
 
 \item{r.conf.level}{numeric Confidence level for the returned confidence
-interval.}
+interval. If set to \code{NA} computation of CI is skipped.}
 
 \item{continuity}{logical If TRUE , a continuity correction is used for
 Kendall's tau and Spearman's rho when not computed exactly.}
@@ -87,8 +87,8 @@ coordinates" (npc units) or character if using \code{geom_text_npc()} or
 \code{geom_label_npc()}. If using \code{geom_text()} or \code{geom_label()}
 numeric in native data units. If too short they will be recycled.}
 
-\item{hstep, vstep}{numeric in npc units, the horizontal and vertical step
-used between labels for different groups.}
+\item{hstep, vstep}{numeric in npc units, the horizontal and vertical
+displacement step-size used between labels for different groups.}
 
 \item{output.type}{character One of "expression", "LaTeX", "text", "markdown"
 or "numeric".}
@@ -236,15 +236,20 @@ ggplot(my.data, aes(x, y)) +
 
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  stat_correlation(use_label(c("R", "R.CI")), boot.R = 999)
+  stat_correlation(use_label(c("R", "R.CI")),
+                   r.conf.level = 0.95)
 
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  stat_correlation(use_label(c("R", "R.CI")), method = "kendall")
+  stat_correlation(use_label(c("R", "R.CI")),
+                   method = "kendall",
+                   r.conf.level = 0.95)
 
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  stat_correlation(use_label(c("R", "R.CI")), method = "spearman")
+  stat_correlation(use_label(c("R", "R.CI")),
+                   method = "spearman",
+                   r.conf.level = 0.95)
 
 # manually assemble and map a specific label using paste() and aes()
 ggplot(my.data, aes(x, y)) +
