@@ -733,9 +733,9 @@ ma_eq_compute_group_fun <- function(data,
     label.x <- ggpp::compute_npcx(x = label.x, group = group.idx, h.step = hstep,
                                   margin.npc = margin.npc)
     if (!npc.used) {
-      x.expanse <- abs(diff(range(data$x)))
-      x.min <- min(data$x)
-      label.x <- label.x * x.expanse + x.min
+      # we need to use scale limits as observations are not necessarily plotted
+      x.range <- scales$x$range$range
+      label.x <- label.x * diff(x.range) + x.range[1]
     }
   }
   if (is.character(label.y)) {
@@ -748,9 +748,9 @@ ma_eq_compute_group_fun <- function(data,
     label.y <- ggpp::compute_npcy(y = label.y, group = group.idx, v.step = vstep,
                                   margin.npc = margin.npc)
     if (!npc.used) {
-      y.expanse <- abs(diff(range(data$y)))
-      y.min <- min(data$y)
-      label.y <- label.y * y.expanse + y.min
+      # we need to use scale limits as observations are not necessarily plotted
+      y.range <- scales$y$range$range
+      label.y <- label.y * diff(y.range) + y.range[1]
     }
   }
 

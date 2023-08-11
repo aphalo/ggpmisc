@@ -814,6 +814,8 @@ quant_eq_compute_group_fun <- function(data,
   z[["fm.formula.chr"]] <- format(formula.ls)
 
   # Compute label positions
+  # we need to use scale limits as observations are not necessarily plotted
+  x.range <- scales$x$range$range
   if (is.character(label.x)) {
     if (npc.used) {
       margin.npc <- 0.05
@@ -825,15 +827,12 @@ quant_eq_compute_group_fun <- function(data,
       ggpp::compute_npcx(x = label.x, group = group.idx, h.step = hstep,
                          margin.npc = margin.npc, each.len = num.quantiles)
     if (!npc.used) {
-      x.expanse <- abs(diff(range(data[["x"]])))
-      x.min <- min(data[["x"]])
-      label.x <- label.x * x.expanse + x.min
+      x.range <- scales$x$range$range
+      label.x <- label.x * diff(x.range) + x.range[1]
     }
   } else if (is.numeric(label.x) && length(label.x == 1L)) {
     if (!npc.used) {
-      x.expanse <- abs(diff(range(data[["x"]])))
-      x.min <- min(data[["x"]])
-      x <- (label.x - x.min) / x.expanse
+      x <- (label.x - x.range[1]) / diff(x.range)
     } else {
       x <- label.x
     }
@@ -850,12 +849,14 @@ quant_eq_compute_group_fun <- function(data,
     x <- ifelse(x > 1, 1, x)
     x <- ifelse(x < 0, 0, x)
     if (!npc.used) {
-      label.x <- x * x.expanse + x.min
+      label.x <- x * diff(x.range) + x.range[1]
     } else {
       label.x <- x
     }
   }
 
+  # we need to use scale limits as observations are not necessarily plotted
+  y.range <- scales$y$range$range
   if (is.character(label.y)) {
     rev.y.pos <- length(label.y) == 1L && label.y != "bottom"
     if (npc.used) {
@@ -868,16 +869,13 @@ quant_eq_compute_group_fun <- function(data,
       ggpp::compute_npcy(y = label.y, group = group.idx, v.step = vstep,
                          margin.npc = margin.npc, each.len = num.quantiles)
     if (!npc.used) {
-      y.expanse <- abs(diff(range(data[["y"]])))
-      y.min <- min(data[["y"]])
-      label.y <- label.y * y.expanse + y.min
+      label.y <- label.y * diff(y.range) + y.range[1]
     }
   } else if (is.numeric(label.y) && length(label.y == 1L)) {
     rev.y.pos <- length(label.y) == 1L && label.y >= 0.5
     if (!npc.used) {
-      y.expanse <- abs(diff(range(data[["y"]])))
-      y.min <- min(data[["y"]])
-      y <- (label.y - y.min) / y.expanse
+      y.range <- scales$y$range$range
+      y <- (label.y - y.range[1]) / diff(y.range)
     } else {
       y <- label.y
     }
@@ -894,7 +892,7 @@ quant_eq_compute_group_fun <- function(data,
     y <- ifelse(y > 1, 1, y)
     y <- ifelse(y < 0, 0, y)
     if (!npc.used) {
-      label.y <- y * y.expanse + y.min
+      label.y <- y * diff(y.range) + y.range[1]
     } else {
       label.y <- y
     }

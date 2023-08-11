@@ -36,13 +36,13 @@ predefined design. Package ‘**ggpmisc**’ together with package
 In fact, these packages follow the tenets of the grammar even more
 strictly than ‘**ggplot2**’ in the distinction between geometries and
 statistics. The new statistics in ‘**ggpmisc**’ focus mainly on model
-fitting, but there is not yet support for multiple comparisons among
-groups. The default annotations are those most broadly valid and of
-easiest interpretation. We follow R’s approach of expecting that users
-know what they need or want, and will usually want to adjust how results
-from model fits are presented both graphically and textually. The
-approach and mechanics of plot construction and rendering remain
-unchanged from those implemented in package ‘**ggplot2**’.
+fitting, including multiple comparisons among groups. The default
+annotations are those most broadly valid and of easiest interpretation.
+We follow R’s approach of expecting that users know what they need or
+want, and will usually want to adjust how results from model fits are
+presented both graphically and textually. The approach and mechanics of
+plot construction and rendering remain unchanged from those implemented
+in package ‘**ggplot2**’.
 
 ## Statistics
 
@@ -61,10 +61,11 @@ Statistics that help with reporting the results of model fits are:
 | `stat_fit_residuals()`  | residuals (`point`)                               | lm, rlm, rq (1, 2, 4, 7, 8)                  |
 | `stat_fit_deviations()` | deviations from observations (`segment`)          | lm, rlm, lqs, rq (1, 2, 4, 7, 9)             |
 | `stat_fit_fitted()`     | fitted values (`point`)                           | lm, rlm, lqs, rq (1, 2, 4, 7, 9)             |
-| `stat_fit_glance()`     | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | all those supported by ‘broom’               |
-| `stat_fit_augment()`    | predicted and other values (`smooth`)             | all those supported by ‘broom’               |
-| `stat_fit_tidy()`       | fit results, e.g., for equation (`text_npc`)      | all those supported by ‘broom’               |
-| `stat_fit_tb()`         | ANOVA and summary tables (`table_npc`)            | all those supported by ‘broom’               |
+| `stat_fit_glance()`     | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | those supported by ‘broom’                   |
+| `stat_fit_augment()`    | predicted and other values (`smooth`)             | those supported by ‘broom’                   |
+| `stat_fit_tidy()`       | fit results, e.g., for equation (`text_npc`)      | those supported by ‘broom’                   |
+| `stat_fit_tb()`         | ANOVA and summary tables (`table_npc`)            | those supported by ‘broom’                   |
+| `stat_multcomp()`       | Multiple comparisons (`label_pairwise` or `text`) | those supported by `glht` (1, 2, 7)          |
 
 Notes: (1) *weight* aesthetic supported; (2) user defined fit functions
 that return an object of a class derived from `lm` are supported even if
@@ -125,27 +126,38 @@ library(ggrepel)
 library(broom)
 ```
 
-In the first example we plot a time series using the specialized version
-of `ggplot()` that converts the time series into a tibble and maps the
-`x` and `y` aesthetics automatically. We also highlight and label the
-peaks using `stat_peaks`.
+In the first two examples we plot data such that we map a factor to the
+*x* aesthetic and label it with the adjusted *P*-values for multitle
+comparision using “Tukey” contrasts.
 
 ``` r
-ggplot(lynx, as.numeric = FALSE) + geom_line() + 
-  stat_peaks(colour = "red") +
-  stat_peaks(geom = "text", colour = "red", angle = 66,
-             hjust = -0.1, x.label.fmt = "%Y") +
-  stat_peaks(geom = "rug", colour = "red", sides = "b") +
-  expand_limits(y = 8000)
+ggplot(mpg, aes(factor(cyl), cty)) +
+  geom_boxplot(width = 0.33) +
+  stat_multcomp(label.type = "letters") +
+  expand_limits(y = 0)
 ```
 
-![](man/figures/README-readme-03-1.png)<!-- -->
+![](man/figures/README-readme-03a-1.png)<!-- -->
 
-In the second example we add the equation for a fitted polynomial plus
-the adjusted coefficient of determination to a plot showing the
-observations plus the fitted curve, deviations and confidence band. We
-use `stat_poly_eq()` together with `use_label()` to assemble and map the
-desired annotations.
+Using “Dunnet” contrasts and “bars” to annotate individual contrasts
+with the adjusted *P*-value, here using Holm’s method.
+
+``` r
+ggplot(mpg, aes(factor(cyl), cty)) +
+  geom_boxplot(width = 0.33) +
+  stat_multcomp(contrast.type = "Dunnet", 
+                adjusted.type = "holm",
+                size = 2.75) +
+  expand_limits(y = 0)
+```
+
+![](man/figures/README-readme-03b-1.png)<!-- -->
+
+In the third example we add the equation for a linear regression, the
+adjusted coefficient of determination and *P*-value to a plot showing
+the observations plus the fitted curve, deviations and confidence band.
+We use `stat_poly_eq()` together with `use_label()` to assemble and map
+the desired annotations.
 
 ``` r
 formula <- y ~ x + I(x^2)
@@ -153,14 +165,14 @@ ggplot(cars, aes(speed, dist)) +
   geom_point() +
   stat_fit_deviations(formula = formula, colour = "red") +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(use_label(c("eq", "adj.R2")), formula = formula)
+  stat_poly_eq(use_label(c("eq", "adj.R2", "P")), formula = formula)
 ```
 
 ![](man/figures/README-readme-04-1.png)<!-- -->
 
-The same figure as in the second example but this time annotated with
-the ANOVA table for the model fit. We use `stat_fit_tb()` which can be
-used to add ANOVA or summary tables.
+The same figure as in the third example but this time annotated with the
+ANOVA table for the model fit. We use `stat_fit_tb()` which can be used
+to add ANOVA or summary tables.
 
 ``` r
 formula <- y ~ x + I(x^2)
@@ -184,7 +196,7 @@ ggplot(cars, aes(speed, dist)) +
 
 ![](man/figures/README-readme-05-1.png)<!-- -->
 
-The same figure as in the second example but this time using quantile
+The same figure as in the third example but this time using quantile
 regression, median in this example.
 
 ``` r
@@ -221,10 +233,27 @@ ggplot(quadrant_example.df, aes(logFC.x, logFC.y)) +
   stat_dens2d_labels(aes(label = gene), keep.fraction = 0.02, 
                      geom = "text_repel", size = 2, colour = "red") +
   scale_x_logFC(name = "Transcript abundance after A%unit") +
-  scale_y_logFC(name = "Transcript abundance after B%unit")
+  scale_y_logFC(name = "Transcript abundance after B%unit",
+                expand = expansion(mult = 0.2))
 ```
 
 ![](man/figures/README-unnamed-chunk-1-1.png)<!-- -->
+
+A time series using the specialized version of `ggplot()` that converts
+the time series into a tibble and maps the `x` and `y` aesthetics
+automatically. We also highlight and label the peaks using
+`stat_peaks()`.
+
+``` r
+ggplot(lynx, as.numeric = FALSE) + geom_line() + 
+  stat_peaks(colour = "red") +
+  stat_peaks(geom = "text", colour = "red", angle = 66,
+             hjust = -0.1, x.label.fmt = "%Y") +
+  stat_peaks(geom = "rug", colour = "red", sides = "b") +
+  expand_limits(y = 8000)
+```
+
+![](man/figures/README-readme-03-1.png)<!-- -->
 
 ## Installation
 
@@ -301,7 +330,7 @@ significant contributions from several of the authors and maintainers of
 
 Aphalo, Pedro J. (2020) *Learn R: As a Language.* The R Series. Boca
 Raton and London: Chapman and Hall/CRC Press. ISBN: 978-0-367-18253-3.
-350 pp.
+350 pp. 
 
 Wickham, Hadley. 2010. “A Layered Grammar of Graphics.” Journal of
 Computational and Graphical Statistics 19 (1): 3–28.

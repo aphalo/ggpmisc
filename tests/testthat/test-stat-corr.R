@@ -48,6 +48,7 @@ test_that("corr_noload", {
                               ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
                                 ggplot2::geom_point() +
                                 ggpmisc::stat_correlation(method = "kendall",
+                                                          r.conf.level = 0.95,
                                                           mapping =
                                                             ggplot2::aes(label = paste(ggplot2::after_stat(r.label),
                                                                                        ggplot2::after_stat(r.confint.label),
@@ -60,6 +61,7 @@ test_that("corr_noload", {
                               ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
                                 ggplot2::geom_point() +
                                 ggpmisc::stat_correlation(method = "kendall",
+                                                          r.conf.level = 0.95,
                                                           mapping = ggpmisc::use_label(c("R", "R.CI", "Z", "P", "n"),
                                                                                        sep = "~~"))
 
@@ -68,6 +70,7 @@ test_that("corr_noload", {
                               ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
                                 ggplot2::geom_point() +
                                 ggpmisc::stat_correlation(method = "kendall",
+                                                          r.conf.level = 0.95,
                                                           mapping = ggpmisc::use_label(c("tau", "tau.CI", "z", "p", "n"),
                                                                                        sep = "~~"))
   )
@@ -75,6 +78,7 @@ test_that("corr_noload", {
                               ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
                                 ggplot2::geom_point() +
                                 ggpmisc::stat_correlation(method = "spearman",
+                                                          r.conf.level = 0.95,
                                                           mapping =
                                                             ggplot2::aes(label = paste(ggplot2::after_stat(r.label),
                                                                                        ggplot2::after_stat(r.confint.label),
@@ -87,6 +91,7 @@ test_that("corr_noload", {
                               ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
                                 ggplot2::geom_point() +
                                 ggpmisc::stat_correlation(method = "spearman",
+                                                          r.conf.level = 0.95,
                                                           mapping = ggpmisc::use_label(c("R", "R.CI", "S", "P", "N"),
                                                                                        sep = "~~"))
   )
@@ -94,6 +99,7 @@ test_that("corr_noload", {
                               ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
                                 ggplot2::geom_point() +
                                 ggpmisc::stat_correlation(method = "spearman",
+                                                          r.conf.level = 0.95,
                                                           mapping = ggpmisc::use_label(c("rho", "rho.ci", "s", "p", "n"),
                                                                                        sep = "~~"))
   )
@@ -122,6 +128,7 @@ test_that("corr_load", {
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
                                 stat_correlation(method = "kendall",
+                                                 r.conf.level = 0.95,
                                                  mapping =
                                                    aes(label = paste(after_stat(r.label),
                                                                      after_stat(r.confint.label),
@@ -134,6 +141,7 @@ test_that("corr_load", {
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
                                 stat_correlation(method = "spearman",
+                                                 r.conf.level = 0.95,
                                                  mapping =
                                                    aes(label = paste(after_stat(r.label),
                                                                      after_stat(r.confint.label),
@@ -194,6 +202,7 @@ test_that("corr_exact", {
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
                                 stat_correlation(method = "kendall", exact = TRUE,
+                                                 r.conf.level = 0.95,
                                                  mapping =
                                                    aes(label = paste(after_stat(r.label),
                                                                      after_stat(r.confint.label),
@@ -207,6 +216,7 @@ test_that("corr_exact", {
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
                                 stat_correlation(method = "spearman", exact = TRUE,
+                                                 r.conf.level = 0.95,
                                                  mapping =
                                                    aes(label = paste(after_stat(r.label),
                                                                      after_stat(r.confint.label),
@@ -239,6 +249,7 @@ test_that("corr_continuity", {
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
                                 stat_correlation(method = "kendall", continuity = TRUE,
+                                                 r.conf.level = 0.95,
                                                  mapping =
                                                    aes(label = paste(after_stat(r.label),
                                                                      after_stat(r.confint.label),
@@ -252,6 +263,7 @@ test_that("corr_continuity", {
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
                                 stat_correlation(method = "spearman", continuity = TRUE,
+                                                 r.conf.level = 0.95,
                                                  mapping =
                                                    aes(label = paste(after_stat(r.label),
                                                                      after_stat(r.confint.label),
@@ -299,6 +311,7 @@ test_that("rounding_signif", {
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
                                 stat_correlation(method = "kendall",
+                                                 r.conf.level = 0.95,
                                                  r.digits = 3,
                                                  p.digits = 4,
                                                  t.digits = 4,
@@ -315,6 +328,7 @@ test_that("rounding_signif", {
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
                                 stat_correlation(method = "kendall",
+                                                 r.conf.level = 0.95,
                                                  r.digits = 2,
                                                  p.digits = 2,
                                                  t.digits = 2,
@@ -331,6 +345,7 @@ test_that("rounding_signif", {
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
                                 stat_correlation(method = "spearman",
+                                                 r.conf.level = 0.95,
                                                  r.digits = 3,
                                                  p.digits = 4,
                                                  t.digits = 4,
@@ -347,6 +362,7 @@ test_that("rounding_signif", {
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
                                 stat_correlation(method = "spearman",
+                                                 r.conf.level = 0.95,
                                                  r.digits = 2,
                                                  p.digits = 2,
                                                  t.digits = 2,
