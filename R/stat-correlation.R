@@ -33,7 +33,7 @@
 #' @param exact logical Whether an exact p-value should be computed. Used for
 #'   Kendall's tau and Spearman's rho.
 #' @param r.conf.level numeric Confidence level for the returned confidence
-#'   interval.
+#'   interval. If set to \code{NA} computation of CI is skipped.
 #' @param continuity logical If TRUE , a continuity correction is used for
 #'   Kendall's tau and Spearman's rho when not computed exactly.
 #' @param small.r,small.p logical Flags to switch use of lower case r and p for
@@ -173,15 +173,20 @@
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   stat_correlation(use_label(c("R", "R.CI")), boot.R = 999)
+#'   stat_correlation(use_label(c("R", "R.CI")),
+#'                    r.conf.level = 0.95)
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   stat_correlation(use_label(c("R", "R.CI")), method = "kendall")
+#'   stat_correlation(use_label(c("R", "R.CI")),
+#'                    method = "kendall",
+#'                    r.conf.level = 0.95)
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   stat_correlation(use_label(c("R", "R.CI")), method = "spearman")
+#'   stat_correlation(use_label(c("R", "R.CI")),
+#'                    method = "spearman",
+#'                    r.conf.level = 0.95)
 #'
 #' # manually assemble and map a specific label using paste() and aes()
 #' ggplot(my.data, aes(x, y)) +
@@ -248,83 +253,89 @@
 #'
 #' @export
 #'
-stat_correlation <- function(mapping = NULL,
-                      data = NULL,
-                      geom = "text_npc",
-                      position = "identity",
-                      ...,
-                      method = "pearson",
-                      n.min = 2L,
-                      alternative = "two.sided",
-                      exact = NULL,
-                      r.conf.level = 0.95,
-                      continuity = FALSE,
-                      small.r = FALSE,
-                      small.p = FALSE,
-                      coef.keep.zeros = TRUE,
-                      r.digits = 2,
-                      t.digits = 3,
-                      p.digits = 3,
-                      CI.brackets = c("[", "]"),
-                      label.x = "left",
-                      label.y = "top",
-                      hstep = 0,
-                      vstep = NULL,
-                      output.type = NULL,
-                      boot.R = ifelse(method == "pearson", 0, 999),
-                      na.rm = FALSE,
-                      parse = NULL,
-                      show.legend = FALSE,
-                      inherit.aes = TRUE) {
-  if (is.null(output.type)) {
-    if (geom %in% c("richtext", "textbox")) {
-      output.type <- "markdown"
-    } else {
-      output.type <- "expression"
+stat_correlation <-
+  function(mapping = NULL,
+           data = NULL,
+           geom = "text_npc",
+           position = "identity",
+           ...,
+           method = "pearson",
+           n.min = 2L,
+           alternative = "two.sided",
+           exact = NULL,
+           r.conf.level =
+             ifelse(method == "pearson", 0.95, NA),
+           continuity = FALSE,
+           small.r = FALSE,
+           small.p = FALSE,
+           coef.keep.zeros = TRUE,
+           r.digits = 2,
+           t.digits = 3,
+           p.digits = 3,
+           CI.brackets = c("[", "]"),
+           label.x = "left",
+           label.y = "top",
+           hstep = 0,
+           vstep = NULL,
+           output.type = NULL,
+           boot.R =
+             ifelse(method == "pearson", 0, 999),
+           na.rm = FALSE,
+           parse = NULL,
+           show.legend = FALSE,
+           inherit.aes = TRUE) {
+    if (is.null(output.type)) {
+      if (geom %in% c("richtext", "textbox")) {
+        output.type <- "markdown"
+      } else {
+        output.type <- "expression"
+      }
     }
-  }
-  if (is.null(parse)) {
-    parse <- output.type == "expression"
-  }
+    if (is.null(parse)) {
+      parse <- output.type == "expression"
+    }
+    if (is.null(r.conf.level) || !is.finite(r.conf.level)) {
+      r.conf.level <- 0
+    }
 
-  ggplot2::layer(
-    data = data,
-    mapping = mapping,
-    stat = StatCorr,
-    geom = geom,
-    position = position,
-    show.legend = show.legend,
-    inherit.aes = inherit.aes,
-    params =
-      rlang::list2(method = method,
-                   n.min = n.min,
-                   alternative = alternative,
-                   exact = exact,
-                   conf.level = r.conf.level,
-                   continuity = continuity,
-                   small.r = small.r,
-                   small.p = small.p,
-                   coef.keep.zeros = coef.keep.zeros,
-                   r.digits = r.digits,
-                   t.digits = t.digits,
-                   p.digits = p.digits,
-                   CI.brackets = CI.brackets,
-                   label.x = label.x,
-                   label.y = label.y,
-                   hstep = hstep,
-                   vstep = ifelse(is.null(vstep),
-                                  ifelse(grepl("label", geom),
-                                         0.10,
-                                         0.05),
-                                  vstep),
-                   npc.used = grepl("_npc", geom),
-                   output.type = output.type,
-                   boot.R = boot.R,
-                   na.rm = na.rm,
-                   parse = parse,
-                   ...)
-  )
-}
+    ggplot2::layer(
+      data = data,
+      mapping = mapping,
+      stat = StatCorr,
+      geom = geom,
+      position = position,
+      show.legend = show.legend,
+      inherit.aes = inherit.aes,
+      params =
+        rlang::list2(method = method,
+                     n.min = n.min,
+                     alternative = alternative,
+                     exact = exact,
+                     conf.level = r.conf.level,
+                     continuity = continuity,
+                     small.r = small.r,
+                     small.p = small.p,
+                     coef.keep.zeros = coef.keep.zeros,
+                     r.digits = r.digits,
+                     t.digits = t.digits,
+                     p.digits = p.digits,
+                     CI.brackets = CI.brackets,
+                     label.x = label.x,
+                     label.y = label.y,
+                     hstep = hstep,
+                     vstep = ifelse(is.null(vstep),
+                                    ifelse(grepl("label", geom),
+                                           0.10,
+                                           0.05),
+                                    vstep),
+                     npc.used = grepl("_npc", geom),
+                     output.type = output.type,
+                     boot.R = boot.R,
+                     na.rm = na.rm,
+                     parse = parse,
+                     ...)
+    )
+  }
 
 # Defined here to avoid a note in check --as-cran as the import from 'polynom'
 # is not seen when the function is defined in-line in the ggproto object.
@@ -450,7 +461,7 @@ cor_test_compute_fun <- function(data,
   z[["n"]] <- nrow(na.omit(data[ , c("x", "y")]))
   z[["method"]] <- method
   z[["r.conf.level"]] <- conf.level
-  if (boot.R >= 50) {
+  if (boot.R >= 50 && conf.level > 0) {
     confint.boot <-
       confintr::ci_cor(data[ , c("x", "y")],
                        probs = ((1 - conf.level) / 2) * c(1, -1) + c(0, 1),
