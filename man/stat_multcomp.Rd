@@ -14,12 +14,13 @@ stat_multcomp(
   method = "lm",
   method.args = list(),
   contrast.type = "Tukey",
+  adjusted.type = "single-step",
   small.p = FALSE,
   p.digits = 3,
   label.type = "bars",
-  main.cutoff.p.value = 0.05,
-  test.cutoff.p.value = 1,
-  letters.p.value = 0.05,
+  fm.cutoff.p.value = 1,
+  mc.cutoff.p.value = 1,
+  mc.critical.p.value = 0.05,
   label.y = NULL,
   vstep = NULL,
   output.type = NULL,
@@ -62,23 +63,34 @@ object accepted by function \code{glht()}.}
 
 \item{contrast.type}{character One of "Tukey" or "Dunnet".}
 
-\item{small.p}{logical Flags to switch use of lower case p for
-p-value.}
+\item{adjusted.type}{character As the argument for parameter \code{type} of
+function \code{adjusted()} passed as argument to parameter \code{test} of
+\code{\link[multcomp]{summary.glht}}. Accepted values are "single-step",
+"Shaffer", "Westfall", "free", "holm", "hochberg", "hommel", "bonferroni",
+"BH", "BY", "fdr", "none".}
+
+\item{small.p}{logical Flags switching on use of lower case \emph{p} instead
+of capital \emph{P} as the symbol for \emph{P}-value in labels.}
 
 \item{p.digits}{integer Number of digits after the decimal point to
-use for \eqn{R^2} and P-value in labels.}
+use for \eqn{R^2} and \emph{P}-value in labels.}
 
 \item{label.type}{character One of "bars", "letters" or "LETTERS", selects
 how the results of the multiple comparisons are displayed.}
 
-\item{main.cutoff.p.value}{numeric [0..1] The P-value for the main effect of
-factor \code{x} in the ANOVA test above which no pairwise comparisons are
-computed or labels generated.}
+\item{fm.cutoff.p.value}{numeric [0..1] The \emph{P}-value for the main effect of
+factor \code{x} in the ANOVA test for the fitted model above which no
+pairwise comparisons are computed or labels generated. Be aware that recent
+literature tends to recommend to consider which testing approach is
+relevant to the problem at hand instead of requiring the significance of
+the main effect before applying multiple comparisons' tests. The default
+value is 1, imposing no restrictions.}
 
-\item{test.cutoff.p.value}{numeric [0..1] The P-value for the individual
-contrasts above which no labelled bar is generated.}
+\item{mc.cutoff.p.value}{numeric [0..1] The \emph{P}-value for the individual
+contrasts above which no labelled bars are generated. Default is 1,
+labelling all pairwise contrasts tested.}
 
-\item{letters.p.value}{numeric The critical P-value used for tests when
+\item{mc.critical.p.value}{numeric The critical \emph{P}-value used for tests when
 when encoded as letters.}
 
 \item{label.y}{numeric in native data units or \code{character}.
@@ -94,7 +106,8 @@ used between labels for comparisons.}
 the computation proceeds.}
 
 \item{orientation}{character Either "x" or "y" controlling the default for
-\code{formula}.}
+\code{formula}. \strong{Support for \code{orientation} is not yet implemented but is
+planned.}}
 
 \item{parse}{logical Passed to the geom. If \code{TRUE}, the labels will be
 parsed into expressions and displayed as described in \code{?plotmath}.
@@ -109,39 +122,39 @@ never includes, and \code{TRUE} always includes.}
 than combining with them.}
 }
 \value{
-A data frame with one row per comparison for \code{label.type = "bars"}, or
-  a data frame with one row per factor \code{x} level for
-  \code{label.type = "letters"} and for
-  \code{label.type = "LETTERS"}. Columns as described under
-  \strong{Computed variables}.
+A data frame with one row per comparison for \code{label.type =
+  "bars"}, or a data frame with one row per factor \code{x} level for
+  \code{label.type = "letters"} and for \code{label.type = "LETTERS"}.
+  Variables (= columns) as described under \strong{Computed variables}.
 }
 \description{
 \code{stat_multcomp} fits a linear model by default with \code{stats::lm()}
 but alternatively using other model fit functions. The model is passed to
 function \code{glht()} from package 'multcomp' to fit Tukey or Dunnet
-contrasts and generates labels for \emph{P}-values.
+contrasts and generates labels based on adjusted \emph{P}-values.
 }
 \details{
 This statistic can be used to automatically annotate a plot with
   \emph{P}-values for multiple comparison tests, based on Tukey contrasts
   (all pairwise) or Dunnet contrasts (other levels against the first one).
-  The explanatory variable must be a factor as this creates the required
-  grouping.
+  See Meier (2022, Chapter 3) for an accessible explanation of multiple
+  comparisons and contrasts with package 'multcomp', of which
+  \code{stat_multcomp()} is mostly a wrapper.
 
-  This statistic generates labels as R expressions by default but LaTeX (use
-  TikZ device), markdown (use package 'ggtext') and plain text are also
-  supported, as well as numeric values for user-generated text labels. The
-  value of \code{parse} is set automatically based on \code{output-type}, but
-  if you assemble labels that need parsing from \code{numeric} output, the
-  default needs to be overridden. This statistic only generates annotation
-  labels and segments connecting the compared factor levels, or letter labels
-  that discriminate significantly different groups.
+  The explanatory variable mapped to the \emph{x} aesthetic must be a factor
+  as this creates the required grouping. Currently, arbitrary contrasts are
+  not supported, mainly because they would be difficult to convert into plot
+  annotations.
 
-  A ggplot statistic receives as \code{data} a data frame that is not the one
-  passed as argument by the user, but instead a data frame with the variables
-  mapped to aesthetics. Consequently, the model formula must be based on
-  \code{x} and \code{y} variables, not the original names of the variables
-  mapped to these aesthetics.
+  \code{stat_multcomp()} by default generates character labels ready to be
+  parsed as R expressions but LaTeX (use TikZ device), markdown (use package
+  'ggtext') and plain text are also supported, as well as numeric values for
+  user-generated text labels. The value of \code{parse} is set automatically
+  based on \code{output.type}, but if you assemble labels that need parsing
+  from \code{numeric} output, the default needs to be overridden. This
+  statistic only generates annotation labels and segments connecting the
+  compared factor levels, or letter labels that discriminate significantly
+  different groups.
 }
 \note{
 R option \code{OutDec} is obeyed based on its value at the time the plot
@@ -152,9 +165,9 @@ R option \code{OutDec} is obeyed based on its value at the time the plot
  \code{stat_multcomp()} understands \code{x} and
   \code{y}, to be referenced in the \code{formula} and \code{weight} passed
   as argument to parameter \code{weights}. A factor must be mapped to
-  \code{x} and \code{numeric} variables to \code{y}, and if used to
+  \code{x} and \code{numeric} variables to \code{y}, and, if used, to
   \code{weight}. In addition, the aesthetics understood by the geom
-  (\code{"text_pairwise"} is the default for \code{label.type = "bars"},
+  (\code{"label_pairwise"} is the default for \code{label.type = "bars"},
   \code{"text"} is the default for \code{label.type = "letters"} and for
   \code{label.type = "LETTERS"}) are understood and grouping
   respected.
@@ -162,21 +175,59 @@ R option \code{OutDec} is obeyed based on its value at the time the plot
 
 \section{Computed variables}{
 
-If output.type different from \code{"numeric"} the returned tibble contains
-columns listed below. If the model fit function used does not return a value,
-the label is set to \code{character(0L)}.
+If \code{output.type = "numeric"} and
+\code{label.type = "bars"} the returned tibble contains
+columns listed below. In all cases if the model fit function used does not return a value,
+the label is set to \code{character(0L)} and the numeric value to \code{NA}.
 \describe{
-  \item{x,xmin,xmax}{x position.}
-  \item{y}{y position.}
-  \item{default.label}{text label.}
-  \item{p.value.label}{P-value.}
-  \item{method.label}{Set according \code{method} used.}
-  \item{p.value, coefficients, contrasts, tstat}{numeric values, from glht object}}
+  \item{x,x.left.tip,x.right.tip}{x position, numeric.}
+  \item{y}{y position, numeric.}
+  \item{coefficients}{Delta estimate from pairwise contrasts, numeric.}
+  \item{contrasts}{Contrasts as two levels' ordinal "numbers" separated by a dash, character.}
+  \item{tstat}{\emph{t}-statistic estimates for the pairwise contrasts, numeric.}
+  \item{p.value}{\emph{P}-value for the pairwise contrasts.}
+  \item{fm.method}{Set according \code{method} used.}
+  \item{fm.class}{Most derived class of the fitted model object.}
+  \item{fm.formula}{Formula extracted from the fitted model object if available, or the formula argument.}
+  \item{fm.formula.chr}{Formula extracted from the fitted model object if available, or the formula argument, formatted as character.}
+  \item{mc.adjusted}{The method used to adjust the \emph{P}-values.}
+  \item{mc.contrast}{The type of contrast used for multiple comparisons.}
+  \item{n}{The total number of observations or rows in data.}
+  \item{default.label}{text label, always included, but possibly NA.}
+  }
 
-If output.type is \code{"numeric"} the returned data frame lacks the labels.
+If output.type is not \code{"numeric"} the returned data frame includes in
+addition the following labels:
 
-To explore the computed values returned for a given input we suggest the use
-of \code{\link[gginnards]{geom_debug}} as shown in the last examples below.
+\describe{
+  \item{p.value.label}{\emph{P}-value for the pairwise contrasts, character.}
+  \item{delta.label}{The coefficient or estimate for the difference between compared pairs of levels.}
+  \item{t.label}{\emph{t}-statistic estimates for the pairwise contrasts, character.}
+  }
+
+If \code{label.type = "letters"} or \code{label.type = "LETTERS"} the returned tibble contains
+columns listed below.
+
+\describe{
+  \item{x,x.left.tip,x.right.tip}{x position, numeric.}
+  \item{y}{y position, numeric.}
+  \item{critical.p.value}{\emph{P}-value used in pairwise tests, numeric.}
+  \item{fm.method}{Set according \code{method} used.}
+  \item{fm.class}{Most derived class of the fitted model object.}
+  \item{fm.formula}{Formula extracted from the fitted model object if available, or the formula argument.}
+  \item{fm.formula.chr}{Formula extracted from the fitted model object if available, or the formula argument, formatted as character.}
+  \item{mc.adjusted}{The method used to adjust the \emph{P}-values.}
+  \item{mc.contrast}{The type of contrast used for multiple comparisons.}
+  \item{n}{The total number of observations or rows in data.}
+  \item{default.label}{text label, always included, but possibly NA.}
+  }
+
+If output.type is not \code{"numeric"} the returned data frame includes in
+addition the following labels:
+
+\describe{
+  \item{letters.label}{Letters that distinguish levels based on significance from multiple comparisons test.}
+  }
 }
 
 \section{Alternatives}{
@@ -197,12 +248,27 @@ p1 <- ggplot(my.cars, aes(cyl, mpg)) +
 p1 +
   stat_multcomp()
 
+# test against a control, with first level being the control
+# change order of factor levels in data to set the control group
 p1 +
   stat_multcomp(contrast.type = "Dunnet")
 
+# different methods to adjust the contrasts
 p1 +
-  stat_multcomp(geom = "text_pairwise")
+  stat_multcomp(adjusted.type = "bonferroni")
 
+p1 +
+  stat_multcomp(adjusted.type = "holm")
+
+p1 +
+  stat_multcomp(adjusted.type = "fdr")
+
+# sometimes we need to expand the plotting area
+p1 +
+  stat_multcomp(geom = "text_pairwise") +
+  scale_y_continuous(expand = expansion(mult = c(0.05, 0.10)))
+
+# position of contrasts' bars (based on scale limits)
 p1 +
   stat_multcomp(label.y = "top")
 
@@ -210,7 +276,16 @@ p1 +
   stat_multcomp(label.y = "bottom")
 
 p1 +
-  stat_multcomp(label.y = 12)
+  stat_multcomp(label.y = 11)
+
+# position of contrasts' bars (manual)
+p1 +
+  stat_multcomp(label.y = c(1, 3, 5)) +
+  expand_limits(y = 0)
+
+p1 +
+  stat_multcomp(label.y = c(3, 1, 5)) +
+  expand_limits(y = 0)
 
 # use different labels: difference and P-value from hypothesis tests
 p1 +
@@ -239,23 +314,20 @@ p1 +
                                     ends = "both")) +
   scale_fill_manual(values = c("white", "green"))
 
-# manual positioning of bars (= segments)
-p1 +
-  stat_multcomp(label.y = c(1, 3, 5)) +
-  expand_limits(y = 0)
-
-p1 +
-  stat_multcomp(label.y = c(3, 1, 5)) +
-  expand_limits(y = 0)
-
 # label only significant differences
+# but test and correct for all pairwise contrasts!
 p1 +
-  stat_multcomp(test.cutoff.p.value = 0.01)
+  stat_multcomp(mc.cutoff.p.value = 0.01)
 
 ## letters as labels for test results
 
 p1 +
   stat_multcomp(label.type = "letters")
+
+# can be confusing, avoid if possible
+p1 +
+  stat_multcomp(label.type = "letters",
+  contrast.type = "Dunnet")
 
 # use capital letters
 p1 +
@@ -281,15 +353,44 @@ p1 +
 
 # stricter critical p-value than default used for test
 p1 +
-  stat_multcomp(label.type = "letters", letters.p.value = 0.01)
+  stat_multcomp(label.type = "letters", mc.critical.p.value = 0.01)
 
+# Inspecting the returned data using geom_debug()
+# This provides a quick way of finding out the names of the variables that
+# are available for mapping to aesthetics with after_stat().
+
+gginnards.installed <- requireNamespace("gginnards", quietly = TRUE)
+
+if (gginnards.installed)
+  library(gginnards)
+
+if (gginnards.installed)
+p1 +
+  stat_multcomp(label.type = "bars",
+                geom = "debug")
+
+if (gginnards.installed)
+p1 +
+  stat_multcomp(label.type = "letters",
+                geom = "debug")
+
+if (gginnards.installed)
+p1 +
+  stat_multcomp(label.type = "bars",
+                output.type = "numeric",
+                geom = "debug")
+
+}
+\references{
+Meier, Lukas (2022) \emph{ANOVA and Mixed Models: A Short Introduction
+Using R}. Chapter 3 Contrasts and Multiple Testing. The R Series. Boca Raton:
+Chapman and Hall/CRC. ISBN: 9780367704209, \doi{10.1201/9781003146216}.
 }
 \seealso{
 This statistic uses the implementation of Tests of General Linear
-  Hypotheses in function \code{\link[multcomp]{glht}}.
-
-Other ggplot statistics for linear and polynomial regression: 
-\code{\link{stat_poly_eq}()},
-\code{\link{stat_poly_line}()}
+  Hypotheses in function \code{\link[multcomp]{glht}}. See
+  \code{\link[multcomp]{summary.glht}} and \code{\link[stats]{p.adjust}}
+  for the supported and tests and the references therein for the theory
+  behind them.
 }
-\concept{ggplot statistics for linear and polynomial regression}
+\concept{ggplot statistics for multiple comparisons}

@@ -526,7 +526,6 @@ This statistics fits a model with function \code{\link[stats]{lm}},
   \code{label} needs to be explicitly supplied by the user.
 
 Other ggplot statistics for linear and polynomial regression: 
-\code{\link{stat_multcomp}()},
 \code{\link{stat_poly_line}()}
 }
 \concept{ggplot statistics for linear and polynomial regression}
