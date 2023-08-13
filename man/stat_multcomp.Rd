@@ -277,50 +277,19 @@ p1 +
 
 # position of contrasts' bars (based on scale limits)
 p1 +
-  stat_multcomp(label.y = "top")
-
-p1 +
   stat_multcomp(label.y = "bottom")
 
 p1 +
   stat_multcomp(label.y = 11)
-
-# position of contrasts' bars (manual)
-p1 +
-  stat_multcomp(label.y = c(7, 4, 1),
-                contrast.type = "Dunnet",
-                size = 2.75) +
-  expand_limits(y = 0)
-
-p1 +
-  stat_multcomp(label.y = seq(from = 15, by = -3, length.out = 6),
-                size = 2.75) +
-  expand_limits(y = 0)
 
 # use different labels: difference and P-value from hypothesis tests
 p1 +
   stat_multcomp(use_label(c("Delta", "P")),
                 size = 2.75)
 
-# control smallest value displayed and number of digits
+# control smallest P-value displayed and number of digits
 p1 +
   stat_multcomp(p.digits = 4)
-
-# use colour to show significance
-p1 +
-  stat_multcomp(aes(colour = after_stat(p.value) < 0.01),
-                size = 2.75) +
-  scale_colour_manual(values = c("grey60", "black")) +
-  theme_bw()
-
-# add arrow heads to segments and use fill to show significance
-p1 +
-  stat_multcomp(aes(fill = after_stat(p.value) < 0.01),
-                size = 2.5,
-                arrow = grid::arrow(angle = 90,
-                                    length = unit(1, "mm"),
-                                    ends = "both")) +
-  scale_fill_manual(values = c("white", "green"))
 
 # label only significant differences
 # but test and correct for all pairwise contrasts!
@@ -344,26 +313,6 @@ p1 +
 p1 +
   stat_multcomp(label.type = "letters",
                 label.y = 0)
-
-medians <-
-  aggregate(mpg$hwy, by = list(mpg$cyl), FUN = median)[["x"]]
-p1 +
-  stat_multcomp(label.type = "letters",
-                label.y = medians,
-                position = position_nudge(x = 0.22))
-
-# Using other geometries
-p1 +
-  stat_multcomp(label.type = "letters",
-                geom = "label")
-
-p1 +
-  stat_multcomp(aes(x = stage(start = factor(cyl),
-                              after_stat = x.right.tip)),
-                geom = "text",
-                label.y = "bottom",
-                vstep = 0,
-                contrast.type = "Dunnet")
 
 # stricter critical p-value than default used for test
 p1 +
