@@ -11,10 +11,12 @@ FC_name(
 )
 }
 \arguments{
+\item{name}{character The axis-label or name of the scale.}
+
+\item{log.base}{integer The base used for the logarithm transformation.}
+
 \item{format}{character string, "R", "R.expression", "R.character", or
 "LaTeX".}
-
-\item{unit.exponent}{integer.}
 }
 \value{
 a character string or an R expression.

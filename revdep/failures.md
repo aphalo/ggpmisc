@@ -2,13 +2,13 @@
 
 <details>
 
-* Version: 1.2.1
+* Version: 1.6.0
 * GitHub: https://github.com/isglobal-brge/methylclock
 * Source code: https://github.com/cran/methylclock
-* Date/Publication: 2022-07-12
-* Number of recursive dependencies: 277
+* Date/Publication: 2023-04-25
+* Number of recursive dependencies: 279
 
-Run `revdep_details(, "methylclock")` for more info
+Run `revdepcheck::revdep_details(, "methylclock")` for more info
 
 </details>
 
