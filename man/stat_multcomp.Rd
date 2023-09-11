@@ -51,13 +51,13 @@ can include aesthetics whose values you want to set, not map. See
 \item{formula}{a formula object. Using aesthetic names \code{x} and \code{y}
 instead of original variable names.}
 
-\item{method}{function or character If character, "lm", "rlm" or the name of
-a model fit function are accepted, possibly followed by the fit function's
-\code{method} argument separated by a colon (e.g. \code{"rlm:M"}). If a
-function different to \code{lm()}, it must accept as a minimum a model
-formula through its first parameter, and have formal parameters named
-\code{data}, \code{weights}, and \code{method}, and return a model fit
-object accepted by function \code{glht()}.}
+\item{method}{function or character If character, "lm" (or its equivalent
+"aov"), "rlm" or the name of a model fit function are accepted, possibly
+followed by the fit function's \code{method} argument separated by a colon
+(e.g. \code{"rlm:M"}). If a function different to \code{lm()}, it must
+accept as a minimum a model formula through its first parameter, and have
+formal parameters named \code{data}, \code{weights}, and \code{method}, and
+return a model fit object accepted by function \code{glht()}.}
 
 \item{method.args}{named list with additional arguments.}
 
@@ -76,7 +76,8 @@ function \code{adjusted()} passed as argument to parameter \code{test} of
 use for \eqn{R^2} and \emph{P}-value in labels.}
 
 \item{label.type}{character One of "bars", "letters" or "LETTERS", selects
-how the results of the multiple comparisons are displayed.}
+how the results of the multiple comparisons are displayed. Only "bars" can
+be used together with \code{contrast.type = "Dunnet"}.}
 
 \item{fm.cutoff.p.value}{numeric [0..1] The \emph{P}-value for the main effect of
 factor \code{x} in the ANOVA test for the fitted model above which no
@@ -147,6 +148,13 @@ This statistic can be used to automatically annotate a plot with
   not supported, mainly because they would be difficult to convert into plot
   annotations.
 
+  Two ways of displaying the outcomes are implemented, and are selected by
+  `"bars"`, `"letters"` or `"LETTERS"` as argument to parameter
+  `label.type`. `"letters"` and `"LETTERS"` can be used only with Tukey
+  contrasts, as otherwise the encoding is ambiguous. As too many bars clutter
+  a plot, the maximum number of factor levels supported for `"bars"` together
+  with Tukey contrasts is five, and together with Dunnet contrasts, unlimited.
+
   \code{stat_multcomp()} by default generates character labels ready to be
   parsed as R expressions but LaTeX (use TikZ device), markdown (use package
   'ggtext') and plain text are also supported, as well as numeric values for
@@ -201,6 +209,7 @@ If output.type is not \code{"numeric"} the returned data frame includes in
 addition the following labels:
 
 \describe{
+  \item{stars.label}{\emph{P}-value for the pairwise contrasts encoded as "starts", character.}
   \item{p.value.label}{\emph{P}-value for the pairwise contrasts, character.}
   \item{delta.label}{The coefficient or estimate for the difference between compared pairs of levels.}
   \item{t.value.label}{\emph{t}-statistic estimates for the pairwise contrasts, character.}
@@ -238,10 +247,7 @@ addition the following labels:
 
 \examples{
 
-my.cars <- mtcars
-my.cars$cyl <- factor(my.cars$cyl)
-
-p1 <- ggplot(my.cars, aes(cyl, mpg)) +
+p1 <- ggplot(mpg, aes(factor(cyl), hwy)) +
   geom_boxplot(width = 0.33)
 
 ## labeleld bars
@@ -271,49 +277,19 @@ p1 +
 
 # position of contrasts' bars (based on scale limits)
 p1 +
-  stat_multcomp(label.y = "top")
-
-p1 +
   stat_multcomp(label.y = "bottom")
 
 p1 +
   stat_multcomp(label.y = 11)
 
-# position of contrasts' bars (manual)
-p1 +
-  stat_multcomp(label.y = c(1, 3, 5)) +
-  expand_limits(y = 0)
-
-p1 +
-  stat_multcomp(label.y = c(3, 1, 5)) +
-  expand_limits(y = 0)
-
 # use different labels: difference and P-value from hypothesis tests
 p1 +
-  stat_multcomp(use_label(c("Delta", "P")), size = 2.75)
+  stat_multcomp(use_label(c("Delta", "P")),
+                size = 2.75)
 
-# use different labels: P-values encoded as stars
-p1 +
-  stat_multcomp(use_label("stars"))
-
-# control smallest value displayed and number of digits
+# control smallest P-value displayed and number of digits
 p1 +
   stat_multcomp(p.digits = 4)
-
-# use colour to show significance
-p1 +
-  stat_multcomp(aes(colour = after_stat(p.value) < 0.01),
-                size = 2.75) +
-  scale_colour_manual(values = c("grey60", "black")) +
-  theme_bw()
-
-# add arrow heads to segments and use fill to show significance
-p1 +
-  stat_multcomp(aes(fill = after_stat(p.value) < 0.01),
-                arrow = grid::arrow(angle = 90,
-                                    length = unit(1, "mm"),
-                                    ends = "both")) +
-  scale_fill_manual(values = c("white", "green"))
 
 # label only significant differences
 # but test and correct for all pairwise contrasts!
@@ -325,36 +301,23 @@ p1 +
 p1 +
   stat_multcomp(label.type = "letters")
 
-# can be confusing, avoid if possible
-p1 +
-  stat_multcomp(label.type = "letters",
-  contrast.type = "Dunnet")
-
 # use capital letters
 p1 +
   stat_multcomp(label.type = "LETTERS")
 
 # location
 p1 +
-  stat_multcomp(label.type = "letters", label.y = "top")
+  stat_multcomp(label.type = "letters",
+                label.y = "top")
 
-p1 +
-  stat_multcomp(label.type = "letters", label.y = 36)
-
-medians <-
-  aggregate(my.cars$mpg, by = list(my.cars$cyl), FUN = median)[["x"]]
 p1 +
   stat_multcomp(label.type = "letters",
-                label.y = medians,
-                position = position_nudge(x = 0.22))
-
-# geometry
-p1 +
-  stat_multcomp(label.type = "letters", geom = "label")
+                label.y = 0)
 
 # stricter critical p-value than default used for test
 p1 +
-  stat_multcomp(label.type = "letters", mc.critical.p.value = 0.01)
+  stat_multcomp(label.type = "letters",
+                mc.critical.p.value = 0.01)
 
 # Inspecting the returned data using geom_debug()
 # This provides a quick way of finding out the names of the variables that

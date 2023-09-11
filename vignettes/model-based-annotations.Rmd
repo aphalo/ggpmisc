@@ -779,6 +779,108 @@ ggplot(my.data, aes(x, y)) +
 
 Please, see the section on `stat_poly_eq()` for additional examples, as here we have highlighted mainly the differences between these two statistics.
 
+### stat_multcomp
+
+_This section is still preliminary._ Multiple comparisons are frequently used when the effect of different levels of a factor are individually of interest. Function `stat_multcomp()` computes adjusted _P_-values for pairwise comparison using Tukey or Dunnet contrasts using function `glht()` from package 'multcomp'. To complement the examples in the documentation of the function, we show below examples that override several defaults. 
+
+A numeric vector passed to `label.y` can be used to manually set the location of each label along the _y_ axis.
+
+```{r}
+# position of contrasts' bars (manual)
+ggplot(mpg, aes(factor(cyl), hwy)) +
+  geom_boxplot(width = 0.33)  +
+  stat_multcomp(label.y = c(7, 4, 1),
+                contrast.type = "Dunnet",
+                size = 2.75) +
+  expand_limits(y = 0)
+```
+
+```{r}
+ggplot(mpg, aes(factor(cyl), hwy)) +
+  geom_boxplot(width = 0.33) +
+   stat_multcomp(label.y = 
+                   seq(from = 15, 
+                       by = -3, 
+                       length.out = 6),
+                 size = 2.5) +
+   expand_limits(y = 0)
+```
+
+We can pre-compute the numeric vector to achieve special positioning.
+
+```{r}
+means <-
+  aggregate(mpg$hwy,
+            by = list(mpg$cyl), 
+            FUN = mean, 
+            na.rm = TRUE)[["x"]]
+
+ggplot(mpg, aes(factor(cyl), hwy)) +
+  stat_summary(fun.data = mean_se) +
+  stat_multcomp(label.type = "letters",
+                label.y = means,
+                position = position_nudge(x = 0.22))
+```
+
+We can overrride the default use of `geom_text()`.
+
+```{r}
+# Using other geometries
+ggplot(mpg, aes(factor(cyl), hwy)) +
+  geom_boxplot(width = 0.33) +
+  stat_multcomp(label.type = "letters",
+                geom = "label")
+```
+
+With Dunnet contrasts, the use of bars can clutter a plot, and we can alternatively show the outcome for each level that has been compared to a control, the first level.
+
+```{r}
+ggplot(mpg, aes(factor(cyl), hwy)) +
+  geom_boxplot(width = 0.33) +
+  stat_multcomp(aes(x = stage(start = factor(cyl),
+                              after_stat = x.right.tip)),
+                geom = "text",
+                label.y = "bottom",
+                vstep = 0,
+                contrast.type = "Dunnet")
+```
+
+```{r}
+ggplot(mpg, aes(factor(cyl), hwy)) +
+  geom_boxplot(width = 0.33) +
+  stat_multcomp(aes(x = stage(start = factor(cyl),
+                              after_stat = x.right.tip),
+                    label = after_stat(stars.label)),
+                geom = "text",
+                label.y = "bottom",
+                vstep = 0,
+                contrast.type = "Dunnet")
+```
+
+The returned value includes numeric values in addition to character strings mapped to the `label` aesthetic. The numeric values can be used to encode the outcomes using additional or different aesthetics than the default.
+
+```{r}
+# use colour to show significance
+ggplot(mpg, aes(factor(cyl), hwy)) +
+  geom_boxplot(width = 0.33) +
+  stat_multcomp(aes(colour = after_stat(p.value) < 0.01),
+                size = 2.75) +
+  scale_colour_manual(values = c("grey60", "black")) +
+  theme_bw()
+```
+
+```{r}
+# add arrow heads to segments and use fill to show significance
+ggplot(mpg, aes(factor(cyl), hwy)) +
+  geom_boxplot(width = 0.33) +
+  stat_multcomp(aes(fill = after_stat(p.value) < 0.01),
+                size = 2.5,
+                arrow = grid::arrow(angle = 90,
+                                    length = unit(1, "mm"),
+                                    ends = "both")) +
+  scale_fill_manual(values = c("white", "green"))
+```
+
 ### stat_fit_residuals
 
 Sometimes we need to quickly plot residuals matching fits plotted with `stat_poly_line()`, `stat_quant_line()`,

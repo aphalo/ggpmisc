@@ -75,9 +75,10 @@ FC_plain <- function(x,
 #'
 #' Generate axis labels for different log-fold change on different log bases.
 #'
+#' @param name character The axis-label or name of the scale.
+#' @param log.base integer The base used for the logarithm transformation.
 #' @param format character string, "R", "R.expression", "R.character", or
 #'   "LaTeX".
-#' @param unit.exponent integer.
 #'
 #' @return a character string or an R expression.
 #'

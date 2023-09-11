@@ -394,6 +394,86 @@ ggplot(my.data, aes(x, y)) +
                 quantiles = 0.95, label.y = 0.9)
 
 ## -----------------------------------------------------------------------------
+# position of contrasts' bars (manual)
+ggplot(mpg, aes(factor(cyl), hwy)) +
+  geom_boxplot(width = 0.33)  +
+  stat_multcomp(label.y = c(7, 4, 1),
+                contrast.type = "Dunnet",
+                size = 2.75) +
+  expand_limits(y = 0)
+
+## -----------------------------------------------------------------------------
+ggplot(mpg, aes(factor(cyl), hwy)) +
+  geom_boxplot(width = 0.33) +
+   stat_multcomp(label.y = 
+                   seq(from = 15, 
+                       by = -3, 
+                       length.out = 6),
+                 size = 2.5) +
+   expand_limits(y = 0)
+
+## -----------------------------------------------------------------------------
+means <-
+  aggregate(mpg$hwy,
+            by = list(mpg$cyl), 
+            FUN = mean, 
+            na.rm = TRUE)[["x"]]
+
+ggplot(mpg, aes(factor(cyl), hwy)) +
+  stat_summary(fun.data = mean_se) +
+  stat_multcomp(label.type = "letters",
+                label.y = means,
+                position = position_nudge(x = 0.22))
+
+## -----------------------------------------------------------------------------
+# Using other geometries
+ggplot(mpg, aes(factor(cyl), hwy)) +
+  geom_boxplot(width = 0.33) +
+  stat_multcomp(label.type = "letters",
+                geom = "label")
+
+## -----------------------------------------------------------------------------
+ggplot(mpg, aes(factor(cyl), hwy)) +
+  geom_boxplot(width = 0.33) +
+  stat_multcomp(aes(x = stage(start = factor(cyl),
+                              after_stat = x.right.tip)),
+                geom = "text",
+                label.y = "bottom",
+                vstep = 0,
+                contrast.type = "Dunnet")
+
+## -----------------------------------------------------------------------------
+ggplot(mpg, aes(factor(cyl), hwy)) +
+  geom_boxplot(width = 0.33) +
+  stat_multcomp(aes(x = stage(start = factor(cyl),
+                              after_stat = x.right.tip),
+                    label = after_stat(stars.label)),
+                geom = "text",
+                label.y = "bottom",
+                vstep = 0,
+                contrast.type = "Dunnet")
+
+## -----------------------------------------------------------------------------
+# use colour to show significance
+ggplot(mpg, aes(factor(cyl), hwy)) +
+  geom_boxplot(width = 0.33) +
+  stat_multcomp(aes(colour = after_stat(p.value) < 0.01),
+                size = 2.75) +
+  scale_colour_manual(values = c("grey60", "black")) +
+  theme_bw()
+
+## -----------------------------------------------------------------------------
+# add arrow heads to segments and use fill to show significance
+ggplot(mpg, aes(factor(cyl), hwy)) +
+  geom_boxplot(width = 0.33) +
+  stat_multcomp(aes(fill = after_stat(p.value) < 0.01),
+                size = 2.5,
+                arrow = grid::arrow(angle = 90,
+                                    length = unit(1, "mm"),
+                                    ends = "both")) +
+  scale_fill_manual(values = c("white", "green"))
+
+## -----------------------------------------------------------------------------
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y, colour = group)) +
   geom_hline(yintercept = 0, linetype = "dashed") +
