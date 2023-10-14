@@ -32,11 +32,35 @@ test_that("ma_formulas", {
                                 stat_ma_line(formula = y ~ x)
   )
 
+  vdiffr::expect_doppelganger("stat_ma_line_formula_x_Iy",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_ma_line(formula = I(y) ~ x)
+  )
+
+  # vdiffr::expect_doppelganger("stat_ma_line_formula_x_Ix",
+  #                             ggplot(my.data, aes(x, y)) +
+  #                               geom_point() +
+  #                               stat_ma_line(formula = y ~ I(x))
+  # )
+
   vdiffr::expect_doppelganger("stat_ma_line_formula_y",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
                                 stat_ma_line(formula = x ~ y)
   )
+
+  vdiffr::expect_doppelganger("stat_ma_line_formula_y_Ix",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_ma_line(formula = I(x) ~ y)
+  )
+
+  # vdiffr::expect_doppelganger("stat_ma_line_formula_y_Iy",
+  #                             ggplot(my.data, aes(x, y)) +
+  #                               geom_point() +
+  #                               stat_ma_line(formula = x ~ I(y))
+  # )
 
   vdiffr::expect_doppelganger("stat_ma_line_formula_x_mf",
                               ggplot(my.data, aes(x, y)) +

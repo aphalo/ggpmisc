@@ -41,6 +41,18 @@ test_that("poly_formulas", {
                                 stat_poly_line(formula = y ~ x)
   )
 
+  vdiffr::expect_doppelganger("stat_poly_line_formula_x_Iy",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_line(formula = I(y) ~ x)
+  )
+
+  vdiffr::expect_doppelganger("stat_poly_line_formula_x_Ix",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_line(formula = y ~ I(x))
+  )
+
   vdiffr::expect_doppelganger("stat_poly_line_formula_x_mf",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
@@ -87,6 +99,18 @@ test_that("poly_formulas", {
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
                                 stat_poly_line(formula = x ~ y)
+  )
+
+  vdiffr::expect_doppelganger("stat_poly_line_formula_y_Ix",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_line(formula = I(x) ~ y)
+  )
+
+  vdiffr::expect_doppelganger("stat_poly_line_formula_y_Iy",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_line(formula = x ~ I(y))
   )
 
   vdiffr::expect_doppelganger("stat_poly_line_formula_yminus1",

@@ -475,8 +475,8 @@ cor_test_compute_fun <- function(data,
       z[["r.confint.low"]]  <-  htest.ls[["conf.int"]][1]
       z[["r.confint.high"]] <-  htest.ls[["conf.int"]][2]
     } else {
-      if (conf.level <= 0) {
-        message("Skipping bootstrap estimation as 'conf.level' <= 0")
+      if (conf.level < 0) {
+        message("Skipping bootstrap estimation as 'conf.level' < 0")
       } else if (boot.R > 0) {
         warning("Skipping bootstrap estimation as 'boot.R' < 50")
       }

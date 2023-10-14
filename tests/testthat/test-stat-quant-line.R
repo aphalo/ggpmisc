@@ -45,6 +45,18 @@ test_that("quant_formulas", {
                                   stat_quant_line(formula = y ~ x)
     )
 
+    vdiffr::expect_doppelganger("stat_quant_line_formula_x_Iy",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_quant_line(formula = I(y) ~ x)
+    )
+
+    vdiffr::expect_doppelganger("stat_quant_line_formula_x_Ix",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_quant_line(formula = y ~ I(x))
+    )
+
     vdiffr::expect_doppelganger("stat_quant_line_formula_xminus1",
                                 ggplot(my.data, aes(x, y)) +
                                   geom_point() +
@@ -81,6 +93,18 @@ test_that("quant_formulas", {
                                 ggplot(my.data, aes(x, y)) +
                                   geom_point() +
                                   stat_quant_line(formula = x ~ y)
+    )
+
+    vdiffr::expect_doppelganger("stat_quant_line_formula_y_Ix",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_quant_line(formula = I(x) ~ y)
+    )
+
+    vdiffr::expect_doppelganger("stat_quant_line_formula_y_Iy",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_quant_line(formula = x ~ I(y))
     )
 
     vdiffr::expect_doppelganger("stat_quant_line_formula_yminus1",

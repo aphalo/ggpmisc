@@ -134,6 +134,30 @@ test_that("ma_formulas", {
                                                                sep = "~~")))
   )
 
+  vdiffr::expect_doppelganger("stat_ma_eq_formula_x_Iy",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_ma_eq(formula = I(y) ~ x, parse = TRUE,
+                                           mapping =
+                                             aes(label = paste(after_stat(eq.label),
+                                                               after_stat(rr.label),
+                                                               after_stat(p.value.label),
+                                                               after_stat(n.label),
+                                                               sep = "~~")))
+  )
+
+  vdiffr::expect_doppelganger("stat_ma_eq_formula_x_I(x)",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_ma_eq(formula = y ~ I(x), parse = TRUE,
+                                           mapping =
+                                             aes(label = paste(after_stat(eq.label),
+                                                               after_stat(rr.label),
+                                                               after_stat(p.value.label),
+                                                               after_stat(n.label),
+                                                               sep = "~~")))
+  )
+
   vdiffr::expect_doppelganger("stat_ma_eq_formula_poly1",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
@@ -151,6 +175,32 @@ test_that("ma_formulas", {
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
                                 stat_ma_eq(formula = x ~ y,
+                                           parse = TRUE,
+                                           mapping =
+                                             aes(label = paste(after_stat(eq.label),
+                                                               after_stat(rr.label),
+                                                               after_stat(p.value.label),
+                                                               after_stat(n.label),
+                                                               sep = "~~")))
+  )
+
+  vdiffr::expect_doppelganger("stat_ma_eq_formula_y_Ix",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_ma_eq(formula = I(x) ~ y,
+                                           parse = TRUE,
+                                           mapping =
+                                             aes(label = paste(after_stat(eq.label),
+                                                               after_stat(rr.label),
+                                                               after_stat(p.value.label),
+                                                               after_stat(n.label),
+                                                               sep = "~~")))
+  )
+
+  vdiffr::expect_doppelganger("stat_ma_eq_formula_y_Iy",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_ma_eq(formula = x ~ I(y),
                                            parse = TRUE,
                                            mapping =
                                              aes(label = paste(after_stat(eq.label),
