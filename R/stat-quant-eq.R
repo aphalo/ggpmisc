@@ -430,6 +430,25 @@ stat_quant_eq <- function(mapping = NULL, data = NULL,
                          parse = NULL,
                          show.legend = FALSE,
                          inherit.aes = TRUE) {
+  # we guess formula from orientation
+  if (is.null(formula)) {
+    if (is.na(orientation) || orientation == "x") {
+      formula <- y ~ x
+    } else if (orientation == "y") {
+      formula <- x ~ y
+    }
+  }
+  # we guess orientation from formula
+  if (is.na(orientation)) {
+    if (grepl("x", as.character(formula)[2])) {
+      orientation <- "y"
+    } else if (grepl("y", as.character(formula)[2])) {
+      orientation <- "x"
+    } else {
+      stop("The model formula should use 'x' and 'y' as variables")
+    }
+  }
+
   # backwards compatibility
   if (!is.null(label.x.npc)) {
     stopifnot(grepl("_npc", geom))
@@ -537,23 +556,11 @@ quant_eq_compute_group_fun <- function(data,
   # factor with nicely formatted labels
   quant.digits <- ifelse(min(quantiles) < 0.01 || max(quantiles) > 0.99, 3, 2)
   quant.levels <- sort(unique(quantiles), decreasing = TRUE)
-  quant.labels <- sprintf_dm("%#.*f", quant.digits, quant.levels, decimal.mark = decimal.mark)
+  quant.labels <- sprintf_dm("%#.*f", quant.digits, quant.levels,
+                             decimal.mark = decimal.mark)
   quantiles.f <- factor(quantiles,
                         levels = quant.levels,
                         labels = quant.labels)
-
-  # we guess formula from orientation
-  if (is.null(formula)) {
-    if (is.na(orientation) || orientation == "x") {
-      formula = y ~ x
-    } else if (orientation == "y") {
-      formula = x ~ y
-    }
-  }
-  # we guess orientation from formula
-  if (is.na(orientation)) {
-    orientation <- unname(c(x = "y", y = "x")[as.character(formula)[2]])
-  }
 
   output.type <- if (!length(output.type)) {
     "expression"

@@ -482,6 +482,28 @@ stat_poly_eq <- function(mapping = NULL, data = NULL,
                          parse = NULL,
                          show.legend = FALSE,
                          inherit.aes = TRUE) {
+
+  stopifnot(!any(c("formula", "data") %in% names(method.args)))
+
+  # we guess formula from orientation
+  if (is.null(formula)) {
+    if (is.na(orientation) || orientation == "x") {
+      formula = y ~ x
+    } else if (orientation == "y") {
+      formula = x ~ y
+    }
+  }
+  # we guess orientation from formula
+  if (is.na(orientation)) {
+    if (grepl("x", as.character(formula)[2])) {
+      orientation <- "y"
+    } else if (grepl("y", as.character(formula)[2])) {
+      orientation <- "x"
+    } else {
+      stop("The model formula should use 'x' and 'y' as variables")
+    }
+  }
+
   # backwards compatibility
   if (!is.null(label.x.npc)) {
     stopifnot(grepl("_npc", geom))
@@ -491,6 +513,7 @@ stat_poly_eq <- function(mapping = NULL, data = NULL,
     stopifnot(grepl("_npc", geom))
     label.y <- label.y.npc
   }
+
   if (is.null(output.type)) {
     if (geom %in% c("richtext", "textbox")) {
       output.type <- "markdown"
@@ -498,9 +521,11 @@ stat_poly_eq <- function(mapping = NULL, data = NULL,
       output.type <- "expression"
     }
   }
+
   if (is.null(parse)) {
     parse <- output.type == "expression"
   }
+
   if (is.character(method)) {
     if (method == "auto") {
       message("Method 'auto' is equivalent to 'lm', splines are not supported.")
@@ -601,20 +626,6 @@ poly_eq_compute_group_fun <- function(data,
     decimal.mark <- "."
   }
   range.sep <- c("." = ", ", "," = "; ")[decimal.mark]
-
-  stopifnot(!any(c("formula", "data") %in% names(method.args)))
-  # we guess formula from orientation
-  if (is.null(formula)) {
-    if (is.na(orientation) || orientation == "x") {
-      formula = y ~ x
-    } else if (orientation == "y") {
-      formula = x ~ y
-    }
-  }
-  # we guess orientation from formula
-  if (is.na(orientation)) {
-    orientation <- unname(c(x = "y", y = "x")[as.character(formula)[2]])
-  }
 
   if (orientation == "x") {
     if (length(unique(data$x)) < n.min) {

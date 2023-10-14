@@ -18,7 +18,7 @@
 #' \item Stats for extracting information from a any model fit supported by
 #' package 'broom' and using it to generate various annotations and data labels.
 #' \item Stat for computing and generating labels for the results from multiple
-#' comparisons, including adjusted \emph{P}-values.
+#' comparisons, including adjusted \emph{P}-values.}
 #'
 #' The stats for peaks and valleys are coded so as to work correctly both with
 #' numeric and POSIXct variables mapped to the x aesthetic. Special handling was

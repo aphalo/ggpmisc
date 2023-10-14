@@ -4,6 +4,11 @@ editor_options:
     wrap: 72
 ---
 
+# ggpmisc 0.5.5
+
+-   Fix decoding of `orientation` from formula to allow function calls on the
+rhs of formulas, e.g., `I(y - 10) ~ x` or `I(x - 10) ~ y`.
+
 # ggpmisc 0.5.4
 
 -   Add `stat_multcomp()` that computes adjusted p-values and constructs labels to annotate plots with results from multiple comparisons based on "Tukey" or "Dunnet" contrasts.

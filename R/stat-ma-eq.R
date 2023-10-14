@@ -313,6 +313,25 @@ stat_ma_eq <- function(mapping = NULL, data = NULL,
                        parse = NULL,
                        show.legend = FALSE,
                        inherit.aes = TRUE) {
+  # we guess formula from orientation
+  if (is.null(formula)) {
+    if (is.na(orientation) || orientation == "x") {
+      formula = y ~ x
+    } else if (orientation == "y") {
+      formula = x ~ y
+    }
+  }
+  # we guess orientation from formula
+  if (is.na(orientation)) {
+    if (grepl("x", as.character(formula)[2])) {
+      orientation <- "y"
+    } else if (grepl("y", as.character(formula)[2])) {
+      orientation <- "x"
+    } else {
+      stop("The model formula should use 'x' and 'y' as variables")
+    }
+  }
+
   if (is.null(output.type)) {
     if (geom %in% c("richtext", "textbox")) {
       output.type <- "markdown"
@@ -426,19 +445,6 @@ ma_eq_compute_group_fun <- function(data,
     decimal.mark <- "."
   }
 #  range.sep <- c("." = ", ", "," = "; ")[decimal.mark]
-
-  # we guess formula from orientation
-  if (is.null(formula)) {
-    if (is.na(orientation) || orientation == "x") {
-      formula = y ~ x
-    } else if (orientation == "y") {
-      formula = x ~ y
-    }
-  }
-  # we guess orientation from formula
-  if (is.na(orientation)) {
-    orientation <- unname(c(x = "y", y = "x")[as.character(formula)[2]])
-  }
 
   output.type <- if (!length(output.type)) {
     "expression"

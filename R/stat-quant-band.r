@@ -181,17 +181,18 @@ stat_quant_band <- function(mapping = NULL,
     formula.chr <- as.character(formula)
     if (is.na(orientation)) {
       # we guess orientation from formula
-      if (formula.chr[2] == "y") {
+      if (grepl("y", formula.chr[2])) {
         orientation <- "x"
-      } else if (formula.chr[2] == "x") {
+      } else if (grepl("x", formula.chr[2])) {
         orientation <- "y"
         formula <- swap_xy(formula)
       }
-    } else if (formula.chr[2] != "y"){
+    } else if (!grepl("y", formula.chr[2])){
       stop("When both 'orientation' and 'formula' are passed arguments ",
            "the formula should have 'x' as explanatory variable.")
     }
   }
+
   if (is.character(method)) {
     if (grepl("^lm|^rlm", method)) {
       stop("Methods 'lm' and 'rlm' not supported, please use 'stat_poly_eq()'.")

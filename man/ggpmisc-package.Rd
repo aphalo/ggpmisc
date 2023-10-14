@@ -9,7 +9,31 @@
 Extensions to 'ggplot2' respecting the grammar of graphics paradigm. Statistics: locate and tag peaks and valleys; label plot with the equation of a fitted polynomial or other types of models; labels with P-value, R^2 or adjusted R^2 or information criteria for fitted models; label with ANOVA table for fitted models; label with summary for fitted models. Model fit classes for which suitable methods are provided by package 'broom' and 'broom.mixed' are supported. Scales and stats to build volcano and quadrant plots based on outcomes, fold changes, p-values and false discovery rates.
 }
 \details{
+The new facilities for cleanly defining new stats and geoms added to
+'ggplot2' in version 2.0.0 and the support for nested tibbles and new syntax
+for mapping computed values to aesthetics added to
+'ggplot2' in version 3.0.0 are used in this package's code, as well as some
+features added in more recent updates. This
+means that current 'ggpmisc' versions require recent versions of ggplot2.
 
+Extensions provided:
+\itemize{
+\item Function for conversion of time series data into tibbles that can be
+plotted with ggplot.
+\item \code{ggplot()} method for time series data.
+\item Stats for locating and tagging "peaks" and "valleys" (local or global
+ maxima and minima).
+\item Stat for generating labels from model fit objects, including
+formatted equations. By default labels are R's plotmath expressions but LaTeX, markdown
+and plain text formatted labels are optionaly assembled.
+\item Stats for extracting information from a any model fit supported by
+package 'broom' and using it to generate various annotations and data labels.
+\item Stat for computing and generating labels for the results from multiple
+comparisons, including adjusted \emph{P}-values.}
+
+The stats for peaks and valleys are coded so as to work correctly both with
+numeric and POSIXct variables mapped to the x aesthetic. Special handling was
+needed as text labels are generated from the data.
 }
 \note{
 The signatures of \code{stat_peaks()} and \code{stat_valleys()} from
