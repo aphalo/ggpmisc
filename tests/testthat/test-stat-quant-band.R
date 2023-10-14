@@ -45,6 +45,18 @@ test_that("quant_formulas", {
                                   stat_quant_band(formula = y ~ x)
     )
 
+    vdiffr::expect_doppelganger("stat_quant_band_formula_x_Iy",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_quant_band(formula = I(y) ~ x)
+    )
+
+    vdiffr::expect_doppelganger("stat_quant_band_formula_x_Ix",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_quant_band(formula = y ~ I(x))
+    )
+
     vdiffr::expect_doppelganger("stat_quant_band_formula_xminus1",
                                 ggplot(my.data, aes(x, y)) +
                                   geom_point() +
@@ -81,6 +93,18 @@ test_that("quant_formulas", {
                                 ggplot(my.data, aes(x, y)) +
                                   geom_point() +
                                   stat_quant_band(formula = x ~ y)
+    )
+
+    vdiffr::expect_doppelganger("stat_quant_band_formula_y_Ix",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_quant_band(formula = I(x) ~ y)
+    )
+
+    vdiffr::expect_doppelganger("stat_quant_band_formula_y_Iy",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_quant_band(formula = x ~ I(y))
     )
 
     vdiffr::expect_doppelganger("stat_quant_band_formula_yminus1",

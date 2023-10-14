@@ -318,6 +318,30 @@ test_that("poly_formulas", {
                                                                  sep = "~~")))
   )
 
+  vdiffr::expect_doppelganger("stat_poly_eq_formula_x_Iy",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_eq(formula = I(y) ~ x, parse = TRUE,
+                                             mapping =
+                                               aes(label = paste(after_stat(eq.label),
+                                                                 after_stat(adj.rr.label),
+                                                                 after_stat(f.value.label),
+                                                                 after_stat(p.value.label),
+                                                                 sep = "~~")))
+  )
+
+  vdiffr::expect_doppelganger("stat_poly_eq_formula_x_Ix",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_eq(formula = y ~ I(x), parse = TRUE,
+                                             mapping =
+                                               aes(label = paste(after_stat(eq.label),
+                                                                 after_stat(adj.rr.label),
+                                                                 after_stat(f.value.label),
+                                                                 after_stat(p.value.label),
+                                                                 sep = "~~")))
+  )
+
   vdiffr::expect_doppelganger("stat_poly_eq_formula_xminus1",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
