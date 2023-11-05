@@ -8,6 +8,7 @@ editor_options:
 
 -   Fix decoding of `orientation` from formula to allow function calls on the
 rhs of formulas, e.g., `I(y - 10) ~ x` or `I(x - 10) ~ y`.
+-   Move transcriptomics example data objects to package 'ggpp'.
 
 # ggpmisc 0.5.4
 

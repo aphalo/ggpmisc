@@ -41,11 +41,6 @@ reference:
     - stat_fit_residuals
     - stat_multcomp
     - use_label
-  - title: Example data
-    desc: Data sets as R objects. The data are used for examples in the documentation.
-    contents:
-    - volcano_example.df
-    - quadrant_example.df
   - title: Utilities
     desc: Low level functions that can be useful to developers of other ggplot2 extensions.
     contents:
