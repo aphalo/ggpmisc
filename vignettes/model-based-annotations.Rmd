@@ -79,8 +79,8 @@ Table 1 below summarizes the use of the model-fittings statistics and the type o
 
 : **Table 1. Summary of features of the statistics.** Returned values can be accessed in `ggplot2::aes()` with function `ggplot2::after_stat(<variable name>)`, which has replaced `ggplot2::stat(<variable name>)` and the three dots notation (`...<variable name>...`) where `<variable name>` is the name of one of the variables in the data frame returned by the statistics. **Notes:** (1) *weight* aesthetic supported; (2) user defined fit functions that return an object of a class derived from `lm` are supported even if they override the statistic's *formula* argument; (3) unlimited quantiles supported; (4) user defined fit functions that return an object of a class derived from `rq` or `rqs` are supported even if they override the statistic's *formula* and/or *quantiles* argument; (5) two and three quantiles supported; (6) user defined fit functions that return an object of a class derived from `lmodel2` are supported; (7) `method` arguments support colon based notation; (8) various functions if method `residuals()` defined for returned value; (9) various functions if method `fitted()` defined for returned value.
 
-| Statistic               | Returned values (*default geometry*)          | Methods                                      |
-|-----------------|-----------------------------|--------------------------|
+| Statistic               | Returned values<br> (*default geometry*)          | Methods                                      |
+|:----------------|:----------------------------|:-------------------------|
 | `stat_poly_eq()`        | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lm, rlm (1, 2, 7)                            |
 | `stat_ma_eq()`          | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lmodel2 (6, 7)                               |
 | `stat_quant_eq()`       | equation, *P*, etc. (`text_npc`)                  | rq (1, 3, 4, 7)                              |
@@ -111,10 +111,10 @@ Function `use_label()` provides an easy way of selecting, possibly combining and
 
 ------------------------------------------------------------------------
 
-: **Table 2. Values returned by `stat_poly_eq()`, `stat_ma_eq()`, `stat_quant_eq()`, `stat_correlation()` and `stat_multcomp()` for `output.type` different from `numeric`.** Column _variable_ gives the variable name in the returned `data` and should be used together with `after_stat()` when mapping to aesthetics using `aes()`. When using function `use_label()`, the short abbreviation shown in column _Key_ can be used as a synonym, although full names are also supported. Column _Mode_ describes the type of the values in each variable. **Notes:** (1) Inclusion of the variable in the returned `data` depends on the argument passed to parameter `method`. (2) Depending on the geometry in use either `x` and `y` or `npcx` and `npcy` are set to `NA`. (3) Depends on `label.type`. **\*** Indicates the default mapping to `label` aesthetic.
+: **Table 2.** Values returned by `stat_poly_eq()`, `stat_ma_eq()`, `stat_quant_eq()`, `stat_correlation()` and `stat_multcomp()` for `output.type` different from `numeric`.** Column _variable_ gives the variable name in the returned `data` and should be used together with `after_stat()` when mapping to aesthetics using `aes()`. When using function `use_label()`, the short abbreviation shown in column _Key_ can be used as a synonym, although full names are also supported. Column _Mode_ describes the type of the values in each variable. **Notes:** (1) Inclusion of the variable in the returned `data` depends on the argument passed to parameter `method`. (2) Depending on the geometry in use either `x` and `y` or `npcx` and `npcy` are set to `NA`. (3) Depends on `label.type`. **\*** Indicates the default mapping to `label` aesthetic.
 
 | Variable          | Key    | Mode      | `poly_eq` | `ma_eq` | `quant_eq` | `correlation` | `multcomp` |
-|-------------------|:------:|:---------:|:---------:|:-------:|:--------- :|:-------------:|:----------:|
+|:------------------|:-------|:----------|:---------:|:-------:|:----------:|:-------------:|:----------:|
 | eq.label          | eq     | character | y         | y       | y\*        | n             | n          |
 | rr.label          | R2     | character | y\*       | y\*     | n          | y(1)          | n          |
 | rr.confint.label  | R2.CI  | character | y         | n       | n          | n             | n          |
@@ -168,7 +168,7 @@ Even though the number of significant digits and some other formatting can be ad
 : **Table 3.** Values returned by `stat_poly_eq()` , `stat_ma_eq()` , `stat_quant_eq()`, and`stat_correlation()` for `output.type` equal to `numeric`. All the same numeric variables as for other output types are returned together with those with names starting with `fm.` and `mc.`, and those in this table.
 
 | Variable      | Mode      | `poly_eq` | `ma_eq` | `quant_eq` | `correlation` |
-|---------------|:---------:|:--------------:|:------------:|:---------------:|:------------------:|
+|:--------------|:----------|:--------------:|:------------:|:---------------:|:------------------:|
 | coef.ls       | list      | y              | y            | y               | n                  |
 | f.value       | numeric   | y              | n            | n               | n                  |
 | f.df1         | numeric   | y              | n            | n               | n                  |
@@ -190,7 +190,7 @@ In the cases of the statistics based on the methods from package 'broom' and its
 : **Table 4.** Values always returned by `stat_fit_tb()`, `stat_fit_tidy()`, `stat_fit_glance()` and `stat_fit_augment()`. As these statistics call generic methods and return their output, only a few variables are guaranteed to be consistently present in the returned `data`. **Note:** (1) Depending on the geometry in use either `x` and `y` or `npcx` and `npcy` are set to `NA`.
 
 | Variable       | Mode       | `fit_tb`  | `fit_tidy` | `fit_glance` | `fit_augment` |
-|----------------|:----------:|:--------------:|:---------------:|:-----------------:|:-----------------:|
+|:---------------|:-----------|:--------------:|:---------------:|:-----------------:|:-----------------:|
 | _broom method_ |            |  `tidy()`      |  `tidy()`       |  `glance()`       |  `augment()`      |
 | x(1)           | numeric    | y              | y               | y                 | y                 |
 | y(1)           | numeric    | y              | y               | y                 | y                 |
