@@ -1,4 +1,4 @@
-## ---- include=FALSE, echo=FALSE-----------------------------------------------
+## ----include=FALSE, echo=FALSE------------------------------------------------
 library(knitr)
 opts_chunk$set(fig.align = 'center', 
                fig.show = 'hold', fig.width = 7, fig.height = 4)
@@ -8,7 +8,7 @@ options(warnPartialMatchArgs = FALSE,
         dplyr.summarise.inform = FALSE)
 eval_flag <- TRUE # evaluate all code chunks
 
-## ---- message=FALSE-----------------------------------------------------------
+## ----message=FALSE------------------------------------------------------------
 library(ggpmisc)
 library(tibble)
 library(dplyr)
@@ -134,7 +134,7 @@ ggplot(my.data, aes(x, y)) +
                                   sep = "")),
                formula = formula, size = 3)
 
-## ---- eval=eval_flag----------------------------------------------------------
+## ----eval=eval_flag-----------------------------------------------------------
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
@@ -142,7 +142,7 @@ ggplot(my.data, aes(x, y)) +
   stat_poly_eq(mapping = use_label(c("eq", "adj.R2"), sep = "~~italic(\"with\")~~"),
                formula = formula)
 
-## ---- eval=eval_flag----------------------------------------------------------
+## ----eval=eval_flag-----------------------------------------------------------
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
@@ -150,7 +150,7 @@ ggplot(my.data, aes(x, y)) +
   stat_poly_eq(aes(label = paste("atop(", after_stat(AIC.label), ",", after_stat(BIC.label), ")", sep = "")), 
                formula = formula)
 
-## ---- eval=eval_flag----------------------------------------------------------
+## ----eval=eval_flag-----------------------------------------------------------
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
@@ -159,7 +159,7 @@ ggplot(my.data, aes(x, y)) +
                eq.with.lhs = FALSE,
                formula = formula)
 
-## ---- eval=eval_flag----------------------------------------------------------
+## ----eval=eval_flag-----------------------------------------------------------
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
@@ -179,7 +179,7 @@ ggplot(my.data, aes(x, y)) +
                formula = formula) +
   labs(x = expression(italic(z)), y = expression(italic(h)))
 
-## ---- eval=eval_flag----------------------------------------------------------
+## ----eval=eval_flag-----------------------------------------------------------
 formula <- y ~ poly(x, 2, raw = TRUE)
 ggplot(my.data, aes(x, log10(y + 1e6))) +
   geom_point() +
@@ -197,7 +197,7 @@ ggplot(my.data, aes(x, y)) +
   stat_poly_line(formula = formula) +
   stat_poly_eq(mapping = use_label("eq"), formula = formula)
 
-## ---- eval=eval_flag----------------------------------------------------------
+## ----eval=eval_flag-----------------------------------------------------------
 formula <- y ~ x + I(x^2) + I(x^3) - 1
 ggplot(my.data, aes(x, y)) +
   geom_point() +
@@ -245,7 +245,7 @@ ggplot(my.data, aes(x, y2)) +
                formula = formula) +
   facet_wrap(~group)
 
-## ---- eval=eval_flag----------------------------------------------------------
+## ----eval=eval_flag-----------------------------------------------------------
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2)) +
   geom_point() +
@@ -261,7 +261,7 @@ ggplot(my.data, aes(x, y2, colour = group)) +
   stat_poly_line(formula = formula) +
   stat_poly_eq(aes(label = after_stat(eq.label)), formula = formula, vstep = 0.06)
 
-## ---- eval=eval_flag----------------------------------------------------------
+## ----eval=eval_flag-----------------------------------------------------------
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2, colour = group, grp.label = group)) +
   geom_point() +
@@ -279,7 +279,7 @@ ggplot(my.data, aes(x, y2, linetype = group, grp.label = group)) +
                                       eq.label, sep = ""))),
                formula = formula)
 
-## ---- eval=eval_flag----------------------------------------------------------
+## ----eval=eval_flag-----------------------------------------------------------
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2, colour = group)) +
   geom_point() +
@@ -298,7 +298,7 @@ ggplot(my.data, aes(x, y2, fill = block)) +
                formula = formula) +
   facet_wrap(~group, scales = "free_y")
 
-## ---- eval=eval_flag----------------------------------------------------------
+## ----eval=eval_flag-----------------------------------------------------------
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2, colour = group, fill = block)) +
   geom_point(shape = 21, size = 3) +
@@ -341,22 +341,22 @@ ggplot(my.data, aes(x, y)) +
   stat_ma_eq(mapping = use_label(c("R2", "eq")), color = "red", orientation = "y",
              label.y = 0.9)
 
-## ---- warning=FALSE-----------------------------------------------------------
+## ----warning=FALSE------------------------------------------------------------
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_quant_band(formula = y ~ poly(x, 2))
 
-## ---- warning=FALSE-----------------------------------------------------------
+## ----warning=FALSE------------------------------------------------------------
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_quant_line(formula = y ~ poly(x, 2), quantiles = c(0.05, 0.95))
 
-## ---- warning=FALSE-----------------------------------------------------------
+## ----warning=FALSE------------------------------------------------------------
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_quant_line(formula = y ~ poly(x, 2), quantiles = 0.5)
 
-## ---- warning=FALSE-----------------------------------------------------------
+## ----warning=FALSE------------------------------------------------------------
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_quant_band(formula = formula, color = "black", fill = "grey60") +
@@ -365,7 +365,7 @@ ggplot(my.data, aes(x, y)) +
                 formula = formula) +
   theme_classic()
 
-## ---- warning=FALSE-----------------------------------------------------------
+## ----warning=FALSE------------------------------------------------------------
 ggplot(my.data, aes(x, y, color = group)) +
   geom_point() +
   stat_quant_line(formula = formula) +
@@ -373,7 +373,7 @@ ggplot(my.data, aes(x, y, color = group)) +
                                   after_stat(eq.label), sep = "")),
                formula = formula)
 
-## ---- warning=FALSE-----------------------------------------------------------
+## ----warning=FALSE------------------------------------------------------------
 ggplot(my.data, aes(x, y, group = group, linetype = group, 
                     shape = group, grp.label = group)) +
   geom_point() +
@@ -383,7 +383,7 @@ ggplot(my.data, aes(x, y, group = group, linetype = group,
                 formula = formula, quantiles = c(0.05, 0.95)) +
   theme_classic()
 
-## ---- warning=FALSE-----------------------------------------------------------
+## ----warning=FALSE------------------------------------------------------------
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_quant_line(formula = y ~ x, color = "blue", quantiles = 0.05) +
@@ -488,7 +488,7 @@ ggplot(my.data, aes(x, y, colour = group)) +
                      mapping = aes(size = sqrt(after_stat(weights))),
                      alpha = 2/3)
 
-## ---- eval = FALSE------------------------------------------------------------
+## ----eval = FALSE-------------------------------------------------------------
 #  formula <- y ~ poly(x, 3, raw = TRUE)
 #  ggplot(my.data, aes(x, y, colour = group)) +
 #    geom_hline(yintercept = 0, linetype = "dashed") +
@@ -501,7 +501,7 @@ ggplot(my.data, aes(x, y)) +
   stat_fit_deviations(formula = formula, colour = "red") +
   geom_point()
 
-## ---- eval=eval_flag----------------------------------------------------------
+## ----eval=eval_flag-----------------------------------------------------------
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_smooth(method = "lm", formula = formula) +
@@ -521,7 +521,7 @@ ggplot(my.data.outlier, aes(x, y)) +
   scale_color_gradient(low = "red", high = "blue", limits = c(0, 1)) +
   geom_point()
 
-## ---- eval=eval_broom---------------------------------------------------------
+## ----eval=eval_broom----------------------------------------------------------
 # formula <- y ~ poly(x, 3, raw = TRUE)
 # broom::augment does not handle poly() correctly!
 formula <- y ~ x + I(x^2) + I(x^3)
@@ -536,7 +536,7 @@ ggplot(my.data, aes(x, y, colour = group)) +
                                       after_stat(p.value))),
                   parse = TRUE)
 
-## ---- eval=eval_broom---------------------------------------------------------
+## ----eval=eval_broom----------------------------------------------------------
 micmen.formula <- y ~ SSmicmen(x, Vm, K) 
 ggplot(Puromycin, aes(conc, rate, colour = state)) +
   geom_point() +
@@ -550,7 +550,7 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
                                     sep = "")),
                   label.x = "centre", label.y = "bottom")
 
-## ---- eval=eval_broom---------------------------------------------------------
+## ----eval=eval_broom----------------------------------------------------------
 formula <- y ~ x + I(x^2) + I(x^3)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
@@ -565,7 +565,7 @@ ggplot(my.data, aes(x, y)) +
               label.y = "top", label.x = "left",
               parse = TRUE)
 
-## ---- eval=eval_broom---------------------------------------------------------
+## ----eval=eval_broom----------------------------------------------------------
 formula <- y ~ x + I(x^2) + I(x^3)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
@@ -581,7 +581,7 @@ ggplot(my.data, aes(x, y)) +
               label.y = "top", label.x = "left",
               parse = TRUE)
 
-## ---- eval=eval_broom---------------------------------------------------------
+## ----eval=eval_broom----------------------------------------------------------
 formula <- y ~ x + I(x^2) + I(x^3)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
@@ -591,7 +591,7 @@ ggplot(my.data, aes(x, y)) +
               tb.type = "fit.coefs", parse = TRUE,
               label.y = "center", label.x = "left")
 
-## ---- eval=eval_broom---------------------------------------------------------
+## ----eval=eval_broom----------------------------------------------------------
 micmen.formula <- y ~ SSmicmen(x, Vm, K)
 ggplot(Puromycin, aes(conc, rate, colour = state)) +
   facet_wrap(~state) +
@@ -607,7 +607,7 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
   theme(legend.position = "none") +
   labs(x = "C", y = "V")
 
-## ---- eval=eval_broom---------------------------------------------------------
+## ----eval=eval_broom----------------------------------------------------------
 ggplot(chickwts, aes(factor(feed), weight)) +
   stat_summary(fun.data = "mean_se") +
   stat_fit_tb(tb.type = "fit.anova",
@@ -615,14 +615,14 @@ ggplot(chickwts, aes(factor(feed), weight)) +
               label.y = "bottom") +
   expand_limits(y = 0)
 
-## ---- eval=eval_broom---------------------------------------------------------
+## ----eval=eval_broom----------------------------------------------------------
 ggplot(chickwts, aes(factor(feed), weight)) +
   stat_summary(fun.data = "mean_se") +
   stat_fit_tb(tb.type = "fit.anova", label.x = "left", size = 3) +
   scale_x_discrete(expand = expansion(mult = c(0.2, 0.5))) +
   coord_flip()
 
-## ---- eval=(eval_flag && eval_broom)------------------------------------------
+## ----eval=(eval_flag && eval_broom)-------------------------------------------
 ggplot(chickwts, aes(factor(feed), weight)) +
   stat_summary(fun.data = "mean_se") +
   stat_fit_tb(tb.type = "fit.anova",
@@ -638,7 +638,7 @@ ggplot(chickwts, aes(factor(feed), weight)) +
   scale_x_discrete(expand = expansion(mult = c(0.1, 0.35))) +
   expand_limits(y = 0)
 
-## ---- eval=eval_broom---------------------------------------------------------
+## ----eval=eval_broom----------------------------------------------------------
 micmen.formula <- y ~ SSmicmen(x, Vm, K) 
 ggplot(Puromycin, aes(conc, rate, colour = state)) +
   geom_point() +
@@ -656,7 +656,7 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
                                   sep = "")),
                 parse = TRUE)
 
-## ---- eval=eval_broom---------------------------------------------------------
+## ----eval=eval_broom----------------------------------------------------------
 micmen.formula <- y ~ SSmicmen(x, Vm, K) 
 ggplot(Puromycin, aes(conc, rate, colour = state)) +
   geom_point() +
@@ -675,7 +675,7 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
                 parse = TRUE) +
   labs(x = "C", y = "V")
 
-## ---- eval=eval_broom---------------------------------------------------------
+## ----eval=eval_broom----------------------------------------------------------
 stat_micmen_eq <- function(vstep = 0.12,
                            size = 3,
                            ...) {
@@ -690,7 +690,7 @@ stat_micmen_eq <- function(vstep = 0.12,
                 ...)
 }
 
-## ---- eval=(eval_flag && eval_broom)------------------------------------------
+## ----eval=(eval_flag && eval_broom)-------------------------------------------
 micmen.formula <- y ~ SSmicmen(x, Vm, K) 
 ggplot(Puromycin, aes(conc, rate, colour = state)) +
   geom_point() +
@@ -701,7 +701,7 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
                 label.y = "bottom") +
   labs(x = "C", y = "V")
 
-## ---- eval=eval_broom---------------------------------------------------------
+## ----eval=eval_broom----------------------------------------------------------
 my_formula <- y ~ x
 
 ggplot(mpg, aes(displ, 1 / hwy)) +
@@ -716,7 +716,7 @@ ggplot(mpg, aes(displ, 1 / hwy)) +
                                               after_stat(x_p.value))),
                 parse = TRUE)
 
-## ---- eval=eval_broom---------------------------------------------------------
+## ----eval=eval_broom----------------------------------------------------------
 stat_rq_eqn <- 
   function(formula = y ~ x, 
            tau = 0.5,
@@ -736,13 +736,13 @@ stat_rq_eqn <-
                   ...)
   }
 
-## ---- eval=(eval_flag && eval_broom)------------------------------------------
+## ----eval=(eval_flag && eval_broom)-------------------------------------------
 ggplot(mpg, aes(displ, 1 / hwy)) +
   geom_point() +
   geom_quantile(quantiles = 0.5, formula = my_formula) +
   stat_rq_eqn(tau = 0.5, formula = my_formula)
 
-## ---- eval=eval_broom---------------------------------------------------------
+## ----eval=eval_broom----------------------------------------------------------
 # formula <- y ~ poly(x, 3, raw = TRUE)
 # broom::augment does not handle poly correctly!
 formula <- y ~ x + I(x^2) + I(x^3)
@@ -751,14 +751,14 @@ ggplot(my.data, aes(x, y)) +
   stat_fit_augment(method = "lm",
                    method.args = list(formula = formula))
 
-## ---- eval=eval_broom---------------------------------------------------------
+## ----eval=eval_broom----------------------------------------------------------
 formula <- y ~ x + I(x^2) + I(x^3)
 ggplot(my.data, aes(x, y, colour = group)) +
   geom_point() +
   stat_fit_augment(method = "lm", 
                    method.args = list(formula = formula))
 
-## ---- eval=(eval_flag && eval_broom)------------------------------------------
+## ----eval=(eval_flag && eval_broom)-------------------------------------------
 formula <- y ~ x + I(x^2) + I(x^3)
 ggplot(my.data, aes(x, y)) +
   stat_fit_augment(method = "lm",
@@ -766,7 +766,7 @@ ggplot(my.data, aes(x, y)) +
                    geom = "point",
                    y.out = ".resid")
 
-## ---- eval=eval_broom---------------------------------------------------------
+## ----eval=eval_broom----------------------------------------------------------
 formula <- y ~ x + I(x^2) + I(x^3)
 ggplot(my.data, aes(x, y, colour = group)) +
   stat_fit_augment(method = "lm",
@@ -774,7 +774,7 @@ ggplot(my.data, aes(x, y, colour = group)) +
                    geom = "point",
                    y.out = ".std.resid")
 
-## ---- eval=(eval_flag && eval_broom)------------------------------------------
+## ----eval=(eval_flag && eval_broom)-------------------------------------------
 args <- list(formula = y ~ k * e ^ x,
              start = list(k = 1, e = 2))
 ggplot(mtcars, aes(wt, mpg)) +
@@ -782,7 +782,7 @@ ggplot(mtcars, aes(wt, mpg)) +
   stat_fit_augment(method = "nls",
                    method.args = args)
 
-## ---- eval=(eval_flag && eval_broom)------------------------------------------
+## ----eval=(eval_flag && eval_broom)-------------------------------------------
 args <- list(formula = y ~ k * e ^ x,
              start = list(k = 1, e = 2))
 ggplot(mtcars, aes(wt, mpg)) +
@@ -791,7 +791,7 @@ ggplot(mtcars, aes(wt, mpg)) +
                    geom = "point",
                    y.out = ".resid")
 
-## ---- eval=(eval_nlme && eval_broom_mixed)------------------------------------
+## ----eval=(eval_nlme && eval_broom_mixed)-------------------------------------
 args <- list(model = y ~ SSlogis(x, Asym, xmid, scal),
              fixed = Asym + xmid + scal ~1,
              random = Asym ~1 | group,
@@ -802,7 +802,7 @@ ggplot(Orange, aes(age, circumference, colour = Tree)) +
                    method.args = args,
                    augment.args = list(data = quote(data)))
 
-## ---- eval=(eval_broom && eval_gginnards)-------------------------------------
+## ----eval=(eval_broom && eval_gginnards)--------------------------------------
 # formula <- y ~ poly(x, 3, raw = TRUE)
 # broom::augment does not handle poly() correctly!
 formula <- y ~ x + I(x^2) + I(x^3)
@@ -818,7 +818,7 @@ ggplot(my.data, aes(x, y, colour = group)) +
                                       after_stat(p.value))),
                   parse = TRUE)
 
-## ---- eval=(eval_broom && eval_gginnards)-------------------------------------
+## ----eval=(eval_broom && eval_gginnards)--------------------------------------
 formula <- y ~ x + I(x^2) + I(x^3)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
