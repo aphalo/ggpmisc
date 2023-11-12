@@ -8,6 +8,7 @@ editor_options:
 
 -   Fix decoding of `orientation` from formula to allow function calls on the
 rhs of formulas, e.g., `I(y - 10) ~ x` or `I(x - 10) ~ y`.
+-   Export function `find_peaks()` which was previously internal. 
 -   Move transcriptomics example data objects to package 'ggpp'.
 -   Fix scrambled table in the vignette (reported by _markbneal_).
 
