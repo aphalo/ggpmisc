@@ -42,15 +42,16 @@ reference:
     - stat_multcomp
     - use_label
   - title: Utilities
-    desc: Low level functions that can be useful to developers of other ggplot2 extensions.
+    desc: Low level functions used to build some of the functions above, but possibly useful also in other contexts.
     contents:
-    - swap_xy
-    - keep_tidy
+    - find_peaks
     - coef.lmodel2
     - confint.lmodel2
     - predict.lmodel2
+    - keep_tidy
+    - swap_xy
   - title: Changes
-    desc: Geometries, statistics and functions moved to package 'gginnards'.
+    desc: List of geometries, statistics and functions moved to package 'gginnards'.
     contents:
     - Moved
 
