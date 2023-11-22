@@ -16,6 +16,7 @@ stat_multcomp(
   contrast.type = "Tukey",
   adjusted.type = "single-step",
   small.p = FALSE,
+  adj.method.tag = 4,
   p.digits = 3,
   label.type = "bars",
   fm.cutoff.p.value = 1,
@@ -71,6 +72,11 @@ function \code{adjusted()} passed as argument to parameter \code{test} of
 
 \item{small.p}{logical If true, use of lower case \emph{p} instead of capital
 \emph{P} as the symbol for \emph{P}-value in labels.}
+
+\item{adj.method.tag}{numeric The length in characters of the abbreviation
+of the method used to adjust \emph{p}-values. The abbreviation is used as
+a subscript to \emph{p} or \emph{P} in labels. A value of zero, adds no
+label and a negative value uses the generic abbraviation "adj".}
 
 \item{p.digits}{integer Number of digits after the decimal point to
 use for \eqn{R^2} and \emph{P}-value in labels.}

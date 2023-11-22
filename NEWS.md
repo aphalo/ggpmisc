@@ -4,6 +4,10 @@ editor_options:
     wrap: 72
 ---
 
+# ggpmisc 0.5.6
+
+-   Revise `stat_multcomp()` to include in labels the abbreviated name of the method used to adjust _p_-values (suggested by _markbneal_).
+
 # ggpmisc 0.5.5
 
 -   Fix decoding of `orientation` from formula to allow function calls on the

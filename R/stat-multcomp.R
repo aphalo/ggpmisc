@@ -41,6 +41,10 @@
 #'   "BH", "BY", "fdr", "none".
 #' @param small.p logical If true, use of lower case \emph{p} instead of capital
 #'   \emph{P} as the symbol for \emph{P}-value in labels.
+#' @param adj.method.tag numeric The length in characters of the abbreviation
+#'   of the method used to adjust \emph{p}-values. The abbreviation is used as
+#'   a subscript to \emph{p} or \emph{P} in labels. A value of zero, adds no
+#'   label and a negative value uses the generic abbraviation "adj".
 #' @param p.digits integer Number of digits after the decimal point to
 #'   use for \eqn{R^2} and \emph{P}-value in labels.
 #' @param label.type character One of "bars", "letters" or "LETTERS", selects
@@ -305,6 +309,7 @@ stat_multcomp <- function(mapping = NULL, data = NULL,
                           contrast.type = "Tukey",
                           adjusted.type = "single-step",
                           small.p = FALSE,
+                          adj.method.tag = 4,
                           p.digits = 3,
                           label.type = "bars",
                           fm.cutoff.p.value = 1,
@@ -384,6 +389,7 @@ stat_multcomp <- function(mapping = NULL, data = NULL,
                    contrast.type = contrast.type,
                    adjusted.type = adjusted.type,
                    small.p = small.p,
+                   adj.method.tag = adj.method.tag,
                    p.digits = p.digits,
                    label.type = label.type,
                    label.y = label.y,
@@ -416,6 +422,7 @@ multcomp_compute_fun <-
            formula,
            weight,
            small.p,
+           adj.method.tag,
            p.digits,
            label.type,
            fm.cutoff.p.value,
@@ -609,6 +616,12 @@ multcomp_compute_fun <-
     pairwise.tstat <- summary.fm.glht[["test"]][["tstat"]]
     pairwise.contrasts <- gsub(" ", "", names(pairwise.coefficients))
 
+    if (adj.method.tag < 0) {
+      adj.label <- "adj"
+    } else {
+      adj.label <- abbreviate(adjusted.type, adj.method.tag)
+    }
+
     if (label.type %in% c("bars")) {
       # Labelled bar representation of multiple contrast results.
       #
@@ -629,7 +642,8 @@ multcomp_compute_fun <-
                           fm.formula.chr = format(formula.ls),
                           mc.adjusted = adjusted.type,
                           mc.contrast = contrast.type,
-                          n = n)
+                          n = n,
+                          just = "center")
 
       # Drop unwanted labels
       z <- z[z[["p.value"]] <= mc.cutoff.p.value, ]
@@ -667,7 +681,8 @@ multcomp_compute_fun <-
         for (i in seq_along(z[["p.value"]])) {
           z[["p.value.label"]][i] <-
             ifelse(is.na(z[["p.value"]][i]) || is.nan(z[["p.value"]][i]), "",
-                   paste(ifelse(small.p, "italic(p)",  "italic(P)"),
+                   paste(paste(ifelse(small.p, "italic(p)[\"",  "italic(P)[\""),
+                               adj.label, "\"]", sep = ""),
                          ifelse(z[["p.value"]][i] < 10^(-p.digits),
                                 sprintf_dm("\"%.*f\"", p.digits, 10^(-p.digits), decimal.mark = decimal.mark),
                                 p.value.char[i]),
@@ -716,13 +731,14 @@ multcomp_compute_fun <-
       # or geom_label()
       #
       names(pairwise.p.values) <- pairwise.contrasts
-      letters <-
+      Letters <-
         multcompView::multcompLetters(x = pairwise.p.values,
                                       threshold = mc.critical.p.value,
                                       Letters = get(label.type),
                                       reversed = TRUE)[["Letters"]]
-
-      z <- tibble::tibble(x = 1:num.levels,
+      p.crit.label <- paste("\"  \"*italic(P)[\"", adj.label, "\"]^{\"crit\"}~`=`~",
+                            mc.critical.p.value, sep = "")
+      z <- tibble::tibble(x = c(0.3, 1:num.levels),
                           x.left.tip = NA_real_,
                           x.right.tip = NA_real_,
                           critical.p.value = mc.critical.p.value,
@@ -733,7 +749,9 @@ multcomp_compute_fun <-
                           mc.adjusted = adjusted.type,
                           mc.contrast = contrast.type,
                           n = n,
-                          letters.label = letters[order(names(letters))])
+                          letters.label = c(p.crit.label ,
+                                            Letters[order(names(Letters))]),
+                          just = c("inward", rep("center", length(Letters))))
 
       if (output.type == "numeric") {
         z[["default.label"]] <- NA_character_
@@ -786,7 +804,8 @@ StatMultcomp <-
                    default_aes = ggplot2::aes(xmin = after_stat(x.left.tip),
                                               xmax = after_stat(x.right.tip),
                                               label = after_stat(default.label),
-                                              weight = 1),
+                                              weight = 1,
+                                              hjust = after_stat(just)),
                    dropped_aes = "weight",
                    required_aes = c("x", "y"),
   )
