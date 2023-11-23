@@ -13,7 +13,7 @@ stat_multcomp(
   formula = NULL,
   method = "lm",
   method.args = list(),
-  contrast.type = "Tukey",
+  contrasts = "Tukey",
   p.adjust.method = "single-step",
   small.p = FALSE,
   adj.method.tag = 4,
@@ -62,7 +62,10 @@ return a model fit object accepted by function \code{glht()}.}
 
 \item{method.args}{named list with additional arguments.}
 
-\item{contrast.type}{character One of "Tukey" or "Dunnet".}
+\item{contrasts}{character vector of length one or a numeric matrix. If
+character, one of "Tukey" or "Dunnet". If a matrix, one column per level
+of the factor mapped to \code{x} and one row per \strong{pairwise}
+contrast.}
 
 \item{p.adjust.method}{character As the argument for parameter \code{type} of
 function \code{adjusted()} passed as argument to parameter \code{test} of
@@ -86,7 +89,7 @@ use for \eqn{R^2} and \emph{P}-value in labels.}
 
 \item{label.type}{character One of "bars", "letters" or "LETTERS", selects
 how the results of the multiple comparisons are displayed. Only "bars" can
-be used together with \code{contrast.type = "Dunnet"}.}
+be used together with \code{contrasts = "Dunnet"}.}
 
 \item{fm.cutoff.p.value}{numeric [0..1] The \emph{P}-value for the main
 effect of factor \code{x} in the ANOVA test for the fitted model above
@@ -270,7 +273,13 @@ p1 +
 # test against a control, with first level being the control
 # change order of factor levels in data to set the control group
 p1 +
-  stat_multcomp(contrast.type = "Dunnet")
+  stat_multcomp(contrasts = "Dunnet")
+
+# arbitrary pairwise contrasts, in arbitrary order
+p1 +
+  stat_multcomp(contrasts = rbind(c(0, 0, -1, 1),
+                                  c(0, -1, 1, 0),
+                                  c(-1, 1, 0, 0)))
 
 # different methods to adjust the contrasts
 p1 +

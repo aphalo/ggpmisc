@@ -424,7 +424,7 @@ ggplot(mpg, aes(factor(cyl), hwy)) +
 ggplot(mpg, aes(factor(cyl), hwy)) +
   geom_boxplot(width = 0.33)  +
   stat_multcomp(label.y = c(7, 4, 1),
-                contrast.type = "Dunnet",
+                contrasts = "Dunnet",
                 size = 2.75) +
   expand_limits(y = 0)
 
@@ -467,7 +467,7 @@ ggplot(mpg, aes(factor(cyl), hwy)) +
                 geom = "text",
                 label.y = "bottom",
                 vstep = 0,
-                contrast.type = "Dunnet")
+                contrasts = "Dunnet")
 
 ## -----------------------------------------------------------------------------
 ggplot(mpg, aes(factor(cyl), hwy)) +
@@ -478,7 +478,7 @@ ggplot(mpg, aes(factor(cyl), hwy)) +
                 geom = "text",
                 label.y = "bottom",
                 vstep = 0,
-                contrast.type = "Dunnet")
+                contrasts = "Dunnet")
 
 ## -----------------------------------------------------------------------------
 # use colour to show significance

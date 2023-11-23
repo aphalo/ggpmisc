@@ -33,7 +33,10 @@
 #'   formal parameters named \code{data}, \code{weights}, and \code{method}, and
 #'   return a model fit object accepted by function \code{glht()}.
 #' @param method.args named list with additional arguments.
-#' @param contrast.type character One of "Tukey" or "Dunnet".
+#' @param contrasts character vector of length one or a numeric matrix. If
+#'    character, one of "Tukey" or "Dunnet". If a matrix, one column per level
+#'    of the factor mapped to \code{x} and one row per \strong{pairwise}
+#'    contrast.
 #' @param p.adjust.method character As the argument for parameter \code{type} of
 #'   function \code{adjusted()} passed as argument to parameter \code{test} of
 #'   \code{\link[multcomp]{summary.glht}}. Accepted values are "single-step",
@@ -52,7 +55,7 @@
 #'   use for \eqn{R^2} and \emph{P}-value in labels.
 #' @param label.type character One of "bars", "letters" or "LETTERS", selects
 #'   how the results of the multiple comparisons are displayed. Only "bars" can
-#'   be used together with \code{contrast.type = "Dunnet"}.
+#'   be used together with \code{contrasts = "Dunnet"}.
 #' @param fm.cutoff.p.value numeric [0..1] The \emph{P}-value for the main
 #'   effect of factor \code{x} in the ANOVA test for the fitted model above
 #'   which no pairwise comparisons are computed or labels generated. Be aware
@@ -217,7 +220,13 @@
 #' # test against a control, with first level being the control
 #' # change order of factor levels in data to set the control group
 #' p1 +
-#'   stat_multcomp(contrast.type = "Dunnet")
+#'   stat_multcomp(contrasts = "Dunnet")
+#'
+#' # arbitrary pairwise contrasts, in arbitrary order
+#' p1 +
+#'   stat_multcomp(contrasts = rbind(c(0, 0, -1, 1),
+#'                                   c(0, -1, 1, 0),
+#'                                   c(-1, 1, 0, 0)))
 #'
 #' # different methods to adjust the contrasts
 #' p1 +
@@ -312,7 +321,7 @@ stat_multcomp <- function(mapping = NULL, data = NULL,
                           formula = NULL,
                           method = "lm",
                           method.args = list(),
-                          contrast.type = "Tukey",
+                          contrasts = "Tukey",
                           p.adjust.method = "single-step",
                           small.p = FALSE,
                           adj.method.tag = 4,
@@ -329,11 +338,11 @@ stat_multcomp <- function(mapping = NULL, data = NULL,
                           parse = NULL,
                           show.legend = FALSE,
                           inherit.aes = TRUE) {
-  stopifnot(length(contrast.type) == 1 &&
-              is.character(contrast.type) &&
-              contrast.type %in% c("Tukey", "Dunnet"))
   stopifnot("Flipping with 'orientation = y' is not supported" = orientation == "x")
-
+  if (is.character(contrasts)) {
+    stopifnot("Character argument to 'contrasts' should be \"Tukey\" or \"Dunnet\"" =
+                all(contrasts %in% c("Tukey", "Dunnet")))
+  }
   force(geom)
   # dynamic defaults
   if (is.null(geom)) {
@@ -347,7 +356,7 @@ stat_multcomp <- function(mapping = NULL, data = NULL,
   }
 
   if (label.type %in% c("letters", "LETTERS") &&
-      contrast.type != "Tukey") {
+      any(contrasts != "Tukey")) {
     stop("'letters' labels are supported only with \"Tukey\" contrasts.")
   }
 
@@ -358,7 +367,7 @@ stat_multcomp <- function(mapping = NULL, data = NULL,
 
   if (label.type == "bars") {
     if (is.null(vstep)) {
-      vstep <- 0.12
+      vstep <- 0.125
     }
     if (is.null(label.y)) {
       label.y <- "top"
@@ -396,7 +405,7 @@ stat_multcomp <- function(mapping = NULL, data = NULL,
       rlang::list2(formula = formula,
                    method = method,
                    method.args = method.args,
-                   contrast.type = contrast.type,
+                   contrasts = contrasts,
                    p.adjust.method = p.adjust.method,
                    small.p = small.p,
                    adj.method.tag = adj.method.tag,
@@ -427,7 +436,7 @@ multcomp_compute_fun <-
            scales,
            method,
            method.args,
-           contrast.type,
+           contrasts,
            p.adjust.method,
            formula,
            weight,
@@ -479,8 +488,8 @@ multcomp_compute_fun <-
     }
 
     num.levels <- length(unique(data[[orientation]]))
-    if (length(contrast.type) == 1 &&
-            (contrast.type == "Tukey" && num.levels > 5 && label.type == "bars")) {
+    if (length(contrasts) == 1 &&
+            (contrasts == "Tukey" && num.levels > 5 && label.type == "bars")) {
       warning("Maximum number of factor levels supported with Tukey contrasts and bars is five. ",
            "Resetting to 'label.type = \"letters\"'.")
       label.type <- "letters"
@@ -594,30 +603,51 @@ multcomp_compute_fun <-
 
     n <- length(residuals(fm))
 
-    if (contrast.type == "Tukey") {
-      x.left.tip <- switch(num.levels,
-                           NA_real_,
-                           1,
-                           c(1, 1, 2),
-                           c(1, 1, 1, 2, 2, 3),
-                           c(1, 1, 1, 1, 2, 2, 2, 3, 3, 4)
-      )
-      x.right.tip <- switch(num.levels,
-                            NA_real_,
-                            2,
-                            c(2, 3, 3),
-                            c(2, 3, 4, 3, 4, 4),
-                            c(2, 3, 4, 5, 3, 4, 5, 4, 5, 5)
-      )
-    } else if (contrast.type == "Dunnet") {
-      x.left.tip <- rep(1, num.levels - 1)
-      x.right.tip <- 2:num.levels
+    if (is.numeric(contrasts)) {
+      if (is.vector(contrasts)) {
+        contrasts <- matrix(contrasts, nrow = 1)
+      }
+      x.left.tip <- x.right.tip <- numeric(nrow(contrasts))
+      for (i in 1:nrow(contrasts)) {
+        x.tips <- which(contrasts[i, ] != 0)
+        if (length(x.tips) != 2) {
+          stop("Only pairwise contrasts are currently supported.")
+        }
+        x.left.tip[i] <- x.tips[1]
+        x.right.tip[i] <- x.tips[2]
+      }
+    } else if (is.character(contrasts)) {
+      if (contrasts == "Tukey") {
+        x.left.tip <- switch(num.levels,
+                             NA_real_,
+                             1,
+                             c(1, 1, 2),
+                             c(1, 1, 1, 2, 2, 3),
+                             c(1, 1, 1, 1, 2, 2, 2, 3, 3, 4)
+        )
+        x.right.tip <- switch(num.levels,
+                              NA_real_,
+                              2,
+                              c(2, 3, 3),
+                              c(2, 3, 4, 3, 4, 4),
+                              c(2, 3, 4, 5, 3, 4, 5, 4, 5, 5)
+        )
+      } else if (contrasts == "Dunnet") {
+        x.left.tip <- rep(1, num.levels - 1)
+        x.right.tip <- 2:num.levels
+      }
     }
 
     # multiple comparisons test
+    if (inherits(contrasts, "mcp")) {
+      linfct.arg <- contrasts
+      contrasts <- "arbitrary"
+    } else {
+      linfct.arg <- multcomp::mcp(`factor(x)` = contrasts)
+    }
     fm.glht <-
       multcomp::glht(model = fm,
-                     linfct = multcomp::mcp(`factor(x)` = contrast.type),
+                     linfct = linfct.arg,
                      rhs = 0)
     summary.fm.glht <-
       summary(fm.glht, test = multcomp::adjusted(type = p.adjust.method))
@@ -662,7 +692,7 @@ multcomp_compute_fun <-
                           fm.formula = formula.ls,
                           fm.formula.chr = format(formula.ls),
                           mc.adjusted = p.adjust.method,
-                          mc.contrast = contrast.type,
+                          mc.contrast = contrasts,
                           n = n,
                           just = "center")
 
@@ -771,7 +801,7 @@ multcomp_compute_fun <-
                             fm.formula = formula.ls,
                             fm.formula.chr = format(formula.ls),
                             mc.adjusted = p.adjust.method,
-                            mc.contrast = contrast.type,
+                            mc.contrast = contrasts,
                             n = n,
                             letters.label = c(p.crit.label ,
                                               Letters[order(names(Letters))]),
@@ -786,7 +816,7 @@ multcomp_compute_fun <-
                             fm.formula = formula.ls,
                             fm.formula.chr = format(formula.ls),
                             mc.adjusted = p.adjust.method,
-                            mc.contrast = contrast.type,
+                            mc.contrast = contrasts,
                             n = n,
                             letters.label = Letters[order(names(Letters))],
                             just = rep("center", length(Letters)))
@@ -844,6 +874,7 @@ StatMultcomp <-
                                               xmax = after_stat(x.right.tip),
                                               label = after_stat(default.label),
                                               weight = 1,
+                                              size = 2.5,
                                               hjust = after_stat(just)),
                    dropped_aes = "weight",
                    required_aes = c("x", "y"),

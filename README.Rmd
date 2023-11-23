@@ -158,8 +158,8 @@ Using "Dunnet" contrasts and "bars" to annotate individual contrasts with the ad
 ```{r readme-03b}
 ggplot(mpg, aes(factor(cyl), cty)) +
   geom_boxplot(width = 0.33) +
-  stat_multcomp(contrast.type = "Dunnet", 
-                adjusted.type = "holm",
+  stat_multcomp(contrasts = "Dunnet",
+                p.adjust.method = "holm",
                 size = 2.75) +
   expand_limits(y = 0)
 ```

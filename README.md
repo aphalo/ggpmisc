@@ -145,8 +145,8 @@ with the adjusted *P*-value, here using Holm’s method.
 ``` r
 ggplot(mpg, aes(factor(cyl), cty)) +
   geom_boxplot(width = 0.33) +
-  stat_multcomp(contrast.type = "Dunnet", 
-                adjusted.type = "holm",
+  stat_multcomp(contrast.type = "Dunnet",
+                p.adjust.method = "holm",
                 size = 2.75) +
   expand_limits(y = 0)
 ```
@@ -235,6 +235,8 @@ ggplot(quadrant_example.df, aes(logFC.x, logFC.y)) +
   scale_x_logFC(name = "Transcript abundance after A%unit") +
   scale_y_logFC(name = "Transcript abundance after B%unit",
                 expand = expansion(mult = 0.2))
+#> Warning: ggrepel: 1 unlabeled data points (too many overlaps). Consider
+#> increasing max.overlaps
 ```
 
 ![](man/figures/README-unnamed-chunk-1-1.png)<!-- -->
@@ -299,9 +301,9 @@ publications, please cite according to:
 citation("ggpmisc")
 #> To cite package 'ggpmisc' in publications use:
 #> 
-#>   Aphalo P (2023). _ggpmisc: Miscellaneous Extensions to 'ggplot2'_.
-#>   https://docs.r4photobiology.info/ggpmisc/,
-#>   https://github.com/aphalo/ggpmisc.
+#>   Aphalo P (2023). _ggpmisc: Miscellaneous Extensions to 'ggplot2'_. R
+#>   package version 0.5.5.9000, https://github.com/aphalo/ggpmisc,
+#>   <https://docs.r4photobiology.info/ggpmisc/>.
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
@@ -309,8 +311,9 @@ citation("ggpmisc")
 #>     title = {ggpmisc: Miscellaneous Extensions to 'ggplot2'},
 #>     author = {Pedro J. Aphalo},
 #>     year = {2023},
-#>     note = {https://docs.r4photobiology.info/ggpmisc/,
+#>     note = {R package version 0.5.5.9000, 
 #> https://github.com/aphalo/ggpmisc},
+#>     url = {https://docs.r4photobiology.info/ggpmisc/},
 #>   }
 ```
 

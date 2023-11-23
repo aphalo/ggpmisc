@@ -44,19 +44,19 @@ test_that("stat_multcomp_contrast_type", {
   vdiffr::expect_doppelganger("stat_multcomp_bars_tukey",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
-                                stat_multcomp(contrast.type = "Tukey")
+                                stat_multcomp(contrasts = "Tukey")
   )
 
   vdiffr::expect_doppelganger("stat_multcomp_bars_dunnet",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
-                                stat_multcomp(contrast.type = "Dunnet")
+                                stat_multcomp(contrasts = "Dunnet")
   )
 
   vdiffr::expect_doppelganger("stat_multcomp_letters_tukey",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
-                                stat_multcomp(contrast.type = "Tukey",
+                                stat_multcomp(contrasts = "Tukey",
                                               label.type = "letters")
   )
 
@@ -66,7 +66,7 @@ test_that("stat_multcomp_geoms", {
   vdiffr::expect_doppelganger("stat_multcomp_text_pairwise_tukey",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
-                                stat_multcomp(contrast.type = "Tukey",
+                                stat_multcomp(contrasts = "Tukey",
                                               geom = "text_pairwise",
                                               label.y = "bottom")
   )
@@ -74,7 +74,7 @@ test_that("stat_multcomp_geoms", {
   vdiffr::expect_doppelganger("stat_multcomp_text_pairwise_dunnet",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
-                                stat_multcomp(contrast.type = "Dunnet",
+                                stat_multcomp(contrasts = "Dunnet",
                                               geom = "text_pairwise",
                                               label.y = "bottom")
   )
@@ -82,7 +82,7 @@ test_that("stat_multcomp_geoms", {
   vdiffr::expect_doppelganger("stat_multcomp_letters_label_tukey",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
-                                stat_multcomp(contrast.type = "Tukey",
+                                stat_multcomp(contrasts = "Tukey",
                                               label.type = "letters",
                                               geom = "label")
   )
@@ -93,21 +93,21 @@ test_that("stat_multcomp_label.y", {
   vdiffr::expect_doppelganger("stat_multcomp_y_top_tukey",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
-                                stat_multcomp(contrast.type = "Tukey",
+                                stat_multcomp(contrasts = "Tukey",
                                               label.y = "top")
   )
 
   vdiffr::expect_doppelganger("stat_multcomp_y_top_dunnet",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
-                                stat_multcomp(contrast.type = "Dunnet",
+                                stat_multcomp(contrasts = "Dunnet",
                                               label.y = "top")
   )
 
   vdiffr::expect_doppelganger("stat_multcomp_y.bottom_tukey",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
-                                stat_multcomp(contrast.type = "Tukey",
+                                stat_multcomp(contrasts = "Tukey",
                                               label.type = "letters",
                                               label.y = "bottom")
   )
@@ -115,21 +115,21 @@ test_that("stat_multcomp_label.y", {
   vdiffr::expect_doppelganger("stat_multcomp_y_top_num_tukey",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
-                                stat_multcomp(contrast.type = "Tukey",
+                                stat_multcomp(contrasts = "Tukey",
                                               label.y = 150)
   )
 
   vdiffr::expect_doppelganger("stat_multcomp_y_top_num_dunnet",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
-                                stat_multcomp(contrast.type = "Dunnet",
+                                stat_multcomp(contrasts = "Dunnet",
                                               label.y = 150)
   )
 
   vdiffr::expect_doppelganger("stat_multcomp_y.top_num_letters_tukey",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
-                                stat_multcomp(contrast.type = "Tukey",
+                                stat_multcomp(contrasts = "Tukey",
                                               label.type = "letters",
                                               label.y = 200)
   )
@@ -137,21 +137,21 @@ test_that("stat_multcomp_label.y", {
   vdiffr::expect_doppelganger("stat_multcomp_y_bottom_num_tukey",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
-                                stat_multcomp(contrast.type = "Tukey",
+                                stat_multcomp(contrasts = "Tukey",
                                               label.y = -25)
   )
 
   vdiffr::expect_doppelganger("stat_multcomp_y_bottom_num_dunnet",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
-                                stat_multcomp(contrast.type = "Dunnet",
+                                stat_multcomp(contrasts = "Dunnet",
                                               label.y = -25)
   )
 
   vdiffr::expect_doppelganger("stat_multcomp_y.bottom_num_letters_tukey",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
-                                stat_multcomp(contrast.type = "Tukey",
+                                stat_multcomp(contrasts = "Tukey",
                                               label.type = "letters",
                                               label.y = -50)
   )
@@ -162,14 +162,14 @@ test_that("stat_multcomp_adjusted", {
   vdiffr::expect_doppelganger("stat_multcomp_bonferroni_tukey",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
-                                stat_multcomp(contrast.type = "Tukey",
+                                stat_multcomp(contrasts = "Tukey",
                                               p.adjust.method = "bonferroni")
   )
 
   vdiffr::expect_doppelganger("stat_multcomp_bonferroni_dunnet",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
-                                stat_multcomp(contrast.type = "Dunnet",
+                                stat_multcomp(contrasts = "Dunnet",
                                               p.adjust.method = "bonferroni")
   )
 
@@ -179,25 +179,25 @@ test_that("stat_multcomp_digits", {
   vdiffr::expect_doppelganger("stat_multcomp_p.digits2",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
-                                stat_multcomp(contrast.type = "Tukey",
+                                stat_multcomp(contrasts = "Tukey",
                                               p.digits = 2)
   )
 
   vdiffr::expect_doppelganger("stat_multcomp_p.digits6",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
-                                stat_multcomp(contrast.type = "Tukey",
+                                stat_multcomp(contrasts = "Tukey",
                                               p.digits = 6)
   )
 
   # testthat::expect_warning(ggplot(my.data, aes(group, y2)) +
   #                            stat_boxplot() +
-  #                            stat_multcomp(contrast.type = "Tukey",
+  #                            stat_multcomp(contrasts = "Tukey",
   #                                          p.digits = 1))
 
   testthat::expect_error(ggplot(my.data, aes(group, y2)) +
                              stat_boxplot() +
-                             stat_multcomp(contrast.type = "zzzz"))
+                             stat_multcomp(contrasts = "zzzz"))
 
   testthat::expect_error(ggplot(my.data, aes(group, y2)) +
                            stat_boxplot() +

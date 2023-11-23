@@ -6,9 +6,10 @@ editor_options:
 
 # ggpmisc 0.5.6
 
--   Revise `stat_multcomp()` to flexibly include in labels both when using "bars" and "letters" the abbreviated name of the method used to adjust _P_-values (suggested by _markbneal_).
--   Revise `stat_multcomp()` to flexibly include when using "letters" an additional label with the critical _P_-value used and the method used to adjust the empirical _P_-values (suggested by _markbneal_).
--   Rename parameter `adjusted.type` to `p.adjust.method` in `stat_multcomp()`.
+-   Revise `stat_multcomp()` to flexibly include in labels, both when using "bars" and "letters", the abbreviated name of the method used to adjust _P_-values (suggested by _markbneal_).
+-   Revise `stat_multcomp()` to flexibly include only when using "letters" an additional label with the critical _P_-value and the method used to adjust the empirical _P_-values (suggested by _markbneal_).
+-   Revise `stat_multcomp()` to support arbitrary sets of pairwise contrasts.
+-   Rename parameters `adjusted.type` to `p.adjust.method`, and `constrast.type` to `contrasts` of `stat_multcomp()`.
 
 # ggpmisc 0.5.5
 
