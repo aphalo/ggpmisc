@@ -26,7 +26,7 @@ stat_multcomp(
   vstep = NULL,
   output.type = NULL,
   na.rm = FALSE,
-  orientation = NA,
+  orientation = "x",
   parse = NULL,
   show.legend = FALSE,
   inherit.aes = TRUE
@@ -73,11 +73,13 @@ function \code{adjusted()} passed as argument to parameter \code{test} of
 \item{small.p}{logical If true, use of lower case \emph{p} instead of capital
 \emph{P} as the symbol for \emph{P}-value in labels.}
 
-\item{adj.method.tag}{numeric The length in characters of the abbreviation
-of the method used to adjust \emph{p}-values. The abbreviation is used as
-a subscript to \emph{p} or \emph{P} in labels. A value of zero, adds no
-label and a negative value uses as starting point for the abbreviation
-the word "adjusted".}
+\item{adj.method.tag}{numeric, character or function If \code{numeric}, the
+length in characters of the abbreviation of the method used to adjust
+\emph{p}-values. A value of zero, adds no label and a negative value uses
+as starting point for the abbreviation the word "adjusted". If
+\code{character} its value is used as subscript. If a \code{function}, the
+value used is the value returned by the function when passed
+\code{adjusted.type} as its only argument.}
 
 \item{p.digits}{integer Number of digits after the decimal point to
 use for \eqn{R^2} and \emph{P}-value in labels.}
@@ -86,20 +88,20 @@ use for \eqn{R^2} and \emph{P}-value in labels.}
 how the results of the multiple comparisons are displayed. Only "bars" can
 be used together with \code{contrast.type = "Dunnet"}.}
 
-\item{fm.cutoff.p.value}{numeric [0..1] The \emph{P}-value for the main effect of
-factor \code{x} in the ANOVA test for the fitted model above which no
-pairwise comparisons are computed or labels generated. Be aware that recent
-literature tends to recommend to consider which testing approach is
-relevant to the problem at hand instead of requiring the significance of
-the main effect before applying multiple comparisons' tests. The default
-value is 1, imposing no restrictions.}
+\item{fm.cutoff.p.value}{numeric [0..1] The \emph{P}-value for the main
+effect of factor \code{x} in the ANOVA test for the fitted model above
+which no pairwise comparisons are computed or labels generated. Be aware
+that recent literature tends to recommend to consider which testing
+approach is relevant to the problem at hand instead of requiring the
+significance of the main effect before applying multiple comparisons'
+tests. The default value is 1, imposing no restrictions.}
 
 \item{mc.cutoff.p.value}{numeric [0..1] The \emph{P}-value for the individual
 contrasts above which no labelled bars are generated. Default is 1,
 labelling all pairwise contrasts tested.}
 
-\item{mc.critical.p.value}{numeric The critical \emph{P}-value used for tests when
-when encoded as letters.}
+\item{mc.critical.p.value}{numeric The critical \emph{P}-value used for tests
+when when encoded as letters.}
 
 \item{label.y}{numeric vector Values in native data units or if
 \code{character}, one of "top" or "bottom". Recycled if too short and
@@ -115,8 +117,8 @@ used between labels for different contrasts when \code{label.type = "bars"}.}
 the computation proceeds.}
 
 \item{orientation}{character Either "x" or "y" controlling the default for
-\code{formula}. \strong{Support for \code{orientation} is not yet implemented but is
-planned.}}
+\code{formula}. \strong{Support for \code{orientation} is not yet
+implemented but is planned.}}
 
 \item{parse}{logical Passed to the geom. If \code{TRUE}, the labels will be
 parsed into expressions and displayed as described in \code{?plotmath}.
