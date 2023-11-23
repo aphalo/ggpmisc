@@ -44,7 +44,8 @@
 #' @param adj.method.tag numeric The length in characters of the abbreviation
 #'   of the method used to adjust \emph{p}-values. The abbreviation is used as
 #'   a subscript to \emph{p} or \emph{P} in labels. A value of zero, adds no
-#'   label and a negative value uses the generic abbraviation "adj".
+#'   label and a negative value uses as starting point for the abbreviation
+#'   the word "adjusted".
 #' @param p.digits integer Number of digits after the decimal point to
 #'   use for \eqn{R^2} and \emph{P}-value in labels.
 #' @param label.type character One of "bars", "letters" or "LETTERS", selects
@@ -617,10 +618,12 @@ multcomp_compute_fun <-
     pairwise.contrasts <- gsub(" ", "", names(pairwise.coefficients))
 
     if (adj.method.tag < 0) {
-      adj.label <- "adj"
+      adj.label <- abbreviate("adjusted", -adj.method.tag)
     } else {
       adj.label <- abbreviate(adjusted.type, adj.method.tag)
     }
+    # only "LETTERS" and "letters" generate legends, not "bars"
+    adj.method.legend <- adj.method.tag != 0
 
     if (label.type %in% c("bars")) {
       # Labelled bar representation of multiple contrast results.
@@ -736,22 +739,38 @@ multcomp_compute_fun <-
                                       threshold = mc.critical.p.value,
                                       Letters = get(label.type),
                                       reversed = TRUE)[["Letters"]]
-      p.crit.label <- paste("\"  \"*italic(P)[\"", adj.label, "\"]^{\"crit\"}~`=`~",
-                            mc.critical.p.value, sep = "")
-      z <- tibble::tibble(x = c(0.3, 1:num.levels),
-                          x.left.tip = NA_real_,
-                          x.right.tip = NA_real_,
-                          critical.p.value = mc.critical.p.value,
-                          fm.method = method.name,
-                          fm.class = fm.class,
-                          fm.formula = formula.ls,
-                          fm.formula.chr = format(formula.ls),
-                          mc.adjusted = adjusted.type,
-                          mc.contrast = contrast.type,
-                          n = n,
-                          letters.label = c(p.crit.label ,
-                                            Letters[order(names(Letters))]),
-                          just = c("inward", rep("center", length(Letters))))
+      if (adj.method.legend) {
+        p.crit.label <- paste("\"  \"*italic(P)[\"", adj.label, "\"]^{\"crit\"}~`=`~",
+                              mc.critical.p.value, sep = "")
+        z <- tibble::tibble(x = c(0.3, 1:num.levels),
+                            x.left.tip = NA_real_,
+                            x.right.tip = NA_real_,
+                            critical.p.value = mc.critical.p.value,
+                            fm.method = method.name,
+                            fm.class = fm.class,
+                            fm.formula = formula.ls,
+                            fm.formula.chr = format(formula.ls),
+                            mc.adjusted = adjusted.type,
+                            mc.contrast = contrast.type,
+                            n = n,
+                            letters.label = c(p.crit.label ,
+                                              Letters[order(names(Letters))]),
+                            just = c("inward", rep("center", length(Letters))))
+      } else {
+        z <- tibble::tibble(x = 1:num.levels,
+                            x.left.tip = NA_real_,
+                            x.right.tip = NA_real_,
+                            critical.p.value = mc.critical.p.value,
+                            fm.method = method.name,
+                            fm.class = fm.class,
+                            fm.formula = formula.ls,
+                            fm.formula.chr = format(formula.ls),
+                            mc.adjusted = adjusted.type,
+                            mc.contrast = contrast.type,
+                            n = n,
+                            letters.label = Letters[order(names(Letters))],
+                            just = rep("center", length(Letters)))
+      }
 
       if (output.type == "numeric") {
         z[["default.label"]] <- NA_character_

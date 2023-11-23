@@ -76,7 +76,8 @@ function \code{adjusted()} passed as argument to parameter \code{test} of
 \item{adj.method.tag}{numeric The length in characters of the abbreviation
 of the method used to adjust \emph{p}-values. The abbreviation is used as
 a subscript to \emph{p} or \emph{P} in labels. A value of zero, adds no
-label and a negative value uses the generic abbraviation "adj".}
+label and a negative value uses as starting point for the abbreviation
+the word "adjusted".}
 
 \item{p.digits}{integer Number of digits after the decimal point to
 use for \eqn{R^2} and \emph{P}-value in labels.}
