@@ -397,6 +397,32 @@ ggplot(my.data, aes(x, y)) +
 # position of contrasts' bars (manual)
 ggplot(mpg, aes(factor(cyl), hwy)) +
   geom_boxplot(width = 0.33)  +
+  stat_multcomp(p.adjust.method = "bonferroni", 
+                adj.method.tag = 3,
+                size = 2.75) +
+  expand_limits(y = 0)
+
+## -----------------------------------------------------------------------------
+# position of contrasts' bars (manual)
+ggplot(mpg, aes(factor(cyl), hwy)) +
+  geom_boxplot(width = 0.33)  +
+  stat_multcomp(p.adjust.method = "bonferroni", 
+                adj.method.tag = -3,
+                size = 2.75) +
+  expand_limits(y = 0)
+
+## -----------------------------------------------------------------------------
+# position of contrasts' bars (manual)
+ggplot(mpg, aes(factor(cyl), hwy)) +
+  geom_boxplot(width = 0.33)  +
+  stat_multcomp(adj.method.tag = "ajustada",
+                size = 2.75) +
+  expand_limits(y = 0)
+
+## -----------------------------------------------------------------------------
+# position of contrasts' bars (manual)
+ggplot(mpg, aes(factor(cyl), hwy)) +
+  geom_boxplot(width = 0.33)  +
   stat_multcomp(label.y = c(7, 4, 1),
                 contrast.type = "Dunnet",
                 size = 2.75) +
@@ -422,14 +448,15 @@ means <-
 ggplot(mpg, aes(factor(cyl), hwy)) +
   stat_summary(fun.data = mean_se) +
   stat_multcomp(label.type = "letters",
-                label.y = means,
-                position = position_nudge(x = 0.22))
+                label.y = c(18, means), # 18 is for critical P label
+                position = position_nudge(x = 0.1))
 
 ## -----------------------------------------------------------------------------
 # Using other geometries
 ggplot(mpg, aes(factor(cyl), hwy)) +
   geom_boxplot(width = 0.33) +
   stat_multcomp(label.type = "letters",
+                adj.method.tag = FALSE,
                 geom = "label")
 
 ## -----------------------------------------------------------------------------
@@ -468,10 +495,10 @@ ggplot(mpg, aes(factor(cyl), hwy)) +
   geom_boxplot(width = 0.33) +
   stat_multcomp(aes(fill = after_stat(p.value) < 0.01),
                 size = 2.5,
-                arrow = grid::arrow(angle = 90,
+                arrow = grid::arrow(angle = 45,
                                     length = unit(1, "mm"),
                                     ends = "both")) +
-  scale_fill_manual(values = c("white", "green"))
+  scale_fill_manual(values = c("white", "lightblue"))
 
 ## -----------------------------------------------------------------------------
 formula <- y ~ poly(x, 3, raw = TRUE)

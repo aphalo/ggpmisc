@@ -2,7 +2,7 @@
 % Please edit documentation in R/stat-multcomp.R
 \name{stat_multcomp}
 \alias{stat_multcomp}
-\title{Labels for multiple comparisons}
+\title{Labels for pairwise multiple comparisons}
 \usage{
 stat_multcomp(
   mapping = NULL,
@@ -14,7 +14,7 @@ stat_multcomp(
   method = "lm",
   method.args = list(),
   contrast.type = "Tukey",
-  adjusted.type = "single-step",
+  p.adjust.method = "single-step",
   small.p = FALSE,
   adj.method.tag = 4,
   p.digits = 3,
@@ -64,7 +64,7 @@ return a model fit object accepted by function \code{glht()}.}
 
 \item{contrast.type}{character One of "Tukey" or "Dunnet".}
 
-\item{adjusted.type}{character As the argument for parameter \code{type} of
+\item{p.adjust.method}{character As the argument for parameter \code{type} of
 function \code{adjusted()} passed as argument to parameter \code{test} of
 \code{\link[multcomp]{summary.glht}}. Accepted values are "single-step",
 "Shaffer", "Westfall", "free", "holm", "hochberg", "hommel", "bonferroni",
@@ -79,7 +79,7 @@ length in characters of the abbreviation of the method used to adjust
 as starting point for the abbreviation the word "adjusted". If
 \code{character} its value is used as subscript. If a \code{function}, the
 value used is the value returned by the function when passed
-\code{adjusted.type} as its only argument.}
+\code{p.adjust.method} as its only argument.}
 
 \item{p.digits}{integer Number of digits after the decimal point to
 use for \eqn{R^2} and \emph{P}-value in labels.}
@@ -264,6 +264,9 @@ p1 <- ggplot(mpg, aes(factor(cyl), hwy)) +
 p1 +
   stat_multcomp()
 
+p1 +
+  stat_multcomp(adj.method.tag = 0)
+
 # test against a control, with first level being the control
 # change order of factor levels in data to set the control group
 p1 +
@@ -271,13 +274,13 @@ p1 +
 
 # different methods to adjust the contrasts
 p1 +
-  stat_multcomp(adjusted.type = "bonferroni")
+  stat_multcomp(p.adjust.method = "bonferroni")
 
 p1 +
-  stat_multcomp(adjusted.type = "holm")
+  stat_multcomp(p.adjust.method = "holm")
 
 p1 +
-  stat_multcomp(adjusted.type = "fdr")
+  stat_multcomp(p.adjust.method = "fdr")
 
 # sometimes we need to expand the plotting area
 p1 +

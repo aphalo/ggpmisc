@@ -163,14 +163,14 @@ test_that("stat_multcomp_adjusted", {
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
                                 stat_multcomp(contrast.type = "Tukey",
-                                              adjusted.type = "bonferroni")
+                                              p.adjust.method = "bonferroni")
   )
 
   vdiffr::expect_doppelganger("stat_multcomp_bonferroni_dunnet",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
                                 stat_multcomp(contrast.type = "Dunnet",
-                                              adjusted.type = "bonferroni")
+                                              p.adjust.method = "bonferroni")
   )
 
 })

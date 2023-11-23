@@ -1,4 +1,4 @@
-#' Labels for multiple comparisons
+#' Labels for pairwise multiple comparisons
 #'
 #' \code{stat_multcomp} fits a linear model by default with \code{stats::lm()}
 #' but alternatively using other model fit functions. The model is passed to
@@ -34,7 +34,7 @@
 #'   return a model fit object accepted by function \code{glht()}.
 #' @param method.args named list with additional arguments.
 #' @param contrast.type character One of "Tukey" or "Dunnet".
-#' @param adjusted.type character As the argument for parameter \code{type} of
+#' @param p.adjust.method character As the argument for parameter \code{type} of
 #'   function \code{adjusted()} passed as argument to parameter \code{test} of
 #'   \code{\link[multcomp]{summary.glht}}. Accepted values are "single-step",
 #'   "Shaffer", "Westfall", "free", "holm", "hochberg", "hommel", "bonferroni",
@@ -47,7 +47,7 @@
 #'   as starting point for the abbreviation the word "adjusted". If
 #'   \code{character} its value is used as subscript. If a \code{function}, the
 #'   value used is the value returned by the function when passed
-#'   \code{adjusted.type} as its only argument.
+#'   \code{p.adjust.method} as its only argument.
 #' @param p.digits integer Number of digits after the decimal point to
 #'   use for \eqn{R^2} and \emph{P}-value in labels.
 #' @param label.type character One of "bars", "letters" or "LETTERS", selects
@@ -211,6 +211,9 @@
 #' p1 +
 #'   stat_multcomp()
 #'
+#' p1 +
+#'   stat_multcomp(adj.method.tag = 0)
+#'
 #' # test against a control, with first level being the control
 #' # change order of factor levels in data to set the control group
 #' p1 +
@@ -218,13 +221,13 @@
 #'
 #' # different methods to adjust the contrasts
 #' p1 +
-#'   stat_multcomp(adjusted.type = "bonferroni")
+#'   stat_multcomp(p.adjust.method = "bonferroni")
 #'
 #' p1 +
-#'   stat_multcomp(adjusted.type = "holm")
+#'   stat_multcomp(p.adjust.method = "holm")
 #'
 #' p1 +
-#'   stat_multcomp(adjusted.type = "fdr")
+#'   stat_multcomp(p.adjust.method = "fdr")
 #'
 #' # sometimes we need to expand the plotting area
 #' p1 +
@@ -310,7 +313,7 @@ stat_multcomp <- function(mapping = NULL, data = NULL,
                           method = "lm",
                           method.args = list(),
                           contrast.type = "Tukey",
-                          adjusted.type = "single-step",
+                          p.adjust.method = "single-step",
                           small.p = FALSE,
                           adj.method.tag = 4,
                           p.digits = 3,
@@ -326,7 +329,9 @@ stat_multcomp <- function(mapping = NULL, data = NULL,
                           parse = NULL,
                           show.legend = FALSE,
                           inherit.aes = TRUE) {
-  stopifnot(contrast.type %in% c("Tukey", "Dunnet"))
+  stopifnot(length(contrast.type) == 1 &&
+              is.character(contrast.type) &&
+              contrast.type %in% c("Tukey", "Dunnet"))
   stopifnot("Flipping with 'orientation = y' is not supported" = orientation == "x")
 
   force(geom)
@@ -392,7 +397,7 @@ stat_multcomp <- function(mapping = NULL, data = NULL,
                    method = method,
                    method.args = method.args,
                    contrast.type = contrast.type,
-                   adjusted.type = adjusted.type,
+                   p.adjust.method = p.adjust.method,
                    small.p = small.p,
                    adj.method.tag = adj.method.tag,
                    p.digits = p.digits,
@@ -423,7 +428,7 @@ multcomp_compute_fun <-
            method,
            method.args,
            contrast.type,
-           adjusted.type,
+           p.adjust.method,
            formula,
            weight,
            small.p,
@@ -474,7 +479,8 @@ multcomp_compute_fun <-
     }
 
     num.levels <- length(unique(data[[orientation]]))
-    if ((contrast.type == "Tukey" && num.levels > 5 && label.type == "bars")) {
+    if (length(contrast.type) == 1 &&
+            (contrast.type == "Tukey" && num.levels > 5 && label.type == "bars")) {
       warning("Maximum number of factor levels supported with Tukey contrasts and bars is five. ",
            "Resetting to 'label.type = \"letters\"'.")
       label.type <- "letters"
@@ -614,7 +620,7 @@ multcomp_compute_fun <-
                      linfct = multcomp::mcp(`factor(x)` = contrast.type),
                      rhs = 0)
     summary.fm.glht <-
-      summary(fm.glht, test = multcomp::adjusted(type = adjusted.type))
+      summary(fm.glht, test = multcomp::adjusted(type = p.adjust.method))
 
     pairwise.p.values <- summary.fm.glht[["test"]][["pvalues"]]
     pairwise.coefficients <- summary.fm.glht[["test"]][["coefficients"]]
@@ -625,11 +631,12 @@ multcomp_compute_fun <-
     if (is.character(adj.method.tag)) {
       adj.label <- adj.method.tag[1]
     } else if (is.function(adj.method.tag)) {
-      adj.label <- adj.method.tag(adjusted.type)
+      adj.label <- adj.method.tag(p.adjust.method)
     } else if (adj.method.tag < 0) {
       adj.label <- abbreviate("adjusted", -adj.method.tag)
     } else if (adj.method.tag > 0) {
-      adj.label <- abbreviate(adjusted.type, adj.method.tag)
+      adj.label <- abbreviate(gsub("-", " ", p.adjust.method, fixed=TRUE),
+                                   adj.method.tag)
     } else {
       adj.label <- character()
       # only "LETTERS" and "letters" generate legends, not "bars"
@@ -654,7 +661,7 @@ multcomp_compute_fun <-
                           fm.class = fm.class[1],
                           fm.formula = formula.ls,
                           fm.formula.chr = format(formula.ls),
-                          mc.adjusted = adjusted.type,
+                          mc.adjusted = p.adjust.method,
                           mc.contrast = contrast.type,
                           n = n,
                           just = "center")
@@ -704,6 +711,8 @@ multcomp_compute_fun <-
                                       "~`<`~",
                                       "~`=`~")))
         }
+        # remove empty subscripts
+        z[["p.value.label"]] <- gsub("\\[\"\"\\]", "", z[["p.value.label"]])
         z[["delta.label"]] <- paste("Delta~`=`~", coefficients.char, sep = "")
         z[["t.value.label"]] <- paste("italic(t)~`=`~", tstat.char, sep = "")
       } else if (output.type %in% c("latex", "tex", "text", "tikz")) {
@@ -761,7 +770,7 @@ multcomp_compute_fun <-
                             fm.class = fm.class,
                             fm.formula = formula.ls,
                             fm.formula.chr = format(formula.ls),
-                            mc.adjusted = adjusted.type,
+                            mc.adjusted = p.adjust.method,
                             mc.contrast = contrast.type,
                             n = n,
                             letters.label = c(p.crit.label ,
@@ -776,7 +785,7 @@ multcomp_compute_fun <-
                             fm.class = fm.class,
                             fm.formula = formula.ls,
                             fm.formula.chr = format(formula.ls),
-                            mc.adjusted = adjusted.type,
+                            mc.adjusted = p.adjust.method,
                             mc.contrast = contrast.type,
                             n = n,
                             letters.label = Letters[order(names(Letters))],

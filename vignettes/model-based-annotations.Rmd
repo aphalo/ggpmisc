@@ -783,6 +783,41 @@ Please, see the section on `stat_poly_eq()` for additional examples, as here we 
 
 _This section is still preliminary._ Multiple comparisons are frequently used when the effect of different levels of a factor are individually of interest. Function `stat_multcomp()` computes adjusted _P_-values for pairwise comparison using Tukey or Dunnet contrasts using function `glht()` from package 'multcomp'. To complement the examples in the documentation of the function, we show below examples that override several defaults. 
 
+Alternatives to the default "tag" values used to describe the adjustment method can be obtained with arguments passed to parameter `adj.method.tag`. In the first example the abbreviation is three characters long, instead of the default of four.
+
+```{r}
+# position of contrasts' bars (manual)
+ggplot(mpg, aes(factor(cyl), hwy)) +
+  geom_boxplot(width = 0.33)  +
+  stat_multcomp(p.adjust.method = "bonferroni", 
+                adj.method.tag = 3,
+                size = 2.75) +
+  expand_limits(y = 0)
+```
+
+Here we use a negative value to use an abbreviation of the word "adjusted" to three characters.
+
+```{r}
+# position of contrasts' bars (manual)
+ggplot(mpg, aes(factor(cyl), hwy)) +
+  geom_boxplot(width = 0.33)  +
+  stat_multcomp(p.adjust.method = "bonferroni", 
+                adj.method.tag = -3,
+                size = 2.75) +
+  expand_limits(y = 0)
+```
+
+A character string passed as argument is used as is, here to set the tag in Spanish.
+
+```{r}
+# position of contrasts' bars (manual)
+ggplot(mpg, aes(factor(cyl), hwy)) +
+  geom_boxplot(width = 0.33)  +
+  stat_multcomp(adj.method.tag = "ajustada",
+                size = 2.75) +
+  expand_limits(y = 0)
+```
+
 A numeric vector passed to `label.y` can be used to manually set the location of each label along the _y_ axis.
 
 ```{r}
@@ -806,7 +841,7 @@ ggplot(mpg, aes(factor(cyl), hwy)) +
    expand_limits(y = 0)
 ```
 
-We can pre-compute the numeric vector to achieve special positioning.
+We can pre-compute the numeric vector to achieve special positioning, in this case, next to each observation.
 
 ```{r}
 means <-
@@ -818,17 +853,18 @@ means <-
 ggplot(mpg, aes(factor(cyl), hwy)) +
   stat_summary(fun.data = mean_se) +
   stat_multcomp(label.type = "letters",
-                label.y = means,
-                position = position_nudge(x = 0.22))
+                label.y = c(18, means), # 18 is for critical P label
+                position = position_nudge(x = 0.1))
 ```
 
-We can overrride the default use of `geom_text()`.
+We can override the default use of `geom_text()` and also remove the _P_ critical label.
 
 ```{r}
 # Using other geometries
 ggplot(mpg, aes(factor(cyl), hwy)) +
   geom_boxplot(width = 0.33) +
   stat_multcomp(label.type = "letters",
+                adj.method.tag = FALSE,
                 geom = "label")
 ```
 
@@ -875,10 +911,10 @@ ggplot(mpg, aes(factor(cyl), hwy)) +
   geom_boxplot(width = 0.33) +
   stat_multcomp(aes(fill = after_stat(p.value) < 0.01),
                 size = 2.5,
-                arrow = grid::arrow(angle = 90,
+                arrow = grid::arrow(angle = 45,
                                     length = unit(1, "mm"),
                                     ends = "both")) +
-  scale_fill_manual(values = c("white", "green"))
+  scale_fill_manual(values = c("white", "lightblue"))
 ```
 
 ### stat_fit_residuals
