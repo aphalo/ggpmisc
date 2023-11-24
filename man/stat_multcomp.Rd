@@ -14,7 +14,7 @@ stat_multcomp(
   method = "lm",
   method.args = list(),
   contrasts = "Tukey",
-  p.adjust.method = "single-step",
+  p.adjust.method = NULL,
   small.p = FALSE,
   adj.method.tag = 4,
   p.digits = 3,
@@ -104,13 +104,13 @@ contrasts above which no labelled bars are generated. Default is 1,
 labelling all pairwise contrasts tested.}
 
 \item{mc.critical.p.value}{numeric The critical \emph{P}-value used for tests
-when when encoded as letters.}
+when encoded as letters.}
 
 \item{label.y}{numeric vector Values in native data units or if
 \code{character}, one of "top" or "bottom". Recycled if too short and
 truncated if too long.}
 
-\item{vstep}{numeric in npc units, the horizontal displacement step-size
+\item{vstep}{numeric in npc units, the vertical displacement step-size
 used between labels for different contrasts when \code{label.type = "bars"}.}
 
 \item{output.type}{character One of "expression", "LaTeX", "text",
@@ -144,28 +144,33 @@ A data frame with one row per comparison for \code{label.type =
 \description{
 \code{stat_multcomp} fits a linear model by default with \code{stats::lm()}
 but alternatively using other model fit functions. The model is passed to
-function \code{glht()} from package 'multcomp' to fit Tukey or Dunnet
-contrasts and generates labels based on adjusted \emph{P}-values.
+function \code{glht()} from package 'multcomp' to fit Tukey, Dunnet or other
+\strong{pairwise} contrasts and generates labels based on adjusted
+\emph{P}-values.
 }
 \details{
 This statistic can be used to automatically annotate a plot with
-  \emph{P}-values for multiple comparison tests, based on Tukey contrasts
-  (all pairwise) or Dunnet contrasts (other levels against the first one).
-  See Meier (2022, Chapter 3) for an accessible explanation of multiple
-  comparisons and contrasts with package 'multcomp', of which
-  \code{stat_multcomp()} is mostly a wrapper.
+  \emph{P}-values for \strong{pairwise} multiple comparison tests, based on
+  Tukey contrasts (all pairwise), Dunnet contrasts (other levels against the
+  first one) or a subset of all possible pairwise contrasts. See Meier (2022,
+  Chapter 3) for an accessible explanation of multiple comparisons and
+  contrasts with package 'multcomp', of which \code{stat_multcomp()} is
+  mostly a wrapper.
 
   The explanatory variable mapped to the \emph{x} aesthetic must be a factor
-  as this creates the required grouping. Currently, arbitrary contrasts are
-  not supported, mainly because they would be difficult to convert into plot
-  annotations.
+  as this creates the required grouping. Currently, contrasts that involve
+  more than two levels of a factor, such as the average of two treatment
+  levels against a control level are not supported, mainly because they
+  require a new geometry that I need to design, implement and add to package
+  'ggpp'.
 
   Two ways of displaying the outcomes are implemented, and are selected by
   `"bars"`, `"letters"` or `"LETTERS"` as argument to parameter
   `label.type`. `"letters"` and `"LETTERS"` can be used only with Tukey
   contrasts, as otherwise the encoding is ambiguous. As too many bars clutter
   a plot, the maximum number of factor levels supported for `"bars"` together
-  with Tukey contrasts is five, and together with Dunnet contrasts, unlimited.
+  with Tukey contrasts is five, while together with Dunnet contrasts or
+  contrasts defined by a numeric matrix, no limit is imposed.
 
   \code{stat_multcomp()} by default generates character labels ready to be
   parsed as R expressions but LaTeX (use TikZ device), markdown (use package
@@ -290,6 +295,10 @@ p1 +
 
 p1 +
   stat_multcomp(p.adjust.method = "fdr")
+
+# no correction, useful only for comparison
+p1 +
+  stat_multcomp(p.adjust.method = "none")
 
 # sometimes we need to expand the plotting area
 p1 +

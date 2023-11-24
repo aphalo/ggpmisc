@@ -145,7 +145,7 @@ with the adjusted *P*-value, here using Holm’s method.
 ``` r
 ggplot(mpg, aes(factor(cyl), cty)) +
   geom_boxplot(width = 0.33) +
-  stat_multcomp(contrast.type = "Dunnet",
+  stat_multcomp(contrasts = "Dunnet",
                 p.adjust.method = "holm",
                 size = 2.75) +
   expand_limits(y = 0)
