@@ -394,6 +394,8 @@ fit_tb_compute_panel_fun <- function(data,
                                      label.x,
                                      label.y) {
 
+  rlang::check_installed("broom", reason = "to use `stat_fit_tb()`")
+
   force(data)
   if (length(unique(data$x)) < n.min) {
     # Not enough data to perform fit

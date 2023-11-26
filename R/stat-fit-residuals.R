@@ -258,9 +258,7 @@ residuals_compute_group_fun <- function(data,
     } else {
       fun.method <- character()
     }
-    if (method == "rq") {
-      rlang::check_installed("quantreg", reason = "for `stat_fit_residuals()` with method `rq()`")
-    }
+
     method <- switch(method,
                      lm = stats::lm,
                      rlm = MASS::rlm,

@@ -100,7 +100,6 @@
 #'   stat_quant_band(formula = x ~ poly(y, 3))
 #'
 #' # Instead of rq() we can use rqss() to fit an additive model:
-#' library(quantreg)
 #' ggplot(mpg, aes(displ, hwy)) +
 #'   geom_point() +
 #'   stat_quant_band(method = "rqss",
@@ -243,7 +242,6 @@ quant_band_compute_group_fun <- function(data,
                                          fm.values = FALSE,
                                          na.rm = FALSE,
                                          flipped_aes = NA) {
-  rlang::check_installed("quantreg", reason = "for `stat_quant_band()`")
 
   data <- ggplot2::flip_data(data, flipped_aes)
 

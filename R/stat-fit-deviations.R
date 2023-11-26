@@ -209,6 +209,7 @@ deviations_compute_group_fun <- function(data,
                                          n.min,
                                          formula,
                                          orientation) {
+
   stopifnot(!any(c("formula", "data") %in% names(method.args)))
   if (is.null(data$weight)) {
     data$weight <- 1
@@ -255,9 +256,6 @@ deviations_compute_group_fun <- function(data,
       method <- method[1]
     } else {
       fun.method <- character()
-    }
-    if (method == "rq") {
-      rlang::check_installed("quantreg", reason = "for `stat_fit_deviations()` with method `rq()`")
     }
 
     method <- switch(method,

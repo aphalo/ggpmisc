@@ -138,7 +138,6 @@ ggplot(mpg, aes(displ, hwy)) +
   stat_quant_band(formula = x ~ poly(y, 3))
 
 # Instead of rq() we can use rqss() to fit an additive model:
-library(quantreg)
 ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
   stat_quant_band(method = "rqss",

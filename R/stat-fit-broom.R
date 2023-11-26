@@ -237,6 +237,8 @@ fit_glance_compute_group_fun <- function(data,
                                          vstep,
                                          npc.used) {
 
+  rlang::check_installed("broom", reason = "to use `stat_fit_glance()`")
+
   force(data) # needed because it appears only wihtin quote()
 
   if (length(unique(data$x)) < n.min) {
@@ -421,7 +423,7 @@ StatFitGlance <-
 #'   the computation proceeds.
 #' @param method character or function.
 #' @param method.args,augment.args list of arguments to pass to \code{method}
-#'   and to to \code{broom:augment}.
+#'   and to to \code{broom::augment}.
 #' @param n.min integer Minimum number of distinct values in the explanatory
 #'   variable (on the rhs of formula) for fitting to the attempted.
 #' @param level numeric Level of confidence interval to use (0.95 by default)
@@ -608,6 +610,8 @@ fit_augment_compute_group_fun <- function(data,
     }
     X
   }
+
+  rlang::check_installed("broom", reason = "to use `stat_fit_augment()`")
 
   force(data)
   data <- na.omit(data)
@@ -932,6 +936,8 @@ fit_tidy_compute_group_fun <- function(data,
                                        vstep,
                                        sanitize.names,
                                        npc.used) {
+  rlang::check_installed("broom", reason = "to use `stat_fit_tidy()`")
+
   force(data)
   if (length(unique(data$x)) < n.min) {
     # Not enough data to perform fit

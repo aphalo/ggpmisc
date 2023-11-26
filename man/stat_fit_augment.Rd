@@ -34,7 +34,7 @@ the plot defaults.}
 \item{method}{character or function.}
 
 \item{method.args, augment.args}{list of arguments to pass to \code{method}
-and to to \code{broom:augment}.}
+and to to \code{broom::augment}.}
 
 \item{n.min}{integer Minimum number of distinct values in the explanatory
 variable (on the rhs of formula) for fitting to the attempted.}

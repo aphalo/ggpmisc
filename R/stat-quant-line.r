@@ -163,7 +163,6 @@
 #'   stat_quant_line(formula = x ~ poly(y, 3))
 #'
 #' # Instead of rq() we can use rqss() to fit an additive model:
-#' library(quantreg)
 #' ggplot(mpg, aes(displ, hwy)) +
 #'   geom_point() +
 #'   stat_quant_line(method = "rqss",
@@ -325,7 +324,6 @@ quant_line_compute_group_fun <- function(data,
                                          fm.values = FALSE,
                                          na.rm = FALSE,
                                          flipped_aes = NA) {
-  rlang::check_installed("quantreg", reason = "for `stat_quant_line()`")
 
   data <- ggplot2::flip_data(data, flipped_aes)
   if (length(unique(data$x)) < n.min) {

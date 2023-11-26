@@ -533,8 +533,6 @@ quant_eq_compute_group_fun <- function(data,
                                        output.type,
                                        na.rm,
                                        orientation) {
-  rlang::check_installed("quantreg", reason = "for `stat_quant_eq()`")
-
   force(data)
   force(method)
 
