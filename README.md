@@ -1,6 +1,4 @@
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
 # ggpmisc <img src="man/figures/logo-ggpmisc.png" align="right" width="150" />
 
 <!-- badges: start -->
