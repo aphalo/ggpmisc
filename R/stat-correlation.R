@@ -527,11 +527,23 @@ cor_test_compute_fun <- function(data,
       if (method == "pearson") {
         rr.char <- sprintf_dm("\"%#.*f\"", r.digits, r^2, decimal.mark = decimal.mark)
         t.value.char <- sprintf_dm("\"%#.*g\"", t.digits, z[["t.value"]], decimal.mark = decimal.mark)
+        if (grepl("e", t.value.char)) {
+          t.value.char <- sprintf_dm("%#.*e", t.digits, z[["t.value"]], decimal.mark = decimal.mark)
+          t.value.char <- paste(gsub("e", " %*% 10^{", t.value.char), "}", sep = "")
+        }
         df.char <- as.character(z[["df"]])
       } else if (method == "kendall") {
         z.value.char <- sprintf_dm("\"%#.*g\"", t.digits, z[["z.value"]], decimal.mark = decimal.mark)
+        if (grepl("e", z.value.char)) {
+          z.value.char <- sprintf_dm("%#.*e", t.digits, z[["z.value"]], decimal.mark = decimal.mark)
+          z.value.char <- paste(gsub("e", " %*% 10^{", z.value.char), "}", sep = "")
+        }
       } else if (method == "spearman") {
         S.value.char <- sprintf_dm("\"%#.*g\"", t.digits, z[["S.value"]], decimal.mark = decimal.mark)
+        if (grepl("e", S.value.char)) {
+          S.value.char <- sprintf_dm("%#.*e", t.digits, z[["S.value"]], decimal.mark = decimal.mark)
+          S.value.char <- paste(gsub("e", " %*% 10^{", S.value.char), "}", sep = "")
+        }
       }
     } else {
       if (p.digits == Inf) {

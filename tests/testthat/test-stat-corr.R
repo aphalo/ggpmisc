@@ -307,6 +307,21 @@ test_that("rounding_signif", {
                                                                      sep = "~~")))
   )
 
+  vdiffr::expect_doppelganger("stat_coor_pearson_round_Inf",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_correlation(r.digits = 4,
+                                                 p.digits = Inf,
+                                                 t.digits = 4,
+                                                 mapping =
+                                                   aes(label = paste(after_stat(r.label),
+                                                                     after_stat(r.confint.label),
+                                                                     after_stat(t.value.label),
+                                                                     after_stat(p.value.label),
+                                                                     after_stat(n.label),
+                                                                     sep = "~~")))
+  )
+
   vdiffr::expect_doppelganger("stat_coor_kendall_round",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
@@ -341,6 +356,23 @@ test_that("rounding_signif", {
                                                                      sep = "~~")))
   )
 
+  vdiffr::expect_doppelganger("stat_coor_kendall_roundInf",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_correlation(method = "kendall",
+                                                 r.conf.level = 0.95,
+                                                 r.digits = 2,
+                                                 p.digits = Inf,
+                                                 t.digits = 2,
+                                                 mapping =
+                                                   aes(label = paste(after_stat(r.label),
+                                                                     after_stat(r.confint.label),
+                                                                     after_stat(z.value.label),
+                                                                     after_stat(p.value.label),
+                                                                     after_stat(n.label),
+                                                                     sep = "~~")))
+  )
+
   vdiffr::expect_doppelganger("stat_coor_spearman_round",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
@@ -365,6 +397,23 @@ test_that("rounding_signif", {
                                                  r.conf.level = 0.95,
                                                  r.digits = 2,
                                                  p.digits = 2,
+                                                 t.digits = 2,
+                                                 mapping =
+                                                   aes(label = paste(after_stat(r.label),
+                                                                     after_stat(r.confint.label),
+                                                                     after_stat(S.value.label),
+                                                                     after_stat(p.value.label),
+                                                                     after_stat(n.label),
+                                                                     sep = "~~")))
+  )
+
+  vdiffr::expect_doppelganger("stat_coor_spearman_round_Inf",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_correlation(method = "spearman",
+                                                 r.conf.level = 0.95,
+                                                 r.digits = 2,
+                                                 p.digits = Inf,
                                                  t.digits = 2,
                                                  mapping =
                                                    aes(label = paste(after_stat(r.label),
