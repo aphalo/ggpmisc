@@ -77,7 +77,8 @@ the correlation coefficients and t-value, z-value or S-value (see note
 below).}
 
 \item{r.digits, t.digits, p.digits}{integer Number of digits after the decimal
-point to use for R, r.squared, tau or rho and P-value in labels.}
+point to use for R, r.squared, tau or rho and P-value in labels. If
+\code{Inf}, use exponential notation with three decimal places.}
 
 \item{CI.brackets}{character vector of length 2. The opening and closing
 brackets used for the CI label.}

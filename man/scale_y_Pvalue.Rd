@@ -10,7 +10,7 @@
 scale_y_Pvalue(
   ...,
   name = expression(italic(P) - plain(value)),
-  trans = NULL,
+  transform = NULL,
   breaks = NULL,
   labels = NULL,
   limits = c(1, 1e-20),
@@ -21,7 +21,7 @@ scale_y_Pvalue(
 scale_y_FDR(
   ...,
   name = "False discovery rate",
-  trans = NULL,
+  transform = NULL,
   breaks = NULL,
   labels = NULL,
   limits = c(1, 1e-10),
@@ -32,7 +32,7 @@ scale_y_FDR(
 scale_x_Pvalue(
   ...,
   name = expression(italic(P) - plain(value)),
-  trans = NULL,
+  transform = NULL,
   breaks = NULL,
   labels = NULL,
   limits = c(1, 1e-20),
@@ -43,7 +43,7 @@ scale_x_Pvalue(
 scale_x_FDR(
   ...,
   name = "False discovery rate",
-  trans = NULL,
+  transform = NULL,
   breaks = NULL,
   labels = NULL,
   limits = c(1, 1e-10),
@@ -55,9 +55,6 @@ scale_x_FDR(
 \item{...}{other named arguments passed to \code{scale_y_continuous}.}
 
 \item{name}{The name of the scale without units, used for the axis-label.}
-
-\item{trans}{Either the name of a transformation object, or the object itself. Use
-NULL for the default.}
 
 \item{breaks}{The positions of ticks or a function to generate them. Default
 varies depending on argument passed to \code{log.base.labels}.}
@@ -79,6 +76,9 @@ bounds). The default squishes out-of-bounds values to the boundary.}
 around the data, to ensure that they are placed some distance away from
 the axes. The default is to expand the scale by 15\% on each end for
 log-fold-data, so as to leave space for counts annotations.}
+
+\item{trans}{Either the name of a transformation object, or the object itself. Use
+NULL for the default.}
 }
 \description{
 Scales for y aesthetic mapped to P-values as used in volcano plots with

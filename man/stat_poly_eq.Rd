@@ -95,7 +95,8 @@ the fitted coefficients and F-value.}
 the fitted coefficients and F-value.}
 
 \item{rr.digits, p.digits}{integer Number of digits after the decimal point to
-use for \eqn{R^2} and P-value in labels.}
+use for \eqn{R^2} and P-value in labels. If \code{Inf}, use exponential
+notation with three decimal places.}
 
 \item{label.x, label.y}{\code{numeric} with range 0..1 "normalized parent
 coordinates" (npc units) or character if using \code{geom_text_npc()} or

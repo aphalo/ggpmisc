@@ -2,7 +2,7 @@ Package: ggpmisc
 Type: Package
 Title: Miscellaneous Extensions to 'ggplot2'
 Version: 0.5.5.9000
-Date: 2023-11-26
+Date: 2024-03-23
 Authors@R:
     c(
     person("Pedro J.", "Aphalo", email = "pedro.aphalo@helsinki.fi", role = c("aut", "cre"), comment = c(ORCID = "0000-0003-3385-972X")),
@@ -28,7 +28,7 @@ Depends:
 Imports:
     grid,
     stats,
-    ggplot2 (>= 3.4.0),
+    ggplot2 (>= 3.5.0),
     scales (>= 1.2.0),
     rlang (>= 1.0.0),
     generics (>= 0.1.2),

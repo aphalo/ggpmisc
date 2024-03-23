@@ -50,8 +50,9 @@
 #'   the fitted coefficients.
 #' @param coef.keep.zeros logical Keep or drop trailing zeros when formatting
 #'   the fitted coefficients and F-value.
-#' @param rr.digits,p.digits,theta.digits integer Number of digits after the
-#'   decimal point to use for R^2, theta and P-value in labels.
+#' @param rr.digits,theta.digits,p.digits integer Number of digits after the
+#'   decimal point to use for R^2, theta and P-value in labels. If \code{Inf},
+#'   use exponential notation with three decimal places.
 #' @param label.x,label.y \code{numeric} with range 0..1 "normalized parent
 #'   coordinates" (npc units) or character if using \code{geom_text_npc()} or
 #'   \code{geom_label_npc()}. If using \code{geom_text()} or \code{geom_label()}
@@ -639,12 +640,21 @@ ma_eq_compute_group_fun <- function(data,
     if (output.type == "expression") {
       rr.char <- sprintf_dm("\"%#.*f\"", rr.digits, rr, decimal.mark = decimal.mark)
       theta.char <- sprintf_dm("\"%#.*f\"", theta.digits, theta, decimal.mark = decimal.mark)
-      p.value.char <- sprintf_dm("\"%#.*f\"", p.digits, p.value, decimal.mark = decimal.mark)
+      if (p.digits == Inf) {
+        p.value.char <- sprintf_dm("%#.2e", p.value, decimal.mark = decimal.mark)
+        p.value.char <- paste(gsub("e", " %*% 10^{", p.value.char), "}", sep = "")
+      } else {
+        p.value.char <- sprintf_dm("\"%#.*f\"", p.digits, p.value, decimal.mark = decimal.mark)
+      }
     } else {
       rr.char <- sprintf_dm("%#.*f", rr.digits, rr, decimal.mark = decimal.mark)
       theta.char <- sprintf_dm("%#.*f", theta.digits, theta, decimal.mark = decimal.mark)
-      p.value.char <- sprintf_dm("%#.*f", p.digits, p.value, decimal.mark = decimal.mark)
-    }
+      if (p.digits == Inf) {
+        p.value.char <- sprintf_dm("%#.2e", p.value, decimal.mark = decimal.mark)
+      } else {
+        p.value.char <- sprintf_dm("%#.*f", p.digits, p.value, decimal.mark = decimal.mark)
+      }
+     }
 
     # build the data frames to return
     if (output.type == "expression") {

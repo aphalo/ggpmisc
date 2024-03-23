@@ -43,7 +43,8 @@
 #'   the correlation coefficients and t-value, z-value or S-value (see note
 #'   below).
 #' @param r.digits,t.digits,p.digits integer Number of digits after the decimal
-#'   point to use for R, r.squared, tau or rho and P-value in labels.
+#'   point to use for R, r.squared, tau or rho and P-value in labels. If
+#'   \code{Inf}, use exponential notation with three decimal places.
 #' @param CI.brackets character vector of length 2. The opening and closing
 #'   brackets used for the CI label.
 #' @param label.x,label.y \code{numeric} with range 0..1 "normalized parent
@@ -504,7 +505,12 @@ cor_test_compute_fun <- function(data,
 
     # build the character strings
     if (output.type == "expression") {
-      p.value.char <- sprintf_dm("\"%#.*f\"", p.digits, z[["p.value"]], decimal.mark = decimal.mark)
+      if (p.digits == Inf) {
+        p.value.char <- sprintf_dm("%#.2e", z[["p.value"]], decimal.mark = decimal.mark)
+        p.value.char <- paste(gsub("e", " %*% 10^{", p.value.char), "}", sep = "")
+      } else {
+        p.value.char <- sprintf_dm("\"%#.*f\"", p.digits, z[["p.value"]], decimal.mark = decimal.mark)
+      }
       r <- z[[unname(c(pearson = "cor", kendall = "tau", spearman = "rho")[method])]]
       r.char <- sprintf_dm("\"%#.*f\"", r.digits, r, decimal.mark = decimal.mark)
       r.confint.chr <- paste(sprintf_dm("%#.*f",
@@ -528,7 +534,11 @@ cor_test_compute_fun <- function(data,
         S.value.char <- sprintf_dm("\"%#.*g\"", t.digits, z[["S.value"]], decimal.mark = decimal.mark)
       }
     } else {
-      p.value.char <- sprintf_dm("%#.*f", p.digits, z[["p.value"]], decimal.mark = decimal.mark)
+      if (p.digits == Inf) {
+        p.value.char <- sprintf_dm("%#.2e", z[["p.value"]], decimal.mark = decimal.mark)
+      } else {
+        p.value.char <- sprintf_dm("%#.*f", p.digits, z[["p.value"]], decimal.mark = decimal.mark)
+      }
       r <- z[[unname(c(pearson = "cor", kendall = "tau", spearman = "rho")[method])]]
       r.char <- sprintf_dm("%#.*f", r.digits, r, decimal.mark = decimal.mark)
       r.confint.chr <- paste(sprintf_dm("%#.*f",

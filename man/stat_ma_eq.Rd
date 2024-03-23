@@ -92,8 +92,9 @@ the fitted coefficients.}
 \item{coef.keep.zeros}{logical Keep or drop trailing zeros when formatting
 the fitted coefficients and F-value.}
 
-\item{rr.digits, p.digits, theta.digits}{integer Number of digits after the
-decimal point to use for R^2, theta and P-value in labels.}
+\item{rr.digits, theta.digits, p.digits}{integer Number of digits after the
+decimal point to use for R^2, theta and P-value in labels. If \code{Inf},
+use exponential notation with three decimal places.}
 
 \item{label.x, label.y}{\code{numeric} with range 0..1 "normalized parent
 coordinates" (npc units) or character if using \code{geom_text_npc()} or
