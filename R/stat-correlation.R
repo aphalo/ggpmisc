@@ -490,15 +490,15 @@ cor_test_compute_fun <- function(data,
     z[["r.label"]] <- NA_character_
   } else {
     # warn if too narrow formats requested
-    stopifnot(r.digits > 0)
+    stopifnot("'r.digits' must be > 0" = r.digits > 0)
     if (r.digits < 2) {
       warning("'r.digits < 2' Likely information loss!")
     }
-    stopifnot(t.digits > 0)
+    stopifnot("'t.digits' must be > 0" = t.digits > 0)
     if (t.digits < 2) {
       warning("'t.digits < 2' Likely information loss!")
     }
-    stopifnot(p.digits > 0)
+    stopifnot("'p.digits' must be > 0" = p.digits > 0)
     if (p.digits < 2) {
       warning("'p.digits < 2' Likely information loss!")
     }
@@ -506,8 +506,8 @@ cor_test_compute_fun <- function(data,
     # build the character strings
     if (output.type == "expression") {
       if (p.digits == Inf) {
-        p.value.char <- sprintf_dm("%#.2e", z[["p.value"]], decimal.mark = decimal.mark)
-        p.value.char <- paste(gsub("e", " %*% 10^{", p.value.char), "}", sep = "")
+          p.value.char <- sprintf_dm("%#.2e", z[["p.value"]], decimal.mark = decimal.mark)
+          p.value.char <- paste(gsub("e", " %*% 10^{", p.value.char), "}", sep = "")
       } else {
         p.value.char <- sprintf_dm("\"%#.*f\"", p.digits, z[["p.value"]], decimal.mark = decimal.mark)
       }

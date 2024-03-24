@@ -141,25 +141,29 @@
 <text x='218.60' y='59.84' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
 <text x='221.37' y='59.84' style='font-size: 11.04px; font-family: sans;' textLength='6.45px' lengthAdjust='spacingAndGlyphs'>=</text>
 <text x='227.82' y='59.84' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='230.58' y='59.84' style='font-size: 11.04px; font-family: sans;' textLength='40.22px' lengthAdjust='spacingAndGlyphs'>8.8e+03</text>
-<text x='270.80' y='59.84' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='273.56' y='59.84' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='276.32' y='59.84' style='font-size: 11.04px; font-style: italic; font-family: sans;' textLength='7.37px' lengthAdjust='spacingAndGlyphs'>P</text>
-<text x='283.69' y='59.84' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='286.45' y='59.84' style='font-size: 11.04px; font-family: sans;' textLength='6.45px' lengthAdjust='spacingAndGlyphs'>=</text>
-<text x='292.90' y='59.84' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='295.67' y='59.84' style='font-size: 11.04px; font-family: sans;' textLength='6.14px' lengthAdjust='spacingAndGlyphs'>0</text>
-<text x='303.85' y='59.84' style='font-size: 11.04px; font-family: sans;' textLength='8.58px' lengthAdjust='spacingAndGlyphs'>×</text>
-<text x='314.47' y='59.84' style='font-size: 11.04px; font-family: sans;' textLength='12.28px' lengthAdjust='spacingAndGlyphs'>10</text>
-<text x='326.75' y='54.30' style='font-size: 7.73px; font-family: sans;' textLength='6.00px' lengthAdjust='spacingAndGlyphs'>+</text>
-<text x='332.75' y='54.30' style='font-size: 7.73px; font-family: sans;' textLength='4.30px' lengthAdjust='spacingAndGlyphs'>0</text>
-<text x='337.05' y='59.84' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='339.81' y='59.84' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='342.58' y='59.84' style='font-size: 11.04px; font-style: italic; font-family: sans;' textLength='6.14px' lengthAdjust='spacingAndGlyphs'>n</text>
-<text x='348.72' y='59.84' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='351.48' y='59.84' style='font-size: 11.04px; font-family: sans;' textLength='6.45px' lengthAdjust='spacingAndGlyphs'>=</text>
-<text x='357.93' y='59.84' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='360.69' y='59.84' style='font-size: 11.04px; font-family: sans;' textLength='18.42px' lengthAdjust='spacingAndGlyphs'>100</text>
+<text x='230.58' y='59.84' style='font-size: 11.04px; font-family: sans;' textLength='21.49px' lengthAdjust='spacingAndGlyphs'>8.84</text>
+<text x='254.11' y='59.84' style='font-size: 11.04px; font-family: sans;' textLength='8.58px' lengthAdjust='spacingAndGlyphs'>×</text>
+<text x='264.74' y='59.84' style='font-size: 11.04px; font-family: sans;' textLength='12.28px' lengthAdjust='spacingAndGlyphs'>10</text>
+<text x='277.02' y='54.30' style='font-size: 7.73px; font-family: sans;' textLength='6.00px' lengthAdjust='spacingAndGlyphs'>+</text>
+<text x='283.02' y='54.30' style='font-size: 7.73px; font-family: sans;' textLength='4.30px' lengthAdjust='spacingAndGlyphs'>3</text>
+<text x='287.31' y='59.84' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='290.08' y='59.84' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='292.84' y='59.84' style='font-size: 11.04px; font-style: italic; font-family: sans;' textLength='7.37px' lengthAdjust='spacingAndGlyphs'>P</text>
+<text x='300.20' y='59.84' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='302.97' y='59.84' style='font-size: 11.04px; font-family: sans;' textLength='6.45px' lengthAdjust='spacingAndGlyphs'>=</text>
+<text x='309.42' y='59.84' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='312.18' y='59.84' style='font-size: 11.04px; font-family: sans;' textLength='6.14px' lengthAdjust='spacingAndGlyphs'>0</text>
+<text x='320.36' y='59.84' style='font-size: 11.04px; font-family: sans;' textLength='8.58px' lengthAdjust='spacingAndGlyphs'>×</text>
+<text x='330.99' y='59.84' style='font-size: 11.04px; font-family: sans;' textLength='12.28px' lengthAdjust='spacingAndGlyphs'>10</text>
+<text x='343.27' y='54.30' style='font-size: 7.73px; font-family: sans;' textLength='6.00px' lengthAdjust='spacingAndGlyphs'>+</text>
+<text x='349.27' y='54.30' style='font-size: 7.73px; font-family: sans;' textLength='4.30px' lengthAdjust='spacingAndGlyphs'>0</text>
+<text x='353.57' y='59.84' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='356.33' y='59.84' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='359.09' y='59.84' style='font-size: 11.04px; font-style: italic; font-family: sans;' textLength='6.14px' lengthAdjust='spacingAndGlyphs'>n</text>
+<text x='365.23' y='59.84' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='367.99' y='59.84' style='font-size: 11.04px; font-family: sans;' textLength='6.45px' lengthAdjust='spacingAndGlyphs'>=</text>
+<text x='374.44' y='59.84' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='377.21' y='59.84' style='font-size: 11.04px; font-family: sans;' textLength='18.42px' lengthAdjust='spacingAndGlyphs'>100</text>
 <rect x='32.79' y='22.78' width='681.73' height='522.33' style='stroke-width: 1.07; stroke: #333333;' />
 </g>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>

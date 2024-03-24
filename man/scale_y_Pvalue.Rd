@@ -56,6 +56,9 @@ scale_x_FDR(
 
 \item{name}{The name of the scale without units, used for the axis-label.}
 
+\item{transform}{Either the name of a transformation object, or the object
+itself. Use NULL for the default.}
+
 \item{breaks}{The positions of ticks or a function to generate them. Default
 varies depending on argument passed to \code{log.base.labels}.}
 
@@ -76,9 +79,6 @@ bounds). The default squishes out-of-bounds values to the boundary.}
 around the data, to ensure that they are placed some distance away from
 the axes. The default is to expand the scale by 15\% on each end for
 log-fold-data, so as to leave space for counts annotations.}
-
-\item{trans}{Either the name of a transformation object, or the object itself. Use
-NULL for the default.}
 }
 \description{
 Scales for y aesthetic mapped to P-values as used in volcano plots with

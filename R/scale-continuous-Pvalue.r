@@ -4,8 +4,8 @@
 #' transcriptomics and metabolomics data.
 #'
 #' @param name The name of the scale without units, used for the axis-label.
-#' @param trans Either the name of a transformation object, or the object itself. Use
-#'   NULL for the default.
+#' @param transform Either the name of a transformation object, or the object
+#'   itself. Use NULL for the default.
 #' @param breaks The positions of ticks or a function to generate them. Default
 #'   varies depending on argument passed to \code{log.base.labels}.
 #' @param labels The tick labels or a function to generate them from the tick
@@ -63,7 +63,7 @@ scale_y_Pvalue <- function(...,
 
   ggplot2::scale_y_continuous(...,
                               name = name,
-                              transform = if (is.null(trans)) reverselog_trans(10) else trans,
+                              transform = if (is.null(transform)) reverselog_trans(10) else transform,
                               breaks = if (is.null(breaks)) default.breaks else breaks,
                               labels = if (is.null(labels)) default.labels else labels,
                               limits = if (is.null(limits)) c(1, 1e-10) else limits, # axis is reversed!
@@ -113,7 +113,7 @@ scale_x_Pvalue <- function(...,
 
   ggplot2::scale_x_continuous(...,
                               name = name,
-                              transform = if (is.null(trans)) reverselog_trans(10) else trans,
+                              transform = if (is.null(transform)) reverselog_trans(10) else transform,
                               breaks = if (is.null(breaks)) default.breaks else breaks,
                               labels = if (is.null(labels)) default.labels else labels,
                               limits = if (is.null(limits)) c(1, 1e-10) else limits, # axis is reversed!

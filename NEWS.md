@@ -6,11 +6,13 @@ editor_options:
 
 # ggpmisc 0.5.6
 
--   Revise `stat_multcomp()` to flexibly include in labels, both when using "bars" and "letters", the abbreviated name of the method used to adjust _P_-values (suggested by _markbneal_).
--   Revise `stat_multcomp()` to flexibly include only when using "letters" an additional label with the critical _P_-value and the method used to adjust the empirical _P_-values (suggested by _markbneal_).
+-   Rename parameter `trans` of `scale_y_Pvalue()` into `transform` to track deprecation in 'ggplot2' 3.5.0.
+-   Revise `stat_multcomp()` to flexibly include in labels, both when using "bars" and "letters", the abbreviated name of the method used to adjust _P_-values (suggested by _markbneal_, Mark Neal).
+-   Revise `stat_multcomp()` to flexibly include only when using "letters" an additional label with the critical _P_-value and the method used to adjust the empirical _P_-values (suggested by _markbneal_, Mark Neal).
 -   Revise `stat_multcomp()` to support arbitrary sets of pairwise contrasts.
--   Rename parameters `adjusted.type` to `p.adjust.method`, and `constrast.type` to `contrasts` of `stat_multcomp()`.
+-   Rename parameters  of `stat_multcomp()`: `adjusted.type` to `p.adjust.method`, and `constrast.type` to `contrasts`.
 -   Change defaults used for `p.adjust.method` so that they depend on the argument passed to `contrasts`.
+-   Accept in `stat_correlation()`, `stat_poly_eq()` and `stat_ma_eq()`, `p.digits = Inf` as a request to use scientific notation for `p.value.label` (suggested by _wbvguo_, Wenbin Guo).
 
 # ggpmisc 0.5.5
 
@@ -18,7 +20,7 @@ editor_options:
 rhs of formulas, e.g., `I(y - 10) ~ x` or `I(x - 10) ~ y`.
 -   Export function `find_peaks()` which was previously internal. 
 -   Move transcriptomics example data objects to package 'ggpp'.
--   Fix scrambled table in the vignette (reported by _markbneal_).
+-   Fix scrambled table in the vignette (reported by _markbneal_, Mark Neal).
 
 # ggpmisc 0.5.4
 
