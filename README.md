@@ -299,7 +299,7 @@ publications, please cite according to:
 citation("ggpmisc")
 #> To cite package 'ggpmisc' in publications use:
 #> 
-#>   Aphalo P (2023). _ggpmisc: Miscellaneous Extensions to 'ggplot2'_. R
+#>   Aphalo P (2024). _ggpmisc: Miscellaneous Extensions to 'ggplot2'_. R
 #>   package version 0.5.5.9000, https://github.com/aphalo/ggpmisc,
 #>   <https://docs.r4photobiology.info/ggpmisc/>.
 #> 
@@ -308,7 +308,7 @@ citation("ggpmisc")
 #>   @Manual{,
 #>     title = {ggpmisc: Miscellaneous Extensions to 'ggplot2'},
 #>     author = {Pedro J. Aphalo},
-#>     year = {2023},
+#>     year = {2024},
 #>     note = {R package version 0.5.5.9000, 
 #> https://github.com/aphalo/ggpmisc},
 #>     url = {https://docs.r4photobiology.info/ggpmisc/},

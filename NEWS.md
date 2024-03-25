@@ -12,7 +12,7 @@ editor_options:
 -   Revise `stat_multcomp()` to support arbitrary sets of pairwise contrasts.
 -   Rename parameters  of `stat_multcomp()`: `adjusted.type` to `p.adjust.method`, and `constrast.type` to `contrasts`.
 -   Change defaults used for `p.adjust.method` so that they depend on the argument passed to `contrasts`.
--   Accept in `stat_correlation()`, `stat_poly_eq()` and `stat_ma_eq()`, `p.digits = Inf` as a request to use scientific notation for `p.value.label` (suggested by _wbvguo_, Wenbin Guo).
+-   Accept in `stat_correlation()`, `stat_poly_eq()`, `stat_ma_eq()`, and `stat_multcomp()`, `p.digits = Inf` as a request to use scientific notation for `p.value.label` (suggested by _wbvguo_, Wenbin Guo).
 
 # ggpmisc 0.5.5
 
