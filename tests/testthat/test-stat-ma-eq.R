@@ -322,5 +322,21 @@ test_that("rounding_signif", {
                                                                sep = "~~")))
   )
 
+  vdiffr::expect_doppelganger("stat_ma_eq_formula_x_round_Inf",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_ma_eq(formula = y ~ x,
+                                           parse = TRUE,
+                                           rr.digits = 2,
+                                           p.digits = Inf,
+                                           coef.digits = 3,
+                                           mapping =
+                                             aes(label = paste(after_stat(eq.label),
+                                                               after_stat(rr.label),
+                                                               after_stat(p.value.label),
+                                                               after_stat(n.label),
+                                                               sep = "~~")))
+  )
+
 })
 

@@ -741,7 +741,7 @@ test_that("rounding_signif", {
                                              parse = TRUE,
                                              rr.digits = 3,
                                              p.digits = 2,
-                                             f.digits = 2,
+                                             f.digits = 3,
                                              coef.digits = 6,
                                              mapping =
                                                aes(label = paste(after_stat(eq.label),
@@ -759,6 +759,23 @@ test_that("rounding_signif", {
                                              rr.digits = 3,
                                              p.digits = 2,
                                              f.digits = 2,
+                                             coef.digits = 4,
+                                             mapping =
+                                               aes(label = paste(after_stat(eq.label),
+                                                                 after_stat(adj.rr.label),
+                                                                 after_stat(f.value.label),
+                                                                 after_stat(p.value.label),
+                                                                 sep = "~~")))
+  )
+
+  vdiffr::expect_doppelganger("stat_poly_eq_formula_x_round_Inf",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_eq(formula = y ~ x,
+                                             parse = TRUE,
+                                             rr.digits = 3,
+                                             p.digits = Inf,
+                                             f.digits = 3,
                                              coef.digits = 4,
                                              mapping =
                                                aes(label = paste(after_stat(eq.label),

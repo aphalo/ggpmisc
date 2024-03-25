@@ -738,12 +738,21 @@ multcomp_compute_fun <-
       }
 
       if (output.type == "expression") {
-        p.value.char <- sprintf_dm("\"%#.*f\"", p.digits, z[["p.value"]], decimal.mark = decimal.mark)
+        if (p.digits == Inf) {
+          p.value.char <- sprintf_dm("%#.2e", z[["p.value"]], decimal.mark = decimal.mark)
+          p.value.char <- paste(gsub("e", " %*% 10^{", p.value.char), "}", sep = "")
+        } else {
+          p.value.char <- sprintf_dm("\"%#.*f\"", p.digits, z[["p.value"]], decimal.mark = decimal.mark)
+        }
         stars.char <- paste("\"", stars_pval(z[["p.value"]]), "\"", sep = "")
         coefficients.char <- sprintf_dm("\"%#.*g\"", 3L, z[["coefficients"]], decimal.mark = decimal.mark)
         tstat.char <- sprintf_dm("\"%#.*g\"", 3L, z[["tstat"]], decimal.mark = decimal.mark)
       } else {
-        p.value.char <- sprintf_dm("%#.*f", p.digits, z[["p.value"]], decimal.mark = decimal.mark)
+        if (p.digits == Inf) {
+          p.value.char <- sprintf_dm("%#.2e", z[["p.value"]], decimal.mark = decimal.mark)
+        } else {
+          p.value.char <- sprintf_dm("%#.*f", p.digits, z[["p.value"]], decimal.mark = decimal.mark)
+        }
         stars.char <- stars_pval(z[["p.value"]])
         coefficients.char <- sprintf_dm("%#.*g", 3L, z[["coefficients"]], decimal.mark = decimal.mark)
         tstat.char <- sprintf_dm("%#.*g", 3L, z[["tstat"]], decimal.mark = decimal.mark)

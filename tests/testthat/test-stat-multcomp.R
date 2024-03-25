@@ -190,6 +190,13 @@ test_that("stat_multcomp_digits", {
                                               p.digits = 6)
   )
 
+  vdiffr::expect_doppelganger("stat_multcomp_p.digits_Inf",
+                              ggplot(my.data, aes(group, y2)) +
+                                stat_boxplot() +
+                                stat_multcomp(contrasts = "Tukey",
+                                              p.digits = Inf)
+  )
+
   # testthat::expect_warning(ggplot(my.data, aes(group, y2)) +
   #                            stat_boxplot() +
   #                            stat_multcomp(contrasts = "Tukey",

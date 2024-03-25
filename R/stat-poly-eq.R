@@ -864,6 +864,10 @@ poly_eq_compute_group_fun <- function(data,
       AIC.char <- sprintf_dm("\"%.4g\"", AIC, decimal.mark = decimal.mark)
       BIC.char <- sprintf_dm("\"%.4g\"", BIC, decimal.mark = decimal.mark)
       f.value.char <- sprintf_dm("\"%#.*g\"", f.digits, f.value, decimal.mark = decimal.mark)
+      if (grepl("e", f.value.char)) {
+        f.value.char <- sprintf_dm("%#.*e", f.digits, f.value, decimal.mark = decimal.mark)
+        f.value.char <- paste(gsub("e", " %*% 10^{", f.value.char), "}", sep = "")
+      }
       f.df1.char <- as.character(f.df1)
       f.df2.char <- as.character(f.df2)
       if (p.digits == Inf) {
