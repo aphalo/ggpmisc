@@ -377,22 +377,6 @@ stat_multcomp <- function(mapping = NULL, data = NULL,
     warning("\"npc\"-based geometries not supported, using\"", geom, "\" instead.")
   }
 
-  if (label.type == "bars") {
-    if (is.null(vstep)) {
-      vstep <- 0.125
-    }
-    if (is.null(label.y)) {
-      label.y <- "top"
-    }
-  } else if (label.type %in% c("letters", "LETTERS", "numeric")) {
-    if (is.null(vstep)) {
-      vstep <- 0
-    }
-    if (is.null(label.y)) {
-      label.y <- "bottom"
-    }
-  }
-
   if (is.null(output.type)) {
     if (geom %in% c("richtext", "textbox")) {
       output.type <- "markdown"
@@ -506,6 +490,24 @@ multcomp_compute_fun <-
            "Resetting to 'label.type = \"letters\"'.")
       label.type <- "letters"
     }
+
+    # default position of labels has to be set after label.type is known
+    if (label.type == "bars") {
+      if (is.null(vstep)) {
+        vstep <- 0.125
+      }
+      if (is.null(label.y)) {
+        label.y <- "top"
+      }
+    } else if (label.type %in% c("letters", "LETTERS", "numeric")) {
+      if (is.null(vstep)) {
+        vstep <- 0
+      }
+      if (is.null(label.y)) {
+        label.y <- "bottom"
+      }
+    }
+
     if (nrow(data) < 2 * num.levels) {
       stop("Too few observations per factor level. ",
            "Did you map to ", orientation, " a continuous variable instead of a factor?")
@@ -611,6 +613,9 @@ multcomp_compute_fun <-
       warning(sprintf("P-value for main effect = %.3f > cutoff = %.3f, skipping tests!",
                       p.value, fm.cutoff.p.value))
       return(data.frame())
+    } else if (any(is.na(fm[["coefficients"]][-1]))) {
+      warning("Problem with model fitting: NAs returned, skipping tests!")
+      return(data.frame())
     }
 
     n <- length(residuals(fm))
@@ -664,6 +669,7 @@ multcomp_compute_fun <-
     if (is.null(p.adjust.method)) {
       summary.fm.glht <-
         summary(fm.glht, test = multcomp::adjusted())
+      # needed for labels
       if (contrasts == "Tukey") {
         p.adjust.method <- "HSD"
       } else if (contrasts == "Dunnet"){
@@ -841,7 +847,7 @@ multcomp_compute_fun <-
                             mc.contrast = contrasts,
                             n = n,
                             letters.label = c(p.crit.label ,
-                                              Letters[order(names(Letters))]),
+                                              Letters[order(as.numeric(names(Letters)))]),
                             just = c("inward", rep("center", length(Letters))))
       } else {
         z <- tibble::tibble(x = 1:num.levels,
@@ -855,7 +861,7 @@ multcomp_compute_fun <-
                             mc.adjusted = p.adjust.method,
                             mc.contrast = contrasts,
                             n = n,
-                            letters.label = Letters[order(names(Letters))],
+                            letters.label = Letters[order(as.numeric(names(Letters)))],
                             just = rep("center", length(Letters)))
       }
 

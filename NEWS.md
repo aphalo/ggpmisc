@@ -13,6 +13,8 @@ editor_options:
 -   Rename parameters  of `stat_multcomp()`: `adjusted.type` to `p.adjust.method`, and `constrast.type` to `contrasts`.
 -   Change defaults used for `p.adjust.method` so that they depend on the argument passed to `contrasts`.
 -   Accept in `stat_correlation()`, `stat_poly_eq()`, `stat_ma_eq()`, and `stat_multcomp()`, `p.digits = Inf` as a request to use scientific notation for `p.value.label` (suggested by _wbvguo_, Wenbin Guo).
+-   Fix bug in `stat_multcomp()`: **wrongly encoded letters** in Tukey contrasts in case of grouping factors with more than nine levels.
+-   Fix bug in `stat_multcomp()`: off-plot letter labels with Tukey contrasts in some plots with more than five groups.
 
 # ggpmisc 0.5.5
 

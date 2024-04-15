@@ -12,8 +12,12 @@ y <- x + rnorm(length(x), mean = 0)
 
 my.data <- data.frame(x,
                       y,
-                      group = factor(c("A", "B", "C", "D")),
-                      y2 = y + 0:3 * rnorm(length(x), mean = 30, sd = 2),
+                      group = factor(LETTERS[1:5]),
+                      group.rev = factor(LETTERS[1:5], levels = LETTERS[5:1]),
+                      group.mixed = factor(LETTERS[1:5], levels = LETTERS[c(3,5,4,1,2)]),
+                      group10 = factor(LETTERS[1:10]),
+                      y2 = y + 0:4 * rnorm(length(x), mean = 20, sd = 2),
+                      y10 = y + 0:9 * rnorm(length(x), mean = 20, sd = 4),
                       wt = sqrt(x))
 formula <- y ~ x
 
@@ -59,6 +63,49 @@ test_that("stat_multcomp_contrast_type", {
                                 stat_multcomp(contrasts = "Tukey",
                                               label.type = "letters")
   )
+
+  vdiffr::expect_doppelganger("stat_multcomp_letters_tukey_rev",
+                              ggplot(my.data, aes(group.rev, y2)) +
+                                stat_boxplot() +
+                                stat_multcomp(contrasts = "Tukey",
+                                              label.type = "letters")
+  )
+
+  vdiffr::expect_doppelganger("stat_multcomp_letters_tukey_mixed",
+                              ggplot(my.data, aes(group.mixed, y2)) +
+                                stat_boxplot() +
+                                stat_multcomp(contrasts = "Tukey",
+                                              label.type = "letters")
+  )
+
+  testthat::expect_error(ggplot(my.data, aes(group.mixed, y2)) +
+                              stat_boxplot() +
+                              stat_multcomp(contrasts = "Dunnet",
+                                            label.type = "letters")
+                          )
+})
+
+test_that("stat_multcomp_many_levels", {
+  # vdiffr::expect_doppelganger("stat_multcomp_bars_tukey",
+  #                             ggplot(my.data, aes(group10, y10)) +
+  #                               stat_boxplot() +
+  #                               stat_multcomp(contrasts = "Tukey")
+  # )
+
+  vdiffr::expect_doppelganger("stat_multcomp_bars_dunnet_many_levels",
+                              ggplot(my.data, aes(group10, y2)) +
+                                stat_boxplot() +
+                                stat_multcomp(contrasts = "Dunnet")
+  )
+
+  # vdiffr::expect_doppelganger("stat_multcomp_letters_tukey_many_levels",
+  #                             ggplot(my.data, aes(group10, y10)) +
+  #                               stat_boxplot() +
+  #                               stat_multcomp(contrasts = "Tukey",
+  #                                             label.type = "letters",
+  #                                             adj.method.tag = 0) +
+  #                             expand_limits(x = -1)
+  # )
 
 })
 
