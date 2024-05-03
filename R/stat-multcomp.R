@@ -486,9 +486,9 @@ multcomp_compute_fun <-
     num.levels <- length(unique(data[[orientation]]))
     if (length(contrasts) == 1 &&
             (contrasts == "Tukey" && num.levels > 5 && label.type == "bars")) {
-      warning("Maximum number of factor levels supported with Tukey contrasts and bars is five. ",
-           "Resetting to 'label.type = \"letters\"'.")
-      label.type <- "letters"
+      warning("Tukey contrasts with bars support at most five groups, not ",
+              num.levels, ". Skipping test")
+      return(data.frame())
     }
 
     # default position of labels has to be set after label.type is known
