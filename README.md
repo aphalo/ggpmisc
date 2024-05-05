@@ -296,11 +296,11 @@ Guide*, is available at <https://docs.r4photobiology.info/ggpmisc/>.
 News about updates are regularly posted at
 <https://www.r4photobiology.info/>.
 
-Chapter 7 in Aphalo (2020) explains basic concepts of the grammar of
-graphics as implemented in ‘ggplot2’ as well as extensions to this
-grammar including several of those made available by packages ‘ggpp’ and
-‘ggpmisc’. Open access supplementary chapters and other information
-related to the book is available at <https://www.learnr-book.info/>.
+Chapter 7 in Aphalo (2020) and Chapter 9 in Aphalo (2024) explain basic
+concepts of the grammar of graphics as implemented in ‘ggplot2’ as well
+as extensions to this grammar including several of those made available
+by packages ‘ggpp’ and ‘ggpmisc’. Information related to the book is
+available at <https://www.learnr-book.info/>.
 
 ## Contributing
 
@@ -318,7 +318,7 @@ citation("ggpmisc")
 #> To cite package 'ggpmisc' in publications use:
 #> 
 #>   Aphalo P (2024). _ggpmisc: Miscellaneous Extensions to 'ggplot2'_. R
-#>   package version 0.5.5.9001, https://github.com/aphalo/ggpmisc,
+#>   package version 0.5.5.9002, https://github.com/aphalo/ggpmisc,
 #>   <https://docs.r4photobiology.info/ggpmisc/>.
 #> 
 #> A BibTeX entry for LaTeX users is
@@ -327,7 +327,7 @@ citation("ggpmisc")
 #>     title = {ggpmisc: Miscellaneous Extensions to 'ggplot2'},
 #>     author = {Pedro J. Aphalo},
 #>     year = {2024},
-#>     note = {R package version 0.5.5.9001, 
+#>     note = {R package version 0.5.5.9002, 
 #> https://github.com/aphalo/ggpmisc},
 #>     url = {https://docs.r4photobiology.info/ggpmisc/},
 #>   }

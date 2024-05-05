@@ -86,7 +86,7 @@
 <text x='303.64' y='181.22' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
 <text x='306.40' y='181.22' style='font-size: 11.04px; font-family: sans;' textLength='6.45px' lengthAdjust='spacingAndGlyphs'>=</text>
 <text x='312.85' y='181.22' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='315.61' y='181.22' style='font-size: 11.04px; font-family: sans;' textLength='27.63px' lengthAdjust='spacingAndGlyphs'>0.151</text>
+<text x='315.61' y='181.22' style='font-size: 11.04px; font-family: sans;' textLength='27.63px' lengthAdjust='spacingAndGlyphs'>0.152</text>
 <line x1='245.94' y1='152.05' x2='506.26' y2='152.05' style='stroke-width: 1.42;' />
 <polygon points='342.56,162.56 409.64,162.56 409.56,162.56 409.88,162.55 410.20,162.49 410.50,162.37 410.77,162.21 411.02,162.01 411.23,161.77 411.40,161.50 411.53,161.21 411.61,160.90 411.63,160.58 411.63,160.58 411.63,145.81 411.63,145.81 411.61,145.49 411.53,145.18 411.40,144.89 411.23,144.61 411.02,144.38 410.77,144.17 410.50,144.01 410.20,143.90 409.88,143.84 409.64,143.82 342.56,143.82 342.80,143.84 342.48,143.82 342.17,143.86 341.86,143.95 341.57,144.09 341.31,144.27 341.08,144.49 340.89,144.75 340.74,145.03 340.64,145.33 340.58,145.65 340.58,145.81 340.58,160.58 340.58,160.42 340.58,160.74 340.64,161.05 340.74,161.36 340.89,161.64 341.08,161.89 341.31,162.12 341.57,162.30 341.86,162.43 342.17,162.52 342.48,162.56 ' style='stroke-width: 1.07; fill: #FFFFFF;' />
 <text x='343.89' y='154.84' style='font-size: 11.04px; font-style: italic; font-family: sans;' textLength='7.37px' lengthAdjust='spacingAndGlyphs'>P</text>
@@ -152,6 +152,6 @@
 <text x='636.42' y='556.10' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='5.87px' lengthAdjust='spacingAndGlyphs'>E</text>
 <text x='376.10' y='568.24' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='28.14px' lengthAdjust='spacingAndGlyphs'>group</text>
 <text transform='translate(13.05,283.95) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='11.62px' lengthAdjust='spacingAndGlyphs'>y2</text>
-<text x='37.69' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='136.49px' lengthAdjust='spacingAndGlyphs'>stat_multcomp_lm.fun2</text>
+<text x='37.69' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='143.82px' lengthAdjust='spacingAndGlyphs'>stat_multcomp_lm.char2</text>
 </g>
 </svg>

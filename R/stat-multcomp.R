@@ -667,8 +667,10 @@ multcomp_compute_fun <-
                      linfct = linfct.arg,
                      rhs = 0)
     if (is.null(p.adjust.method)) {
+      # we increase maxpts based on the number of levels to ensure convergence
+      # in mvtnorm::pmvnorm
       summary.fm.glht <-
-        summary(fm.glht, test = multcomp::adjusted())
+        summary(fm.glht, test = multcomp::adjusted(maxpts = 4e4 * num.levels))
       # needed for labels
       if (contrasts == "Tukey") {
         p.adjust.method <- "HSD"
@@ -835,7 +837,7 @@ multcomp_compute_fun <-
       if (adj.method.legend) {
         p.crit.label <- paste("\"  \"*italic(P)[\"", adj.label, "\"]^{\"crit\"}~`=`~",
                               mc.critical.p.value, sep = "")
-        z <- tibble::tibble(x = c(0.3, 1:num.levels),
+        z <- tibble::tibble(x = c(0.1, 1:num.levels),
                             x.left.tip = NA_real_,
                             x.right.tip = NA_real_,
                             critical.p.value = mc.critical.p.value,

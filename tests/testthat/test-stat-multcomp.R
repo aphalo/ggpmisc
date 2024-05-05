@@ -45,6 +45,7 @@ library(ggpmisc)
 
 
 test_that("stat_multcomp_contrast_type", {
+  set.seed(4321)
 
   vdiffr::expect_doppelganger("stat_multcomp_bars_tukey",
                               ggplot(my.data, aes(group, y2)) +
@@ -87,6 +88,8 @@ test_that("stat_multcomp_contrast_type", {
 })
 
 test_that("stat_multcomp_many_levels", {
+  set.seed(4321)
+
   vdiffr::expect_doppelganger("stat_multcomp_bars_tukey2",
                               ggplot(subset(my.data, group10 %in% LETTERS[1:6]), aes(group10, y10)) +
                                 stat_boxplot() +
@@ -118,6 +121,8 @@ test_that("stat_multcomp_many_levels", {
 })
 
 test_that("stat_multcomp_geoms", {
+  set.seed(4321)
+
   vdiffr::expect_doppelganger("stat_multcomp_text_pairwise_tukey",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
@@ -146,6 +151,8 @@ test_that("stat_multcomp_geoms", {
 })
 
 test_that("stat_multcomp_label.y", {
+  set.seed(4321)
+
   vdiffr::expect_doppelganger("stat_multcomp_y_top_tukey",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
@@ -218,6 +225,8 @@ test_that("stat_multcomp_label.y", {
 })
 
 test_that("stat_multcomp_adjusted", {
+  set.seed(4321)
+
   vdiffr::expect_doppelganger("stat_multcomp_bonferroni_tukey",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
@@ -235,6 +244,8 @@ test_that("stat_multcomp_adjusted", {
 })
 
 test_that("stat_multcomp_digits", {
+  set.seed(4321)
+
   vdiffr::expect_doppelganger("stat_multcomp_p.digits2",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
@@ -243,21 +254,22 @@ test_that("stat_multcomp_digits", {
   )
 
   # p-value unstable in least significant digit
-  # vdiffr::expect_doppelganger("stat_multcomp_p.digits6",
-  #                             ggplot(my.data, aes(group, y2)) +
-  #                               stat_boxplot() +
-  #                               stat_multcomp(contrasts = "Tukey",
-  #                                             p.digits = 6)
-  # )
+  vdiffr::expect_doppelganger("stat_multcomp_p.digits6",
+                              ggplot(my.data, aes(group, y2)) +
+                                stat_boxplot() +
+                                stat_multcomp(contrasts = "Tukey",
+                                              p.digits = 6)
+  )
 
   # p-value unstable in least significant digit
-  # vdiffr::expect_doppelganger("stat_multcomp_p.digits_Inf",
-  #                             ggplot(my.data, aes(group, y2)) +
-  #                               stat_boxplot() +
-  #                               stat_multcomp(contrasts = "Tukey",
-  #                                             p.digits = Inf)
-  # )
+  vdiffr::expect_doppelganger("stat_multcomp_p.digits_Inf",
+                              ggplot(my.data, aes(group, y2)) +
+                                stat_boxplot() +
+                                stat_multcomp(contrasts = "Tukey",
+                                              p.digits = Inf)
+  )
 
+  # warning is solected by testthat!!
   # testthat::expect_warning(ggplot(my.data, aes(group, y2)) +
   #                            stat_boxplot() +
   #                            stat_multcomp(contrasts = "Tukey",
@@ -274,7 +286,9 @@ test_that("stat_multcomp_digits", {
 })
 
 test_that("stat_multcomp_methods", {
-  vdiffr::expect_doppelganger("stat_multcomp_lm.char",
+  set.seed(4321)
+
+  vdiffr::expect_doppelganger("stat_multcomp_lm.char2",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
                                 stat_multcomp(method = "lm")
@@ -287,6 +301,7 @@ test_that("stat_multcomp_methods", {
                                               p.digits = 2)
   )
 
+  # inconsistent across OSs
   vdiffr::expect_doppelganger("stat_multcomp_lm.char",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
