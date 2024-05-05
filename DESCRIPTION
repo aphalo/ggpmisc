@@ -1,7 +1,7 @@
 Package: ggpmisc
 Type: Package
 Title: Miscellaneous Extensions to 'ggplot2'
-Version: 0.5.5.9002
+Version: 0.5.5.9003
 Date: 2024-05-05
 Authors@R:
     c(
@@ -24,7 +24,7 @@ LazyLoad: TRUE
 ByteCompile: TRUE
 Depends:
     R (>= 4.0.0),
-    ggpp (>= 0.5.6)
+    ggpp (>= 0.5.7)
 Imports:
     grid,
     stats,
