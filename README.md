@@ -7,7 +7,10 @@
 version](https://www.r-pkg.org/badges/version/ggpmisc)](https://cran.r-project.org/package=ggpmisc)
 [![cran
 checks](https://badges.cranchecks.info/worst/ggpmisc.svg)](https://cran.r-project.org/web/checks/check_results_ggpmisc.html)
+[![ggpmisc status
+badge](https://aphalo.r-universe.dev/badges/ggpmisc)](https://aphalo.r-universe.dev/ggpmisc)
 [![R-CMD-check](https://github.com/aphalo/ggpmisc/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/aphalo/ggpmisc/actions/workflows/R-CMD-check.yaml)
+<a href="https://docs.r4photobiology.info/ggpmisc/"><img src="https://img.shields.io/badge/documentation-ggpmisc-informational.svg" alt="" /></a>
 <!-- badges: end -->
 
 ## Purpose
@@ -106,6 +109,8 @@ still available when ‘ggpmisc’ is loaded, but the documentation now
 resides in the new package
 [‘**ggpp**’](https://docs.r4photobiology.info/ggpp/). [![cran
 version](https://www.r-pkg.org/badges/version/ggpp)](https://cran.r-project.org/package=ggpp)
+[![ggpp status
+badge](https://aphalo.r-universe.dev/badges/ggpp)](https://aphalo.r-universe.dev/ggpp)
 <a href="https://docs.r4photobiology.info/ggpp/"><img src="https://img.shields.io/badge/documentation-ggpp-informational.svg" alt="" /></a>
 
 Functions for the manipulation of layers in ggplot objects, together
@@ -114,6 +119,8 @@ package ‘ggplot2’, included in package ‘ggpmisc’ until version 0.2.17
 are now in package
 [‘**gginnards**’](https://docs.r4photobiology.info/gginnards/). [![cran
 version](https://www.r-pkg.org/badges/version/gginnards)](https://cran.r-project.org/package=gginnards)
+[![gginnards status
+badge](https://aphalo.r-universe.dev/badges/gginnards)](https://aphalo.r-universe.dev/gginnards)
 <a href="https://docs.r4photobiology.info/gginnards/"><img src="https://img.shields.io/badge/documentation-gginnards-informational.svg" alt="" /></a>
 
 ## Examples
@@ -257,17 +264,28 @@ ggplot(lynx, as.numeric = FALSE) + geom_line() +
 
 ## Installation
 
-Installation of the most recent stable version from CRAN:
+Installation of the most recent stable version from CRAN (sources, Mac
+and Win binaries):
 
 ``` r
 install.packages("ggpmisc")
 ```
 
-Installation of the current unstable version from GitHub:
+Installation of the current unstable version from R-Universe CRAN-like
+repository (binaries for Mac, Win, Webassembly, and Linux, as well as
+sources available):
 
 ``` r
-# install.packages("devtools")
-devtools::install_github("aphalo/ggpmisc")
+install.packages('ggpmisc', 
+                 repos = c('https://aphalo.r-universe.dev', 
+                           'https://cloud.r-project.org'))
+```
+
+Installation of the current unstable version from GitHub (from sources):
+
+``` r
+# install.packages("remotes")
+remotes::install_github("aphalo/ggpmisc")
 ```
 
 ## Documentation
@@ -278,11 +296,11 @@ Guide*, is available at <https://docs.r4photobiology.info/ggpmisc/>.
 News about updates are regularly posted at
 <https://www.r4photobiology.info/>.
 
-Chapter 7 in Aphalo (2020) explains basic concepts of the grammar of
-graphics as implemented in ‘ggplot2’ as well as extensions to this
-grammar including several of those made available by packages ‘ggpp’ and
-‘ggpmisc’. Open access supplementary chapters and other information
-related to the book is available at <https://www.learnr-book.info/>.
+Chapter 7 in Aphalo (2020) and Chapter 9 in Aphalo (2024) explain basic
+concepts of the grammar of graphics as implemented in ‘ggplot2’ as well
+as extensions to this grammar including several of those made available
+by packages ‘ggpp’ and ‘ggpmisc’. Information related to the book is
+available at <https://www.learnr-book.info/>.
 
 ## Contributing
 
@@ -300,7 +318,7 @@ citation("ggpmisc")
 #> To cite package 'ggpmisc' in publications use:
 #> 
 #>   Aphalo P (2024). _ggpmisc: Miscellaneous Extensions to 'ggplot2'_. R
-#>   package version 0.5.5.9000, https://github.com/aphalo/ggpmisc,
+#>   package version 0.5.5.9002, https://github.com/aphalo/ggpmisc,
 #>   <https://docs.r4photobiology.info/ggpmisc/>.
 #> 
 #> A BibTeX entry for LaTeX users is
@@ -309,7 +327,7 @@ citation("ggpmisc")
 #>     title = {ggpmisc: Miscellaneous Extensions to 'ggplot2'},
 #>     author = {Pedro J. Aphalo},
 #>     year = {2024},
-#>     note = {R package version 0.5.5.9000, 
+#>     note = {R package version 0.5.5.9002, 
 #> https://github.com/aphalo/ggpmisc},
 #>     url = {https://docs.r4photobiology.info/ggpmisc/},
 #>   }
@@ -329,8 +347,12 @@ significant contributions from several of the authors and maintainers of
 
 ## References
 
-Aphalo, Pedro J. (2020) *Learn R: As a Language.* The R Series. Boca
-Raton and London: Chapman and Hall/CRC Press. ISBN: 978-0-367-18253-3.
+Aphalo, Pedro J. (2024) *Learn R: As a Language.* 2ed. The R Series.
+Boca Raton and London: Chapman and Hall/CRC Press. ISBN: 9781032516998.
+466 pp. 
+
+Aphalo, Pedro J. (2020) *Learn R: As a Language.* 1ed. The R Series.
+Boca Raton and London: Chapman and Hall/CRC Press. ISBN: 9780367182533.
 350 pp. 
 
 Wickham, Hadley. 2010. “A Layered Grammar of Graphics.” Journal of
@@ -339,6 +361,6 @@ Computational and Graphical Statistics 19 (1): 3–28.
 
 ## License
 
-© 2016-2023 Pedro J. Aphalo (<pedro.aphalo@helsinki.fi>). Released under
+© 2016-2024 Pedro J. Aphalo (<pedro.aphalo@helsinki.fi>). Released under
 the GPL, version 2 or greater. This software carries no warranty of any
 kind.

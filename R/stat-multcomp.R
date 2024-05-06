@@ -377,22 +377,6 @@ stat_multcomp <- function(mapping = NULL, data = NULL,
     warning("\"npc\"-based geometries not supported, using\"", geom, "\" instead.")
   }
 
-  if (label.type == "bars") {
-    if (is.null(vstep)) {
-      vstep <- 0.125
-    }
-    if (is.null(label.y)) {
-      label.y <- "top"
-    }
-  } else if (label.type %in% c("letters", "LETTERS", "numeric")) {
-    if (is.null(vstep)) {
-      vstep <- 0
-    }
-    if (is.null(label.y)) {
-      label.y <- "bottom"
-    }
-  }
-
   if (is.null(output.type)) {
     if (geom %in% c("richtext", "textbox")) {
       output.type <- "markdown"
@@ -502,10 +486,28 @@ multcomp_compute_fun <-
     num.levels <- length(unique(data[[orientation]]))
     if (length(contrasts) == 1 &&
             (contrasts == "Tukey" && num.levels > 5 && label.type == "bars")) {
-      warning("Maximum number of factor levels supported with Tukey contrasts and bars is five. ",
-           "Resetting to 'label.type = \"letters\"'.")
-      label.type <- "letters"
+      warning("Tukey contrasts with bars support at most five groups, not ",
+              num.levels, ". Skipping test")
+      return(data.frame())
     }
+
+    # default position of labels has to be set after label.type is known
+    if (label.type == "bars") {
+      if (is.null(vstep)) {
+        vstep <- 0.125
+      }
+      if (is.null(label.y)) {
+        label.y <- "top"
+      }
+    } else if (label.type %in% c("letters", "LETTERS", "numeric")) {
+      if (is.null(vstep)) {
+        vstep <- 0
+      }
+      if (is.null(label.y)) {
+        label.y <- "bottom"
+      }
+    }
+
     if (nrow(data) < 2 * num.levels) {
       stop("Too few observations per factor level. ",
            "Did you map to ", orientation, " a continuous variable instead of a factor?")
@@ -611,6 +613,9 @@ multcomp_compute_fun <-
       warning(sprintf("P-value for main effect = %.3f > cutoff = %.3f, skipping tests!",
                       p.value, fm.cutoff.p.value))
       return(data.frame())
+    } else if (any(is.na(fm[["coefficients"]][-1]))) {
+      warning("Problem with model fitting: NAs returned, skipping tests!")
+      return(data.frame())
     }
 
     n <- length(residuals(fm))
@@ -662,8 +667,11 @@ multcomp_compute_fun <-
                      linfct = linfct.arg,
                      rhs = 0)
     if (is.null(p.adjust.method)) {
+      # we increase maxpts based on the number of levels to ensure convergence
+      # in mvtnorm::pmvnorm
       summary.fm.glht <-
-        summary(fm.glht, test = multcomp::adjusted())
+        summary(fm.glht, test = multcomp::adjusted(maxpts = 4e4 * num.levels))
+      # needed for labels
       if (contrasts == "Tukey") {
         p.adjust.method <- "HSD"
       } else if (contrasts == "Dunnet"){
@@ -829,7 +837,7 @@ multcomp_compute_fun <-
       if (adj.method.legend) {
         p.crit.label <- paste("\"  \"*italic(P)[\"", adj.label, "\"]^{\"crit\"}~`=`~",
                               mc.critical.p.value, sep = "")
-        z <- tibble::tibble(x = c(0.3, 1:num.levels),
+        z <- tibble::tibble(x = c(0.1, 1:num.levels),
                             x.left.tip = NA_real_,
                             x.right.tip = NA_real_,
                             critical.p.value = mc.critical.p.value,
@@ -841,7 +849,7 @@ multcomp_compute_fun <-
                             mc.contrast = contrasts,
                             n = n,
                             letters.label = c(p.crit.label ,
-                                              Letters[order(names(Letters))]),
+                                              Letters[order(as.numeric(names(Letters)))]),
                             just = c("inward", rep("center", length(Letters))))
       } else {
         z <- tibble::tibble(x = 1:num.levels,
@@ -855,7 +863,7 @@ multcomp_compute_fun <-
                             mc.adjusted = p.adjust.method,
                             mc.contrast = contrasts,
                             n = n,
-                            letters.label = Letters[order(names(Letters))],
+                            letters.label = Letters[order(as.numeric(names(Letters)))],
                             just = rep("center", length(Letters)))
       }
 
