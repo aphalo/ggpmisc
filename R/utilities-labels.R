@@ -408,6 +408,115 @@ t_value_label <- function(value,
   }
 }
 
+z_value_label <- function(value,
+                          digits = 4,
+                          fixed = FALSE,
+                          output.type = "expression",
+                          decimal.mark = getOption("OutDec", default = ".")) {
+  italic_label(value = value,
+               value.name = "z",
+               digits = digits,
+               fixed = fixed,
+               output.type = output.type,
+               decimal.mark = decimal.mark)
+}
+
+S_value_label <- function(value,
+                          digits = 4,
+                          fixed = FALSE,
+                          output.type = "expression",
+                          decimal.mark = getOption("OutDec", default = ".")) {
+  italic_label(value = value,
+               value.name = "S",
+               digits = digits,
+               fixed = fixed,
+               output.type = output.type,
+               decimal.mark = decimal.mark)
+}
+
+mean_value_label <- function(value,
+                             digits = 4,
+                             fixed = FALSE,
+                             output.type = "expression",
+                             decimal.mark = getOption("OutDec", default = ".")) {
+  value.name <- if (output.type == "expression") {
+    "bar(x)"
+  } else if (output.type %in% c("latex", "tex", "tikz")) {
+    "\\bar{x}"
+  } else if (output.type == "markdown") {
+    "mean(x)"
+  } else {
+    "mean(x)"
+  }
+
+  italic_label(value = value,
+               value.name = value.name,
+               digits = digits,
+               fixed = fixed,
+               output.type = output.type,
+               decimal.mark = decimal.mark)
+}
+
+var_value_label <- function(value,
+                             digits = 4,
+                             fixed = FALSE,
+                             output.type = "expression",
+                             decimal.mark = getOption("OutDec", default = ".")) {
+  value.name <- if (output.type == "expression") {
+    "sigma^2"
+  } else if (output.type %in% c("latex", "tex", "tikz")) {
+    "\\sigma^2"
+  } else if (output.type == "markdown") {
+    "&sigma;<sup>2</sup>"
+  } else {
+    "s^2"
+  }
+
+  italic_label(value = value,
+               value.name = value.name,
+               digits = digits,
+               fixed = fixed,
+               output.type = output.type,
+               decimal.mark = decimal.mark)
+}
+
+sd_value_label <- function(value,
+                            digits = 4,
+                            fixed = FALSE,
+                            output.type = "expression",
+                            decimal.mark = getOption("OutDec", default = ".")) {
+  value.name <- if (output.type == "expression") {
+    "sigma"
+  } else if (output.type %in% c("latex", "tex", "tikz")) {
+    "\\sigma"
+  } else if (output.type == "markdown") {
+    "&sigma;"
+  } else {
+    "s.d."
+  }
+
+  italic_label(value = value,
+               value.name = value.name,
+               digits = digits,
+               fixed = fixed,
+               output.type = output.type,
+               decimal.mark = decimal.mark)
+}
+
+se_value_label <- function(value,
+                           digits = 4,
+                           fixed = FALSE,
+                           output.type = "expression",
+                           decimal.mark = getOption("OutDec", default = ".")) {
+
+  italic_label(value = value,
+               value.name = "s.e.",
+               digits = digits,
+               fixed = fixed,
+               output.type = output.type,
+               decimal.mark = decimal.mark)
+}
+
 #' @rdname plain_label
 #'
 #' @param method character The method used to estimate correlation, which

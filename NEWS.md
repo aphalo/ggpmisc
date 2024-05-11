@@ -7,6 +7,7 @@ editor_options:
 # ggpmisc 0.5.7
 
 -   Export functions used for formatting parameter estimates into character strings.
+-   Support decreasing-power order of polynomial terms in `stat_poly_eq()`, `stat_quant_eq()` and `stat_ma_eq()`.
 
 # ggpmisc 0.5.6
 

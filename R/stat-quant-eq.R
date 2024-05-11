@@ -55,6 +55,8 @@
 #'   the fitted coefficients and rho in labels.
 #' @param coef.keep.zeros logical Keep or drop trailing zeros when formatting
 #'   the fitted coefficients and F-value.
+#' @param decreasing logical It specifies the order of the terms in the
+#'   returned character string; in increasing (default) or decreasing powers.
 #' @param label.x,label.y \code{numeric} with range 0..1 "normalized parent
 #'   coordinates" (npc units) or character if using \code{geom_text_npc()} or
 #'   \code{geom_label_npc()}. If using \code{geom_text()} or \code{geom_label()}
@@ -226,7 +228,17 @@
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   stat_quant_line() +
-#'   stat_quant_eq(use_label(c("eq", "method")))
+#'   stat_quant_eq(mapping = use_label("eq"))
+#'
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   stat_quant_line() +
+#'   stat_quant_eq(mapping = use_label("eq"), decreasing = TRUE)
+#'
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   stat_quant_line() +
+#'   stat_quant_eq(mapping = use_label(c("eq", "method")))
 #'
 #' # same formula as default
 #' ggplot(my.data, aes(x, y)) +
@@ -243,15 +255,15 @@
 #' # using color
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   stat_quant_line(aes(color = after_stat(quantile.f))) +
-#'   stat_quant_eq(aes(color = after_stat(quantile.f))) +
+#'   stat_quant_line(mapping = aes(color = after_stat(quantile.f))) +
+#'   stat_quant_eq(mapping = aes(color = after_stat(quantile.f))) +
 #'   labs(color = "Quantiles")
 #'
 #' # location and colour
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   stat_quant_line(aes(color = after_stat(quantile.f))) +
-#'   stat_quant_eq(aes(color = after_stat(quantile.f)),
+#'   stat_quant_line(mapping = aes(color = after_stat(quantile.f))) +
+#'   stat_quant_eq(mapping = aes(color = after_stat(quantile.f)),
 #'                 label.y = "bottom", label.x = "right") +
 #'   labs(color = "Quantiles")
 #'
@@ -301,7 +313,7 @@
 #'        grp.label = group)) +
 #'   geom_point() +
 #'   stat_quant_band(formula = formula, color = "black", linewidth = 0.75) +
-#'   stat_quant_eq(use_label(c("grp", "eq"), sep = "*\": \"*"),
+#'   stat_quant_eq(mapping = use_label(c("grp", "eq"), sep = "*\": \"*"),
 #'                 formula = formula) +
 #'   expand_limits(y = 3) +
 #'   theme_classic()
@@ -312,7 +324,7 @@
 #' ggplot(my.data, aes(x, y + 1)) +
 #'   geom_point() +
 #'   stat_quant_line(formula = formula.trans) +
-#'   stat_quant_eq(use_label("eq"),
+#'   stat_quant_eq(mapping = use_label("eq"),
 #'                formula = formula.trans,
 #'                eq.x.rhs = "~x^2",
 #'                eq.with.lhs = "y + 1~~`=`~~")
@@ -333,10 +345,10 @@
 #' ggplot(my.data, aes(x, y2, color = group, grp.label = group)) +
 #'   geom_point() +
 #'   stat_quant_line(method = "rq", formula = formula,
-#'                 quantiles = c(0.05, 0.5, 0.95),
-#'                 linewidth = 0.5) +
-#'   stat_quant_eq(aes(label = paste(after_stat(grp.label), "*\": \"*",
-#'                                    after_stat(eq.label), sep = "")),
+#'                   quantiles = c(0.05, 0.5, 0.95),
+#'                   linewidth = 0.5) +
+#'   stat_quant_eq(mapping = aes(label = paste(after_stat(grp.label), "*\": \"*",
+#'                                             after_stat(eq.label), sep = "")),
 #'                 quantiles = c(0.05, 0.5, 0.95),
 #'                 formula = formula, size = 3)
 #'
@@ -345,9 +357,9 @@
 #'   geom_point() +
 #'   stat_quant_band(method = "rq", formula = formula,
 #'                   quantiles = c(0.05, 0.5, 0.95)) +
-#'   stat_quant_eq(aes(label = sprintf("%s*\": \"*%s",
-#'                                     after_stat(grp.label),
-#'                                     after_stat(eq.label))),
+#'   stat_quant_eq(mapping = aes(label = sprintf("%s*\": \"*%s",
+#'                                               after_stat(grp.label),
+#'                                               after_stat(eq.label))),
 #'                 quantiles = c(0.05, 0.5, 0.95),
 #'                 formula = formula, size = 3)
 #'
@@ -377,7 +389,7 @@
 #' if (gginnards.installed)
 #'   ggplot(my.data, aes(x, y)) +
 #'     geom_point() +
-#'     stat_quant_eq(aes(label = after_stat(eq.label)),
+#'     stat_quant_eq(mapping = aes(label = after_stat(eq.label)),
 #'                   formula = formula, geom = "debug",
 #'                   output.type = "markdown")
 #'
@@ -419,6 +431,7 @@ stat_quant_eq <- function(mapping = NULL, data = NULL,
                          eq.x.rhs = NULL,
                          coef.digits = 3,
                          coef.keep.zeros = TRUE,
+                         decreasing = FALSE,
                          rho.digits = 2,
                          label.x = "left", label.y = "top",
                          label.x.npc = NULL, label.y.npc = NULL,
@@ -487,6 +500,7 @@ stat_quant_eq <- function(mapping = NULL, data = NULL,
                    eq.x.rhs = eq.x.rhs,
                    coef.digits = coef.digits,
                    coef.keep.zeros = coef.keep.zeros,
+                   decreasing = decreasing,
                    rho.digits = rho.digits,
                    label.x = label.x,
                    label.y = label.y,
@@ -524,6 +538,7 @@ quant_eq_compute_group_fun <- function(data,
                                        eq.x.rhs,
                                        coef.digits,
                                        coef.keep.zeros,
+                                       decreasing,
                                        rho.digits,
                                        label.x,
                                        label.y,
@@ -753,6 +768,7 @@ quant_eq_compute_group_fun <- function(data,
       eq.char[q] <- coefs2poly_eq(coefs = coefs.ls[[q]],
                                   coef.digits = coef.digits,
                                   coef.keep.zeros = coef.keep.zeros,
+                                  decreasing = decreasing,
                                   eq.x.rhs = eq.x.rhs,
                                   lhs = lhs,
                                   output.type = output.type,

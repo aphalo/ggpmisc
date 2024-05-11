@@ -52,6 +52,8 @@
 #'   the fitted coefficients and F-value.
 #' @param coef.keep.zeros logical Keep or drop trailing zeros when formatting
 #'   the fitted coefficients and F-value.
+#' @param decreasing logical It specifies the order of the terms in the
+#'   returned character string; in increasing (default) or decreasing powers.
 #' @param rr.digits,p.digits integer Number of digits after the decimal point to
 #'   use for \eqn{R^2} and P-value in labels. If \code{Inf}, use exponential
 #'   notation with three decimal places.
@@ -254,6 +256,12 @@
 #'   geom_point() +
 #'   stat_poly_line(formula = formula) +
 #'   stat_poly_eq(use_label("eq"), formula = formula)
+#'
+#' # other labels
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   stat_poly_line(formula = formula) +
+#'   stat_poly_eq(use_label("eq"), formula = formula, decreasing = TRUE)
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
@@ -468,6 +476,7 @@ stat_poly_eq <- function(mapping = NULL, data = NULL,
                          rsquared.conf.level = 0.95,
                          coef.digits = 3,
                          coef.keep.zeros = TRUE,
+                         decreasing = FALSE,
                          rr.digits = 2,
                          f.digits = 3,
                          p.digits = 3,
@@ -563,6 +572,7 @@ stat_poly_eq <- function(mapping = NULL, data = NULL,
                    rsquared.conf.level = rsquared.conf.level,
                    coef.digits = coef.digits,
                    coef.keep.zeros = coef.keep.zeros,
+                   decreasing = decreasing,
                    rr.digits = rr.digits,
                    f.digits = f.digits,
                    p.digits = p.digits,
@@ -605,6 +615,7 @@ poly_eq_compute_group_fun <- function(data,
                                       rsquared.conf.level,
                                       coef.digits,
                                       coef.keep.zeros,
+                                      decreasing,
                                       rr.digits,
                                       f.digits,
                                       p.digits,
@@ -828,6 +839,7 @@ poly_eq_compute_group_fun <- function(data,
     eq.char <- coefs2poly_eq(coefs = coefs,
                              coef.digits = coef.digits,
                              coef.keep.zeros = coef.keep.zeros,
+                             decreasing = decreasing,
                              eq.x.rhs = eq.x.rhs,
                              lhs = lhs,
                              output.type = output.type,

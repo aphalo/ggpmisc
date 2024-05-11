@@ -8,7 +8,7 @@ coefs2poly_eq(
   coefs,
   coef.digits = 3L,
   coef.keep.zeros = TRUE,
-  powers.decreasing = FALSE,
+  decreasing = FALSE,
   eq.x.rhs = "x",
   lhs = "y~`=`~",
   output.type = "expression",
@@ -16,14 +16,14 @@ coefs2poly_eq(
 )
 }
 \arguments{
-\item{coefs}{numeric}
+\item{coefs}{numeric Terms always sorted by increasing powers.}
 
 \item{coef.digits}{integer}
 
 \item{coef.keep.zeros}{logical This flag refers to trailing zeros.}
 
-\item{powers.decreasing}{logical It specifies the order of the terms; in
-increasing (default) or decreasing powers.}
+\item{decreasing}{logical It specifies the order of the terms in the
+returned character string; in increasing (default) or decreasing powers.}
 
 \item{eq.x.rhs}{character}
 
@@ -48,6 +48,7 @@ Terms with zero-valued coefficients are dropped from the polynomial.
 coefs2poly_eq(c(1, 2, 0, 4, 5, 2e-5))
 coefs2poly_eq(c(1, 2, 0, 4, 5, 2e-5), output.type = "latex")
 coefs2poly_eq(0:2)
+coefs2poly_eq(0:2, decreasing = TRUE)
 coefs2poly_eq(c(1, 2, 0, 4, 5), coef.keep.zeros = TRUE)
 coefs2poly_eq(c(1, 2, 0, 4, 5), coef.keep.zeros = FALSE)
 

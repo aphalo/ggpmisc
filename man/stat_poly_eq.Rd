@@ -22,6 +22,7 @@ stat_poly_eq(
   rsquared.conf.level = 0.95,
   coef.digits = 3,
   coef.keep.zeros = TRUE,
+  decreasing = FALSE,
   rr.digits = 2,
   f.digits = 3,
   p.digits = 3,
@@ -93,6 +94,9 @@ the fitted coefficients and F-value.}
 
 \item{coef.keep.zeros}{logical Keep or drop trailing zeros when formatting
 the fitted coefficients and F-value.}
+
+\item{decreasing}{logical It specifies the order of the terms in the
+returned character string; in increasing (default) or decreasing powers.}
 
 \item{rr.digits, p.digits}{integer Number of digits after the decimal point to
 use for \eqn{R^2} and P-value in labels. If \code{Inf}, use exponential
@@ -306,6 +310,12 @@ ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
   stat_poly_eq(use_label("eq"), formula = formula)
+
+# other labels
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_poly_line(formula = formula) +
+  stat_poly_eq(use_label("eq"), formula = formula, decreasing = TRUE)
 
 ggplot(my.data, aes(x, y)) +
   geom_point() +

@@ -23,6 +23,7 @@ stat_ma_eq(
   small.p = FALSE,
   coef.digits = 3,
   coef.keep.zeros = TRUE,
+  decreasing = FALSE,
   rr.digits = 2,
   theta.digits = 2,
   p.digits = max(1, ceiling(log10(nperm))),
@@ -91,6 +92,9 @@ the fitted coefficients.}
 
 \item{coef.keep.zeros}{logical Keep or drop trailing zeros when formatting
 the fitted coefficients and F-value.}
+
+\item{decreasing}{logical It specifies the order of the terms in the
+returned character string; in increasing (default) or decreasing powers.}
 
 \item{rr.digits, theta.digits, p.digits}{integer Number of digits after the
 decimal point to use for R^2, theta and P-value in labels. If \code{Inf},
@@ -246,16 +250,26 @@ ggplot(my.data, aes(x, y)) +
   stat_ma_line() +
   stat_ma_eq()
 
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_ma_line() +
+  stat_ma_eq(mapping = use_label("eq"))
+
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_ma_line() +
+  stat_ma_eq(mapping = use_label("eq"), decreasing = TRUE)
+
 # use_label() can assemble and map a combined label
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_ma_line(method = "MA") +
-  stat_ma_eq(use_label(c("eq", "R2", "P")))
+  stat_ma_eq(mapping = use_label(c("eq", "R2", "P")))
 
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_ma_line(method = "MA") +
-  stat_ma_eq(use_label(c("R2", "P", "theta", "method")))
+  stat_ma_eq(mapping = use_label(c("R2", "P", "theta", "method")))
 
 # using ranged major axis regression
 ggplot(my.data, aes(x, y)) +
@@ -263,7 +277,7 @@ ggplot(my.data, aes(x, y)) +
   stat_ma_line(method = "RMA",
                range.y = "interval",
                range.x = "interval") +
-  stat_ma_eq(use_label(c("eq", "R2", "P")),
+  stat_ma_eq(mapping = use_label(c("eq", "R2", "P")),
              method = "RMA",
              range.y = "interval",
              range.x = "interval")
@@ -272,7 +286,7 @@ ggplot(my.data, aes(x, y)) +
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_ma_line(method = "MA") +
-  stat_ma_eq(use_label(c("eq", "R2")),
+  stat_ma_eq(mapping = use_label(c("eq", "R2")),
              method = "MA",
              nperm = 0)
 
@@ -281,13 +295,13 @@ ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_ma_line(formula = x ~ y) +
   stat_ma_eq(formula = x ~ y,
-             use_label(c("eq", "R2", "P")))
+             mapping = use_label(c("eq", "R2", "P")))
 
 # modifying both variables within aes()
 ggplot(my.data, aes(log(x + 10), log(y + 10))) +
   geom_point() +
   stat_poly_line() +
-  stat_poly_eq(use_label("eq"),
+  stat_poly_eq(mapping = use_label("eq"),
                eq.x.rhs = "~~log(x+10)",
                eq.with.lhs = "log(y+10)~~`=`~~")
 
@@ -302,7 +316,7 @@ ggplot(my.data,
        aes(x, y,  shape = group, linetype = group, grp.label = group)) +
   geom_point() +
   stat_ma_line(color = "black") +
-  stat_ma_eq(use_label(c("grp", "eq", "R2"))) +
+  stat_ma_eq(mapping = use_label(c("grp", "eq", "R2"))) +
   theme_classic()
 
 # Inspecting the returned data using geom_debug()
@@ -324,7 +338,7 @@ if (gginnards.installed)
 if (gginnards.installed)
   ggplot(my.data, aes(x, y)) +
     geom_point() +
-    stat_ma_eq(aes(label = after_stat(eq.label)),
+    stat_ma_eq(mapping = aes(label = after_stat(eq.label)),
                geom = "debug",
                output.type = "markdown")
 
