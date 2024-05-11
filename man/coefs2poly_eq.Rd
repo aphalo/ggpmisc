@@ -8,6 +8,7 @@ coefs2poly_eq(
   coefs,
   coef.digits = 3L,
   coef.keep.zeros = TRUE,
+  powers.decreasing = FALSE,
   eq.x.rhs = "x",
   lhs = "y~`=`~",
   output.type = "expression",
@@ -19,7 +20,10 @@ coefs2poly_eq(
 
 \item{coef.digits}{integer}
 
-\item{coef.keep.zeros}{logical}
+\item{coef.keep.zeros}{logical This flag refers to trailing zeros.}
+
+\item{powers.decreasing}{logical It specifies the order of the terms; in
+increasing (default) or decreasing powers.}
 
 \item{eq.x.rhs}{character}
 
@@ -37,7 +41,14 @@ A \code{character} string.
 Uses a vector of coefficients from a model fit of a polynomial to build
 the fitted model equation with embedded coefficient estimates.
 }
+\note{
+Terms with zero-valued coefficients are dropped from the polynomial.
+}
 \examples{
-coefs2poly_eq(1:5)
+coefs2poly_eq(c(1, 2, 0, 4, 5, 2e-5))
+coefs2poly_eq(c(1, 2, 0, 4, 5, 2e-5), output.type = "latex")
+coefs2poly_eq(0:2)
+coefs2poly_eq(c(1, 2, 0, 4, 5), coef.keep.zeros = TRUE)
+coefs2poly_eq(c(1, 2, 0, 4, 5), coef.keep.zeros = FALSE)
 
 }

@@ -4,6 +4,10 @@ editor_options:
     wrap: 72
 ---
 
+# ggpmisc 0.5.7
+
+-   Export functions used for formatting parameter estimates into character strings.
+
 # ggpmisc 0.5.6
 
 -   Rename parameter `trans` of `scale_y_Pvalue()` into `transform` to track deprecation in 'ggplot2' 3.5.0.

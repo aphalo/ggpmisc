@@ -73,11 +73,14 @@ build_lhs <- function(output.type = "expression",
 #'
 #' @return A \code{character} string.
 #'
+#' @examples
+#' poly2character(1:3)
+#' poly2character(1:3, decreasing = TRUE)
+#'
 #' @export
 #'
 poly2character <- function (x,
                             decreasing = FALSE,
-                            ...,
                             digits = 3,
                             keep.zeros = TRUE) {
   if (keep.zeros) {
@@ -146,9 +149,11 @@ typeset_numbers <- function(eq.char, output.type) {
 #' Uses a vector of coefficients from a model fit of a polynomial to build
 #' the fitted model equation with embedded coefficient estimates.
 #'
-#' @param coefs numeric
+#' @param coefs numeric Terms always sorted by increasing powers.
 #' @param coef.digits integer
 #' @param coef.keep.zeros logical This flag refers to trailing zeros.
+#' @param decreasing logical It specifies the order of the terms in the
+#'   returned character string; in increasing (default) or decreasing powers.
 #' @param eq.x.rhs character
 #' @param lhs character
 #' @param output.type character One of "expression", "latex", "tex", "text",
@@ -163,6 +168,7 @@ typeset_numbers <- function(eq.char, output.type) {
 #' coefs2poly_eq(c(1, 2, 0, 4, 5, 2e-5))
 #' coefs2poly_eq(c(1, 2, 0, 4, 5, 2e-5), output.type = "latex")
 #' coefs2poly_eq(0:2)
+#' coefs2poly_eq(0:2, decreasing = TRUE)
 #' coefs2poly_eq(c(1, 2, 0, 4, 5), coef.keep.zeros = TRUE)
 #' coefs2poly_eq(c(1, 2, 0, 4, 5), coef.keep.zeros = FALSE)
 #'
@@ -171,6 +177,7 @@ typeset_numbers <- function(eq.char, output.type) {
 coefs2poly_eq <- function(coefs,
                           coef.digits = 3L,
                           coef.keep.zeros = TRUE,
+                          decreasing = FALSE,
                           eq.x.rhs = "x",
                           lhs = "y~`=`~",
                           output.type = "expression",
@@ -181,6 +188,7 @@ coefs2poly_eq <- function(coefs,
     warning("'coef.digits < 3' Likely information loss!")
   }
   eq.char <- poly2character(polynom::as.polynomial(coefs),
+                            decreasing = decreasing,
                             digits = coef.digits,
                             keep.zeros = coef.keep.zeros)
   eq.char <- typeset_numbers(eq.char, output.type)

@@ -4,7 +4,7 @@
 \alias{poly2character}
 \title{Convert a polynomial into character string}
 \usage{
-poly2character(x, decreasing = FALSE, ..., digits = 3, keep.zeros = TRUE)
+poly2character(x, decreasing = FALSE, digits = 3, keep.zeros = TRUE)
 }
 \arguments{
 \item{x}{a \code{polynomial} object.}
@@ -29,4 +29,9 @@ are preserved.
 This is an edit of the code in package 'polynom' so that trailing zeros are
  retained during the conversion. It is not defined using a different name
  so as not to interfere with the original.
+}
+\examples{
+poly2character(1:3)
+poly2character(1:3, decreasing = TRUE)
+
 }
