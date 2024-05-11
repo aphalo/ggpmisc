@@ -44,6 +44,8 @@ reference:
   - title: Utilities
     desc: Low level functions used to build some of the functions above, but possibly useful also in other contexts.
     contents:
+    - sprintf_dm
+    - plain_label
     - find_peaks
     - coef.lmodel2
     - confint.lmodel2
