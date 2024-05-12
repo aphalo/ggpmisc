@@ -241,7 +241,11 @@ p_value_label <- function(value,
                           decimal.mark = getOption("OutDec", default = ".")) {
 
   stopifnot(length(value) == 1L,
-            "Out of range P-value" = value >= 0 & value <= 1)
+            "Out of range P-value" = is.na(value) | (value >= 0 & value <= 1),
+            "Negative value of 'digits'" = digits > 0)
+  if (digits < 2) {
+    warning("'digits < 2' Likely information loss!")
+  }
   p.value <- value
 
   if (is.na(p.value) || is.nan(p.value)) {
@@ -309,7 +313,7 @@ f_value_label <- function(value,
                           decimal.mark = getOption("OutDec", default = ".")) {
 
   stopifnot(length(value) == 1L,
-            "Out of range F-value" = value >= 0)
+            "Out of range F-value" = is.na(value) | value >= 0)
   f.value <- value
 
   if (is.na(f.value) || is.nan(f.value)) {
@@ -413,6 +417,7 @@ z_value_label <- function(value,
                           fixed = FALSE,
                           output.type = "expression",
                           decimal.mark = getOption("OutDec", default = ".")) {
+
   italic_label(value = value,
                value.name = "z",
                digits = digits,
@@ -426,6 +431,7 @@ S_value_label <- function(value,
                           fixed = FALSE,
                           output.type = "expression",
                           decimal.mark = getOption("OutDec", default = ".")) {
+
   italic_label(value = value,
                value.name = "S",
                digits = digits,
@@ -439,6 +445,7 @@ mean_value_label <- function(value,
                              fixed = FALSE,
                              output.type = "expression",
                              decimal.mark = getOption("OutDec", default = ".")) {
+
   value.name <- if (output.type == "expression") {
     "bar(x)"
   } else if (output.type %in% c("latex", "tex", "tikz")) {
@@ -481,10 +488,10 @@ var_value_label <- function(value,
 }
 
 sd_value_label <- function(value,
-                            digits = 4,
-                            fixed = FALSE,
-                            output.type = "expression",
-                            decimal.mark = getOption("OutDec", default = ".")) {
+                           digits = 4,
+                           fixed = FALSE,
+                           output.type = "expression",
+                           decimal.mark = getOption("OutDec", default = ".")) {
   value.name <- if (output.type == "expression") {
     "sigma"
   } else if (output.type %in% c("latex", "tex", "tikz")) {
@@ -543,7 +550,11 @@ r_label <- function(value,
                     decimal.mark = getOption("OutDec", default = ".")) {
 
   stopifnot(length(value) == 1L,
-            "Out of range R" = value >= -1 & value <= 1)
+            "Out of range R" = is.na(value) || abs(value) <= 1,
+            "Negative value of 'digits'" = digits > 0)
+  if (digits < 2) {
+    warning("'digits < 2' Likely information loss!")
+  }
   r.value <- value
 
   if (is.na(r.value) || is.nan(r.value)) {
@@ -639,7 +650,11 @@ rr_label <- function(value,
                      decimal.mark = getOption("OutDec", default = ".")) {
 
   stopifnot(length(value) == 1L,
-            "Out of range R^2" = value >= 0 & value <= 1)
+            "Out of range R^2" = is.na(value) | (value >= 0 & value <= 1),
+            "Negative value of 'digits'" = digits > 0)
+  if (digits < 2) {
+    warning("'digits < 2' Likely information loss!")
+  }
   rr.value <- value
 
   if (is.na(rr.value) || is.nan(rr.value)) {
@@ -698,7 +713,11 @@ adj_rr_label <- function(value,
                          output.type = "expression",
                          decimal.mark = getOption("OutDec", default = ".")) {
 
-  stopifnot(length(value) == 1L)
+  stopifnot(length(value) == 1L,
+            "Negative value of 'digits'" = digits > 0)
+  if (digits < 2) {
+    warning("'digits < 2' Likely information loss!")
+  }
   adj.rr.value <- value
 
   if (is.na(adj.rr.value) || is.nan(adj.rr.value)) {
@@ -740,6 +759,7 @@ adj_rr_label <- function(value,
 #' @examples
 #' rr_ci_label(value = c(0.3, 0.4), conf.level = 0.95)
 #' rr_ci_label(value = c(0.3, 0.4), conf.level = 0.95, output.type = "text")
+#' rr_ci_label(value = c(0.3, 0.4), conf.level = 0.95, range.sep = ",")
 #'
 #' @export
 #'
@@ -753,17 +773,15 @@ rr_ci_label <- function(value,
                         decimal.mark = getOption("OutDec", default = ".")) {
 
   stopifnot(length(value) == 2L,
-            "Out of range P-value" = all(value >= -1 & value <= 1))
+            "Out of range R^2-value" = all(is.na(value) | (value >= 0 & value <= 1)),
+            "Negative value of 'digits'" = digits > 0)
+  if (digits < 2) {
+    warning("'digits < 2' Likely information loss!")
+  }
   rr.ci.value <- sort(value)
 
   if (is.null(range.sep)) {
-    if (output.type == "expression") {
-      range.sep <- "*ldots*"
-    } else if (output.type %in% c("latex", "tex")) {
-      range.sep <- "\\ldots "
-    } else {
-      range.sep <- "..."
-    }
+    range.sep <- c("." = ", ", "," = "; ")[decimal.mark]
   }
 
   if (any(is.na(rr.ci.value) | is.nan(rr.ci.value))) {
@@ -774,12 +792,12 @@ rr_ci_label <- function(value,
   rr.ci.char <- character(2)
   rr.ci.char[1] <- value2char(value = rr.ci.value[1],
                               digits = digits,
-                              output.type = output.type,
+                              output.type = "text",
                               decimal.mark = decimal.mark,
                               fixed = fixed)
   rr.ci.char[2] <- value2char(value = rr.ci.value[2],
                               digits = digits,
-                              output.type = output.type,
+                              output.type = "text",
                               decimal.mark = decimal.mark,
                               fixed = TRUE)
   rr.ci.char <- paste(rr.ci.char[1], rr.ci.char[2], sep = range.sep)
@@ -788,11 +806,7 @@ rr_ci_label <- function(value,
   } else {
     conf.level.digits = 0L
   }
-  conf.level.char <- value2char(conf.level * 100,
-                                digits = conf.level.digits,
-                                output.type = output.type,
-                                decimal.mark = decimal.mark,
-                                fixed = TRUE)
+  conf.level.char <- as.character(conf.level * 100)
 
   if (output.type == "expression") {
     paste("\"", conf.level.char, "% CI ",
