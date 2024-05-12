@@ -203,6 +203,7 @@ adj_rr_label(value = 0.0001, digits = 2, output.type = "expression")
 
 rr_ci_label(value = c(0.3, 0.4), conf.level = 0.95)
 rr_ci_label(value = c(0.3, 0.4), conf.level = 0.95, output.type = "text")
+rr_ci_label(value = c(0.3, 0.4), conf.level = 0.95, range.sep = ",")
 
 }
 \seealso{

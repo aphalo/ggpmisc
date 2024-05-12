@@ -137,15 +137,18 @@ plain_label <- function(value,
   stopifnot(length(value) == 1L)
 
   if (is.na(value) || is.nan(value)) {
-    # character(0) instead of "" avoids in paste() the insertion of sep for missing labels
-    return(character(0L))
+    return(NA_character_)
   }
 
-  value.char <- value2char(value = value,
-                           digits = digits,
-                           output.type = output.type,
-                           decimal.mark = decimal.mark,
-                           fixed = fixed)
+  if (is.integer(value)) {
+    value.char <- as.character(value)
+  } else {
+    value.char <- value2char(value = value,
+                             digits = digits,
+                             output.type = output.type,
+                             decimal.mark = decimal.mark,
+                             fixed = fixed)
+  }
 
   if (output.type == "expression") {
     paste("plain(", value.name, ")~`=`~", value.char, sep = "")
@@ -170,15 +173,18 @@ italic_label <- function(value,
   stopifnot(length(value) == 1L)
 
   if (is.na(value) || is.nan(value)) {
-    # character(0) instead of "" avoids in paste() the insertion of sep for missing labels
-    return(character(0L))
+    return(NA_character_)
   }
 
-  value.char <- value2char(value = value,
+  if (is.integer(value)) {
+    value.char <- as.character(value)
+  } else {
+    value.char <- value2char(value = value,
                            digits = digits,
                            output.type = output.type,
                            decimal.mark = decimal.mark,
                            fixed = fixed)
+  }
 
   if (output.type == "expression") {
     paste("italic(", value.name, ")~`=`~", value.char, sep = "")
@@ -203,15 +209,18 @@ bold_label <- function(value,
   stopifnot(length(value) == 1L)
 
   if (is.na(value) || is.nan(value)) {
-    # character(0) instead of "" avoids in paste() the insertion of sep for missing labels
-    return(character(0L))
+    return(NA_character_)
   }
 
-  value.char <- value2char(value = value,
+  if (is.integer(value)) {
+    value.char <- as.character(value)
+  } else {
+    value.char <- value2char(value = value,
                            digits = digits,
                            output.type = output.type,
                            decimal.mark = decimal.mark,
                            fixed = fixed)
+  }
 
   if (output.type == "expression") {
     paste("bold(", value.name, ")~`=`~", value.char, sep = "")
@@ -249,8 +258,7 @@ p_value_label <- function(value,
   p.value <- value
 
   if (is.na(p.value) || is.nan(p.value)) {
-    # character(0) instead of "" avoids in paste() the insertion of sep for missing labels
-    return(character(0L))
+    return(NA_character_)
   }
 
   p.value.char <- value2char(value = p.value,
@@ -317,8 +325,7 @@ f_value_label <- function(value,
   f.value <- value
 
   if (is.na(f.value) || is.nan(f.value)) {
-    # character(0) instead of "" avoids in paste() the insertion of sep for missing labels
-    return(character(0L))
+    return(NA_character_)
   }
 
   if (is.null(df1) || is.null(df2)) {
@@ -379,8 +386,7 @@ t_value_label <- function(value,
   t.value <- value
 
   if (is.na(t.value) || is.nan(t.value)) {
-    # character(0) instead of "" avoids in paste() the insertion of sep for missing labels
-    return(character(0L))
+    return(NA_character_)
   }
 
   if (is.null(df)) {
@@ -558,8 +564,7 @@ r_label <- function(value,
   r.value <- value
 
   if (is.na(r.value) || is.nan(r.value)) {
-    # character(0) instead of "" avoids in paste() the insertion of sep for missing labels
-    return(character(0L))
+    return(NA_character_)
   }
 
   r.value.char <- value2char(value = r.value,
@@ -658,8 +663,7 @@ rr_label <- function(value,
   rr.value <- value
 
   if (is.na(rr.value) || is.nan(rr.value)) {
-    # character(0) instead of "" avoids in paste() the insertion of sep for missing labels
-    return(character(0L))
+    return(NA_character_)
   }
 
   rr.value.char <- value2char(value = rr.value,
@@ -721,8 +725,7 @@ adj_rr_label <- function(value,
   adj.rr.value <- value
 
   if (is.na(adj.rr.value) || is.nan(adj.rr.value)) {
-    # character(0) instead of "" avoids in paste() the insertion of sep for missing labels
-    return(character(0L))
+    return(NA_character_)
   }
 
   adj.rr.value.char <- value2char(value = adj.rr.value,
@@ -785,8 +788,7 @@ rr_ci_label <- function(value,
   }
 
   if (any(is.na(rr.ci.value) | is.nan(rr.ci.value))) {
-    # character(0) instead of "" avoids in paste() the insertion of sep for missing labels
-    return(character(0L))
+    return(NA_character_)
   }
 
   rr.ci.char <- character(2)

@@ -141,6 +141,15 @@
 #'   interest and using larger values of \code{n.min} than the default is
 #'   usually wise.
 #'
+#' @section Warning!: For the formatted equation to be valid, the fitted model
+#'   must be a polynomial, with or without intercept. If defined using
+#'   \code{poly()} the argument \code{raw = TRUE} must be passed. If defined
+#'   manually as powers of \code{x}, \strong{the terms must be in order of
+#'   increasing powers, with no missing intermediate power term.} Please, see
+#'   examples below. Currently, no check on the model is used to validate that
+#'   it is a polynomial, so failing to comply with this requirement results in
+#'   the silent output of an erroneous formatted equation.
+#'
 #' @references Originally written as an answer to question 7549694 at
 #'   Stackoverflow but enhanced based on suggestions from users and my own
 #'   needs.
@@ -843,57 +852,57 @@ poly_eq_compute_group_fun <- function(data,
                              decimal.mark = decimal.mark)
 
     # assemble the data frame to return
-    z <- tibble::tibble(eq.label = eq.char,
-                        rr.label = rr_label(value = rr,
-                                            small.r = small.r,
-                                            digits = rr.digits,
+    z <- data.frame(eq.label = eq.char,
+                    rr.label = rr_label(value = rr,
+                                        small.r = small.r,
+                                        digits = rr.digits,
+                                        output.type = output.type,
+                                        decimal.mark = decimal.mark),
+                    adj.rr.label = adj_rr_label(value = adj.rr,
+                                                small.r = small.r,
+                                                digits = rr.digits,
+                                                output.type = output.type,
+                                                decimal.mark = decimal.mark),
+                    rr.confint.label = rr_ci_label(value = c(rr.confint.low, rr.confint.high),
+                                                   conf.level = rsquared.conf.level,
+                                                   range.brackets = CI.brackets,
+                                                   range.sep = NULL,
+                                                   digits = rr.digits,
+                                                   output.type = output.type,
+                                                   decimal.mark = decimal.mark),
+                    AIC.label = plain_label(value = AIC,
+                                            value.name = "AIC",
+                                            digits = 4,
                                             output.type = output.type,
                                             decimal.mark = decimal.mark),
-                        adj.rr.label = adj_rr_label(value = adj.rr,
-                                                    small.r = small.r,
-                                                    digits = rr.digits,
-                                                    output.type = output.type,
-                                                    decimal.mark = decimal.mark),
-                        rr.confint.label = rr_ci_label(value = c(rr.confint.low, rr.confint.high),
-                                                       conf.level = rsquared.conf.level,
-                                                       range.brackets = CI.brackets,
-                                                       range.sep = NULL,
-                                                       digits = rr.digits,
-                                                       output.type = output.type,
-                                                       decimal.mark = decimal.mark),
-                        AIC.label = plain_label(value = AIC,
-                                                value.name = "AIC",
-                                                digits = 4,
-                                                output.type = output.type,
-                                                decimal.mark = decimal.mark),
-                        BIC.label = plain_label(value = BIC,
-                                                value.name = "BIC",
-                                                digits = 4,
-                                                output.type = output.type,
-                                                decimal.mark = decimal.mark),
-                        f.value.label = f_value_label(value = f.value,
-                                                      df1 = f.df1,
-                                                      df2 = f.df2,
-                                                      digits = f.digits,
-                                                      output.type = output.type,
-                                                      decimal.mark = decimal.mark),
-                        p.value.label = p_value_label(value = p.value,
-                                                      small.p = small.p,
-                                                      digits = p.digits,
-                                                      output.type = output.type,
-                                                      decimal.mark = decimal.mark),
-                        n.label = italic_label(value = n,
-                                               value.name = "n",
-                                               digits = 0,
-                                               fixed = TRUE,
-                                               output.type = output.type,
-                                               decimal.mark = decimal.mark),
-                        grp.label = grp.label,
-                        method.label = paste("\"method: ", method.name, "\"", sep = ""),
-                        r.squared = rr,
-                        adj.r.squared = adj.rr,
-                        p.value = p.value,
-                        n = n)
+                    BIC.label = plain_label(value = BIC,
+                                            value.name = "BIC",
+                                            digits = 4,
+                                            output.type = output.type,
+                                            decimal.mark = decimal.mark),
+                    f.value.label = f_value_label(value = f.value,
+                                                  df1 = f.df1,
+                                                  df2 = f.df2,
+                                                  digits = f.digits,
+                                                  output.type = output.type,
+                                                  decimal.mark = decimal.mark),
+                    p.value.label = p_value_label(value = p.value,
+                                                  small.p = small.p,
+                                                  digits = p.digits,
+                                                  output.type = output.type,
+                                                  decimal.mark = decimal.mark),
+                    n.label = italic_label(value = n,
+                                           value.name = "n",
+                                           digits = 0,
+                                           fixed = TRUE,
+                                           output.type = output.type,
+                                           decimal.mark = decimal.mark),
+                    grp.label = grp.label,
+                    method.label = paste("\"method: ", method.name, "\"", sep = ""),
+                    r.squared = rr,
+                    adj.r.squared = adj.rr,
+                    p.value = p.value,
+                    n = n)
   }
 
   # add members common to numeric and other output types
