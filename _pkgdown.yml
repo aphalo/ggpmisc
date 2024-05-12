@@ -46,6 +46,9 @@ reference:
     contents:
     - sprintf_dm
     - plain_label
+    - coefs2poly_eq
+    - poly2character
+    - typeset_numbers
     - find_peaks
     - coef.lmodel2
     - confint.lmodel2

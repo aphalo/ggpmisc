@@ -147,7 +147,8 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label = paste("atop(", after_stat(AIC.label), ",", after_stat(BIC.label), ")", sep = "")), 
+  stat_poly_eq(aes(label = paste("atop(", after_stat(AIC.label), ",", 
+                                 after_stat(BIC.label), ")", sep = "")), 
                formula = formula)
 
 ## ----eval=eval_flag-----------------------------------------------------------
