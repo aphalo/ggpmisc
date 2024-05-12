@@ -43,6 +43,7 @@ bold_label(
 p_value_label(
   value,
   small.p = FALSE,
+  subscript = "",
   digits = 4,
   fixed = TRUE,
   output.type = "expression",
@@ -128,6 +129,8 @@ digits after the decimal mark or as the number of significant digits.}
 \eqn{r},  \eqn{r^2}) instead of upper case (\eqn{P} and
 \eqn{R}, \eqn{R^2}),}
 
+\item{subscript}{character Text for a subscript to P symbol}
+
 \item{df, df1, df2}{numeric The degrees of freedom of the estimate.}
 
 \item{method}{character The method used to estimate correlation, which
@@ -165,6 +168,7 @@ p_value_label(value = 0.345, digits = Inf, output.type = "expression")
 p_value_label(value = 0.345, digits = 6, output.type = "expression")
 p_value_label(value = 0.345, output.type = "markdown")
 p_value_label(value = 0.345, output.type = "latex")
+p_value_label(value = 0.345, subscript = "Holm")
 
 f_value_label(value = 123.4567, digits = 2, output.type = "expression")
 f_value_label(value = 123.4567, digits = Inf, output.type = "expression")
