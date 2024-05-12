@@ -20,7 +20,7 @@ stat_quant_eq(
   coef.digits = 3,
   coef.keep.zeros = TRUE,
   decreasing = FALSE,
-  rho.digits = 2,
+  rho.digits = 4,
   label.x = "left",
   label.y = "top",
   label.x.npc = NULL,

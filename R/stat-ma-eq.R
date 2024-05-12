@@ -469,7 +469,6 @@ ma_eq_compute_group_fun <- function(data,
     warning("Decimal mark must be one of '.' or ',', not: '", decimal.mark, "'")
     decimal.mark <- "."
   }
-#  range.sep <- c("." = ", ", "," = "; ")[decimal.mark]
 
   output.type <- if (!length(output.type)) {
     "expression"
@@ -681,6 +680,7 @@ ma_eq_compute_group_fun <- function(data,
                     n = n)
   }
 
+  # add members common to numeric and other output types
   z[["fm.method"]] <- method.name
   z[["fm.class"]] <- fm.class[1]
   z[["fm.formula"]] <- formula.ls

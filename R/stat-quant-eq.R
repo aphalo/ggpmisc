@@ -441,7 +441,7 @@ stat_quant_eq <- function(mapping = NULL, data = NULL,
                          coef.digits = 3,
                          coef.keep.zeros = TRUE,
                          decreasing = FALSE,
-                         rho.digits = 2,
+                         rho.digits = 4,
                          label.x = "left", label.y = "top",
                          label.x.npc = NULL, label.y.npc = NULL,
                          hstep = 0,
@@ -568,7 +568,6 @@ quant_eq_compute_group_fun <- function(data,
     warning("Decimal mark must be one of '.' or ',', not: '", decimal.mark, "'")
     decimal.mark <- "."
   }
-#  range.sep <- c("." = ", ", "," = "; ")[decimal.mark]
 
   num.quantiles <- length(quantiles)
 
@@ -771,7 +770,7 @@ quant_eq_compute_group_fun <- function(data,
       warning("'coef.digits < 3' Likely information loss!")
     }
 
-    eq.char <- AIC.char <- rho.char <- character(num.quantiles)
+    qtl.char <- n.char <- eq.char <- AIC.char <- rho.char <- character(num.quantiles)
     for (q in seq_along(quantiles)) {
       # build equation as a character string from the coefficient estimates
       eq.char[q] <- coefs2poly_eq(coefs = coefs.ls[[q]],
@@ -782,62 +781,49 @@ quant_eq_compute_group_fun <- function(data,
                                   lhs = lhs,
                                   output.type = output.type,
                                   decimal.mark = decimal.mark)
-
-      if (output.type == "expression" && coef.keep.zeros) {
-        AIC.char[q] <- sprintf_dm("\"%.4g\"", AIC[q], decimal.mark = decimal.mark)
-        rho.char[q] <- sprintf_dm("\"%#.3g\"", rho[q], decimal.mark = decimal.mark)
-      } else {
-        AIC.char[q] <- sprintf_dm("%.4g", AIC[q], decimal.mark = decimal.mark)
-        rho.char[q] <- sprintf_dm("%#.3g", rho[q], decimal.mark = decimal.mark)
-      }
+      # build other label that vary with quantiles
+      AIC.char[q] <- plain_label(value = AIC[q],
+                                 value.name = "AIC",
+                                 digits = 4,
+                                 fixed = FALSE,
+                                 output.type = output.type,
+                                 decimal.mark = decimal.mark)
+      rho.char[q] <- r_label(value = rho[q],
+                             method = "spearman",
+                             digits = rho.digits,
+                             fixed = FALSE,
+                             output.type = output.type,
+                             decimal.mark = decimal.mark)
+      n.char[q] <- italic_label(value = n,
+                                value.name = "n",
+                                digits = 0,
+                                fixed = TRUE,
+                                output.type = output.type,
+                                decimal.mark = decimal.mark)
+      qtl.char[q] <- italic_label(value = quantiles[q],
+                                  value.name = "q",
+                                  digits = 2,
+                                  fixed = TRUE,
+                                  output.type = output.type,
+                                  decimal.mark = decimal.mark)
     }
 
     # build data frames to return
-    if (output.type == "expression") {
-      z <- tibble::tibble(eq.label = eq.char,
-                          AIC.label = paste("AIC", AIC.char, sep = "~`=`~"),
-                          rho.label = paste("rho", rho.char, sep = "~`=`~"),
-                          n.label = paste("italic(n)~`=`~", n, sep = ""),
-                          grp.label = if (any(grp.label != ""))
-                                         paste(grp.label,
-                                            sprintf_dm("italic(q)~`=`~\"%.2f\"", quantiles, decimal.mark = decimal.mark),
-                                            sep = "*\", \"*")
-                                      else
-                                        sprintf_dm("italic(q)~`=`~\"%.2f\"", quantiles, decimal.mark = decimal.mark),
-                          method.label = paste("\"method: ", method.name, "\"", sep = ""),
-                          rq.method = rq.method,
-                          quantile = quantiles,
-                          quantile.f = quantiles.f,
-                          n = n)
-    } else if (output.type %in% c("latex", "tex", "text", "tikz")) {
-      z <- tibble::tibble(eq.label = eq.char,
-                          AIC.label = paste("AIC", AIC.char, sep = " = "),
-                          rho.label = paste("rho", rho.char, sep = " = "),
-                          n.label = paste("n = ", n, sep = ""),
-                          grp.label = paste(grp.label,
-                                            sprintf_dm("q = %.2f", quantiles, decimal.mark = decimal.mark)),
-                          method.label = paste("method: ", method.name, sep = ""),
-                          rq.method = rq.method,
-                          quantile = quantiles,
-                          quantile.f = quantiles.f,
-                          n = n)
-    } else if (output.type == "markdown") {
-      z <- tibble::tibble(eq.label = eq.char,
-                          AIC.label = paste("AIC", AIC.char, sep = " = "),
-                          rho.label = paste("rho", rho.char, sep = " = "),
-                          n.label = paste("_n_ = ", n, sep = ""),
-                          grp.label = paste(grp.label,
-                                            sprintf_dm("q = %.2f", quantiles, decimal.mark = decimal.mark)),
-                          method.label = paste("method: ", method.name, sep = ""),
-                          rq.method = rq.method,
-                          quantile = quantiles,
-                          quantile.f = quantiles.f,
-                          n = n)
-    } else {
-      warning("Unknown 'output.type' argument: ", output.type)
-    }
+    z <- data.frame(eq.label = eq.char,
+                    AIC.label = AIC.char,
+                    rho.label = rho.char,
+                    n.label = n.char,
+                    grp.label = grp.label,
+                    qtl.label = qtl.char,
+                    method.label = paste("\"method: ", method.name, "\"", sep = ""),
+                    rho = rho,
+                    rq.method = rq.method,
+                    quantile = quantiles,
+                    quantile.f = quantiles.f,
+                    n = n)
   }
 
+  # add members common to numeric and other output types
   z[["fm.method"]] <- method.name
   z[["fm.class"]] <- fm.class[1]
   z[["fm.formula"]] <- formula.ls

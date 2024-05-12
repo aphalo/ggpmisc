@@ -61,13 +61,13 @@ value2char <- function(value,
                        decimal.mark = getOption("OutDec", default = ".")) {
   if (output.type == "expression") {
     if (digits == Inf) {
-      temp.char <- sprintf_dm("%#.2e", value, decimal.mark = decimal.mark)
+      temp.char <- sprintf_dm("\"%#.2e\"", value, decimal.mark = decimal.mark)
     } else {
       temp.char <- sprintf_dm(ifelse(fixed, "\"%#.*f\"", "\"%#.*g\""),
                               digits, value, decimal.mark = decimal.mark)
     }
     if (grepl("e", temp.char)) {
-      paste(gsub("e", " %*% 10^{", temp.char), "}", sep = "")
+      paste(gsub("e", "\" %*% 10^{\"", temp.char), "}", sep = "")
     } else {
       temp.char
     }
@@ -242,6 +242,7 @@ bold_label <- function(value,
 #' p_value_label(value = 0.345, output.type = "markdown")
 #' p_value_label(value = 0.345, output.type = "latex")
 #' p_value_label(value = 0.345, subscript = "Holm")
+#' p_value_label(value = 1e-25, digits = Inf, output.type = "expression")
 #'
 #' @export
 #'
@@ -575,9 +576,15 @@ r_label <- function(value,
                     output.type = "expression",
                     decimal.mark = getOption("OutDec", default = ".")) {
 
-  stopifnot(length(value) == 1L,
-            "Out of range R" = is.na(value) || abs(value) <= 1,
-            "Negative value of 'digits'" = digits > 0)
+  if (method == "pearson") {
+    stopifnot(length(value) == 1L,
+              "Out of range R" = is.na(value) || abs(value) <= 1,
+              "Negative value of 'digits'" = digits > 0)
+  } else {
+    stopifnot(length(value) == 1L,
+              "Negative value of 'digits'" = digits > 0)
+  }
+
   if (digits < 2) {
     warning("'digits < 2' Likely information loss!")
   }

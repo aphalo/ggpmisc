@@ -169,6 +169,7 @@ p_value_label(value = 0.345, digits = 6, output.type = "expression")
 p_value_label(value = 0.345, output.type = "markdown")
 p_value_label(value = 0.345, output.type = "latex")
 p_value_label(value = 0.345, subscript = "Holm")
+p_value_label(value = 1e-25, digits = Inf, output.type = "expression")
 
 f_value_label(value = 123.4567, digits = 2, output.type = "expression")
 f_value_label(value = 123.4567, digits = Inf, output.type = "expression")
