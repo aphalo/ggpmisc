@@ -8,7 +8,7 @@ editor_options:
 
 -   Export functions used for formatting parameter estimates into character strings.
 -   Support decreasing-power order of polynomial terms in `stat_poly_eq()`, `stat_quant_eq()` and `stat_ma_eq()`.
--   Return new `qtl,label` for quantiles, separately from `grp.label`, which now works as in the other statistics based on a pseudo aesthetic. **This is a code breaking change affecting some plots.**
+-   Return new `qtl.label` for quantiles, separately from `grp.label`, which now works as in the other statistics based on a pseudo aesthetic. **This is a code breaking change affecting some plots.**
 -   Small visual changes in the formatting labels also affect some plots as the default number of digits was increased in a few cases.
 
 # ggpmisc 0.5.6
