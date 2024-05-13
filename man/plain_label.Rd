@@ -11,6 +11,7 @@
 \alias{rr_label}
 \alias{adj_rr_label}
 \alias{rr_ci_label}
+\alias{r_ci_label}
 \title{Format numbers as character labels}
 \usage{
 plain_label(
@@ -101,6 +102,18 @@ adj_rr_label(
 rr_ci_label(
   value,
   conf.level,
+  range.brackets = c("[", "]"),
+  range.sep = NULL,
+  digits = 2,
+  fixed = TRUE,
+  output.type = "expression",
+  decimal.mark = getOption("OutDec", default = ".")
+)
+
+r_ci_label(
+  value,
+  conf.level,
+  small.r = FALSE,
   range.brackets = c("[", "]"),
   range.sep = NULL,
   digits = 2,
@@ -211,6 +224,10 @@ adj_rr_label(value = 0.0001, digits = 2, output.type = "expression")
 rr_ci_label(value = c(0.3, 0.4), conf.level = 0.95)
 rr_ci_label(value = c(0.3, 0.4), conf.level = 0.95, output.type = "text")
 rr_ci_label(value = c(0.3, 0.4), conf.level = 0.95, range.sep = ",")
+
+r_ci_label(value = c(-0.3, 0.4), conf.level = 0.95)
+r_ci_label(value = c(-0.3, 0.4), conf.level = 0.95, output.type = "text")
+r_ci_label(value = c(-0.3, 0.4), conf.level = 0.95, range.sep = ",")
 
 }
 \seealso{

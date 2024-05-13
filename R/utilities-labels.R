@@ -257,9 +257,22 @@ p_value_label <- function(value,
                           output.type = "expression",
                           decimal.mark = getOption("OutDec", default = ".")) {
 
-  stopifnot(length(value) == 1L,
-            "Out of range P-value" = is.na(value) | (value >= 0 & value <= 1),
+  stopifnot(length(value) <= 1L,
             "Negative value of 'digits'" = digits > 0)
+
+  if (length(value) == 0 || is.na(value) || is.nan(value)) {
+    return(NA_character_)
+  }
+
+  if (value < 0 && value > -1e-12) {
+    value <- 0
+  } else if (value > 1 && value < 1 + 1e-12) {
+    value <- 1
+  } else if (value < 0 || value > 1) {
+    warning("Out of range P-value replaced by 'NA'")
+    value <- NA_real_
+  }
+
   if (digits < 2) {
     warning("'digits < 2' Likely information loss!")
   }
@@ -267,10 +280,6 @@ p_value_label <- function(value,
 
   if (is.na(subscript) | !is.character(subscript) | length(subscript) != 1L) {
     subscript <- ""
-  }
-
-  if (is.na(p.value) || is.nan(p.value)) {
-    return(NA_character_)
   }
 
   p.value.char <- value2char(value = p.value,
@@ -855,5 +864,68 @@ rr_ci_label <- function(value,
   } else if (output.type %in% c("latex", "tex", "text", "tikz", "markdown")) {
     paste(conf.level.char, "% CI ",
           range.brackets[1], rr.ci.char, range.brackets[2], sep = "")
+  }
+}
+
+#' @rdname plain_label
+#'
+#' @examples
+#' r_ci_label(value = c(-0.3, 0.4), conf.level = 0.95)
+#' r_ci_label(value = c(-0.3, 0.4), conf.level = 0.95, output.type = "text")
+#' r_ci_label(value = c(-0.3, 0.4), conf.level = 0.95, range.sep = ",")
+#'
+#' @export
+#'
+r_ci_label <- function(value,
+                       conf.level,
+                       small.r = FALSE,
+                       range.brackets = c("[", "]"),
+                       range.sep = NULL,
+                       digits = 2,
+                       fixed = TRUE,
+                       output.type = "expression",
+                       decimal.mark = getOption("OutDec", default = ".")) {
+
+  stopifnot(length(value) == 2L,
+            "Out of range R-value" = all(is.na(value) | (value >= -1 & value <= 1)),
+            "Negative value of 'digits'" = digits > 0)
+  if (digits < 2) {
+    warning("'digits < 2' Likely information loss!")
+  }
+  r.ci.value <- sort(value)
+
+  if (is.null(range.sep)) {
+    range.sep <- c("." = ", ", "," = "; ")[decimal.mark]
+  }
+
+  if (any(is.na(r.ci.value) | is.nan(r.ci.value))) {
+    return(NA_character_)
+  }
+
+  r.ci.char <- character(2)
+  r.ci.char[1] <- value2char(value = r.ci.value[1],
+                              digits = digits,
+                              output.type = "text",
+                              decimal.mark = decimal.mark,
+                              fixed = fixed)
+  r.ci.char[2] <- value2char(value = r.ci.value[2],
+                              digits = digits,
+                              output.type = "text",
+                              decimal.mark = decimal.mark,
+                              fixed = TRUE)
+  r.ci.char <- paste(r.ci.char[1], r.ci.char[2], sep = range.sep)
+  if (as.logical((conf.level * 100) %% 1)) {
+    conf.level.digits = 1L
+  } else {
+    conf.level.digits = 0L
+  }
+  conf.level.char <- as.character(conf.level * 100)
+
+  if (output.type == "expression") {
+    paste("\"", conf.level.char, "% CI ",
+          range.brackets[1], r.ci.char, range.brackets[2], "\"", sep = "")
+  } else if (output.type %in% c("latex", "tex", "text", "tikz", "markdown")) {
+    paste(conf.level.char, "% CI ",
+          range.brackets[1], r.ci.char, range.brackets[2], sep = "")
   }
 }

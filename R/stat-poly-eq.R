@@ -772,6 +772,8 @@ poly_eq_compute_group_fun <- function(data,
         ) {
       rr.confint.low <- rr.confint.high <- NA_real_
     } else {
+      # error handler needs to be added as ci_rsquared() will call stop on non-convergence
+      # or alternatively implement a non-stop version of ci_rsquared()
       rr.confint <-
         confintr::ci_rsquared(x = f.value,
                               df1 = f.df1,
