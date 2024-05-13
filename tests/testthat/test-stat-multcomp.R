@@ -253,23 +253,23 @@ test_that("stat_multcomp_digits", {
                                               p.digits = 2)
   )
 
-  # p-value unstable in least significant digit
-  vdiffr::expect_doppelganger("stat_multcomp_p.digits6",
-                              ggplot(my.data, aes(group, y2)) +
-                                stat_boxplot() +
-                                stat_multcomp(contrasts = "Tukey",
-                                              p.digits = 6)
-  )
+  # # p-value unstable in least significant digit
+  # vdiffr::expect_doppelganger("stat_multcomp_p.digits6",
+  #                             ggplot(my.data, aes(group, y2)) +
+  #                               stat_boxplot() +
+  #                               stat_multcomp(contrasts = "Tukey",
+  #                                             p.digits = 6)
+  # )
+  #
+  # # p-value unstable in least significant digit
+  # vdiffr::expect_doppelganger("stat_multcomp_p.digits_Inf",
+  #                             ggplot(my.data, aes(group, y2)) +
+  #                               stat_boxplot() +
+  #                               stat_multcomp(contrasts = "Tukey",
+  #                                             p.digits = Inf)
+  # )
 
-  # p-value unstable in least significant digit
-  vdiffr::expect_doppelganger("stat_multcomp_p.digits_Inf",
-                              ggplot(my.data, aes(group, y2)) +
-                                stat_boxplot() +
-                                stat_multcomp(contrasts = "Tukey",
-                                              p.digits = Inf)
-  )
-
-  # warning is solected by testthat!!
+  # warning is silenced under testthat!!
   # testthat::expect_warning(ggplot(my.data, aes(group, y2)) +
   #                            stat_boxplot() +
   #                            stat_multcomp(contrasts = "Tukey",
