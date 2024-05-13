@@ -67,7 +67,8 @@ value2char <- function(value,
                               digits, value, decimal.mark = decimal.mark)
     }
     if (grepl("e", temp.char)) {
-      paste(gsub("e", "\" %*% 10^{\"", temp.char), "}", sep = "")
+      # dash -> minus
+      paste(gsub("e", "\" %*% 10^{\"", gsub("-", "\u2212", temp.char)), "}", sep = "")
     } else {
       temp.char
     }
@@ -233,7 +234,8 @@ bold_label <- function(value,
 
 #' @rdname plain_label
 #'
-#' @param subscript character Text for a subscript to P symbol
+#' @param subscript,superscript character Text for a subscript and superscript
+#'   to \emph{P} symbol.
 #'
 #' @examples
 #' p_value_label(value = 0.345, digits = 2, output.type = "expression")
@@ -249,6 +251,7 @@ bold_label <- function(value,
 p_value_label <- function(value,
                           small.p = FALSE,
                           subscript = "",
+                          superscript = "",
                           digits = 4,
                           fixed = TRUE,
                           output.type = "expression",
@@ -281,6 +284,9 @@ p_value_label <- function(value,
                 ifelse(subscript != "",
                        paste("[", subscript, "]", sep = ""),
                        ""),
+                ifelse(superscript != "",
+                       paste("^{", superscript, "}", sep = ""),
+                       ""),
                 sep = ""),
           ifelse(p.value < 10^(-digits),
                  sprintf_dm("\"%.*f\"", digits, 10^(-digits),
@@ -291,9 +297,12 @@ p_value_label <- function(value,
                        "~`=`~"))
   } else if (output.type %in% c("latex", "tex", "text", "tikz")) {
     paste(paste(ifelse(small.p, "p",  "P"),
-                subscript <- ifelse(subscript != "",
-                                    paste("_{", subscript, "}", sep = ""),
-                                    character()),
+                ifelse(subscript != "",
+                       paste("_{", subscript, "}", sep = ""),
+                       ""),
+                ifelse(superscript != "",
+                       paste("^{", superscript, "}", sep = ""),
+                       ""),
                 sep = ""),
           ifelse(p.value < 10^(-digits),
                  sprintf_dm("\"%.*f\"", digits, 10^(-digits),
@@ -304,9 +313,12 @@ p_value_label <- function(value,
                        " = "))
   } else if (output.type == "markdown") {
     paste(paste(ifelse(small.p, "_p_",  "_P_"),
-                subscript <- ifelse(subscript != "",
-                                    paste("<sub>", subscript, "</sub>", sep = ""),
-                                    character()),
+                ifelse(subscript != "",
+                       paste("<sub>", subscript, "</sub>", sep = ""),
+                       character()),
+                ifelse(superscript != "",
+                       paste("<sup>", superscript, "</sup>", sep = ""),
+                       character()),
                 sep = ""),
           ifelse(p.value < 10^(-digits),
                  sprintf_dm("\"%.*f\"", digits, 10^(-digits),

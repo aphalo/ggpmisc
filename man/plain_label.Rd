@@ -44,6 +44,7 @@ p_value_label(
   value,
   small.p = FALSE,
   subscript = "",
+  superscript = "",
   digits = 4,
   fixed = TRUE,
   output.type = "expression",
@@ -129,7 +130,8 @@ digits after the decimal mark or as the number of significant digits.}
 \eqn{r},  \eqn{r^2}) instead of upper case (\eqn{P} and
 \eqn{R}, \eqn{R^2}),}
 
-\item{subscript}{character Text for a subscript to P symbol}
+\item{subscript, superscript}{character Text for a subscript and superscript
+to \emph{P} symbol.}
 
 \item{df, df1, df2}{numeric The degrees of freedom of the estimate.}
 

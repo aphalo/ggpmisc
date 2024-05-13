@@ -47,14 +47,18 @@
 <line x1='640.68' y1='263.46' x2='640.68' y2='324.04' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
 <polygon points='594.54,158.22 594.54,263.46 686.83,263.46 686.83,158.22 594.54,158.22 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt; stroke-linejoin: miter; fill: #FFFFFF;' />
 <line x1='594.54' y1='210.19' x2='686.83' y2='210.19' style='stroke-width: 2.13; stroke: #333333; stroke-linecap: butt; stroke-linejoin: miter;' />
-<text x='37.69' y='50.35' style='font-size: 11.04px; font-family: sans;' textLength='6.13px' lengthAdjust='spacingAndGlyphs'>  </text>
-<text x='43.82' y='50.35' style='font-size: 11.04px; font-style: italic; font-family: sans;' textLength='7.37px' lengthAdjust='spacingAndGlyphs'>P</text>
-<text x='52.33' y='53.77' style='font-size: 7.73px; font-family: sans;' textLength='16.32px' lengthAdjust='spacingAndGlyphs'>HSD</text>
-<text x='53.47' y='44.81' style='font-size: 7.73px; font-family: sans;' textLength='10.30px' lengthAdjust='spacingAndGlyphs'>crit</text>
-<text x='68.65' y='50.35' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='71.41' y='50.35' style='font-size: 11.04px; font-family: sans;' textLength='6.45px' lengthAdjust='spacingAndGlyphs'>=</text>
-<text x='77.86' y='50.35' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='80.62' y='50.35' style='font-size: 11.04px; font-family: sans;' textLength='21.49px' lengthAdjust='spacingAndGlyphs'>0.05</text>
+<text x='37.69' y='50.35' style='font-size: 11.04px; font-style: italic; font-family: sans;' textLength='7.37px' lengthAdjust='spacingAndGlyphs'>P</text>
+<text x='46.19' y='53.77' style='font-size: 7.73px; font-family: sans;' textLength='5.58px' lengthAdjust='spacingAndGlyphs'>H</text>
+<text x='51.78' y='53.77' style='font-size: 7.73px; font-family: sans;' textLength='5.16px' lengthAdjust='spacingAndGlyphs'>S</text>
+<text x='56.93' y='53.77' style='font-size: 7.73px; font-family: sans;' textLength='5.58px' lengthAdjust='spacingAndGlyphs'>D</text>
+<text x='47.33' y='44.81' style='font-size: 7.73px; font-family: sans;' textLength='3.87px' lengthAdjust='spacingAndGlyphs'>c</text>
+<text x='51.20' y='44.81' style='font-size: 7.73px; font-family: sans;' textLength='2.57px' lengthAdjust='spacingAndGlyphs'>r</text>
+<text x='53.77' y='44.81' style='font-size: 7.73px; font-family: sans;' textLength='1.72px' lengthAdjust='spacingAndGlyphs'>i</text>
+<text x='55.49' y='44.81' style='font-size: 7.73px; font-family: sans;' textLength='2.15px' lengthAdjust='spacingAndGlyphs'>t</text>
+<text x='62.51' y='50.35' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='65.28' y='50.35' style='font-size: 11.04px; font-family: sans;' textLength='6.45px' lengthAdjust='spacingAndGlyphs'>=</text>
+<text x='71.73' y='50.35' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='74.49' y='50.35' style='font-size: 11.04px; font-family: sans;' textLength='27.63px' lengthAdjust='spacingAndGlyphs'>0.050</text>
 <text x='145.68' y='49.44' style='font-size: 11.04px; font-family: sans;' textLength='5.52px' lengthAdjust='spacingAndGlyphs'>c</text>
 <text x='265.67' y='50.47' style='font-size: 11.04px; font-family: sans;' textLength='5.52px' lengthAdjust='spacingAndGlyphs'>c</text>
 <text x='271.19' y='50.47' style='font-size: 11.04px; font-family: sans;' textLength='6.14px' lengthAdjust='spacingAndGlyphs'>d</text>
