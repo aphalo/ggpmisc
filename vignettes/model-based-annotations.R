@@ -147,7 +147,8 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label = paste("atop(", after_stat(AIC.label), ",", after_stat(BIC.label), ")", sep = "")), 
+  stat_poly_eq(aes(label = paste("atop(", after_stat(AIC.label), ",", 
+                                 after_stat(BIC.label), ")", sep = "")), 
                formula = formula)
 
 ## ----eval=eval_flag-----------------------------------------------------------
@@ -360,7 +361,7 @@ ggplot(my.data, aes(x, y)) +
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_quant_band(formula = formula, color = "black", fill = "grey60") +
-  stat_quant_eq(aes(label = paste(after_stat(grp.label), "*\": \"*",
+  stat_quant_eq(aes(label = paste(after_stat(qtl.label), "*\": \"*",
                                   after_stat(eq.label), sep = "")),
                 formula = formula) +
   theme_classic()
@@ -369,7 +370,7 @@ ggplot(my.data, aes(x, y)) +
 ggplot(my.data, aes(x, y, color = group)) +
   geom_point() +
   stat_quant_line(formula = formula) +
-  stat_quant_eq(aes(label = paste(after_stat(grp.label), "*\": \"*",
+  stat_quant_eq(aes(label = paste(after_stat(qtl.label), "*\": \"*",
                                   after_stat(eq.label), sep = "")),
                formula = formula)
 
@@ -378,7 +379,8 @@ ggplot(my.data, aes(x, y, group = group, linetype = group,
                     shape = group, grp.label = group)) +
   geom_point() +
   stat_quant_line(formula = formula, quantiles = c(0.05, 0.95), color = "black") +
-  stat_quant_eq(aes(label = paste(after_stat(grp.label), "*\": \"*",
+  stat_quant_eq(aes(label = paste(after_stat(grp.label), "*\", \"*",
+                                  after_stat(qtl.label), "*\": \"*",
                                   after_stat(eq.label), sep = "")),
                 formula = formula, quantiles = c(0.05, 0.95)) +
   theme_classic()

@@ -38,8 +38,8 @@ test_that("quant_eq_noload", {
                                 ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
                                   ggplot2::geom_point() +
                                   ggpmisc::stat_quant_eq(formula = y ~ x, parse = TRUE,
-                                                         mapping = ggpmisc::use_label(c("grp", "eq", "rho", "AIC", "method"),
-                                                                                      ggplot2::aes(colour = ggplot2::after_stat(grp.label)),
+                                                         mapping = ggpmisc::use_label(c("qtl", "eq", "rho", "AIC", "method"),
+                                                                                      ggplot2::aes(colour = ggplot2::after_stat(qtl.label)),
                                                                                       sep = "~~"))
     )
   }, warning=function(w) {

@@ -19,7 +19,8 @@ stat_quant_eq(
   eq.x.rhs = NULL,
   coef.digits = 3,
   coef.keep.zeros = TRUE,
-  rho.digits = 2,
+  decreasing = FALSE,
+  rho.digits = 4,
   label.x = "left",
   label.y = "top",
   label.x.npc = NULL,
@@ -81,6 +82,9 @@ the fitted coefficients and rho in labels.}
 
 \item{coef.keep.zeros}{logical Keep or drop trailing zeros when formatting
 the fitted coefficients and F-value.}
+
+\item{decreasing}{logical It specifies the order of the terms in the
+returned character string; in increasing (default) or decreasing powers.}
 
 \item{label.x, label.y}{\code{numeric} with range 0..1 "normalized parent
 coordinates" (npc units) or character if using \code{geom_text_npc()} or
@@ -200,6 +204,17 @@ Support for the \code{angle} aesthetic is not automatic and requires
   that the user passes as argument suitable numeric values to override the
   defaults for label positions.
 }
+\section{Warning!}{
+ For the formatted equations to be valid, the fitted model
+  must be a polynomial, with or without intercept. If defined using
+  \code{poly()} the argument \code{raw = TRUE} must be passed. If defined
+  manually as powers of \code{x}, \strong{the terms must be in order of
+  increasing powers, with no missing intermediate power term.} Please, see
+  examples below. Currently, no check on the model is used to validate that
+  it is a polynomial, so failing to comply with this requirement results in
+  the silent output of an erroneous formatted equation.
+}
+
 \section{Aesthetics}{
  \code{stat_quant_eq()} understands \code{x} and \code{y},
   to be referenced in the \code{formula} and \code{weight} passed as argument
@@ -274,7 +289,17 @@ ggplot(my.data, aes(x, y)) +
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_quant_line() +
-  stat_quant_eq(use_label(c("eq", "method")))
+  stat_quant_eq(mapping = use_label("eq"))
+
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_quant_line() +
+  stat_quant_eq(mapping = use_label("eq"), decreasing = TRUE)
+
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_quant_line() +
+  stat_quant_eq(mapping = use_label(c("eq", "method")))
 
 # same formula as default
 ggplot(my.data, aes(x, y)) +
@@ -291,15 +316,15 @@ ggplot(my.data, aes(x, y)) +
 # using color
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  stat_quant_line(aes(color = after_stat(quantile.f))) +
-  stat_quant_eq(aes(color = after_stat(quantile.f))) +
+  stat_quant_line(mapping = aes(color = after_stat(quantile.f))) +
+  stat_quant_eq(mapping = aes(color = after_stat(quantile.f))) +
   labs(color = "Quantiles")
 
 # location and colour
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  stat_quant_line(aes(color = after_stat(quantile.f))) +
-  stat_quant_eq(aes(color = after_stat(quantile.f)),
+  stat_quant_line(mapping = aes(color = after_stat(quantile.f))) +
+  stat_quant_eq(mapping = aes(color = after_stat(quantile.f)),
                 label.y = "bottom", label.x = "right") +
   labs(color = "Quantiles")
 
@@ -349,7 +374,7 @@ ggplot(my.data, aes(x, y2,  shape = group, linetype = group,
        grp.label = group)) +
   geom_point() +
   stat_quant_band(formula = formula, color = "black", linewidth = 0.75) +
-  stat_quant_eq(use_label(c("grp", "eq"), sep = "*\": \"*"),
+  stat_quant_eq(mapping = use_label(c("grp", "eq"), sep = "*\": \"*"),
                 formula = formula) +
   expand_limits(y = 3) +
   theme_classic()
@@ -360,7 +385,7 @@ formula.trans <- y ~ I(x^2)
 ggplot(my.data, aes(x, y + 1)) +
   geom_point() +
   stat_quant_line(formula = formula.trans) +
-  stat_quant_eq(use_label("eq"),
+  stat_quant_eq(mapping = use_label("eq"),
                formula = formula.trans,
                eq.x.rhs = "~x^2",
                eq.with.lhs = "y + 1~~`=`~~")
@@ -381,10 +406,10 @@ ggplot(my.data, aes(x, y)) +
 ggplot(my.data, aes(x, y2, color = group, grp.label = group)) +
   geom_point() +
   stat_quant_line(method = "rq", formula = formula,
-                quantiles = c(0.05, 0.5, 0.95),
-                linewidth = 0.5) +
-  stat_quant_eq(aes(label = paste(after_stat(grp.label), "*\": \"*",
-                                   after_stat(eq.label), sep = "")),
+                  quantiles = c(0.05, 0.5, 0.95),
+                  linewidth = 0.5) +
+  stat_quant_eq(mapping = aes(label = paste(after_stat(grp.label), "*\": \"*",
+                                            after_stat(eq.label), sep = "")),
                 quantiles = c(0.05, 0.5, 0.95),
                 formula = formula, size = 3)
 
@@ -393,9 +418,9 @@ ggplot(my.data, aes(x, y2, color = group, grp.label = group)) +
   geom_point() +
   stat_quant_band(method = "rq", formula = formula,
                   quantiles = c(0.05, 0.5, 0.95)) +
-  stat_quant_eq(aes(label = sprintf("\%s*\": \"*\%s",
-                                    after_stat(grp.label),
-                                    after_stat(eq.label))),
+  stat_quant_eq(mapping = aes(label = sprintf("\%s*\": \"*\%s",
+                                              after_stat(grp.label),
+                                              after_stat(eq.label))),
                 quantiles = c(0.05, 0.5, 0.95),
                 formula = formula, size = 3)
 
@@ -425,7 +450,7 @@ if (gginnards.installed)
 if (gginnards.installed)
   ggplot(my.data, aes(x, y)) +
     geom_point() +
-    stat_quant_eq(aes(label = after_stat(eq.label)),
+    stat_quant_eq(mapping = aes(label = after_stat(eq.label)),
                   formula = formula, geom = "debug",
                   output.type = "markdown")
 

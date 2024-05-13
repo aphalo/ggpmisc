@@ -55,6 +55,8 @@
 #'   the fitted coefficients and rho in labels.
 #' @param coef.keep.zeros logical Keep or drop trailing zeros when formatting
 #'   the fitted coefficients and F-value.
+#' @param decreasing logical It specifies the order of the terms in the
+#'   returned character string; in increasing (default) or decreasing powers.
 #' @param label.x,label.y \code{numeric} with range 0..1 "normalized parent
 #'   coordinates" (npc units) or character if using \code{geom_text_npc()} or
 #'   \code{geom_label_npc()}. If using \code{geom_text()} or \code{geom_label()}
@@ -132,6 +134,15 @@
 #'
 #' @references Written as an answer to question 65695409 by Mark Neal at
 #'   Stackoverflow.
+#'
+#' @section Warning!: For the formatted equations to be valid, the fitted model
+#'   must be a polynomial, with or without intercept. If defined using
+#'   \code{poly()} the argument \code{raw = TRUE} must be passed. If defined
+#'   manually as powers of \code{x}, \strong{the terms must be in order of
+#'   increasing powers, with no missing intermediate power term.} Please, see
+#'   examples below. Currently, no check on the model is used to validate that
+#'   it is a polynomial, so failing to comply with this requirement results in
+#'   the silent output of an erroneous formatted equation.
 #'
 #' @section Aesthetics: \code{stat_quant_eq()} understands \code{x} and \code{y},
 #'   to be referenced in the \code{formula} and \code{weight} passed as argument
@@ -226,7 +237,17 @@
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   stat_quant_line() +
-#'   stat_quant_eq(use_label(c("eq", "method")))
+#'   stat_quant_eq(mapping = use_label("eq"))
+#'
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   stat_quant_line() +
+#'   stat_quant_eq(mapping = use_label("eq"), decreasing = TRUE)
+#'
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   stat_quant_line() +
+#'   stat_quant_eq(mapping = use_label(c("eq", "method")))
 #'
 #' # same formula as default
 #' ggplot(my.data, aes(x, y)) +
@@ -243,15 +264,15 @@
 #' # using color
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   stat_quant_line(aes(color = after_stat(quantile.f))) +
-#'   stat_quant_eq(aes(color = after_stat(quantile.f))) +
+#'   stat_quant_line(mapping = aes(color = after_stat(quantile.f))) +
+#'   stat_quant_eq(mapping = aes(color = after_stat(quantile.f))) +
 #'   labs(color = "Quantiles")
 #'
 #' # location and colour
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   stat_quant_line(aes(color = after_stat(quantile.f))) +
-#'   stat_quant_eq(aes(color = after_stat(quantile.f)),
+#'   stat_quant_line(mapping = aes(color = after_stat(quantile.f))) +
+#'   stat_quant_eq(mapping = aes(color = after_stat(quantile.f)),
 #'                 label.y = "bottom", label.x = "right") +
 #'   labs(color = "Quantiles")
 #'
@@ -301,7 +322,7 @@
 #'        grp.label = group)) +
 #'   geom_point() +
 #'   stat_quant_band(formula = formula, color = "black", linewidth = 0.75) +
-#'   stat_quant_eq(use_label(c("grp", "eq"), sep = "*\": \"*"),
+#'   stat_quant_eq(mapping = use_label(c("grp", "eq"), sep = "*\": \"*"),
 #'                 formula = formula) +
 #'   expand_limits(y = 3) +
 #'   theme_classic()
@@ -312,7 +333,7 @@
 #' ggplot(my.data, aes(x, y + 1)) +
 #'   geom_point() +
 #'   stat_quant_line(formula = formula.trans) +
-#'   stat_quant_eq(use_label("eq"),
+#'   stat_quant_eq(mapping = use_label("eq"),
 #'                formula = formula.trans,
 #'                eq.x.rhs = "~x^2",
 #'                eq.with.lhs = "y + 1~~`=`~~")
@@ -333,10 +354,10 @@
 #' ggplot(my.data, aes(x, y2, color = group, grp.label = group)) +
 #'   geom_point() +
 #'   stat_quant_line(method = "rq", formula = formula,
-#'                 quantiles = c(0.05, 0.5, 0.95),
-#'                 linewidth = 0.5) +
-#'   stat_quant_eq(aes(label = paste(after_stat(grp.label), "*\": \"*",
-#'                                    after_stat(eq.label), sep = "")),
+#'                   quantiles = c(0.05, 0.5, 0.95),
+#'                   linewidth = 0.5) +
+#'   stat_quant_eq(mapping = aes(label = paste(after_stat(grp.label), "*\": \"*",
+#'                                             after_stat(eq.label), sep = "")),
 #'                 quantiles = c(0.05, 0.5, 0.95),
 #'                 formula = formula, size = 3)
 #'
@@ -345,9 +366,9 @@
 #'   geom_point() +
 #'   stat_quant_band(method = "rq", formula = formula,
 #'                   quantiles = c(0.05, 0.5, 0.95)) +
-#'   stat_quant_eq(aes(label = sprintf("%s*\": \"*%s",
-#'                                     after_stat(grp.label),
-#'                                     after_stat(eq.label))),
+#'   stat_quant_eq(mapping = aes(label = sprintf("%s*\": \"*%s",
+#'                                               after_stat(grp.label),
+#'                                               after_stat(eq.label))),
 #'                 quantiles = c(0.05, 0.5, 0.95),
 #'                 formula = formula, size = 3)
 #'
@@ -377,7 +398,7 @@
 #' if (gginnards.installed)
 #'   ggplot(my.data, aes(x, y)) +
 #'     geom_point() +
-#'     stat_quant_eq(aes(label = after_stat(eq.label)),
+#'     stat_quant_eq(mapping = aes(label = after_stat(eq.label)),
 #'                   formula = formula, geom = "debug",
 #'                   output.type = "markdown")
 #'
@@ -419,7 +440,8 @@ stat_quant_eq <- function(mapping = NULL, data = NULL,
                          eq.x.rhs = NULL,
                          coef.digits = 3,
                          coef.keep.zeros = TRUE,
-                         rho.digits = 2,
+                         decreasing = FALSE,
+                         rho.digits = 4,
                          label.x = "left", label.y = "top",
                          label.x.npc = NULL, label.y.npc = NULL,
                          hstep = 0,
@@ -487,6 +509,7 @@ stat_quant_eq <- function(mapping = NULL, data = NULL,
                    eq.x.rhs = eq.x.rhs,
                    coef.digits = coef.digits,
                    coef.keep.zeros = coef.keep.zeros,
+                   decreasing = decreasing,
                    rho.digits = rho.digits,
                    label.x = label.x,
                    label.y = label.y,
@@ -524,6 +547,7 @@ quant_eq_compute_group_fun <- function(data,
                                        eq.x.rhs,
                                        coef.digits,
                                        coef.keep.zeros,
+                                       decreasing,
                                        rho.digits,
                                        label.x,
                                        label.y,
@@ -544,7 +568,6 @@ quant_eq_compute_group_fun <- function(data,
     warning("Decimal mark must be one of '.' or ',', not: '", decimal.mark, "'")
     decimal.mark <- "."
   }
-#  range.sep <- c("." = ", ", "," = "; ")[decimal.mark]
 
   num.quantiles <- length(quantiles)
 
@@ -747,72 +770,60 @@ quant_eq_compute_group_fun <- function(data,
       warning("'coef.digits < 3' Likely information loss!")
     }
 
-    eq.char <- AIC.char <- rho.char <- character(num.quantiles)
+    qtl.char <- n.char <- eq.char <- AIC.char <- rho.char <- character(num.quantiles)
     for (q in seq_along(quantiles)) {
       # build equation as a character string from the coefficient estimates
       eq.char[q] <- coefs2poly_eq(coefs = coefs.ls[[q]],
                                   coef.digits = coef.digits,
                                   coef.keep.zeros = coef.keep.zeros,
+                                  decreasing = decreasing,
                                   eq.x.rhs = eq.x.rhs,
                                   lhs = lhs,
                                   output.type = output.type,
                                   decimal.mark = decimal.mark)
-
-      if (output.type == "expression" && coef.keep.zeros) {
-        AIC.char[q] <- sprintf_dm("\"%.4g\"", AIC[q], decimal.mark = decimal.mark)
-        rho.char[q] <- sprintf_dm("\"%#.3g\"", rho[q], decimal.mark = decimal.mark)
-      } else {
-        AIC.char[q] <- sprintf_dm("%.4g", AIC[q], decimal.mark = decimal.mark)
-        rho.char[q] <- sprintf_dm("%#.3g", rho[q], decimal.mark = decimal.mark)
-      }
+      # build other label that vary with quantiles
+      AIC.char[q] <- plain_label(value = AIC[q],
+                                 value.name = "AIC",
+                                 digits = 4,
+                                 fixed = FALSE,
+                                 output.type = output.type,
+                                 decimal.mark = decimal.mark)
+      rho.char[q] <- r_label(value = rho[q],
+                             method = "spearman",
+                             digits = rho.digits,
+                             fixed = FALSE,
+                             output.type = output.type,
+                             decimal.mark = decimal.mark)
+      n.char[q] <- italic_label(value = n,
+                                value.name = "n",
+                                digits = 0,
+                                fixed = TRUE,
+                                output.type = output.type,
+                                decimal.mark = decimal.mark)
+      qtl.char[q] <- italic_label(value = quantiles[q],
+                                  value.name = "q",
+                                  digits = 2,
+                                  fixed = TRUE,
+                                  output.type = output.type,
+                                  decimal.mark = decimal.mark)
     }
 
     # build data frames to return
-    if (output.type == "expression") {
-      z <- tibble::tibble(eq.label = eq.char,
-                          AIC.label = paste("AIC", AIC.char, sep = "~`=`~"),
-                          rho.label = paste("rho", rho.char, sep = "~`=`~"),
-                          n.label = paste("italic(n)~`=`~", n, sep = ""),
-                          grp.label = if (any(grp.label != ""))
-                                         paste(grp.label,
-                                            sprintf_dm("italic(q)~`=`~\"%.2f\"", quantiles, decimal.mark = decimal.mark),
-                                            sep = "*\", \"*")
-                                      else
-                                        sprintf_dm("italic(q)~`=`~\"%.2f\"", quantiles, decimal.mark = decimal.mark),
-                          method.label = paste("\"method: ", method.name, "\"", sep = ""),
-                          rq.method = rq.method,
-                          quantile = quantiles,
-                          quantile.f = quantiles.f,
-                          n = n)
-    } else if (output.type %in% c("latex", "tex", "text", "tikz")) {
-      z <- tibble::tibble(eq.label = eq.char,
-                          AIC.label = paste("AIC", AIC.char, sep = " = "),
-                          rho.label = paste("rho", rho.char, sep = " = "),
-                          n.label = paste("n = ", n, sep = ""),
-                          grp.label = paste(grp.label,
-                                            sprintf_dm("q = %.2f", quantiles, decimal.mark = decimal.mark)),
-                          method.label = paste("method: ", method.name, sep = ""),
-                          rq.method = rq.method,
-                          quantile = quantiles,
-                          quantile.f = quantiles.f,
-                          n = n)
-    } else if (output.type == "markdown") {
-      z <- tibble::tibble(eq.label = eq.char,
-                          AIC.label = paste("AIC", AIC.char, sep = " = "),
-                          rho.label = paste("rho", rho.char, sep = " = "),
-                          n.label = paste("_n_ = ", n, sep = ""),
-                          grp.label = paste(grp.label,
-                                            sprintf_dm("q = %.2f", quantiles, decimal.mark = decimal.mark)),
-                          method.label = paste("method: ", method.name, sep = ""),
-                          rq.method = rq.method,
-                          quantile = quantiles,
-                          quantile.f = quantiles.f,
-                          n = n)
-    } else {
-      warning("Unknown 'output.type' argument: ", output.type)
-    }
+    z <- data.frame(eq.label = eq.char,
+                    AIC.label = AIC.char,
+                    rho.label = rho.char,
+                    n.label = n.char,
+                    grp.label = grp.label,
+                    qtl.label = qtl.char,
+                    method.label = paste("\"method: ", method.name, "\"", sep = ""),
+                    rho = rho,
+                    rq.method = rq.method,
+                    quantile = quantiles,
+                    quantile.f = quantiles.f,
+                    n = n)
   }
 
+  # add members common to numeric and other output types
   z[["fm.method"]] <- method.name
   z[["fm.class"]] <- fm.class[1]
   z[["fm.formula"]] <- formula.ls

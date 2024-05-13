@@ -22,6 +22,7 @@ stat_poly_eq(
   rsquared.conf.level = 0.95,
   coef.digits = 3,
   coef.keep.zeros = TRUE,
+  decreasing = FALSE,
   rr.digits = 2,
   f.digits = 3,
   p.digits = 3,
@@ -93,6 +94,9 @@ the fitted coefficients and F-value.}
 
 \item{coef.keep.zeros}{logical Keep or drop trailing zeros when formatting
 the fitted coefficients and F-value.}
+
+\item{decreasing}{logical It specifies the order of the terms in the
+returned character string; in increasing (default) or decreasing powers.}
 
 \item{rr.digits, p.digits}{integer Number of digits after the decimal point to
 use for \eqn{R^2} and P-value in labels. If \code{Inf}, use exponential
@@ -213,6 +217,17 @@ For backward compatibility a logical is accepted as argument for
   is rendered, i.e., displayed or printed. Set \code{options(OutDec = ",")}
   for languages like Spanish or French.
 }
+\section{Warning!}{
+ For the formatted equation to be valid, the fitted model
+  must be a polynomial, with or without intercept. If defined using
+  \code{poly()} the argument \code{raw = TRUE} must be passed. If defined
+  manually as powers of \code{x}, \strong{the terms must be in order of
+  increasing powers, with no missing intermediate power term.} Please, see
+  examples below. Currently, no check on the model is used to validate that
+  it is a polynomial, so failing to comply with this requirement results in
+  the silent output of an erroneous formatted equation.
+}
+
 \section{Aesthetics}{
  \code{stat_poly_eq()} understands \code{x} and \code{y},
   to be referenced in the \code{formula} and \code{weight} passed as argument
@@ -306,6 +321,12 @@ ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
   stat_poly_eq(use_label("eq"), formula = formula)
+
+# other labels
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_poly_line(formula = formula) +
+  stat_poly_eq(use_label("eq"), formula = formula, decreasing = TRUE)
 
 ggplot(my.data, aes(x, y)) +
   geom_point() +

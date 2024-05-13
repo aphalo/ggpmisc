@@ -52,6 +52,8 @@
 #'   the fitted coefficients and F-value.
 #' @param coef.keep.zeros logical Keep or drop trailing zeros when formatting
 #'   the fitted coefficients and F-value.
+#' @param decreasing logical It specifies the order of the terms in the
+#'   returned character string; in increasing (default) or decreasing powers.
 #' @param rr.digits,p.digits integer Number of digits after the decimal point to
 #'   use for \eqn{R^2} and P-value in labels. If \code{Inf}, use exponential
 #'   notation with three decimal places.
@@ -138,6 +140,15 @@
 #'   needed. Anyway, model fits with very few observations are of little
 #'   interest and using larger values of \code{n.min} than the default is
 #'   usually wise.
+#'
+#' @section Warning!: For the formatted equation to be valid, the fitted model
+#'   must be a polynomial, with or without intercept. If defined using
+#'   \code{poly()} the argument \code{raw = TRUE} must be passed. If defined
+#'   manually as powers of \code{x}, \strong{the terms must be in order of
+#'   increasing powers, with no missing intermediate power term.} Please, see
+#'   examples below. Currently, no check on the model is used to validate that
+#'   it is a polynomial, so failing to comply with this requirement results in
+#'   the silent output of an erroneous formatted equation.
 #'
 #' @references Originally written as an answer to question 7549694 at
 #'   Stackoverflow but enhanced based on suggestions from users and my own
@@ -254,6 +265,12 @@
 #'   geom_point() +
 #'   stat_poly_line(formula = formula) +
 #'   stat_poly_eq(use_label("eq"), formula = formula)
+#'
+#' # other labels
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   stat_poly_line(formula = formula) +
+#'   stat_poly_eq(use_label("eq"), formula = formula, decreasing = TRUE)
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
@@ -468,6 +485,7 @@ stat_poly_eq <- function(mapping = NULL, data = NULL,
                          rsquared.conf.level = 0.95,
                          coef.digits = 3,
                          coef.keep.zeros = TRUE,
+                         decreasing = FALSE,
                          rr.digits = 2,
                          f.digits = 3,
                          p.digits = 3,
@@ -563,6 +581,7 @@ stat_poly_eq <- function(mapping = NULL, data = NULL,
                    rsquared.conf.level = rsquared.conf.level,
                    coef.digits = coef.digits,
                    coef.keep.zeros = coef.keep.zeros,
+                   decreasing = decreasing,
                    rr.digits = rr.digits,
                    f.digits = f.digits,
                    p.digits = p.digits,
@@ -605,6 +624,7 @@ poly_eq_compute_group_fun <- function(data,
                                       rsquared.conf.level,
                                       coef.digits,
                                       coef.keep.zeros,
+                                      decreasing,
                                       rr.digits,
                                       f.digits,
                                       p.digits,
@@ -626,7 +646,6 @@ poly_eq_compute_group_fun <- function(data,
     warning("Decimal mark must be one of '.' or ',', not: '", decimal.mark, "'")
     decimal.mark <- "."
   }
-  range.sep <- c("." = ", ", "," = "; ")[decimal.mark]
 
   if (orientation == "x") {
     if (length(unique(data$x)) < n.min) {
@@ -746,14 +765,15 @@ poly_eq_compute_group_fun <- function(data,
   } else {
     f.value <- f.df1 <- f.df2 <- p.value <- NA_real_
   }
-  if ("r.squared" %in% names(fm.summary)
-  ) {
+  if ("r.squared" %in% names(fm.summary)) {
     rr <- fm.summary[["r.squared"]]
     if (!all(is.finite(c(f.value, f.df1, f.df2))) ||
         rsquared.conf.level <= 0
         ) {
       rr.confint.low <- rr.confint.high <- NA_real_
     } else {
+      # error handler needs to be added as ci_rsquared() will call stop on non-convergence
+      # or alternatively implement a non-stop version of ci_rsquared()
       rr.confint <-
         confintr::ci_rsquared(x = f.value,
                               df1 = f.df1,
@@ -808,7 +828,7 @@ poly_eq_compute_group_fun <- function(data,
                         b_0.constant = forced.origin)
     z <- cbind(z, tibble::as_tibble_row(coefs))
   } else {
-    # set defaults needed to assemble the equation as a character string
+    # assemble the fitted polynomial equation as a character string
     if (is.null(eq.x.rhs)) {
       eq.x.rhs <- build_eq.x.rhs(output.type = output.type,
                                  orientation = orientation)
@@ -824,214 +844,70 @@ poly_eq_compute_group_fun <- function(data,
       lhs <- character(0)
     }
 
-    # build equation as a character string from the coefficient estimates
     eq.char <- coefs2poly_eq(coefs = coefs,
                              coef.digits = coef.digits,
                              coef.keep.zeros = coef.keep.zeros,
+                             decreasing = decreasing,
                              eq.x.rhs = eq.x.rhs,
                              lhs = lhs,
                              output.type = output.type,
                              decimal.mark = decimal.mark)
 
-    # build the other character strings
-    stopifnot(rr.digits > 0)
-    if (rr.digits < 2) {
-      warning("'rr.digits < 2' Likely information loss!")
-    }
-    stopifnot(f.digits > 0)
-    if (f.digits < 2) {
-      warning("'f.digits < 2' Likely information loss!")
-    }
-    stopifnot(p.digits > 0)
-    if (p.digits < 2) {
-      warning("'p.digits < 2' Likely information loss!")
-    }
-
-    if (output.type == "expression") {
-      rr.char <- sprintf_dm("\"%#.*f\"", rr.digits, rr, decimal.mark = decimal.mark)
-      adj.rr.char <- sprintf_dm("\"%#.*f\"", rr.digits, adj.rr, decimal.mark = decimal.mark)
-      rr.confint.chr <- paste(sprintf_dm("%#.*f",
-                                rr.digits, rr.confint.low, decimal.mark = decimal.mark),
-                              sprintf_dm("%#.*f",
-                                         rr.digits, rr.confint.high, decimal.mark = decimal.mark),
-                              sep = range.sep)
-      if (as.logical((rsquared.conf.level * 100) %% 1)) {
-        conf.level.digits = 1L
-      } else {
-        conf.level.digits = 0L
-      }
-      conf.level.chr <- sprintf_dm("%.*f", conf.level.digits, rsquared.conf.level * 100, decimal.mark = decimal.mark)
-      AIC.char <- sprintf_dm("\"%.4g\"", AIC, decimal.mark = decimal.mark)
-      BIC.char <- sprintf_dm("\"%.4g\"", BIC, decimal.mark = decimal.mark)
-      f.value.char <- sprintf_dm("\"%#.*g\"", f.digits, f.value, decimal.mark = decimal.mark)
-      if (grepl("e", f.value.char)) {
-        f.value.char <- sprintf_dm("%#.*e", f.digits, f.value, decimal.mark = decimal.mark)
-        f.value.char <- paste(gsub("e", " %*% 10^{", f.value.char), "}", sep = "")
-      }
-      f.df1.char <- as.character(f.df1)
-      f.df2.char <- as.character(f.df2)
-      if (p.digits == Inf) {
-        p.value.char <- sprintf_dm("%#.2e", p.value, decimal.mark = decimal.mark)
-        p.value.char <- paste(gsub("e", " %*% 10^{", p.value.char), "}", sep = "")
-      } else {
-        p.value.char <- sprintf_dm("\"%#.*f\"", p.digits, p.value, decimal.mark = decimal.mark)
-      }
-    } else {
-      rr.char <- sprintf_dm("%#.*f", rr.digits, rr, decimal.mark = decimal.mark)
-      adj.rr.char <- sprintf_dm("%#.*f", rr.digits, adj.rr, decimal.mark = decimal.mark)
-      rr.confint.chr <- paste(sprintf_dm("%#.*f",
-                                         rr.digits, rr.confint.low, decimal.mark = decimal.mark),
-                              sprintf_dm("%#.*f",
-                                         rr.digits, rr.confint.high, decimal.mark = decimal.mark),
-                              sep = range.sep)
-      if (as.logical((rsquared.conf.level * 100) %% 1)) {
-        conf.level.digits = 1L
-      } else {
-        conf.level.digits = 0L
-      }
-      conf.level.chr <- sprintf_dm("%.*f", conf.level.digits, rsquared.conf.level * 100, decimal.mark = decimal.mark)
-      AIC.char <- sprintf_dm("%.4g", AIC, decimal.mark = decimal.mark)
-      BIC.char <- sprintf_dm("%.4g", BIC, decimal.mark = decimal.mark)
-      f.value.char <- sprintf_dm("%#.*g", f.digits, f.value, decimal.mark = decimal.mark)
-      f.df1.char <- as.character(f.df1)
-      f.df2.char <- as.character(f.df2)
-      if (p.digits == Inf) {
-        p.value.char <- sprintf_dm("%#.2e", p.value, decimal.mark = decimal.mark)
-      } else {
-        p.value.char <- sprintf_dm("%#.*f", p.digits, p.value, decimal.mark = decimal.mark)
-      }
-    }
-
-    # build the data frames to return
-    if (output.type == "expression") {
-      z <- tibble::tibble(eq.label = eq.char,
-                          rr.label =
-                            # character(0) instead of "" avoids in paste() the insertion of sep for missing labels
-                            ifelse(is.na(rr) || is.nan(rr), character(0L),
-                                   paste(ifelse(small.r, "italic(r)^2", "italic(R)^2"),
-                                         ifelse(rr < 10^(-rr.digits) & rr != 0,
-                                                sprintf_dm("\"%.*f\"", rr.digits, 10^(-rr.digits), decimal.mark = decimal.mark),
-                                                rr.char),
-                                         sep = ifelse(rr < 10^(-rr.digits) & rr != 0,
-                                                      "~`<`~",
-                                                      "~`=`~"))),
-                          adj.rr.label =
-                            ifelse(is.na(adj.rr) || is.nan(adj.rr), character(0L),
-                                   paste(ifelse(small.r, "italic(r)[adj]^2", "italic(R)[adj]^2"),
-                                         ifelse(adj.rr < 10^(-rr.digits) & adj.rr != 0,
-                                                sprintf_dm("\"%.*f\"", rr.digits, 10^(-rr.digits), decimal.mark = decimal.mark),
-                                                adj.rr.char),
-                                         sep = ifelse(adj.rr < 10^(-rr.digits) & adj.rr != 0,
-                                                      "~`<`~",
-                                                      "~`=`~"))),
-                          rr.confint.label =
-                            paste("\"", conf.level.chr, "% CI ", CI.brackets[1], rr.confint.chr, CI.brackets[2], "\"", sep = ""),
-                          AIC.label =
-                            ifelse(is.na(AIC) || is.nan(AIC), character(0L),
-                                   paste("AIC", AIC.char, sep = "~`=`~")),
-                          BIC.label =
-                            ifelse(is.na(BIC) || is.nan(BIC), character(0L),
-                                   paste("BIC", BIC.char, sep = "~`=`~")),
-                          f.value.label =
-                            ifelse(is.na(f.value) || is.nan(f.value), character(0L),
-                                   paste("italic(F)[", f.df1.char,
-                                         "*\",\"*", f.df2.char,
-                                         "]~`=`~", f.value.char, sep = "")),
-                          p.value.label =
-                            ifelse(is.na(p.value) || is.nan(p.value), character(0L),
-                                   paste(ifelse(small.p, "italic(p)",  "italic(P)"),
-                                         ifelse(p.value < 10^(-p.digits),
-                                                sprintf_dm("\"%.*f\"", p.digits, 10^(-p.digits), decimal.mark = decimal.mark),
-                                                p.value.char),
-                                         sep = ifelse(p.value < 10^(-p.digits),
-                                                      "~`<`~",
-                                                      "~`=`~"))),
-                          n.label = paste("italic(n)~`=`~\"", n, "\"", sep = ""),
-                          grp.label = grp.label,
-                          method.label = paste("\"method: ", method.name, "\"", sep = ""),
-                          r.squared = rr,
-                          adj.r.squared = adj.rr,
-                          p.value = p.value,
-                          n = n)
-    } else if (output.type %in% c("latex", "tex", "text", "tikz")) {
-      z <- tibble::tibble(eq.label = eq.char,
-                          rr.label =
-                            # character(0) instead of "" avoids in paste() the insertion of sep for missing labels
-                            ifelse(is.na(rr) || is.nan(rr), character(0L),
-                                   paste(ifelse(small.r, "r^2", "R^2"),
-                                         ifelse(rr < 10^(-rr.digits), as.character(10^(-rr.digits)), rr.char),
-                                         sep = ifelse(rr < 10^(-rr.digits), " < ", " = "))),
-                          adj.rr.label =
-                            ifelse(is.na(adj.rr) || is.nan(adj.rr), character(0L),
-                                   paste(ifelse(small.r, "r_{adj}^2", "R_{adj}^2"),
-                                         ifelse(adj.rr < 10^(-rr.digits), as.character(10^(-rr.digits)), adj.rr.char),
-                                         sep = ifelse(adj.rr < 10^(-rr.digits), " < ", " = "))),
-                          rr.confint.label =
-                            paste(conf.level.chr, "% CI ", CI.brackets[1], rr.confint.chr, CI.brackets[2], sep = ""),
-                          AIC.label =
-                            ifelse(is.na(AIC) || is.nan(AIC), character(0L),
-                                   paste("AIC", AIC.char, sep = " = ")),
-                          BIC.label =
-                            ifelse(is.na(BIC) || is.nan(BIC), character(0L),
-                                   paste("BIC", BIC.char, sep = " = ")),
-                          f.value.label =
-                            ifelse(is.na(f.value) || is.nan(f.value), character(0L),
-                                   paste("F_{", f.df1.char, ",", f.df2.char,
-                                         "} = ", f.value.char, sep = "")),
-                          p.value.label =
-                            ifelse(is.na(p.value), character(0L),
-                                   paste(ifelse(small.p, "p",  "P"),
-                                         ifelse(p.value < 10^(-p.digits), as.character(10^(-p.digits)), p.value.char),
-                                         sep = ifelse(p.value < 10^(-p.digits), " < ", " = "))),
-                          n.label = paste("n = ", n, sep = ""),
-                          grp.label = grp.label,
-                          method.label = paste("method: ", method.name, sep = ""),
-                          r.squared = rr,
-                          adj.r.squared = adj.rr,
-                          p.value = p.value,
-                          n = n)
-    } else if (output.type == "markdown") {
-      z <- tibble::tibble(eq.label = eq.char,
-                          rr.label =
-                            # character(0) instead of "" avoids in paste() the insertion of sep for missing labels
-                            ifelse(is.na(rr) || is.nan(rr), character(0L),
-                                   paste(ifelse(small.r, "_r_<sup>2</sup>", "_R_<sup>2</sup>"),
-                                         ifelse(rr < 10^(-rr.digits), as.character(10^(-rr.digits)), rr.char),
-                                         sep = ifelse(rr < 10^(-rr.digits), " < ", " = "))),
-                          adj.rr.label =
-                            ifelse(is.na(adj.rr) || is.nan(adj.rr), character(0L),
-                                   paste(ifelse(small.r, "_r_<sup>2</sup><sub>adj</sub>", "_R_<sup>2</sup><sub>adj</sub>"),
-                                         ifelse(adj.rr < 10^(-rr.digits), as.character(10^(-rr.digits)), adj.rr.char),
-                                         sep = ifelse(adj.rr < 10^(-rr.digits), " < ", " = "))),
-                          rr.confint.label =
-                            paste(conf.level.chr, "% CI ", CI.brackets[1], rr.confint.chr, CI.brackets[2], sep = ""),
-                          AIC.label =
-                            ifelse(is.na(AIC) || is.nan(AIC), character(0L),
-                                   paste("AIC", AIC.char, sep = " = ")),
-                          BIC.label =
-                            ifelse(is.na(BIC) || is.nan(BIC), character(0L),
-                                   paste("BIC", BIC.char, sep = " = ")),
-                          f.value.label =
-                            ifelse(is.na(f.value) || is.nan(f.value), character(0L),
-                                   paste("_F_<sub>", f.df1.char, ",", f.df2.char,
-                                         "</sub> = ", f.value.char, sep = "")),
-                          p.value.label =
-                            ifelse(is.na(p.value) || is.nan(p.value), character(0L),
-                                   paste(ifelse(small.p, "_p_", "_P_"),
-                                         ifelse(p.value < 10^(-p.digits), as.character(10^(-p.digits)), p.value.char),
-                                         sep = ifelse(p.value < 10^(-p.digits), " < ", " = "))),
-                          n.label = paste("_n_ = ", n, sep = ""),
-                          grp.label = grp.label,
-                          method.label = paste("method: ", method.name, sep = ""),
-                          r.squared = rr,
-                          adj.r.squared = adj.rr,
-                          p.value = p.value,
-                          n = n)
-    } else {
-      warning("Unknown 'output.type' argument: ", output.type)
-    }
+    # assemble the data frame to return
+    z <- data.frame(eq.label = eq.char,
+                    rr.label = rr_label(value = rr,
+                                        small.r = small.r,
+                                        digits = rr.digits,
+                                        output.type = output.type,
+                                        decimal.mark = decimal.mark),
+                    adj.rr.label = adj_rr_label(value = adj.rr,
+                                                small.r = small.r,
+                                                digits = rr.digits,
+                                                output.type = output.type,
+                                                decimal.mark = decimal.mark),
+                    rr.confint.label = rr_ci_label(value = c(rr.confint.low, rr.confint.high),
+                                                   conf.level = rsquared.conf.level,
+                                                   range.brackets = CI.brackets,
+                                                   range.sep = NULL,
+                                                   digits = rr.digits,
+                                                   output.type = output.type,
+                                                   decimal.mark = decimal.mark),
+                    AIC.label = plain_label(value = AIC,
+                                            value.name = "AIC",
+                                            digits = 4,
+                                            output.type = output.type,
+                                            decimal.mark = decimal.mark),
+                    BIC.label = plain_label(value = BIC,
+                                            value.name = "BIC",
+                                            digits = 4,
+                                            output.type = output.type,
+                                            decimal.mark = decimal.mark),
+                    f.value.label = f_value_label(value = f.value,
+                                                  df1 = f.df1,
+                                                  df2 = f.df2,
+                                                  digits = f.digits,
+                                                  output.type = output.type,
+                                                  decimal.mark = decimal.mark),
+                    p.value.label = p_value_label(value = p.value,
+                                                  small.p = small.p,
+                                                  digits = p.digits,
+                                                  output.type = output.type,
+                                                  decimal.mark = decimal.mark),
+                    n.label = italic_label(value = n,
+                                           value.name = "n",
+                                           digits = 0,
+                                           fixed = TRUE,
+                                           output.type = output.type,
+                                           decimal.mark = decimal.mark),
+                    grp.label = grp.label,
+                    method.label = paste("\"method: ", method.name, "\"", sep = ""),
+                    r.squared = rr,
+                    adj.r.squared = adj.rr,
+                    p.value = p.value,
+                    n = n)
   }
 
+  # add members common to numeric and other output types
   z[["fm.method"]] <- method.name
   z[["fm.class"]] <- fm.class[1]
   z[["fm.formula"]] <- formula.ls
@@ -1103,158 +979,3 @@ StatPolyEq <-
                    optional_aes = "grp.label"
   )
 
-### Utility functions shared between stat_poly_eq() and stat_quant_eq()
-# when stable will be exported
-#
-build_eq.x.rhs <- function(output.type = "expression",
-                           orientation = "x") {
-  if (orientation == "x") {
-    if (output.type == "expression") {
-      "~italic(x)"
-    } else if (output.type == "markdown") {
-      "_x_"
-    } else{
-      " x"
-    }
-  } else if (orientation == "y") {
-    if (output.type == "expression") {
-      "~italic(y)"
-    } else if (output.type == "markdown") {
-      "_y_"
-    } else{
-      " y"
-    }
-  }
-}
-
-build_lhs <- function(output.type = "expression",
-                      orientation = "x") {
-  if (orientation == "x") {
-    if (output.type == "expression") {
-      "italic(y)~`=`~"
-    } else if (output.type %in% c("latex", "tex", "tikz", "text")) {
-       "y = "
-    } else if (output.type == "markdown") {
-      "_y_ = "
-    }
-  } else if (orientation == "y") {
-    if (output.type == "expression") {
-      "italic(x)~`=`~"
-    } else if (output.type %in% c("latex", "tex", "tikz", "text")) {
-      "x = "
-    } else if (output.type == "markdown") {
-      "_x_ = "
-    }
-  }
-}
-
-coefs2poly_eq <- function(coefs,
-                          coef.digits = 3L,
-                          coef.keep.zeros = TRUE,
-                          eq.x.rhs = "x",
-                          lhs = "y~`=`~",
-                          output.type = "expression",
-                          decimal.mark = ".") {
-  # build equation as a character string from the coefficient estimates
-  stopifnot(coef.digits > 0)
-  if (coef.digits < 3) {
-    warning("'coef.digits < 3' Likely information loss!")
-  }
-  eq.char <- as.character(polynom::as.polynomial(coefs),
-                          digits = coef.digits,
-                          keep.zeros = coef.keep.zeros)
-  eq.char <- typeset_numbers(eq.char, output.type)
-  if (output.type != "expression") { # parse() does the conversion
-    if (decimal.mark == ".") {
-      eq.char <- gsub(",", decimal.mark, eq.char, fixed = TRUE)
-    } else {
-      eq.char <- gsub(".", decimal.mark, eq.char, fixed = TRUE)
-    }
-  }
-
-  if (eq.x.rhs != "x") {
-    eq.char <- gsub("x", eq.x.rhs, eq.char, fixed = TRUE)
-  }
-  if (length(lhs)) {
-    eq.char <- paste(lhs, eq.char, sep = "")
-  }
-
-  eq.char
-}
-
-# based on idea in answer by slamballais to Stackoverflow question
-# at https://stackoverflow.com/questions/67942485/
-#
-# This is an edit of the code in package 'polynom' so that trailing zeros are
-# retained during the conversion
-#' @noRd
-#' @noMd
-#' @export
-#' @method as.character polynomial
-#'
-as.character.polynomial <- function (x,
-                                     decreasing = FALSE,
-                                     digits = 3,
-                                     keep.zeros = TRUE,
-                                     ...) {
-  if (keep.zeros) {
-    p <- sprintf("%#.*g", digits, x)
-  } else {
-    p <- sprintf("%.*g", digits, x)
-  }
-  lp <- length(p) - 1
-  names(p) <- 0:lp
-  p <- p[as.numeric(p) != 0]
-  if (length(p) == 0)
-    return("0")
-  if (decreasing)
-    p <- rev(p)
-  signs <- ifelse(as.numeric(p) < 0, "- ", "+ ")
-  signs[1] <- if (signs[1] == "- ") "-" else ""
-  np <- names(p)
-  pow <- paste("x^", np, sep = "")
-  pow[np == "0"] <- ""
-  pow[np == "1"] <- "x"
-  stars <- rep.int("*", length(p))
-  stars[p == "" | pow == ""] <- ""
-  p <- gsub("^-", "", p)
-  paste0(signs, p, stars, pow, collapse = " ")
-}
-
-# exponential number notation to typeset equivalent: Protecting trailing zeros
-# in negative numbers is more involved than I would like. Not only we need to
-# enclose numbers in quotations marks but we also need to replace dashes with
-# the minus character. I am not sure we can do the replacement portably, but
-# that recent R supports UTF gives some hope.
-#
-typeset_numbers <- function(eq.char, output.type) {
-  if (output.type == "markdown") {
-    eq.char <- gsub("e([+-]?)[0]([1-9]*)", "&times;10<sup>\\1\\2</sup>", eq.char)
-    eq.char <- gsub("[:^]([0-9]*)", "<sup>\\1</sup>", eq.char)
-    eq.char <- gsub("*", "&nbsp;", eq.char, fixed = TRUE)
-    eq.char <- gsub(" ", "", eq.char, fixed = TRUE)
-  } else {
-    eq.char <- gsub("e([+-]?[0-9]*)", "%*% 10^{\\1}", eq.char)
-    # muliplication symbol
-    if (output.type %in% c("latex", "tikz")) {
-      eq.char <- gsub("%*%", "\\times{}", eq.char, fixed = TRUE)
-      eq.char <- gsub("*", "", eq.char, fixed = TRUE)
-    } else if (output.type == "text") {
-      eq.char <- gsub("[{]|[}]", "", eq.char, fixed = FALSE)
-      eq.char <- gsub("%*%", "", eq.char, fixed = TRUE)
-      eq.char <- gsub("*", " ", eq.char, fixed = TRUE)
-      eq.char <- gsub("  ", " ", eq.char, fixed = TRUE)
-    }
-  }
-  eq.char
-}
-
-# replace decimal mark used by sprintf() if needed
-sprintf_dm <- function(fmt, ..., decimal.mark = ".") {
-  if (decimal.mark != ".") {
-    gsub(".", decimal.mark, sprintf(fmt, ...), fixed = TRUE)
-  } else {
-    # in case OS locale uses ","
-    gsub(",", ".", sprintf(fmt, ...), fixed = TRUE)
-  }
-}
