@@ -217,6 +217,7 @@ r_label(value = 0.95, digits = 2, method = "spearman")
 
 rr_label(value = 0.95, digits = 2, output.type = "expression")
 rr_label(value = 0.0001, digits = 2, output.type = "expression")
+rr_label(value = 1e-17, digits = Inf, output.type = "expression")
 
 adj_rr_label(value = 0.95, digits = 2, output.type = "expression")
 adj_rr_label(value = 0.0001, digits = 2, output.type = "expression")
@@ -228,6 +229,7 @@ rr_ci_label(value = c(0.3, 0.4), conf.level = 0.95, range.sep = ",")
 r_ci_label(value = c(-0.3, 0.4), conf.level = 0.95)
 r_ci_label(value = c(-0.3, 0.4), conf.level = 0.95, output.type = "text")
 r_ci_label(value = c(-0.3, 0.4), conf.level = 0.95, range.sep = ",")
+r_ci_label(value = c(-1.0, 0.4), conf.level = 0.95, range.sep = ",")
 
 }
 \seealso{
