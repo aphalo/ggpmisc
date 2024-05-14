@@ -260,10 +260,7 @@ p_value_label <- function(value,
   stopifnot(length(value) <= 1L,
             "Negative value of 'digits'" = digits > 0)
 
-  if (length(value) == 0 || is.na(value) || is.nan(value)) {
-    return(NA_character_)
-  }
-
+  # we accept and trim slightly off-range values
   if (value < 0 && value > -1e-12) {
     value <- 0
   } else if (value > 1 && value < 1 + 1e-12) {
@@ -273,12 +270,21 @@ p_value_label <- function(value,
     value <- NA_real_
   }
 
+  if (length(value) == 0 || is.na(value) || is.nan(value)) {
+    return(NA_character_)
+  }
+
   if (digits < 2) {
     warning("'digits < 2' Likely information loss!")
   }
   p.value <- value
 
-  if (is.na(subscript) | !is.character(subscript) | length(subscript) != 1L) {
+  if (is.null(subscript) | is.na(subscript) |
+      !is.character(subscript) | length(subscript) != 1L) {
+    subscript <- ""
+  }
+  if (is.null(superscript) | is.na(superscript) |
+      !is.character(superscript) | length(superscript) != 1L) {
     subscript <- ""
   }
 
@@ -324,10 +330,10 @@ p_value_label <- function(value,
     paste(paste(ifelse(small.p, "_p_",  "_P_"),
                 ifelse(subscript != "",
                        paste("<sub>", subscript, "</sub>", sep = ""),
-                       character()),
+                       ""),
                 ifelse(superscript != "",
                        paste("<sup>", superscript, "</sup>", sep = ""),
-                       character()),
+                       ""),
                 sep = ""),
           ifelse(p.value < 10^(-digits),
                  sprintf_dm("\"%.*f\"", digits, 10^(-digits),
@@ -597,14 +603,20 @@ r_label <- function(value,
                     output.type = "expression",
                     decimal.mark = getOption("OutDec", default = ".")) {
 
+  # we accept and trim slightly off-range values
   if (method == "pearson") {
-    stopifnot(length(value) == 1L,
-              "Out of range R" = is.na(value) || abs(value) <= 1,
-              "Negative value of 'digits'" = digits > 0)
-  } else {
-    stopifnot(length(value) == 1L,
-              "Negative value of 'digits'" = digits > 0)
+    if (value < -1 && value > -1 - 1e-12) {
+      value <- 0
+    } else if (value > 1 && value < 1 + 1e-12) {
+      value <- 1
+    } else if (value < 1 || value > 1) {
+      warning("Out of range P-value replaced by 'NA'")
+      value <- NA_real_
+    }
   }
+
+  stopifnot(length(value) == 1L,
+            "Negative value of 'digits'" = digits > 0)
 
   if (digits < 2) {
     warning("'digits < 2' Likely information loss!")
@@ -631,7 +643,7 @@ r_label <- function(value,
       } else if (method == "spearman") {
         "italic(rho)"
       } else {
-        character(0)
+        method
       }
 
     if (abs(r.value) < 10^(-digits) & r.value != 0) {
@@ -652,7 +664,7 @@ r_label <- function(value,
       } else if (method == "spearman") {
         ifelse(output.type == "text", "rho", "\rho")
       } else {
-        character(0)
+        method
       }
 
     if (abs(r.value) < 10^(-digits) & r.value != 0) {
@@ -673,7 +685,7 @@ r_label <- function(value,
       } else if (method == "spearman") {
         "_&tau;_"
       } else {
-        character(0)
+        method
       }
 
     if (abs(r.value) < 10^(-digits) & r.value != 0) {
@@ -692,6 +704,7 @@ r_label <- function(value,
 #' @examples
 #' rr_label(value = 0.95, digits = 2, output.type = "expression")
 #' rr_label(value = 0.0001, digits = 2, output.type = "expression")
+#' rr_label(value = 1e-17, digits = Inf, output.type = "expression")
 #'
 #' @export
 #'
@@ -702,9 +715,19 @@ rr_label <- function(value,
                      output.type = "expression",
                      decimal.mark = getOption("OutDec", default = ".")) {
 
+  # we accept and trim slightly off-range values
+  if (value < 0 && value > -1e-12) {
+    value <- 0
+  } else if (value > 1 && value < 1 + 1e-12) {
+    value <- 1
+  } else if (value < 0 || value > 1) {
+    warning("Out of range P-value replaced by 'NA'")
+    value <- NA_real_
+  }
+
   stopifnot(length(value) == 1L,
-            "Out of range R^2" = is.na(value) | (value >= 0 & value <= 1),
-            "Negative value of 'digits'" = digits > 0)
+             "Negative value of 'digits'" = digits > 0)
+
   if (digits < 2) {
     warning("'digits < 2' Likely information loss!")
   }
@@ -765,6 +788,15 @@ adj_rr_label <- function(value,
                          output.type = "expression",
                          decimal.mark = getOption("OutDec", default = ".")) {
 
+  # we accept and trim slightly off-range values
+  # adjusted R^2 can have values < 0!
+  if (value > 1 && value < 1 + 1e-12) {
+    value <- 1
+  } else if (value > 1) {
+    warning("Out of range adjusted R^2-value replaced by 'NA'")
+    value <- NA_real_
+  }
+
   stopifnot(length(value) == 1L,
             "Negative value of 'digits'" = digits > 0)
   if (digits < 2) {
@@ -823,8 +855,17 @@ rr_ci_label <- function(value,
                         output.type = "expression",
                         decimal.mark = getOption("OutDec", default = ".")) {
 
+  # we accept and trim slightly off-range values
+  if (value[1] < 0 && value[1] > -1e-12) {
+    value[1] <- 0
+  } else if (value[2] > 1 && value[2] < 1 + 1e-12) {
+    value[2] <- 1
+  } else if (any(value < 0 | value > 1)) {
+    warning("Out of range R^2-value replaced by 'NA'")
+    value[value < 0 | value > 1] <- NA_real_
+  }
+
   stopifnot(length(value) == 2L,
-            "Out of range R^2-value" = all(is.na(value) | (value >= 0 & value <= 1)),
             "Negative value of 'digits'" = digits > 0)
   if (digits < 2) {
     warning("'digits < 2' Likely information loss!")
@@ -886,8 +927,17 @@ r_ci_label <- function(value,
                        output.type = "expression",
                        decimal.mark = getOption("OutDec", default = ".")) {
 
+  # we accept and trim slightly off-range values
+  if (value[1] < -1 && value[1] > -1 - 1e-12) {
+    value <- 0
+  } else if (value[2] > 1 && value[2] < 1 + 1e-12) {
+    value <- 1
+  } else if (any(value < -1 || value > 1)) {
+    warning("Out of range P-value replaced by 'NA'")
+    value[value < -1 || value > 1] <- NA_real_
+  }
+
   stopifnot(length(value) == 2L,
-            "Out of range R-value" = all(is.na(value) | (value >= -1 & value <= 1)),
             "Negative value of 'digits'" = digits > 0)
   if (digits < 2) {
     warning("'digits < 2' Likely information loss!")
