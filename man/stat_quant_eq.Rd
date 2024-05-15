@@ -210,9 +210,9 @@ Support for the \code{angle} aesthetic is not automatic and requires
   \code{poly()} the argument \code{raw = TRUE} must be passed. If defined
   manually as powers of \code{x}, \strong{the terms must be in order of
   increasing powers, with no missing intermediate power term.} Please, see
-  examples below. Currently, no check on the model is used to validate that
-  it is a polynomial, so failing to comply with this requirement results in
-  the silent output of an erroneous formatted equation.
+  examples below. A check on the model is used to validate that it is a
+  polynomial, in most cases a warning is issued. Failing to comply with this
+  requirement results in the output of an erroneous formatted equation.
 }
 
 \section{Aesthetics}{

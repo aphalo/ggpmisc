@@ -143,13 +143,14 @@ generates several labels including the equation, p-value,
 coefficient of determination (R^2), and number of observations.
 }
 \details{
-This stat can be used to automatically annotate a plot with \eqn{R^2},
-  \eqn{P}-value, \eqn{n} and/or the fitted model equation. It supports linear major axis
-  (MA), standard major axis (SMA) and ranged major axis (RMA) regression by
-  means of function \code{\link[lmodel2]{lmodel2}}. Please see the
-  documentation, including the vignette of package 'lmodel2' for details.
-  The parameters in \code{stat_ma_eq()} follow the same naming as in function
-  \code{lmodel2()}.
+This stat can be used to automatically annotate a plot with
+  \eqn{R^2}, \eqn{P}-value, \eqn{n} and/or the fitted model equation. It
+  supports linear major axis (MA), standard major axis (SMA) and ranged major
+  axis (RMA) regression by means of function \code{\link[lmodel2]{lmodel2}}.
+  Formulas describing a straight line and includinmg an intercept are the
+  only ones currently supported. Please see the documentation, including the
+  vignette of package 'lmodel2' for details. The parameters in
+  \code{stat_ma_eq()} follow the same naming as in function \code{lmodel2()}.
 
   It is important to keep in mind that although the fitted line does not
   depend on whether the \eqn{x} or \eqn{y} appears on the rhs of the model
@@ -191,17 +192,6 @@ For backward compatibility a logical is accepted as argument for
   is rendered, i.e., displayed or printed. Set \code{options(OutDec = ",")}
   for languages like Spanish or French.
 }
-\section{Warning!}{
- For the formatted equation to be valid, the fitted model
-  must be a polynomial, with or without intercept. If defined using
-  \code{poly()} the argument \code{raw = TRUE} must be passed. If defined
-  manually as powers of \code{x}, \strong{the terms must be in order of
-  increasing powers, with no missing intermediate power term.} Please, see
-  examples below. Currently, no check on the model is used to validate that
-  it is a polynomial, so failing to comply with this requirement results in
-  the silent output of an erroneous formatted equation.
-}
-
 \section{Aesthetics}{
  \code{stat_ma_eq} understands \code{x} and \code{y}, to
   be referenced in the \code{formula} while the \code{weight} aesthetic is
@@ -217,9 +207,9 @@ For backward compatibility a logical is accepted as argument for
 
 \section{Computed variables}{
 
-If output.type different from \code{"numeric"} the returned tibble contains
-columns listed below. If the fitted model does not contain a given value,
-the label is set to \code{character(0L)}.
+If \code{output.type} is different from \code{"numeric"} the returned tibble
+contains columns listed below. If the fitted model does not contain a given
+value, the label is set to \code{character(0L)}.
 \describe{
   \item{x,npcx}{x position}
   \item{y,npcy}{y position}

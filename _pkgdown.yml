@@ -53,6 +53,7 @@ reference:
     - coef.lmodel2
     - confint.lmodel2
     - predict.lmodel2
+    - check_poly_formula
     - keep_tidy
     - swap_xy
   - title: Changes
