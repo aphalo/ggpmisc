@@ -1,7 +1,7 @@
 #' Format numeric values as strings
 #'
 #' Using \code{\link{sprintf}} flexibly format numbers as character strings
-#' encoded for parsing into R expressions or using \eqn{\LaTeX} or markdown
+#' encoded for parsing into R expressions or using LaTeX or markdown
 #' notation.
 #'
 #' @param fmt character as in \code{sprintf()}.
