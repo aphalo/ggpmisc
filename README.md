@@ -9,7 +9,6 @@ version](https://www.r-pkg.org/badges/version/ggpmisc)](https://cran.r-project.o
 checks](https://badges.cranchecks.info/worst/ggpmisc.svg)](https://cran.r-project.org/web/checks/check_results_ggpmisc.html)
 [![ggpmisc status
 badge](https://aphalo.r-universe.dev/badges/ggpmisc)](https://aphalo.r-universe.dev/ggpmisc)
-[![R-CMD-check](https://github.com/aphalo/ggpmisc/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/aphalo/ggpmisc/actions/workflows/R-CMD-check.yaml)
 <a href="https://docs.r4photobiology.info/ggpmisc/"><img src="https://img.shields.io/badge/documentation-ggpmisc-informational.svg" alt="" /></a>
 <!-- badges: end -->
 
@@ -318,7 +317,7 @@ citation("ggpmisc")
 #> To cite package 'ggpmisc' in publications use:
 #> 
 #>   Aphalo P (2024). _ggpmisc: Miscellaneous Extensions to 'ggplot2'_. R
-#>   package version 0.5.5.9002, https://github.com/aphalo/ggpmisc,
+#>   package version 0.5.6.9002, https://github.com/aphalo/ggpmisc,
 #>   <https://docs.r4photobiology.info/ggpmisc/>.
 #> 
 #> A BibTeX entry for LaTeX users is
@@ -327,7 +326,7 @@ citation("ggpmisc")
 #>     title = {ggpmisc: Miscellaneous Extensions to 'ggplot2'},
 #>     author = {Pedro J. Aphalo},
 #>     year = {2024},
-#>     note = {R package version 0.5.5.9002, 
+#>     note = {R package version 0.5.6.9002, 
 #> https://github.com/aphalo/ggpmisc},
 #>     url = {https://docs.r4photobiology.info/ggpmisc/},
 #>   }

@@ -141,14 +141,14 @@
 #'   interest and using larger values of \code{n.min} than the default is
 #'   usually wise.
 #'
-#' @section Warning!: For the formatted equation to be valid, the fitted model
+#' @section Warning!: For the formatted equations to be valid, the fitted model
 #'   must be a polynomial, with or without intercept. If defined using
 #'   \code{poly()} the argument \code{raw = TRUE} must be passed. If defined
 #'   manually as powers of \code{x}, \strong{the terms must be in order of
 #'   increasing powers, with no missing intermediate power term.} Please, see
-#'   examples below. Currently, no check on the model is used to validate that
-#'   it is a polynomial, so failing to comply with this requirement results in
-#'   the silent output of an erroneous formatted equation.
+#'   examples below. A check on the model is used to validate that it is a
+#'   polynomial, in most cases a warning is issued. Failing to comply with this
+#'   requirement results in the output of an erroneous formatted equation.
 #'
 #' @references Originally written as an answer to question 7549694 at
 #'   Stackoverflow but enhanced based on suggestions from users and my own
@@ -522,6 +522,8 @@ stat_poly_eq <- function(mapping = NULL, data = NULL,
       stop("The model formula should use 'x' and 'y' as variables")
     }
   }
+  # is the model formula that of complete and increasing polynomial?
+  check_poly_formula(formula, orientation)
 
   # backwards compatibility
   if (!is.null(label.x.npc)) {
