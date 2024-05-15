@@ -35,7 +35,7 @@ digits after the decimal mark or as the number of significant digits.}
 }
 \description{
 Using \code{\link{sprintf}} flexibly format numbers as character strings
-encoded for parsing into R expressions or using \eqn{\LaTeX} or markdown
+encoded for parsing into R expressions or using LaTeX or markdown
 notation.
 }
 \details{
