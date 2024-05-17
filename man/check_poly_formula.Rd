@@ -41,9 +41,10 @@ This validation check could fail to validate some valid formulas as
   missing intermediate terms. If \code{poly()} is used in the model formula,
   a single term is expected.
 
-  This function also checks that all power terms are protected with "as is"
-  \code{I()}, as otherwise they are not powers but instead part of the
-  formula specification.
+  This function checks that all power terms defined using \code{^} are
+  protected with "as is" \code{I()}, as otherwise they are not powers but
+  instead part of the formula specification. It also checks that an argument
+  is passed to parameter \code{raw} of function \code{poly()} if present.
 
   If the warning text is \code{NULL} or \code{character(0)} no warning is
   issued. The caller always receives a length-1 logical as return value.
@@ -61,5 +62,8 @@ check_poly_formula(y ~ I(x^2) + x)
 check_poly_formula(y ~ x + I(x^2) + I(x^3))
 check_poly_formula(y ~ I(x^2) + I(x^3))
 check_poly_formula(y ~ x + I(x^3) + I(x^2))
+
+check_poly_formula(y ~ poly(x, 2, raw = TRUE)) # use for label
+check_poly_formula(y ~ poly(x, 2)) # orthogonal polynomial
 
 }

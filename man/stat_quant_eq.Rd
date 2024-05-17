@@ -212,7 +212,7 @@ Support for the \code{angle} aesthetic is not automatic and requires
   increasing powers, with no missing intermediate power term.} Please, see
   examples below. A check on the model is used to validate that it is a
   polynomial, in most cases a warning is issued. Failing to comply with this
-  requirement results in the output of an erroneous formatted equation.
+  requirement results in the return of \code{NA} as the formatted equation.
 }
 
 \section{Aesthetics}{

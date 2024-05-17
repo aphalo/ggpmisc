@@ -21,9 +21,10 @@
 #'   missing intermediate terms. If \code{poly()} is used in the model formula,
 #'   a single term is expected.
 #'
-#'   This function also checks that all power terms are protected with "as is"
-#'   \code{I()}, as otherwise they are not powers but instead part of the
-#'   formula specification.
+#'   This function checks that all power terms defined using \code{^} are
+#'   protected with "as is" \code{I()}, as otherwise they are not powers but
+#'   instead part of the formula specification. It also checks that an argument
+#'   is passed to parameter \code{raw} of function \code{poly()} if present.
 #'
 #'   If the warning text is \code{NULL} or \code{character(0)} no warning is
 #'   issued. The caller always receives a length-1 logical as return value.
@@ -48,6 +49,9 @@
 #' check_poly_formula(y ~ I(x^2) + I(x^3))
 #' check_poly_formula(y ~ x + I(x^3) + I(x^2))
 #'
+#' check_poly_formula(y ~ poly(x, 2, raw = TRUE)) # use for label
+#' check_poly_formula(y ~ poly(x, 2)) # orthogonal polynomial
+#'
 check_poly_formula <-
   function(formula,
            x.name = "x",
@@ -57,13 +61,18 @@ check_poly_formula <-
   x.terms <- grepl(x.name, term.labels)
   poly.in.terms <- grepl("poly *\\(", as.character(formula)[3L])
   power.terms  <- grepl("\\^ *", term.labels)
+  raw.terms  <- grepl("raw *=", term.labels)
   as.is.terms <- grepl("I *\\(", term.labels)
 
   if (num.terms > 1L && poly.in.terms && sum(power.terms) != 0L) {
     stop("Both 'poly()' and power (^) terms in model formula.")
   }
   if (num.terms > 1L && !all(power.terms == as.is.terms)) {
-    stop("Power (^) terms in model formula need to be protected by 'I()'.")
+    warning("Power (^) terms in model formula of a polynomial need to be protected by 'I()'.")
+    return(FALSE)
+  }
+  if (poly.in.terms && !sum(raw.terms)) {
+    message("'poly()' in model formula may need to be passed 'raw = TRUE'")
   }
   if (num.terms == 0L || poly.in.terms && num.terms == 1L) {
     polynomial <- TRUE

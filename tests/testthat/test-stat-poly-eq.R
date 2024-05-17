@@ -417,7 +417,7 @@ test_that("poly_formulas", {
   vdiffr::expect_doppelganger("stat_poly_eq_formula_poly1",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
-                                stat_poly_eq(formula = y ~ poly(x, 1), parse = TRUE,
+                                stat_poly_eq(formula = y ~ poly(x, 1, raw = TRUE), parse = TRUE,
                                              mapping =
                                                aes(label = paste(after_stat(eq.label),
                                                                  after_stat(adj.rr.label),
@@ -429,7 +429,7 @@ test_that("poly_formulas", {
   vdiffr::expect_doppelganger("stat_poly_eq_formula_poly3",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
-                                stat_poly_eq(formula = y ~ poly(x, 3), parse = TRUE,
+                                stat_poly_eq(formula = y ~ poly(x, 3, raw = TRUE), parse = TRUE,
                                              mapping =
                                                aes(label = paste(after_stat(eq.label),
                                                                  after_stat(adj.rr.label),
@@ -489,7 +489,7 @@ test_that("poly_formulas", {
   vdiffr::expect_doppelganger("stat_poly_eq_formula_ypoly1",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
-                                stat_poly_eq(formula = x ~ poly(y, 1), parse = TRUE,
+                                stat_poly_eq(formula = x ~ poly(y, 1, raw = TRUE), parse = TRUE,
                                              mapping =
                                                aes(label = paste(after_stat(eq.label),
                                                                  after_stat(adj.rr.label),
@@ -502,7 +502,7 @@ test_that("poly_formulas", {
   vdiffr::expect_doppelganger("stat_poly_eq_formula_poly3_comma",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
-                                stat_poly_eq(formula = y ~ poly(x, 3), parse = TRUE,
+                                stat_poly_eq(formula = y ~ poly(x, 3, raw = TRUE), parse = TRUE,
                                              mapping =
                                                aes(label = paste(after_stat(eq.label),
                                                                  after_stat(adj.rr.label),
