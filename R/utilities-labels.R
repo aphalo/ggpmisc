@@ -39,31 +39,41 @@ sprintf_dm <- function(fmt,
 #' @rdname sprintf_dm
 #'
 #' @param value numeric The value of the estimate.
-#' @param digits integer Number of digits to which numeric values are formatetd.
-#' @param fixed logical Interpret \code{digits} as indicating a number of
-#'   digits after the decimal mark or as the number of significant digits.
+#' @param digits integer Number of digits to which numeric values are formatted.
+#' @param format character One of "e", "f" or "g" for exponential, fixed, or
+#' significant digits formatting.
 #' @param output.type character One of "expression", "latex", "tex", "text",
 #'   "tikz", "markdown".
 #'
 #' @examples
 #'
 #' value2char(2.34)
-#' value2char(2.34, digits = 3, fixed = FALSE)
-#' value2char(2.34, digits = 3, fixed = TRUE)
+#' value2char(2.34, digits = 3, format = "g")
+#' value2char(2.34, digits = 3, format = "f")
 #' value2char(2.34, output.type = "text")
+#' value2char(2.34, output.type = "text", format = "f")
+#' value2char(2.34, output.type = "text", format = "g")
 #'
 #' @export
 #'
 value2char <- function(value,
                        digits = Inf,
-                       fixed = FALSE,
+                       format = "g",
                        output.type = "expression",
                        decimal.mark = getOption("OutDec", default = ".")) {
+
+  stopifnot("Bad 'format' argument" = format %in% c("f", "g", "e"))
+
+  format <- paste("%#.*", format, sep = "")
+  protected.format <- paste("\"", format, "\"", sep = "")
+
   if (output.type == "expression") {
+
     if (digits == Inf) {
-      temp.char <- sprintf_dm("\"%#.2e\"", value, decimal.mark = decimal.mark)
+      temp.char <- sprintf_dm(protected.format,
+                              2L, value, decimal.mark = decimal.mark)
     } else {
-      temp.char <- sprintf_dm(ifelse(fixed, "\"%#.*f\"", "\"%#.*g\""),
+      temp.char <- sprintf_dm(protected.format,
                               digits, value, decimal.mark = decimal.mark)
     }
     if (grepl("e", temp.char)) {
@@ -74,9 +84,9 @@ value2char <- function(value,
     }
   } else {
     if (digits == Inf) {
-      temp.char <- sprintf_dm("%#.2e", value, decimal.mark = decimal.mark)
+      temp.char <- sprintf_dm(format, 2L, value, decimal.mark = decimal.mark)
     } else {
-      temp.char <- sprintf_dm(ifelse(fixed, "%#.*f", "%#.*g"),
+      temp.char <- sprintf_dm(format,
                               digits, value, decimal.mark = decimal.mark)
     }
     if (output.type %in% c("latex", "tex", "tikz") && grepl("e", temp.char)) {
@@ -149,7 +159,7 @@ plain_label <- function(value,
                              digits = digits,
                              output.type = output.type,
                              decimal.mark = decimal.mark,
-                             fixed = fixed)
+                             format = ifelse(fixed, "f", "g"))
   }
 
   if (output.type == "expression") {
@@ -186,7 +196,7 @@ italic_label <- function(value,
                            digits = digits,
                            output.type = output.type,
                            decimal.mark = decimal.mark,
-                           fixed = fixed)
+                           format = ifelse(fixed, "f", "g"))
   }
 
   if (output.type == "expression") {
@@ -223,7 +233,7 @@ bold_label <- function(value,
                            digits = digits,
                            output.type = output.type,
                            decimal.mark = decimal.mark,
-                           fixed = fixed)
+                           format = ifelse(fixed, "f", "g"))
   }
 
   if (output.type == "expression") {
@@ -256,7 +266,7 @@ p_value_label <- function(value,
                           subscript = "",
                           superscript = "",
                           digits = 4,
-                          fixed = TRUE,
+                          fixed = NULL,
                           output.type = "expression",
                           decimal.mark = getOption("OutDec", default = ".")) {
 
@@ -266,6 +276,19 @@ p_value_label <- function(value,
 
   stopifnot(length(value) == 1L,
             "Negative value of 'digits'" = digits >= 0)
+
+  if (is.null(fixed)) {
+    if (digits == Inf) {
+      format <- "g"
+      digits <- 3
+    } else if (digits > 4) {
+      format <- "e"
+    } else {
+      format <- "f"
+    }
+  } else {
+    format <- ifelse(fixed, "f", "g")
+  }
 
   # we accept and trim slightly off-range values
   if (value < 0 && value > -1e-12) {
@@ -295,7 +318,10 @@ p_value_label <- function(value,
                              digits = digits,
                              output.type = output.type,
                              decimal.mark = decimal.mark,
-                             fixed = fixed)
+                             format = format)
+
+  format <- paste("%#.*", format, sep = "")
+  protected.format <- paste("\"", format, "\"", sep = "")
 
   if (output.type == "expression") {
     paste(paste(ifelse(small.p, "italic(p)",  "italic(P)"),
@@ -307,7 +333,7 @@ p_value_label <- function(value,
                        ""),
                 sep = ""),
           ifelse(p.value < 10^(-digits),
-                 sprintf_dm("\"%.*f\"", digits, 10^(-digits),
+                 sprintf_dm(protected.format, digits, 10^(-digits),
                             decimal.mark = decimal.mark),
                  p.value.char),
           sep = ifelse(p.value < 10^(-digits),
@@ -323,7 +349,7 @@ p_value_label <- function(value,
                        ""),
                 sep = ""),
           ifelse(p.value < 10^(-digits),
-                 sprintf_dm("\"%.*f\"", digits, 10^(-digits),
+                 sprintf_dm(format, digits, 10^(-digits),
                             decimal.mark = decimal.mark),
                  p.value.char),
           sep = ifelse(p.value < 10^(-digits),
@@ -339,7 +365,7 @@ p_value_label <- function(value,
                        ""),
                 sep = ""),
           ifelse(p.value < 10^(-digits),
-                 sprintf_dm("\"%.*f\"", digits, 10^(-digits),
+                 sprintf_dm(format, digits, 10^(-digits),
                             decimal.mark = decimal.mark),
                  p.value.char),
           sep = ifelse(p.value < 10^(-digits),
@@ -401,7 +427,7 @@ f_value_label <- function(value,
                              digits = digits,
                              output.type = output.type,
                              decimal.mark = decimal.mark,
-                             fixed = fixed)
+                             format = ifelse(fixed, "f", "g"))
 
   df1.char <- as.character(df1)
   df2.char <- as.character(df2)
@@ -462,7 +488,7 @@ t_value_label <- function(value,
                              digits = digits,
                              output.type = output.type,
                              decimal.mark = decimal.mark,
-                             fixed = fixed)
+                             format = ifelse(fixed, "f", "g"))
   df.char <- as.character(df)
 
   if (output.type == "expression") {
@@ -477,6 +503,10 @@ t_value_label <- function(value,
   }
 }
 
+#' @rdname plain_label
+#'
+#' @export
+#'
 z_value_label <- function(value,
                           digits = 4,
                           fixed = FALSE,
@@ -491,6 +521,10 @@ z_value_label <- function(value,
                decimal.mark = decimal.mark)
 }
 
+#' @rdname plain_label
+#'
+#' @export
+#'
 S_value_label <- function(value,
                           digits = 4,
                           fixed = FALSE,
@@ -505,6 +539,10 @@ S_value_label <- function(value,
                decimal.mark = decimal.mark)
 }
 
+#' @rdname plain_label
+#'
+#' @export
+#'
 mean_value_label <- function(value,
                              digits = 4,
                              fixed = FALSE,
@@ -529,6 +567,10 @@ mean_value_label <- function(value,
                decimal.mark = decimal.mark)
 }
 
+#' @rdname plain_label
+#'
+#' @export
+#'
 var_value_label <- function(value,
                              digits = 4,
                              fixed = FALSE,
@@ -553,6 +595,10 @@ var_value_label <- function(value,
                decimal.mark = decimal.mark)
 }
 
+#' @rdname plain_label
+#'
+#' @export
+#'
 sd_value_label <- function(value,
                            digits = 4,
                            fixed = FALSE,
@@ -577,6 +623,10 @@ sd_value_label <- function(value,
                decimal.mark = decimal.mark)
 }
 
+#' @rdname plain_label
+#'
+#' @export
+#'
 se_value_label <- function(value,
                            digits = 4,
                            fixed = FALSE,
@@ -639,6 +689,8 @@ r_label <- function(value,
   if (digits < 2) {
     warning("'digits < 2' Likely information loss!")
   }
+  format <- ifelse(fixed, "f", "g")
+
   r.value <- value
 
   if (is.na(r.value) || is.nan(r.value)) {
@@ -649,7 +701,10 @@ r_label <- function(value,
                              digits = digits,
                              output.type = output.type,
                              decimal.mark = decimal.mark,
-                             fixed = fixed)
+                             format = format)
+
+  format <- paste("%#.*", format, sep = "")
+  protected.format <- paste("\"", format, "\"", sep = "")
 
   if (output.type == "expression") {
 
@@ -666,7 +721,8 @@ r_label <- function(value,
 
     if (abs(r.value) < 10^(-digits) & r.value != 0) {
       paste("|", r.symbol, "|", "~ < ~",
-            sprintf_dm("\"%.*f\"", digits, 10^(-digits), decimal.mark = decimal.mark),
+            sprintf_dm(protected.format,
+                       digits, 10^(-digits), decimal.mark = decimal.mark),
             sep = "")
     } else {
       paste(r.symbol, "~`=`~", r.value.char)
@@ -687,7 +743,8 @@ r_label <- function(value,
 
     if (abs(r.value) < 10^(-digits) & r.value != 0) {
       paste("|", r.symbol, "|", " < ",
-            sprintf_dm("%.*f", digits, 10^(-digits), decimal.mark = decimal.mark),
+            sprintf_dm(format,
+                       digits, 10^(-digits), decimal.mark = decimal.mark),
             sep = "")
     } else {
       paste(r.symbol, " = ", r.value.char)
@@ -708,7 +765,8 @@ r_label <- function(value,
 
     if (abs(r.value) < 10^(-digits) & r.value != 0) {
       paste("|", r.symbol, "|", " < ",
-            sprintf_dm("%.*f", digits, 10^(-digits), decimal.mark = decimal.mark),
+            sprintf_dm(format,
+                       digits, 10^(-digits), decimal.mark = decimal.mark),
             sep = "")
     } else {
       paste(r.symbol, " = ", r.value.char)
@@ -753,19 +811,25 @@ rr_label <- function(value,
   if (digits < 2) {
     warning("'digits < 2' Likely information loss!")
   }
+  format <- ifelse(fixed, "f", "g")
+
   rr.value <- value
 
   rr.value.char <- value2char(value = rr.value,
                               digits = digits,
                               output.type = output.type,
                               decimal.mark = decimal.mark,
-                              fixed = fixed)
+                              format = format)
+
+  format <- paste("%#.*", format, sep = "")
+  protected.format <- paste("\"", format, "\"", sep = "")
 
   if (output.type == "expression") {
     rr.symbol <- ifelse(small.r, "italic(r)^2", "italic(R)^2")
     if (rr.value < 10^(-digits) & rr.value != 0) {
       paste(rr.symbol,
-            sprintf_dm("\"%.*f\"", digits, 10^(-digits), decimal.mark = decimal.mark),
+            sprintf_dm(protected.format,
+                       digits, 10^(-digits), decimal.mark = decimal.mark),
             sep = "~`<`~")
     } else {
       paste(rr.symbol, rr.value.char, sep = "~`=`~")
@@ -774,7 +838,8 @@ rr_label <- function(value,
     rr.symbol <- ifelse(small.r, "r^2", "R^2")
     if (rr.value < 10^(-digits) & rr.value != 0) {
       paste(rr.symbol,
-            sprintf_dm("%.*f", digits, 10^(-digits), decimal.mark = decimal.mark),
+            sprintf_dm(format,
+                       digits, 10^(-digits), decimal.mark = decimal.mark),
             sep = " < ")
     } else {
       paste(rr.symbol, rr.value.char, sep = " = ")
@@ -783,7 +848,8 @@ rr_label <- function(value,
     rr.symbol <- ifelse(small.r, "_r_<sup>2</sup>", "_R_<sup>2</sup>")
     if (rr.value < 10^(-digits) & rr.value != 0) {
       paste(rr.symbol,
-            as.character(10^(-digits)),
+            sprintf_dm(format,
+                       digits, 10^(-digits), decimal.mark = decimal.mark),
             sep = " < ")
     } else {
       paste(rr.symbol, rr.value.char, sep = " = ")
@@ -825,29 +891,38 @@ adj_rr_label <- function(value,
   if (digits < 2) {
     warning("'digits < 2' Likely information loss!")
   }
+  format <- ifelse(fixed, "f", "g")
+
   adj.rr.value <- value
 
   adj.rr.value.char <- value2char(value = adj.rr.value,
                                   digits = digits,
                                   output.type = output.type,
                                   decimal.mark = decimal.mark,
-                                  fixed = fixed)
+                                  format = format)
+
+  format <- paste("%#.*", format, sep = "")
+  protected.format <- paste("\"", format, "\"", sep = "")
 
   if (output.type == "expression") {
     paste(ifelse(small.r, "italic(r)[adj]^2", "italic(R)[adj]^2"),
           ifelse(adj.rr.value < 10^(-digits) & adj.rr.value != 0,
-                 sprintf_dm("\"%.*f\"", digits, 10^(-digits), decimal.mark = decimal.mark),
+                 sprintf_dm(protected.format, digits, 10^(-digits), decimal.mark = decimal.mark),
                  adj.rr.value.char),
           sep = ifelse(adj.rr.value < 10^(-digits) & adj.rr.value != 0,
                        "~`<`~",
                        "~`=`~"))
   } else if (output.type %in% c("latex", "tex", "text", "tikz")) {
     paste(ifelse(small.r, "r_{adj}^2", "R_{adj}^2"),
-          ifelse(adj.rr.value < 10^(-digits), as.character(10^(-digits)), adj.rr.value.char),
+          ifelse(adj.rr.value < 10^(-digits),
+                 sprintf_dm(format, digits, 10^(-digits), decimal.mark = decimal.mark),
+                 adj.rr.value.char),
           sep = ifelse(adj.rr.value < 10^(-digits), " < ", " = "))
   } else if (output.type == "markdown") {
     paste(ifelse(small.r, "_r_<sup>2</sup><sub>adj</sub>", "_R_<sup>2</sup><sub>adj</sub>"),
-          ifelse(adj.rr.value < 10^(-digits), as.character(10^(-digits)), adj.rr.value.char),
+          ifelse(adj.rr.value < 10^(-digits),
+                 sprintf_dm(protected.format, digits, 10^(-digits), decimal.mark = decimal.mark),
+                 adj.rr.value.char),
           sep = ifelse(adj.rr.value < 10^(-digits), " < ", " = "))
   }
 }
@@ -912,12 +987,12 @@ rr_ci_label <- function(value,
                               digits = digits,
                               output.type = "text",
                               decimal.mark = decimal.mark,
-                              fixed = fixed)
+                              format = ifelse(fixed, "f", "g"))
   rr.ci.char[2] <- value2char(value = rr.ci.value[2],
                               digits = digits,
                               output.type = "text",
                               decimal.mark = decimal.mark,
-                              fixed = TRUE)
+                              format = ifelse(fixed, "f", "g"))
   rr.ci.char <- paste(rr.ci.char[1], rr.ci.char[2], sep = range.sep)
   if (as.logical((conf.level * 100) %% 1)) {
     conf.level.digits = 1L
@@ -988,15 +1063,15 @@ r_ci_label <- function(value,
 
   r.ci.char <- character(2)
   r.ci.char[1] <- value2char(value = r.ci.value[1],
-                              digits = digits,
-                              output.type = "text",
-                              decimal.mark = decimal.mark,
-                              fixed = fixed)
+                             digits = digits,
+                             output.type = "text",
+                             decimal.mark = decimal.mark,
+                             format = ifelse(fixed, "f", "g"))
   r.ci.char[2] <- value2char(value = r.ci.value[2],
-                              digits = digits,
-                              output.type = "text",
-                              decimal.mark = decimal.mark,
-                              fixed = TRUE)
+                             digits = digits,
+                             output.type = "text",
+                             decimal.mark = decimal.mark,
+                             format = ifelse(fixed, "f", "g"))
   r.ci.char <- paste(r.ci.char[1], r.ci.char[2], sep = range.sep)
   if (as.logical((conf.level * 100) %% 1)) {
     conf.level.digits = 1L

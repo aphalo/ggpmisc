@@ -10,7 +10,7 @@ sprintf_dm(fmt, ..., decimal.mark = getOption("OutDec", default = "."))
 value2char(
   value,
   digits = Inf,
-  fixed = FALSE,
+  format = "g",
   output.type = "expression",
   decimal.mark = getOption("OutDec", default = ".")
 )
@@ -25,10 +25,10 @@ attempted and the value returned by \code{sprintf()} is returned as is.}
 
 \item{value}{numeric The value of the estimate.}
 
-\item{digits}{integer Number of digits to which numeric values are formatetd.}
+\item{digits}{integer Number of digits to which numeric values are formatted.}
 
-\item{fixed}{logical Interpret \code{digits} as indicating a number of
-digits after the decimal mark or as the number of significant digits.}
+\item{format}{character One of "e", "f" or "g" for exponential, fixed, or
+significant digits formatting.}
 
 \item{output.type}{character One of "expression", "latex", "tex", "text",
 "tikz", "markdown".}
@@ -51,9 +51,11 @@ sprintf_dm("\%2.3f", 2.34, decimal.mark = ",")
 
 
 value2char(2.34)
-value2char(2.34, digits = 3, fixed = FALSE)
-value2char(2.34, digits = 3, fixed = TRUE)
+value2char(2.34, digits = 3, format = "g")
+value2char(2.34, digits = 3, format = "f")
 value2char(2.34, output.type = "text")
+value2char(2.34, output.type = "text", format = "f")
+value2char(2.34, output.type = "text", format = "g")
 
 }
 \seealso{
