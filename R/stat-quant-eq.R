@@ -142,7 +142,7 @@
 #'   increasing powers, with no missing intermediate power term.} Please, see
 #'   examples below. A check on the model is used to validate that it is a
 #'   polynomial, in most cases a warning is issued. Failing to comply with this
-#'   requirement results in the output of an erroneous formatted equation.
+#'   requirement results in the return of \code{NA} as the formatted equation.
 #'
 #' @section Aesthetics: \code{stat_quant_eq()} understands \code{x} and \code{y},
 #'   to be referenced in the \code{formula} and \code{weight} passed as argument
@@ -471,7 +471,7 @@ stat_quant_eq <- function(mapping = NULL, data = NULL,
     }
   }
   # is the model formula that of complete and increasing polynomial?
-  check_poly_formula(formula, orientation)
+  mk.eq.label <- check_poly_formula(formula, orientation)
 
   # backwards compatibility
   if (!is.null(label.x.npc)) {
@@ -509,6 +509,7 @@ stat_quant_eq <- function(mapping = NULL, data = NULL,
                    n.min = n.min,
                    eq.with.lhs = eq.with.lhs,
                    eq.x.rhs = eq.x.rhs,
+                   mk.eq.label = mk.eq.label,
                    coef.digits = coef.digits,
                    coef.keep.zeros = coef.keep.zeros,
                    decreasing = decreasing,
@@ -547,7 +548,7 @@ quant_eq_compute_group_fun <- function(data,
                                        weight,
                                        eq.with.lhs,
                                        eq.x.rhs,
-                                       coef.digits,
+                                       mk.eq.label,                                      coef.digits,
                                        coef.keep.zeros,
                                        decreasing,
                                        rho.digits,
@@ -750,22 +751,23 @@ quant_eq_compute_group_fun <- function(data,
                         b_0.constant = forced.origin)
     z <- cbind(z, tibble::as_tibble(t(coefs.mt)))
   } else {
-    # set defaults needed to assemble the equation as a character string
-    if (is.null(eq.x.rhs)) {
-      eq.x.rhs <- build_eq.x.rhs(output.type = output.type,
-                                 orientation = orientation)
-    }
+    if (mk.eq.label) {
+      # set defaults needed to assemble the equation as a character string
+      if (is.null(eq.x.rhs)) {
+        eq.x.rhs <- build_eq.x.rhs(output.type = output.type,
+                                   orientation = orientation)
+      }
 
-    if (is.character(eq.with.lhs)) {
-      lhs <- eq.with.lhs
-      eq.with.lhs <- TRUE
-    } else if (eq.with.lhs) {
-      lhs <- build_lhs(output.type = output.type,
-                       orientation = orientation)
-    } else {
-      lhs <- character(0)
+      if (is.character(eq.with.lhs)) {
+        lhs <- eq.with.lhs
+        eq.with.lhs <- TRUE
+      } else if (eq.with.lhs) {
+        lhs <- build_lhs(output.type = output.type,
+                         orientation = orientation)
+      } else {
+        lhs <- character(0)
+      }
     }
-
     # build labels
     stopifnot(coef.digits > 0)
     if (coef.digits < 3) {
@@ -774,15 +776,19 @@ quant_eq_compute_group_fun <- function(data,
 
     qtl.char <- n.char <- eq.char <- AIC.char <- rho.char <- character(num.quantiles)
     for (q in seq_along(quantiles)) {
-      # build equation as a character string from the coefficient estimates
-      eq.char[q] <- coefs2poly_eq(coefs = coefs.ls[[q]],
-                                  coef.digits = coef.digits,
-                                  coef.keep.zeros = coef.keep.zeros,
-                                  decreasing = decreasing,
-                                  eq.x.rhs = eq.x.rhs,
-                                  lhs = lhs,
-                                  output.type = output.type,
-                                  decimal.mark = decimal.mark)
+      if (mk.eq.label) {
+        # build equation as a character string from the coefficient estimates
+        eq.char[q] <- coefs2poly_eq(coefs = coefs.ls[[q]],
+                                    coef.digits = coef.digits,
+                                    coef.keep.zeros = coef.keep.zeros,
+                                    decreasing = decreasing,
+                                    eq.x.rhs = eq.x.rhs,
+                                    lhs = lhs,
+                                    output.type = output.type,
+                                    decimal.mark = decimal.mark)
+      } else {
+        eq.char[q] <- NA_character_
+      }
       # build other label that vary with quantiles
       AIC.char[q] <- plain_label(value = AIC[q],
                                  value.name = "AIC",

@@ -7,6 +7,12 @@
 \alias{p_value_label}
 \alias{f_value_label}
 \alias{t_value_label}
+\alias{z_value_label}
+\alias{S_value_label}
+\alias{mean_value_label}
+\alias{var_value_label}
+\alias{sd_value_label}
+\alias{se_value_label}
 \alias{r_label}
 \alias{rr_label}
 \alias{adj_rr_label}
@@ -47,7 +53,7 @@ p_value_label(
   subscript = "",
   superscript = "",
   digits = 4,
-  fixed = TRUE,
+  fixed = NULL,
   output.type = "expression",
   decimal.mark = getOption("OutDec", default = ".")
 )
@@ -65,6 +71,54 @@ f_value_label(
 t_value_label(
   value,
   df = NULL,
+  digits = 4,
+  fixed = FALSE,
+  output.type = "expression",
+  decimal.mark = getOption("OutDec", default = ".")
+)
+
+z_value_label(
+  value,
+  digits = 4,
+  fixed = FALSE,
+  output.type = "expression",
+  decimal.mark = getOption("OutDec", default = ".")
+)
+
+S_value_label(
+  value,
+  digits = 4,
+  fixed = FALSE,
+  output.type = "expression",
+  decimal.mark = getOption("OutDec", default = ".")
+)
+
+mean_value_label(
+  value,
+  digits = 4,
+  fixed = FALSE,
+  output.type = "expression",
+  decimal.mark = getOption("OutDec", default = ".")
+)
+
+var_value_label(
+  value,
+  digits = 4,
+  fixed = FALSE,
+  output.type = "expression",
+  decimal.mark = getOption("OutDec", default = ".")
+)
+
+sd_value_label(
+  value,
+  digits = 4,
+  fixed = FALSE,
+  output.type = "expression",
+  decimal.mark = getOption("OutDec", default = ".")
+)
+
+se_value_label(
+  value,
   digits = 4,
   fixed = FALSE,
   output.type = "expression",

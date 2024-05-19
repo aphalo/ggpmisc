@@ -140,8 +140,8 @@ default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
 \value{
 A data frame, with a single row and columns as described under
   \strong{Computed variables}. In cases when the number of observations is
-  less than \code{n.min} a data frame with no rows or columns is returned
-  rendered as an empty/invisible plot layer.
+  less than \code{n.min} a data frame with no rows or columns is returned,
+  and rendered as an empty/invisible plot layer.
 }
 \description{
 \code{stat_poly_eq} fits a polynomial by default with \code{stats::lm()} but
@@ -152,30 +152,35 @@ coefficient of determination (R^2), 'AIC', 'BIC', and number of observations.
 \details{
 This statistic can be used to automatically annotate a plot with
   \eqn{R^2}, adjusted \eqn{R^2} or the fitted model equation. It supports
-  linear regression, robust linear regression and median regression fitted
-  with functions \code{\link{lm}}, or \code{\link[MASS]{rlm}}. The \eqn{R^2}
-  and adjusted \eqn{R^2} annotations can be used with any linear model
-  formula. The confidence interval for \eqn{R^2} is computed with function
+  linear regression, and robust linear regression fitted with functions
+  \code{\link{lm}}, or \code{\link[MASS]{rlm}}. The \eqn{R^2} and adjusted
+  \eqn{R^2} annotations can be used with any linear model formula. The
+  confidence interval for \eqn{R^2} is computed with function
   \code{\link[confintr]{ci_rsquared}} from package 'confintr'. The fitted
-  equation label is correctly generated for polynomials or quasi-polynomials
-  through the origin. Model formulas can use \code{poly()} or be defined
-  algebraically with terms of powers of increasing magnitude with no missing
-  intermediate terms, except possibly for the intercept indicated by "- 1" or
-  "-1" or \code{"+ 0"} in the formula. The validity of the \code{formula} is
-  not checked in the current implementation, and for this reason the default
-  aesthetics sets \eqn{R^2} as label for the annotation. This statistic
-  generates labels as R expressions by default but LaTeX (use TikZ device),
-  markdown (use package 'ggtext') and plain text are also supported, as well
-  as numeric values for user-generated text labels. The value of \code{parse}
-  is set automatically based on \code{output-type}, but if you assemble
-  labels that need parsing from \code{numeric} output, the default needs to
-  be overridden. This stat only generates annotation labels, the predicted
-  values/line need to be added to the plot as a separate layer using
-  \code{\link{stat_poly_line}} (or \code{\link[ggplot2]{stat_smooth}}), if
-  the default formula is overriden with an argument, it is crucial to make
-  sure that the same model formula is used in all layers. In this case it is
-  best to save the formula as an object and supply this object as argument to
-  the different statistics.
+  equation label is generated only for polynomials or quasi-polynomials
+  through the origin \emph{with terms in order of increasing powers}.
+
+  Model formulas can use \code{poly()} or be defined algebraically including
+  the intercept indicated by \code{+1}, \code{-1}, \code{+0} or implicit.
+  The \code{model formula} is checked, and if not recognized as a
+  polynomial with no missing terms, no equation label is generated. Thus,
+  as the value returned for \code{eq.label} may be \code{NA} the default
+  aesthetic mapping for \emph{label} is \eqn{R^2}.
+
+  By default, the character strings are generated as suitable for parsing into R's
+  plotmath expressions. However, LaTeX (use TikZ device), markdown (use package
+  'ggtext') and plain text are also supported, as well as returnibg numeric values for
+  user-generated text labels. The argument of \code{parse} is set automatically
+  based on \code{output-type}, but if you assemble labels that need parsing
+  from \code{numeric} output, the default needs to be overridden. This stat
+  only generates annotation labels, the predicted values/line need to be
+  added to the plot as a separate layer using \code{\link{stat_poly_line}}
+  (or \code{\link[ggplot2]{stat_smooth}}). Using the same formula in
+  \code{stat_poly_line()} and in \code{stat_poly_eq()} in most cases ensures
+  that the plotted curve and equation are consistent. Thus, unless the
+  default formula is not averriden, it is best to save the model formula
+  as an object and supply this named object as argument to the two
+  statistics.
 
   A ggplot statistic receives as \code{data} a data frame that is not the one
   passed as argument by the user, but instead a data frame with the variables
@@ -225,7 +230,7 @@ For backward compatibility a logical is accepted as argument for
   increasing powers, with no missing intermediate power term.} Please, see
   examples below. A check on the model is used to validate that it is a
   polynomial, in most cases a warning is issued. Failing to comply with this
-  requirement results in the output of an erroneous formatted equation.
+  requirement results in the return of \code{NA} as the formatted equation.
 }
 
 \section{Aesthetics}{
@@ -235,14 +240,14 @@ For backward compatibility a logical is accepted as argument for
   variables. In addition, the aesthetics understood by the geom
   (\code{"text"} is the default) are understood and grouping respected.
 
-  \emph{If the model formula includes a transformation of \code{x}, a
+  If the model formula includes a transformation of \code{x}, a
   matching argument should be passed to parameter \code{eq.x.rhs}
   as its default value \code{"x"} will not reflect the applied
   transformation. In plots, transformation should never be applied to the
   left hand side of the model formula, but instead in the mapping of the
   variable within \code{aes}, as otherwise plotted observations and fitted
   curve will not match. In this case it may be necessary to also pass
-  a matching argument to parameter \code{eq.with.lhs}.}
+  a matching argument to parameter \code{eq.with.lhs}.
 }
 
 \section{Computed variables}{
