@@ -7,7 +7,7 @@
 check_poly_formula(
   formula,
   x.name = "x",
-  warning.text = "'formula' is not an increasing polynomial: expect bad/no 'eq.label'!"
+  warning.text = "'formula' not an increasing polynomial: 'eq.label' is NA!"
 )
 }
 \arguments{
@@ -24,7 +24,8 @@ A logical, TRUE if the formula describes an increasing polynomial,
 }
 \description{
 Analyse a model formula to determine if it describes a polynomial with
-terms in order of increasing powers.
+terms in order of increasing powers, and fulfils the expectations of the
+algorithm used to generate the equation-label.
 }
 \details{
 This validation check could fail to validate some valid formulas as
@@ -53,14 +54,16 @@ This validation check could fail to validate some valid formulas as
 check_poly_formula(y ~ 1)
 check_poly_formula(y ~ x)
 check_poly_formula(y ~ x^3)
-check_poly_formula(y ~ poly(x, 2))
 check_poly_formula(y ~ x + 0)
 check_poly_formula(y ~ x - 1)
 check_poly_formula(y ~ x + 1)
 check_poly_formula(y ~ x + I(x^2))
+check_poly_formula(y ~ 1 + x + I(x^2))
 check_poly_formula(y ~ I(x^2) + x)
 check_poly_formula(y ~ x + I(x^2) + I(x^3))
+check_poly_formula(y ~ I(x) + I(x^2) + I(x^3))
 check_poly_formula(y ~ I(x^2) + I(x^3))
+check_poly_formula(y ~ I(x^2) + I(x^4))
 check_poly_formula(y ~ x + I(x^3) + I(x^2))
 
 check_poly_formula(y ~ poly(x, 2, raw = TRUE)) # use for label

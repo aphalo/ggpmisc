@@ -1,7 +1,8 @@
 #' Validate model formula as a polynomial
 #'
 #' Analyse a model formula to determine if it describes a polynomial with
-#' terms in order of increasing powers.
+#' terms in order of increasing powers, and fulfils the expectations of the
+#' algorithm used to generate the equation-label.
 #'
 #' @param formula A model formula in \code{x.name}.
 #' @param x.name character The name of the explanatory variable in the formula.
@@ -39,14 +40,16 @@
 #' check_poly_formula(y ~ 1)
 #' check_poly_formula(y ~ x)
 #' check_poly_formula(y ~ x^3)
-#' check_poly_formula(y ~ poly(x, 2))
 #' check_poly_formula(y ~ x + 0)
 #' check_poly_formula(y ~ x - 1)
 #' check_poly_formula(y ~ x + 1)
 #' check_poly_formula(y ~ x + I(x^2))
+#' check_poly_formula(y ~ 1 + x + I(x^2))
 #' check_poly_formula(y ~ I(x^2) + x)
 #' check_poly_formula(y ~ x + I(x^2) + I(x^3))
+#' check_poly_formula(y ~ I(x) + I(x^2) + I(x^3))
 #' check_poly_formula(y ~ I(x^2) + I(x^3))
+#' check_poly_formula(y ~ I(x^2) + I(x^4))
 #' check_poly_formula(y ~ x + I(x^3) + I(x^2))
 #'
 #' check_poly_formula(y ~ poly(x, 2, raw = TRUE)) # use for label
@@ -55,34 +58,37 @@
 check_poly_formula <-
   function(formula,
            x.name = "x",
-           warning.text = "'formula' is not an increasing polynomial: expect bad/no 'eq.label'!") {
-  term.labels <- attr(terms(formula), "term.labels")
-  num.terms <- length(term.labels)
-  x.terms <- grepl(x.name, term.labels)
+           warning.text = "'formula' not an increasing polynomial: 'eq.label' is NA!") {
+  rhs <- as.character(formula)[3]
+  rhs.terms <- unlist(strsplit(x = rhs, split = c("+", "*"), fixed = TRUE))
+  num.terms <- length(rhs.terms)
+  x.terms <- grepl(x.name, rhs.terms)
   poly.in.terms <- grepl("poly *\\(", as.character(formula)[3L])
-  power.terms  <- grepl("\\^ *", term.labels)
-  raw.terms  <- grepl("raw *=", term.labels)
-  as.is.terms <- grepl("I *\\(", term.labels)
+  power.terms  <- grepl("\\^ *", rhs.terms)
+  raw.terms  <- grepl("raw *=", rhs.terms)
+  as.is.terms <- grepl("I *\\(", rhs.terms)
 
   if (num.terms > 1L && poly.in.terms && sum(power.terms) != 0L) {
     stop("Both 'poly()' and power (^) terms in model formula.")
   }
-  if (num.terms > 1L && !all(power.terms == as.is.terms)) {
+  if (num.terms > 1L && !all(which(power.terms) %in% which(as.is.terms))) {
     warning("Power (^) terms in model formula of a polynomial need to be protected by 'I()'.")
     return(FALSE)
   }
   if (poly.in.terms && !sum(raw.terms)) {
-    message("'poly()' in model formula may need to be passed 'raw = TRUE'")
+    warning("'poly()' in model formula has to be passed 'raw = TRUE'")
   }
-  if (num.terms == 0L || poly.in.terms && num.terms == 1L) {
+  if (sum(x.terms) == 0L || poly.in.terms && num.terms == 1L) {
     polynomial <- TRUE
     increasing <- TRUE
-  } else if (sum(power.terms) <= 1L ||
+  } else if (sum(power.terms) < 1L ||
              sum(power.terms) == num.terms - 1L &&
-             sum(x.terms) == num.terms) {
+             sum(x.terms) == num.terms ||
+             sum(power.terms) == num.terms - 2L &&
+             sum(x.terms) == num.terms - 1L) {
     polynomial <- TRUE
-    if (sum(x.terms) == 1L || min(which(power.terms)) == 2L) {
-      powers <- as.numeric(gsub(".*\\^([0-9]+).*", "\\1", term.labels[power.terms]))
+    if (sum(x.terms) == 1L || min(which(power.terms)) %in% 2L:3L) {
+      powers <- as.numeric(gsub(".*\\^([0-9]+).*", "\\1", rhs.terms[power.terms]))
       increasing <- length(powers) <= 1L ||
         !is.unsorted(powers, strictly = TRUE) &&
         max(powers) == length(powers) + 1 # no missing terms
