@@ -11,6 +11,7 @@ editor_options:
 -   Define function `check_poly_formula()` and use it in `stat_poly_eq()` and `stat_quant_eq()` to validate that the user-supplied model formula is a polynomial with terms in order of increasing powers. If not validated, `NA` is returned as formatted equation label.
 -   Statistics `stat_poly_eq()`, `stat_ma_eq()`, `stat_quant_eq()`, `stat_correlation()`, and `stat_multcomp()` were in part rewritten, introducing small visual changes in the formatting of labels, including changes in the default number of digits.
 -   Export new utility functions, used internally for formatting parameter estimates into character strings.
+-   Implement R options `ggpmisc.small.p`, `ggpmisc.small.r` and `ggpmisc.decreasing.poly.eq`.
 
 # ggpmisc 0.5.6
 

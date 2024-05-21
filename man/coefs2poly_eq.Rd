@@ -8,7 +8,7 @@ coefs2poly_eq(
   coefs,
   coef.digits = 3L,
   coef.keep.zeros = TRUE,
-  decreasing = FALSE,
+  decreasing = getOption("ggpmisc.decreasing.poly.eq", FALSE),
   eq.x.rhs = "x",
   lhs = "y~`=`~",
   output.type = "expression",
