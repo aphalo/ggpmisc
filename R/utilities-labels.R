@@ -725,7 +725,7 @@ r_label <- function(value,
                        digits, 10^(-digits), decimal.mark = decimal.mark),
             sep = "")
     } else {
-      paste(r.symbol, "~`=`~", r.value.char)
+      paste(r.symbol, "~`=`~", r.value.char, sep = "")
     }
 
   } else if (output.type %in% c("latex", "tex", "text", "tikz")) {
@@ -747,7 +747,7 @@ r_label <- function(value,
                        digits, 10^(-digits), decimal.mark = decimal.mark),
             sep = "")
     } else {
-      paste(r.symbol, " = ", r.value.char)
+      paste(r.symbol, " = ", r.value.char, sep = "")
     }
 
   } else if (output.type == "markdown") {
@@ -769,7 +769,7 @@ r_label <- function(value,
                        digits, 10^(-digits), decimal.mark = decimal.mark),
             sep = "")
     } else {
-      paste(r.symbol, " = ", r.value.char)
+      paste(r.symbol, " = ", r.value.char, sep = "")
     }
 
   }
