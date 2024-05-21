@@ -15,7 +15,7 @@ stat_multcomp(
   method.args = list(),
   contrasts = "Tukey",
   p.adjust.method = NULL,
-  small.p = FALSE,
+  small.p = getOption("ggpmisc.small.p", default = FALSE),
   adj.method.tag = 4,
   p.digits = 3,
   label.type = "bars",

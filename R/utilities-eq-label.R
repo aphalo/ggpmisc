@@ -80,7 +80,7 @@ build_lhs <- function(output.type = "expression",
 #' @export
 #'
 poly2character <- function (x,
-                            decreasing = FALSE,
+                            decreasing = getOption("ggpmisc.decreasing.poly.eq", FALSE),
                             digits = 3,
                             keep.zeros = TRUE) {
   if (keep.zeros) {
@@ -177,7 +177,7 @@ typeset_numbers <- function(eq.char, output.type) {
 coefs2poly_eq <- function(coefs,
                           coef.digits = 3L,
                           coef.keep.zeros = TRUE,
-                          decreasing = FALSE,
+                          decreasing = getOption("ggpmisc.decreasing.poly.eq", FALSE),
                           eq.x.rhs = "x",
                           lhs = "y~`=`~",
                           output.type = "expression",

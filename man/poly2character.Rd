@@ -4,7 +4,12 @@
 \alias{poly2character}
 \title{Convert a polynomial into character string}
 \usage{
-poly2character(x, decreasing = FALSE, digits = 3, keep.zeros = TRUE)
+poly2character(
+  x,
+  decreasing = getOption("ggpmisc.decreasing.poly.eq", FALSE),
+  digits = 3,
+  keep.zeros = TRUE
+)
 }
 \arguments{
 \item{x}{a \code{polynomial} object.}

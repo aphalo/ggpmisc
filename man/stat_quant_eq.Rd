@@ -19,7 +19,7 @@ stat_quant_eq(
   eq.x.rhs = NULL,
   coef.digits = 3,
   coef.keep.zeros = TRUE,
-  decreasing = FALSE,
+  decreasing = getOption("ggpmisc.decreasing.poly.eq", FALSE),
   rho.digits = 4,
   label.x = "left",
   label.y = "top",

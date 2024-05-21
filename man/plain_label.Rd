@@ -49,7 +49,7 @@ bold_label(
 
 p_value_label(
   value,
-  small.p = FALSE,
+  small.p = getOption("ggpmisc.small.p", default = FALSE),
   subscript = "",
   superscript = "",
   digits = 4,
@@ -128,7 +128,7 @@ se_value_label(
 r_label(
   value,
   method = "pearson",
-  small.r = FALSE,
+  small.r = getOption("ggpmisc.small.r", default = FALSE),
   digits = 3,
   fixed = TRUE,
   output.type = "expression",
@@ -137,7 +137,7 @@ r_label(
 
 rr_label(
   value,
-  small.r = FALSE,
+  small.r = getOption("ggpmisc.small.r", default = FALSE),
   digits = 3,
   fixed = TRUE,
   output.type = "expression",
@@ -146,7 +146,7 @@ rr_label(
 
 adj_rr_label(
   value,
-  small.r = FALSE,
+  small.r = getOption("ggpmisc.small.r", default = FALSE),
   digits = 3,
   fixed = TRUE,
   output.type = "expression",
@@ -167,7 +167,7 @@ rr_ci_label(
 r_ci_label(
   value,
   conf.level,
-  small.r = FALSE,
+  small.r = getOption("ggpmisc.small.r", default = FALSE),
   range.brackets = c("[", "]"),
   range.sep = NULL,
   digits = 2,
