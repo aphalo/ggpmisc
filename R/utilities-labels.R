@@ -203,8 +203,10 @@ italic_label <- function(value,
     paste("italic(", value.name, ")~`=`~", value.char, sep = "")
   } else if (output.type %in% c("latex", "tex", "tikz")) {
     paste("\\mathit{", value.name, "} = ", value.char, sep = "")
-  } else if (output.type %in% c("text", "markdown")) {
+  } else if (output.type == "markdown") {
     paste("_", value.name, "_ = ", value.char, sep = "")
+  } else {
+    paste(value.name, " = ", value.char, sep = "")
   }
 }
 
@@ -240,8 +242,10 @@ bold_label <- function(value,
     paste("bold(", value.name, ")~`=`~", value.char, sep = "")
   } else if (output.type %in% c("latex", "tex", "tikz")) {
     paste("\\mathbf{", value.name, "} = ", value.char, sep = "")
-  } else if (output.type %in% c("text", "markdown")) {
+  } else if (output.type == "markdown") {
     paste("**", value.name, "** = ", value.char, sep = "")
+  } else {
+    paste(value.name, " = ", value.char, sep = "")
   }
 }
 
@@ -436,12 +440,16 @@ f_value_label <- function(value,
     paste("italic(F)[", df1.char,
           "*\",\"*", df2.char,
           "]~`=`~", f.value.char, sep = "")
-  } else if (output.type %in% c("latex", "tex", "text", "tikz")) {
+  } else if (output.type %in% c("latex", "tex","tikz")) {
     paste("F_{", df1.char, ",", df2.char,
           "} = ", f.value.char, sep = "")
   } else if (output.type == "markdown") {
     paste("_F_<sub>", df1.char, ",", df2.char,
           "</sub> = ", f.value.char, sep = "")
+  } else {
+    paste("F(", df1.char, ",", df2.char,
+          ") = ", f.value.char, sep = "")
+
   }
 }
 
@@ -494,12 +502,14 @@ t_value_label <- function(value,
   if (output.type == "expression") {
     paste("italic(t)[", df.char,
           "]~`=`~", t.value.char, sep = "")
-  } else if (output.type %in% c("latex", "tex", "text", "tikz")) {
-    paste("t_{", df.char,
-          "} = ", t.value.char, sep = "")
+  } else if (output.type %in% c("latex", "tex", "tikz")) {
+    paste("t_{", df.char, "} = ", t.value.char, sep = "")
   } else if (output.type == "markdown") {
     paste("_t_<sub>", df.char,
           "</sub> = ", t.value.char, sep = "")
+  } else {
+    paste("t(", df.char, ") = ", t.value.char, sep = "")
+
   }
 }
 
@@ -692,10 +702,6 @@ r_label <- function(value,
   format <- ifelse(fixed, "f", "g")
 
   r.value <- value
-
-  if (is.na(r.value) || is.nan(r.value)) {
-    return(NA_character_)
-  }
 
   r.value.char <- value2char(value = r.value,
                              digits = digits,
@@ -949,14 +955,14 @@ rr_ci_label <- function(value,
                         output.type = "expression",
                         decimal.mark = getOption("OutDec", default = ".")) {
 
-  if (length(value) == 0 || any(is.na(value) | is.nan(value))) {
+  if (length(value) == 0L || any(is.na(value) | is.nan(value))) {
     return(NA_character_)
   }
 
   stopifnot("A CI label needs 'value' of length two" = length(value) == 2L,
             "Negative value of 'digits'" = digits >= 0)
 
-  if (is.unsorted(value)) {
+  if (!any(is.na(value)) && is.unsorted(value)) {
     warning("Found unsorted CI limits; sorting them")
     value <- sort(value)
   }
@@ -964,9 +970,11 @@ rr_ci_label <- function(value,
   # we accept and trim slightly off-range values
   if (value[1] < 0 && value[1] > -1e-12) {
     value[1] <- 0
-  } else if (value[2] > 1 && value[2] < 1 + 1e-12) {
+  }
+  if (value[2] > 1 && value[2] < 1 + 1e-12) {
     value[2] <- 1
-  } else if (any(value < 0 | value > 1)) {
+  }
+  if (any(value < 0 | value > 1)) {
     warning("Out of range R^2-values (", value, ") replaced by 'NA's")
     value[value < 0 | value > 1] <- NA_real_
   }
@@ -976,7 +984,7 @@ rr_ci_label <- function(value,
   if (digits < 2) {
     warning("'digits < 2' Likely information loss!")
   }
-  rr.ci.value <- sort(value)
+  rr.ci.value <- value
 
   if (is.null(range.sep)) {
     range.sep <- c("." = ", ", "," = "; ")[decimal.mark]
@@ -1030,25 +1038,27 @@ r_ci_label <- function(value,
                        output.type = "expression",
                        decimal.mark = getOption("OutDec", default = ".")) {
 
-  if (length(value) == 0 || any(is.na(value) | is.nan(value))) {
+  if (length(value) == 0L || any(is.na(value) | is.nan(value))) {
     return(NA_character_)
   }
 
   stopifnot("A CI label needs a 'value' of length two" = length(value) == 2L,
             "Negative value of 'digits'" = digits >= 0)
 
-  if (is.unsorted(value)) {
+  if (!any(is.na(value)) && is.unsorted(value)) {
     warning("Found unsorted CI limits; sorting them")
     value <- sort(value)
   }
 
   # we accept and trim slightly off-range values
   if (value[1] < -1 && value[1] > -1 - 1e-12) {
-    value <- -1
-  } else if (value[2] > 1 && value[2] < 1 + 1e-12) {
-    value <- 1
-  } else if (any(value < -1 | value > 1)) {
-    warning("Out of range R-values (", value, ") replaced by 'NA's")
+    value[1] <- -1
+  }
+  if (value[2] > 1 && value[2] < 1 + 1e-12) {
+    value[2] <- 1
+  }
+  if (any(value < -1 | value > 1)) {
+    warning("Out of range R-values (", value, ") replaced by 'NA'")
     value[value < -1 | value > 1] <- NA_real_
   }
 

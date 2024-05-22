@@ -26,6 +26,23 @@ test_that("check poly passed with increasing powers", {
   expect_true(check_poly_formula(y ~ I(x) + I(x^2) + I(x^3) + I(x^4)))
 })
 
+test_that("check poly fails with decreasing powers", {
+  expect_false(suppressWarnings(check_poly_formula(y ~ I(x^2) + x)))
+  expect_false(suppressWarnings(check_poly_formula(y ~ I(x^3) + I(x^2) + x)))
+  expect_false(check_poly_formula(y ~ I(x^3) + I(x^2) + x, warning.text = NULL))
+})
+
+test_that("check poly warns with decreasing powers", {
+  expect_warning(check_poly_formula(y ~ I(x^2) + x))
+  expect_warning(check_poly_formula(y ~ I(x^3) + I(x^2) + x))
+  expect_no_warning(check_poly_formula(y ~ I(x^3) + I(x^2) + x, warning.text = NULL))
+})
+
+test_that("check poly errors with mixed power and poly", {
+  expect_error(check_poly_formula(y ~ I(x^2) + poly(x, 3, raw = TRUE)))
+  expect_error(check_poly_formula(y ~ poly(x, 3, raw = TRUE) + I(x^2)))
+})
+
 test_that("check poly fails with missing as is", {
   expect_false(suppressWarnings(check_poly_formula(y ~ x + x^2)))
   expect_false(suppressWarnings(check_poly_formula(y ~ 1 + x + x^2)))
