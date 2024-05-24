@@ -53,7 +53,7 @@ ggplot(my.data, aes(x, y, color = group)) +
 ## -----------------------------------------------------------------------------
 ggplot(my.data, aes(x, y, color = group)) +
   geom_point() +
-  stat_correlation(mapping = use_label(c("R", "t", "P", "n")))
+  stat_correlation(mapping = use_label("R", "t", "P", "n"))
 
 ## -----------------------------------------------------------------------------
 ggplot(my.data, aes(x, y)) +
@@ -118,7 +118,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(mapping = use_label(c("eq", "adj.R2")),
+  stat_poly_eq(mapping = use_label("eq", "adj.R2"),
                formula = formula) +
   labs(x = expression(italic(x)), y = expression(italic(y)))
 
@@ -139,7 +139,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(mapping = use_label(c("eq", "adj.R2"), sep = "~~italic(\"with\")~~"),
+  stat_poly_eq(mapping = use_label("eq", "adj.R2", sep = "~~italic(\"with\")~~"),
                formula = formula)
 
 ## ----eval=eval_flag-----------------------------------------------------------
@@ -174,7 +174,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(mapping = use_label(c("eq", "R2")),
+  stat_poly_eq(mapping = use_label("eq", "R2"),
                eq.with.lhs = "italic(h)~`=`~",
                eq.x.rhs = "~italic(z)",
                formula = formula) +
@@ -322,9 +322,9 @@ ggplot(my.data, aes(x, y2, colour = group)) +
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = y ~ x, color = "blue") +
-  stat_poly_eq(mapping = use_label(c("R2", "eq")), color = "blue") +
+  stat_poly_eq(mapping = use_label("R2", "eq"), color = "blue") +
   stat_poly_line(formula = y ~ x, color = "red", orientation = "y") +
-  stat_poly_eq(mapping = use_label(c("R2", "eq")), color = "red", orientation = "y",
+  stat_poly_eq(mapping = use_label("R2", "eq"), color = "red", orientation = "y",
                label.y = 0.9)
 
 ## -----------------------------------------------------------------------------
@@ -337,9 +337,9 @@ ggplot(my.data, aes(x, y)) +
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_ma_line(color = "blue") +
-  stat_ma_eq(mapping = use_label(c("R2", "eq")), color = "blue") +
+  stat_ma_eq(mapping = use_label("R2", "eq"), color = "blue") +
   stat_ma_line(color = "red", orientation = "y") +
-  stat_ma_eq(mapping = use_label(c("R2", "eq")), color = "red", orientation = "y",
+  stat_ma_eq(mapping = use_label("R2", "eq"), color = "red", orientation = "y",
              label.y = 0.9)
 
 ## ----warning=FALSE------------------------------------------------------------
@@ -882,7 +882,7 @@ ggplot(volcano_example.df,
   geom_point() +
   scale_x_logFC(name = "Transcript abundance%unit") +
   scale_y_Pvalue() +
-  scale_colour_outcome() +
+  scale_colour_outcome(values = "outcome:de") +
   stat_quadrant_counts(data = function(x) {subset(x, outcome != 0)})
 
 ## -----------------------------------------------------------------------------

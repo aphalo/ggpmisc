@@ -228,7 +228,7 @@ Statistics `stat_peaks()` and `stat_valleys()` can be used to locate and annotat
 
 ### R options
 
-Some default arguments that should in most cases be consistent across annotations in the plots of a document can be set through R options. These include the character used as decimal point, through the option used by R itself, `OutDec`, the use of upper- or lower case letters as symbol for probability and pearson correlation and coefficient of determination: `ggpmisc.small.p`, `ggpmisc.small.r` and the ordering of terms in the model fit equation label (not the in the model formula argument) `ggpmisc.decreasing.poly.eq`.
+Some default arguments that should be in most cases set consistently the different plots included in a document, can be set through R options. These include the character used as decimal point, through the option used by R itself, `OutDec`, the use of upper- or lower case letters as symbol for probability and pearson correlation and coefficient of determination: `ggpmisc.small.p`, `ggpmisc.small.r` and the ordering of terms in the model fit equation label (not the in the model formula argument) `ggpmisc.decreasing.poly.eq`.
 
 The labels can be generated using different types of markup: R plotmath expressions,
 Markdown, $\LaTeX$, and plain text. Character strings suitable for parsing are the default unless the argument to parameter `geom` is `richtext` or `textbox`, in which case Markdown encoded character strings are returned. The default for `parse` is `TRUE` only if suitable strings are being returned.
@@ -1458,7 +1458,7 @@ ggplot(volcano_example.df,
   geom_point() +
   scale_x_logFC(name = "Transcript abundance%unit") +
   scale_y_Pvalue() +
-  scale_colour_outcome() +
+  scale_colour_outcome(values = "outcome:de") +
   stat_quadrant_counts(data = function(x) {subset(x, outcome != 0)})
 ```
 
