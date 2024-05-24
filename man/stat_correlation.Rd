@@ -229,26 +229,26 @@ ggplot(my.data, aes(x, y)) +
 # use_label() can assemble and map a combined label
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  stat_correlation(use_label(c("R", "P", "n", "method")))
+  stat_correlation(use_label("R", "P", "n", "method"))
 
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  stat_correlation(use_label(c("R", "R.CI")))
+  stat_correlation(use_label("R", "R.CI"))
 
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  stat_correlation(use_label(c("R", "R.CI")),
+  stat_correlation(use_label("R", "R.CI"),
                    r.conf.level = 0.95)
 
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  stat_correlation(use_label(c("R", "R.CI")),
+  stat_correlation(use_label("R", "R.CI"),
                    method = "kendall",
                    r.conf.level = 0.95)
 
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  stat_correlation(use_label(c("R", "R.CI")),
+  stat_correlation(use_label("R", "R.CI"),
                    method = "spearman",
                    r.conf.level = 0.95)
 

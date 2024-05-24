@@ -247,7 +247,7 @@
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   stat_quant_line() +
-#'   stat_quant_eq(mapping = use_label(c("eq", "method")))
+#'   stat_quant_eq(mapping = use_label("eq", "method"))
 #'
 #' # same formula as default
 #' ggplot(my.data, aes(x, y)) +
@@ -322,7 +322,7 @@
 #'        grp.label = group)) +
 #'   geom_point() +
 #'   stat_quant_band(formula = formula, color = "black", linewidth = 0.75) +
-#'   stat_quant_eq(mapping = use_label(c("grp", "eq"), sep = "*\": \"*"),
+#'   stat_quant_eq(mapping = use_label("grp", "eq", sep = "*\": \"*"),
 #'                 formula = formula) +
 #'   expand_limits(y = 3) +
 #'   theme_classic()

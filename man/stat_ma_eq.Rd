@@ -265,12 +265,12 @@ ggplot(my.data, aes(x, y)) +
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_ma_line(method = "MA") +
-  stat_ma_eq(mapping = use_label(c("eq", "R2", "P")))
+  stat_ma_eq(mapping = use_label("eq", "R2", "P"))
 
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_ma_line(method = "MA") +
-  stat_ma_eq(mapping = use_label(c("R2", "P", "theta", "method")))
+  stat_ma_eq(mapping = use_label("R2", "P", "theta", "method"))
 
 # using ranged major axis regression
 ggplot(my.data, aes(x, y)) +
@@ -278,7 +278,7 @@ ggplot(my.data, aes(x, y)) +
   stat_ma_line(method = "RMA",
                range.y = "interval",
                range.x = "interval") +
-  stat_ma_eq(mapping = use_label(c("eq", "R2", "P")),
+  stat_ma_eq(mapping = use_label("eq", "R2", "P"),
              method = "RMA",
              range.y = "interval",
              range.x = "interval")
@@ -287,7 +287,7 @@ ggplot(my.data, aes(x, y)) +
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_ma_line(method = "MA") +
-  stat_ma_eq(mapping = use_label(c("eq", "R2")),
+  stat_ma_eq(mapping = use_label("eq", "R2"),
              method = "MA",
              nperm = 0)
 
@@ -296,7 +296,7 @@ ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_ma_line(formula = x ~ y) +
   stat_ma_eq(formula = x ~ y,
-             mapping = use_label(c("eq", "R2", "P")))
+             mapping = use_label("eq", "R2", "P"))
 
 # modifying both variables within aes()
 ggplot(my.data, aes(log(x + 10), log(y + 10))) +
@@ -317,7 +317,7 @@ ggplot(my.data,
        aes(x, y,  shape = group, linetype = group, grp.label = group)) +
   geom_point() +
   stat_ma_line(color = "black") +
-  stat_ma_eq(mapping = use_label(c("grp", "eq", "R2"))) +
+  stat_ma_eq(mapping = use_label("grp", "eq", "R2")) +
   theme_classic()
 
 # Inspecting the returned data using geom_debug()

@@ -314,7 +314,7 @@ p1 +
 
 # use different labels: difference and P-value from hypothesis tests
 p1 +
-  stat_multcomp(use_label(c("Delta", "P")),
+  stat_multcomp(use_label("Delta", "P"),
                 size = 2.75)
 
 # control smallest P-value displayed and number of digits
