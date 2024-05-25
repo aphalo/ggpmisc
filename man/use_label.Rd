@@ -130,7 +130,7 @@ ggplot(data = my.data,
                label.y = "bottom",
                label.x = "right")
 
-# quantile regresion
+# quantile regression
 ggplot(data = my.data,
        mapping = aes(x, y)) +
   stat_quant_band(formula = formula) +

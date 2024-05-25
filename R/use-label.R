@@ -121,7 +121,7 @@
 #'                label.y = "bottom",
 #'                label.x = "right")
 #'
-#' # quantile regresion
+#' # quantile regression
 #' ggplot(data = my.data,
 #'        mapping = aes(x, y)) +
 #'   stat_quant_band(formula = formula) +
@@ -145,9 +145,8 @@ use_label <- function(...,
                       labels = NULL,
                       other.mapping = NULL,
                       sep =  "*\", \"*") {
-  if (is.null(labels)) {
+  if (!length(labels)) {
     labels <- list(...)
-    # backwards compatibility: accept vector as if passed to parameter labels
     if (length(labels)) {
       for (i in seq_along(labels)) {
         if (inherits(labels[[i]], "uneval")) {
@@ -156,17 +155,22 @@ use_label <- function(...,
         }
       }
     }
-    if (length(labels) && length(labels[[1]]) > 1L) {
-      labels <- labels[[1]]
+    if (length(labels)) { # <- NULL above makes this necessary
+      if (length(labels[[1]]) > 1L) {
+        # backwards compatibility: accept vector as if passed by position to labels
+        labels <- labels[[1]]
+      }
     }
   }
   if (!length(labels)) {
-    # same default as in earlier versions
     labels <- c("eq", "p.value")
   }
+
   if (length(labels) > 5) {
-    warning("Pasting first 5 labels and discardin others.")
+    warning("Pasting first 5 labels and discarding others.")
+    labels <- labels[1:5]
   }
+
   # accept upper case equivalents
   labels <- tolower(labels)
   # accept short names lacking ".label" as ending
