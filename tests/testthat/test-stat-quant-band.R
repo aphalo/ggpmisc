@@ -33,6 +33,36 @@ library(ggpmisc)
 
 test_that("quant_formulas", {
   withCallingHandlers({
+    vdiffr::expect_doppelganger("stat_quant_band_formula_missing",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_quant_band()
+    )
+
+    vdiffr::expect_doppelganger("stat_quant_band_formula_missing_orientationy",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_quant_band(orientation = "y")
+    )
+
+    vdiffr::expect_doppelganger("stat_quant_band_formula_missing_orientationx",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_quant_band(orientation = "x")
+    )
+
+    vdiffr::expect_doppelganger("stat_quant_band_formula_missing_rqss",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_quant_band(method = "rqss")
+    )
+
+    expect_error(ggplot(my.data, aes(x, y)) +
+                   stat_quant_band(method = "lm"))
+
+    expect_error(ggplot(my.data, aes(x, y)) +
+                   stat_quant_band(method = "lmodel2"))
+
     vdiffr::expect_doppelganger("stat_quant_band_formula_1",
                                 ggplot(my.data, aes(x, y)) +
                                   geom_point() +

@@ -170,7 +170,7 @@ stat_quant_band <- function(mapping = NULL,
       if (method == "rq") {
         formula <- y ~ x
       } else if (method == "rqss") {
-        formula <- y ~ quantreg::qss(x, lambda = 1, constraint = "N")
+        formula <- y ~ qss(x)
       }
     }
     if (is.na(orientation)) {
