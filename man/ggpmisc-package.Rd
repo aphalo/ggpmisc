@@ -58,7 +58,7 @@ formula <- y ~ poly(x, 2, raw = TRUE)
 ggplot(cars, aes(speed, dist)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(use_label(c("eq", "R2", "P")),
+  stat_poly_eq(use_label("eq", "R2", "P"),
                formula = formula,
                parse = TRUE) +
   labs(x = expression("Speed, "*x~("mph")),

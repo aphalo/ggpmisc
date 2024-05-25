@@ -280,17 +280,17 @@
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   stat_poly_line(formula = formula) +
-#'   stat_poly_eq(use_label(c("eq", "R2")), formula = formula)
+#'   stat_poly_eq(use_label("eq", "R2"), formula = formula)
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   stat_poly_line(formula = formula) +
-#'   stat_poly_eq(use_label(c("R2", "R2.CI", "P", "method")), formula = formula)
+#'   stat_poly_eq(use_label("R2", "R2.CI", "P", "method"), formula = formula)
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   stat_poly_line(formula = formula) +
-#'   stat_poly_eq(use_label(c("R2", "F", "P", "n"), sep = "*\"; \"*"),
+#'   stat_poly_eq(use_label("R2", "F", "P", "n", sep = "*\"; \"*"),
 #'                formula = formula)
 #'
 #' # grouping
@@ -361,7 +361,7 @@
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   stat_poly_line(formula = formula, orientation = "y") +
-#'   stat_poly_eq(use_label(c("eq", "adj.R2")),
+#'   stat_poly_eq(use_label("eq", "adj.R2"),
 #'                formula = x ~ poly(y, 3, raw = TRUE))
 #'
 #' # conditional user specified label

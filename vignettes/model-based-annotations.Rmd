@@ -228,7 +228,7 @@ Statistics `stat_peaks()` and `stat_valleys()` can be used to locate and annotat
 
 ### R options
 
-Some default arguments that should in most cases be consistent across annotations in the plots of a document can be set through R options. These include the character used as decimal point, through the option used by R itself, `OutDec`, the use of upper- or lower case letters as symbol for probability and pearson correlation and coefficient of determination: `ggpmisc.small.p`, `ggpmisc.small.r` and the ordering of terms in the model fit equation label (not the in the model formula argument) `ggpmisc.decreasing.poly.eq`.
+Some default arguments that should be in most cases set consistently the different plots included in a document, can be set through R options. These include the character used as decimal point, through the option used by R itself, `OutDec`, the use of upper- or lower case letters as symbol for probability and pearson correlation and coefficient of determination: `ggpmisc.small.p`, `ggpmisc.small.r` and the ordering of terms in the model fit equation label (not the in the model formula argument) `ggpmisc.decreasing.poly.eq`.
 
 The labels can be generated using different types of markup: R plotmath expressions,
 Markdown, $\LaTeX$, and plain text. Character strings suitable for parsing are the default unless the argument to parameter `geom` is `richtext` or `textbox`, in which case Markdown encoded character strings are returned. The default for `parse` is `TRUE` only if suitable strings are being returned.
@@ -293,12 +293,12 @@ ggplot(my.data, aes(x, y, color = group)) +
   stat_correlation(method = "spearman")
 ```
 
-Statistic `stat_correlation()` generates multiple labels as listed in the tables above. We can combine them freely within a call to `aes()` to customize the annotations.
+Statistic `stat_correlation()` generates multiple labels as listed in the tables above. We can combine them freely within a call to `aes()` to customize the annotations, or we can use the convenience function `use_label()` to create the mapping.
 
 ```{r}
 ggplot(my.data, aes(x, y, color = group)) +
   geom_point() +
-  stat_correlation(mapping = use_label(c("R", "t", "P", "n")))
+  stat_correlation(mapping = use_label("R", "t", "P", "n"))
 ```
 
 Facets are also supported.
@@ -397,7 +397,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(mapping = use_label(c("eq", "adj.R2")),
+  stat_poly_eq(mapping = use_label("eq", "adj.R2"),
                formula = formula) +
   labs(x = expression(italic(x)), y = expression(italic(y)))
 ```
@@ -424,7 +424,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(mapping = use_label(c("eq", "adj.R2"), sep = "~~italic(\"with\")~~"),
+  stat_poly_eq(mapping = use_label("eq", "adj.R2", sep = "~~italic(\"with\")~~"),
                formula = formula)
 ```
 
@@ -471,7 +471,7 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(mapping = use_label(c("eq", "R2")),
+  stat_poly_eq(mapping = use_label("eq", "R2"),
                eq.with.lhs = "italic(h)~`=`~",
                eq.x.rhs = "~italic(z)",
                formula = formula) +
@@ -673,9 +673,9 @@ As is the case for model fitting functions themselves, which variable is depende
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = y ~ x, color = "blue") +
-  stat_poly_eq(mapping = use_label(c("R2", "eq")), color = "blue") +
+  stat_poly_eq(mapping = use_label("R2", "eq"), color = "blue") +
   stat_poly_line(formula = y ~ x, color = "red", orientation = "y") +
-  stat_poly_eq(mapping = use_label(c("R2", "eq")), color = "red", orientation = "y",
+  stat_poly_eq(mapping = use_label("R2", "eq"), color = "red", orientation = "y",
                label.y = 0.9)
 ```
 
@@ -696,9 +696,9 @@ ggplot(my.data, aes(x, y)) +
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_ma_line(color = "blue") +
-  stat_ma_eq(mapping = use_label(c("R2", "eq")), color = "blue") +
+  stat_ma_eq(mapping = use_label("R2", "eq"), color = "blue") +
   stat_ma_line(color = "red", orientation = "y") +
-  stat_ma_eq(mapping = use_label(c("R2", "eq")), color = "red", orientation = "y",
+  stat_ma_eq(mapping = use_label("R2", "eq"), color = "red", orientation = "y",
              label.y = 0.9)
 ```
 
@@ -1458,7 +1458,7 @@ ggplot(volcano_example.df,
   geom_point() +
   scale_x_logFC(name = "Transcript abundance%unit") +
   scale_y_Pvalue() +
-  scale_colour_outcome() +
+  scale_colour_outcome(values = "outcome:de") +
   stat_quadrant_counts(data = function(x) {subset(x, outcome != 0)})
 ```
 

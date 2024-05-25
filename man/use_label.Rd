@@ -4,15 +4,14 @@
 \alias{use_label}
 \title{Assemble label and map it}
 \usage{
-use_label(
-  labels = c("eq", "p.value"),
-  other.mapping = NULL,
-  sep = "*\\", \\"*"
-)
+use_label(..., labels = NULL, other.mapping = NULL, sep = "*\\", \\"*")
 }
 \arguments{
-\item{labels}{character A vector with the name of the label components in the
+\item{...}{character Strings giving the names of the label components in the
 order they will be included in the combined label.}
+
+\item{labels}{character A vector with the name of the label components. If
+provided, values passed through \code{...} are ignored.}
 
 \item{other.mapping}{An unevaluated expression constructed with function
 \code{\link[ggplot2]{aes}} to be included in the returned value.}
@@ -83,7 +82,7 @@ ggplot(data = my.data,
        mapping = aes(x = x, y = y2, colour = group)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(mapping = use_label(labels = c("eq", "F")),
+  stat_poly_eq(mapping = use_label("eq", "F"),
               formula = formula)
 
 # user specified label components and separator
@@ -91,7 +90,7 @@ ggplot(data = my.data,
        mapping = aes(x = x, y = y2, colour = group)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(mapping = use_label(c("R2", "F"), sep = "*\" with \"*"),
+  stat_poly_eq(mapping = use_label("R2", "F", sep = "*\" with \"*"),
                formula = formula)
 
 # combine the mapping to the label aesthetic with other mappings
@@ -99,8 +98,16 @@ ggplot(data = my.data,
        mapping = aes(x = x, y = y2)) +
   geom_point(mapping = aes(colour = group)) +
   stat_poly_line(mapping = aes(colour = group), formula = formula) +
-  stat_poly_eq(mapping = use_label(labels = c("eq", "F"),
-                                   other.mapping = aes(grp.label = group)),
+  stat_poly_eq(mapping = use_label("grp", "eq", "F",
+                                   aes(grp.label = group)),
+              formula = formula)
+
+# combine other mappings with default labels
+ggplot(data = my.data,
+       mapping = aes(x = x, y = y2)) +
+  geom_point(mapping = aes(colour = group)) +
+  stat_poly_line(mapping = aes(colour = group), formula = formula) +
+  stat_poly_eq(mapping = use_label(aes(colour = group)),
               formula = formula)
 
 # example with other available components
@@ -108,7 +115,7 @@ ggplot(data = my.data,
        mapping = aes(x = x, y = y2, colour = group)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(mapping = use_label(c("eq", "adj.R2", "n")),
+  stat_poly_eq(mapping = use_label("eq", "adj.R2", "n"),
                formula = formula)
 
 # multiple labels
@@ -116,31 +123,31 @@ ggplot(data = my.data,
        mapping = aes(x, y2, colour = group)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(mapping = use_label(c("R2", "F", "P", "AIC", "BIC")),
+  stat_poly_eq(mapping = use_label("R2", "F", "P", "AIC", "BIC"),
                formula = formula) +
   stat_poly_eq(mapping = use_label(c("eq", "n")),
                formula = formula,
                label.y = "bottom",
                label.x = "right")
 
-# quantile regresion
+# quantile regression
 ggplot(data = my.data,
        mapping = aes(x, y)) +
   stat_quant_band(formula = formula) +
-  stat_quant_eq(mapping = use_label(c("eq", "n")),
+  stat_quant_eq(mapping = use_label("eq", "n"),
                 formula = formula) +
   geom_point()
 
 # major axis regresion
 ggplot(data = my.data, aes(x = x, y = y)) +
   stat_ma_line() +
-  stat_ma_eq(mapping = use_label(c("eq", "n"))) +
+  stat_ma_eq(mapping = use_label("eq", "n")) +
   geom_point()
 
 # correlation
 ggplot(data = my.data,
        mapping = aes(x = x, y = y)) +
-  stat_correlation(mapping = use_label(c("r", "t", "p"))) +
+  stat_correlation(mapping = use_label("r", "t", "p")) +
   geom_point()
 
 }

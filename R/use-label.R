@@ -3,8 +3,10 @@
 #' Assemble model-fit-derived text or expressions and map them to
 #' the \code{label} aesthetic.
 #'
-#' @param labels character A vector with the name of the label components in the
+#' @param ... character Strings giving the names of the label components in the
 #'   order they will be included in the combined label.
+#' @param labels character A vector with the name of the label components. If
+#'   provided, values passed through \code{...} are ignored.
 #' @param sep character A string used as separator when pasting the label
 #'   components together.
 #' @param other.mapping An unevaluated expression constructed with function
@@ -71,7 +73,7 @@
 #'        mapping = aes(x = x, y = y2, colour = group)) +
 #'   geom_point() +
 #'   stat_poly_line(formula = formula) +
-#'   stat_poly_eq(mapping = use_label(labels = c("eq", "F")),
+#'   stat_poly_eq(mapping = use_label("eq", "F"),
 #'               formula = formula)
 #'
 #' # user specified label components and separator
@@ -79,7 +81,7 @@
 #'        mapping = aes(x = x, y = y2, colour = group)) +
 #'   geom_point() +
 #'   stat_poly_line(formula = formula) +
-#'   stat_poly_eq(mapping = use_label(c("R2", "F"), sep = "*\" with \"*"),
+#'   stat_poly_eq(mapping = use_label("R2", "F", sep = "*\" with \"*"),
 #'                formula = formula)
 #'
 #' # combine the mapping to the label aesthetic with other mappings
@@ -87,8 +89,16 @@
 #'        mapping = aes(x = x, y = y2)) +
 #'   geom_point(mapping = aes(colour = group)) +
 #'   stat_poly_line(mapping = aes(colour = group), formula = formula) +
-#'   stat_poly_eq(mapping = use_label(labels = c("eq", "F"),
-#'                                    other.mapping = aes(grp.label = group)),
+#'   stat_poly_eq(mapping = use_label("grp", "eq", "F",
+#'                                    aes(grp.label = group)),
+#'               formula = formula)
+#'
+#' # combine other mappings with default labels
+#' ggplot(data = my.data,
+#'        mapping = aes(x = x, y = y2)) +
+#'   geom_point(mapping = aes(colour = group)) +
+#'   stat_poly_line(mapping = aes(colour = group), formula = formula) +
+#'   stat_poly_eq(mapping = use_label(aes(colour = group)),
 #'               formula = formula)
 #'
 #' # example with other available components
@@ -96,7 +106,7 @@
 #'        mapping = aes(x = x, y = y2, colour = group)) +
 #'   geom_point() +
 #'   stat_poly_line(formula = formula) +
-#'   stat_poly_eq(mapping = use_label(c("eq", "adj.R2", "n")),
+#'   stat_poly_eq(mapping = use_label("eq", "adj.R2", "n"),
 #'                formula = formula)
 #'
 #' # multiple labels
@@ -104,39 +114,63 @@
 #'        mapping = aes(x, y2, colour = group)) +
 #'   geom_point() +
 #'   stat_poly_line(formula = formula) +
-#'   stat_poly_eq(mapping = use_label(c("R2", "F", "P", "AIC", "BIC")),
+#'   stat_poly_eq(mapping = use_label("R2", "F", "P", "AIC", "BIC"),
 #'                formula = formula) +
 #'   stat_poly_eq(mapping = use_label(c("eq", "n")),
 #'                formula = formula,
 #'                label.y = "bottom",
 #'                label.x = "right")
 #'
-#' # quantile regresion
+#' # quantile regression
 #' ggplot(data = my.data,
 #'        mapping = aes(x, y)) +
 #'   stat_quant_band(formula = formula) +
-#'   stat_quant_eq(mapping = use_label(c("eq", "n")),
+#'   stat_quant_eq(mapping = use_label("eq", "n"),
 #'                 formula = formula) +
 #'   geom_point()
 #'
 #' # major axis regresion
 #' ggplot(data = my.data, aes(x = x, y = y)) +
 #'   stat_ma_line() +
-#'   stat_ma_eq(mapping = use_label(c("eq", "n"))) +
+#'   stat_ma_eq(mapping = use_label("eq", "n")) +
 #'   geom_point()
 #'
 #' # correlation
 #' ggplot(data = my.data,
 #'        mapping = aes(x = x, y = y)) +
-#'   stat_correlation(mapping = use_label(c("r", "t", "p"))) +
+#'   stat_correlation(mapping = use_label("r", "t", "p")) +
 #'   geom_point()
 #'
-use_label <- function(labels = c("eq", "p.value"),
+use_label <- function(...,
+                      labels = NULL,
                       other.mapping = NULL,
                       sep =  "*\", \"*") {
-  if (length(labels) > 5) {
-    warning("Pasting first 5 labels and discardin others.")
+  if (!length(labels)) {
+    labels <- list(...)
+    if (length(labels)) {
+      for (i in seq_along(labels)) {
+        if (inherits(labels[[i]], "uneval")) {
+          other.mapping <- labels[[i]]
+          labels[[i]] <- NULL
+        }
+      }
+    }
+    if (length(labels)) { # <- NULL above makes this necessary
+      if (length(labels[[1]]) > 1L) {
+        # backwards compatibility: accept vector as if passed by position to labels
+        labels <- labels[[1]]
+      }
+    }
   }
+  if (!length(labels)) {
+    labels <- c("eq", "p.value")
+  }
+
+  if (length(labels) > 5) {
+    warning("Pasting first 5 labels and discarding others.")
+    labels <- labels[1:5]
+  }
+
   # accept upper case equivalents
   labels <- tolower(labels)
   # accept short names lacking ".label" as ending
