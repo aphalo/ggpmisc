@@ -83,16 +83,24 @@ poly2character <- function (x,
                             decreasing = getOption("ggpmisc.decreasing.poly.eq", FALSE),
                             digits = 3,
                             keep.zeros = TRUE) {
+  if (anyNA(x)) {
+    warning("Polynomial 'x' contains 'NA's")
+    return(NA_character_)
+  }
+
   if (keep.zeros) {
     p <- sprintf("%#.*g", digits, x)
   } else {
     p <- sprintf("%.*g", digits, x)
   }
+
+  if (length(p) == 0) {
+    return(p)
+  }
+
   lp <- length(p) - 1
   names(p) <- 0:lp
   p <- p[as.numeric(p) != 0]
-  if (length(p) == 0)
-    return("0")
   if (decreasing)
     p <- rev(p)
   signs <- ifelse(as.numeric(p) < 0, "- ", "+ ")
