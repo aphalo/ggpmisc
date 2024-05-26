@@ -595,6 +595,27 @@ test_that("poly_methods", {
                                                                  sep = "~~")))
   )
 
+  vdiffr::expect_doppelganger("stat_poly_eq_missing_fm",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_eq(formula = y ~ x, parse = TRUE,
+                                             method = function(...) {list()})
+  )
+
+  vdiffr::expect_doppelganger("stat_poly_eq_NULL_fm",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_eq(formula = y ~ x, parse = TRUE,
+                                             method = function(...) {NULL})
+  )
+
+  vdiffr::expect_doppelganger("stat_poly_eq_NA_fm",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_eq(formula = y ~ x, parse = TRUE,
+                                             method = function(...) {NA})
+  )
+
 })
 
 test_that("textual_positions", {

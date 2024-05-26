@@ -314,7 +314,9 @@ poly_line_compute_group_fun <-
 
     fm <- do.call(method, args = fun.args)
 
-    if (!inherits(fm, "lm")) {
+    if (!length(fm) || (is.atomic(fm) && is.na(fm))) {
+      return(data.frame())
+    } else if (!inherits(fm, "lm")) {
       stop("Method \"", method.name, "\" did not return a \"lm\" object")
     }
 

@@ -579,7 +579,9 @@ ma_eq_compute_group_fun <- function(data,
     }
   })
 
-  if (!inherits(fm, "lmodel2")) {
+  if (!length(fm) || (is.atomic(fm) && is.na(fm))) {
+    return(data.frame())
+  } else if (!inherits(fm, "lmodel2")) {
     stop("Method \"", method.name, "\" did not return a \"lmodel2\" object")
   }
   fm.class <- class(fm)

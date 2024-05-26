@@ -750,16 +750,15 @@ poly_eq_compute_group_fun <- function(data,
     fun.args[["method"]] <- fun.method
   }
 
-  # some model fit functions contain code with partial matching of names!
-  # so we silence selectively only these warnings
-  withCallingHandlers({
-    fm <- do.call(method, args = fun.args)
-    fm.summary <- summary(fm)
-  }, warning = function(w) {
-    if (startsWith(conditionMessage(w), "partial match of 'coef'") ||
-        startsWith(conditionMessage(w), "partial argument match of 'contrasts'"))
-      invokeRestart("muffleWarning")
-  })
+  fm <- do.call(method, args = fun.args)
+  # allow skipping of output if returned value from model fit function is missing
+  if (!length(fm) || (is.atomic(fm) && is.na(fm))) {
+    return(data.frame())
+  } else if (!inherits(fm, "lm")) {
+    stop("Method \"", method.name, "\" did not return a \"lm\" object")
+  }
+
+  fm.summary <- summary(fm)
   fm.class <- class(fm)
 
   # allow model formula selection by the model fit method

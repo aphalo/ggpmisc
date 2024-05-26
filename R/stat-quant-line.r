@@ -453,6 +453,10 @@ quant_pred <- function(quantile, data, method, formula, weight, grid,
     }
   })
 
+  if (!length(fm) || (is.atomic(fm) && is.na(fm))) {
+    return(data.frame())
+  }
+
   if (orientation == "x") {
     grid[["y"]] <- stats::predict(fm, newdata = grid, level = level,
                                   type = type, interval = interval)

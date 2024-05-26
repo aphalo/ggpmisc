@@ -689,6 +689,28 @@ quant_eq_compute_group_fun <- function(data,
   # so we silence selectively only these warnings
   withCallingHandlers({
     fm <- do.call(method, args = fun.args)
+  }, warning = function(w) {
+    if (startsWith(conditionMessage(w), "partial match of") ||
+        startsWith(conditionMessage(w), "partial argument match of")) {
+      invokeRestart("muffleWarning")
+    }
+  })
+
+  # allow model formula and tau selection by method functions
+  if (!length(fm) || (is.atomic(fm) && is.na(fm))) {
+    return(data.frame())
+  } else if (inherits(fm, "rq") || inherits(fm, "rqs")) {
+    # allow model formula selection by the model fit method
+    # extract formula from fitted model if possible, but fall back on argument if needed
+    formula.ls <- fail_safe_formula(fm, fun.args, verbose = TRUE)
+    quantiles <- fm[["tau"]]
+  } else {
+    stop("Fitted model object does not inherit from class \"rq\" or \"rqs\" as expected")
+  }
+
+  # quantreg contains code with partial matching of names!
+  # so we silence selectively only these warnings
+  withCallingHandlers({
     fm.summary <- summary(fm)
   }, warning = function(w) {
     if (startsWith(conditionMessage(w), "partial match of") ||
@@ -698,16 +720,6 @@ quant_eq_compute_group_fun <- function(data,
   })
 
   fm.class <- class(fm)
-
-  # allow model formula and tau selection by method functions
-  if (inherits(fm, "rq") || inherits(fm, "rqs")) {
-    # allow model formula selection by the model fit method
-    # extract formula from fitted model if possible, but fall back on argument if needed
-    formula.ls <- fail_safe_formula(fm, fun.args, verbose = TRUE)
-    quantiles <- fm[["tau"]]
-  } else {
-    stop("Fitted model object does not inherit from class \"rq\" or \"rqs\" as expected")
-  }
 
   # class of returned summary value depends on length of quantiles vector
   if (!inherits(fm.summary, "summary.rqs")) {

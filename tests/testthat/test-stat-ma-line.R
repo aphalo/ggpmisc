@@ -111,5 +111,25 @@ test_that("ma_methods", {
                                              range.x = "relative")
   )
 
+  # vdiffr::expect_doppelganger("stat_ma_line_missing_fm",
+  #                             ggplot(my.data, aes(x + 5, y + 10)) +
+  #                               geom_point() +
+  #                               stat_ma_line(method = function(...) {list()},
+  #                                            range.y = "relative",
+  #                                            range.x = "relative")
+  # )
+  #
+  # vdiffr::expect_doppelganger("stat_ma_line_NULL_fm",
+  #                             ggplot(my.data, aes(x + 5, y + 10)) +
+  #                               geom_point() +
+  #                               stat_ma_line(method = function(...) {NULL})
+  # )
+  #
+  # vdiffr::expect_doppelganger("stat_ma_line_NA_fm",
+  #                             ggplot(my.data, aes(x + 5, y + 10)) +
+  #                               geom_point() +
+  #                               stat_ma_line(method = function(...) {NA})
+  # )
+
 })
 
