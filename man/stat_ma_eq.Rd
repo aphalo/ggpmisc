@@ -57,7 +57,7 @@ can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 
 \item{formula}{a formula object. Using aesthetic names \code{x} and \code{y}
-instead of original variable names.}
+instead of original variable names. Either \code{y ~ x} or \code{x ~ y}.}
 
 \item{method}{function or character If character, "MA", "SMA" , "RMA" or
 "OLS", alternatively "lmodel2" or the name of a model fit function are
@@ -147,7 +147,7 @@ This stat can be used to automatically annotate a plot with
   \eqn{R^2}, \eqn{P}-value, \eqn{n} and/or the fitted model equation. It
   supports linear major axis (MA), standard major axis (SMA) and ranged major
   axis (RMA) regression by means of function \code{\link[lmodel2]{lmodel2}}.
-  Formulas describing a straight line and includinmg an intercept are the
+  Formulas describing a straight line and including an intercept are the
   only ones currently supported. Please see the documentation, including the
   vignette of package 'lmodel2' for details. The parameters in
   \code{stat_ma_eq()} follow the same naming as in function \code{lmodel2()}.
@@ -159,9 +159,10 @@ This stat can be used to automatically annotate a plot with
   A ggplot statistic receives as \code{data} a data frame that is not the one
   passed as argument by the user, but instead a data frame with the variables
   mapped to aesthetics. \code{stat_ma_eq()} mimics how \code{stat_smooth()}
-  works, except that only linear regression can be fitted. Similarly to these
-  statistics the model fits respect grouping, so the scales used for \code{x}
-  and \code{y} should both be continuous scales rather than discrete.
+  works, except that Model II regressions can be fitted. Similarly to
+  \code{stat_smooth()} the model is fitted separately to data from each
+  group, so the variables mapped to \code{x} and \code{y} should both be
+  continuous rather than discrete as well as the corresponding scales.
 
   The minimum number of observations with distinct values can be set through
   parameter \code{n.min}. The default \code{n.min = 2L} is the smallest
@@ -192,6 +193,15 @@ For backward compatibility a logical is accepted as argument for
   is rendered, i.e., displayed or printed. Set \code{options(OutDec = ",")}
   for languages like Spanish or French.
 }
+\section{User-defined methods}{
+ User-defined functions can be passed as
+  argument to \code{method}. The requirements are 1) that the signature is
+  similar to that of function \code{lmodel2()} and 2) that the value returned
+  by the function is an object as returned by \code{lmodel2()} or an atomic
+  \code{NA} value. Thus, user-defined methods can implement conditional
+  skipping of labelling.
+}
+
 \section{Aesthetics}{
  \code{stat_ma_eq} understands \code{x} and \code{y}, to
   be referenced in the \code{formula} while the \code{weight} aesthetic is
@@ -201,8 +211,8 @@ For backward compatibility a logical is accepted as argument for
 
   \emph{Transformation of \code{x} or \code{y} within the model formula
   is not supported by \code{stat_ma_eq()}. In this case, transformations
-  should never be applied in the model formula, but instead in the mapping
-  of the variables within \code{aes}.}
+  should not be applied in the model formula, but instead in the mapping
+  of the variables within \code{aes} or in the scales.}
 }
 
 \section{Computed variables}{

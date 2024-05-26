@@ -297,6 +297,13 @@ quant_band_compute_group_fun <- function(data,
                  formula = formula, weight = data[["weight"]], grid = grid,
                  method.args = method.args, orientation = "x",
                  make.groups = FALSE)
+
+  missing <- sapply(X =  z.ls,
+                    FUN = function(x) {!nrow(x)})
+  if (any(missing)) {
+    return(data.frame())
+  }
+
   z <- z.ls[[2]]
   z[["ymin"]] <- z.ls[[1]][["y"]]
   z[["quantile.ymin"]] <- z.ls[[1]][["quantile"]]

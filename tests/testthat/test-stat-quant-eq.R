@@ -397,6 +397,44 @@ test_that("quant_formulas", {
 #
 # })
 
+test_that("quant_formulas", {
+  vdiffr::expect_doppelganger("stat_quant_eq_fm_NA",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_quant_eq(formula = y ~ 1, parse = TRUE,
+                                              method = function(...) {NA},
+                                              mapping =
+                                                aes(label = paste(after_stat(eq.label),
+                                                                  after_stat(rho.label),
+                                                                  after_stat(AIC.label),
+                                                                  sep = "~~")))
+  )
+  vdiffr::expect_doppelganger("stat_quant_eq_fm_NULL",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_quant_eq(formula = y ~ 1, parse = TRUE,
+                                              method = function(...) {NULL},
+                                              mapping =
+                                                aes(label = paste(after_stat(eq.label),
+                                                                  after_stat(rho.label),
+                                                                  after_stat(AIC.label),
+                                                                  sep = "~~")))
+  )
+  vdiffr::expect_doppelganger("stat_quant_eq_fm_missing",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_quant_eq(formula = y ~ 1, parse = TRUE,
+                                              method = function(...) {list()},
+                                              mapping =
+                                                aes(label = paste(after_stat(eq.label),
+                                                                  after_stat(rho.label),
+                                                                  after_stat(AIC.label),
+                                                                  sep = "~~")))
+  )
+
+})
+
+
 formula_n <- y ~ x + I(x^2) + I(x^3)
 my.format <-
   "b[0]~`=`~%.3g*\", \"*b[1]~`=`~%.3g*\", \"*b[2]~`=`~%.3g*\", \"*b[3]~`=`~%.3g"

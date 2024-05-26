@@ -132,6 +132,18 @@
 #'   observations are of little interest and using larger values of \code{n.min}
 #'   than the default is usually wise.
 #'
+#' @section User-defined methods: User-defined functions can be passed as
+#'   argument to \code{method}. The requirements are 1) that the signature is
+#'   similar to that of functions from package 'quantreg' and 2) that the value
+#'   returned by the function is an object belonging to class \code{"rq"}, class
+#'   \code{"rqs"}, or an atomic \code{NA} value.
+#'
+#'   The \code{formula} and \code{tau} used to build the equation and quantile
+#'   labels aer extracted from the returned \code{"rq"} or \code{"rqs"} object
+#'   and can safely differ from the argument passed to parameter \code{formula}
+#'   in the call to \code{stat_poly_eq()}. Thus, user-defined methods can
+#'   implement both model selection or conditional skipping of labelling.
+#'
 #' @references Written as an answer to question 65695409 by Mark Neal at
 #'   Stackoverflow.
 #'
@@ -548,7 +560,8 @@ quant_eq_compute_group_fun <- function(data,
                                        weight,
                                        eq.with.lhs,
                                        eq.x.rhs,
-                                       mk.eq.label,                                      coef.digits,
+                                       mk.eq.label,
+                                       coef.digits,
                                        coef.keep.zeros,
                                        decreasing,
                                        rho.digits,
@@ -689,6 +702,28 @@ quant_eq_compute_group_fun <- function(data,
   # so we silence selectively only these warnings
   withCallingHandlers({
     fm <- do.call(method, args = fun.args)
+  }, warning = function(w) {
+    if (startsWith(conditionMessage(w), "partial match of") ||
+        startsWith(conditionMessage(w), "partial argument match of")) {
+      invokeRestart("muffleWarning")
+    }
+  })
+
+  # allow model formula and tau selection by method functions
+  if (!length(fm) || (is.atomic(fm) && is.na(fm))) {
+    return(data.frame())
+  } else if (inherits(fm, "rq") || inherits(fm, "rqs")) {
+    # allow model formula selection by the model fit method
+    # extract formula from fitted model if possible, but fall back on argument if needed
+    formula.ls <- fail_safe_formula(fm, fun.args, verbose = TRUE)
+    quantiles <- fm[["tau"]]
+  } else {
+    stop("Fitted model object does not inherit from class \"rq\" or \"rqs\" as expected")
+  }
+
+  # quantreg contains code with partial matching of names!
+  # so we silence selectively only these warnings
+  withCallingHandlers({
     fm.summary <- summary(fm)
   }, warning = function(w) {
     if (startsWith(conditionMessage(w), "partial match of") ||
@@ -698,16 +733,6 @@ quant_eq_compute_group_fun <- function(data,
   })
 
   fm.class <- class(fm)
-
-  # allow model formula and tau selection by method functions
-  if (inherits(fm, "rq") || inherits(fm, "rqs")) {
-    # allow model formula selection by the model fit method
-    # extract formula from fitted model if possible, but fall back on argument if needed
-    formula.ls <- fail_safe_formula(fm, fun.args, verbose = TRUE)
-    quantiles <- fm[["tau"]]
-  } else {
-    stop("Fitted model object does not inherit from class \"rq\" or \"rqs\" as expected")
-  }
 
   # class of returned summary value depends on length of quantiles vector
   if (!inherits(fm.summary, "summary.rqs")) {

@@ -15,7 +15,7 @@
 #'
 #'   As the fitted line is the same whether \code{x} or \code{y} is on the rhs
 #'   of the model equation, \code{orientation} even if accepted does not have an
-#'   effect on the fit. In contrast, \code{\link[ggplot2]{geom_smooth}} treats
+#'   effect on the fitted line. In contrast, \code{\link[ggplot2]{geom_smooth}} treats
 #'   each axis differently and can thus have two orientations. The orientation
 #'   is easy to deduce from the argument passed to \code{formula}. Thus,
 #'   \code{stat_ma_line()} will by default guess which orientation the layer
@@ -378,7 +378,9 @@ ma_line_compute_group_fun <-
       }
     })
 
-    if (!inherits(fm, "lmodel2")) {
+    if (!length(fm) || (is.atomic(fm) && is.na(fm))) {
+      return(data.frame())
+    } else if (!inherits(fm, "lmodel2")) {
       stop("Method \"", method.name, "\" did not return a \"lmodel2\" object")
     }
 

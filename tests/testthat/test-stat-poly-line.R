@@ -158,5 +158,23 @@ test_that("poly_methods", {
                                 stat_poly_line(formula = y ~ x, method = MASS::rlm)
   )
 
+  vdiffr::expect_doppelganger("stat_poly_line_empty_fm",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_line(method = function(...) {list()})
+  )
+
+  vdiffr::expect_doppelganger("stat_poly_line_NA_fm",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_line(method = function(...) {NA})
+  )
+
+  vdiffr::expect_doppelganger("stat_poly_line_NULL_fm",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_line(method = function(...) {NULL})
+  )
+
 })
 
