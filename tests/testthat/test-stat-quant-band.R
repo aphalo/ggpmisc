@@ -63,6 +63,24 @@ test_that("quant_formulas", {
     expect_error(ggplot(my.data, aes(x, y)) +
                    stat_quant_band(method = "lmodel2"))
 
+    vdiffr::expect_doppelganger("stat_quant_line_fm_NA",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_quant_band(method = function(...) {NA})
+    )
+
+    vdiffr::expect_doppelganger("stat_quant_line_fm_NULL",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_quant_band(method = function(...) {NULL})
+    )
+
+    vdiffr::expect_doppelganger("stat_quant_line_fm_missing",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_quant_band(method = function(...) {list()})
+    )
+
     vdiffr::expect_doppelganger("stat_quant_band_formula_1",
                                 ggplot(my.data, aes(x, y)) +
                                   geom_point() +

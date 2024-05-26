@@ -204,6 +204,20 @@ Support for the \code{angle} aesthetic is not automatic and requires
   that the user passes as argument suitable numeric values to override the
   defaults for label positions.
 }
+\section{User-defined methods}{
+ User-defined functions can be passed as
+  argument to \code{method}. The requirements are 1) that the signature is
+  similar to that of functions from package 'quantreg' and 2) that the value
+  returned by the function is an object belonging to class \code{"rq"}, class
+  \code{"rqs"}, or an atomic \code{NA} value.
+
+  The \code{formula} and \code{tau} used to build the equation and quantile
+  labels aer extracted from the returned \code{"rq"} or \code{"rqs"} object
+  and can safely differ from the argument passed to parameter \code{formula}
+  in the call to \code{stat_poly_eq()}. Thus, user-defined methods can
+  implement both model selection or conditional skipping of labelling.
+}
+
 \section{Warning!}{
  For the formatted equations to be valid, the fitted model
   must be a polynomial, with or without intercept. If defined using

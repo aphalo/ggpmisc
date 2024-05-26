@@ -287,6 +287,54 @@ test_that("ma_methods", {
                                                                sep = "~~")))
   )
 
+  vdiffr::expect_doppelganger("stat_ma_eq_fun_NA",
+                              ggplot(my.data, aes(x + 5, y + 20)) +
+                                geom_point() +
+                                stat_ma_eq(formula = y ~ x,
+                                           method = function(...) {NA},
+                                           range.y = "relative",
+                                           range.x = "relative",
+                                           parse = TRUE,
+                                           mapping =
+                                             aes(label = paste(after_stat(eq.label),
+                                                               after_stat(rr.label),
+                                                               after_stat(p.value.label),
+                                                               after_stat(n.label),
+                                                               sep = "~~")))
+  )
+
+  vdiffr::expect_doppelganger("stat_ma_eq_fun_NULL",
+                              ggplot(my.data, aes(x + 5, y + 20)) +
+                                geom_point() +
+                                stat_ma_eq(formula = y ~ x,
+                                           method = function(...) {NULL},
+                                           range.y = "relative",
+                                           range.x = "relative",
+                                           parse = TRUE,
+                                           mapping =
+                                             aes(label = paste(after_stat(eq.label),
+                                                               after_stat(rr.label),
+                                                               after_stat(p.value.label),
+                                                               after_stat(n.label),
+                                                               sep = "~~")))
+  )
+
+  vdiffr::expect_doppelganger("stat_ma_eq_fun_missing",
+                              ggplot(my.data, aes(x + 5, y + 20)) +
+                                geom_point() +
+                                stat_ma_eq(formula = y ~ x,
+                                           method = function(...) {list()},
+                                           range.y = "relative",
+                                           range.x = "relative",
+                                           parse = TRUE,
+                                           mapping =
+                                             aes(label = paste(after_stat(eq.label),
+                                                               after_stat(rr.label),
+                                                               after_stat(p.value.label),
+                                                               after_stat(n.label),
+                                                               sep = "~~")))
+  )
+
 })
 
 test_that("rounding_signif", {

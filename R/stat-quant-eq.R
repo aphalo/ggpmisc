@@ -132,6 +132,18 @@
 #'   observations are of little interest and using larger values of \code{n.min}
 #'   than the default is usually wise.
 #'
+#' @section User-defined methods: User-defined functions can be passed as
+#'   argument to \code{method}. The requirements are 1) that the signature is
+#'   similar to that of functions from package 'quantreg' and 2) that the value
+#'   returned by the function is an object belonging to class \code{"rq"}, class
+#'   \code{"rqs"}, or an atomic \code{NA} value.
+#'
+#'   The \code{formula} and \code{tau} used to build the equation and quantile
+#'   labels aer extracted from the returned \code{"rq"} or \code{"rqs"} object
+#'   and can safely differ from the argument passed to parameter \code{formula}
+#'   in the call to \code{stat_poly_eq()}. Thus, user-defined methods can
+#'   implement both model selection or conditional skipping of labelling.
+#'
 #' @references Written as an answer to question 65695409 by Mark Neal at
 #'   Stackoverflow.
 #'
@@ -548,7 +560,8 @@ quant_eq_compute_group_fun <- function(data,
                                        weight,
                                        eq.with.lhs,
                                        eq.x.rhs,
-                                       mk.eq.label,                                      coef.digits,
+                                       mk.eq.label,
+                                       coef.digits,
                                        coef.keep.zeros,
                                        decreasing,
                                        rho.digits,

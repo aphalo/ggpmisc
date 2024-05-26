@@ -379,12 +379,20 @@ quant_line_compute_group_fun <- function(data,
     method.args[["method"]] <- fun.method
   }
 
-  z <- dplyr::bind_rows(
-    lapply(quantiles, quant_pred, data = data, method = method,
-           formula = formula, weight = data[["weight"]], grid = grid,
-           method.args = method.args, orientation = "x",
-           level = level, type = type, interval = interval)
-  )
+  z <- lapply(quantiles, quant_pred, data = data, method = method,
+              formula = formula, weight = data[["weight"]], grid = grid,
+              method.args = method.args, orientation = "x",
+              level = level, type = type, interval = interval)
+
+  missing <- sapply(X = z,
+                    FUN = function(x) {!nrow(x)})
+
+  if (any(missing)) {
+    return(data.frame())
+  } else {
+    z <- dplyr::bind_rows(z)
+  }
+
   if (is.matrix(z[["y"]])) {
     z[["ymin"]] <- z[["y"]][ , 2L]
     z[["ymax"]] <- z[["y"]][ , 3L]
