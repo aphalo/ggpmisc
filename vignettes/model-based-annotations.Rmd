@@ -1416,7 +1416,7 @@ Volcano and quadrant plots are scatter plots with some peculiarities. Creating t
 
 Manual scales for colour and fill aesthetics with defaults suitable for the three way outcomes from statistical tests.
 
-### scale_x\_FDR, scale_y\_FDR, scale_x\_logFC, scale_y\_logFC, scale_x\_Pvalue, scale_y\_Pvalue
+### scale_x_FDR, scale_y_FDR, scale_x_logFC, scale_y_logFC, scale_x_Pvalue, scale_y_Pvalue
 
 Scales for *x* or *y* aesthetics mapped to *P*-values, FDR (false discovery rate) or log FC (logarithm of fold-change) as used in volcano and quadrant plots of transcriptomics and metabolomics data.
 
