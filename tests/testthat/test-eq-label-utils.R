@@ -58,7 +58,7 @@ test_that("polynomial as character well formatted", {
   expect_equal(poly2character(x = (1:5) * 1e-6, decreasing = TRUE, digits = 3, keep.zeros = TRUE),
                "5.00e-06*x^4 + 4.00e-06*x^3 + 3.00e-06*x^2 + 2.00e-06*x + 1.00e-06")
   expect_equal(poly2character(x = (1:5) * 1e+3, decreasing = TRUE, digits = 3, keep.zeros = TRUE),
-               "5.00e+03*x^4 + 4.00e+03*x^3 + 3.00e+03*x^2 + 2.00e+03*x + 1.000e+03")
+               "5.00e+03*x^4 + 4.00e+03*x^3 + 3.00e+03*x^2 + 2.00e+03*x + 1.00e+03")
   expect_warning(poly2character(x = NA))
   expect_true(is.na(suppressWarnings(poly2character(x = NA))))
   expect_equal(poly2character(x = NULL), character(0))
