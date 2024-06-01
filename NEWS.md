@@ -14,6 +14,7 @@ editor_options:
 -   Export the new utility functions now used internally for formatting parameter estimates into character strings in `stat_poly_eq()`, `stat_ma_eq()`, `stat_quant_eq()`, `stat_correlation()`, and `stat_multcomp()`.
 -   Implement R options `ggpmisc.small.p`, `ggpmisc.small.r` and `ggpmisc.decreasing.poly.eq`.
 -   Allow user-defined fit methods passed as argument to `stat_poly_eq()`, `stat_poly_line()`, `stat_ma_eq()`, `stat_ma_line()`, `stat_quant_eq()`, `stat_quant_line()`, and `stat_quant_band()` to return an atomic `NA` or a length zero object to skip labelling or plotting related to the attempted model fit.
+-   Implement automatic switch to `output.type = "markdown"` for `geom = "marquee"`.
 
 # ggpmisc 0.5.6
 

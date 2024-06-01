@@ -286,7 +286,7 @@ stat_correlation <-
            show.legend = FALSE,
            inherit.aes = TRUE) {
     if (is.null(output.type)) {
-      if (geom %in% c("richtext", "textbox")) {
+      if (geom %in% c("richtext", "textbox", "marquee")) {
         output.type <- "markdown"
       } else {
         output.type <- "expression"
