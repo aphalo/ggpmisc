@@ -427,3 +427,86 @@ test_that("rounding_signif", {
 
 })
 
+
+# Markdown ----------------------------------------------------------------
+
+if (requireNamespace("ggtext", quietly = TRUE)) {
+  library(ggtext)
+
+  test_that("corr_markdown", {
+    set.seed(4321)
+    skip_on_os(c("mac", "linux", "solaris"))
+    vdiffr::expect_doppelganger("stat_correlation_pearson_markdown",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_correlation(geom = "richtext",
+                                                   hjust = 0, vjust = 0,
+                                                   label.x = 0,
+                                                   label.y = 21,
+                                                   method = "pearson",
+                                                   r.conf.level = NA,
+                                                   mapping =
+                                                     aes(label = paste(after_stat(r.label),
+                                                                       after_stat(r.confint.label),
+                                                                       after_stat(t.value.label),
+                                                                       after_stat(p.value.label),
+                                                                       after_stat(n.label),
+                                                                       sep = " ")))
+    )
+    vdiffr::expect_doppelganger("stat_correlation_kendall_markdown",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_correlation(geom = "richtext",
+                                                   hjust = 0, vjust = 0,
+                                                   label.x = 0,
+                                                   label.y = 21,
+                                                   method = "kendall",
+                                                   r.conf.level = 0.95,
+                                                   mapping =
+                                                     aes(label = paste(after_stat(r.label),
+                                                                       after_stat(r.confint.label),
+                                                                       after_stat(z.value.label),
+                                                                       after_stat(p.value.label),
+                                                                       after_stat(n.label),
+                                                                       sep = " ")))
+    )
+    vdiffr::expect_doppelganger("stat_correlation_spearman_markdowm",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_correlation(geom = "richtext",
+                                                   hjust = 0, vjust = 0,
+                                                   label.x = 0,
+                                                   label.y = 21,
+                                                   method = "spearman",
+                                                   r.conf.level = 0.95,
+                                                   mapping =
+                                                     aes(label = paste(after_stat(r.label),
+                                                                       after_stat(r.confint.label),
+                                                                       after_stat(S.value.label),
+                                                                       after_stat(p.value.label),
+                                                                       after_stat(n.label),
+                                                                       sep = " ")))
+    )
+    { # output under linux does not match snapshots created under Windows
+      skip_on_os(c("mac", "linux", "solaris"))
+      vdiffr::expect_doppelganger("stat_correlation_pearson_small_markdown",
+                                  ggplot(my.data, aes(x, y)) +
+                                    geom_point() +
+                                    stat_correlation(geom = "richtext",
+                                                     hjust = 0, vjust = 0,
+                                                     label.x = 0,
+                                                     label.y = 21,
+                                                     method = "pearson", small.r = TRUE, small.p = TRUE,
+                                                     mapping =
+                                                       aes(label = paste(after_stat(r.label),
+                                                                         after_stat(r.confint.label),
+                                                                         after_stat(t.value.label),
+                                                                         after_stat(p.value.label),
+                                                                         after_stat(n.label))))
+      )
+    }
+  })
+}
+
+
+

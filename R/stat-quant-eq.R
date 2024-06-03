@@ -458,7 +458,7 @@ stat_quant_eq <- function(mapping = NULL, data = NULL,
                          label.x.npc = NULL, label.y.npc = NULL,
                          hstep = 0,
                          vstep = NULL,
-                         output.type = "expression",
+                         output.type = NULL,
                          na.rm = FALSE,
                          orientation = NA,
                          parse = NULL,
@@ -493,6 +493,13 @@ stat_quant_eq <- function(mapping = NULL, data = NULL,
   if (!is.null(label.y.npc)) {
     stopifnot(grepl("_npc", geom))
     label.y <- label.y.npc
+  }
+  if (is.null(output.type)) {
+    if (geom %in% c("richtext", "textbox", "marquee")) {
+      output.type <- "markdown"
+    } else {
+      output.type <- "expression"
+    }
   }
   if (is.null(parse)) {
     parse <- output.type == "expression"
