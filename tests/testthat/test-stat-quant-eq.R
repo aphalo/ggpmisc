@@ -646,3 +646,51 @@ test_that("rounding_signif", {
 
 })
 
+# Markdown ----------------------------------------------------------------
+
+if (requireNamespace("ggtext", quietly = TRUE)) {
+  library(ggtext)
+
+  test_that("markdown_richtext", {
+    withCallingHandlers({
+      vdiffr::expect_doppelganger("stat_quant_eq_n1_markdown",
+                                  ggplot(my.data, aes(x, y)) +
+                                    geom_point() +
+                                    stat_quant_line(formula = formula) +
+                                    stat_quant_eq(mapping = use_label("eq", "n", "rho", sep = ", "),
+                                                  geom = "richtext",
+                                                  formula = formula,
+                                                  hjust = 0, vjust = 1,
+                                                  vstep = .1,
+                                                  label.x = 0, label.y = 115)
+      )
+    vdiffr::expect_doppelganger("stat_quant_eq_n2_markdown",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_quant_line(formula = formula) +
+                                  stat_quant_eq(mapping = use_label("eq", "n", "rho", sep = ", "),
+                                                colour = "red",
+                                                geom = "richtext",
+                                                formula = formula,
+                                                hjust = 0, vjust = 1,
+                                                vstep = .1,
+                                                label.x = 0, label.y = 115)
+    )
+    vdiffr::expect_doppelganger("stat_quant_eq_n3_markdown",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_quant_line(formula = formula) +
+                                  stat_quant_eq(use_label("AIC", "n", sep = ", "),
+                                                geom = "richtext",
+                                                formula = formula,
+                                                hjust = 0, vjust = 1,
+                                                vstep = .1,
+                                                label.x = 0, label.y = 115)
+    )
+    }, warning=function(w) {
+      if (startsWith(conditionMessage(w), "Solution may be nonunique"))
+        invokeRestart("muffleWarning")
+    })
+  })
+
+}

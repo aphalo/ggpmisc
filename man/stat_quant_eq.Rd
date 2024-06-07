@@ -27,7 +27,7 @@ stat_quant_eq(
   label.y.npc = NULL,
   hstep = 0,
   vstep = NULL,
-  output.type = "expression",
+  output.type = NULL,
   na.rm = FALSE,
   orientation = NA,
   parse = NULL,

@@ -347,27 +347,27 @@ stat_correlation <-
 #'
 cor_test_compute_fun <- function(data,
                                  scales,
-                                 method,
-                                 n.min,
-                                 alternative,
-                                 exact,
-                                 conf.level,
-                                 continuity,
-                                 small.r,
-                                 small.p,
+                                 method = "pearson",
+                                 n.min = 2L,
+                                 alternative = "two.sided",
+                                 exact = NULL,
+                                 conf.level = NA,
+                                 continuity = FALSE,
+                                 small.r = FALSE,
+                                 small.p = FALSE,
                                  coef.keep.zeros,
-                                 r.digits,
-                                 t.digits,
-                                 p.digits,
-                                 CI.brackets,
-                                 label.x,
-                                 label.y,
-                                 hstep,
-                                 vstep,
-                                 npc.used,
-                                 output.type,
-                                 boot.R,
-                                 na.rm) {
+                                 r.digits = 2,
+                                 t.digits = 3,
+                                 p.digits = 3,
+                                 CI.brackets = c("[", "]"),
+                                 label.x = "left",
+                                 label.y = "top",
+                                 hstep = 0,
+                                 vstep = 0.1,
+                                 npc.used = TRUE,
+                                 output.type = "expression",
+                                 boot.R = 0,
+                                 na.rm = FALSE) {
 
   # Much of the complexity of the label formatting is needed to
   # prevent the automatic dropping of trailing zeros in expressions.
@@ -481,9 +481,11 @@ cor_test_compute_fun <- function(data,
       z[["r.confint.high"]] <-  htest.ls[["conf.int"]][2]
     } else {
       if (conf.level <= 0) {
-        message("Skipping bootstrap estimation as 'conf.level' <= 0")
+        if (getOption("verbose", default = FALSE)) {
+          message("Skipping estimation of CI as 'conf.level' <= 0")
+        }
       } else if (boot.R > 0) {
-        warning("Skipping bootstrap estimation as 'boot.R' < 50")
+        warning("CI estimation skipped unless 'boot.R' >= 50")
       }
       z[["r.confint.low"]]  <- NA_real_
       z[["r.confint.high"]] <- NA_real_

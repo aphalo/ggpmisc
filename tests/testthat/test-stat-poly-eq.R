@@ -808,3 +808,52 @@ test_that("rounding_signif", {
 
 })
 
+# Markdown ----------------------------------------------------------------
+
+if (requireNamespace("ggtext", quietly = TRUE)) {
+  library(ggtext)
+
+  test_that("markdown_richtext", {
+    vdiffr::expect_doppelganger("stat_poly_eq_n1_markdown",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_smooth(method = "lm", formula = formula) +
+                                  stat_poly_eq(geom = "richtext",
+                                               formula = formula,
+                                               hjust = 0, vjust = 1,
+                                               label.x = 0, label.y = 10e5)
+    )
+    vdiffr::expect_doppelganger("stat_poly_eq_n2_markdown",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_smooth(method = "lm", formula = formula) +
+                                  stat_poly_eq(use_label("eq", "n", "P", "R2", sep = ", "),
+                                               geom = "richtext",
+                                               formula = formula,
+                                               hjust = 0, vjust = 1,
+                                               label.x = 0, label.y = 10e5)
+    )
+    vdiffr::expect_doppelganger("stat_poly_eq_n3_markdown",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_smooth(method = "lm", formula = formula) +
+                                  stat_poly_eq(use_label("eq", "n", "P", "R2", sep = ", "),
+                                               colour = "red",
+                                               geom = "richtext",
+                                               formula = formula,
+                                               hjust = 0, vjust = 1,
+                                               label.x = 0, label.y = 10e5)
+    )
+    vdiffr::expect_doppelganger("stat_poly_eq_n4_markdown",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_smooth(method = "lm", formula = formula) +
+                                  stat_poly_eq(use_label("AIC", "BIC", "R2.CI", sep = ", "),
+                                               geom = "richtext",
+                                               formula = formula,
+                                               hjust = 0, vjust = 1,
+                                               label.x = 0, label.y = 10e5)
+    )
+  })
+}
+
