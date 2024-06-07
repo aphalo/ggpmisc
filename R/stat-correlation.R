@@ -481,9 +481,11 @@ cor_test_compute_fun <- function(data,
       z[["r.confint.high"]] <-  htest.ls[["conf.int"]][2]
     } else {
       if (conf.level <= 0) {
-        message("Skipping bootstrap estimation as 'conf.level' <= 0")
+        if (getOption("verbose", default = FALSE)) {
+          message("Skipping estimation of CI as 'conf.level' <= 0")
+        }
       } else if (boot.R > 0) {
-        warning("Skipping bootstrap estimation as 'boot.R' < 50")
+        warning("CI estimation skipped unless 'boot.R' >= 50")
       }
       z[["r.confint.low"]]  <- NA_real_
       z[["r.confint.high"]] <- NA_real_

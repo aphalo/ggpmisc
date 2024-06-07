@@ -472,6 +472,7 @@ stat_quant_eq <- function(mapping = NULL, data = NULL,
       formula <- x ~ y
     }
   }
+
   # we guess orientation from formula
   if (is.na(orientation)) {
     if (grepl("x", as.character(formula)[2])) {
@@ -482,8 +483,6 @@ stat_quant_eq <- function(mapping = NULL, data = NULL,
       stop("The model formula should use 'x' and 'y' as variables")
     }
   }
-  # is the model formula that of complete and increasing polynomial?
-  mk.eq.label <- check_poly_formula(formula, orientation)
 
   # backwards compatibility
   if (!is.null(label.x.npc)) {
@@ -494,6 +493,7 @@ stat_quant_eq <- function(mapping = NULL, data = NULL,
     stopifnot(grepl("_npc", geom))
     label.y <- label.y.npc
   }
+
   if (is.null(output.type)) {
     if (geom %in% c("richtext", "textbox", "marquee")) {
       output.type <- "markdown"
@@ -504,6 +504,10 @@ stat_quant_eq <- function(mapping = NULL, data = NULL,
   if (is.null(parse)) {
     parse <- output.type == "expression"
   }
+
+  # is the model formula that of complete and increasing polynomial?
+  mk.eq.label <- output.type != "numeric" && check_poly_formula(formula, orientation)
+
   if (is.character(method)) {
     if (grepl("^lm|^rlm", method)) {
       stop("Methods 'lm' and 'rlm' not supported, please use 'stat_poly_eq()'.")
