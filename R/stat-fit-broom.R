@@ -189,12 +189,15 @@
 #'                     mapping = aes(label = sprintf('AIC = %.3g, BIC = %.3g',
 #'                                   after_stat(AIC), after_stat(BIC))))
 #'
-stat_fit_glance <- function(mapping = NULL, data = NULL, geom = "text_npc",
+stat_fit_glance <- function(mapping = NULL,
+                            data = NULL,
+                            geom = "text_npc",
                             method = "lm",
                             method.args = list(formula = y ~ x),
                             n.min = 2L,
                             glance.args = list(),
-                            label.x = "left", label.y = "top",
+                            label.x = "left",
+                            label.y = "top",
                             hstep = 0,
                             vstep = 0.075,
                             position = "identity",
@@ -227,15 +230,15 @@ stat_fit_glance <- function(mapping = NULL, data = NULL, geom = "text_npc",
 #'
 fit_glance_compute_group_fun <- function(data,
                                          scales,
-                                         method,
-                                         method.args,
-                                         n.min,
-                                         glance.args,
-                                         label.x,
-                                         label.y,
-                                         hstep,
-                                         vstep,
-                                         npc.used) {
+                                         method = "lm",
+                                         method.args = list(formula = y ~ x),
+                                         n.min = 2L,
+                                         glance.args = list(),
+                                         label.x = "left",
+                                         label.y = "top",
+                                         hstep = 0,
+                                         vstep = 0.1,
+                                         npc.used = TRUE) {
 
   rlang::check_installed("broom", reason = "to use `stat_fit_glance()`")
 

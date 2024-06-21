@@ -309,12 +309,12 @@ stat_peaks <- function(mapping = NULL,
 #'
 peaks_compute_group_fun <- function(data,
                                     scales,
-                                    span,
-                                    ignore_threshold,
-                                    strict,
-                                    label.fmt,
-                                    x.label.fmt,
-                                    y.label.fmt,
+                                    span = 5,
+                                    ignore_threshold = 0,
+                                    strict = FALSE,
+                                    label.fmt = NULL,
+                                    x.label.fmt = NULL,
+                                    y.label.fmt = NULL,
                                     flipped_aes = FALSE) {
   data <- ggplot2::flip_data(data, flipped_aes)
   if (!is.null(label.fmt)) {

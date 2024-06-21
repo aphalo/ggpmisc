@@ -273,8 +273,9 @@ stat_ma_line <- function(mapping = NULL,
 #' @usage NULL
 #'
 ma_line_compute_group_fun <-
-  function(data, scales,
-           method = NULL,
+  function(data,
+           scales,
+           method,
            method.args = list(),
            n.min = 2L,
            formula = NULL,

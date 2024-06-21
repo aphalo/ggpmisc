@@ -205,13 +205,13 @@ stat_fit_residuals <- function(mapping = NULL,
 #'
 residuals_compute_group_fun <- function(data,
                                         scales,
-                                        method,
-                                        method.args,
-                                        n.min,
-                                        formula,
-                                        resid.type,
-                                        weighted,
-                                        orientation) {
+                                        method = "lm",
+                                        method.args = list(),
+                                        n.min = 2L,
+                                        formula = y ~ x,
+                                        resid.type = NULL,
+                                        weighted = FALSE,
+                                        orientation = "x") {
   stopifnot(!any(c("formula", "data") %in% names(method.args)))
   if (is.null(data$weight)) {
     data$weight <- 1

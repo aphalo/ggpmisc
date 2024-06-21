@@ -42,12 +42,10 @@
 #' @param tb.vars,tb.params character or numeric vectors, optionally named, used
 #'   to select and/or rename the columns or the parameters in the table
 #'   returned.
-#' @param label.x.npc,label.y.npc \code{numeric} with range 0..1 or character.
-#'   Coordinates to be used for positioning the output, expressed in "normalized
-#'   parent coordinates" or character string. If too short they will be
-#'   recycled.
-#' @param label.x,label.y \code{numeric} Coordinates (in data units) to be used
-#'   for absolute positioning of the output. If too short they will be recycled.
+#' @param label.x,label.y \code{numeric} Coordinates in data units or with range
+#'   0..1, expressed in "normalized parent coordinates" or as character strings
+#'   depending on the geometry used. If too short they will be recycled. They set
+#'   the \code{x} and \code{y} coordinates at the \code{after_stat} stage.
 #' @param table.theme NULL, list or function A 'gridExtra' \code{ttheme}
 #'   definition, or a constructor for a \code{ttheme} or NULL for default.
 #' @param table.rownames,table.colnames logical flag to enable or disabling
@@ -316,7 +314,9 @@
 #'                 npcx = "left", npcy = "bottom") +
 #'     expand_limits(y = 35)
 #'
-stat_fit_tb <- function(mapping = NULL, data = NULL, geom = "table_npc",
+stat_fit_tb <- function(mapping = NULL,
+                        data = NULL,
+                        geom = "table_npc",
                         method = "lm",
                         method.args = list(formula = y ~ x),
                         n.min = 2L,
@@ -326,26 +326,18 @@ stat_fit_tb <- function(mapping = NULL, data = NULL, geom = "table_npc",
                         tb.params = NULL,
                         digits = 3,
                         p.digits = digits,
-                        label.x = "center", label.y = "top",
-                        label.x.npc = NULL, label.y.npc = NULL,
+                        label.x = "center",
+                        label.y = "top",
                         position = "identity",
                         table.theme = NULL,
                         table.rownames = FALSE,
                         table.colnames = TRUE,
                         table.hjust = 1,
                         parse = FALSE,
-                        na.rm = FALSE, show.legend = FALSE,
+                        na.rm = FALSE,
+                        show.legend = FALSE,
                         inherit.aes = TRUE,
                         ...) {
-  # backwards compatibility
-  if (!is.null(label.x.npc)) {
-    stopifnot(grepl("_npc", geom))
-    label.x <- label.x.npc
-  }
-  if (!is.null(label.y.npc)) {
-    stopifnot(grepl("_npc", geom))
-    label.y <- label.y.npc
-  }
   ggplot2::layer(
     stat = StatFitTb, data = data, mapping = mapping, geom = geom,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
@@ -381,18 +373,18 @@ stat_fit_tb <- function(mapping = NULL, data = NULL, geom = "table_npc",
 #'
 fit_tb_compute_panel_fun <- function(data,
                                      scales,
-                                     method,
-                                     method.args,
-                                     n.min,
-                                     tidy.args,
-                                     tb.type,
-                                     tb.vars,
-                                     tb.params,
-                                     digits,
-                                     p.digits,
+                                     method = "lm",
+                                     method.args = list(formula = y ~ x),
+                                     n.min = 2L,
+                                     tidy.args = list(),
+                                     tb.type = "fit.summary",
+                                     tb.vars = NULL,
+                                     tb.params = NULL,
+                                     digits = 3,
+                                     p.digits = digits,
                                      npc.used = TRUE,
-                                     label.x,
-                                     label.y) {
+                                     label.x = "center",
+                                     label.y = "top") {
 
   rlang::check_installed("broom", reason = "to use `stat_fit_tb()`")
 

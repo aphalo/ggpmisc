@@ -28,8 +28,6 @@ stat_poly_eq(
   p.digits = 3,
   label.x = "left",
   label.y = "top",
-  label.x.npc = NULL,
-  label.y.npc = NULL,
   hstep = 0,
   vstep = NULL,
   output.type = NULL,
@@ -106,10 +104,6 @@ notation with three decimal places.}
 coordinates" (npc units) or character if using \code{geom_text_npc()} or
 \code{geom_label_npc()}. If using \code{geom_text()} or \code{geom_label()}
 numeric in native data units. If too short they will be recycled.}
-
-\item{label.x.npc, label.y.npc}{\code{numeric} with range 0..1 (npc units)
-DEPRECATED, use label.x and label.y instead; together with a geom
-using npcx and npcy aesthetics.}
 
 \item{hstep, vstep}{numeric in npc units, the horizontal and vertical step
 used between labels for different groups.}

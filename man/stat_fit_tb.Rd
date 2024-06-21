@@ -19,8 +19,6 @@ stat_fit_tb(
   p.digits = digits,
   label.x = "center",
   label.y = "top",
-  label.x.npc = NULL,
-  label.y.npc = NULL,
   position = "identity",
   table.theme = NULL,
   table.rownames = FALSE,
@@ -65,13 +63,10 @@ p-values to, with those rounded to zero displayed as the next larger
 possible value preceded by "<". If \code{p.digits} is outside the range
 1..22 no rounding takes place.}
 
-\item{label.x, label.y}{\code{numeric} Coordinates (in data units) to be used
-for absolute positioning of the output. If too short they will be recycled.}
-
-\item{label.x.npc, label.y.npc}{\code{numeric} with range 0..1 or character.
-Coordinates to be used for positioning the output, expressed in "normalized
-parent coordinates" or character string. If too short they will be
-recycled.}
+\item{label.x, label.y}{\code{numeric} Coordinates in data units or with range
+0..1, expressed in "normalized parent coordinates" or as character strings
+depending on the geometry used. If too short they will be recycled. They set
+the \code{x} and \code{y} coordinates at the \code{after_stat} stage.}
 
 \item{position}{The position adjustment to use for overlapping points on this
 layer}

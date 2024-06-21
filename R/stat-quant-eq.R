@@ -61,9 +61,6 @@
 #'   coordinates" (npc units) or character if using \code{geom_text_npc()} or
 #'   \code{geom_label_npc()}. If using \code{geom_text()} or \code{geom_label()}
 #'   numeric in native data units. If too short they will be recycled.
-#' @param label.x.npc,label.y.npc \code{numeric} with range 0..1 (npc units)
-#'   DEPRECATED, use label.x and label.y instead; together with a geom
-#'   using npcx and npcy aesthetics.
 #' @param hstep,vstep numeric in npc units, the horizontal and vertical step
 #'   used between labels for different groups.
 #' @param output.type character One of \code{"expression"}, \code{"LaTeX"},
@@ -455,7 +452,6 @@ stat_quant_eq <- function(mapping = NULL, data = NULL,
                          decreasing = getOption("ggpmisc.decreasing.poly.eq", FALSE),
                          rho.digits = 4,
                          label.x = "left", label.y = "top",
-                         label.x.npc = NULL, label.y.npc = NULL,
                          hstep = 0,
                          vstep = NULL,
                          output.type = NULL,
@@ -482,16 +478,6 @@ stat_quant_eq <- function(mapping = NULL, data = NULL,
     } else {
       stop("The model formula should use 'x' and 'y' as variables")
     }
-  }
-
-  # backwards compatibility
-  if (!is.null(label.x.npc)) {
-    stopifnot(grepl("_npc", geom))
-    label.x <- label.x.npc
-  }
-  if (!is.null(label.y.npc)) {
-    stopifnot(grepl("_npc", geom))
-    label.y <- label.y.npc
   }
 
   if (is.null(output.type)) {
@@ -563,27 +549,27 @@ stat_quant_eq <- function(mapping = NULL, data = NULL,
 #'
 quant_eq_compute_group_fun <- function(data,
                                        scales,
-                                       formula,
-                                       quantiles,
-                                       method,
-                                       method.args,
-                                       n.min,
-                                       weight,
-                                       eq.with.lhs,
-                                       eq.x.rhs,
-                                       mk.eq.label,
-                                       coef.digits,
-                                       coef.keep.zeros,
-                                       decreasing,
-                                       rho.digits,
-                                       label.x,
-                                       label.y,
-                                       hstep,
-                                       vstep,
-                                       npc.used,
-                                       output.type,
-                                       na.rm,
-                                       orientation) {
+                                       formula = y ~ x,
+                                       quantiles = c(0.25, 0.5, 0.75),
+                                       method = "rq:br",
+                                       method.args = list(),
+                                       n.min = 3L,
+                                       weight = 1,
+                                       eq.with.lhs = TRUE,
+                                       eq.x.rhs = NULL,
+                                       mk.eq.label = TRUE,
+                                       coef.digits = 3,
+                                       coef.keep.zeros = TRUE,
+                                       decreasing = FALSE,
+                                       rho.digits = 4,
+                                       label.x = "left",
+                                       label.y = "top",
+                                       hstep = 0,
+                                       vstep = 0.10,
+                                       npc.used = TRUE,
+                                       output.type = "expression",
+                                       na.rm = FALSE,
+                                       orientation = "x") {
   force(data)
   force(method)
 
