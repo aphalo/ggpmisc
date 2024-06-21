@@ -1,9 +1,9 @@
 #' @details The new facilities for cleanly defining new stats and geoms added to
-#' 'ggplot2' in version 2.0.0 and the support for nested tibbles and new syntax
-#' for mapping computed values to aesthetics added to
-#' 'ggplot2' in version 3.0.0 are used in this package's code, as well as some
-#' features added in more recent updates. This
-#' means that current 'ggpmisc' versions require recent versions of ggplot2.
+#'   'ggplot2' in version 2.0.0 and the support for nested data frames and lists
+#'   and new syntax for mapping computed values to aesthetics added to 'ggplot2'
+#'   in version 3.0.0 are used in this package's code, as well as some features
+#'   added in more recent updates including 3.5.0. This means that current
+#'   'ggpmisc' versions require recent versions of ggplot2.
 #'
 #' Extensions provided:
 #' \itemize{

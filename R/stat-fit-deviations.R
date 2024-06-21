@@ -205,7 +205,7 @@ stat_fit_deviations <- function(mapping = NULL, data = NULL, geom = "segment",
 deviations_compute_group_fun <- function(data,
                                          scales,
                                          method = "lm",
-                                         method.args = lisst(),
+                                         method.args = list(),
                                          n.min = 2L,
                                          formula = y ~ x,
                                          orientation = "x") {
