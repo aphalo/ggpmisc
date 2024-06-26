@@ -1,5 +1,5 @@
 
-# ggpmisc <img src="man/figures/logo-ggpmisc.png" align="right" width="150" />
+# ggpmisc <img src="man/figures/logo.png" align="right" width="150" />
 
 <!-- badges: start -->
 
@@ -10,7 +10,7 @@ checks](https://badges.cranchecks.info/worst/ggpmisc.svg)](https://cran.r-projec
 [![ggpmisc status
 badge](https://aphalo.r-universe.dev/badges/ggpmisc)](https://aphalo.r-universe.dev/ggpmisc)
 <a href="https://docs.r4photobiology.info/ggpmisc/"><img src="https://img.shields.io/badge/documentation-ggpmisc-informational.svg" alt="" /></a>
-<!-- badges: end -->
+[![](https://img.shields.io/badge/doi-10.32614/CRAN.package.ggpmisc-blue.svg)](https://doi.org/10.32614/CRAN.package.ggpmisc)<!-- badges: end -->
 
 ## Purpose
 
@@ -195,6 +195,8 @@ ggplot(cars, aes(speed, dist)) +
               label.y.npc = "top", label.x.npc = "left",
               size = 2.5,
               parse = TRUE)
+#> Warning in stat_fit_tb(method = "lm", method.args = list(formula = formula), :
+#> Ignoring unknown parameters: `label.y.npc` and `label.x.npc`
 #> Dropping params/terms (rows) from table!
 ```
 
@@ -317,7 +319,7 @@ citation("ggpmisc")
 #> To cite package 'ggpmisc' in publications use:
 #> 
 #>   Aphalo P (2024). _ggpmisc: Miscellaneous Extensions to 'ggplot2'_. R
-#>   package version 0.5.6.9002, https://github.com/aphalo/ggpmisc,
+#>   package version 0.6.0, https://github.com/aphalo/ggpmisc,
 #>   <https://docs.r4photobiology.info/ggpmisc/>.
 #> 
 #> A BibTeX entry for LaTeX users is
@@ -326,7 +328,7 @@ citation("ggpmisc")
 #>     title = {ggpmisc: Miscellaneous Extensions to 'ggplot2'},
 #>     author = {Pedro J. Aphalo},
 #>     year = {2024},
-#>     note = {R package version 0.5.6.9002, 
+#>     note = {R package version 0.6.0, 
 #> https://github.com/aphalo/ggpmisc},
 #>     url = {https://docs.r4photobiology.info/ggpmisc/},
 #>   }
