@@ -9,8 +9,11 @@ version](https://www.r-pkg.org/badges/version/ggpmisc)](https://cran.r-project.o
 checks](https://badges.cranchecks.info/worst/ggpmisc.svg)](https://cran.r-project.org/web/checks/check_results_ggpmisc.html)
 [![ggpmisc status
 badge](https://aphalo.r-universe.dev/badges/ggpmisc)](https://aphalo.r-universe.dev/ggpmisc)
-<a href="https://docs.r4photobiology.info/ggpmisc/"><img src="https://img.shields.io/badge/documentation-ggpmisc-informational.svg" alt="" /></a>
-[![](https://img.shields.io/badge/doi-10.32614/CRAN.package.ggpmisc-blue.svg)](https://doi.org/10.32614/CRAN.package.ggpmisc)<!-- badges: end -->
+[![web
+site](https://img.shields.io/badge/documentation-ggpmisc-informational.svg)](https://docs.r4photobiology.info/ggpmisc/)
+
+[![](https://img.shields.io/badge/doi-10.32614/CRAN.package.ggpmisc-blue.svg)](https://doi.org/10.32614/CRAN.package.ggpmisc)
+<!-- badges: end -->
 
 ## Purpose
 
