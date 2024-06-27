@@ -62,9 +62,6 @@
 #'   coordinates" (npc units) or character if using \code{geom_text_npc()} or
 #'   \code{geom_label_npc()}. If using \code{geom_text()} or \code{geom_label()}
 #'   numeric in native data units. If too short they will be recycled.
-#' @param label.x.npc,label.y.npc \code{numeric} with range 0..1 (npc units)
-#'   DEPRECATED, use label.x and label.y instead; together with a geom
-#'   using npcx and npcy aesthetics.
 #' @param hstep,vstep numeric in npc units, the horizontal and vertical step
 #'   used between labels for different groups.
 #' @param output.type character One of "expression", "LaTeX", "text",
@@ -507,8 +504,6 @@ stat_poly_eq <- function(mapping = NULL, data = NULL,
                          p.digits = 3,
                          label.x = "left",
                          label.y = "top",
-                         label.x.npc = NULL,
-                         label.y.npc = NULL,
                          hstep = 0,
                          vstep = NULL,
                          output.type = NULL,
@@ -537,16 +532,6 @@ stat_poly_eq <- function(mapping = NULL, data = NULL,
     } else {
       stop("The model formula should use 'x' and 'y' as variables")
     }
-  }
-
-  # backwards compatibility
-  if (!is.null(label.x.npc)) {
-    stopifnot(grepl("_npc", geom))
-    label.x <- label.x.npc
-  }
-  if (!is.null(label.y.npc)) {
-    stopifnot(grepl("_npc", geom))
-    label.y <- label.y.npc
   }
 
   if (is.null(output.type)) {
@@ -631,32 +616,32 @@ stat_poly_eq <- function(mapping = NULL, data = NULL,
 #'
 poly_eq_compute_group_fun <- function(data,
                                       scales,
-                                      method,
-                                      method.args,
-                                      formula,
-                                      n.min,
-                                      weight,
+                                      method = "lm",
+                                      method.args = list(),
+                                      formula = y ~ x,
+                                      n.min =2L,
+                                      weight = 1,
                                       eq.with.lhs,
-                                      eq.x.rhs,
-                                      mk.eq.label,
-                                      small.r,
-                                      small.p,
-                                      CI.brackets,
-                                      rsquared.conf.level,
-                                      coef.digits,
-                                      coef.keep.zeros,
-                                      decreasing,
-                                      rr.digits,
-                                      f.digits,
-                                      p.digits,
-                                      label.x,
-                                      label.y,
-                                      hstep,
-                                      vstep,
-                                      npc.used,
-                                      output.type,
-                                      na.rm,
-                                      orientation) {
+                                      eq.x.rhs = TRUE,
+                                      mk.eq.label = TRUE,
+                                      small.r = FALSE,
+                                      small.p  = FALSE,
+                                      CI.brackets = c("[", "]"),
+                                      rsquared.conf.level  = 0.95,
+                                      coef.digits = 3L,
+                                      coef.keep.zeros = TRUE,
+                                      decreasing = FALSE,
+                                      rr.digits = 2,
+                                      f.digits = 3,
+                                      p.digits = 3,
+                                      label.x = "left",
+                                      label.y = "top",
+                                      hstep = 0,
+                                      vstep = 0.1,
+                                      npc.used = TRUE,
+                                      output.type = "expression",
+                                      na.rm = FALSE,
+                                      orientation = "x") {
   force(data)
 
   # parse obeys this option, but as for some labels or output types we do not

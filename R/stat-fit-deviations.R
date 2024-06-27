@@ -204,11 +204,11 @@ stat_fit_deviations <- function(mapping = NULL, data = NULL, geom = "segment",
 #'
 deviations_compute_group_fun <- function(data,
                                          scales,
-                                         method,
-                                         method.args,
-                                         n.min,
-                                         formula,
-                                         orientation) {
+                                         method = "lm",
+                                         method.args = list(),
+                                         n.min = 2L,
+                                         formula = y ~ x,
+                                         orientation = "x") {
 
   stopifnot(!any(c("formula", "data") %in% names(method.args)))
   if (is.null(data$weight)) {

@@ -6,15 +6,17 @@
 \alias{ggpmisc-package}
 \title{ggpmisc: Miscellaneous Extensions to 'ggplot2'}
 \description{
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
 Extensions to 'ggplot2' respecting the grammar of graphics paradigm. Statistics: locate and tag peaks and valleys; label plot with the equation of a fitted polynomial or other types of models; labels with P-value, R^2 or adjusted R^2 or information criteria for fitted models; label with ANOVA table for fitted models; label with summary for fitted models. Model fit classes for which suitable methods are provided by package 'broom' and 'broom.mixed' are supported. Scales and stats to build volcano and quadrant plots based on outcomes, fold changes, p-values and false discovery rates.
 }
 \details{
 The new facilities for cleanly defining new stats and geoms added to
-'ggplot2' in version 2.0.0 and the support for nested tibbles and new syntax
-for mapping computed values to aesthetics added to
-'ggplot2' in version 3.0.0 are used in this package's code, as well as some
-features added in more recent updates. This
-means that current 'ggpmisc' versions require recent versions of ggplot2.
+  'ggplot2' in version 2.0.0 and the support for nested data frames and lists
+  and new syntax for mapping computed values to aesthetics added to 'ggplot2'
+  in version 3.0.0 are used in this package's code, as well as some features
+  added in more recent updates including 3.5.0. This means that current
+  'ggpmisc' versions require recent versions of ggplot2.
 
 Extensions provided:
 \itemize{

@@ -148,21 +148,6 @@ test_that("glance_methods", {
                                                                       after_stat(df.residual))))
   )
 
-  old.options <- options(warn = -1)
-  vdiffr::expect_doppelganger("glance_method_rq",
-                               ggplot(my.data, aes(x, y)) +
-                                geom_point() +
-                                stat_fit_glance(method = "rq",
-                                                method.args = list(formula = y ~ x + I(x^2)),
-                                                mapping =
-                                                  aes(label = sprintf("%.3g, %.3g, %.3g, %.3g, %.3g",
-                                                                      after_stat(tau),
-                                                                      after_stat(logLik),
-                                                                      after_stat(AIC),
-                                                                      after_stat(BIC),
-                                                                      after_stat(df.residual))))
-   )
-  options(old.options)
 
   # triggers an expected warning but supressWarnings
   # vdiffr::expect_doppelganger("glance_method_cortest_xy",
@@ -186,6 +171,22 @@ test_that("glance_methods", {
                                                                       after_stat(estimate),
                                                                       after_stat(p.value))))
   )
+
+  old.options <- options(warn = -1)
+  vdiffr::expect_doppelganger("glance_method_rq",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_fit_glance(method = "rq",
+                                                method.args = list(formula = y ~ x + I(x^2)),
+                                                mapping =
+                                                  aes(label = sprintf("%.3g, %.3g, %.3g, %.3g, %.3g",
+                                                                      after_stat(tau),
+                                                                      after_stat(logLik),
+                                                                      after_stat(AIC),
+                                                                      after_stat(BIC),
+                                                                      after_stat(df.residual))))
+  )
+  options(old.options)
 
 })
 
