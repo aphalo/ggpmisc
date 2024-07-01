@@ -148,7 +148,7 @@ These statistics check the scale of the \code{x} aesthetic and if it is
  The current version of these statistics do not support
   passing \code{nudge_x} or \code{nurge_y} named parameters to the geometry.
   Use `position` and one of the position functions such as
-  \code{\link{position_nudge_keep}} instead.
+  \code{\link[ggpp]{position_nudge_keep}} instead.
 }
 
 \examples{
