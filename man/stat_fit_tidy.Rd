@@ -152,19 +152,21 @@ Although arguments passed to parameter \code{tidy.args} will be
 # Package 'broom' needs to be installed to run these examples.
 # We check availability before running them to avoid errors.
 
-if (requireNamespace("broom", quietly = TRUE)) {
-  broom.installed <- TRUE
+broom.installed <- requireNamespace("broom", quietly = TRUE)
+gginnards.installed <- requireNamespace("gginnards", quietly = TRUE)
+
+if (broom.installed) {
   library(broom)
   library(quantreg)
+}
 
 # Inspecting the returned data using geom_debug()
-  if (requireNamespace("gginnards", quietly = TRUE)) {
+  if (gginnards.installed) {
     library(gginnards)
+}
 
-# This provides a quick way of finding out the names of the variables that
-# are available for mapping to aesthetics. This is specially important for
-# this stat as these names depend on the specific tidy() method used, which
-# depends on the method used, such as lm(), used to fit the model.
+# Regression by panel, inspecting data
+if (broom.installed && gginnards.installed) {
 
 # Regression by panel, default column names
   ggplot(mtcars, aes(x = disp, y = mpg)) +
@@ -181,7 +183,6 @@ if (requireNamespace("broom", quietly = TRUE)) {
     stat_fit_tidy(method = "lm",
                   method.args = list(formula = y ~ x + I(x^2)),
                   geom = "debug", sanitize.names = TRUE)
-  }
 }
 
 # Regression by panel example

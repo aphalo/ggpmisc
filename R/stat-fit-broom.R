@@ -103,22 +103,26 @@
 #' @examples
 #' # package 'broom' needs to be installed to run these examples
 #'
-#' if (requireNamespace("broom", quietly = TRUE)) {
-#'   broom.installed <- TRUE
+#' broom.installed <- requireNamespace("broom", quietly = TRUE)
+#' gginnards.installed <- requireNamespace("gginnards", quietly = TRUE)
+#'
+#' if (broom.installed) {
 #'   library(broom)
 #'   library(quantreg)
+#' }
+#'
+#' if (gginnards.installed) {
+#'     library(gginnards)
+#' }
 #'
 #' # Inspecting the returned data using geom_debug()
-#'   if (requireNamespace("gginnards", quietly = TRUE)) {
-#'     library(gginnards)
-#'
+#'   if (broom.installed && gginnards.installed) {
 #'     ggplot(mtcars, aes(x = disp, y = mpg)) +
 #'       stat_smooth(method = "lm") +
 #'       geom_point(aes(colour = factor(cyl))) +
 #'       stat_fit_glance(method = "lm",
 #'                       method.args = list(formula = y ~ x),
 #'                       geom = "debug")
-#'   }
 #' }
 #'
 #' if (broom.installed)
@@ -492,23 +496,27 @@ StatFitGlance <-
 #' # Package 'broom' needs to be installed to run these examples.
 #' # We check availability before running them to avoid errors.
 #'
-#' if (requireNamespace("broom", quietly = TRUE)) {
-#'   broom.installed <- TRUE
+#' broom.installed <- requireNamespace("broom", quietly = TRUE)
+#' gginnards.installed <- requireNamespace("gginnards", quietly = TRUE)
+#'
+#' if (broom.installed) {
 #'   library(broom)
 #'   library(quantreg)
+#' }
 #'
 #' # Inspecting the returned data using geom_debug()
-#'   if (requireNamespace("gginnards", quietly = TRUE)) {
+#'   if (gginnards.installed) {
 #'     library(gginnards)
+#' }
 #'
 #' # Regression by panel, inspecting data
+#' if (broom.installed & gginnards.installed) {
 #'     ggplot(mtcars, aes(x = disp, y = mpg)) +
 #'       geom_point(aes(colour = factor(cyl))) +
 #'       stat_fit_augment(method = "lm",
 #'                        method.args = list(formula = y ~ x),
 #'                        geom = "debug",
 #'                        summary.fun = colnames)
-#'   }
 #' }
 #'
 #' # Regression by panel example
@@ -804,19 +812,21 @@ StatFitAugment <-
 #' # Package 'broom' needs to be installed to run these examples.
 #' # We check availability before running them to avoid errors.
 #'
-#' if (requireNamespace("broom", quietly = TRUE)) {
-#'   broom.installed <- TRUE
+#' broom.installed <- requireNamespace("broom", quietly = TRUE)
+#' gginnards.installed <- requireNamespace("gginnards", quietly = TRUE)
+#'
+#' if (broom.installed) {
 #'   library(broom)
 #'   library(quantreg)
+#' }
 #'
 #' # Inspecting the returned data using geom_debug()
-#'   if (requireNamespace("gginnards", quietly = TRUE)) {
+#'   if (gginnards.installed) {
 #'     library(gginnards)
+#' }
 #'
-#' # This provides a quick way of finding out the names of the variables that
-#' # are available for mapping to aesthetics. This is specially important for
-#' # this stat as these names depend on the specific tidy() method used, which
-#' # depends on the method used, such as lm(), used to fit the model.
+#' # Regression by panel, inspecting data
+#' if (broom.installed && gginnards.installed) {
 #'
 #' # Regression by panel, default column names
 #'   ggplot(mtcars, aes(x = disp, y = mpg)) +
@@ -833,7 +843,6 @@ StatFitAugment <-
 #'     stat_fit_tidy(method = "lm",
 #'                   method.args = list(formula = y ~ x + I(x^2)),
 #'                   geom = "debug", sanitize.names = TRUE)
-#'   }
 #' }
 #'
 #' # Regression by panel example

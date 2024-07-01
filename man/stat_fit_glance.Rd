@@ -140,22 +140,26 @@ Although arguments passed to parameter \code{glance.args} will be
 \examples{
 # package 'broom' needs to be installed to run these examples
 
-if (requireNamespace("broom", quietly = TRUE)) {
-  broom.installed <- TRUE
+broom.installed <- requireNamespace("broom", quietly = TRUE)
+gginnards.installed <- requireNamespace("gginnards", quietly = TRUE)
+
+if (broom.installed) {
   library(broom)
   library(quantreg)
+}
+
+if (gginnards.installed) {
+    library(gginnards)
+}
 
 # Inspecting the returned data using geom_debug()
-  if (requireNamespace("gginnards", quietly = TRUE)) {
-    library(gginnards)
-
+  if (broom.installed && gginnards.installed) {
     ggplot(mtcars, aes(x = disp, y = mpg)) +
       stat_smooth(method = "lm") +
       geom_point(aes(colour = factor(cyl))) +
       stat_fit_glance(method = "lm",
                       method.args = list(formula = y ~ x),
                       geom = "debug")
-  }
 }
 
 if (broom.installed)

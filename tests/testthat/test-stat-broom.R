@@ -1,5 +1,8 @@
 context("stat_fit_glance")
 
+skip_if_not_installed("broom", minimum_version = NULL)
+skip_if_not_installed("broom.mixed", minimum_version = NULL)
+
 library(tibble)
 library(nlme)
 library(quantreg)

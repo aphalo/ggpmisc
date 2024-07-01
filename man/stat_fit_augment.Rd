@@ -129,23 +129,27 @@ Although arguments passed to parameter \code{augment.args} will be
 # Package 'broom' needs to be installed to run these examples.
 # We check availability before running them to avoid errors.
 
-if (requireNamespace("broom", quietly = TRUE)) {
-  broom.installed <- TRUE
+broom.installed <- requireNamespace("broom", quietly = TRUE)
+gginnards.installed <- requireNamespace("gginnards", quietly = TRUE)
+
+if (broom.installed) {
   library(broom)
   library(quantreg)
+}
 
 # Inspecting the returned data using geom_debug()
-  if (requireNamespace("gginnards", quietly = TRUE)) {
+  if (gginnards.installed) {
     library(gginnards)
+}
 
 # Regression by panel, inspecting data
+if (broom.installed & gginnards.installed) {
     ggplot(mtcars, aes(x = disp, y = mpg)) +
       geom_point(aes(colour = factor(cyl))) +
       stat_fit_augment(method = "lm",
                        method.args = list(formula = y ~ x),
                        geom = "debug",
                        summary.fun = colnames)
-  }
 }
 
 # Regression by panel example
