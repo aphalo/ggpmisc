@@ -4,15 +4,14 @@
 <!-- badges: start -->
 
 [![cran
-version](https://www.r-pkg.org/badges/version/ggpmisc)](https://cran.r-project.org/package=ggpmisc)
+version](https://www.r-pkg.org/badges/version-last-release/ggpmisc)](https://cran.r-project.org/package=ggpmisc)
 [![cran
 checks](https://badges.cranchecks.info/worst/ggpmisc.svg)](https://cran.r-project.org/web/checks/check_results_ggpmisc.html)
 [![ggpmisc status
 badge](https://aphalo.r-universe.dev/badges/ggpmisc)](https://aphalo.r-universe.dev/ggpmisc)
 [![web
 site](https://img.shields.io/badge/documentation-ggpmisc-informational.svg)](https://docs.r4photobiology.info/ggpmisc/)
-
-[![](https://img.shields.io/badge/doi-10.32614/CRAN.package.ggpmisc-blue.svg)](https://doi.org/10.32614/CRAN.package.ggpmisc)
+[![DOI](https://img.shields.io/badge/doi-10.32614/CRAN.package.ggpmisc-blue.svg)](https://doi.org/10.32614/CRAN.package.ggpmisc)
 <!-- badges: end -->
 
 ## Purpose
@@ -51,24 +50,24 @@ in package ‘**ggplot2**’.
 
 Statistics that help with reporting the results of model fits are:
 
-| Statistic               | Returned values (*default geometry*)              | Methods                                      |
-|-------------------------|---------------------------------------------------|----------------------------------------------|
-| `stat_poly_eq()`        | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lm, rlm (1, 2, 7)                            |
-| `stat_ma_eq()`          | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lmodel2 (6, 7)                               |
-| `stat_quant_eq()`       | equation, *P*, etc. (`text_npc`)                  | rq (1, 3, 4, 7)                              |
-| `stat_correlation()`    | correlation, *P*-value, CI (`text_npc`)           | Pearson (*t*), Kendall (*z*), Spearman (*S*) |
-| `stat_poly_line()`      | line + conf. (`smooth`)                           | lm, rlm (1, 2, 7)                            |
-| `stat_ma_line()`        | line + conf. (`smooth`)                           | lmodel2 (6, 7)                               |
-| `stat_quant_line()`     | line + conf. (`smooth`)                           | rq, rqss (1, 3, 4, 7)                        |
-| `stat_quant_band()`     | median + quartiles (`smooth`)                     | rq, rqss (1, 4, 5, 7)                        |
-| `stat_fit_residuals()`  | residuals (`point`)                               | lm, rlm, rq (1, 2, 4, 7, 8)                  |
-| `stat_fit_deviations()` | deviations from observations (`segment`)          | lm, rlm, lqs, rq (1, 2, 4, 7, 9)             |
-| `stat_fit_fitted()`     | fitted values (`point`)                           | lm, rlm, lqs, rq (1, 2, 4, 7, 9)             |
-| `stat_fit_glance()`     | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | those supported by ‘broom’                   |
-| `stat_fit_augment()`    | predicted and other values (`smooth`)             | those supported by ‘broom’                   |
-| `stat_fit_tidy()`       | fit results, e.g., for equation (`text_npc`)      | those supported by ‘broom’                   |
-| `stat_fit_tb()`         | ANOVA and summary tables (`table_npc`)            | those supported by ‘broom’                   |
-| `stat_multcomp()`       | Multiple comparisons (`label_pairwise` or `text`) | those supported by `glht` (1, 2, 7)          |
+| Statistic | Returned values (*default geometry*) | Methods |
+|----|----|----|
+| `stat_poly_eq()` | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lm, rlm (1, 2, 7) |
+| `stat_ma_eq()` | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lmodel2 (6, 7) |
+| `stat_quant_eq()` | equation, *P*, etc. (`text_npc`) | rq (1, 3, 4, 7) |
+| `stat_correlation()` | correlation, *P*-value, CI (`text_npc`) | Pearson (*t*), Kendall (*z*), Spearman (*S*) |
+| `stat_poly_line()` | line + conf. (`smooth`) | lm, rlm (1, 2, 7) |
+| `stat_ma_line()` | line + conf. (`smooth`) | lmodel2 (6, 7) |
+| `stat_quant_line()` | line + conf. (`smooth`) | rq, rqss (1, 3, 4, 7) |
+| `stat_quant_band()` | median + quartiles (`smooth`) | rq, rqss (1, 4, 5, 7) |
+| `stat_fit_residuals()` | residuals (`point`) | lm, rlm, rq (1, 2, 4, 7, 8) |
+| `stat_fit_deviations()` | deviations from observations (`segment`) | lm, rlm, lqs, rq (1, 2, 4, 7, 9) |
+| `stat_fit_fitted()` | fitted values (`point`) | lm, rlm, lqs, rq (1, 2, 4, 7, 9) |
+| `stat_fit_glance()` | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | those supported by ‘broom’ |
+| `stat_fit_augment()` | predicted and other values (`smooth`) | those supported by ‘broom’ |
+| `stat_fit_tidy()` | fit results, e.g., for equation (`text_npc`) | those supported by ‘broom’ |
+| `stat_fit_tb()` | ANOVA and summary tables (`table_npc`) | those supported by ‘broom’ |
+| `stat_multcomp()` | Multiple comparisons (`label_pairwise` or `text`) | those supported by `glht` (1, 2, 7) |
 
 Notes: (1) *weight* aesthetic supported; (2) user defined fit functions
 that return an object of a class derived from `lm` are supported even if
@@ -322,7 +321,7 @@ citation("ggpmisc")
 #> To cite package 'ggpmisc' in publications use:
 #> 
 #>   Aphalo P (2024). _ggpmisc: Miscellaneous Extensions to 'ggplot2'_. R
-#>   package version 0.6.0, https://github.com/aphalo/ggpmisc,
+#>   package version 0.6.0.9000, https://github.com/aphalo/ggpmisc,
 #>   <https://docs.r4photobiology.info/ggpmisc/>.
 #> 
 #> A BibTeX entry for LaTeX users is
@@ -331,7 +330,7 @@ citation("ggpmisc")
 #>     title = {ggpmisc: Miscellaneous Extensions to 'ggplot2'},
 #>     author = {Pedro J. Aphalo},
 #>     year = {2024},
-#>     note = {R package version 0.6.0, 
+#>     note = {R package version 0.6.0.9000, 
 #> https://github.com/aphalo/ggpmisc},
 #>     url = {https://docs.r4photobiology.info/ggpmisc/},
 #>   }
