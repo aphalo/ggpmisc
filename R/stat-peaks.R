@@ -265,6 +265,8 @@ find_peaks <-
 stat_peaks <- function(mapping = NULL,
                        data = NULL,
                        geom = "point",
+                       position = "identity",
+                       ...,
                        span = 5,
                        ignore_threshold = 0,
                        strict = FALSE,
@@ -272,11 +274,9 @@ stat_peaks <- function(mapping = NULL,
                        x.label.fmt = NULL,
                        y.label.fmt = NULL,
                        orientation = "x",
-                       position = "identity",
                        na.rm = FALSE,
                        show.legend = FALSE,
-                       inherit.aes = TRUE,
-                       ...) {
+                       inherit.aes = TRUE) {
   ggplot2::layer(
     stat = StatPeaks,
     data = data,
@@ -507,6 +507,8 @@ StatPeaks <-
 stat_valleys <- function(mapping = NULL,
                          data = NULL,
                          geom = "point",
+                         position = "identity",
+                         ...,
                          span = 5,
                          ignore_threshold = 0,
                          strict = FALSE,
@@ -514,11 +516,9 @@ stat_valleys <- function(mapping = NULL,
                          x.label.fmt = NULL,
                          y.label.fmt = NULL,
                          orientation = "x",
-                         position = "identity",
                          na.rm = FALSE,
                          show.legend = FALSE,
-                         inherit.aes = TRUE,
-                         ...) {
+                         inherit.aes = TRUE) {
   ggplot2::layer(
     stat = StatValleys,
     data = data,

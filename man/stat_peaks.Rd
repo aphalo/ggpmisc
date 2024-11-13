@@ -9,6 +9,8 @@ stat_peaks(
   mapping = NULL,
   data = NULL,
   geom = "point",
+  position = "identity",
+  ...,
   span = 5,
   ignore_threshold = 0,
   strict = FALSE,
@@ -16,17 +18,17 @@ stat_peaks(
   x.label.fmt = NULL,
   y.label.fmt = NULL,
   orientation = "x",
-  position = "identity",
   na.rm = FALSE,
   show.legend = FALSE,
-  inherit.aes = TRUE,
-  ...
+  inherit.aes = TRUE
 )
 
 stat_valleys(
   mapping = NULL,
   data = NULL,
   geom = "point",
+  position = "identity",
+  ...,
   span = 5,
   ignore_threshold = 0,
   strict = FALSE,
@@ -34,11 +36,9 @@ stat_valleys(
   x.label.fmt = NULL,
   y.label.fmt = NULL,
   orientation = "x",
-  position = "identity",
   na.rm = FALSE,
   show.legend = FALSE,
-  inherit.aes = TRUE,
-  ...
+  inherit.aes = TRUE
 )
 }
 \arguments{
@@ -50,6 +50,13 @@ set at the layer level if you are overriding the plot defaults.}
 the plot defaults.}
 
 \item{geom}{The geometric object to use display the data.}
+
+\item{position}{The position adjustment to use for overlapping points
+on this layer.}
+
+\item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This
+can include aesthetics whose values you want to set, not map. See
+\code{\link[ggplot2]{layer}} for more details.}
 
 \item{span}{a peak is defined as an element in a sequence which is greater
 than all other elements within a window of width span centered at that
@@ -78,9 +85,6 @@ converting $y$-values into character strings by means of function
 
 \item{orientation}{character Either "x" or "y".}
 
-\item{position}{The position adjustment to use for overlapping points
-on this layer.}
-
 \item{na.rm}{a logical value indicating whether NA values should be
 stripped before the computation proceeds.}
 
@@ -92,10 +96,6 @@ stripped before the computation proceeds.}
 rather than combining with them. This is most useful for helper functions
 that define both data and aesthetics and shouldn't inherit behaviour from
 the default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
-
-\item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This
-can include aesthetics whose values you want to set, not map. See
-\code{\link[ggplot2]{layer}} for more details.}
 }
 \description{
 \code{stat_peaks} finds at which x positions local y maxima are located and

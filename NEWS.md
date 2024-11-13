@@ -4,6 +4,11 @@ editor_options:
     wrap: 72
 ---
 
+# ggpmisc 0.6.1
+
+-   Fix warning with current 'broom' and upcoming 'ggplot2'.
+-   Make order of formal parameters in stats consistent with that in current 'ggplot2'.
+
 # ggpmisc 0.6.0-1
 
 -   Add ellipsis parameter (`...`) to `use_label()` so that in addition to a character vector of label names passed to parameter `labels`, separate strings for each name are now also accepted.
