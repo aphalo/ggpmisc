@@ -171,17 +171,18 @@
 stat_fit_residuals <- function(mapping = NULL,
                                data = NULL,
                                geom = "point",
+                               position = "identity",
+                               ...,
                                method = "lm",
                                method.args = list(),
                                n.min = 2L,
                                formula = NULL,
                                resid.type = NULL,
                                weighted = FALSE,
-                               position = "identity",
                                na.rm = FALSE,
                                orientation = NA,
                                show.legend = FALSE,
-                               inherit.aes = TRUE, ...) {
+                               inherit.aes = TRUE) {
   ggplot2::layer(
     stat = StatFitResiduals, data = data, mapping = mapping, geom = geom,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,

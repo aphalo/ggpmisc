@@ -171,16 +171,19 @@
 #'
 #' @export
 #'
-stat_fit_deviations <- function(mapping = NULL, data = NULL, geom = "segment",
-                               method = "lm",
-                               method.args = list(),
-                               n.min = 2L,
-                               formula = NULL,
-                               position = "identity",
-                               na.rm = FALSE,
-                               orientation = NA,
-                               show.legend = FALSE,
-                               inherit.aes = TRUE, ...) {
+stat_fit_deviations <- function(mapping = NULL,
+                                data = NULL,
+                                geom = "segment",
+                                position = "identity",
+                                ...,
+                                method = "lm",
+                                method.args = list(),
+                                n.min = 2L,
+                                formula = NULL,
+                                na.rm = FALSE,
+                                orientation = NA,
+                                show.legend = FALSE,
+                                inherit.aes = TRUE) {
   ggplot2::layer(
     stat = StatFitDeviations, data = data, mapping = mapping, geom = geom,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,

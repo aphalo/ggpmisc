@@ -196,6 +196,8 @@
 stat_fit_glance <- function(mapping = NULL,
                             data = NULL,
                             geom = "text_npc",
+                            position = "identity",
+                            ...,
                             method = "lm",
                             method.args = list(formula = y ~ x),
                             n.min = 2L,
@@ -204,9 +206,9 @@ stat_fit_glance <- function(mapping = NULL,
                             label.y = "top",
                             hstep = 0,
                             vstep = 0.075,
-                            position = "identity",
-                            na.rm = FALSE, show.legend = FALSE,
-                            inherit.aes = TRUE, ...) {
+                            na.rm = FALSE,
+                            show.legend = FALSE,
+                            inherit.aes = TRUE) {
   ggplot2::layer(
     stat = StatFitGlance, data = data, mapping = mapping, geom = geom,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
@@ -483,7 +485,8 @@ StatFitGlance <-
 #'   passed to [generics::augment()] whether they are silently ignored or obeyed
 #'   depends on each specialization of [augment()], so do carefully read the
 #'   documentation for the version of [augment()] corresponding to the `method`
-#'   used to fit the model.
+#'   used to fit the model. Be aware that `se_fit = FALSE` is the default in
+#'   these methods even when supported.
 #'
 #' @family ggplot statistics for model fits
 #'
@@ -526,6 +529,13 @@ StatFitGlance <-
 #'     stat_fit_augment(method = "lm",
 #'                      method.args = list(formula = y ~ x))
 #'
+#' if (broom.installed)
+#'   ggplot(mtcars, aes(x = disp, y = mpg)) +
+#'     geom_point(aes(colour = factor(cyl))) +
+#'     stat_fit_augment(method = "lm",
+#'                      augment.args = list(se_fit = TRUE),
+#'                      method.args = list(formula = y ~ x + I(x^2)))
+#'
 #' # Residuals from regression by panel example
 #' if (broom.installed)
 #'   ggplot(mtcars, aes(x = disp, y = mpg)) +
@@ -540,6 +550,7 @@ StatFitGlance <-
 #'   ggplot(mtcars, aes(x = disp, y = mpg, colour = factor(cyl))) +
 #'     geom_point() +
 #'     stat_fit_augment(method = "lm",
+#'                      augment.args = list(se_fit = TRUE),
 #'                      method.args = list(formula = y ~ x))
 #'
 #' # Residuals from regression by group example
@@ -574,16 +585,20 @@ StatFitGlance <-
 #'     stat_fit_augment(method = "rq")
 #'
 #'
-stat_fit_augment <- function(mapping = NULL, data = NULL, geom = "smooth",
+stat_fit_augment <- function(mapping = NULL,
+                             data = NULL,
+                             geom = "smooth",
+                             position = "identity",
+                             ...,
                              method = "lm",
                              method.args = list(formula = y ~ x),
                              n.min = 2L,
                              augment.args = list(),
                              level = 0.95,
                              y.out = ".fitted",
-                             position = "identity",
-                             na.rm = FALSE, show.legend = FALSE,
-                             inherit.aes = TRUE, ...) {
+                             na.rm = FALSE,
+                             show.legend = FALSE,
+                             inherit.aes = TRUE) {
   ggplot2::layer(
     stat = StatFitAugment, data = data, mapping = mapping, geom = geom,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
@@ -607,14 +622,14 @@ stat_fit_augment <- function(mapping = NULL, data = NULL, geom = "smooth",
 #' @usage NULL
 #'
 fit_augment_compute_group_fun <- function(data,
-                                    scales,
-                                    method,
-                                    method.args,
-                                    n.min,
-                                    augment.args,
-                                    level,
-                                    y.out,
-                                    ...) {
+                                          scales,
+                                          method,
+                                          method.args,
+                                          n.min,
+                                          augment.args,
+                                          level,
+                                          y.out,
+                                          ...) {
   unAsIs <- function(X) {
     if ("AsIs" %in% class(X)) {
       class(X) <- class(X)[-match("AsIs", class(X))]
@@ -670,7 +685,8 @@ fit_augment_compute_group_fun <- function(data,
     z[["t.value"]] <- rep_len(NA_real_, nrow(z))
   }
   if (!exists(".se.fit", z)) {
-    z[[".se.fit"]] <- rep_len(NA_real_, nrow(z))
+#    z[[".se.fit"]] <- rep_len(NA_real_, nrow(z)) # triggered warning!
+    z[[".se.fit"]] <- rep_len(0, nrow(z))
   }
   z[["fm.class"]] <- rep_len(fm.class[1], nrow(z))
   z[["fm.method"]] <- rep_len(method.name, nrow(z))
@@ -894,18 +910,23 @@ StatFitAugment <-
 #'                                                 after_stat(x_estimate),
 #'                                                 after_stat(x_p.value))))
 #'
-stat_fit_tidy <- function(mapping = NULL, data = NULL, geom = "text_npc",
+stat_fit_tidy <- function(mapping = NULL,
+                          data = NULL,
+                          geom = "text_npc",
+                          position = "identity",
+                          ...,
                           method = "lm",
                           method.args = list(formula = y ~ x),
                           n.min = 2L,
                           tidy.args = list(),
-                          label.x = "left", label.y = "top",
+                          label.x = "left",
+                          label.y = "top",
                           hstep = 0,
                           vstep = NULL,
                           sanitize.names = FALSE,
-                          position = "identity",
-                          na.rm = FALSE, show.legend = FALSE,
-                          inherit.aes = TRUE, ...) {
+                          na.rm = FALSE,
+                          show.legend = FALSE,
+                          inherit.aes = TRUE) {
   ggplot2::layer(
     stat = StatFitTidy, data = data, mapping = mapping, geom = geom,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,

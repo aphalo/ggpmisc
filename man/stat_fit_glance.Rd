@@ -8,6 +8,8 @@ stat_fit_glance(
   mapping = NULL,
   data = NULL,
   geom = "text_npc",
+  position = "identity",
+  ...,
   method = "lm",
   method.args = list(formula = y ~ x),
   n.min = 2L,
@@ -16,11 +18,9 @@ stat_fit_glance(
   label.y = "top",
   hstep = 0,
   vstep = 0.075,
-  position = "identity",
   na.rm = FALSE,
   show.legend = FALSE,
-  inherit.aes = TRUE,
-  ...
+  inherit.aes = TRUE
 )
 }
 \arguments{
@@ -32,6 +32,13 @@ to be set at the layer level if you are overriding the plot defaults.}
 the plot defaults.}
 
 \item{geom}{The geometric object to use display the data}
+
+\item{position}{The position adjustment to use for overlapping points on this
+layer}
+
+\item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This
+can include aesthetics whose values you want to set, not map. See
+\code{\link[ggplot2]{layer}} for more details.}
 
 \item{method}{character or function.}
 
@@ -49,9 +56,6 @@ numeric in native data units. If too short they will be recycled.}
 \item{hstep, vstep}{numeric in npc units, the horizontal and vertical step
 used between labels for different groups.}
 
-\item{position}{The position adjustment to use for overlapping points on this
-layer}
-
 \item{na.rm}{a logical indicating whether NA values should be stripped before
 the computation proceeds.}
 
@@ -63,10 +67,6 @@ never includes, and \code{TRUE} always includes.}
 than combining with them. This is most useful for helper functions that
 define both data and aesthetics and shouldn't inherit behaviour from the
 default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
-
-\item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This
-can include aesthetics whose values you want to set, not map. See
-\code{\link[ggplot2]{layer}} for more details.}
 }
 \value{
 The output of the \code{glance()} methods is returned almost as is in

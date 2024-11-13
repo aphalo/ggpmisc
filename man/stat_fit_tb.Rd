@@ -8,6 +8,8 @@ stat_fit_tb(
   mapping = NULL,
   data = NULL,
   geom = "table_npc",
+  position = "identity",
+  ...,
   method = "lm",
   method.args = list(formula = y ~ x),
   n.min = 2L,
@@ -19,7 +21,6 @@ stat_fit_tb(
   p.digits = digits,
   label.x = "center",
   label.y = "top",
-  position = "identity",
   table.theme = NULL,
   table.rownames = FALSE,
   table.colnames = TRUE,
@@ -27,8 +28,7 @@ stat_fit_tb(
   parse = FALSE,
   na.rm = FALSE,
   show.legend = FALSE,
-  inherit.aes = TRUE,
-  ...
+  inherit.aes = TRUE
 )
 }
 \arguments{
@@ -40,6 +40,13 @@ set at the layer level if you are overriding the plot defaults.}
 plot defaults.}
 
 \item{geom}{The geometric object to use display the data}
+
+\item{position}{The position adjustment to use for overlapping points on this
+layer}
+
+\item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This
+can include aesthetics whose values you want to set, not map. See
+\code{\link[ggplot2]{layer}} for more details.}
 
 \item{method}{character.}
 
@@ -68,9 +75,6 @@ possible value preceded by "<". If \code{p.digits} is outside the range
 depending on the geometry used. If too short they will be recycled. They set
 the \code{x} and \code{y} coordinates at the \code{after_stat} stage.}
 
-\item{position}{The position adjustment to use for overlapping points on this
-layer}
-
 \item{table.theme}{NULL, list or function A 'gridExtra' \code{ttheme}
 definition, or a constructor for a \code{ttheme} or NULL for default.}
 
@@ -94,10 +98,6 @@ never includes, and \code{TRUE} always includes.}
 than combining with them. This is most useful for helper functions that
 define both data and aesthetics and shouldn't inherit behaviour from the
 default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
-
-\item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This
-can include aesthetics whose values you want to set, not map. See
-\code{\link[ggplot2]{layer}} for more details.}
 }
 \value{
 A tibble with columns named \code{fm.tb} (a tibble returned by

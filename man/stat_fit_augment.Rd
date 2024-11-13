@@ -8,17 +8,17 @@ stat_fit_augment(
   mapping = NULL,
   data = NULL,
   geom = "smooth",
+  position = "identity",
+  ...,
   method = "lm",
   method.args = list(formula = y ~ x),
   n.min = 2L,
   augment.args = list(),
   level = 0.95,
   y.out = ".fitted",
-  position = "identity",
   na.rm = FALSE,
   show.legend = FALSE,
-  inherit.aes = TRUE,
-  ...
+  inherit.aes = TRUE
 )
 }
 \arguments{
@@ -30,6 +30,13 @@ to be set at the layer level if you are overriding the plot defaults.}
 the plot defaults.}
 
 \item{geom}{The geometric object to use display the data}
+
+\item{position}{The position adjustment to use for overlapping points on this
+layer}
+
+\item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This
+can include aesthetics whose values you want to set, not map. See
+\code{\link[ggplot2]{layer}} for more details.}
 
 \item{method}{character or function.}
 
@@ -43,9 +50,6 @@ variable (on the rhs of formula) for fitting to the attempted.}
 
 \item{y.out}{character (or numeric) index to column to return as \code{y}.}
 
-\item{position}{The position adjustment to use for overlapping points on this
-layer}
-
 \item{na.rm}{logical indicating whether NA values should be stripped before
 the computation proceeds.}
 
@@ -57,10 +61,6 @@ never includes, and \code{TRUE} always includes.}
 than combining with them. This is most useful for helper functions that
 define both data and aesthetics and shouldn't inherit behaviour from the
 default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
-
-\item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This
-can include aesthetics whose values you want to set, not map. See
-\code{\link[ggplot2]{layer}} for more details.}
 }
 \description{
 \code{stat_fit_augment} fits a model and returns a "tidy"
@@ -96,7 +96,8 @@ Although arguments passed to parameter \code{augment.args} will be
   passed to [generics::augment()] whether they are silently ignored or obeyed
   depends on each specialization of [augment()], so do carefully read the
   documentation for the version of [augment()] corresponding to the `method`
-  used to fit the model.
+  used to fit the model. Be aware that `se_fit = FALSE` is the default in
+  these methods even when supported.
 }
 \section{Warning!}{
  Not all `glance()` methods are defined in package 'broom'.
@@ -159,6 +160,13 @@ if (broom.installed)
     stat_fit_augment(method = "lm",
                      method.args = list(formula = y ~ x))
 
+if (broom.installed)
+  ggplot(mtcars, aes(x = disp, y = mpg)) +
+    geom_point(aes(colour = factor(cyl))) +
+    stat_fit_augment(method = "lm",
+                     augment.args = list(se_fit = TRUE),
+                     method.args = list(formula = y ~ x + I(x^2)))
+
 # Residuals from regression by panel example
 if (broom.installed)
   ggplot(mtcars, aes(x = disp, y = mpg)) +
@@ -173,6 +181,7 @@ if (broom.installed)
   ggplot(mtcars, aes(x = disp, y = mpg, colour = factor(cyl))) +
     geom_point() +
     stat_fit_augment(method = "lm",
+                     augment.args = list(se_fit = TRUE),
                      method.args = list(formula = y ~ x))
 
 # Residuals from regression by group example

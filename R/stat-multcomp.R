@@ -323,7 +323,8 @@
 #'
 #' @export
 #'
-stat_multcomp <- function(mapping = NULL, data = NULL,
+stat_multcomp <- function(mapping = NULL,
+                          data = NULL,
                           geom = NULL,
                           position = "identity",
                           ...,

@@ -169,8 +169,10 @@
 #'
 #' @export
 #'
-stat_poly_line <- function(mapping = NULL, data = NULL,
-                           geom = "smooth", position = "identity",
+stat_poly_line <- function(mapping = NULL,
+                           data = NULL,
+                           geom = "smooth",
+                           position = "identity",
                            ...,
                            method = "lm",
                            formula = NULL,

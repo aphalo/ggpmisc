@@ -482,7 +482,8 @@
 #'
 #' @export
 #'
-stat_poly_eq <- function(mapping = NULL, data = NULL,
+stat_poly_eq <- function(mapping = NULL,
+                         data = NULL,
                          geom = "text_npc",
                          position = "identity",
                          ...,
