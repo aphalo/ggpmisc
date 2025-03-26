@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Pedro J. Aphalo" />
+
+<meta name="date" content="2025-03-26" />
+
+<title>Fitted-Model-Based Annotations :: Cheat Sheet</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Fitted-Model-Based Annotations :: Cheat
+Sheet</h1>
+<h3 class="subtitle">‘ggpmisc’ 0.6.1</h3>
+<h4 class="author">Pedro J. Aphalo</h4>
+<h4 class="date">2025-03-26</h4>
+
+
+<div id="TOC">
+<ul>
+<li><a href="#basics" id="toc-basics">Basics</a></li>
+<li><a href="#correlation" id="toc-correlation">Correlation</a></li>
+<li><a href="#fitted-lines" id="toc-fitted-lines">Fitted lines</a></li>
+<li><a href="#fitted-equations-and-parameters" id="toc-fitted-equations-and-parameters">Fitted equations and
+parameters</a></li>
+<li><a href="#anova-or-summary-tables" id="toc-anova-or-summary-tables">ANOVA or summary tables</a></li>
+<li><a href="#multiple-comparisons" id="toc-multiple-comparisons">Multiple comparisons</a></li>
+<li><a href="#peaks-and-valleys" id="toc-peaks-and-valleys">Peaks and
+valleys</a></li>
+<li><a href="#volcano-and-quadrant-plots" id="toc-volcano-and-quadrant-plots">Volcano and quadrant plots</a></li>
+<li><a href="#utility-functions" id="toc-utility-functions">Utility
+functions</a></li>
+</ul>
+</div>
+
+<div id="basics" class="section level2">
+<h2>Basics</h2>
+<p><strong>ggpmisc</strong> is based on the <strong>grammar of
+graphics</strong> implemented in <strong>ggplot2</strong>, the idea that
+you can build every graph from the same components: a
+<strong>data</strong> set, a <strong>coordinate system</strong>, and
+<strong>geoms</strong>—visual marks that represent data points. If you
+are not already familiar with this grammar and <strong>ggplot2</strong>
+you should visit the <a href="https://rstudio.github.io/cheatsheets/html/data-visualization.html"><strong>ggplot2</strong>
+Cheat Sheet</a> first, and afterwards come back to this Cheat Sheet.</p>
+<p>Differently to <strong>ggplot2</strong>, no geometries with the new
+stats as default are provided. The plot layers described here are always
+added with a <em>stat</em>, and when necessary, their default
+<code>geom</code> argument can be overrriden. The default <em>geoms</em>
+for the statistics described below are from packages
+<strong>ggplot2</strong> and <strong>ggpp</strong>.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(ggpmisc)</span></code></pre></div>
+<p>Most of the layer functions in <strong>ggpmisc</strong> aim at making
+it easier to add to plots information derived from model fitting, tests
+of significance and some summaries. All layer functions work as expected
+with groups and facets.</p>
+</div>
+<div id="correlation" class="section level2">
+<h2>Correlation</h2>
+<ul>
+<li><code>stat_correlation()</code> computes parametric or
+non-parametric regression coefficients and optionally their confidence
+interval.</li>
+</ul>
+</div>
+<div id="fitted-lines" class="section level2">
+<h2>Fitted lines</h2>
+<p>In general these layer functions have additional features than those
+in <strong>ggplot2</strong> or support different kinds of models. They
+add one or more curves and confidence band.</p>
+<ul>
+<li><p><code>stat_poly_line()</code> fits a linear model.</p></li>
+<li><p><code>stat_quant_line()</code> and <code>stat_quant_band()</code>
+fit a quantile regression model.</p></li>
+<li><p><code>stat_ma_line()</code> fits a major axis
+regression.</p></li>
+<li><p><code>stat_fit_augment()</code> fits any model supported by a
+<code>broom::augment()</code> method.</p></li>
+</ul>
+</div>
+<div id="fitted-equations-and-parameters" class="section level2">
+<h2>Fitted equations and parameters</h2>
+<p>These layer functions have no equivalent in <strong>ggplot2</strong>.
+They flexibly construct labels to add a layer with one or more equations
+and/or estimates of parameters a fitted model. In the model is a true
+polynomial, the “label” can be formatted to be parsed into an R
+expression, or as <span class="math inline">\(LaTeX\)</span> or <span class="math inline">\(markdown\)</span> encoded character strings. The
+numeric values of the estimates are also returned and can be used to
+construct a label within a call to <code>aes()</code>.</p>
+<ul>
+<li><p><code>stat_poly_eq()</code> is similar to
+<code>ggplot2::stat_smooth()</code> and fits a linear model.</p></li>
+<li><p><code>stat_quant_eq()</code> is similar to
+<code>ggplot2::stat_quantile()</code> and fits a quantile regression
+model.</p></li>
+<li><p><code>stat_ma_eq()</code> fits a major axis regression.</p></li>
+<li><p><code>stat_fit_tidy()</code> fits any model supported by a
+<code>broom::tidy()</code> method.</p></li>
+</ul>
+</div>
+<div id="anova-or-summary-tables" class="section level2">
+<h2>ANOVA or summary tables</h2>
+<ul>
+<li><code>stat_fit_tb()</code> fits any model supported by a
+<code>broom::tidy()</code> method. Adds an ANOVA or Summary table. Which
+columns are included and their naming can be set by the user.</li>
+</ul>
+</div>
+<div id="multiple-comparisons" class="section level2">
+<h2>Multiple comparisons</h2>
+<ul>
+<li><code>stat_multcomp()</code> fits a model, computes ANOVA and
+subsequently calls <strong>multcomp</strong> to test the significance of
+Tikey, Dunnet or arbitrary sets of pairwise contrasts, with a choice of
+the adjustment method for the <em>P</em>-values. Significance of
+differences can be indicated with letters, asteriks or
+<em>P</em>-values. Sizes of differences are also computed and available
+for user-assembled labels.</li>
+</ul>
+</div>
+<div id="peaks-and-valleys" class="section level2">
+<h2>Peaks and valleys</h2>
+<ul>
+<li><p><code>stat_peaks()</code> finds and labels peaks (= local
+maxima).</p></li>
+<li><p><code>stat_valleys()</code> finds and labels valleys (= local
+minima).</p></li>
+</ul>
+</div>
+<div id="volcano-and-quadrant-plots" class="section level2">
+<h2>Volcano and quadrant plots</h2>
+<p>These plots are frequently used with gene expression data, and each
+of the many genes labeled based on the ternary outcome from a
+statistical test. Data are usually, in addition transformed.
+<strong>ggpmisc</strong> provides several variations on continuous,
+color, fill and shape scales, with defaults set as needed. Scales
+support log fold-change (<code>logFC</code>), false discovery ratio
+(<code>FDR</code>), <em>P</em>-value (<code>Pvalue</code>) and binary or
+ternary test outcomes (<code>outcome</code>).</p>
+</div>
+<div id="utility-functions" class="section level2">
+<h2>Utility functions</h2>
+<p>Most of the functions used to generated formated labels in layers and
+scales are also exported.</p>
+<hr />
+<p>Learn more at <a href="https://docs.r4photobiology.info/ggpmisc">docs.r4photobiology.info/ggpmisc</a>.</p>
+<hr />
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

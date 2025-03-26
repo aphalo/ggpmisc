@@ -1,0 +1,82 @@
+---
+title: "Fitted-Model-Based Annotations :: Cheat Sheet"
+subtitle: "'ggpmisc' `r packageVersion('ggpmisc')`"
+author: "Pedro J. Aphalo"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+    toc: yes
+vignette: >
+  %\VignetteIndexEntry{Fitted-Model-Based Annotations :: Cheat Sheet}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+## Basics
+
+**ggpmisc** is based on the **grammar of graphics** implemented in **ggplot2**, the idea that you can build every graph from the same components: a **data** set, a **coordinate system**, and **geoms**---visual marks that represent data points. If you are not already familiar with this grammar and **ggplot2** you should visit the [**ggplot2** Cheat Sheet](https://rstudio.github.io/cheatsheets/html/data-visualization.html) first, and afterwards come back to this Cheat Sheet.
+
+Differently to **ggplot2**, no geometries with the new stats as default are provided. The plot layers described here are always added with a _stat_, and when necessary, their default `geom` argument can be overrriden. The default _geoms_ for the statistics described below are from packages **ggplot2** and **ggpp**.
+
+```{r, eval=FALSE}
+library(ggpmisc)
+```
+
+Most of the layer functions in **ggpmisc** aim at making it easier to add to plots information derived from model fitting, tests of significance and some summaries. All layer functions work as expected with groups and facets. 
+
+## Correlation
+
+* `stat_correlation()` computes parametric or non-parametric regression coefficients and optionally their confidence interval.
+
+## Fitted lines
+
+In general these layer functions have additional features than those in **ggplot2** or support different kinds of models. They add one or more curves and confidence band.
+
+* `stat_poly_line()` fits a linear model.
+
+* `stat_quant_line()` and `stat_quant_band()` fit a quantile regression model.
+
+* `stat_ma_line()` fits a major axis regression.
+
+* `stat_fit_augment()` fits any model supported by a `broom::augment()` method.
+
+## Fitted equations and parameters
+
+These layer functions have no equivalent in **ggplot2**. They flexibly construct labels to add a layer with one or more equations and/or estimates of parameters a fitted model. In the model is a true polynomial, the "label" can be formatted to be parsed into an R expression, or as $LaTeX$ or $markdown$ encoded character strings. The numeric values of the estimates are also returned and can be used to construct a label within a call to `aes()`.
+
+* `stat_poly_eq()` is similar to `ggplot2::stat_smooth()` and fits a linear model.
+
+* `stat_quant_eq()` is similar to `ggplot2::stat_quantile()` and fits a quantile regression model.
+
+* `stat_ma_eq()` fits a major axis regression.
+
+* `stat_fit_tidy()` fits any model supported by a `broom::tidy()` method.
+
+## ANOVA or summary tables
+
+* `stat_fit_tb()` fits any model supported by a `broom::tidy()` method. Adds an ANOVA or Summary table. Which columns are included and their naming can be set by the user.
+
+## Multiple comparisons
+
+* `stat_multcomp()` fits a model, computes ANOVA and subsequently calls **multcomp** to test the significance of Tikey, Dunnet or arbitrary sets of pairwise contrasts, with a choice of the adjustment method for the _P_-values. Significance of differences can be indicated with letters, asteriks or _P_-values. Sizes of differences are also computed and available for user-assembled labels. 
+
+## Peaks and valleys
+
+* `stat_peaks()` finds and labels peaks (= local maxima).
+
+* `stat_valleys()` finds and labels valleys (= local minima).
+
+## Volcano and quadrant plots
+
+These plots are frequently used with gene expression data, and each of the many genes labeled based on the ternary outcome from a statistical test. Data are usually, in addition transformed. **ggpmisc** provides several variations on continuous, color, fill and shape scales, with defaults set as needed. Scales support log fold-change (`logFC`),
+false discovery ratio (`FDR`), _P_-value (`Pvalue`) and binary or ternary test outcomes (`outcome`).
+
+## Utility functions
+
+Most of the functions used to generated formated labels in layers and scales are also exported.
+
+------------------------------------------------------------------------
+
+Learn more at [docs.r4photobiology.info/ggpmisc](https://docs.r4photobiology.info/ggpmisc).
+
+------------------------------------------------------------------------

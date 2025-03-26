@@ -81,10 +81,12 @@ navbar:
       href: https://github.com/aphalo/ggpmisc/
       aria-label: GitHub
     articles:
-      text: User Guide
+      text: Articles
       menu:
-      - text: 'Fitted-model-based Annotations'
-        href: articles/model-based-annotations.html
+      - text: 'Cheat Sheet'
+        href: articles/cheat-sheet.html
+      - text: 'User Guide'
+        href: articles/user-guide.html
     tutorials:
       text: Resources
       menu:

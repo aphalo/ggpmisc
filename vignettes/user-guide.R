@@ -518,10 +518,10 @@ ggplot(my.data, aes(x, y, colour = group)) +
                      alpha = 2/3)
 
 ## ----eval = FALSE-------------------------------------------------------------
-#  formula <- y ~ poly(x, 3, raw = TRUE)
-#  ggplot(my.data, aes(x, y, colour = group)) +
-#    geom_hline(yintercept = 0, linetype = "dashed") +
-#    stat_fit_residuals(formula = formula, weighted = TRUE)
+# formula <- y ~ poly(x, 3, raw = TRUE)
+# ggplot(my.data, aes(x, y, colour = group)) +
+#   geom_hline(yintercept = 0, linetype = "dashed") +
+#   stat_fit_residuals(formula = formula, weighted = TRUE)
 
 ## -----------------------------------------------------------------------------
 formula <- y ~ poly(x, 3, raw = TRUE)
