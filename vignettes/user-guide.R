@@ -526,14 +526,14 @@ ggplot(my.data, aes(x, y, colour = group)) +
 ## -----------------------------------------------------------------------------
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
-  geom_smooth(method = "lm", formula = formula) +
+  stat_smooth(method = "lm", formula = formula) +
   stat_fit_deviations(formula = formula, colour = "red") +
   geom_point()
 
 ## ----eval=eval_flag-----------------------------------------------------------
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
-  geom_smooth(method = "lm", formula = formula) +
+  stat_smooth(method = "lm", formula = formula) +
   geom_point() +
   stat_fit_deviations(formula = formula, colour = "red",
                       arrow = arrow(length = unit(0.015, "npc"), 
@@ -556,7 +556,7 @@ ggplot(my.data.outlier, aes(x, y)) +
 formula <- y ~ x + I(x^2) + I(x^3)
 ggplot(my.data, aes(x, y, colour = group)) +
   geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
+  stat_smooth(method = "lm", formula = formula) +
   stat_fit_glance(method = "lm", 
                   method.args = list(formula = formula),
                   label.x = "right",
@@ -569,7 +569,7 @@ ggplot(my.data, aes(x, y, colour = group)) +
 micmen.formula <- y ~ SSmicmen(x, Vm, K) 
 ggplot(Puromycin, aes(conc, rate, colour = state)) +
   geom_point() +
-  geom_smooth(method = "nls", 
+  stat_smooth(method = "nls", 
               formula = micmen.formula,
               se = FALSE) +
   stat_fit_glance(method = "nls", 
@@ -583,7 +583,7 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
 formula <- y ~ x + I(x^2) + I(x^3)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
+  stat_smooth(method = "lm", formula = formula) +
   stat_fit_tb(method = "lm",
               method.args = list(formula = formula),
               tb.vars = c(Parameter = "term", 
@@ -598,7 +598,7 @@ ggplot(my.data, aes(x, y)) +
 formula <- y ~ x + I(x^2) + I(x^3)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
+  stat_smooth(method = "lm", formula = formula) +
   stat_fit_tb(method = "lm",
               method.args = list(formula = formula),
               tb.type = "fit.anova",
@@ -614,7 +614,7 @@ ggplot(my.data, aes(x, y)) +
 formula <- y ~ x + I(x^2) + I(x^3)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
+  stat_smooth(method = "lm", formula = formula) +
   stat_fit_tb(method = "lm",
               method.args = list(formula = formula),
               tb.type = "fit.coefs", parse = TRUE,
@@ -625,7 +625,7 @@ micmen.formula <- y ~ SSmicmen(x, Vm, K)
 ggplot(Puromycin, aes(conc, rate, colour = state)) +
   facet_wrap(~state) +
   geom_point() +
-  geom_smooth(method = "nls",
+  stat_smooth(method = "nls",
               formula = micmen.formula,
               se = FALSE) +
   stat_fit_tb(method = "nls",
@@ -671,7 +671,7 @@ ggplot(chickwts, aes(factor(feed), weight)) +
 micmen.formula <- y ~ SSmicmen(x, Vm, K) 
 ggplot(Puromycin, aes(conc, rate, colour = state)) +
   geom_point() +
-  geom_smooth(method = "nls", 
+  stat_smooth(method = "nls", 
               formula = micmen.formula,
               se = FALSE) +
   stat_fit_tidy(method = "nls", 
@@ -689,7 +689,7 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
 micmen.formula <- y ~ SSmicmen(x, Vm, K) 
 ggplot(Puromycin, aes(conc, rate, colour = state)) +
   geom_point() +
-  geom_smooth(method = "nls", 
+  stat_smooth(method = "nls", 
               formula = micmen.formula,
               se = FALSE) +
   stat_fit_tidy(method = "nls", 
@@ -723,7 +723,7 @@ stat_micmen_eq <- function(vstep = 0.12,
 micmen.formula <- y ~ SSmicmen(x, Vm, K) 
 ggplot(Puromycin, aes(conc, rate, colour = state)) +
   geom_point() +
-  geom_smooth(method = "nls", 
+  stat_smooth(method = "nls", 
               formula = micmen.formula,
               se = FALSE) +
   stat_micmen_eq(label.x = "center",
@@ -735,7 +735,7 @@ my_formula <- y ~ x
 
 ggplot(mpg, aes(displ, 1 / hwy)) +
   geom_point() +
-  geom_quantile(quantiles = 0.5, formula = my_formula) +
+  stat_quantile(quantiles = 0.5, formula = my_formula) +
   stat_fit_tidy(method = "rq",
                 method.args = list(formula = y ~ x, tau = 0.5), 
                 tidy.args = list(se.type = "nid"),
@@ -768,7 +768,7 @@ stat_rq_eqn <-
 ## ----eval=(eval_flag && eval_broom)-------------------------------------------
 ggplot(mpg, aes(displ, 1 / hwy)) +
   geom_point() +
-  geom_quantile(quantiles = 0.5, formula = my_formula) +
+  stat_quantile(quantiles = 0.5, formula = my_formula) +
   stat_rq_eqn(tau = 0.5, formula = my_formula)
 
 ## ----eval=eval_broom----------------------------------------------------------
@@ -837,7 +837,7 @@ ggplot(Orange, aes(age, circumference, colour = Tree)) +
 formula <- y ~ x + I(x^2) + I(x^3)
 ggplot(my.data, aes(x, y, colour = group)) +
   geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
+  stat_smooth(method = "lm", formula = formula) +
   stat_fit_glance(geom = "debug",
                   method = "lm", 
                   method.args = list(formula = formula),
@@ -851,7 +851,7 @@ ggplot(my.data, aes(x, y, colour = group)) +
 formula <- y ~ x + I(x^2) + I(x^3)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
+  stat_smooth(method = "lm", formula = formula) +
   stat_fit_tb(geom = "debug",
               summary.fun = str,
               method = "lm",

@@ -970,7 +970,7 @@ When teaching we may wish to highlight residuals in plots used in slides and not
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
-  geom_smooth(method = "lm", formula = formula) +
+  stat_smooth(method = "lm", formula = formula) +
   stat_fit_deviations(formula = formula, colour = "red") +
   geom_point()
 ```
@@ -980,7 +980,7 @@ The geometry used by default is `ggplot2::geom_segment()` and additional aesthet
 ```{r, eval=eval_flag}
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
-  geom_smooth(method = "lm", formula = formula) +
+  stat_smooth(method = "lm", formula = formula) +
   geom_point() +
   stat_fit_deviations(formula = formula, colour = "red",
                       arrow = arrow(length = unit(0.015, "npc"), 
@@ -1013,7 +1013,7 @@ As we have above given some simple examples, we here exemplify this statistic in
 formula <- y ~ x + I(x^2) + I(x^3)
 ggplot(my.data, aes(x, y, colour = group)) +
   geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
+  stat_smooth(method = "lm", formula = formula) +
   stat_fit_glance(method = "lm", 
                   method.args = list(formula = formula),
                   label.x = "right",
@@ -1029,7 +1029,7 @@ It is also possible to fit a non-linear model with `method = "nls"`, and any oth
 micmen.formula <- y ~ SSmicmen(x, Vm, K) 
 ggplot(Puromycin, aes(conc, rate, colour = state)) +
   geom_point() +
-  geom_smooth(method = "nls", 
+  stat_smooth(method = "nls", 
               formula = micmen.formula,
               se = FALSE) +
   stat_fit_glance(method = "nls", 
@@ -1052,7 +1052,7 @@ The default output of `stat_fit_tb()` is the default output from `tidy(fm)` wher
 formula <- y ~ x + I(x^2) + I(x^3)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
+  stat_smooth(method = "lm", formula = formula) +
   stat_fit_tb(method = "lm",
               method.args = list(formula = formula),
               tb.vars = c(Parameter = "term", 
@@ -1070,7 +1070,7 @@ When `tb.type = "fit.anova"` the output returned is that from `tidy(anova(fm))` 
 formula <- y ~ x + I(x^2) + I(x^3)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
+  stat_smooth(method = "lm", formula = formula) +
   stat_fit_tb(method = "lm",
               method.args = list(formula = formula),
               tb.type = "fit.anova",
@@ -1089,7 +1089,7 @@ When `tb.type = "fit.coefs"` the output returned is that of `tidy(fm)` after sel
 formula <- y ~ x + I(x^2) + I(x^3)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
+  stat_smooth(method = "lm", formula = formula) +
   stat_fit_tb(method = "lm",
               method.args = list(formula = formula),
               tb.type = "fit.coefs", parse = TRUE,
@@ -1103,7 +1103,7 @@ micmen.formula <- y ~ SSmicmen(x, Vm, K)
 ggplot(Puromycin, aes(conc, rate, colour = state)) +
   facet_wrap(~state) +
   geom_point() +
-  geom_smooth(method = "nls",
+  stat_smooth(method = "nls",
               formula = micmen.formula,
               se = FALSE) +
   stat_fit_tb(method = "nls",
@@ -1165,7 +1165,7 @@ As first example we fit a non-linear model, the Michaelis-Menten equation of rea
 micmen.formula <- y ~ SSmicmen(x, Vm, K) 
 ggplot(Puromycin, aes(conc, rate, colour = state)) +
   geom_point() +
-  geom_smooth(method = "nls", 
+  stat_smooth(method = "nls", 
               formula = micmen.formula,
               se = FALSE) +
   stat_fit_tidy(method = "nls", 
@@ -1186,7 +1186,7 @@ Using paste we can build a string that can be parsed into an R expression, in th
 micmen.formula <- y ~ SSmicmen(x, Vm, K) 
 ggplot(Puromycin, aes(conc, rate, colour = state)) +
   geom_point() +
-  geom_smooth(method = "nls", 
+  stat_smooth(method = "nls", 
               formula = micmen.formula,
               se = FALSE) +
   stat_fit_tidy(method = "nls", 
@@ -1226,7 +1226,7 @@ The code for the figure is now simpler, and still produces the same figure (not 
 micmen.formula <- y ~ SSmicmen(x, Vm, K) 
 ggplot(Puromycin, aes(conc, rate, colour = state)) +
   geom_point() +
-  geom_smooth(method = "nls", 
+  stat_smooth(method = "nls", 
               formula = micmen.formula,
               se = FALSE) +
   stat_micmen_eq(label.x = "center",
@@ -1241,7 +1241,7 @@ my_formula <- y ~ x
 
 ggplot(mpg, aes(displ, 1 / hwy)) +
   geom_point() +
-  geom_quantile(quantiles = 0.5, formula = my_formula) +
+  stat_quantile(quantiles = 0.5, formula = my_formula) +
   stat_fit_tidy(method = "rq",
                 method.args = list(formula = y ~ x, tau = 0.5), 
                 tidy.args = list(se.type = "nid"),
@@ -1280,7 +1280,7 @@ And the code of the figure now as simple as. Figure not shown, as is identical t
 ```{r, eval=(eval_flag && eval_broom)}
 ggplot(mpg, aes(displ, 1 / hwy)) +
   geom_point() +
-  geom_quantile(quantiles = 0.5, formula = my_formula) +
+  stat_quantile(quantiles = 0.5, formula = my_formula) +
   stat_rq_eqn(tau = 0.5, formula = my_formula)
 ```
 
@@ -1375,7 +1375,7 @@ When using `stat_fit_glance()`, `stat_fit_tidy()`, `stat_fit_augment()` and `sta
 formula <- y ~ x + I(x^2) + I(x^3)
 ggplot(my.data, aes(x, y, colour = group)) +
   geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
+  stat_smooth(method = "lm", formula = formula) +
   stat_fit_glance(geom = "debug",
                   method = "lm", 
                   method.args = list(formula = formula),
@@ -1392,7 +1392,7 @@ In the case of `stat_fit_tb()` the computed variables returned include a list co
 formula <- y ~ x + I(x^2) + I(x^3)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
+  stat_smooth(method = "lm", formula = formula) +
   stat_fit_tb(geom = "debug",
               summary.fun = str,
               method = "lm",
