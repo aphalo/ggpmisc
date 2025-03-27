@@ -880,7 +880,7 @@ ggplot(volcano_example.df,
 ggplot(volcano_example.df, 
        aes(logFC, PValue, colour = outcome2factor(outcome, n.levels = 2))) +
   geom_point() +
-  scale_x_logFC(name = "Transcript abundance%unit") +
+  scale_x_logFC(name = "Transcript abundance%unit", log.base.labels = 2) +
   scale_y_Pvalue() +
   scale_colour_outcome(values = "outcome:de") +
   stat_quadrant_counts(data = function(x) {subset(x, outcome != 0)})
