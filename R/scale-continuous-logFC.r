@@ -113,11 +113,11 @@ FC_name <- function(name = "Abundance%unit",
       paste(name, " ($log_", log.base, "$ fold change)", sep = "")
     }
   } else if (format %in% c("R.expression")) {
-    # as.expression() needed as in ggplot2 (> 3.5.1) scales accept lambdas
+    # 'ggplot2' (== 3.5.1.9000) has difficulties with tilde: ~~ -> *" "*
     if (!log.base) {
-      as.expression(bquote(plain(.(name))~~(plain("fold change"))))
+      bquote(plain(.(name))*" "*(plain("fold change")))
     } else {
-      as.expression(bquote(plain(.(name))~~(log[.(log.base)]~~plain("fold change"))))
+      bquote(plain(.(name))*" "*(log[.(log.base)]*" "*plain("fold change")))
     }
   } else if (format == "R.character") {
     if (!log.base) {
