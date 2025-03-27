@@ -1365,7 +1365,7 @@ ggplot(Orange, aes(age, circumference, colour = Tree)) +
 
 ### How to find out what variables are computed
 
-When using `stat_fit_glance()`, `stat_fit_tidy()`, `stat_fit_augment()` and `stat_fit_tb()` the documentation cannot describe the variables present in the returned `data` because they call methods using their generic interface and the exact especialization used depends on the argument passed to method, which can be even one that I have not been aware of and never tested. Thanks to package 'gginnards' and its `gginnards::geom_debug()` we can find this out with a temporary change to the plot code.
+When using `stat_fit_glance()`, `stat_fit_tidy()`, `stat_fit_augment()` and `stat_fit_tb()` the documentation cannot describe the variables present in the returned `data` because they call methods using their generic interface and the exact specialization used depends on the argument passed to method, which can be even one that I have not been aware of and never tested. Thanks to package 'gginnards' and its `gginnards::geom_debug()` we can find this out with a temporary change to the plot code.
 
 `gginnards::geom_debug()` uses by default `head()` to echo to the R console the data it receives as input. It ignores the aesthetic mappings so it can be used with any statistics or directly as a layer function. However, unrecognised aesthetics can trigger warnings during plot rendering. These warnings can be ignored in most cases.
 

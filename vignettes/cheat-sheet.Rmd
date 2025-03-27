@@ -16,7 +16,7 @@ vignette: >
 
 **ggpmisc** is based on the **grammar of graphics** implemented in **ggplot2**, the idea that you can build every graph from the same components: a **data** set, a **coordinate system**, and **geoms**---visual marks that represent data points. If you are not already familiar with this grammar and **ggplot2** you should visit the [**ggplot2** Cheat Sheet](https://rstudio.github.io/cheatsheets/html/data-visualization.html) first, and afterwards come back to this Cheat Sheet.
 
-Differently to **ggplot2**, no geometries with the new stats as default are provided. The plot layers described here are always added with a _stat_, and when necessary, their default `geom` argument can be overrriden. The default _geoms_ for the statistics described below are from packages **ggplot2** and **ggpp**.
+Differently to **ggplot2**, no geometries with the new stats as default are provided. The plot layers described here are always added with a _stat_, and when necessary, their default `geom` argument can be overridden. The default _geoms_ for the statistics described below are from packages **ggplot2** and **ggpp**.
 
 ```{r, eval=FALSE}
 library(ggpmisc)
@@ -58,7 +58,7 @@ These layer functions have no equivalent in **ggplot2**. They flexibly construct
 
 ## Multiple comparisons
 
-* `stat_multcomp()` fits a model, computes ANOVA and subsequently calls **multcomp** to test the significance of Tikey, Dunnet or arbitrary sets of pairwise contrasts, with a choice of the adjustment method for the _P_-values. Significance of differences can be indicated with letters, asteriks or _P_-values. Sizes of differences are also computed and available for user-assembled labels. 
+* `stat_multcomp()` fits a model, computes ANOVA and subsequently calls **multcomp** to test the significance of Tukey, Dunnet or arbitrary sets of pairwise contrasts, with a choice of the adjustment method for the _P_-values. Significance of differences can be indicated with letters, asterisks or _P_-values. Sizes of differences are also computed and available for user-assembled labels. 
 
 ## Peaks and valleys
 
@@ -68,12 +68,11 @@ These layer functions have no equivalent in **ggplot2**. They flexibly construct
 
 ## Volcano and quadrant plots
 
-These plots are frequently used with gene expression data, and each of the many genes labeled based on the ternary outcome from a statistical test. Data are usually, in addition transformed. **ggpmisc** provides several variations on continuous, color, fill and shape scales, with defaults set as needed. Scales support log fold-change (`logFC`),
-false discovery ratio (`FDR`), _P_-value (`Pvalue`) and binary or ternary test outcomes (`outcome`).
+These plots are frequently used with gene expression data, and each of the many genes labelled based on the ternary outcome from a statistical test. Data are usually, in addition transformed. **ggpmisc** provides several variations on continuous, colour, fill and shape scales, with defaults set as needed. Scales support log fold-change (`logFC`), false discovery ratio (`FDR`), _P_-value (`Pvalue`) and binary or ternary test outcomes (`outcome`).
 
 ## Utility functions
 
-Most of the functions used to generated formated labels in layers and scales are also exported.
+Most of the functions used to generate formatted labels in layers and scales are also exported.
 
 ------------------------------------------------------------------------
 
