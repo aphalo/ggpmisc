@@ -4,6 +4,10 @@ editor_options:
     wrap: 72
 ---
 
+# ggpmisc 0.6.2
+
+-   Add HTML Cheat Sheet.
+
 # ggpmisc 0.6.1
 
 -   Fix warning with current 'broom' and upcoming 'ggplot2'.
