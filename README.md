@@ -1,6 +1,8 @@
 
 # ggpmisc <img src="man/figures/logo.png" align="right" width="150" />
 
+## Miscellaneous Extensions to ‘ggplot2’
+
 <!-- badges: start -->
 
 [![cran
