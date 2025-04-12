@@ -87,6 +87,8 @@ navbar:
         href: articles/cheat-sheet.html
       - text: 'User Guide'
         href: articles/user-guide.html
+      - text: 'Custom polynomial models'
+        href: articles/poly-advanced.html
     tutorials:
       text: Resources
       menu:

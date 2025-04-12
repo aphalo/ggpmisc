@@ -12,3 +12,4 @@ data-raw
 ^\.github$
 ^revdep$
 ^CITATION\.cff$
+^vignettes/articles$

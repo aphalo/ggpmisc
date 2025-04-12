@@ -1,0 +1,206 @@
+---
+title: "Custom polynomial models"
+subtitle: "'ggpmisc' `r packageVersion('ggpmisc')`"
+author: "Pedro J. Aphalo"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+    toc: yes
+vignette: >
+  %\VignetteIndexEntry{Custom polynomial models}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+```{r, include=FALSE, echo=FALSE}
+knitr::opts_chunk$set(fig.align = 'center', 
+                      collapse = TRUE,
+                      comment = "#>",
+                      fig.show = 'hold', fig.width = 7, fig.height = 7)
+
+options(warnPartialMatchArgs = FALSE,
+        tibble.print.max = 4,
+        tibble.print.min = 4,
+        dplyr.summarise.inform = FALSE)
+
+eval_flag <- TRUE # evaluate all code chunks
+```
+
+## Purpose
+
+Package 'ggpmisc' makes it easier to add to plots created using 'ggplot2' annotations based on fitted models and other statistics. It does this by wrapping existing model fit and other functions. The same annotations can be produced by calling the model fit functions, extracting the desired estimates and adding them to plots. There are two advantages in wrapping these functions in an extension to package 'ggplot2': 1) we ensure the coupling of graphical elements and the annotations by building all elements of the plot using the same data and a consistent grammar and 2) we make it easier to annotate plots to the casual user of R, already familiar with the grammar of graphics.
+
+_To avoid confusion it is good to make clear what may seem obvious to some: if no plot is needed, then there is no reason to use this package. The values shown as annotations are not computed by 'ggpmisc' but instead by the usual model-fit and statistical functions from R and other packages. The same is true for model predictions, residuals, etc. that some of the functions in 'ggpmisc' display as lines, segments, or other graphical elements._
+
+It is also important to remember that in most cases data analysis including exploratory and other stages should take place before annotated plots for publication are produced. Even though data analysis can benefit from combined numerical and graphical representation of the results, the use I envision for 'ggpmisc' is mainly for the production of plots for publication or communication of a completed analysis.
+
+Attaching package 'ggpmisc' also attaches package 'ggpp' as this package was created as a spin-off from 'ggpmisc'. 'ggpp' provides several of the geometries used by default in the statistics described below. Package 'ggpp' can be loaded and attached on its own, and has [separate documentation](https://docs.r4photobiology.info/ggpp/).
+
+In this article I explore the use of contributed and user defined model fit functions that return model fit objects of class `"lm"` or derived, and are thus compatible with `stat_poly_line()` and `stat_poly_eq()` layer functions from package 'ggpmisc'. The examples use facets to more easily show that the models fitted depend on the data, but the approach and functions can be equally well used with no facets and with or without groups.
+
+## Preliminaries
+
+We load all the packages used in the examples.
+
+```{r, message=FALSE}
+library(ggpmisc)
+library(refitME)
+```
+
+As we will use text and labels on the plotting area we change the default theme to an uncluttered one.
+
+```{r}
+old_theme <- theme_set(theme_bw())
+```
+
+## User defined functions
+
+Layer functions  fit functions `stat_poly_line()` and `stat_poly_eq()` support the use of any model fit function that returns an `"lm"` object and has format compatible with the objects returned by function `"lm"`. The model formula in this object and fitted model must be a polynomial and the variable mapped as response (_y_ or _x_ depending on `orientation`) must be a continuous variable. The returned model formula can vary by group and/or panel, as the models are fitted separately to each of them. 
+
+**`stat_poly_eq()` builds the fitted model equation based on the model formula extracted from the model fit object, which can differ from that passed as argument to `formula` when calling the statistic.** As the examples below demonstrate, this approach can be very useful.
+
+### Fit or not
+
+In the first example we fit a model only if a minimum number of distinct _x_ values are present in `data`. We define a function that instead of fitting the model, returns `NA` when the condition is not fulfilled. Here `"x"` is the aesthetic, and has to be replaced by `"y"` depending on `orientation`.
+
+```{r}
+fit_or_not <- function(formula, data, ..., orientation = "x") {
+  if (length(unique(data[[orientation]])) > 5) {
+    lm(formula = formula, data = data, ...)
+  } else {
+    NA_real_
+  }
+}
+```
+
+Instead of using `stats::lm()` as method, we pass our wrapper function `fit_or_not()` as the method. As the function returns either an `"lm"` object from the wrapped call to `lm()` or `NA`, the call to the statistics can make use of all other features as needed.
+
+```{r}
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  stat_poly_line(method = "fit_or_not") +
+  stat_poly_eq(method = fit_or_not, mapping = use_label("eq", "R2"),
+               label.x = "right") +
+  stat_panel_counts(label.x = "left", label.y = "bottom") +
+  theme(legend.position = "bottom") +
+  facet_wrap(~class, ncol = 2)
+```
+
+### Degree of polynomial
+
+Not fitting a model, is a drastic solution. An alternative that we implement next, is to plot the mean when the slope of the linear regression is not significantly different from zero. In the example below instead of using `stats::lm()` as method, we define a different wrapper function that tests for the significance of the slope in linear regression, and if not significant, fits the mean instead. _This works because the model formula is extracted from the fitted model rather than using the argument passed by the user in the call to the statistics.
+
+
+_Fitting different models to different panels is supported._ User-defined method functions are required to return an object that inherits from class `"lm"`. The function is applied per group and panel, and the model `formula` fitted can differ among them, as it is retrieved from this object to construct the equation label.
+
+In the example below instead of using `stats::lm()` as method, we define a wrapper function that tests for the significance of the slope in linear regression, and if not significant, fits the mean instead. 
+
+```{r}
+poly_or_mean <- function(formula, data, ...) {
+   fm <- lm(formula = formula, data = data, ...)
+   if (anova(fm)[["Pr(>F)"]][1] > 0.1) {
+      lm(formula = y ~ 1, data = data, ...)
+   } else {
+      fm
+   }
+}
+```
+
+We then use our function `poly_or_mean()` as the method.
+
+```{r}
+ggplot(mpg, aes(displ, hwy)) +
+   geom_point() +
+   stat_poly_line(method = "poly_or_mean") +
+   stat_poly_eq(method = poly_or_mean,
+   aes(label = after_stat(eq.label)),
+   label.x = "right") +
+   theme(legend.position = "bottom") +
+   facet_wrap(~class, ncol = 2)
+```
+
+```{r}
+ggplot(mpg, aes(displ, hwy, color = class)) +
+   geom_point() +
+   stat_poly_line(method = "poly_or_mean") +
+   stat_poly_eq(method = poly_or_mean,
+   aes(label = after_stat(eq.label)),
+   label.x = "right") +
+   theme(legend.position = "bottom")
+```
+
+A different approach to selecting the degree of a polynomial is to use stepwise selection based on AIC. In this case the `formula` passed as argument is the "upper" degree of the polynomial. All lower degree polynomials are fitted and the one with lowest AIC used.
+
+```{r}
+best_poly_lm <- function(formula, data, ...) {
+  poly.term <- as.character(formula)[3]
+  degree <- as.numeric(gsub("poly[(]x, |, raw = TRUE|[)]", "", poly.term))
+  fms <- list()
+  AICs <- numeric(degree)
+  for (d in 1:degree) {
+    # we need to define the formula with the value of degree replaced
+    working.formula <- as.formula(bquote(y ~ poly(x, degree = .(d), raw = TRUE)))
+    fms[[d]] <- lm(formula = working.formula, data = data, ...)
+    AICs[d] <- AIC(fms[[d]])
+  }
+  fms[[which.min(AICs)[1]]] # if there is a tie, we take the simplest
+}
+```
+
+We then use our function `best_poly_lm()` as the method.
+
+```{r}
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  stat_poly_line(formula = y ~ poly(x, 3, raw = TRUE), method = "best_poly_lm") +
+  stat_poly_eq(formula = y ~ poly(x, 3, raw = TRUE), method = "best_poly_lm",
+               mapping = use_label("eq", "AIC"), size = 2.8,
+               label.x = "right") +
+  expand_limits(y = c(0, 65)) +
+  theme(legend.position = "bottom") +
+  facet_wrap(~class, ncol = 2)
+```
+
+```{r}
+ggplot(mpg, aes(displ, hwy, color = class)) +
+  geom_point() +
+  stat_poly_line(formula = y ~ poly(x, 3, raw = TRUE), method = "best_poly_lm") +
+  stat_poly_eq(formula = y ~ poly(x, 3, raw = TRUE), method = "best_poly_lm",
+               mapping = use_label("eq", "AIC"),
+               label.x = "right") +
+  expand_limits(y = c(0, 65)) +
+  theme(legend.position = "bottom")
+```
+
+## Errors in variables (EIV)
+
+As 'refitME' functions return a model fit object of the same class as that received as input, a model fitted with `lm()` could be, in principle, refit in a wrapper functions as those above. However, at the moment the functions in package 'refitME' fail when called from within another function.
+
+```{r}
+lm_EIV <- function(formula, data, ..., sigma.sq.u) {
+   # there is a bug somewhere in refitME accessing data in the wrong environment
+   # copy data with <<- makes this function work at the R prompt, but still does not work
+   # when called by another function...
+   # my.data <<- data
+   # fm <- lm(formula = formula, data = my.data, ...)
+   fm <- lm(formula = formula, data = data, ...)
+   MCEMfit_glm(mod = fm, family = "gaussian", sigma.sq.u = sigma.sq.u)
+}
+```
+
+We then use our function `lm_EIV()` as the method.
+
+```{r, eval=FALSE}
+ggplot(mpg, aes(displ, hwy)) +
+   geom_point() +
+   stat_poly_line(method = "lm_EIV", method.args = c(sigma.sq.u = 0)) +
+   stat_poly_eq(method = "lm_EIV", method.args = c(sigma.sq.u = 0),
+                mapping = use_label("eq"),
+   label.x = "right") +
+   theme(legend.position = "bottom") +
+   facet_wrap(~class, ncol = 2)
+```
+
+
+
+

@@ -527,34 +527,6 @@ ggplot(my.data, aes(x, y)) +
   labs(x = expression(italic(x)), y = expression(italic(y)))
 ```
 
-_Fitting different models to different panels is supported._ User-defined method functions are required to return an object that inherits from class `"lm"`. The function is applied per group and panel, and the model `formula` fitted can differ among them, as it is retrieved from this object to construct the equation label.
-
-In the example below instead of using `stats::lm()` as method, we define a wrapper function that tests for the significance of the slope in linear regression, and if not significant, fits the mean instead. 
-
-```{r}
-poly_or_mean <- function(formula, data, ...) {
-   fm <- lm(formula = formula, data = data, ...)
-   if (anova(fm)[["Pr(>F)"]][1] > 0.1) {
-      lm(formula = y ~ 1, data = data, ...)
-   } else {
-      fm
-   }
-}
-```
-
-We then use our function `poly_or_mean()` as the method.
-
-```{r}
-ggplot(mpg, aes(displ, hwy)) +
-   geom_point() +
-   stat_poly_line(method = "poly_or_mean") +
-   stat_poly_eq(method = poly_or_mean,
-   aes(label = after_stat(eq.label)),
-   label.x = "right") +
-   theme(legend.position = "bottom") +
-   facet_wrap(~class, ncol = 2)
-```
-
 We give below several examples to demonstrate how other components of the `ggplot` object affect the behaviour of this statistic.
 
 _Facets work as expected both with fixed or free scales._ Although below we had to adjust the size of the font used for the equation.
