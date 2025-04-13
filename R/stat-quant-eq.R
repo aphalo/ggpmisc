@@ -461,6 +461,29 @@ stat_quant_eq <- function(mapping = NULL,
                           parse = NULL,
                           show.legend = FALSE,
                           inherit.aes = TRUE) {
+
+  stopifnot("Args 'formula' and/or 'data' in 'method.args'" =
+              !any(c("formula", "data") %in% names(method.args)))
+
+  # we make a character string name for the method
+  if (is.character(method)) {
+    method <- trimws(method, which = "both")
+    method.name <- method
+  } else if (is.function(method)) {
+    method.name <- deparse(substitute(method))
+    if (grepl("^function[ ]*[(]", method.name[1])) {
+      method.name <- "function"
+    }
+  } else {
+    method.name <- "missing"
+  }
+
+  if (grepl("^lm$|^lm[:]|^rlm$|^rlm[:]|^gls$|^gls[:]", method.name)) {
+    stop("Methods 'lm', 'rlm' and 'gls' not supported, please use 'stat_poly_eq()'.")
+  } else if (grepl("^lmodel2$|^lmodel2[:]", method.name)) {
+    stop("Method 'lmodel2' not supported, please use 'stat_ma_eq()'.")
+  }
+
   # we guess formula from orientation
   if (is.null(formula)) {
     if (is.na(orientation) || orientation == "x") {
@@ -495,14 +518,6 @@ stat_quant_eq <- function(mapping = NULL,
   # is the model formula that of complete and increasing polynomial?
   mk.eq.label <- output.type != "numeric" && check_poly_formula(formula, orientation)
 
-  if (is.character(method)) {
-    if (grepl("^lm|^rlm", method)) {
-      stop("Methods 'lm' and 'rlm' not supported, please use 'stat_poly_eq()'.")
-    } else if (grepl("^lmodel2", method)) {
-      stop("Method 'lmodel2' not supported, please use 'stat_ma_eq()'.")
-    }
-  }
-
   ggplot2::layer(
     data = data,
     mapping = mapping,
@@ -515,6 +530,7 @@ stat_quant_eq <- function(mapping = NULL,
       rlang::list2(formula = formula,
                    quantiles = quantiles,
                    method = method,
+                   method.name = method.name,
                    method.args = method.args,
                    n.min = n.min,
                    eq.with.lhs = eq.with.lhs,
@@ -552,7 +568,8 @@ quant_eq_compute_group_fun <- function(data,
                                        scales,
                                        formula = y ~ x,
                                        quantiles = c(0.25, 0.5, 0.75),
-                                       method = "rq:br",
+                                       method,
+                                       method.name,
                                        method.args = list(),
                                        n.min = 3L,
                                        weight = 1,
@@ -677,11 +694,6 @@ quant_eq_compute_group_fun <- function(data,
                      match.fun(method))
   } else if (is.function(method)) {
     fun.method <- method.args[["method"]]
-    if (is.name(quote(method))) {
-      method.name <- as.character(quote(method))
-    } else {
-      method.name <- "function"
-    }
     if (length(fun.method)) {
       method.name <- paste(method.name, fun.method, sep = ":")
     }

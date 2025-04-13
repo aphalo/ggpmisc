@@ -36,14 +36,13 @@ It is also important to remember that in most cases data analysis including expl
 
 Attaching package 'ggpmisc' also attaches package 'ggpp' as this package was created as a spin-off from 'ggpmisc'. 'ggpp' provides several of the geometries used by default in the statistics described below. Package 'ggpp' can be loaded and attached on its own, and has [separate documentation](https://docs.r4photobiology.info/ggpp/).
 
-In this article I explore the use of contributed and user defined model fit functions that return model fit objects of class `"lm"` or derived, and are thus compatible with `stat_poly_line()` and `stat_poly_eq()` layer functions from package 'ggpmisc'. The examples use facets to more easily show that the models fitted depend on the data, but the approach and functions can be equally well used with no facets and with or without groups.
-
 ## Preliminaries
 
 We load all the packages used in the examples.
 
 ```{r, message=FALSE}
 library(ggpmisc)
+library(nlme)
 library(refitME)
 ```
 
@@ -53,11 +52,62 @@ As we will use text and labels on the plotting area we change the default theme 
 old_theme <- theme_set(theme_bw())
 ```
 
+## Fitted models in `stat_poly_line()` and `stat_poly_eq()`
+
+Both functions are designed for flexibility while still attempting to keep their implementation and use rather straightforward.
+
+* Any R function or its name is accepted as argument for `method`.
+* The fitted model object must belong to class `"lm"` or to class `"gls"`, as tested with `inherits()`.
+* The implementation tolerates some missing fields in model fit objects of a derived class and summary, e.g., `stat_poly_eq()` returns "empty" `character' labels in such cases.
+* The formula used to construct the equation is, whenever possible, extracted from the fitted model object, and only exceptionally, with a warning, the formula passed as argument for `formula` in the call.
+
+This makes it possible to use as `method` existing model fit functions that return an object of a class derived from `"lm"` or `"gls"` or wrapper functions that call such functions, or in some other way return an object of a class derived from `"lm"`.
+
+To showcase this, I explore the use of contributed and user defined model fit functions through examples. The examples use facets or grouping to demonstrate that the models fitted depend on the data, but the approach and functions can be also used with no facets and/or groups to automate the creation of reports or similar.
+
+Some frequently use model fit functions that do not return model fit objects inheriting from class `"lm"` are supported in 'ggpmisc' by specific statistics: `stat_ma_line()` and `stat_ma_eq()` for mayor axis regression with package 'lmodel2', and `stat_quant_line()`, `stat_quant_band()` and `stat_quant_equation()` for quantile regression with package 'quantreg'. Their use is documented in the User Guide and their help pages.
+
+## Existing functions
+
+### Robust regression
+
+Package 'MASS' provides function `rlm()` for "Robust Fitting of Linear Models". The returned value is an `"rlm"` object. Class `"rlm"` is derived from `"lm"` so the stats work mostly as expected. However, we need to be aware that no $R^2$ or $P$ estimates are available and the corresponding labels are empty strings.
+
+```{r}
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  stat_poly_line(method = MASS::rlm) +
+  stat_poly_eq(method = MASS::rlm, mapping = use_label("eq", "n"),
+               label.x = "right") +
+  theme(legend.position = "bottom") +
+  facet_wrap(~class, ncol = 2)
+```
+
+### Linear Models Using Generalized Least Squares
+
+In 'ggpmisc' (>= 0.6.2) function `gls()` from package 'nlme' is supported natively by functions `stat_poly_line()` and `stat_poly_eq()`. In this example, using a variance covariate, the computations do not converge with the data in one of the plot panels.
+
+```{r}
+ggplot(mpg, aes(displ, hwy)) +
+   geom_point() +
+   stat_poly_line(method = gls, 
+                  method.args = list(weights = varPower()), 
+                  se = FALSE) +
+   stat_poly_eq(method = gls, 
+                method.args = list(weights = varPower()),
+                mapping = use_label("eq"),
+   label.x = "right") +
+   theme(legend.position = "bottom") +
+   facet_wrap(~class, ncol = 2)
+```
+
 ## User defined functions
 
-Layer functions  fit functions `stat_poly_line()` and `stat_poly_eq()` support the use of any model fit function that returns an `"lm"` object and has format compatible with the objects returned by function `"lm"`. The model formula in this object and fitted model must be a polynomial and the variable mapped as response (_y_ or _x_ depending on `orientation`) must be a continuous variable. The returned model formula can vary by group and/or panel, as the models are fitted separately to each of them. 
+As mentioned above, layer functions `stat_poly_line()` and `stat_poly_eq()` support the use of any model fit function that returns an `"lm"` or a `"gls"` object similar to the objects returned by functions `lm()` and `gls()`. The model formula in this object and fitted model must be a polynomial and the variable mapped as response (_y_ or _x_ depending on `orientation`) must be a continuous variable. The returned model formula can vary by group and/or panel, as models are fitted separately to each of them, similarly as by `ggplot2::stat_smooth()`. 
 
 **`stat_poly_eq()` builds the fitted model equation based on the model formula extracted from the model fit object, which can differ from that passed as argument to `formula` when calling the statistic.** As the examples below demonstrate, this approach can be very useful.
+
+In the examples below I use `"lm"` model fit objects, but the same approaches can be applied to `"gls"` objects.
 
 ### Fit or not
 
@@ -79,7 +129,8 @@ Instead of using `stats::lm()` as method, we pass our wrapper function `fit_or_n
 ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
   stat_poly_line(method = "fit_or_not") +
-  stat_poly_eq(method = fit_or_not, mapping = use_label("eq", "R2"),
+  stat_poly_eq(method = fit_or_not, 
+               mapping = use_label("eq", "R2"),
                label.x = "right") +
   stat_panel_counts(label.x = "left", label.y = "bottom") +
   theme(legend.position = "bottom") +
@@ -113,8 +164,8 @@ ggplot(mpg, aes(displ, hwy)) +
    geom_point() +
    stat_poly_line(method = "poly_or_mean") +
    stat_poly_eq(method = poly_or_mean,
-   aes(label = after_stat(eq.label)),
-   label.x = "right") +
+               mapping = use_label("eq", "R2"),
+               label.x = "right") +
    theme(legend.position = "bottom") +
    facet_wrap(~class, ncol = 2)
 ```
@@ -124,8 +175,8 @@ ggplot(mpg, aes(displ, hwy, color = class)) +
    geom_point() +
    stat_poly_line(method = "poly_or_mean") +
    stat_poly_eq(method = poly_or_mean,
-   aes(label = after_stat(eq.label)),
-   label.x = "right") +
+               mapping = use_label("eq"),
+               label.x = "right") +
    theme(legend.position = "bottom")
 ```
 
@@ -154,7 +205,8 @@ ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
   stat_poly_line(formula = y ~ poly(x, 3, raw = TRUE), method = "best_poly_lm") +
   stat_poly_eq(formula = y ~ poly(x, 3, raw = TRUE), method = "best_poly_lm",
-               mapping = use_label("eq", "AIC"), size = 2.8,
+               mapping = use_label("eq", "AIC"),
+               size = 2.8,
                label.x = "right") +
   expand_limits(y = c(0, 65)) +
   theme(legend.position = "bottom") +
@@ -200,7 +252,5 @@ ggplot(mpg, aes(displ, hwy)) +
    theme(legend.position = "bottom") +
    facet_wrap(~class, ncol = 2)
 ```
-
-
 
 

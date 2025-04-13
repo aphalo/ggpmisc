@@ -12,7 +12,7 @@ stat_poly_line(
   ...,
   method = "lm",
   formula = NULL,
-  se = TRUE,
+  se = NULL,
   fm.values = FALSE,
   n = 80,
   fullrange = FALSE,
@@ -52,8 +52,8 @@ model fit object of class \code{lm}.}
 \item{formula}{a formula object. Using aesthetic names \code{x} and \code{y}
 instead of original variable names.}
 
-\item{se}{Display confidence interval around smooth? (`TRUE` by default, see
-`level` to control.)}
+\item{se}{Display confidence interval around smooth? (`TRUE` by default,
+except for fits with \code{gls()}, see `level` to control.)}
 
 \item{fm.values}{logical Add R2, adjusted R2, p-value and n as columns to
 returned data? (`FALSE` by default.)}
@@ -91,17 +91,21 @@ The value returned by the statistic is a data frame, with \code{n}
   also include additional values related to the model fit.
 }
 \description{
-Predicted values and a confidence band are computed and, by default, plotted.
+\code{stat_poly_line()} fits a polynomial, by default with
+\code{stats::lm()}, but alternatively using robust regression or generalized
+least squares. Predicted values and a confidence band, if possible, are
+computed and, by default, plotted.
 }
 \details{
 This statistic is similar to \code{\link[ggplot2]{stat_smooth}} but has
-different defaults. It interprets the argument passed to \code{formula}
-differently, accepting \code{y} as explanatory variable and setting
+different defaults and supports additonal model fit functions. It also
+interprets the argument passed to \code{formula} differently than
+\code{stat_smooth()}, accepting \code{y} as explanatory variable and setting
 \code{orientation} automatically. The default for \code{method} is
 \code{"lm"} and spline-based smoothers like \code{loess} are not supported.
 Other defaults are consistent with those in \code{stat_poly_eq()},
-\code{stat_quant_line()}, \code{stat_quant_eq()}, \code{stat_ma_line()},
-\code{stat_ma_eq()}.
+\code{stat_quant_line()}, \code{stat_quant_band()}, \code{stat_quant_eq()},
+\code{stat_ma_line()}, \code{stat_ma_eq()}.
 
 \code{geom_poly_line()} treats the x and y aesthetics differently and can
 thus have two orientations. The orientation can be deduced from the argument

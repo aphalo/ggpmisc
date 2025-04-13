@@ -1,10 +1,10 @@
 #' Equation, p-value, \eqn{R^2}, AIC and BIC of fitted polynomial
 #'
 #' \code{stat_poly_eq} fits a polynomial, by default with \code{stats::lm()},
-#' but alternatively using robust regression. Using the fitted model it
-#' generates several labels including the fitted model equation, p-value,
-#' F-value, coefficient of determination (R^2), 'AIC', 'BIC', and number of
-#' observations.
+#' but alternatively using robust regression or generalized least squares. Using
+#' the fitted model it generates several labels including the fitted model
+#' equation, p-value, F-value, coefficient of determination (R^2), 'AIC', 'BIC',
+#' number of observations and method name, if available.
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}}. Only needs to be
@@ -28,13 +28,14 @@
 #'   the computation proceeds.
 #' @param formula a formula object. Using aesthetic names \code{x} and \code{y}
 #'   instead of original variable names.
-#' @param method function or character If character, "lm", "rlm" or the name of
-#'   a model fit function are accepted, possibly followed by the fit function's
-#'   \code{method} argument separated by a colon (e.g. \code{"rlm:M"}). If a
-#'   function different to \code{lm()}, it must accept as a minimum a model
-#'   formula through its first parameter, and have formal parameters named
-#'   \code{data}, \code{weights}, and \code{method}, and return a model fit
-#'   object of class \code{lm}.
+#' @param method function or character If character, "lm", "rlm", "gls" or the
+#'   name of a model fit function are accepted, possibly followed by the fit
+#'   function's \code{method} argument separated by a colon (e.g.
+#'   \code{"rlm:M"}). If a function is different to \code{lm()}, \code{rlm()},
+#'   or \code{gls()}, it must accept as a minimum a model formula through its
+#'   first parameter, and have formal parameters named \code{data},
+#'   \code{weights}, and \code{method}, and return a model fit object of class
+#'   \code{"lm"} or class \code{"gls"}.
 #' @param method.args named list with additional arguments.
 #' @param n.min integer Minimum number of distinct values in the explanatory
 #'   variable (on the rhs of formula) for fitting to the attempted.
@@ -514,7 +515,30 @@ stat_poly_eq <- function(mapping = NULL,
                          show.legend = FALSE,
                          inherit.aes = TRUE) {
 
-  stopifnot(!any(c("formula", "data") %in% names(method.args)))
+  stopifnot("Args 'formula' and/or 'data' in 'method.args'" =
+              !any(c("formula", "data") %in% names(method.args)))
+
+  # we make a character string name for the method
+  if (is.character(method)) {
+    method <- trimws(method, which = "both")
+    method.name <- method
+  } else if (is.function(method)) {
+    method.name <- deparse(substitute(method))
+    if (grepl("^function[ ]*[(]", method.name[1])) {
+      method.name <- "function"
+    }
+  } else {
+    method.name <- "missing"
+  }
+
+  if (method.name == "auto") {
+    message("Method 'auto' is equivalent to 'lm', splines are not supported.")
+    method <- method.name <- "lm"
+  } else if (grepl("^rq$|^rq[:]|^rqss$|^rqss[:]", method.name)) {
+    stop("Methods 'rq' and 'rqss' not supported, please use 'stat_quant_eq()'.")
+  } else if (grepl("^lmodel2$|^lmodel2[:]", method.name)) {
+    stop("Method 'lmodel2' not supported, please use 'stat_ma_eq()'.")
+  }
 
   # we guess formula from orientation
   if (is.null(formula)) {
@@ -550,17 +574,6 @@ stat_poly_eq <- function(mapping = NULL,
   # is the model formula that of complete and increasing polynomial?
   mk.eq.label <- output.type != "numeric" && check_poly_formula(formula, orientation)
 
-  if (is.character(method)) {
-    if (method == "auto") {
-      message("Method 'auto' is equivalent to 'lm', splines are not supported.")
-      method <- "lm"
-    } else if (grepl("^rq", method)) {
-      stop("Method 'rq' not supported, please use 'stat_quant_eq()'.")
-    } else if (grepl("^lmodel2", method)) {
-      stop("Method 'lmodel2' not supported, please use 'stat_ma_eq()'.")
-    }
-  }
-
   if (is.null(rsquared.conf.level) || !is.finite(rsquared.conf.level)) {
     rsquared.conf.level <- 0
   }
@@ -576,6 +589,7 @@ stat_poly_eq <- function(mapping = NULL,
     params =
       rlang::list2(formula = formula,
                    method = method,
+                   method.name = method.name,
                    method.args = method.args,
                    n.min = n.min,
                    eq.with.lhs = eq.with.lhs,
@@ -617,7 +631,8 @@ stat_poly_eq <- function(mapping = NULL,
 #'
 poly_eq_compute_group_fun <- function(data,
                                       scales,
-                                      method = "lm",
+                                      method,
+                                      method.name,
                                       method.args = list(),
                                       formula = y ~ x,
                                       n.min =2L,
@@ -718,6 +733,7 @@ poly_eq_compute_group_fun <- function(data,
     method <- switch(method,
                      lm = "lm:qr",
                      rlm = "rlm:M",
+                     gls = "gls:REML",
                      method)
     method.name <- method
     method <- strsplit(x = method, split = ":", fixed = TRUE)[[1]]
@@ -730,30 +746,39 @@ poly_eq_compute_group_fun <- function(data,
     method <- switch(method,
                      lm = stats::lm,
                      rlm = MASS::rlm,
+                     gls = nlme::gls,
                      match.fun(method))
   } else if (is.function(method)) {
     fun.method <- character()
-    if (is.name(quote(method))) {
-      method.name <- as.character(quote(method))
-    } else {
-      method.name <- "function"
-    }
   }
 
-  fun.args <- list(quote(formula),
-                   data = quote(data),
-                   weights = data[["weight"]])
+  if (exists("weight", data) && !all(data[["weight"]] == 1)) {
+    stopifnot("A mapping to 'weight' and a named argument 'weights' cannot co-exist" =
+                !"weights" %in% method.args)
+    fun.args <- list(formula = quote(formula),
+                     data = quote(data),
+                     weights = data[["weight"]])
+  } else {
+    fun.args <- list(formula = quote(formula),
+                     data = quote(data))
+  }
   fun.args <- c(fun.args, method.args)
   if (length(fun.method)) {
     fun.args[["method"]] <- fun.method
   }
 
+  # gls() parameter for formula is called model
+  if (grepl("gls", method.name)) {
+    names(fun.args)[1] <- "model"
+  }
+
   fm <- do.call(method, args = fun.args)
+
   # allow skipping of output if returned value from model fit function is missing
   if (!length(fm) || (is.atomic(fm) && is.na(fm))) {
     return(data.frame())
-  } else if (!inherits(fm, "lm")) {
-    stop("Method \"", method.name, "\" did not return a \"lm\" object")
+  } else if (!(inherits(fm, "lm") || inherits(fm, "gls"))) {
+    stop("Method \"", method.name, "\" did not return a \"lm\" or \"gls\" object")
   }
 
   fm.summary <- summary(fm)

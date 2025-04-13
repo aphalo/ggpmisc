@@ -8,6 +8,7 @@ editor_options:
 
 -   Add HTML Cheat Sheet.
 -   Add article 'Custom polynomial models' as on-line only documentation.
+-   Support `nlme::gls()` in `stat_poly_line()` and `stat_poly_eq()`, polynomials fitted by generalised least squares support variance covariates and autocorrelation. 
 -   Update `scale_x_logFC()`and `scale_y_logFC()` for improved compatibility with 'ggplot2' (== 3.5.1.9000).
 
 # ggpmisc 0.6.1

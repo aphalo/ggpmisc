@@ -1,16 +1,20 @@
 #' Predicted line from linear model fit
 #'
-#' Predicted values and a confidence band are computed and, by default, plotted.
+#' \code{stat_poly_line()} fits a polynomial, by default with
+#' \code{stats::lm()}, but alternatively using robust regression or generalized
+#' least squares. Predicted values and a confidence band, if possible, are
+#' computed and, by default, plotted.
 #'
 #' @details
 #' This statistic is similar to \code{\link[ggplot2]{stat_smooth}} but has
-#' different defaults. It interprets the argument passed to \code{formula}
-#' differently, accepting \code{y} as explanatory variable and setting
+#' different defaults and supports additonal model fit functions. It also
+#' interprets the argument passed to \code{formula} differently than
+#' \code{stat_smooth()}, accepting \code{y} as explanatory variable and setting
 #' \code{orientation} automatically. The default for \code{method} is
 #' \code{"lm"} and spline-based smoothers like \code{loess} are not supported.
 #' Other defaults are consistent with those in \code{stat_poly_eq()},
-#' \code{stat_quant_line()}, \code{stat_quant_eq()}, \code{stat_ma_line()},
-#' \code{stat_ma_eq()}.
+#' \code{stat_quant_line()}, \code{stat_quant_band()}, \code{stat_quant_eq()},
+#' \code{stat_ma_line()}, \code{stat_ma_eq()}.
 #'
 #' \code{geom_poly_line()} treats the x and y aesthetics differently and can
 #' thus have two orientations. The orientation can be deduced from the argument
@@ -81,8 +85,8 @@
 #' @param method.args named list with additional arguments.
 #' @param n.min integer Minimum number of distinct values in the explanatory
 #'   variable (on the rhs of formula) for fitting to the attempted.
-#' @param se Display confidence interval around smooth? (`TRUE` by default, see
-#'   `level` to control.)
+#' @param se Display confidence interval around smooth? (`TRUE` by default,
+#'   except for fits with \code{gls()}, see `level` to control.)
 #' @param fm.values logical Add R2, adjusted R2, p-value and n as columns to
 #'   returned data? (`FALSE` by default.)
 #' @param fullrange Should the fit span the full range of the plot, or just
@@ -176,7 +180,7 @@ stat_poly_line <- function(mapping = NULL,
                            ...,
                            method = "lm",
                            formula = NULL,
-                           se = TRUE,
+                           se = NULL,
                            fm.values = FALSE,
                            n = 80,
                            fullrange = FALSE,
@@ -187,6 +191,35 @@ stat_poly_line <- function(mapping = NULL,
                            orientation = NA,
                            show.legend = NA,
                            inherit.aes = TRUE) {
+
+  stopifnot("Args 'formula' and/or 'data' in 'method.args'" =
+              !any(c("formula", "data") %in% names(method.args)))
+
+  if (is.character(method)) {
+    method <- trimws(method, which = "both")
+    method.name <- method
+  } else if (is.function(method)) {
+    method.name <- deparse(substitute(method))
+    if (grepl("^function[ ]*[(]", method.name[1])) {
+      method.name <- "function"
+    }
+  } else {
+    method.name <- "missing"
+  }
+
+  if (method.name == "auto") {
+    message("Method 'auto' is equivalent to 'lm', splines are not supported.")
+    method <- method.name <- "lm"
+  } else if (grepl("^rq$|^rq[:]|^rqss$|^rqss[:]", method.name)) {
+    stop("Methods 'rq' and 'rqss' not supported, please use 'stat_quant_line()'.")
+  } else if (grepl("^lmodel2$|^lmodel2[:]", method.name)) {
+    stop("Method 'lmodel2' not supported, please use 'stat_ma_line()'.")
+  }
+
+  if (is.null(se)) {
+    se <- ifelse(grepl("gls", method.name), FALSE, TRUE)
+  }
+
   if (is.null(formula)) {
     formula = y ~ x
     if (is.na(orientation)) {
@@ -208,17 +241,6 @@ stat_poly_line <- function(mapping = NULL,
     }
   }
 
-  if (is.character(method)) {
-    if (method == "auto") {
-      message("Method 'auto' is equivalent to 'lm', splines are not supported.")
-      method <- "lm"
-    } else if (grepl("^rq", method)) {
-      stop("Method 'rq' not supported, please use 'stat_quant_eq()'.")
-    } else if (grepl("^lmodel2", method)) {
-      stop("Method 'lmodel2' not supported, please use 'stat_ma_eq()'.")
-    }
-  }
-
   ggplot2::layer(
     data = data,
     mapping = mapping,
@@ -229,6 +251,7 @@ stat_poly_line <- function(mapping = NULL,
     inherit.aes = inherit.aes,
     params = rlang::list2(
       method = method,
+      method.name = method.name,
       formula = formula,
       se = se,
       fm.values = fm.values,
@@ -245,8 +268,10 @@ stat_poly_line <- function(mapping = NULL,
 }
 
 poly_line_compute_group_fun <-
-  function(data, scales,
-           method = NULL,
+  function(data,
+           scales,
+           method,
+           method.name,
            formula = NULL,
            se = TRUE,
            fm.values = FALSE,
@@ -284,6 +309,7 @@ poly_line_compute_group_fun <-
       method <- switch(method,
                        lm = "lm:qr",
                        rlm = "rlm:M",
+                       gls = "gls:REML",
                        method)
       method.name <- method
       method <- strsplit(x = method, split = ":", fixed = TRUE)[[1]]
@@ -296,39 +322,53 @@ poly_line_compute_group_fun <-
       method <- switch(method,
                        lm = stats::lm,
                        rlm = MASS::rlm,
+                       gls = nlme::gls,
                        match.fun(method))
     } else if (is.function(method)) {
       fun.method <- character()
-      if (is.name(quote(method))) {
-        method.name <- as.character(quote(method))
-      } else {
-        method.name <- "function"
-      }
     }
 
-    fun.args <- list(quote(formula),
+    if (exists("weight", data) && !all(data[["weight"]] == 1)) {
+      stopifnot("A mapping to 'weight' and a named argument 'weights' cannot co-exist" =
+                  !"weights" %in% method.args)
+      fun.args <- list(quote(formula),
                      data = quote(data),
                      weights = data[["weight"]])
+    } else {
+      fun.args <- list(formula = quote(formula),
+                       data = quote(data))
+    }
     fun.args <- c(fun.args, method.args)
-    if (length(fun.method)) {
-      fun.args[["method"]] <- fun.method
+
+    # gls() parameter for formula is called 'model'
+    if (grepl("gls", method.name)) {
+      names(fun.args)[1] <- "model"
     }
 
     fm <- do.call(method, args = fun.args)
 
     if (!length(fm) || (is.atomic(fm) && is.na(fm))) {
       return(data.frame())
-    } else if (!inherits(fm, "lm")) {
+    } else if (!(inherits(fm, "lm") || inherits(fm, "gls"))) {
       stop("Method \"", method.name, "\" did not return a \"lm\" object")
     }
 
     newdata <- data.frame(x = xseq)
-    prediction <- stats::predict(fm,
-                                 newdata = newdata,
-                                 se.fit = se,
-                                 level = level,
-                                 interval = if (se) "confidence" else "none"
-    )
+
+    if (inherits(fm, "lm")) {
+      prediction <- stats::predict(fm,
+                                   newdata = newdata,
+                                   se.fit = se,
+                                   level = level,
+                                   interval = if (se) "confidence" else "none"
+      )
+    } else {
+      if (se) {
+        warning("Confidence band not supported: overridding 'se = TRUE'")
+      }
+      se <- FALSE
+      prediction <- stats::predict(fm, newdata = newdata)
+    }
     if (se) {
       if (exists("fit", prediction)) {
         prediction <- as.data.frame(prediction[["fit"]])

@@ -58,13 +58,14 @@ can include aesthetics whose values you want to set, not map. See
 \item{formula}{a formula object. Using aesthetic names \code{x} and \code{y}
 instead of original variable names.}
 
-\item{method}{function or character If character, "lm", "rlm" or the name of
-a model fit function are accepted, possibly followed by the fit function's
-\code{method} argument separated by a colon (e.g. \code{"rlm:M"}). If a
-function different to \code{lm()}, it must accept as a minimum a model
-formula through its first parameter, and have formal parameters named
-\code{data}, \code{weights}, and \code{method}, and return a model fit
-object of class \code{lm}.}
+\item{method}{function or character If character, "lm", "rlm", "gls" or the
+name of a model fit function are accepted, possibly followed by the fit
+function's \code{method} argument separated by a colon (e.g.
+\code{"rlm:M"}). If a function is different to \code{lm()}, \code{rlm()},
+or \code{gls()}, it must accept as a minimum a model formula through its
+first parameter, and have formal parameters named \code{data},
+\code{weights}, and \code{method}, and return a model fit object of class
+\code{"lm"} or class \code{"gls"}.}
 
 \item{method.args}{named list with additional arguments.}
 
@@ -139,10 +140,10 @@ A data frame, with a single row and columns as described under
 }
 \description{
 \code{stat_poly_eq} fits a polynomial, by default with \code{stats::lm()},
-but alternatively using robust regression. Using the fitted model it
-generates several labels including the fitted model equation, p-value,
-F-value, coefficient of determination (R^2), 'AIC', 'BIC', and number of
-observations.
+but alternatively using robust regression or generalized least squares. Using
+the fitted model it generates several labels including the fitted model
+equation, p-value, F-value, coefficient of determination (R^2), 'AIC', 'BIC',
+number of observations and method name, if available.
 }
 \details{
 This statistic can be used to automatically annotate a plot with

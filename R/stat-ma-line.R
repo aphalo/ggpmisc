@@ -204,6 +204,29 @@ stat_ma_line <- function(mapping = NULL,
                          orientation = NA,
                          show.legend = NA,
                          inherit.aes = TRUE) {
+
+  stopifnot("Args 'formula' and/or 'data' in 'method.args'" =
+              !any(c("formula", "data") %in% names(method.args)))
+
+  # we make a character string name for the method
+  if (is.character(method)) {
+    method <- trimws(method, which = "both")
+    method.name <- method
+  } else if (is.function(method)) {
+    method.name <- deparse(substitute(method))
+    if (grepl("^function[ ]*[(]", method.name[1])) {
+      method.name <- "function"
+    }
+  } else {
+    method.name <- "missing"
+  }
+
+  if (grepl("^lm$|^lm[:]|^rlm$|^rlm[:]|^gls$|^gls[:]", method.name)) {
+    stop("Methods 'lm', 'rlm' and 'gls' not supported, please use 'stat_poly_line()'.")
+  } else if (grepl("^rq$|^rq[:]", method.name)) {
+    stop("Method 'rq' not supported, please use 'stat_quant_line()'.")
+  }
+
   if (is.null(formula)) {
     formula = y ~ x
     if (is.na(orientation)) {

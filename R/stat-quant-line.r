@@ -234,6 +234,29 @@ stat_quant_line <- function(mapping = NULL,
                             orientation = NA,
                             show.legend = NA,
                             inherit.aes = TRUE) {
+
+  stopifnot("Args 'formula' and/or 'data' in 'method.args'" =
+              !any(c("formula", "data") %in% names(method.args)))
+
+  # we make a character string name for the method
+  if (is.character(method)) {
+    method <- trimws(method, which = "both")
+    method.name <- method
+  } else if (is.function(method)) {
+    method.name <- deparse(substitute(method))
+    if (grepl("^function[ ]*[(]", method.name[1])) {
+      method.name <- "function"
+    }
+  } else {
+    method.name <- "missing"
+  }
+
+  if (grepl("^lm$|^lm[:]|^rlm$|^rlm[:]|^gls$|^gls[:]", method.name)) {
+    stop("Methods 'lm', 'rlm' and 'gls' not supported, please use 'stat_poly_line()'.")
+  } else if (grepl("^lmodel2$|^lmodel2[:]", method.name)) {
+    stop("Method 'lmodel2' not supported, please use 'stat_ma_line()'.")
+  }
+
   if (is.null(formula)) {
     if (is.character(method)) {
       if (method == "rq") {
@@ -265,14 +288,6 @@ stat_quant_line <- function(mapping = NULL,
     }
   }
 
-  if (is.character(method)) {
-    if (grepl("^lm|^rlm", method)) {
-      stop("Methods 'lm' and 'rlm' not supported, please use 'stat_poly_eq()'.")
-    } else if (grepl("^lmodel2", method)) {
-      stop("Method 'lmodel2' not supported, please use 'stat_ma_eq()'.")
-    }
-  }
-
   ggplot2::layer(
     data = data,
     mapping = mapping,
@@ -289,6 +304,7 @@ stat_quant_line <- function(mapping = NULL,
         fm.values = fm.values,
         n = n,
         method = method,
+        method.name = method.name,
         method.args = method.args,
         n.min = n.min,
         na.rm = na.rm,
@@ -313,7 +329,8 @@ quant_line_compute_group_fun <- function(data,
                                          quantiles = c(0.25, 0.5, 0.75),
                                          formula = NULL,
                                          n = 80,
-                                         method = "rq",
+                                         method,
+                                         method.name,
                                          method.args = list(),
                                          n.min = 3L,
                                          lambda = 1,
@@ -351,7 +368,6 @@ quant_line_compute_group_fun <- function(data,
       method <- paste("rq", method, sep = ":")
       message("Using method: ", method)
     }
-    method.name <- method
     method <- strsplit(x = method, split = ":", fixed = TRUE)[[1]]
     if (length(method) > 1L) {
       fun.method <- method[2]
@@ -365,11 +381,6 @@ quant_line_compute_group_fun <- function(data,
                      match.fun(method))
   } else if (is.function(method)) {
     fun.method <- method.args[["method"]]
-    if (is.name(quote(method))) {
-      method.name <- as.character(quote(method))
-    } else {
-      method.name <- "function"
-    }
     if (length(fun.method)) {
       method.name <- paste(method.name, fun.method, sep = ":")
     }

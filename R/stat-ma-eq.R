@@ -337,6 +337,29 @@ stat_ma_eq <- function(mapping = NULL,
                        parse = NULL,
                        show.legend = FALSE,
                        inherit.aes = TRUE) {
+
+  stopifnot("Args 'formula' and/or 'data' in 'method.args'" =
+              !any(c("formula", "data") %in% names(method.args)))
+
+  # we make a character string name for the method
+  if (is.character(method)) {
+    method <- trimws(method, which = "both")
+    method.name <- method
+  } else if (is.function(method)) {
+    method.name <- deparse(substitute(method))
+    if (grepl("^function[ ]*[(]", method.name[1])) {
+      method.name <- "function"
+    }
+  } else {
+    method.name <- "missing"
+  }
+
+  if (grepl("^lm$|^lm[:]|^rlm$|^rlm[:]|^gls$|^gls[:]", method.name)) {
+    stop("Methods 'lm', 'rlm' and 'gls' not supported, please use 'stat_poly_eq()'.")
+  } else if (grepl("^rq$|^rq[:]", method.name)) {
+      stop("Method 'rq' not supported, please use 'stat_quant_eq()'.")
+  }
+
   # we guess formula from orientation
   if (is.null(formula)) {
     if (is.na(orientation) || orientation == "x") {
@@ -365,16 +388,6 @@ stat_ma_eq <- function(mapping = NULL,
   }
   if (is.null(parse)) {
     parse <- output.type == "expression"
-  }
-  if (is.character(method)) {
-    if (grepl("^rq", method)) {
-      stop("Method 'rq' not supported, please use 'stat_quant_eq()'.")
-    } else if (grepl("^lm$|^lm[:]|^rlm$|^rlm[:]", method)) {
-      stop("Methods 'lm' and 'rlm' not supported, please use 'stat_poly_eq()'.")
-    }
-    if (grepl("RMA$", method) && (is.null(range.y) || is.null(range.x))) {
-      stop("Method \"RMA\" is computed only if both 'range.x' and 'range.y' are set.")
-    }
   }
 
   ggplot2::layer(
