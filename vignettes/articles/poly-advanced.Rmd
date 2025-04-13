@@ -83,7 +83,21 @@ ggplot(mpg, aes(displ, hwy)) +
   facet_wrap(~class, ncol = 2)
 ```
 
-### Linear Models Using Generalized Least Squares
+### Resistant regression
+
+Package 'MASS' provides function `lqs()` for "Resistant Regression". The returned value is an `"lqs"` object. Class `"rlm"` is not derived from `"lm"` but the structure is similar. However, we need to be aware that no $R^2$ or $P$ estimates are available and the corresponding labels are empty strings.
+
+```{r}
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  stat_poly_line(method = MASS::lqs, se = FALSE) +
+  stat_poly_eq(method = MASS::lqs, mapping = use_label("eq", "n"),
+               label.x = "right") +
+  theme(legend.position = "bottom") +
+  facet_wrap(~class, ncol = 2)
+```
+
+### Generalized Least Squares
 
 In 'ggpmisc' (>= 0.6.2) function `gls()` from package 'nlme' is supported natively by functions `stat_poly_line()` and `stat_poly_eq()`. In this example, using a variance covariate, the computations do not converge with the data in one of the plot panels.
 

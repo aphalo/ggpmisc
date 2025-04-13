@@ -58,14 +58,14 @@ can include aesthetics whose values you want to set, not map. See
 \item{formula}{a formula object. Using aesthetic names \code{x} and \code{y}
 instead of original variable names.}
 
-\item{method}{function or character If character, "lm", "rlm", "gls" or the
-name of a model fit function are accepted, possibly followed by the fit
-function's \code{method} argument separated by a colon (e.g.
+\item{method}{function or character If character, "lm", "rlm", "lqs". "gls"
+or the name of a model fit function are accepted, possibly followed by the
+fit function's \code{method} argument separated by a colon (e.g.
 \code{"rlm:M"}). If a function is different to \code{lm()}, \code{rlm()},
-or \code{gls()}, it must accept as a minimum a model formula through its
-first parameter, and have formal parameters named \code{data},
-\code{weights}, and \code{method}, and return a model fit object of class
-\code{"lm"} or class \code{"gls"}.}
+\code{lqs()} or \code{gls()}, it must have formal parameters named
+\code{formula}, \code{data}, \code{weights}, and \code{method}, and return
+a model fit object of class \code{"lm"}, class \code{"lqs"} or class
+\code{"gls"}.}
 
 \item{method.args}{named list with additional arguments.}
 

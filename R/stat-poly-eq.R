@@ -28,14 +28,14 @@
 #'   the computation proceeds.
 #' @param formula a formula object. Using aesthetic names \code{x} and \code{y}
 #'   instead of original variable names.
-#' @param method function or character If character, "lm", "rlm", "gls" or the
-#'   name of a model fit function are accepted, possibly followed by the fit
-#'   function's \code{method} argument separated by a colon (e.g.
+#' @param method function or character If character, "lm", "rlm", "lqs". "gls"
+#'   or the name of a model fit function are accepted, possibly followed by the
+#'   fit function's \code{method} argument separated by a colon (e.g.
 #'   \code{"rlm:M"}). If a function is different to \code{lm()}, \code{rlm()},
-#'   or \code{gls()}, it must accept as a minimum a model formula through its
-#'   first parameter, and have formal parameters named \code{data},
-#'   \code{weights}, and \code{method}, and return a model fit object of class
-#'   \code{"lm"} or class \code{"gls"}.
+#'   \code{lqs()} or \code{gls()}, it must have formal parameters named
+#'   \code{formula}, \code{data}, \code{weights}, and \code{method}, and return
+#'   a model fit object of class \code{"lm"}, class \code{"lqs"} or class
+#'   \code{"gls"}.
 #' @param method.args named list with additional arguments.
 #' @param n.min integer Minimum number of distinct values in the explanatory
 #'   variable (on the rhs of formula) for fitting to the attempted.
@@ -733,6 +733,7 @@ poly_eq_compute_group_fun <- function(data,
     method <- switch(method,
                      lm = "lm:qr",
                      rlm = "rlm:M",
+                     lqs = "lqs:lqs",
                      gls = "gls:REML",
                      method)
     method.name <- method
@@ -746,6 +747,7 @@ poly_eq_compute_group_fun <- function(data,
     method <- switch(method,
                      lm = stats::lm,
                      rlm = MASS::rlm,
+                     lqs = MASS::lqs,
                      gls = nlme::gls,
                      match.fun(method))
   } else if (is.function(method)) {
@@ -777,8 +779,8 @@ poly_eq_compute_group_fun <- function(data,
   # allow skipping of output if returned value from model fit function is missing
   if (!length(fm) || (is.atomic(fm) && is.na(fm))) {
     return(data.frame())
-  } else if (!(inherits(fm, "lm") || inherits(fm, "gls"))) {
-    stop("Method \"", method.name, "\" did not return a \"lm\" or \"gls\" object")
+  } else if (!(inherits(fm, "lm") || inherits(fm, "gls") || inherits(fm, "lqs"))) {
+    warning("Method \"", method.name, "\" did not return a \"lm\", \"lqs\" or \"gls\" object, possible failure ahead.")
   }
 
   fm.summary <- summary(fm)
@@ -827,9 +829,18 @@ poly_eq_compute_group_fun <- function(data,
   } else {
     adj.rr <- NA_real_
   }
-  AIC <- AIC(fm)
-  BIC <- BIC(fm)
-  n <- length(fm.summary[["residuals"]])
+  AIC <- try(AIC(fm), silent = TRUE)
+  if (inherits(AIC, "try-error")) {
+    AIC <- NA_real_
+  }
+  BIC <- try(BIC(fm), silent = TRUE)
+  if (inherits(BIC, "try-error")) {
+    BIC <- NA_real_
+  }
+  n <- try(length(stats::residuals(fm)), silent = TRUE)
+  if (inherits(n, "try-error")) {
+    n <- NA_real_
+  }
   coefs <- stats::coefficients(fm)
 
   formula <- formula.ls[[1L]]

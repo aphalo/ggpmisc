@@ -27,41 +27,41 @@ stat_poly_line(
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
-\code{\link[ggplot2]{aes}}. Only needs to be
-set at the layer level if you are overriding the plot defaults.}
+\code{\link[ggplot2]{aes}}. Only needs to be set at the layer level if you
+are overriding the plot defaults.}
 
-\item{data}{A layer specific dataset, only needed if you want to override
-the plot defaults.}
+\item{data}{A layer specific dataset, only needed if you want to override the
+plot defaults.}
 
 \item{geom}{The geometric object to use display the data}
 
 \item{position}{The position adjustment to use for overlapping points on this
-layer}
+layer.}
 
 \item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This
 can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 
-\item{method}{function or character If character, "lm", "rlm" or the name of
-a model fit function are accepted, possibly followed by the fit function's
-\code{method} argument separated by a colon (e.g. \code{"rlm:M"}). If a
-function different to \code{lm()}, it must accept arguments named
-\code{formula}, \code{data}, \code{weights}, and \code{method} and return a
-model fit object of class \code{lm}.}
+\item{method}{function or character If character, "lm", "rlm", "lqs", "gls"
+or the name of a model fit function are accepted, possibly followed by the
+fit function's \code{method} argument separated by a colon (e.g.
+\code{"rlm:M"}). If a function different to \code{lm()}, it must accept
+arguments named \code{formula}, \code{data}, \code{weights}, and
+\code{method} and return a model fit object of class \code{lm}.}
 
 \item{formula}{a formula object. Using aesthetic names \code{x} and \code{y}
 instead of original variable names.}
 
-\item{se}{Display confidence interval around smooth? (`TRUE` by default,
-except for fits with \code{gls()}, see `level` to control.)}
+\item{se}{Display confidence interval around smooth? (`TRUE` by default only
+for fits with \code{lm()} and \code{rlm()}, see `level` to control.)}
 
 \item{fm.values}{logical Add R2, adjusted R2, p-value and n as columns to
 returned data? (`FALSE` by default.)}
 
 \item{n}{Number of points at which to evaluate smoother.}
 
-\item{fullrange}{Should the fit span the full range of the plot, or just
-the data?}
+\item{fullrange}{Should the fit span the full range of the plot, or just the
+data?}
 
 \item{level}{Level of confidence interval to use (0.95 by default).}
 
