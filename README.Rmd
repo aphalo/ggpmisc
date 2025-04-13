@@ -61,7 +61,7 @@ Statistics that help with reporting the results of model fits are:
 +--------------------------+---------------------------------------------------+------------------------------------------------+
 | Statistic                | Returned values (_default geometry_)              | Methods                                        |
 +==========================+===================================================+================================================+
-| `stat_poly_eq()`         | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lm, rlm (1, 2, 7)                              |
+| `stat_poly_eq()`         | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lm, rlm, lqs, gls, etc. (1, 2, 7)              |
 +--------------------------+---------------------------------------------------+------------------------------------------------+
 | `stat_ma_eq()`           | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lmodel2 (6, 7)                                 |
 +--------------------------+---------------------------------------------------+------------------------------------------------+
@@ -69,7 +69,7 @@ Statistics that help with reporting the results of model fits are:
 +--------------------------+---------------------------------------------------+------------------------------------------------+
 | `stat_correlation()`     | correlation, _P_-value, CI (`text_npc`)           | Pearson (_t_), Kendall (_z_), Spearman (_S_)   |
 +--------------------------+---------------------------------------------------+------------------------------------------------+
-| `stat_poly_line()`       | line + conf. (`smooth`)                           | lm, rlm (1, 2, 7)                              |
+| `stat_poly_line()`       | line + conf. (`smooth`)                           | lm, rlm, lqs, gls, etc. (1, 2, 7)              |
 +--------------------------+---------------------------------------------------+------------------------------------------------+
 | `stat_ma_line()`         | line + conf. (`smooth`)                           | lmodel2 (6, 7)                                 |
 +--------------------------+---------------------------------------------------+------------------------------------------------+
@@ -94,16 +94,18 @@ Statistics that help with reporting the results of model fits are:
 | `stat_multcomp()`        | Multiple comparisons (`label_pairwise` or `text`) | those supported by `glht` (1, 2, 7)            |
 +--------------------------+---------------------------------------------------+------------------------------------------------+
 
-: Notes:  (1) *weight* aesthetic supported; (2) user defined fit functions that
-return an object of a class derived from `lm` are supported even if they
-override the statistic's *formula*  argument; (3) unlimited quantiles supported;
-(4) user defined fit functions that return an object of a class derived from
-`rq` or `rqs` are supported even if they override the statistic's *formula*
-and/or *quantiles* argument; (5) two and three quantiles supported; (6) user
-defined fit functions that return an object of a class derived from `lmodel2`
-are supported; (7) `method` arguments support colon based notation; (8) various
-functions if method `residuals()` defined for returned value; (9) various
-functions if method `fitted()` defined for returned value.
+: Notes:  (1) *weight* aesthetic supported; (2) user defined model fit functions
+including wrappers of supported methods are accepted even if they modify the
+model *formula* (additional model fitting methods are likely to work, but have
+not been tested); (3) unlimited quantiles supported; (4) user defined fit
+functions that return an object of a class derived from `rq` or `rqs` are
+supported even if they override the 
+statistic's *formula* and/or *quantiles*
+argument; (5) two and three quantiles supported; (6) user defined fit functions
+that return an object of a class derived from `lmodel2` are supported; (7)
+`method` arguments support colon based notation; (8) model fit functions if method
+`residuals()` defined for returned value; (9) model fit functions if method
+`fitted()` is defined for the returned value.
 
 Statistics `stat_peaks()` and `stat_valleys()` can be used to highlight and/or
 label maxima and minima in a plot.
@@ -202,7 +204,7 @@ ggplot(cars, aes(speed, dist)) +
                           "italic(F)" = "statistic", 
                           "italic(P)" = "p.value"),
               tb.params = c(x = 1, "x^2" = 2),
-              label.y.npc = "top", label.x.npc = "left",
+              label.y = "top", label.x = "left",
               size = 2.5,
               parse = TRUE)
 ```

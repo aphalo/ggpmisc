@@ -55,11 +55,11 @@ Statistics that help with reporting the results of model fits are:
 
 | Statistic | Returned values (*default geometry*) | Methods |
 |----|----|----|
-| `stat_poly_eq()` | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lm, rlm (1, 2, 7) |
+| `stat_poly_eq()` | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lm, rlm, lqs, gls, etc. (1, 2, 7) |
 | `stat_ma_eq()` | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lmodel2 (6, 7) |
 | `stat_quant_eq()` | equation, *P*, etc. (`text_npc`) | rq (1, 3, 4, 7) |
 | `stat_correlation()` | correlation, *P*-value, CI (`text_npc`) | Pearson (*t*), Kendall (*z*), Spearman (*S*) |
-| `stat_poly_line()` | line + conf. (`smooth`) | lm, rlm (1, 2, 7) |
+| `stat_poly_line()` | line + conf. (`smooth`) | lm, rlm, lqs, gls, etc. (1, 2, 7) |
 | `stat_ma_line()` | line + conf. (`smooth`) | lmodel2 (6, 7) |
 | `stat_quant_line()` | line + conf. (`smooth`) | rq, rqss (1, 3, 4, 7) |
 | `stat_quant_band()` | median + quartiles (`smooth`) | rq, rqss (1, 4, 5, 7) |
@@ -72,17 +72,18 @@ Statistics that help with reporting the results of model fits are:
 | `stat_fit_tb()` | ANOVA and summary tables (`table_npc`) | those supported by ‘broom’ |
 | `stat_multcomp()` | Multiple comparisons (`label_pairwise` or `text`) | those supported by `glht` (1, 2, 7) |
 
-Notes: (1) *weight* aesthetic supported; (2) user defined fit functions
-that return an object of a class derived from `lm` are supported even if
-they override the statistic’s *formula* argument; (3) unlimited
-quantiles supported; (4) user defined fit functions that return an
-object of a class derived from `rq` or `rqs` are supported even if they
-override the statistic’s *formula* and/or *quantiles* argument; (5) two
-and three quantiles supported; (6) user defined fit functions that
-return an object of a class derived from `lmodel2` are supported; (7)
-`method` arguments support colon based notation; (8) various functions
-if method `residuals()` defined for returned value; (9) various
-functions if method `fitted()` defined for returned value.
+Notes: (1) *weight* aesthetic supported; (2) user defined model fit
+functions including wrappers of supported methods are accepted even if
+they modify the model *formula* (additional model fitting methods are
+likely to work, but have not been tested); (3) unlimited quantiles
+supported; (4) user defined fit functions that return an object of a
+class derived from `rq` or `rqs` are supported even if they override the
+statistic’s *formula* and/or *quantiles* argument; (5) two and three
+quantiles supported; (6) user defined fit functions that return an
+object of a class derived from `lmodel2` are supported; (7) `method`
+arguments support colon based notation; (8) model fit functions if
+method `residuals()` defined for returned value; (9) model fit functions
+if method `fitted()` is defined for the returned value.
 
 Statistics `stat_peaks()` and `stat_valleys()` can be used to highlight
 and/or label maxima and minima in a plot.
@@ -197,11 +198,9 @@ ggplot(cars, aes(speed, dist)) +
                           "italic(F)" = "statistic", 
                           "italic(P)" = "p.value"),
               tb.params = c(x = 1, "x^2" = 2),
-              label.y.npc = "top", label.x.npc = "left",
+              label.y = "top", label.x = "left",
               size = 2.5,
               parse = TRUE)
-#> Warning in stat_fit_tb(method = "lm", method.args = list(formula = formula), :
-#> Ignoring unknown parameters: `label.y.npc` and `label.x.npc`
 #> Dropping params/terms (rows) from table!
 ```
 
@@ -323,7 +322,7 @@ publications, please cite according to:
 citation("ggpmisc")
 #> To cite package 'ggpmisc' in publications use:
 #> 
-#>   Aphalo P (2024). _ggpmisc: Miscellaneous Extensions to 'ggplot2'_. R
+#>   Aphalo P (2025). _ggpmisc: Miscellaneous Extensions to 'ggplot2'_. R
 #>   package version 0.6.1.9000, https://github.com/aphalo/ggpmisc,
 #>   <https://docs.r4photobiology.info/ggpmisc/>.
 #> 
@@ -332,7 +331,7 @@ citation("ggpmisc")
 #>   @Manual{,
 #>     title = {ggpmisc: Miscellaneous Extensions to 'ggplot2'},
 #>     author = {Pedro J. Aphalo},
-#>     year = {2024},
+#>     year = {2025},
 #>     note = {R package version 0.6.1.9000, 
 #> https://github.com/aphalo/ggpmisc},
 #>     url = {https://docs.r4photobiology.info/ggpmisc/},
