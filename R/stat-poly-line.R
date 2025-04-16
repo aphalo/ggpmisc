@@ -351,25 +351,35 @@ poly_line_compute_group_fun <-
 
     if (!length(fm) || (is.atomic(fm) && is.na(fm))) {
       return(data.frame())
-    } else if (!(inherits(fm, "lm") || inherits(fm, "gls") || inherits(fm, "lqs"))) {
-      warning("Method \"", method.name, "\" did not return a \"lm\", \"lqs\" or \"gls\" object, possible failure ahead.")
+    } else if (!(inherits(fm, "lm") || inherits(fm, "lmrob") ||
+                 inherits(fm, "gls") || inherits(fm, "lqs"))) {
+      message("Method \"", method.name,
+              "\" did not return a \"lm\", \"lmrob\", \"lqs\" or \"gls\" object, possible failure ahead.")
     }
 
     newdata <- data.frame(x = xseq)
 
-    if (inherits(fm, "lm")) {
+    # We try hard to extract predicted values
+    try(
       prediction <- stats::predict(fm,
                                    newdata = newdata,
                                    se.fit = se,
                                    level = level,
                                    interval = if (se) "confidence" else "none"
       )
-    } else {
+    )
+    if (inherits(prediction, "try-error")) {
       if (se) {
-        warning("Confidence band not supported: overridding 'se = TRUE'")
+        message("Confidence band not supported: overridding 'se = TRUE'")
+        se <- FALSE
       }
-      se <- FALSE
-      prediction <- stats::predict(fm, newdata = newdata)
+      try(
+        prediction <- stats::predict(fm, newdata = newdata)
+      )
+      if (inherits(prediction, "try-error")) {
+        message("Prediction failed!")
+        prediction <- rep(NA_real_, nrow(data))
+      }
     }
     if (se) {
       if (exists("fit", prediction)) {

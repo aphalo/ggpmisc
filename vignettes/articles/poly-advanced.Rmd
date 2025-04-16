@@ -69,7 +69,7 @@ Some frequently use model fit functions that do not return model fit objects inh
 
 ## Existing functions
 
-### Robust regression
+### Robust regression ('MASS')
 
 Package 'MASS' provides function `rlm()` for "Robust Fitting of Linear Models". The returned value is an `"rlm"` object. Class `"rlm"` is derived from `"lm"` so the stats work mostly as expected. However, we need to be aware that no $R^2$ or $P$ estimates are available and the corresponding labels are empty strings.
 
@@ -79,11 +79,51 @@ ggplot(mpg, aes(displ, hwy)) +
   stat_poly_line(method = MASS::rlm) +
   stat_poly_eq(method = MASS::rlm, mapping = use_label("eq", "n"),
                label.x = "right") +
+  facet_wrap(~class, ncol = 2)
+```
+
+When weights are available, either supplied by the user, or computed as part of the fit, they are returned in `data`. Having weights available allows encoding them using colour. We here use a robust regression fit with `MASS::rlm()`.
+
+```{r}
+ggplot(mpg, aes(displ, hwy)) +
+  stat_poly_line(method = MASS::rlm) +
+  stat_fit_deviations(method = "rlm",
+                      mapping = aes(colour = after_stat(weights)),
+                      show.legend = TRUE) +
+  scale_color_gradient(low = "red", high = "blue", limits = c(0, 1)) +
+  geom_point()
+```
+
+
+### Robust regression ('robustbase')
+
+Package 'robustbase' provides function `lmrob()` for "MM-type Estimators for Linear Regression". The returned value is an `"lmrob"` object. Class `"lmrob"` is derived from `"lm"` so the stats work mostly as expected. However, we need to be aware that no $R^2$ or $P$ estimates are available and the corresponding labels are empty strings.
+
+
+```{r}
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  stat_poly_line(method = robustbase::lmrob) +
+  stat_poly_eq(method = robustbase::lmrob, mapping = use_label("eq", "n"),
+               label.x = "right") +
   theme(legend.position = "bottom") +
   facet_wrap(~class, ncol = 2)
 ```
 
-### Resistant regression
+When weights are available, either supplied by the user, or computed as part of the fit, they are returned in `data`. Having weights available allows encoding them using colour. We here use a robust regression fit with `MASS::rlm()`.
+
+```{r}
+ggplot(mpg, aes(displ, hwy)) +
+  stat_poly_line(method = robustbase::lmrob) +
+  stat_fit_deviations(method = robustbase::lmrob,
+                      mapping = aes(colour = after_stat(weights)),
+                      show.legend = TRUE) +
+  scale_color_gradient(low = "red", high = "blue", limits = c(0, 1)) +
+  geom_point()
+```
+
+
+### Resistant regression ('MASS')
 
 Package 'MASS' provides function `lqs()` for "Resistant Regression". The returned value is an `"lqs"` object. Class `"rlm"` is not derived from `"lm"` but the structure is similar. However, we need to be aware that no $R^2$ or $P$ estimates are available and the corresponding labels are empty strings.
 
@@ -97,7 +137,7 @@ ggplot(mpg, aes(displ, hwy)) +
   facet_wrap(~class, ncol = 2)
 ```
 
-### Generalized Least Squares
+### Generalized Least Squares ('nlme')
 
 In 'ggpmisc' (>= 0.6.2) function `gls()` from package 'nlme' is supported natively by functions `stat_poly_line()` and `stat_poly_eq()`. In this example, using a variance covariate, the computations do not converge with the data in one of the plot panels.
 
@@ -223,7 +263,6 @@ ggplot(mpg, aes(displ, hwy)) +
                size = 2.8,
                label.x = "right") +
   expand_limits(y = c(0, 65)) +
-  theme(legend.position = "bottom") +
   facet_wrap(~class, ncol = 2)
 ```
 
@@ -244,13 +283,8 @@ As 'refitME' functions return a model fit object of the same class as that recei
 
 ```{r}
 lm_EIV <- function(formula, data, ..., sigma.sq.u) {
-   # there is a bug somewhere in refitME accessing data in the wrong environment
-   # copy data with <<- makes this function work at the R prompt, but still does not work
-   # when called by another function...
-   # my.data <<- data
-   # fm <- lm(formula = formula, data = my.data, ...)
-   fm <- lm(formula = formula, data = data, ...)
-   MCEMfit_glm(mod = fm, family = "gaussian", sigma.sq.u = sigma.sq.u)
+  fm <- lm(formula = formula, data = data, ...)
+  MCEMfit_glm(mod = fm, family = "gaussian", sigma.sq.u = sigma.sq.u)
 }
 ```
 
@@ -267,4 +301,71 @@ ggplot(mpg, aes(displ, hwy)) +
    facet_wrap(~class, ncol = 2)
 ```
 
+Produces one warning like below for each call of the statistics.
+
+```
+Warning: Computation failed in `stat_poly_eq()`.
+Caused by error in `names(new.dat)[c(1, which(names(mod$data) %in% names.w))] <- names(mod$data)[c(1, which(names(mod$data) %in% names.w))]`:
+! replacement has length zero```
+```
+
+I have reported the problem through a [GitHub issue](https://github.com/JakubStats/refitME/issues/5) to Jakub Stoklosa, the maintainer of 'refitME', and he is looking for a permanent solution. Meanwhile, he has provided a temporary fix that I copy below with a few small edits to the ggplot code. Many thanks to Jakub Stoklosa for his very fast answer!
+
+```{r}
+rm(list = ls(pattern = "*"))
+
+library(ggplot2)
+library(ggpmisc)
+library(refitME)
+
+lm_EIV <- function(formula, data, ..., sigma.sq.u) {
+  assign("my.data", value = data, envir = globalenv())
+  fm <- lm(formula = formula, data = my.data, ...)
+  fit <- refitME(fm, sigma.sq.u)
+  
+  fit$coefficients <- Re(fit$coefficients)
+  fit$fitted.values <- Re(fit$fitted.values)
+  fit$residuals <- Re(fit$residuals)
+  fit$effects <- Re(fit$effects)
+  fit$linear.predictors <- Re(fit$linear.predictors)
+  fit$se <- Re(fit$se)
+  
+  if ("qr" %in% names(fit)) {
+  fit$qr$qr <- Re(fit$qr$qr)
+  fit$qr$qraux <- Re(fit$qr$qraux)
+  }
+  
+  class(fit) <- c("lm_EIV", "lm")
+  return(fit)
+}
+
+predict.lm_EIV <- function(object, newdata = NULL, ...) {
+  preds <- NextMethod("predict", object, newdata = newdata, ...)
+  
+  if (is.numeric(preds)) {
+    return(Re(preds))
+  } else if (is.matrix(preds)) {
+    return(Re(preds))
+  } else {
+    return(preds) # Leave unchanged if not numeric/matrix
+  }
+}
+```
+
+Here the limitation of 'ggplot2' and 'ggpmisc' in that the fit is recomputed in each layer causes a further difficulty, as with most algorithms using random numbers, the successive refits do not necessarily produce the same rasults. In this case, the equation and line are not matched. This is something that can most likely be fixed in 'ggpmisc' by setting the seed of the RNG. (Or by caching the result of the model fit and reusing it.)
+
+```{r}
+ggplot(mpg, aes(x = displ, y = hwy)) +
+  geom_point() +
+  stat_poly_line(aes(y = hwy),
+                 method = "lm_EIV",
+                 method.args = list(sigma.sq.u = 0.01)) +
+  stat_poly_eq(aes(y = hwy, 
+                   label = paste(after_stat(eq.label), after_stat(rr.label), 
+                                 sep = "~~")),
+               method = "lm_EIV",
+               method.args = list(sigma.sq.u = 0.01),
+               label.x = "right") +
+  facet_wrap(~class, ncol = 2)
+```
 

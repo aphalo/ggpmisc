@@ -183,6 +183,19 @@ stat_fit_residuals <- function(mapping = NULL,
                                orientation = NA,
                                show.legend = FALSE,
                                inherit.aes = TRUE) {
+
+  if (is.character(method)) {
+    method <- trimws(method, which = "both")
+    method.name <- method
+  } else if (is.function(method)) {
+    method.name <- deparse(substitute(method))
+    if (grepl("^function[ ]*[(]", method.name[1])) {
+      method.name <- "function"
+    }
+  } else {
+    method.name <- "missing"
+  }
+
   ggplot2::layer(
     stat = StatFitResiduals, data = data, mapping = mapping, geom = geom,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
@@ -250,6 +263,8 @@ residuals_compute_group_fun <- function(data,
                      lm = "lm:qr",
                      rlm = "rlm:M",
                      rq = "rq:br",
+                     lqs = "lqs:lqs",
+                     gls = "gls:REML",
                      method)
     method.name <- method
     method <- strsplit(x = method, split = ":", fixed = TRUE)[[1]]
@@ -264,22 +279,31 @@ residuals_compute_group_fun <- function(data,
                      lm = stats::lm,
                      rlm = MASS::rlm,
                      rq = quantreg::rq,
+                     lqs = MASS::lqs,
+                     gls = nlme::gls,
                      match.fun(method))
   } else if (is.function(method)) {
     fun.method <- character()
-    if (is.name(quote(method))) {
-      method.name <- as.character(quote(method))
-    } else {
-      method.name <- "function"
-    }
   }
 
-  fun.args <- list(quote(formula),
-                   data = quote(data),
-                   weights = data[["weight"]])
+  if (exists("weight", data) && !all(data[["weight"]] == 1)) {
+    stopifnot("A mapping to 'weight' and a named argument 'weights' cannot co-exist" =
+                !"weights" %in% method.args)
+    fun.args <- list(formula = quote(formula),
+                     data = quote(data),
+                     weights = data[["weight"]])
+  } else {
+    fun.args <- list(formula = quote(formula),
+                     data = quote(data))
+  }
   fun.args <- c(fun.args, method.args)
   if (length(fun.method)) {
     fun.args[["method"]] <- fun.method
+  }
+
+  # gls() parameter for formula is called model
+  if (grepl("gls", method.name)) {
+    names(fun.args)[1] <- "model"
   }
 
   # quantreg contains code with partial matching of names!
@@ -315,13 +339,21 @@ residuals_compute_group_fun <- function(data,
     fit.residuals <- do.call(stats::residuals, args = resid.args)
   }
 
-  if (exists("w", fm)) {
-    weight.vals <- fm[["w"]]
+  if (inherits(fm, "lmrob")) {
+    try(weight.vals <- stats::weights(fm, type = "robustness"))
+    message("Extracting \"robustness\" weights from \"lmrob\" object")
   } else {
-    weight.vals <- stats::weights(fm)
-    weight.vals <- ifelse(length(weight.vals) == length(fit.residuals),
-                          weight.vals,
-                          rep_len(NA_real_, length(fit.residuals)))
+    try(weight.vals <- stats::weights(fm))
+  }
+  if (inherits(weight.vals, "try-error")) {
+    if (exists("w", fm)) {
+      weight.vals <- fm[["w"]]
+    } else if (exists("weights", fm) && # defensive
+               length(fm[["weights"]]) == length(fit.residuals)) {
+      weight.vals <- fm[["weights"]]
+    } else {
+      weight.vals <- rep_len(NA_real_, nrow(data))
+    }
   }
 
   if (orientation == "y") {

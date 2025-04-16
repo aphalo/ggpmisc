@@ -184,6 +184,19 @@ stat_fit_deviations <- function(mapping = NULL,
                                 orientation = NA,
                                 show.legend = FALSE,
                                 inherit.aes = TRUE) {
+
+  if (is.character(method)) {
+    method <- trimws(method, which = "both")
+    method.name <- method
+  } else if (is.function(method)) {
+    method.name <- deparse(substitute(method))
+    if (grepl("^function[ ]*[(]", method.name[1])) {
+      method.name <- "function"
+    }
+  } else {
+    method.name <- "missing"
+  }
+
   ggplot2::layer(
     stat = StatFitDeviations, data = data, mapping = mapping, geom = geom,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
@@ -251,6 +264,7 @@ deviations_compute_group_fun <- function(data,
                      rlm = "rlm:M",
                      lqs = "lqs:lts",
                      rq = "rq:br",
+                     gls = "gls:REML",
                      method)
     method.name <- method
     method <- strsplit(x = method, split = ":", fixed = TRUE)[[1]]
@@ -266,22 +280,30 @@ deviations_compute_group_fun <- function(data,
                      rlm = MASS::rlm,
                      lqs = MASS::lqs,
                      rq = quantreg::rq,
+                     gls = nlme::gls,
                      match.fun(method))
   } else if (is.function(method)) {
     fun.method <- character()
-    if (is.name(quote(method))) {
-      method.name <- as.character(quote(method))
-    } else {
-      method.name <- "function"
-    }
   }
 
-  fun.args <- list(quote(formula),
-                   data = quote(data),
-                   weights = data[["weight"]])
+  if (exists("weight", data) && !all(data[["weight"]] == 1)) {
+    stopifnot("A mapping to 'weight' and a named argument 'weights' cannot co-exist" =
+                !"weights" %in% method.args)
+    fun.args <- list(formula = quote(formula),
+                     data = quote(data),
+                     weights = data[["weight"]])
+  } else {
+    fun.args <- list(formula = quote(formula),
+                     data = quote(data))
+  }
   fun.args <- c(fun.args, method.args)
   if (length(fun.method)) {
     fun.args[["method"]] <- fun.method
+  }
+
+  # gls() parameter for formula is called model
+  if (grepl("gls", method.name)) {
+    names(fun.args)[1] <- "model"
   }
 
   # quantreg contains code with partial matching of names!
@@ -295,14 +317,34 @@ deviations_compute_group_fun <- function(data,
     }
   })
 
-  fitted.vals <- stats::fitted(fm)
-  if (exists("w", fm)) {
-    weight.vals <- fm[["w"]]
+  # As users may use model fit functions that we have not tested
+  # we try hard to extract the components from the model fit object
+  try(fitted.vals <- stats::fitted(fm))
+  if (inherits(fitted.vals, "try-error")) {
+    if (exists("fitted.values", fm) &&  # defensive
+        length(fm[["fitted.values"]]) == nrow(data)) {
+      fitted.vals <- fm[["fitted.values"]]
+    } else {
+      warning("Fitted values could not be retrieved!")
+      fitted.vals <- rep(NA_real_, nrow(data))
+    }
+  }
+
+  if (inherits(fm, "lmrob")) {
+    try(weight.vals <- stats::weights(fm, type = "robustness"))
+    message("Extracting \"robustness\" weights from \"lmrob\" object")
   } else {
-    weight.vals <- stats::weights(fm)
-    weight.vals <- ifelse(length(weight.vals) == length(fitted.vals),
-                          weight.vals,
-                          rep_len(NA_real_, length(fitted.vals)))
+    try(weight.vals <- stats::weights(fm))
+  }
+  if (inherits(weight.vals, "try-error")) {
+    if (exists("w", fm)) {
+      weight.vals <- fm[["w"]]
+    } else if (exists("weights", fm) &&  # defensive
+               length(fm[["weights"]]) == length(fitted.vals)) {
+      weight.vals <- fm[["weights"]]
+    } else {
+      weight.vals <- rep_len(NA_real_, nrow(data))
+    }
   }
   if (orientation == "y") {
     data.frame(x = data$x,
@@ -349,6 +391,19 @@ stat_fit_fitted <- function(mapping = NULL, data = NULL, geom = "point",
                             orientation = NA,
                             show.legend = FALSE,
                             inherit.aes = TRUE, ...) {
+
+  if (is.character(method)) {
+    method <- trimws(method, which = "both")
+    method.name <- method
+  } else if (is.function(method)) {
+    method.name <- deparse(substitute(method))
+    if (grepl("^function[ ]*[(]", method.name[1])) {
+      method.name <- "function"
+    }
+  } else {
+    method.name <- "missing"
+  }
+
   ggplot2::layer(
     stat = StatFitFitted, data = data, mapping = mapping, geom = geom,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
@@ -416,6 +471,7 @@ fitted_compute_group_fun <- function(data,
                      rlm = "rlm:M",
                      lqs = "lqs:lts",
                      rq = "rq:br",
+                     gls = "gls:REML",
                      method)
     method.name <- method
     method <- strsplit(x = method, split = ":", fixed = TRUE)[[1]]
@@ -434,22 +490,30 @@ fitted_compute_group_fun <- function(data,
                      rlm = MASS::rlm,
                      lqs = MASS::lqs,
                      rq = quantreg::rq,
+                     gls = nlme::gls,
                      match.fun(method))
   } else if (is.function(method)) {
     fun.method <- character()
-    if (is.name(quote(method))) {
-      method.name <- as.character(quote(method))
-    } else {
-      method.name <- "function"
-    }
   }
 
-  fun.args <- list(quote(formula),
-                   data = quote(data),
-                   weights = data[["weight"]])
+  if (exists("weight", data) && !all(data[["weight"]] == 1)) {
+    stopifnot("A mapping to 'weight' and a named argument 'weights' cannot co-exist" =
+                !"weights" %in% method.args)
+    fun.args <- list(formula = quote(formula),
+                     data = quote(data),
+                     weights = data[["weight"]])
+  } else {
+    fun.args <- list(formula = quote(formula),
+                     data = quote(data))
+  }
   fun.args <- c(fun.args, method.args)
   if (length(fun.method)) {
     fun.args[["method"]] <- fun.method
+  }
+
+  # gls() parameter for formula is called model
+  if (grepl("gls", method.name)) {
+    names(fun.args)[1] <- "model"
   }
 
   # quantreg contains code with partial matching of names!
@@ -463,7 +527,19 @@ fitted_compute_group_fun <- function(data,
     }
   })
 
-  fitted.vals <- stats::fitted(fm)
+  # As users may use model fit functions that we have not tested
+  # we try hard to extract the components from the model fit object
+  try(fitted.vals <- stats::fitted(fm))
+  if (inherits(fitted.vals, "try-error")) {
+    if (exists("fitted.values", fm) &&  # defensive
+        length(fm[["fitted.values"]]) == nrow(data)) {
+      fitted.vals <- fm[["fitted.values"]]
+    } else {
+      warning("Fitted values could not be retrieved!")
+      fitted.vals <- rep(NA_real_, nrow(data))
+    }
+  }
+
   if (orientation == "y") {
     data.frame(x = fitted.vals,
                y = data$y)
