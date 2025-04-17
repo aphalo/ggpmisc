@@ -202,6 +202,7 @@ stat_fit_deviations <- function(mapping = NULL,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
     params =
       rlang::list2(method = method,
+                   method.name = method.name,
                    method.args = method.args,
                    n.min = n.min,
                    formula = formula,
@@ -220,7 +221,8 @@ stat_fit_deviations <- function(mapping = NULL,
 #'
 deviations_compute_group_fun <- function(data,
                                          scales,
-                                         method = "lm",
+                                         method,
+                                         method.name,
                                          method.args = list(),
                                          n.min = 2L,
                                          formula = y ~ x,
@@ -331,27 +333,34 @@ deviations_compute_group_fun <- function(data,
   }
 
   if (inherits(fm, "lmrob")) {
-    try(weight.vals <- stats::weights(fm, type = "robustness"))
-    message("Extracting \"robustness\" weights from \"lmrob\" object")
+    rob.weight.vals <- stats::weights(fm, type = "robustness")
+    weight.vals <- stats::weights(fm, type = "prior")
+    if (!length(weight.vals)) {
+      weight.vals <- rep_len(1, nrow(data))
+    }
+  } else if (inherits(fm, "rlm")) {
+    rob.weight.vals <- fm[["w"]]
+    weight.vals <- stats::weights(fm)
   } else {
-    try(weight.vals <- stats::weights(fm))
-  }
-  if (inherits(weight.vals, "try-error")) {
-    if (exists("w", fm)) {
-      weight.vals <- fm[["w"]]
-    } else if (exists("weights", fm) &&  # defensive
-               length(fm[["weights"]]) == length(fitted.vals)) {
-      weight.vals <- fm[["weights"]]
-    } else {
-      weight.vals <- rep_len(NA_real_, nrow(data))
+    rob.weight.vals <- rep(NA_real_, nrow(data))
+    try(prior.weight.vals <- stats::weights(fm))
+    if (inherits(weight.vals, "try-error")) {
+      if (exists("weights", fm) &&  # defensive
+          length(fm[["weights"]]) == nrow(data)) {
+        weight.vals <- fm[["weights"]]
+      } else {
+        weight.vals <- rep_len(NA_real_, nrow(data))
+      }
     }
   }
+
   if (orientation == "y") {
     data.frame(x = data$x,
                y = data$y,
                x.fitted = fitted.vals,
                y.fitted = data$y,
                weights = weight.vals,
+               robustness.weights = rob.weight.vals,
                hjust = 0)
   } else {
     data.frame(x = data$x,
@@ -359,6 +368,7 @@ deviations_compute_group_fun <- function(data,
                x.fitted = data$x,
                y.fitted = fitted.vals,
                weights = weight.vals,
+               robustness.weights = rob.weight.vals,
                hjust = 0)
   }
 }
@@ -409,6 +419,7 @@ stat_fit_fitted <- function(mapping = NULL, data = NULL, geom = "point",
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
     params =
       rlang::list2(method = method,
+                   method.name = method.name,
                    method.args = method.args,
                    n.min = n.min,
                    formula = formula,
@@ -428,6 +439,7 @@ stat_fit_fitted <- function(mapping = NULL, data = NULL, geom = "point",
 fitted_compute_group_fun <- function(data,
                                      scales,
                                      method,
+                                     method.name,
                                      method.args,
                                      n.min,
                                      formula,

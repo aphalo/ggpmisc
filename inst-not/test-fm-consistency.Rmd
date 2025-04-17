@@ -1,15 +1,8 @@
 ---
-title: "Custom polynomial models"
+title: "Test fm consistency"
 subtitle: "'ggpmisc' `r packageVersion('ggpmisc')`"
 author: "Pedro J. Aphalo"
 date: "`r Sys.Date()`"
-output: 
-  rmarkdown::html_vignette:
-    toc: yes
-vignette: >
-  %\VignetteIndexEntry{Custom polynomial models}
-  %\VignetteEncoding{UTF-8}
-  %\VignetteEngine{knitr::rmarkdown}
 ---
 
 ```{r, include=FALSE, echo=FALSE}
@@ -71,14 +64,13 @@ Some frequently use model fit functions that do not return model fit objects inh
 
 ### Robust regression ('MASS')
 
-Package 'MASS' provides function `rlm()` for "Robust Fitting of Linear Models". The returned value is an `"rlm"` object. Class `"rlm"` is derived from `"lm"` so the stats work mostly as expected. However, we need to be aware that no $R^2$ or $P$ estimates are available and the corresponding labels are empty strings.
-
 ```{r}
 ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
-  stat_poly_line(method = MASS::rlm) +
-  stat_poly_eq(method = MASS::rlm, mapping = use_label("eq", "n"),
-               label.x = "right") +
+  stat_poly_line(method = MASS::rlm, color = "black", alpha = 0.1) +
+  stat_poly_line(method = MASS::rlm, color = "red", fill = "red", alpha = 0.1) +
+  stat_poly_line(method = MASS::rlm, color = "green", fill = "green", alpha = 0.1) +
+  stat_poly_line(method = MASS::rlm, color = "blue", fill = "blue", alpha = 0.1) +
   facet_wrap(~class, ncol = 2)
 ```
 
@@ -86,13 +78,10 @@ When weights are available, either supplied by the user, or computed as part of 
 
 ```{r, fig.width = 7, fig.height = 5}
 ggplot(mpg, aes(displ, hwy)) +
-  stat_poly_line(method = MASS::rlm) +
-  stat_fit_deviations(method = "rlm",
-                      mapping = aes(colour = after_stat(robustness.weights)),
-                      show.legend = TRUE) +
-  scale_color_gradient(low = "red", high = "blue", limits = c(0, 1)) +
-  geom_point() +
-  theme(legend.position = "top")
+  stat_poly_line(method = MASS::rlm, color = "black", alpha = 0.1) +
+  stat_poly_line(method = MASS::rlm, color = "red", fill = "red", alpha = 0.1) +
+  stat_poly_line(method = MASS::rlm, color = "green", fill = "green", alpha = 0.1) +
+  stat_poly_line(method = MASS::rlm, color = "blue", fill = "blue", alpha = 0.1)
 ```
 
 
@@ -103,11 +92,10 @@ Package 'robustbase' provides function `lmrob()` for "MM-type Estimators for Lin
 
 ```{r}
 ggplot(mpg, aes(displ, hwy)) +
-  geom_point() +
-  stat_poly_line(method = robustbase::lmrob) +
-  stat_poly_eq(method = robustbase::lmrob, mapping = use_label("eq", "n"),
-               label.x = "right") +
-  theme(legend.position = "bottom") +
+  stat_poly_line(method = robustbase::lmrob, color = "black", alpha = 0.1) +
+  stat_poly_line(method = robustbase::lmrob, color = "red", fill = "red", alpha = 0.1) +
+  stat_poly_line(method = robustbase::lmrob, color = "green", fill = "green", alpha = 0.1) +
+  stat_poly_line(method = robustbase::lmrob, color = "blue", fill = "blue", alpha = 0.1) +
   facet_wrap(~class, ncol = 2)
 ```
 
@@ -115,13 +103,11 @@ When weights are available, either supplied by the user, or computed as part of 
 
 ```{r, fig.width = 7, fig.height = 5}
 ggplot(mpg, aes(displ, hwy)) +
-  stat_poly_line(method = robustbase::lmrob) +
-  stat_fit_deviations(method = robustbase::lmrob,
-                      mapping = aes(colour = after_stat(robustness.weights)),
-                      show.legend = TRUE) +
-  scale_color_gradient(low = "red", high = "blue", limits = c(0, 1)) +
-  geom_point() +
-  theme(legend.position = "top")
+  stat_poly_line(method = robustbase::lmrob, color = "black", alpha = 0.1) +
+  stat_poly_line(method = robustbase::lmrob, color = "red", fill = "red", alpha = 0.1) +
+  stat_poly_line(method = robustbase::lmrob, color = "green", fill = "green", alpha = 0.1) +
+  stat_poly_line(method = robustbase::lmrob, color = "blue", fill = "blue", alpha = 0.1)
+
 ```
 
 
@@ -131,11 +117,10 @@ Package 'MASS' provides function `lqs()` for "Resistant Regression". The returne
 
 ```{r}
 ggplot(mpg, aes(displ, hwy)) +
-  geom_point() +
-  stat_poly_line(method = MASS::lqs, se = FALSE) +
-  stat_poly_eq(method = MASS::lqs, mapping = use_label("eq", "n"),
-               label.x = "right") +
-  theme(legend.position = "bottom") +
+  stat_poly_line(method = MASS::lqs, se = FALSE, color = "black", alpha = 0.1) +
+  stat_poly_line(method = MASS::lqs, se = FALSE, color = "red", fill = "red", alpha = 0.1) +
+  stat_poly_line(method = MASS::lqs, se = FALSE, color = "green", fill = "green", alpha = 0.1) +
+  stat_poly_line(method = MASS::lqs, se = FALSE, color = "blue", fill = "blue", alpha = 0.1) +
   facet_wrap(~class, ncol = 2)
 ```
 
@@ -143,141 +128,23 @@ ggplot(mpg, aes(displ, hwy)) +
 
 In 'ggpmisc' (>= 0.6.2) function `gls()` from package 'nlme' is supported natively by functions `stat_poly_line()` and `stat_poly_eq()`. In this example, using a variance covariate, the computations do not converge with the data in one of the plot panels.
 
-```{r}
+```{r, warning=FALSE}
 ggplot(mpg, aes(displ, hwy)) +
-   geom_point() +
-   stat_poly_line(method = gls, 
+  stat_poly_line(method = gls, 
                   method.args = list(weights = varPower()), 
-                  se = FALSE) +
-   stat_poly_eq(method = gls, 
-                method.args = list(weights = varPower()),
-                mapping = use_label("eq"),
-   label.x = "right") +
-   theme(legend.position = "bottom") +
+                  color = "black", alpha = 0.1) +
+  stat_poly_line(method = gls, 
+                  method.args = list(weights = varPower()), 
+                  color = "red", fill = "red", alpha = 0.1) +
+  stat_poly_line(method = gls, 
+                  method.args = list(weights = varPower()), 
+                  color = "green", fill = "green", alpha = 0.1) +
+  stat_poly_line(method = gls, 
+                  method.args = list(weights = varPower()), 
+                  color = "blue", fill = "blue", alpha = 0.1) +
    facet_wrap(~class, ncol = 2)
 ```
 
-## User defined functions
-
-As mentioned above, layer functions `stat_poly_line()` and `stat_poly_eq()` support the use of any model fit function that returns an `"lm"` or a `"gls"` object similar to the objects returned by functions `lm()` and `gls()`. The model formula in this object and fitted model must be a polynomial and the variable mapped as response (_y_ or _x_ depending on `orientation`) must be a continuous variable. The returned model formula can vary by group and/or panel, as models are fitted separately to each of them, similarly as by `ggplot2::stat_smooth()`. 
-
-**`stat_poly_eq()` builds the fitted model equation based on the model formula extracted from the model fit object, which can differ from that passed as argument to `formula` when calling the statistic.** As the examples below demonstrate, this approach can be very useful.
-
-In the examples below I use `"lm"` model fit objects, but the same approaches can be applied to `"gls"` objects.
-
-### Fit or not
-
-In the first example we fit a model only if a minimum number of distinct _x_ values are present in `data`. We define a function that instead of fitting the model, returns `NA` when the condition is not fulfilled. Here `"x"` is the aesthetic, and has to be replaced by `"y"` depending on `orientation`.
-
-```{r}
-fit_or_not <- function(formula, data, ..., orientation = "x") {
-  if (length(unique(data[[orientation]])) > 5) {
-    lm(formula = formula, data = data, ...)
-  } else {
-    NA_real_
-  }
-}
-```
-
-Instead of using `stats::lm()` as method, we pass our wrapper function `fit_or_not()` as the method. As the function returns either an `"lm"` object from the wrapped call to `lm()` or `NA`, the call to the statistics can make use of all other features as needed.
-
-```{r}
-ggplot(mpg, aes(displ, hwy)) +
-  geom_point() +
-  stat_poly_line(method = "fit_or_not") +
-  stat_poly_eq(method = fit_or_not, 
-               mapping = use_label("eq", "R2"),
-               label.x = "right") +
-  stat_panel_counts(label.x = "left", label.y = "bottom") +
-  theme(legend.position = "bottom") +
-  facet_wrap(~class, ncol = 2)
-```
-
-### Degree of polynomial
-
-Not fitting a model, is a drastic solution. An alternative that we implement next, is to plot the mean when the slope of the linear regression is not significantly different from zero. In the example below instead of using `stats::lm()` as method, we define a different wrapper function that tests for the significance of the slope in linear regression, and if not significant, fits the mean instead. _This works because the model formula is extracted from the fitted model rather than using the argument passed by the user in the call to the statistics.
-
-
-_Fitting different models to different panels is supported._ User-defined method functions are required to return an object that inherits from class `"lm"`. The function is applied per group and panel, and the model `formula` fitted can differ among them, as it is retrieved from this object to construct the equation label.
-
-In the example below instead of using `stats::lm()` as method, we define a wrapper function that tests for the significance of the slope in linear regression, and if not significant, fits the mean instead. 
-
-```{r}
-poly_or_mean <- function(formula, data, ...) {
-   fm <- lm(formula = formula, data = data, ...)
-   if (anova(fm)[["Pr(>F)"]][1] > 0.1) {
-      lm(formula = y ~ 1, data = data, ...)
-   } else {
-      fm
-   }
-}
-```
-
-We then use our function `poly_or_mean()` as the method.
-
-```{r}
-ggplot(mpg, aes(displ, hwy)) +
-   geom_point() +
-   stat_poly_line(method = "poly_or_mean") +
-   stat_poly_eq(method = poly_or_mean,
-               mapping = use_label("eq", "R2"),
-               label.x = "right") +
-   theme(legend.position = "bottom") +
-   facet_wrap(~class, ncol = 2)
-```
-
-```{r}
-ggplot(mpg, aes(displ, hwy, color = class)) +
-   geom_point() +
-   stat_poly_line(method = "poly_or_mean") +
-   stat_poly_eq(method = poly_or_mean,
-               mapping = use_label("eq"),
-               label.x = "right") +
-   theme(legend.position = "top")
-```
-
-A different approach to selecting the degree of a polynomial is to use stepwise selection based on AIC. In this case the `formula` passed as argument is the "upper" degree of the polynomial. All lower degree polynomials are fitted and the one with lowest AIC used.
-
-```{r}
-best_poly_lm <- function(formula, data, ...) {
-  poly.term <- as.character(formula)[3]
-  degree <- as.numeric(gsub("poly[(]x, |, raw = TRUE|[)]", "", poly.term))
-  fms <- list()
-  AICs <- numeric(degree)
-  for (d in 1:degree) {
-    # we need to define the formula with the value of degree replaced
-    working.formula <- as.formula(bquote(y ~ poly(x, degree = .(d), raw = TRUE)))
-    fms[[d]] <- lm(formula = working.formula, data = data, ...)
-    AICs[d] <- AIC(fms[[d]])
-  }
-  fms[[which.min(AICs)[1]]] # if there is a tie, we take the simplest
-}
-```
-
-We then use our function `best_poly_lm()` as the method.
-
-```{r}
-ggplot(mpg, aes(displ, hwy)) +
-  geom_point() +
-  stat_poly_line(formula = y ~ poly(x, 3, raw = TRUE), method = "best_poly_lm") +
-  stat_poly_eq(formula = y ~ poly(x, 3, raw = TRUE), method = "best_poly_lm",
-               mapping = use_label("eq", "AIC"),
-               size = 2.8,
-               label.x = "right") +
-  expand_limits(y = c(0, 65)) +
-  facet_wrap(~class, ncol = 2)
-```
-
-```{r}
-ggplot(mpg, aes(displ, hwy, color = class)) +
-  geom_point() +
-  stat_poly_line(formula = y ~ poly(x, 3, raw = TRUE), method = "best_poly_lm") +
-  stat_poly_eq(formula = y ~ poly(x, 3, raw = TRUE), method = "best_poly_lm",
-               mapping = use_label("eq", "AIC"),
-               label.x = "right") +
-  expand_limits(y = c(0, 65)) +
-  theme(legend.position = "top")
-```
 
 ## Errors in variables (EIV)
 
@@ -356,18 +223,47 @@ predict.lm_EIV <- function(object, newdata = NULL, ...) {
 
 Here the limitation of 'ggplot2' and 'ggpmisc' in that the fit is recomputed in each layer causes a further difficulty, as with most algorithms using random numbers, the successive refits do not necessarily produce the same rasults. In this case, the equation and line are not matched. This is something that can most likely be fixed in 'ggpmisc' by setting the seed of the RNG. (Or by caching the result of the model fit and reusing it.)
 
-```{r}
+```{r, message=FALSE}
 ggplot(mpg, aes(x = displ, y = hwy)) +
   geom_point() +
   stat_poly_line(aes(y = hwy),
                  method = "lm_EIV",
-                 method.args = list(sigma.sq.u = 0.01)) +
-  stat_poly_eq(aes(y = hwy, 
-                   label = paste(after_stat(eq.label), after_stat(rr.label), 
-                                 sep = "~~")),
-               method = "lm_EIV",
-               method.args = list(sigma.sq.u = 0.01),
-               label.x = "right") +
+                 method.args = list(sigma.sq.u = 0.01), 
+                 color = "black", alpha = 0.1) +
+  stat_poly_line(aes(y = hwy),
+                 method = "lm_EIV",
+                 method.args = list(sigma.sq.u = 0.01),
+                 color = "red", fill = "red", alpha = 0.1) +
+  stat_poly_line(aes(y = hwy),
+                 method = "lm_EIV",
+                 method.args = list(sigma.sq.u = 0.01),
+                 color = "green", fill = "green", alpha = 0.1) +
+  stat_poly_line(aes(y = hwy),
+                 method = "lm_EIV",
+                 method.args = list(sigma.sq.u = 0.01),
+                 color = "blue", fill = "blue", alpha = 0.1) +
   facet_wrap(~class, ncol = 2)
 ```
 
+
+```{r, message=FALSE}
+ggplot(mpg, aes(x = displ, y = hwy)) +
+  geom_point() +
+  stat_poly_line(aes(y = hwy),
+                 method = "lm_EIV",
+                 method.args = list(sigma.sq.u = 0.1), 
+                 color = "black", alpha = 0.1) +
+  stat_poly_line(aes(y = hwy),
+                 method = "lm_EIV",
+                 method.args = list(sigma.sq.u = 0.1),
+                 color = "red", fill = "red", alpha = 0.1) +
+  stat_poly_line(aes(y = hwy),
+                 method = "lm_EIV",
+                 method.args = list(sigma.sq.u = 0.1),
+                 color = "green", fill = "green", alpha = 0.1) +
+  stat_poly_line(aes(y = hwy),
+                 method = "lm_EIV",
+                 method.args = list(sigma.sq.u = 0.1),
+                 color = "blue", fill = "blue", alpha = 0.1) +
+  facet_wrap(~class, ncol = 2)
+```

@@ -217,7 +217,7 @@ stat_poly_line <- function(mapping = NULL,
   }
 
   if (is.null(se)) {
-    se <- ifelse(grepl("gls", method.name), FALSE, TRUE)
+    se <- ifelse(grepl("gls|lqs", method.name), FALSE, TRUE)
   }
 
   if (is.null(formula)) {
@@ -273,7 +273,7 @@ poly_line_compute_group_fun <-
            method,
            method.name,
            formula = NULL,
-           se = TRUE,
+           se,
            fm.values = FALSE,
            n = 80,
            fullrange = FALSE,

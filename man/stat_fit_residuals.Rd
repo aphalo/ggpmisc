@@ -101,18 +101,25 @@ How weights are applied to residuals depends on the method used to fit
   squares of the residuals, so the weighted residuals are obtained by
   multiplying the "deviance" residuals by the square root of the weights.
   When residuals are penalized differently to fit a model, the weighted
-  residuals need to be computed accordingly. Say if we use the absolute value
-  of the residuals instead of the squared values, weighted residuals are
-  obtained by multiplying the residuals by the weights.
+  residuals need to be computed accordingly. To types of weights are
+  possible: prior ones supplied in the call, and "robustness weights"
+  implicitly or explicitly used by robust regression methods. Not all the
+  supported methods return prior weights and \code{gls()} does not return
+  weights of any type. When not available weights are set to NA unless when
+  known to be equal to 1.
 }
 \section{Computed variables}{
  Data frame with same value of \code{nrow} as
-  \code{data} as subset for each group containing five numeric variables.
+  \code{data} as subset for each group containing six numeric variables.
   \describe{ \item{x}{x coordinates of observations or x residuals from
   fitted values}, \item{y}{y coordinates of observations or y residuals from
   fitted values}, \item{x.resid}{residuals from fitted values},
   \item{y.resid}{residuals from fitted values}, \item{weights}{the weights
-  passed as input to lm or those computed by rlm}}.
+  passed as input to \code{lm()}, \code{rlm()}, or \code{lmrob()},
+  using aesthetic weight. More generally the value returned by
+  \code{weights()} }, \item{robustness.weights}{the "weights"
+  of the applied minimization criterion relative to those of OLS in
+  \code{rlm()}, or \code{lmrob()}} }.
 
   For \code{orientation = "x"}, the default, \code{stat(y.resid)} is copied
   to variable \code{y}, while for \code{orientation = "y"}

@@ -61,17 +61,24 @@
 #'   squares of the residuals, so the weighted residuals are obtained by
 #'   multiplying the "deviance" residuals by the square root of the weights.
 #'   When residuals are penalized differently to fit a model, the weighted
-#'   residuals need to be computed accordingly. Say if we use the absolute value
-#'   of the residuals instead of the squared values, weighted residuals are
-#'   obtained by multiplying the residuals by the weights.
+#'   residuals need to be computed accordingly. To types of weights are
+#'   possible: prior ones supplied in the call, and "robustness weights"
+#'   implicitly or explicitly used by robust regression methods. Not all the
+#'   supported methods return prior weights and \code{gls()} does not return
+#'   weights of any type. When not available weights are set to NA unless when
+#'   known to be equal to 1.
 #'
 #' @section Computed variables: Data frame with same value of \code{nrow} as
-#'   \code{data} as subset for each group containing five numeric variables.
+#'   \code{data} as subset for each group containing six numeric variables.
 #'   \describe{ \item{x}{x coordinates of observations or x residuals from
 #'   fitted values}, \item{y}{y coordinates of observations or y residuals from
 #'   fitted values}, \item{x.resid}{residuals from fitted values},
 #'   \item{y.resid}{residuals from fitted values}, \item{weights}{the weights
-#'   passed as input to lm or those computed by rlm}}.
+#'   passed as input to \code{lm()}, \code{rlm()}, or \code{lmrob()},
+#'   using aesthetic weight. More generally the value returned by
+#'   \code{weights()} }, \item{robustness.weights}{the "weights"
+#'   of the applied minimization criterion relative to those of OLS in
+#'   \code{rlm()}, or \code{lmrob()}} }.
 #'
 #'   For \code{orientation = "x"}, the default, \code{stat(y.resid)} is copied
 #'   to variable \code{y}, while for \code{orientation = "y"}
@@ -201,6 +208,7 @@ stat_fit_residuals <- function(mapping = NULL,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
     params =
       rlang::list2(method = method,
+                   method.name = method.name,
                    method.args = method.args,
                    n.min = n.min,
                    formula = formula,
@@ -219,7 +227,8 @@ stat_fit_residuals <- function(mapping = NULL,
 #'
 residuals_compute_group_fun <- function(data,
                                         scales,
-                                        method = "lm",
+                                        method,
+                                        method.name,
                                         method.args = list(),
                                         n.min = 2L,
                                         formula = y ~ x,
@@ -340,19 +349,24 @@ residuals_compute_group_fun <- function(data,
   }
 
   if (inherits(fm, "lmrob")) {
-    try(weight.vals <- stats::weights(fm, type = "robustness"))
-    message("Extracting \"robustness\" weights from \"lmrob\" object")
+    rob.weight.vals <- stats::weights(fm, type = "robustness")
+    weight.vals <- stats::weights(fm, type = "prior")
+    if (!length(weight.vals)) {
+      weight.vals <- rep_len(1, nrow(data))
+    }
+  } else if (inherits(fm, "rlm")) {
+    weight.vals <- stats::weights(fm)
+    rob.weight.vals <- fm[["w"]]
   } else {
+    rob.weight.vals <- rep_len(NA_real_, nrow(data))
     try(weight.vals <- stats::weights(fm))
-  }
-  if (inherits(weight.vals, "try-error")) {
-    if (exists("w", fm)) {
-      weight.vals <- fm[["w"]]
-    } else if (exists("weights", fm) && # defensive
-               length(fm[["weights"]]) == length(fit.residuals)) {
-      weight.vals <- fm[["weights"]]
-    } else {
-      weight.vals <- rep_len(NA_real_, nrow(data))
+    if (inherits(weight.vals, "try-error")) {
+      if (exists("weights", fm) &&  # defensive
+          length(fm[["weights"]]) == nrow(data)) {
+        weight.vals <- fm[["weights"]]
+      } else {
+        weight.vals <- rep_len(NA_real_, nrow(data))
+      }
     }
   }
 
