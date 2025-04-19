@@ -86,12 +86,12 @@ When weights are available, either supplied by the user, or computed as part of 
 
 ```{r, fig.width = 7, fig.height = 5}
 ggplot(mpg, aes(displ, hwy)) +
-  stat_poly_line(method = MASS::rlm) +
+  stat_poly_line(method = MASS::rlm, colour = "black") +
   stat_fit_deviations(method = "rlm",
                       mapping = aes(colour = after_stat(robustness.weights)),
-                      show.legend = TRUE) +
+                      show.legend = TRUE,
+                      geom = "point") +
   scale_color_gradient(low = "red", high = "blue", limits = c(0, 1)) +
-  geom_point() +
   theme(legend.position = "top")
 ```
 
@@ -115,12 +115,13 @@ When weights are available, either supplied by the user, or computed as part of 
 
 ```{r, fig.width = 7, fig.height = 5}
 ggplot(mpg, aes(displ, hwy)) +
-  stat_poly_line(method = robustbase::lmrob) +
+  stat_poly_line(method = robustbase::lmrob, colour = "black") +
   stat_fit_deviations(method = robustbase::lmrob,
                       mapping = aes(colour = after_stat(robustness.weights)),
-                      show.legend = TRUE) +
-  scale_color_gradient(low = "red", high = "blue", limits = c(0, 1)) +
-  geom_point() +
+                      show.legend = TRUE,
+                      geom = "point") +
+  scale_color_gradient(name = "Robustness weights",
+                       low = "red", high = "blue", limits = c(0, 1)) +
   theme(legend.position = "top")
 ```
 
@@ -138,6 +139,49 @@ ggplot(mpg, aes(displ, hwy)) +
   theme(legend.position = "bottom") +
   facet_wrap(~class, ncol = 2)
 ```
+
+Weights are currently not available for `MASS::lqs()` and `NA` vectors are returned instead. To highlight the LTS weights, `rosbustbase::ltsReg()` can be used as shown in the next section. 
+
+```{r, fig.width = 7, fig.height = 5}
+ggplot(mpg, aes(displ, hwy)) +
+  stat_poly_line(method = "lqs:lms", colour = "black") +
+  stat_fit_deviations(method = "lqs:lms",
+                      mapping = 
+                        aes(colour = factor(after_stat(robustness.weights))),
+                      show.legend = TRUE,
+                      geom = "point") +
+  scale_color_manual(name = "LTS weights",
+                     values = c("0" = "red", "1" = "black")) +
+  theme(legend.position = "top")
+```
+
+### Resistant regression ('robustbase')
+
+Package 'MASS' provides function `lqs()` for "Resistant Regression". The returned value is an `"lqs"` object. Class `"rlm"` is not derived from `"lm"` but the structure is similar. However, we need to be aware that no $R^2$ or $P$ estimates are available and the corresponding labels are empty strings.
+
+```{r}
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  stat_poly_line(method = robustbase::ltsReg, se = FALSE) +
+  stat_poly_eq(method = robustbase::ltsReg, mapping = use_label("eq", "n"),
+               label.x = "right") +
+  theme(legend.position = "bottom") +
+  facet_wrap(~class, ncol = 2)
+```
+
+
+```{r, fig.width = 7, fig.height = 5}
+ggplot(mpg, aes(displ, hwy)) +
+  stat_poly_line(method = robustbase::ltsReg, colour = "black") +
+  stat_fit_deviations(mapping = aes(colour = factor(after_stat(robustness.weights))),
+                      geom = "point",
+                      method = robustbase::ltsReg,
+                      show.legend = TRUE) +
+  scale_color_manual(name = "LTS weights",
+                     values = c("0" = "red", "1" = "blue")) +
+  theme(legend.position = "top")
+```
+
 
 ### Generalized Least Squares ('nlme')
 

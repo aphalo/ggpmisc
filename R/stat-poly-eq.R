@@ -780,9 +780,10 @@ poly_eq_compute_group_fun <- function(data,
   if (!length(fm) || (is.atomic(fm) && is.na(fm))) {
     return(data.frame())
   } else if (!(inherits(fm, "lm") || inherits(fm, "lmrob") ||
-               inherits(fm, "gls") || inherits(fm, "lqs"))) {
+               inherits(fm, "gls") || inherits(fm, "lqs") ||
+               inherits(fm, "lts"))) {
     warning("Method \"", method.name,
-            "\" did not return a \"lm\", \"lmrob\", \"lqs\" or \"gls\" object, possible failure ahead.")
+            "\" did not return a \"lm\", \"lmrob\", \"lqs\", \"lts\" or \"gls\" object, possible failure ahead.")
   }
 
   fm.summary <- summary(fm)

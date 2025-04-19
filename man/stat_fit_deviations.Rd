@@ -90,19 +90,20 @@ residuals ready to be plotted as segments.
 }
 \details{
 This stat can be used to automatically highlight residuals as
-  segments in a plot of a fitted model equation. This stat only generates the
-  residuals, the predicted values need to be separately added to the plot, so
-  to make sure that the same model formula is used in all steps it is best to
-  save the formula as an object and supply this object as argument to the
-  different statistics.
+  segments in a plot of a fitted model equation. This stat only returns the
+  fitted values and observations, the prediction and its confidence need to
+  be separately added to the plot when desired. Thus, to make sure that the
+  same model formula is used in all plot layers, it is best to save the
+  formula as an object and supply this object as argument to the different
+  statistics.
 
   A ggplot statistic receives as data a data frame that is not the one passed
   as argument by the user, but instead a data frame with the variables mapped
-  to aesthetics. In other words, it respects the grammar of graphics and
-  consequently within the model \code{formula} names of aesthetics like $x$
-  and $y$ should be used instead of the original variable names. This helps
-  ensure that the model is fitted to the same data as plotted in other
-  layers.
+  to aesthetics and NA values removed. In other words, it respects the
+  grammar of graphics and consequently within the model \code{formula} names
+  of aesthetics like $x$ and $y$ should be used instead of the original
+  variable names. This helps ensure that the model is fitted to the same data
+  as plotted in other layers.
 }
 \note{
 In the case of \code{method = "rq"} quantiles are fixed at \code{tau =
@@ -115,7 +116,12 @@ In the case of \code{method = "rq"} quantiles are fixed at \code{tau =
   as subset for each group containing five numeric variables. \describe{
   \item{x}{x coordinates of observations} \item{x.fitted}{x coordinates of
   fitted values} \item{y}{y coordinates of observations} \item{y.fitted}{y
-  coordinates of fitted values}}
+  coordinates of fitted values}, \item{weights}{the weights
+  passed as input to \code{lm()}, \code{rlm()}, or \code{lmrob()},
+  using aesthetic weight. More generally the value returned by
+  \code{weights()} }, \item{robustness.weights}{the "weights"
+  of the applied minimization criterion relative to those of OLS in
+  \code{rlm()}, or \code{lmrob()}} }
 
   To explore the values returned by this statistic we suggest the use of
   \code{\link[gginnards]{geom_debug}}. An example is shown below, where one

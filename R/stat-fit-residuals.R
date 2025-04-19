@@ -61,7 +61,7 @@
 #'   squares of the residuals, so the weighted residuals are obtained by
 #'   multiplying the "deviance" residuals by the square root of the weights.
 #'   When residuals are penalized differently to fit a model, the weighted
-#'   residuals need to be computed accordingly. To types of weights are
+#'   residuals need to be computed accordingly. Two types of weights are
 #'   possible: prior ones supplied in the call, and "robustness weights"
 #'   implicitly or explicitly used by robust regression methods. Not all the
 #'   supported methods return prior weights and \code{gls()} does not return
@@ -354,12 +354,21 @@ residuals_compute_group_fun <- function(data,
     if (!length(weight.vals)) {
       weight.vals <- rep_len(1, nrow(data))
     }
+  } else if (inherits(fm, "lts")) {
+    rob.weight.vals <- fm[["lts.wt"]]
+    weight.vals <- rep_len(1, nrow(data))
   } else if (inherits(fm, "rlm")) {
-    weight.vals <- stats::weights(fm)
     rob.weight.vals <- fm[["w"]]
+    weight.vals <- stats::weights(fm)
+  } else if (inherits(fm, "lqs")) {
+    ## what does fm$bestone contain?
+    warning("Returned \"robustness weights\" are likely incorrect")
+    rob.weight.vals <- rep_len(0, nrow(data))
+    rob.weight.vals[fm[["bestone"]]] <- 1
+    weight.vals <- rep_len(1, nrow(data))
   } else {
-    rob.weight.vals <- rep_len(NA_real_, nrow(data))
-    try(weight.vals <- stats::weights(fm))
+    rob.weight.vals <- rep(NA_real_, nrow(data))
+    try(prior.weight.vals <- stats::weights(fm))
     if (inherits(weight.vals, "try-error")) {
       if (exists("weights", fm) &&  # defensive
           length(fm[["weights"]]) == nrow(data)) {
@@ -375,13 +384,15 @@ residuals_compute_group_fun <- function(data,
                x = fit.residuals,
                x.resid = fit.residuals,
                y.resid = NA_real_,
-               weights = weight.vals)
+               weights = weight.vals,
+               robustness.weights = rob.weight.vals)
   } else {
     data.frame(x = data$x,
                y = fit.residuals,
                y.resid = fit.residuals,
                x.resid = NA_real_,
-               weights = weight.vals)
+               weights = weight.vals,
+               robustness.weights = rob.weight.vals)
   }
 }
 

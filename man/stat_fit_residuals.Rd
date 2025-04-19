@@ -101,7 +101,7 @@ How weights are applied to residuals depends on the method used to fit
   squares of the residuals, so the weighted residuals are obtained by
   multiplying the "deviance" residuals by the square root of the weights.
   When residuals are penalized differently to fit a model, the weighted
-  residuals need to be computed accordingly. To types of weights are
+  residuals need to be computed accordingly. Two types of weights are
   possible: prior ones supplied in the call, and "robustness weights"
   implicitly or explicitly used by robust regression methods. Not all the
   supported methods return prior weights and \code{gls()} does not return

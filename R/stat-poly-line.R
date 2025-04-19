@@ -352,44 +352,56 @@ poly_line_compute_group_fun <-
     if (!length(fm) || (is.atomic(fm) && is.na(fm))) {
       return(data.frame())
     } else if (!(inherits(fm, "lm") || inherits(fm, "lmrob") ||
-                 inherits(fm, "gls") || inherits(fm, "lqs"))) {
+                 inherits(fm, "gls") || inherits(fm, "lqs") ||
+                 inherits(fm, "lts"))) {
       message("Method \"", method.name,
-              "\" did not return a \"lm\", \"lmrob\", \"lqs\" or \"gls\" object, possible failure ahead.")
+              "\" did not return a \"lm\", \"lmrob\", \"lqs\", \"lts\" or \"gls\" object, possible failure ahead.")
     }
 
-    newdata <- data.frame(x = xseq)
-
-    # We try hard to extract predicted values
-    try(
-      prediction <- stats::predict(fm,
-                                   newdata = newdata,
-                                   se.fit = se,
-                                   level = level,
-                                   interval = if (se) "confidence" else "none"
-      )
-    )
-    if (inherits(prediction, "try-error")) {
-      if (se) {
-        message("Confidence band not supported: overridding 'se = TRUE'")
-        se <- FALSE
+    has.predict.method <- FALSE
+    for (cl in class(fm)) {
+      if (any(grepl("^predict", methods(class = cl)))) {
+        has.predict.method <- TRUE
+        break()
       }
+    }
+    if (has.predict.method) {
+      # We try hard to extract predicted values
+      newdata <- data.frame(x = xseq)
       try(
-        prediction <- stats::predict(fm, newdata = newdata)
+        prediction <- stats::predict(fm,
+                                     newdata = newdata,
+                                     se.fit = se,
+                                     level = level,
+                                     interval = if (se) "confidence" else "none"
+        )
       )
       if (inherits(prediction, "try-error")) {
-        message("Prediction failed!")
-        prediction <- rep(NA_real_, nrow(data))
+        if (se) {
+          message("Confidence band not supported: overridding 'se = TRUE'")
+          se <- FALSE
+        }
+        try(
+          prediction <- stats::predict(fm, newdata = newdata)
+        )
+        if (inherits(prediction, "try-error")) {
+          Warning("Prediction failed!")
+          prediction <- rep_len(NA_real_, nrow(data))
+        }
       }
-    }
-    if (se) {
-      if (exists("fit", prediction)) {
-        prediction <- as.data.frame(prediction[["fit"]])
+      if (se) {
+        if (exists("fit", prediction)) {
+          prediction <- as.data.frame(prediction[["fit"]])
+        }
+        names(prediction) <- c("y", "ymin", "ymax")
+      } else {
+        prediction <- data.frame(y = as.vector(prediction))
       }
-      names(prediction) <- c("y", "ymin", "ymax")
+      prediction <- cbind(newdata, prediction)
     } else {
-      prediction <- data.frame(y = as.vector(prediction))
+      message("Fitted values returned")
+      prediction <- data.frame(x = data[["x"]], y = fitted(fm))
     }
-    prediction <- cbind(newdata, prediction)
 
     if (fm.values) {
       fm.summary <- summary(fm)

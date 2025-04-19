@@ -6,14 +6,15 @@ editor_options:
 
 # ggpmisc 0.6.2
 
--   In `stat_poly_line()` and `stat_poly_eq() a fitted model object of an unexpected class triggers a warning instead of an error, as wider compatibility is provided by improved tolerance for missing fields and methods.
--   Support `MASS::lqs()` in `stat_poly_line()` and `stat_poly_eq()`, resistant regression methods. 
--   Support `nlme::gls()` in `stat_poly_line()` and `stat_poly_eq()`, polynomials fitted by generalised least squares support variance covariates and autocorrelation. 
--   Support `robustbase::lmrob()` in `stat_poly_line()` and `stat_poly_eq()`, polynomials fitted by robust regression methods. 
--   Support `nlme::gls()`, `MASS::lqs()`, `robustbase::lmrob()` and model fit objects of classes for which method `weights()` is not available in `stat_fit_deviations()`, `stat_fit_fitted()`, `stat_fit_residuals()`.
--   Update `scale_x_logFC()`and `scale_y_logFC()` for improved compatibility with 'ggplot2' (== 3.5.1.9000).
+The main new feature in this release is support of additional model fit functions, both explicitly and by handling missing methods and values more gracefully.
+
+-   In `stat_poly_line()` and `stat_poly_eq() a fitted model object of an unexpected class triggers a warning instead of an error.
+-   Support `MASS::lqs()`, `nlme::gls()`, `robustbase::lmrob()` and `robustbase::lstReg()` in `stat_poly_line()`, `stat_poly_eq()`, `stat_fit_deviations()`, stat_fit_residuals()` and `stat_fit_fitted()`. 
+-   Support `nlme::gls()`, `MASS::lqs()`, `robustbase::lmrob()`, `robustbase::ltsReg()` and model fit objects of classes for which method `weights()` is not available in `stat_fit_deviations()`, `stat_fit_fitted()`, `stat_fit_residuals()`.
+-   If `predict()` is not available for a `method`, function `stat_poly_line()` uses `fitted()` instead.
 -   Code breaking change in `stat_fit_deviations()`: consistently return prior weights in variable `weights` and new variable `robustness.weights` for the implicit weights used by robust fit methods.
 -   Bug fix: the value of 'method.label' not always set.
+-   Update `scale_x_logFC()`and `scale_y_logFC()` for improved compatibility with 'ggplot2' (== 3.5.1.9000).
 -   Add HTML Cheat Sheet.
 -   Add article 'Custom polynomial models' as on-line only documentation.
 
