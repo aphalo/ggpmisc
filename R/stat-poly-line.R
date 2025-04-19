@@ -360,7 +360,7 @@ poly_line_compute_group_fun <-
 
     has.predict.method <- FALSE
     for (cl in class(fm)) {
-      if (any(grepl("^predict", methods(class = cl)))) {
+      if (any(grepl("^predict", utils::methods(class = cl)))) {
         has.predict.method <- TRUE
         break()
       }
@@ -385,7 +385,7 @@ poly_line_compute_group_fun <-
           prediction <- stats::predict(fm, newdata = newdata)
         )
         if (inherits(prediction, "try-error")) {
-          Warning("Prediction failed!")
+          warning("Prediction failed!")
           prediction <- rep_len(NA_real_, nrow(data))
         }
       }
