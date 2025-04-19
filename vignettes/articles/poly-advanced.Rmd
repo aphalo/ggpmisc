@@ -26,15 +26,13 @@ options(warnPartialMatchArgs = FALSE,
 eval_flag <- TRUE # evaluate all code chunks
 ```
 
-## Purpose
+## Aims of 'ggpmisc' and caveats
 
 Package 'ggpmisc' makes it easier to add to plots created using 'ggplot2' annotations based on fitted models and other statistics. It does this by wrapping existing model fit and other functions. The same annotations can be produced by calling the model fit functions, extracting the desired estimates and adding them to plots. There are two advantages in wrapping these functions in an extension to package 'ggplot2': 1) we ensure the coupling of graphical elements and the annotations by building all elements of the plot using the same data and a consistent grammar and 2) we make it easier to annotate plots to the casual user of R, already familiar with the grammar of graphics.
 
 _To avoid confusion it is good to make clear what may seem obvious to some: if no plot is needed, then there is no reason to use this package. The values shown as annotations are not computed by 'ggpmisc' but instead by the usual model-fit and statistical functions from R and other packages. The same is true for model predictions, residuals, etc. that some of the functions in 'ggpmisc' display as lines, segments, or other graphical elements._
 
 It is also important to remember that in most cases data analysis including exploratory and other stages should take place before annotated plots for publication are produced. Even though data analysis can benefit from combined numerical and graphical representation of the results, the use I envision for 'ggpmisc' is mainly for the production of plots for publication or communication of a completed analysis.
-
-Attaching package 'ggpmisc' also attaches package 'ggpp' as this package was created as a spin-off from 'ggpmisc'. 'ggpp' provides several of the geometries used by default in the statistics described below. Package 'ggpp' can be loaded and attached on its own, and has [separate documentation](https://docs.r4photobiology.info/ggpp/).
 
 ## Preliminaries
 
@@ -46,6 +44,8 @@ library(nlme)
 library(refitME)
 ```
 
+Attaching package 'ggpmisc' also attaches package 'ggpp' as it provides several of the geometries used by default in the statistics described below. Package 'ggpp' can be loaded and attached on its own, and has [separate documentation](https://docs.r4photobiology.info/ggpp/).
+
 As we will use text and labels on the plotting area we change the default theme to an uncluttered one.
 
 ```{r}
@@ -56,18 +56,35 @@ old_theme <- theme_set(theme_bw())
 
 Both functions are designed for flexibility while still attempting to keep their implementation and use rather straightforward.
 
-* Any R function or its name is accepted as argument for `method`.
-* The fitted model object must belong to class `"lm"` or to class `"gls"`, as tested with `inherits()`.
-* The implementation tolerates some missing fields in model fit objects of a derived class and summary, e.g., `stat_poly_eq()` returns "empty" `character' labels in such cases.
-* The formula used to construct the equation is, whenever possible, extracted from the fitted model object, and only exceptionally, with a warning, the formula passed as argument for `formula` in the call.
+_Function `stat_poly_eq()` requires that the model `formula` is a regular polynomial (with no missing intermediate power terms), with the exception that the intercept can be missing._ Function `stat_poly_line()` has fewer requirements for the argument passed to `formula`. 
 
-This makes it possible to use as `method` existing model fit functions that return an object of a class derived from `"lm"` or `"gls"` or wrapper functions that call such functions, or in some other way return an object of a class derived from `"lm"`.
+Both statistics:
+* Accept any R function or its name as argument for `method`,
+* as long as fitted model object belongs to classes `"lm"`, `"rlm"`, `"lqs"`, `"lts"` or `"gls"`, as tested with `inherits()`, and additionally models of other classes as long as methods are available.
+* Their implementation tolerates some missing methods and fields in model fit objects and their summary, i.e., returning `NA_real_` or empty `character` strings depending on the case.
+* The formula used to construct the equation is, whenever possible, extracted from the fitted model object. Only exceptionally, with this approach fails, the formula passed as argument for `formula` in the call is used with a warning.
 
-To showcase this, I explore the use of contributed and user defined model fit functions through examples. The examples use facets or grouping to demonstrate that the models fitted depend on the data, but the approach and functions can be also used with no facets and/or groups to automate the creation of reports or similar.
+This design makes it possible to use as `method` existing model fit functions that return an object of one of the classes specifically supported, wrapper functions that call such functions, or in some other way return an object of a _known_ class such as `"lm"` or a class with suitable methods implemented.
 
-Some frequently use model fit functions that do not return model fit objects inheriting from class `"lm"` are supported in 'ggpmisc' by specific statistics: `stat_ma_line()` and `stat_ma_eq()` for mayor axis regression with package 'lmodel2', and `stat_quant_line()`, `stat_quant_band()` and `stat_quant_equation()` for quantile regression with package 'quantreg'. Their use is documented in the User Guide and their help pages.
+To showcase this, I explore the use of contributed and user defined model fit functions through examples. Several of the examples use facets or grouping to demonstrate how the models fitted depend on the data. The approach can be also useful in the absence of facets and/or groups, for example for dynamic reports or dashboards.
+
+Two frequently use model fit functions that return model fit objects that require special handling to extract values are supported in 'ggpmisc' by specific statistics: `stat_ma_line()` and `stat_ma_eq()` for mayor axis regression with package 'lmodel2', and `stat_quant_line()`, `stat_quant_band()` and `stat_quant_equation()` for quantile regression with package 'quantreg'. Their use is documented in the User Guide and their help pages.
 
 ## Existing functions
+
+We consider cases in which fitting linear models with _ordinary least squares_ (OLS) as criterion is unsuitable. 
+
+In the case of outliers, many methods are available, and each fit function usually also supports several variations within a class of methods. In _robust regression_ the weight of extreme observations in the computation of the penalty function is decreased compared to OLS. The effect of such decrease can be described as weights ranging continuously between 0 and 1, either actually used in the fit algorithm or computed _a posteriori_ by comparison to OLS. In _resistant regression_, some observations are ignored altogether, which is equivalent to discrete weights taking one of two values, 0 or 1. Even if these approaches work automatically, similarly as when discarding observations manually, it is important to investigate the origin of outliers.
+
+_Generalised least squares_ (GLS) is an extension to OLS that makes it possible to describe how the variance of the response _y_ varies. GLS supports description of heterogeneous variance by means of variance covariates, and correlation structures.
+
+_Error in variance_ (EIV) methods remove the assumption that the values of the covariate _x_ are measured/known without error. It is important here to stress that linear models (LM) do not require us to assume that there is no variation in _x_, only that we have observed/measured/know these values without error. To apply most of these methods, we need independently obtained information about the size of the measuring errors affecting covariates.
+
+Not exemplified here, _major axis regression_ (MA), is useful when both _x_ and _y_ values are affected to comparable extents by measurement errors. This is typically the case when there is no causal direction between _x_ and _y_ such as in allometric relationships between body parts of the same individual. See `stat_ma_line()` and `stat_ma_eq()`.
+
+_Quantile regression_ can be thought as similar to both a regression an a box plot. It makes it possible to fit curves that divide the observations in 2D space into quantiles, approximately preserving this split along a fitted curve of _y_ on _x_. See `stat_quant_line()`, `stat_quant_band()` and `stat_quant_eq()`.
+
+As all these methods use different penalty functions when fitting a model to observations, they yield different estimates of parameter values for the same model formula. For several of these methods the approximate solution is obtained using numeral iteration. In these cases, it is important to check whether the solution is stable with different starting points for random number generation.
 
 ### Robust regression ('MASS')
 
@@ -86,6 +103,9 @@ When weights are available, either supplied by the user, or computed as part of 
 
 ```{r, fig.width = 7, fig.height = 5}
 ggplot(mpg, aes(displ, hwy)) +
+  stat_poly_eq(use_label("eq", "n", "method"), 
+               label.x = "right",
+               method = MASS::rlm) +
   stat_poly_line(method = MASS::rlm, colour = "black") +
   stat_fit_deviations(method = "rlm",
                       mapping = aes(colour = after_stat(robustness.weights)),
@@ -95,6 +115,24 @@ ggplot(mpg, aes(displ, hwy)) +
   theme(legend.position = "top")
 ```
 
+```{r, fig.width = 7, fig.height = 5}
+my.formula <- y ~ poly(x, 2, raw = TRUE)
+ggplot(mpg, aes(displ, hwy)) +
+  stat_poly_eq(use_label("eq", "n", "method"), 
+               formula = my.formula,
+               label.x = "right",
+               method = MASS::rlm) +
+  stat_poly_line(method = MASS::rlm, 
+                 formula = my.formula,
+                 colour = "black") +
+  stat_fit_deviations(mapping = aes(colour = after_stat(robustness.weights)),
+                      method = "rlm",
+                      formula = my.formula,
+                      show.legend = TRUE,
+                      geom = "point") +
+  scale_color_gradient(low = "red", high = "blue", limits = c(0, 1)) +
+  theme(legend.position = "top")
+```
 
 ### Robust regression ('robustbase')
 
@@ -105,7 +143,7 @@ Package 'robustbase' provides function `lmrob()` for "MM-type Estimators for Lin
 ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
   stat_poly_line(method = robustbase::lmrob) +
-  stat_poly_eq(method = robustbase::lmrob, mapping = use_label("eq", "n"),
+  stat_poly_eq(method = robustbase::lmrob, mapping = use_label("eq", "R2"),
                label.x = "right") +
   theme(legend.position = "bottom") +
   facet_wrap(~class, ncol = 2)
@@ -115,9 +153,32 @@ When weights are available, either supplied by the user, or computed as part of 
 
 ```{r, fig.width = 7, fig.height = 5}
 ggplot(mpg, aes(displ, hwy)) +
+  stat_poly_eq(use_label("eq", "R2", "method"), 
+               label.x = "right",
+               method = robustbase::lmrob) +
   stat_poly_line(method = robustbase::lmrob, colour = "black") +
   stat_fit_deviations(method = robustbase::lmrob,
                       mapping = aes(colour = after_stat(robustness.weights)),
+                      show.legend = TRUE,
+                      geom = "point") +
+  scale_color_gradient(name = "Robustness weights",
+                       low = "red", high = "blue", limits = c(0, 1)) +
+  theme(legend.position = "top")
+```
+
+```{r, fig.width = 7, fig.height = 5}
+my.formula <- y ~ poly(x, 2, raw = TRUE)
+ggplot(mpg, aes(displ, hwy)) +
+  stat_poly_eq(use_label("eq", "R2", "method"), 
+               formula = my.formula,
+               label.x = "right",
+               method = robustbase::lmrob) +
+  stat_poly_line(method = robustbase::lmrob, 
+                 formula = my.formula,
+                 colour = "black") +
+  stat_fit_deviations(method = robustbase::lmrob,
+                      mapping = aes(colour = after_stat(robustness.weights)),
+                      formula = my.formula,
                       show.legend = TRUE,
                       geom = "point") +
   scale_color_gradient(name = "Robustness weights",
@@ -144,10 +205,34 @@ Weights are currently not available for `MASS::lqs()` and `NA` vectors are retur
 
 ```{r, fig.width = 7, fig.height = 5}
 ggplot(mpg, aes(displ, hwy)) +
+  stat_poly_eq(use_label("eq", "n", "method"), 
+               label.x = "right",
+               method = MASS::lqs) +
   stat_poly_line(method = "lqs:lms", colour = "black") +
-  stat_fit_deviations(method = "lqs:lms",
+  stat_fit_deviations(method = MASS::lqs,
                       mapping = 
                         aes(colour = factor(after_stat(robustness.weights))),
+                      show.legend = TRUE,
+                      geom = "point") +
+  scale_color_manual(name = "LTS weights",
+                     values = c("0" = "red", "1" = "black")) +
+  theme(legend.position = "top")
+```
+
+```{r, fig.width = 7, fig.height = 5}
+my.formula <- y ~ poly(x, 2, raw = TRUE)
+ggplot(mpg, aes(displ, hwy)) +
+  stat_poly_eq(use_label("eq", "n", "method"), 
+               formula = my.formula,
+               label.x = "right",
+               method = MASS::lqs) +
+  stat_poly_line(method = "lqs:lms", 
+                 formula = my.formula,
+                 colour = "black") +
+  stat_fit_deviations(mapping = 
+                        aes(colour = factor(after_stat(robustness.weights))),
+                      method = MASS::lqs,
+                      formula = my.formula,
                       show.legend = TRUE,
                       geom = "point") +
   scale_color_manual(name = "LTS weights",
@@ -169,9 +254,21 @@ ggplot(mpg, aes(displ, hwy)) +
   facet_wrap(~class, ncol = 2)
 ```
 
+_If no `predict()` method is available, `stat_poly_line()` calls `fitted()`,
+which is nearly always available. This is how the `"lts"` objects returned by
+`robustbase::ltsReg()` are by default supported._ For a linear regression,
+unless extrapolation is attempted this makes little, if any, difference to the
+plot. With higher degree polynomials and sparse data this approach can result in
+a curve that is not smooth. It is possible for users to define the missing
+specialization for the `predict()` method. How difficult this is depends on the
+fitted model and on whether only a line for the prediction is plotted or a line
+plus a prediction confidence band.
 
 ```{r, fig.width = 7, fig.height = 5}
 ggplot(mpg, aes(displ, hwy)) +
+  stat_poly_eq(use_label("eq", "R2", "method"), 
+               label.x = "right",
+               method = robustbase::ltsReg) +
   stat_poly_line(method = robustbase::ltsReg, colour = "black") +
   stat_fit_deviations(mapping = aes(colour = factor(after_stat(robustness.weights))),
                       geom = "point",
@@ -182,6 +279,25 @@ ggplot(mpg, aes(displ, hwy)) +
   theme(legend.position = "top")
 ```
 
+```{r, fig.width = 7, fig.height = 5}
+my.formula <- y ~ poly(x, 2, raw = TRUE)
+ggplot(mpg, aes(displ, hwy)) +
+  stat_poly_eq(use_label("eq", "R2", "method"), 
+               label.x = "right",
+               formula = my.formula,
+               method = robustbase::ltsReg) +
+  stat_poly_line(method = robustbase::ltsReg, 
+                 formula = my.formula,
+                 colour = "black") +
+  stat_fit_deviations(mapping = aes(colour = factor(after_stat(robustness.weights))),
+                      formula = my.formula,
+                      geom = "point",
+                      method = robustbase::ltsReg,
+                      show.legend = TRUE) +
+  scale_color_manual(name = "LTS weights",
+                     values = c("0" = "red", "1" = "blue")) +
+  theme(legend.position = "top")
+```
 
 ### Generalized Least Squares ('nlme')
 
@@ -203,11 +319,13 @@ ggplot(mpg, aes(displ, hwy)) +
 
 ## User defined functions
 
-As mentioned above, layer functions `stat_poly_line()` and `stat_poly_eq()` support the use of any model fit function that returns an `"lm"` or a `"gls"` object similar to the objects returned by functions `lm()` and `gls()`. The model formula in this object and fitted model must be a polynomial and the variable mapped as response (_y_ or _x_ depending on `orientation`) must be a continuous variable. The returned model formula can vary by group and/or panel, as models are fitted separately to each of them, similarly as by `ggplot2::stat_smooth()`. 
+As mentioned above, layer functions `stat_poly_line()` and `stat_poly_eq()` support the use of several different model fit functions, as long as the estimates and predictions can be extracted. In the case of `stat_poly_eq()`, the model formula embedded in this object must be a polynomial. The variables mapped to _x_ and _y_ aesthetics must be continuous numeric, times or dates. Models are fitted separately to each group and plot panel, similarly as by `ggplot2::stat_smooth()`. 'ggpmisc' provides additional flexibility by delaying some decisions until after the models have been fit to the observations.
 
-**`stat_poly_eq()` builds the fitted model equation based on the model formula extracted from the model fit object, which can differ from that passed as argument to `formula` when calling the statistic.** As the examples below demonstrate, this approach can be very useful.
+**`stat_poly_line()` and `stat_poly_eq()` adjust their behaviour based on the class of the model object returned by the method, not the name of the method passed in the call as argument.** Thus, the class of the model fit object returned can vary in response to data, and thus also be different for different panels or groups in the same plot. 
 
-In the examples below I use `"lm"` model fit objects, but the same approaches can be applied to `"gls"` objects.
+**`stat_poly_eq()` builds the fitted model equation based on the model formula extracted from the model fit object, which can differ from that passed as argument to `formula` when calling the statistic.** Thus, the model formula returned by the function passed as argument for `method` vary by group and/or panel.As the examples below demonstrate, this approach can be very useful. In addition, `NA` can be used to signal to `stat_poly_line()` and `stat_poly_eq()` that no model has been fit for a group or panel.
+
+Below I use `lm()` and `"lm"` model fit objects in most examples, but the same approaches can be applied to objects of other classes, including `"rlm"`, `"lmrob"`, '"lqs"`, `"lts"`, `"gls"`.
 
 ### Fit or not
 
@@ -323,18 +441,22 @@ ggplot(mpg, aes(displ, hwy, color = class)) +
   theme(legend.position = "top")
 ```
 
-## Errors in variables (EIV)
+## Work-arounds
 
-As 'refitME' functions return a model fit object of the same class as that received as input, a model fitted with `lm()` could be, in principle, refit in a wrapper functions as those above. However, at the moment the functions in package 'refitME' fail when called from within another function.
+Some model fit functions return object for which no `predict()` method exist. In such cases, as users we can define such a method. More difficult situations can be faced. In this last section I show a situation I faced when trying to use package 'refitME'. The functions exported by this package fail when called from within a function, so they do not currently work if passed as an argument for `method`. Below, a temporary work-around based on a solution provided by the maintainer of 'refitME' is shown.
 
-```{r}
+### Errors in variables ('refitME')
+
+As 'refitME' functions return a model fit object of the same class as that received as input, a model fitted with `lm()` could be, in principle, refit in a user-defined wrapper function as those above, calling first `lm()` and re-fitting the obtained model with a `refitME::refitME()` as shown in the code chunk below. However, at the moment the functions in package 'refitME' fail when called from within another function.
+
+```{r, eval=FALSE}
 lm_EIV <- function(formula, data, ..., sigma.sq.u) {
   fm <- lm(formula = formula, data = data, ...)
   MCEMfit_glm(mod = fm, family = "gaussian", sigma.sq.u = sigma.sq.u)
 }
 ```
 
-We then use our function `lm_EIV()` as the method.
+After defining such a function, we could then use our function `lm_EIV()` as the method.
 
 ```{r, eval=FALSE}
 ggplot(mpg, aes(displ, hwy)) +
@@ -398,9 +520,28 @@ predict.lm_EIV <- function(object, newdata = NULL, ...) {
 }
 ```
 
-Here the limitation of 'ggplot2' and 'ggpmisc' in that the fit is recomputed in each layer causes a further difficulty, as with most algorithms using random numbers, the successive refits do not necessarily produce the same rasults. In this case, the equation and line are not matched. This is something that can most likely be fixed in 'ggpmisc' by setting the seed of the RNG. (Or by caching the result of the model fit and reusing it.)
+Here the limitation of 'ggplot2' and 'ggpmisc' in that the fit is recomputed in each layer causes a further difficulty, as with most algorithms using random numbers, the successive refits do not necessarily produce the exact same results. In this case, the equation and line are not matched, and the mismatch can be large for large values of `sigma.sq.u` and low replication, especially in the presence of outliers. 
 
-```{r}
+This is something that can most likely be fixed in 'ggpmisc' by setting the seed of the RNG. To check that work-around is working as expected, we set `sigma.sq.u = 0` effectively using an OLS approach and expecting values nearly identical as with `lm()`.
+
+```{r, message=FALSE}
+ggplot(mpg, aes(x = displ, y = hwy)) +
+  geom_point() +
+  stat_poly_line(aes(y = hwy),
+                 method = "lm_EIV",
+                 method.args = list(sigma.sq.u = 0)) +
+  stat_poly_eq(aes(y = hwy, 
+                   label = paste(after_stat(eq.label), after_stat(rr.label), 
+                                 sep = "~~")),
+               method = "lm_EIV",
+               method.args = list(sigma.sq.u = 0),
+               label.x = "right") +
+  facet_wrap(~class, ncol = 2)
+```
+
+We do not know the measurement error for the measurement of `displ`, the displacement volume of the engines. For this example we make up a value: `sigma.sq.u = 0.01` expecting estimates different from above and with `lm()`.
+ 
+```{r, message=FALSE}
 ggplot(mpg, aes(x = displ, y = hwy)) +
   geom_point() +
   stat_poly_line(aes(y = hwy),
@@ -414,4 +555,3 @@ ggplot(mpg, aes(x = displ, y = hwy)) +
                label.x = "right") +
   facet_wrap(~class, ncol = 2)
 ```
-
