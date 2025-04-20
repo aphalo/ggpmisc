@@ -299,6 +299,8 @@ ggplot(mpg, aes(displ, hwy)) +
   theme(legend.position = "top")
 ```
 
+One possibility is to define the missing `predict.lst()` method because if present it will be used. The call to `fitted()` takes place only if a search for a `predict()` method for the class of the fitted model object fails.
+
 ### Generalized Least Squares ('nlme')
 
 In 'ggpmisc' (>= 0.6.2) function `gls()` from package 'nlme' is supported natively by functions `stat_poly_line()` and `stat_poly_eq()`. In this example, using a variance covariate, the computations do not converge with the data in one of the plot panels.
