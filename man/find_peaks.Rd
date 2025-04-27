@@ -76,4 +76,8 @@ lynx_datetime.df[find_peaks(lynx_datetime.df$lynx,
 }
 \seealso{
 \code{\link[splus2R]{peaks}}
+
+Other peaks and valleys functions: 
+\code{\link{find_spikes}()}
 }
+\concept{peaks and valleys functions}
