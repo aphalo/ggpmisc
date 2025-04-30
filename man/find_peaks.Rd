@@ -15,21 +15,23 @@ find_peaks(
 )
 }
 \arguments{
-\item{x}{numeric vector.}
+\item{x}{numeric vector. Hint: to find valleys, change the sign of the
+argument with the unary operator \code{-}.}
 
 \item{global.threshold}{numeric A value between 0.0 and 1.0 indicating the
-\emph{global} height threshold below which peaks will be ignored, or a
-negative value, between 0.0 and -1.0 indicating the  \emph{global} height
-threshold above which peaks will be ignored. These values are relative to
-the range of \code{x}.}
+\emph{global} height (depth) threshold below which peaks (valleys) will be
+ignored, or a negative value, between 0.0 and -1.0 indicating the
+\emph{global} height (depth) threshold above which peaks (valleys) will be
+ignored. These values are relative to the range of \code{x}.}
 
 \item{local.threshold}{numeric A value between 0.0 and 1.0 indicating the
-\emph{within-window} height threshold below which peaks will be ignored.
-These values are relative to the range of \code{x}.}
+\emph{within-window} height (depth) threshold below which peaks (valleys)
+will be ignored. This value is relative to the range of \code{x}.}
 
-\item{local.reference}{character One of \code{"minimum"} or \code{"median"}.
-The reference used to assess the height of the peak, either the minimum
-value wihtin the window or the median of all values in the window.}
+\item{local.reference}{character One of \code{"minimum"} (eqv.
+\code{"maximum"}) or \code{"median"}. The reference used to assess the
+height of the peak, either the minimum (maximum) value within the window or
+the median of all values in the window.}
 
 \item{span}{odd integer A peak is defined as an element in a sequence which
 is greater than all other elements within a moving window of width

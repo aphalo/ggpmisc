@@ -69,17 +69,19 @@ peak is bigger than both of its neighbours. \code{span = NULL} extends the
 span to the whole length of \code{x}.}
 
 \item{global.threshold}{numeric A value between 0.0 and 1.0 indicating the
-\emph{global} height threshold below which peaks will be ignored, or a
-negative value, between 0.0 and -1.0 indicating the  \emph{global} height
-threshold above which peaks will be ignored. These values are relative to
-the range of \code{x}.}
+\emph{global} height (depth) threshold below which peaks (valleys) will be
+ignored, or a negative value, between 0.0 and -1.0 indicating the
+\emph{global} height (depth) threshold above which peaks (valleys) will be
+ignored. These values are relative to the range of \code{x}.}
 
 \item{local.threshold}{numeric A value between 0.0 and 1.0 indicating the
-\emph{within-window} height threshold below which peaks will be ignored.
-These values are relative to the range of \code{x}.}
+\emph{within-window} height (depth) threshold below which peaks (valleys)
+will be ignored. This value is relative to the range of \code{x}.}
 
-\item{local.reference}{character One of \code{"median"} or \code{"minimum"}
-(for peaks) and \code{"maximum"} (for valleys).}
+\item{local.reference}{character One of \code{"minimum"} (eqv.
+\code{"maximum"}) or \code{"median"}. The reference used to assess the
+height of the peak, either the minimum (maximum) value within the window or
+the median of all values in the window.}
 
 \item{strict}{logical flag: if TRUE, an element must be strictly greater than
 all other values in its window to be considered a peak. Default: TRUE.}
@@ -240,5 +242,6 @@ ggplot(lynx_datetime.df, aes(year, lynx)) +
 
 }
 \seealso{
-[find_peaks()]
+\code{\link{find_peaks}} for details on how peaks and valleys are
+  found.
 }

@@ -3,18 +3,20 @@
 #' This function finds peaks (local maxima) in a vector, using a user selectable
 #' span and size threshold relative to the tallest peak (global maximum).
 #'
-#' @param x numeric vector.
+#' @param x numeric vector. Hint: to find valleys, change the sign of the
+#'   argument with the unary operator \code{-}.
 #' @param global.threshold numeric A value between 0.0 and 1.0 indicating the
-#'   \emph{global} height threshold below which peaks will be ignored, or a
-#'   negative value, between 0.0 and -1.0 indicating the  \emph{global} height
-#'   threshold above which peaks will be ignored. These values are relative to
-#'   the range of \code{x}.
+#'   \emph{global} height (depth) threshold below which peaks (valleys) will be
+#'   ignored, or a negative value, between 0.0 and -1.0 indicating the
+#'   \emph{global} height (depth) threshold above which peaks (valleys) will be
+#'   ignored. These values are relative to the range of \code{x}.
 #' @param local.threshold numeric A value between 0.0 and 1.0 indicating the
-#'   \emph{within-window} height threshold below which peaks will be ignored.
-#'   These values are relative to the range of \code{x}.
-#' @param local.reference character One of \code{"minimum"} or \code{"median"}.
-#'   The reference used to assess the height of the peak, either the minimum
-#'   value wihtin the window or the median of all values in the window.
+#'   \emph{within-window} height (depth) threshold below which peaks (valleys)
+#'   will be ignored. This value is relative to the range of \code{x}.
+#' @param local.reference character One of \code{"minimum"} (eqv.
+#'   \code{"maximum"}) or \code{"median"}. The reference used to assess the
+#'   height of the peak, either the minimum (maximum) value within the window or
+#'   the median of all values in the window.
 #' @param span odd integer A peak is defined as an element in a sequence which
 #'   is greater than all other elements within a moving window of width
 #'   \code{span} centred at that element. The default value is 3, meaning that a
@@ -111,6 +113,10 @@ find_peaks <-
     }
     # apply local.threshold height test to found peaks
     if (local.threshold > 0) {
+      # we always search for maxima, even in the case of valleys
+      if (local.reference == "maximum") {
+        local.reference <- "minimum"
+      }
       range_x <- range(x, na.rm = na.rm, finite = TRUE)
       min_x <- range_x[1]
       max_x <- range_x[2]
@@ -232,8 +238,6 @@ find_spikes <-
 #' @param na.rm	a logical value indicating whether NA values should be
 #'   stripped before the computation proceeds.
 #' @inheritParams find_peaks
-#' @param local.reference character One of \code{"median"} or \code{"minimum"}
-#'   (for peaks) and \code{"maximum"} (for valleys).
 #' @param label.fmt character  string giving a format definition for converting
 #'   values into character strings by means of function \code{\link{sprintf}}
 #'   or \code{\link{strptime}}, its use is deprecated.
@@ -287,7 +291,8 @@ find_spikes <-
 #'   Instead, use as an argument to parameter `position` one of the position
 #'   functions such as \code{\link[ggpp]{position_nudge_keep}}.
 #'
-#' @seealso [find_peaks()]
+#' @seealso \code{\link{find_peaks}} for details on how peaks and valleys are
+#'   found.
 #'
 #' @examples
 #' # lynx is a time.series object
@@ -559,9 +564,6 @@ valleys_compute_group_fun <- function(data,
     # will be plotted
     data <- data[order(data$x), ]
     # we search for peaks in -y
-    if (local.reference == "maximum") {
-      local.reference <- "minimum"
-    }
     valleys.df <- data[find_peaks(-data$y,
                                   span = span,
                                   global.threshold = global.threshold,

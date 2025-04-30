@@ -50,6 +50,7 @@ reference:
     - poly2character
     - typeset_numbers
     - find_peaks
+    - find_spikes
     - coef.lmodel2
     - confint.lmodel2
     - predict.lmodel2
