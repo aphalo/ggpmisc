@@ -1,18 +1,22 @@
 #' Find local maxima or global maximum (peaks)
 #'
-#' This method finds peaks (local maxima) in a vector, using a user selectable
+#' This function finds peaks (local maxima) in a vector, using a user selectable
 #' span and size threshold relative to the tallest peak (global maximum).
 #'
 #' @param x numeric vector.
-#' @param ignore_threshold numeric value between 0.0 and 1.0 indicating the size
-#'   threshold below which peaks will be ignored, or a negative value >= -1,
-#'   to ignore peaks above a threshold. These values are relative to the range
-#'   of \code{x}.
-#' @param span a peak is defined as an element in a sequence which is greater
-#'   than all other elements within a window of width span centered at that
-#'   element. The default value is 3, meaning that a peak is bigger than both of
-#'   its neighbors. \code{span = NULL} extends the span to the whole length of
-#'   \code{x}.
+#' @param ignore_threshold numeric A value between 0.0 and 1.0 indicating the
+#'   height threshold below which peaks will be ignored, or a negative value >=
+#'   -1, to ignore peaks above a height threshold. These values are relative to
+#'   the range of \code{x}.
+#' @param local_threshold numeric A value between 0.0 and 1.0 indicating the
+#'   within-window relative height threshold below which peaks will be ignored.
+#'   These values are relative to thee range of \code{x}. The height of the
+#'   peak is compared to the median height of the window centred on it.
+#' @param span odd integer A peak is defined as an element in a sequence which
+#'   is greater than all other elements within a window of width span centred at
+#'   that element. The default value is 3, meaning that a peak is bigger than
+#'   both of its neighbors. \code{span = NULL} extends the span to the whole
+#'   length of \code{x}.
 #' @param strict logical flag: if TRUE, an element must be strictly greater than
 #'   all other values in its window to be considered a peak. Default: TRUE.
 #' @param na.rm logical indicating whether \code{NA} values should be stripped
@@ -28,6 +32,9 @@
 #'   error when \code{na.rm = FALSE} and \code{x} contains \code{NA} values,
 #'   \code{NA} values are replaced with the smallest finite value in \code{x}.
 #'   \code{span = NULL} is treated as a special case and returns \code{max(x)}.
+#'   Two tests are added, one based on the absolute height of the peaks
+#'   (\code{ignore_threshold}) and another for the relative height within the
+#'   window (\code{local_threshold}).
 #'
 #' @note The default for parameter \code{strict} is \code{FALSE} in functions
 #'   \code{peaks()} and \code{find_peaks()}, as in \code{stat_peaks()} and in
@@ -67,6 +74,7 @@
 find_peaks <-
   function(x,
            ignore_threshold = 0,
+           local_threshold = 0,
            span = 3,
            strict = FALSE,
            na.rm = FALSE) {
@@ -79,10 +87,8 @@ find_peaks <-
     } else {
       pks <- splus2R::peaks(x = x, span = span, strict = strict)
     }
-    # apply threshold to found peaks
-    if (abs(ignore_threshold) < 1e-5) {
-      pks
-    } else {
+    # apply global height threshold test to found peaks
+    if (abs(ignore_threshold) >= 1e-5) {
       range_x <- range(x, na.rm = na.rm, finite = TRUE)
       min_x <- range_x[1]
       max_x <- range_x[2]
@@ -92,21 +98,31 @@ find_peaks <-
       top_flag <- ignore_threshold > 0.0
       scaled_threshold <- delta * abs(ignore_threshold)
       if (top_flag) {
-        ifelse(x - min_x > scaled_threshold, pks , FALSE)
+        pks <- ifelse(x - min_x > scaled_threshold, pks , FALSE)
       } else {
-        ifelse(max_x - x > scaled_threshold, pks , FALSE)
+        pks <- ifelse(max_x - x > scaled_threshold, pks , FALSE)
       }
     }
+    # apply local_threshold height test to found peaks
+    if (local_threshold > 0) {
+      range_x <- range(x, na.rm = na.rm, finite = TRUE)
+      min_x <- range_x[1]
+      max_x <- range_x[2]
+      local_threshold <- local_threshold * (max_x - min_x)
+      smooth_x <- runmed(x, k = span, endrule = "median")
+      pks <- pks & (x[pks] - smooth_x[pks]) > local_threshold
+    }
+    pks
   }
 
 #' Find spikes
 #'
 #' This function finds spikes in a numeric vector using the algorithm of
 #' Whitaker and Hayes (2018). Spikes are values in spectra that are unusually
-#' high or low compared to neighbors. They are usually individual values or very
+#' high or low compared to neighbours. They are usually individual values or very
 #' short runs of similar "unusual" values. Spikes caused by cosmic radiation are
 #' a frequent problem in Raman spectra. Another source of spikes are "hot
-#' pixels" in CCD and diode arrays. Other kinds of accidental "outlayers" will
+#' pixels" in CCD and diode arrays. Other kinds of accidental "outlayers" are
 #' be also detected.
 #'
 #' @details Spikes are detected based on a modified Z score calculated from the
@@ -135,7 +151,6 @@ find_peaks <-
 #' spectra. Chemometrics and Intelligent Laboratory Systems, 179, 82-84.
 #'
 #' @export
-#' @examples
 #'
 #' @family peaks and valleys functions
 #'
@@ -205,15 +220,7 @@ find_spikes <-
 #'   \code{\link[ggplot2]{layer}} for more details.
 #' @param na.rm	a logical value indicating whether NA values should be
 #'   stripped before the computation proceeds.
-#' @param ignore_threshold numeric value between 0.0 and 1.0 indicating the size
-#'   threshold below which peaks will be ignored.
-#' @param span a peak is defined as an element in a sequence which is greater
-#'   than all other elements within a window of width span centered at that
-#'   element. The default value is 5, meaning that a peak is bigger than two
-#'   consecutive neighbors on each side. A \code{NULL} value for \code{span}
-#'   is taken as a span covering the whole of the data range.
-#' @param strict logical flag: if TRUE, an element must be strictly greater than
-#'   all other values in its window to be considered a peak. Default: FALSE.
+#' @inheritParams find_peaks
 #' @param label.fmt character  string giving a format definition for converting
 #'   values into character strings by means of function \code{\link{sprintf}}
 #'   or \code{\link{strptime}}, its use is deprecated.
@@ -349,6 +356,7 @@ stat_peaks <- function(mapping = NULL,
                        ...,
                        span = 5,
                        ignore_threshold = 0,
+                       local_threshold = 0,
                        strict = FALSE,
                        label.fmt = NULL,
                        x.label.fmt = NULL,
@@ -369,6 +377,7 @@ stat_peaks <- function(mapping = NULL,
       rlang::list2(
         span = span,
         ignore_threshold = ignore_threshold,
+        local_threshold = local_threshold,
         strict = strict,
         label.fmt = label.fmt,
         x.label.fmt = x.label.fmt,
@@ -391,6 +400,7 @@ peaks_compute_group_fun <- function(data,
                                     scales,
                                     span = 5,
                                     ignore_threshold = 0,
+                                    local_threshold = 0,
                                     strict = FALSE,
                                     label.fmt = NULL,
                                     x.label.fmt = NULL,
@@ -449,6 +459,7 @@ peaks_compute_group_fun <- function(data,
     peaks.df <- data[find_peaks(data$y,
                                 span = span,
                                 ignore_threshold = ignore_threshold,
+                                local_threshold = local_threshold,
                                 strict = strict,
                                 na.rm = TRUE), , drop = FALSE]
   }
@@ -472,6 +483,7 @@ valleys_compute_group_fun <- function(data,
                                       scales,
                                       span,
                                       ignore_threshold,
+                                      local_threshold,
                                       strict,
                                       label.fmt,
                                       x.label.fmt,
@@ -529,6 +541,7 @@ valleys_compute_group_fun <- function(data,
     valleys.df <- data[find_peaks(-data$y,
                                   span = span,
                                   ignore_threshold = ignore_threshold,
+                                  local_threshold = local_threshold,
                                   strict = strict,
                                   na.rm = TRUE), , drop = FALSE]
   }
@@ -591,6 +604,7 @@ stat_valleys <- function(mapping = NULL,
                          ...,
                          span = 5,
                          ignore_threshold = 0,
+                         local_threshold = 0,
                          strict = FALSE,
                          label.fmt = NULL,
                          x.label.fmt = NULL,
@@ -611,6 +625,7 @@ stat_valleys <- function(mapping = NULL,
       rlang::list2(
         span = span,
         ignore_threshold = ignore_threshold,
+        local_threshold = local_threshold,
         strict = strict,
         label.fmt = label.fmt,
         x.label.fmt = x.label.fmt,

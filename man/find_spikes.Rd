@@ -33,10 +33,10 @@ A logical vector of the same length as \code{x}. Values that are TRUE
 \description{
 This function finds spikes in a numeric vector using the algorithm of
 Whitaker and Hayes (2018). Spikes are values in spectra that are unusually
-high or low compared to neighbors. They are usually individual values or very
+high or low compared to neighbours. They are usually individual values or very
 short runs of similar "unusual" values. Spikes caused by cosmic radiation are
 a frequent problem in Raman spectra. Another source of spikes are "hot
-pixels" in CCD and diode arrays. Other kinds of accidental "outlayers" will
+pixels" in CCD and diode arrays. Other kinds of accidental "outlayers" are
 be also detected.
 }
 \details{

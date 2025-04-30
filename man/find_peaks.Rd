@@ -4,21 +4,33 @@
 \alias{find_peaks}
 \title{Find local maxima or global maximum (peaks)}
 \usage{
-find_peaks(x, ignore_threshold = 0, span = 3, strict = FALSE, na.rm = FALSE)
+find_peaks(
+  x,
+  ignore_threshold = 0,
+  local_threshold = 0,
+  span = 3,
+  strict = FALSE,
+  na.rm = FALSE
+)
 }
 \arguments{
 \item{x}{numeric vector.}
 
-\item{ignore_threshold}{numeric value between 0.0 and 1.0 indicating the size
-threshold below which peaks will be ignored, or a negative value >= -1,
-to ignore peaks above a threshold. These values are relative to the range
-of \code{x}.}
+\item{ignore_threshold}{numeric A value between 0.0 and 1.0 indicating the
+height threshold below which peaks will be ignored, or a negative value >=
+-1, to ignore peaks above a height threshold. These values are relative to
+the range of \code{x}.}
 
-\item{span}{a peak is defined as an element in a sequence which is greater
-than all other elements within a window of width span centered at that
-element. The default value is 3, meaning that a peak is bigger than both of
-its neighbors. \code{span = NULL} extends the span to the whole length of
-\code{x}.}
+\item{local_threshold}{numeric A value between 0.0 and 1.0 indicating the
+within-window relative height threshold below which peaks will be ignored.
+These values are relative to thee range of \code{x}. The height of the
+peak is compared to the median height of the window centred on it.}
+
+\item{span}{odd integer A peak is defined as an element in a sequence which
+is greater than all other elements within a window of width span centred at
+that element. The default value is 3, meaning that a peak is bigger than
+both of its neighbors. \code{span = NULL} extends the span to the whole
+length of \code{x}.}
 
 \item{strict}{logical flag: if TRUE, an element must be strictly greater than
 all other values in its window to be considered a peak. Default: TRUE.}
@@ -32,7 +44,7 @@ A vector of logical values. Values that are TRUE correspond to local
   to peaks from a data frame.
 }
 \description{
-This method finds peaks (local maxima) in a vector, using a user selectable
+This function finds peaks (local maxima) in a vector, using a user selectable
 span and size threshold relative to the tallest peak (global maximum).
 }
 \details{
@@ -42,6 +54,9 @@ This function is a wrapper built onto function
   error when \code{na.rm = FALSE} and \code{x} contains \code{NA} values,
   \code{NA} values are replaced with the smallest finite value in \code{x}.
   \code{span = NULL} is treated as a special case and returns \code{max(x)}.
+  Two tests are added, one based on the absolute height of the peaks
+  (\code{ignore_threshold}) and another for the relative height within the
+  window (\code{local_threshold}).
 }
 \note{
 The default for parameter \code{strict} is \code{FALSE} in functions

@@ -13,6 +13,7 @@ stat_peaks(
   ...,
   span = 5,
   ignore_threshold = 0,
+  local_threshold = 0,
   strict = FALSE,
   label.fmt = NULL,
   x.label.fmt = NULL,
@@ -31,6 +32,7 @@ stat_valleys(
   ...,
   span = 5,
   ignore_threshold = 0,
+  local_threshold = 0,
   strict = FALSE,
   label.fmt = NULL,
   x.label.fmt = NULL,
@@ -58,17 +60,24 @@ on this layer.}
 can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 
-\item{span}{a peak is defined as an element in a sequence which is greater
-than all other elements within a window of width span centered at that
-element. The default value is 5, meaning that a peak is bigger than two
-consecutive neighbors on each side. A \code{NULL} value for \code{span}
-is taken as a span covering the whole of the data range.}
+\item{span}{odd integer A peak is defined as an element in a sequence which
+is greater than all other elements within a window of width span centred at
+that element. The default value is 3, meaning that a peak is bigger than
+both of its neighbors. \code{span = NULL} extends the span to the whole
+length of \code{x}.}
 
-\item{ignore_threshold}{numeric value between 0.0 and 1.0 indicating the size
-threshold below which peaks will be ignored.}
+\item{ignore_threshold}{numeric A value between 0.0 and 1.0 indicating the
+height threshold below which peaks will be ignored, or a negative value >=
+-1, to ignore peaks above a height threshold. These values are relative to
+the range of \code{x}.}
+
+\item{local_threshold}{numeric A value between 0.0 and 1.0 indicating the
+within-window relative height threshold below which peaks will be ignored.
+These values are relative to thee range of \code{x}. The height of the
+peak is compared to the median height of the window centred on it.}
 
 \item{strict}{logical flag: if TRUE, an element must be strictly greater than
-all other values in its window to be considered a peak. Default: FALSE.}
+all other values in its window to be considered a peak. Default: TRUE.}
 
 \item{label.fmt}{character  string giving a format definition for converting
 values into character strings by means of function \code{\link{sprintf}}
