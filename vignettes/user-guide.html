@@ -12,7 +12,7 @@
 
 <meta name="author" content="Pedro J. Aphalo" />
 
-<meta name="date" content="2025-04-17" />
+<meta name="date" content="2025-04-30" />
 
 <title>Fitted-Model-Based Annotations</title>
 
@@ -339,9 +339,9 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 <h1 class="title toc-ignore">Fitted-Model-Based Annotations</h1>
-<h3 class="subtitle">‘ggpmisc’ 0.6.1.9001</h3>
+<h3 class="subtitle">‘ggpmisc’ 0.6.1.9002</h3>
 <h4 class="author">Pedro J. Aphalo</h4>
-<h4 class="date">2025-04-17</h4>
+<h4 class="date">2025-04-30</h4>
 
 
 <div id="TOC">
@@ -2413,8 +2413,8 @@ aesthetic of the same name. The default geom is
 <span id="cb56-3"><a href="#cb56-3" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>) <span class="sc">+</span></span>
 <span id="cb56-4"><a href="#cb56-4" tabindex="-1"></a>  <span class="fu">stat_fit_residuals</span>(<span class="at">formula =</span> formula)</span></code></pre></div>
 <pre><code>## Warning: Computation failed in `stat_fit_residuals()`.
-## Caused by error in `data.frame()`:
-## ! arguments imply differing number of rows: 50, 1, 0</code></pre>
+## Caused by error in `compute_group()`:
+## ! object &#39;weight.vals&#39; not found</code></pre>
 <p><img role="img" src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
 <p>We can of course also map the weights returned in the model fit
 object to ggplot2 aesthetics, here we use <code>size</code>.</p>
@@ -2917,8 +2917,9 @@ default.</p>
 <span id="cb91-13"><a href="#cb91-13" tabindex="-1"></a>                          <span class="st">&quot;italic(P)&quot;</span> <span class="ot">=</span> <span class="st">&quot;p.value&quot;</span>),</span>
 <span id="cb91-14"><a href="#cb91-14" tabindex="-1"></a>              <span class="at">label.y =</span> <span class="st">&quot;top&quot;</span>, <span class="at">label.x =</span> <span class="st">&quot;left&quot;</span>,</span>
 <span id="cb91-15"><a href="#cb91-15" tabindex="-1"></a>              <span class="at">parse =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-<pre><code>## Warning in stat_fit_tb(geom = &quot;debug&quot;, summary.fun = str, method = &quot;lm&quot;, : Ignoring unknown parameters: `table.theme`, `table.rownames`, `table.colnames`, `table.hjust`, `parse`, and
-## `summary.fun`</code></pre>
+<pre><code>## Warning in stat_fit_tb(geom = &quot;debug&quot;, summary.fun = str, method = &quot;lm&quot;, : Ignoring unknown parameters: `table.theme`,
+## `table.rownames`, `table.colnames`, `table.hjust`,
+## `parse`, and `summary.fun`</code></pre>
 <pre><code>## [1] &quot;PANEL 1; group(s) NULL; &#39;draw_function()&#39; input &#39;data&#39; (head):&quot;
 ##                                                                                                                                                                   label
 ## 1 (Intercept), x, I(x^2), I(x^3), -0.0045, 0.00109, -2.14e-05, 1.06e-06, 0.0227, 0.00194, 4.44e-05, 2.89e-07, -0.198, 0.563, -0.482, 3.65, 0.843, 0.575, 0.631, &lt; 0.001

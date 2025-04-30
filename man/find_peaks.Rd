@@ -6,8 +6,9 @@
 \usage{
 find_peaks(
   x,
-  ignore_threshold = 0,
-  local_threshold = 0,
+  global.threshold = 0,
+  local.threshold = 0,
+  local.reference = "minimum",
   span = 3,
   strict = FALSE,
   na.rm = FALSE
@@ -16,21 +17,25 @@ find_peaks(
 \arguments{
 \item{x}{numeric vector.}
 
-\item{ignore_threshold}{numeric A value between 0.0 and 1.0 indicating the
-height threshold below which peaks will be ignored, or a negative value >=
--1, to ignore peaks above a height threshold. These values are relative to
+\item{global.threshold}{numeric A value between 0.0 and 1.0 indicating the
+\emph{global} height threshold below which peaks will be ignored, or a
+negative value, between 0.0 and -1.0 indicating the  \emph{global} height
+threshold above which peaks will be ignored. These values are relative to
 the range of \code{x}.}
 
-\item{local_threshold}{numeric A value between 0.0 and 1.0 indicating the
-within-window relative height threshold below which peaks will be ignored.
-These values are relative to thee range of \code{x}. The height of the
-peak is compared to the median height of the window centred on it.}
+\item{local.threshold}{numeric A value between 0.0 and 1.0 indicating the
+\emph{within-window} height threshold below which peaks will be ignored.
+These values are relative to the range of \code{x}.}
+
+\item{local.reference}{character One of \code{"minimum"} or \code{"median"}.
+The reference used to assess the height of the peak, either the minimum
+value wihtin the window or the median of all values in the window.}
 
 \item{span}{odd integer A peak is defined as an element in a sequence which
-is greater than all other elements within a window of width span centred at
-that element. The default value is 3, meaning that a peak is bigger than
-both of its neighbors. \code{span = NULL} extends the span to the whole
-length of \code{x}.}
+is greater than all other elements within a moving window of width
+\code{span} centred at that element. The default value is 3, meaning that a
+peak is bigger than both of its neighbours. \code{span = NULL} extends the
+span to the whole length of \code{x}.}
 
 \item{strict}{logical flag: if TRUE, an element must be strictly greater than
 all other values in its window to be considered a peak. Default: TRUE.}
@@ -54,9 +59,11 @@ This function is a wrapper built onto function
   error when \code{na.rm = FALSE} and \code{x} contains \code{NA} values,
   \code{NA} values are replaced with the smallest finite value in \code{x}.
   \code{span = NULL} is treated as a special case and returns \code{max(x)}.
-  Two tests are added, one based on the absolute height of the peaks
-  (\code{ignore_threshold}) and another for the relative height within the
-  window (\code{local_threshold}).
+  Two tests are optional, one based on the absolute height of the peaks
+  (\code{global.threshold}) and another based on the height of the peaks
+  compared to other values within the window of width equal to \code{span}
+  (\code{local.threshold}). The reference value used within each window
+  containing a peak is given by \code{local.reference}.
 }
 \note{
 The default for parameter \code{strict} is \code{FALSE} in functions
@@ -76,7 +83,7 @@ lynx_num.df[find_peaks(lynx_num.df$lynx, span = 15), ]
 lynx_num.df[find_peaks(lynx_num.df$lynx, span = NULL), ]
 lynx_num.df[find_peaks(lynx_num.df$lynx,
                        span = 31,
-                       ignore_threshold = 0.75), ]
+                       global.threshold = 0.75), ]
 
 lynx_datetime.df <-
    try_tibble(lynx,
@@ -86,7 +93,7 @@ which(find_peaks(lynx_datetime.df$lynx, span = 31))
 lynx_datetime.df[find_peaks(lynx_datetime.df$lynx, span = 31), ]
 lynx_datetime.df[find_peaks(lynx_datetime.df$lynx,
                             span = 31,
-                            ignore_threshold = 0.75), ]
+                            global.threshold = 0.75), ]
 
 }
 \seealso{

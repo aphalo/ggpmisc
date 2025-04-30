@@ -15,7 +15,8 @@ The main new feature in this release is support of additional model fit function
 -   Code breaking change in `stat_fit_deviations()`: consistently return prior weights in variable `weights` and new variable `robustness.weights` for the implicit weights used by robust fit methods.
 -   Bug fix: the value of 'method.label' not always set.
 -   Update `scale_x_logFC()`and `scale_y_logFC()` for improved compatibility with 'ggplot2' (== 3.5.1.9000).
--   Implement local threshold for peak height and valley depth in `stat_peaks()`  and `stat_valleys()`.
+-   Implement local threshold for peak height and valley depth in `stat_peaks()`  and `stat_valleys()`, using parameters `local.threshold` and `local.reference`.
+-   **Code breaking:** Rename parameter `ignore_threshold` into `global.threshold` in `find_peaks()`, `stat_peaks()`  and `stat_valleys()` for naming consistency and clarity.
 -   Add HTML Cheat Sheet.
 -   Add article 'Custom polynomial models' as on-line only documentation.
 

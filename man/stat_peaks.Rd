@@ -12,8 +12,9 @@ stat_peaks(
   position = "identity",
   ...,
   span = 5,
-  ignore_threshold = 0,
-  local_threshold = 0,
+  global.threshold = 0,
+  local.threshold = 0,
+  local.reference = "minimum",
   strict = FALSE,
   label.fmt = NULL,
   x.label.fmt = NULL,
@@ -31,8 +32,9 @@ stat_valleys(
   position = "identity",
   ...,
   span = 5,
-  ignore_threshold = 0,
-  local_threshold = 0,
+  global.threshold = 0,
+  local.threshold = 0,
+  local.reference = "maximum",
   strict = FALSE,
   label.fmt = NULL,
   x.label.fmt = NULL,
@@ -61,20 +63,23 @@ can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 
 \item{span}{odd integer A peak is defined as an element in a sequence which
-is greater than all other elements within a window of width span centred at
-that element. The default value is 3, meaning that a peak is bigger than
-both of its neighbors. \code{span = NULL} extends the span to the whole
-length of \code{x}.}
+is greater than all other elements within a moving window of width
+\code{span} centred at that element. The default value is 3, meaning that a
+peak is bigger than both of its neighbours. \code{span = NULL} extends the
+span to the whole length of \code{x}.}
 
-\item{ignore_threshold}{numeric A value between 0.0 and 1.0 indicating the
-height threshold below which peaks will be ignored, or a negative value >=
--1, to ignore peaks above a height threshold. These values are relative to
+\item{global.threshold}{numeric A value between 0.0 and 1.0 indicating the
+\emph{global} height threshold below which peaks will be ignored, or a
+negative value, between 0.0 and -1.0 indicating the  \emph{global} height
+threshold above which peaks will be ignored. These values are relative to
 the range of \code{x}.}
 
-\item{local_threshold}{numeric A value between 0.0 and 1.0 indicating the
-within-window relative height threshold below which peaks will be ignored.
-These values are relative to thee range of \code{x}. The height of the
-peak is compared to the median height of the window centred on it.}
+\item{local.threshold}{numeric A value between 0.0 and 1.0 indicating the
+\emph{within-window} height threshold below which peaks will be ignored.
+These values are relative to the range of \code{x}.}
+
+\item{local.reference}{character One of \code{"median"} or \code{"minimum"}
+(for peaks) and \code{"maximum"} (for valleys).}
 
 \item{strict}{logical flag: if TRUE, an element must be strictly greater than
 all other values in its window to be considered a peak. Default: TRUE.}
@@ -131,7 +136,7 @@ These statistics check the scale of the \code{x} aesthetic and if it is
   numeric \code{x} values to Date or POSIXct objects, respectively. In which
   case the \code{x.label.fmt} must follow the syntax supported by
   \code{strftime()} rather than by \code{sprintf()}. Overlap of labels with
-  points can avoided by use of one of the nudge positions, possibly together
+  points can be avoided by use of one of the nudge positions, possibly together
   with geometry \code{\link[ggpp]{geom_text_s}} from package
   \code{\link[ggpp]{ggpp}}, or with \code{\link[ggrepel]{geom_text_repel}} or
   \code{\link[ggrepel]{geom_label_repel}} from package
@@ -139,7 +144,7 @@ These statistics check the scale of the \code{x} aesthetic and if it is
   \code{check_overlap = TRUE} as argument to \code{geom_text} or
   \code{geom_text_s}. By default the labels are character values suitable to
   be plotted as is, but with a suitable format passed as argument to
-  \code{label.fmt} labels suitable for parsing by the geoms (e.g. into
+  \code{label.fmt} labels suitable for parsing by the geoms (e.g., into
   expressions containing Greek letters, super- or subscripts, maths symbols
   or maths constructs) can be also easily obtained.
 }
@@ -154,10 +159,10 @@ These statistics check the scale of the \code{x} aesthetic and if it is
 }
 
 \section{Warning!}{
- The current version of these statistics do not support
+ The current version of these statistics does not support
   passing \code{nudge_x} or \code{nurge_y} named parameters to the geometry.
-  Use `position` and one of the position functions such as
-  \code{\link[ggpp]{position_nudge_keep}} instead.
+  Instead, use as an argument to parameter `position` one of the position
+  functions such as \code{\link[ggpp]{position_nudge_keep}}.
 }
 
 \examples{
@@ -233,4 +238,7 @@ ggplot(lynx_datetime.df, aes(year, lynx)) +
              angle = 90) +
   expand_limits(y = 9000)
 
+}
+\seealso{
+[find_peaks()]
 }

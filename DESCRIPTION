@@ -44,7 +44,8 @@ Imports:
     tibble (>= 3.2.1),
     plyr (>= 1.8.9),
     dplyr (>= 1.1.4),
-    lubridate (>= 1.9.3)
+    lubridate (>= 1.9.3),
+    caTools (>= 1.18.3)
 Suggests:
     knitr (>= 1.45),
     rmarkdown (>= 2.25),
