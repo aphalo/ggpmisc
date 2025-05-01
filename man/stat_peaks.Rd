@@ -15,6 +15,7 @@ stat_peaks(
   global.threshold = 0,
   local.threshold = 0,
   local.reference = "minimum",
+  threshold.scaling = "data.range",
   strict = FALSE,
   label.fmt = NULL,
   x.label.fmt = NULL,
@@ -35,6 +36,7 @@ stat_valleys(
   global.threshold = 0,
   local.threshold = 0,
   local.reference = "maximum",
+  threshold.scaling = "data.range",
   strict = FALSE,
   label.fmt = NULL,
   x.label.fmt = NULL,
@@ -82,6 +84,10 @@ will be ignored. This value is relative to the range of \code{x}.}
 \code{"maximum"}) or \code{"median"}. The reference used to assess the
 height of the peak, either the minimum (maximum) value within the window or
 the median of all values in the window.}
+
+\item{threshold.scaling}{character or numeric If \code{character} one of
+\code{"data.range"} or \code{"scale.range"}, if \code{numeric} a vector of
+length one or two.}
 
 \item{strict}{logical flag: if TRUE, an element must be strictly greater than
 all other values in its window to be considered a peak. Default: TRUE.}
@@ -131,6 +137,22 @@ These stats use \code{geom_point} by default as it is the geom most
   The default for parameter \code{strict} is \code{TRUE} in functions
   \code{splus2R::peaks()} and \code{find_peaks()}, while the default is \code{FALSE}
   in \code{stat_peaks()} and in \code{stat_valleys()}.
+
+  A problem faced when identifying peaks is their relevance. One approach is
+  to ignore peaks based on their height, which can be done either globally for
+  the whole variable mapped to the \emph{y} aesthetic or within a narrower
+  window. These two approaches can be combined. The size can be given in data
+  units by passing \code{threshold.scaling = 1}, relative to
+  the range of \emph{y} by passing \code{threshold.scaling = "data.range"},
+  relative to the range of the scale used for \emph{y} by passing
+  \code{threshold.scaling = "scale.range"}, or relative to an arbitrary
+  range by passing a \code{numeric} vector. A numeric vector of length one
+  is interpreted as a scaling factor, and equivalent to a vector of length
+  two that includes this number and zero. The default
+  \code{threshold.scaling = "data.range"} is the same as the fixed value in
+  versions <= 0.6.1 of 'ggpmisc'. However, being dependent on the data can
+  lead to inconsistencies among plots, and between groups and panels within a
+  single plot.
 }
 \note{
 These statistics check the scale of the \code{x} aesthetic and if it is

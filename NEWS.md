@@ -6,17 +6,18 @@ editor_options:
 
 # ggpmisc 0.6.2
 
-The main new feature in this release is support of additional model fit functions, both explicitly and by handling missing methods and values more gracefully.
+A significant new feature in this release is the support of additional model fit functions, both explicitly and by handling missing methods and values more gracefully. Another enhancement is the more flexible approach to the filtering with thresholds of peaks and valleys, which improves the detection of prominent or major peaks in noisy data by reducing or preventing "false positives".
 
--   In `stat_poly_line()` and `stat_poly_eq() a fitted model object of an unexpected class triggers a warning instead of an error.
+-   In `stat_poly_line()` and `stat_poly_eq()` a fitted model object of an unexpected class triggers a warning instead of an error.
 -   Support `MASS::lqs()`, `nlme::gls()`, `robustbase::lmrob()` and `robustbase::lstReg()` in `stat_poly_line()`, `stat_poly_eq()`, `stat_fit_deviations()`, stat_fit_residuals()` and `stat_fit_fitted()`. 
 -   Support `nlme::gls()`, `MASS::lqs()`, `robustbase::lmrob()`, `robustbase::ltsReg()` and model fit objects of classes for which method `weights()` is not available in `stat_fit_deviations()`, `stat_fit_fitted()`, `stat_fit_residuals()`.
 -   If `predict()` is not available for a `method`, function `stat_poly_line()` uses `fitted()` instead.
 -   Code breaking change in `stat_fit_deviations()`: consistently return prior weights in variable `weights` and new variable `robustness.weights` for the implicit weights used by robust fit methods.
 -   Bug fix: the value of 'method.label' not always set.
 -   Update `scale_x_logFC()`and `scale_y_logFC()` for improved compatibility with 'ggplot2' (== 3.5.1.9000).
--   Implement local threshold for peak height and valley depth in `stat_peaks()`  and `stat_valleys()`, using parameters `local.threshold` and `local.reference`.
+-   Implement a local (within-window span) threshold for peak height and valley depth in `stat_peaks()`  and `stat_valleys()`, using parameters `local.threshold` and `local.reference`.
 -   **Code breaking:** Rename parameter `ignore_threshold` into `global.threshold` in `find_peaks()`, `stat_peaks()`  and `stat_valleys()` for naming consistency and clarity.
+-   The scaling applied to user-supplied values for `global.threshold` and `local.threshold` can be modified by passing an argument to `threshold.scaling`.
 -   Add HTML Cheat Sheet.
 -   Add article 'Custom polynomial models' as on-line only documentation.
 

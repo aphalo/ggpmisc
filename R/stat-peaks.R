@@ -17,6 +17,9 @@
 #'   \code{"maximum"}) or \code{"median"}. The reference used to assess the
 #'   height of the peak, either the minimum (maximum) value within the window or
 #'   the median of all values in the window.
+#' @param threshold.range numeric vector of length 2 or a longer vector or list
+#'   on which a call to \code{range()} returns a numeric vector of length 2. If
+#'   \code{NULL}, the default, \code{range(x)} is used.
 #' @param span odd integer A peak is defined as an element in a sequence which
 #'   is greater than all other elements within a moving window of width
 #'   \code{span} centred at that element. The default value is 3, meaning that a
@@ -83,6 +86,7 @@ find_peaks <-
            global.threshold = 0,
            local.threshold = 0,
            local.reference = "minimum",
+           threshold.range = NULL,
            span = 3,
            strict = FALSE,
            na.rm = FALSE) {
@@ -95,39 +99,42 @@ find_peaks <-
     } else {
       pks <- splus2R::peaks(x = x, span = span, strict = strict)
     }
-    # apply global height threshold test to found peaks
-    if (abs(global.threshold) >= 1e-5) {
-      range_x <- range(x, na.rm = na.rm, finite = TRUE)
-      min_x <- range_x[1]
-      max_x <- range_x[2]
-      x <- ifelse(!is.finite(x), min_x, x)
-      # this can cater for the case when max_x < 0, as with logs
-      delta <- max_x - min_x
-      top_flag <- global.threshold > 0.0
-      scaled_threshold <- delta * abs(global.threshold)
-      if (top_flag) {
-        pks <- ifelse(x - min_x > scaled_threshold, pks , FALSE)
+    if (abs(global.threshold) >= 1e-5 ||
+        local.threshold >= 1e-5) {
+      if (is.null(threshold.range)) {
+        threshold.range <- range(x)
       } else {
-        pks <- ifelse(max_x - x > scaled_threshold, pks , FALSE)
+        threshold.range <- range(threshold.range)
       }
-    }
-    # apply local.threshold height test to found peaks
-    if (local.threshold > 0) {
-      # we always search for maxima, even in the case of valleys
-      if (local.reference == "maximum") {
-        local.reference <- "minimum"
+      # add validation of threshold.range
+      threshold.delta <- threshold.range[2] - threshold.range[1]
+      x <- ifelse(!is.finite(x), threshold.range[1], x)
+      # apply global height threshold test to found peaks
+      if (abs(global.threshold) >= 1e-5) {
+        # this can cater for the case when max_x < 0, as with logs
+        top_flag <- global.threshold > 0.0
+        scaled_threshold <- threshold.delta * abs(global.threshold)
+        if (top_flag) {
+          pks <- ifelse(x - threshold.range[1] > scaled_threshold, pks , FALSE)
+        } else {
+          pks <- ifelse(threshold.range[2] - x > scaled_threshold, pks , FALSE)
+        }
       }
-      range_x <- range(x, na.rm = na.rm, finite = TRUE)
-      min_x <- range_x[1]
-      max_x <- range_x[2]
-      local.threshold <- local.threshold * (max_x - min_x)
-      smooth_x <-
-        switch(local.reference,
-               minimum = caTools::runmin(x, k = span, endrule = "min"),
-               median = runmed(x, k = span, endrule = "median"))
-      pks <- ifelse(pks,
-                    (x - smooth_x) > local.threshold,
-                    pks)
+      # apply local.threshold height test to found peaks
+      if (local.threshold > 0) {
+        # we always search for maxima, even in the case of valleys
+        if (local.reference == "maximum") {
+          local.reference <- "minimum"
+        }
+        local.threshold <- local.threshold * threshold.delta
+        smooth_x <-
+          switch(local.reference,
+                 minimum = caTools::runmin(x, k = span, endrule = "min"),
+                 median = runmed(x, k = span, endrule = "median"))
+        pks <- ifelse(pks,
+                      (x - smooth_x) > local.threshold,
+                      pks)
+      }
     }
     pks
   }
@@ -238,6 +245,9 @@ find_spikes <-
 #' @param na.rm	a logical value indicating whether NA values should be
 #'   stripped before the computation proceeds.
 #' @inheritParams find_peaks
+#' @param threshold.scaling character or numeric If \code{character} one of
+#'   \code{"data.range"} or \code{"scale.range"}, if \code{numeric} a vector of
+#'   length one or two.
 #' @param label.fmt character  string giving a format definition for converting
 #'   values into character strings by means of function \code{\link{sprintf}}
 #'   or \code{\link{strptime}}, its use is deprecated.
@@ -268,6 +278,22 @@ find_spikes <-
 #'   The default for parameter \code{strict} is \code{TRUE} in functions
 #'   \code{splus2R::peaks()} and \code{find_peaks()}, while the default is \code{FALSE}
 #'   in \code{stat_peaks()} and in \code{stat_valleys()}.
+#'
+#'   A problem faced when identifying peaks is their relevance. One approach is
+#'   to ignore peaks based on their height, which can be done either globally for
+#'   the whole variable mapped to the \emph{y} aesthetic or within a narrower
+#'   window. These two approaches can be combined. The size can be given in data
+#'   units by passing \code{threshold.scaling = 1}, relative to
+#'   the range of \emph{y} by passing \code{threshold.scaling = "data.range"},
+#'   relative to the range of the scale used for \emph{y} by passing
+#'   \code{threshold.scaling = "scale.range"}, or relative to an arbitrary
+#'   range by passing a \code{numeric} vector. A numeric vector of length one
+#'   is interpreted as a scaling factor, and equivalent to a vector of length
+#'   two that includes this number and zero. The default
+#'   \code{threshold.scaling = "data.range"} is the same as the fixed value in
+#'   versions <= 0.6.1 of 'ggpmisc'. However, being dependent on the data can
+#'   lead to inconsistencies among plots, and between groups and panels within a
+#'   single plot.
 #'
 #' @note These statistics check the scale of the \code{x} aesthetic and if it is
 #'   Date or Datetime they correctly generate the labels by transforming the
@@ -378,6 +404,7 @@ stat_peaks <- function(mapping = NULL,
                        global.threshold = 0,
                        local.threshold = 0,
                        local.reference = "minimum",
+                       threshold.scaling = "data.range",
                        strict = FALSE,
                        label.fmt = NULL,
                        x.label.fmt = NULL,
@@ -400,6 +427,7 @@ stat_peaks <- function(mapping = NULL,
         global.threshold = global.threshold,
         local.threshold = local.threshold,
         local.reference = local.reference,
+        threshold.scaling = threshold.scaling,
         strict = strict,
         label.fmt = label.fmt,
         x.label.fmt = x.label.fmt,
@@ -420,10 +448,11 @@ stat_peaks <- function(mapping = NULL,
 #'
 peaks_compute_group_fun <- function(data,
                                     scales,
-                                    span = 5,
-                                    global.threshold = 0,
-                                    local.threshold = 0,
-                                    local.reference = "minimum",
+                                    span,
+                                    global.threshold,
+                                    local.threshold,
+                                    local.reference,
+                                    threshold.scaling,
                                     strict = FALSE,
                                     label.fmt = NULL,
                                     x.label.fmt = NULL,
@@ -479,15 +508,30 @@ peaks_compute_group_fun <- function(data,
     # for span to work as expected the data should be in the order they
     # will be plotted
     data <- data[order(data$x), ]
+    if (is.character(threshold.scaling)) {
+      threshold.range <-
+        switch(threshold.scaling,
+               data.range = range(data$y),
+               scale.range = scales$x$range)
+    } else if (is.numeric(threshold.scaling)) {
+      if (length(threshold.scaling) == 1L) {
+        threshold.range <- c(0, threshold.scaling)
+      } else {
+        threshold.range <- threshold.scaling
+      }
+    } else {
+      stop ("Unrecognized value for 'threshold.scaling': ",
+            threshold.scaling)
+    }
     peaks.df <- data[find_peaks(data$y,
                                 span = span,
                                 global.threshold = global.threshold,
                                 local.threshold = local.threshold,
                                 local.reference = local.reference,
+                                threshold.range = threshold.range,
                                 strict = strict,
                                 na.rm = TRUE), , drop = FALSE]
   }
-
   peaks.df$flipped_aes <- flipped_aes
   peaks.df <- ggplot2::flip_data(peaks.df, flipped_aes)
 
@@ -509,6 +553,7 @@ valleys_compute_group_fun <- function(data,
                                       global.threshold,
                                       local.threshold,
                                       local.reference,
+                                      threshold.scaling,
                                       strict,
                                       label.fmt,
                                       x.label.fmt,
@@ -563,12 +608,28 @@ valleys_compute_group_fun <- function(data,
     # for span to work as expected the data should be in the order they
     # will be plotted
     data <- data[order(data$x), ]
+    if (is.character(threshold.scaling)) {
+      threshold.range <-
+        switch(threshold.scaling,
+               data.range = range(data$y),
+               scale.range = scales$x$range)
+    } else if (is.numeric(threshold.scaling)) {
+      if (length(threshold.scaling) == 1L) {
+        threshold.range <- c(0, threshold.scaling)
+      } else {
+        threshold.range <- threshold.scaling
+      }
+    } else {
+      stop ("Unrecognized value for 'threshold.scaling': ",
+            threshold.scaling)
+    }
     # we search for peaks in -y
     valleys.df <- data[find_peaks(-data$y,
                                   span = span,
                                   global.threshold = global.threshold,
                                   local.threshold = local.threshold,
                                   local.reference = local.reference,
+                                  threshold.range = threshold.range,
                                   strict = strict,
                                   na.rm = TRUE), , drop = FALSE]
   }
@@ -609,7 +670,6 @@ StatPeaks <-
                      if (!has_x && !has_y) {
                        rlang::abort("stat_density() requires an x or y aesthetic.")
                      }
-
                      params
                    },
                    extra_params = c("na.rm", "orientation"),
@@ -633,6 +693,7 @@ stat_valleys <- function(mapping = NULL,
                          global.threshold = 0,
                          local.threshold = 0,
                          local.reference = "maximum",
+                         threshold.scaling = "data.range",
                          strict = FALSE,
                          label.fmt = NULL,
                          x.label.fmt = NULL,
@@ -655,6 +716,7 @@ stat_valleys <- function(mapping = NULL,
         global.threshold = global.threshold,
         local.threshold = local.threshold,
         local.reference = local.reference,
+        threshold.scaling = threshold.scaling,
         strict = strict,
         label.fmt = label.fmt,
         x.label.fmt = x.label.fmt,

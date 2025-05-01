@@ -9,6 +9,7 @@ find_peaks(
   global.threshold = 0,
   local.threshold = 0,
   local.reference = "minimum",
+  threshold.range = NULL,
   span = 3,
   strict = FALSE,
   na.rm = FALSE
@@ -32,6 +33,10 @@ will be ignored. This value is relative to the range of \code{x}.}
 \code{"maximum"}) or \code{"median"}. The reference used to assess the
 height of the peak, either the minimum (maximum) value within the window or
 the median of all values in the window.}
+
+\item{threshold.range}{numeric vector of length 2 or a longer vector or list
+on which a call to \code{range()} returns a numeric vector of length 2. If
+\code{NULL}, the default, \code{range(x)} is used.}
 
 \item{span}{odd integer A peak is defined as an element in a sequence which
 is greater than all other elements within a moving window of width
