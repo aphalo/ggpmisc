@@ -70,24 +70,29 @@ is greater than all other elements within a moving window of width
 peak is bigger than both of its neighbours. \code{span = NULL} extends the
 span to the whole length of \code{x}.}
 
-\item{global.threshold}{numeric A value between 0.0 and 1.0 indicating the
+\item{global.threshold}{numeric A value between 0.0 and 1.0, relative to
+\code{threshold.range} indicating the
 \emph{global} height (depth) threshold below which peaks (valleys) will be
 ignored, or a negative value, between 0.0 and -1.0 indicating the
 \emph{global} height (depth) threshold above which peaks (valleys) will be
-ignored. These values are relative to the range of \code{x}.}
+ignored. If \code{threshold.range = 0} or the value passed as argument
+belongs to class \code{"AsIs"} the value is interpreted as an
+absolute value expressed in data units.}
 
-\item{local.threshold}{numeric A value between 0.0 and 1.0 indicating the
+\item{local.threshold}{numeric A value between 0.0 and 1.0, relative to
+\code{threshold.range}, indicating the
 \emph{within-window} height (depth) threshold below which peaks (valleys)
-will be ignored. This value is relative to the range of \code{x}.}
+will be ignored.  If \code{threshold.range = 0} or the value passed
+as argument belongs to class \code{"AsIs"} the value is interpreted as an
+absolute value expressed in data units.}
 
 \item{local.reference}{character One of \code{"minimum"} (eqv.
 \code{"maximum"}) or \code{"median"}. The reference used to assess the
 height of the peak, either the minimum (maximum) value within the window or
 the median of all values in the window.}
 
-\item{threshold.scaling}{character or numeric If \code{character} one of
-\code{"data.range"} or \code{"scale.range"}, if \code{numeric} a vector of
-length one or two.}
+\item{threshold.scaling}{character One of \code{"data.range"},
+\code{"scale.range"}, or \code{"none"}.}
 
 \item{strict}{logical flag: if TRUE, an element must be strictly greater than
 all other values in its window to be considered a peak. Default: TRUE.}
@@ -96,7 +101,7 @@ all other values in its window to be considered a peak. Default: TRUE.}
 values into character strings by means of function \code{\link{sprintf}}
 or \code{\link{strptime}}, its use is deprecated.}
 
-\item{x.label.fmt}{character  string giving a format definition for
+\item{x.label.fmt}{character string giving a format definition for
 converting $x$-values into character strings by means of function
 \code{\link{sprintf}} or \code{\link{strftime}}. The default argument
 varies depending on the scale in use.}
@@ -141,18 +146,15 @@ These stats use \code{geom_point} by default as it is the geom most
   A problem faced when identifying peaks is their relevance. One approach is
   to ignore peaks based on their height, which can be done either globally for
   the whole variable mapped to the \emph{y} aesthetic or within a narrower
-  window. These two approaches can be combined. The size can be given in data
-  units by passing \code{threshold.scaling = 1}, relative to
-  the range of \emph{y} by passing \code{threshold.scaling = "data.range"},
+  window. These two approaches can be combined. The threshold height (depth)
+  can be given in data units by protecting the argument in a call to
+  \code{I()} or by passing \code{threshold.scaling = "none"}. They can be
+  also expressed relative to the range of \emph{y} by passing
+  \code{threshold.scaling = "data.range"}, or
   relative to the range of the scale used for \emph{y} by passing
-  \code{threshold.scaling = "scale.range"}, or relative to an arbitrary
-  range by passing a \code{numeric} vector. A numeric vector of length one
-  is interpreted as a scaling factor, and equivalent to a vector of length
-  two that includes this number and zero. The default
+  \code{threshold.scaling = "scale.range"}. The default
   \code{threshold.scaling = "data.range"} is the same as the fixed value in
-  versions <= 0.6.1 of 'ggpmisc'. However, being dependent on the data can
-  lead to inconsistencies among plots, and between groups and panels within a
-  single plot.
+  versions <= 0.6.1 of 'ggpmisc'.
 }
 \note{
 These statistics check the scale of the \code{x} aesthetic and if it is

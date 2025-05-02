@@ -19,15 +19,21 @@ find_peaks(
 \item{x}{numeric vector. Hint: to find valleys, change the sign of the
 argument with the unary operator \code{-}.}
 
-\item{global.threshold}{numeric A value between 0.0 and 1.0 indicating the
+\item{global.threshold}{numeric A value between 0.0 and 1.0, relative to
+\code{threshold.range} indicating the
 \emph{global} height (depth) threshold below which peaks (valleys) will be
 ignored, or a negative value, between 0.0 and -1.0 indicating the
 \emph{global} height (depth) threshold above which peaks (valleys) will be
-ignored. These values are relative to the range of \code{x}.}
+ignored. If \code{threshold.range = 0} or the value passed as argument
+belongs to class \code{"AsIs"} the value is interpreted as an
+absolute value expressed in data units.}
 
-\item{local.threshold}{numeric A value between 0.0 and 1.0 indicating the
+\item{local.threshold}{numeric A value between 0.0 and 1.0, relative to
+\code{threshold.range}, indicating the
 \emph{within-window} height (depth) threshold below which peaks (valleys)
-will be ignored. This value is relative to the range of \code{x}.}
+will be ignored.  If \code{threshold.range = 0} or the value passed
+as argument belongs to class \code{"AsIs"} the value is interpreted as an
+absolute value expressed in data units.}
 
 \item{local.reference}{character One of \code{"minimum"} (eqv.
 \code{"maximum"}) or \code{"median"}. The reference used to assess the

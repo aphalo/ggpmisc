@@ -5,14 +5,20 @@
 #'
 #' @param x numeric vector. Hint: to find valleys, change the sign of the
 #'   argument with the unary operator \code{-}.
-#' @param global.threshold numeric A value between 0.0 and 1.0 indicating the
+#' @param global.threshold numeric A value between 0.0 and 1.0, relative to
+#'   \code{threshold.range} indicating the
 #'   \emph{global} height (depth) threshold below which peaks (valleys) will be
 #'   ignored, or a negative value, between 0.0 and -1.0 indicating the
 #'   \emph{global} height (depth) threshold above which peaks (valleys) will be
-#'   ignored. These values are relative to the range of \code{x}.
-#' @param local.threshold numeric A value between 0.0 and 1.0 indicating the
+#'   ignored. If \code{threshold.range = 0} or the value passed as argument
+#'   belongs to class \code{"AsIs"} the value is interpreted as an
+#'   absolute value expressed in data units.
+#' @param local.threshold numeric A value between 0.0 and 1.0, relative to
+#'   \code{threshold.range}, indicating the
 #'   \emph{within-window} height (depth) threshold below which peaks (valleys)
-#'   will be ignored. This value is relative to the range of \code{x}.
+#'   will be ignored.  If \code{threshold.range = 0} or the value passed
+#'   as argument belongs to class \code{"AsIs"} the value is interpreted as an
+#'   absolute value expressed in data units.
 #' @param local.reference character One of \code{"minimum"} (eqv.
 #'   \code{"maximum"}) or \code{"median"}. The reference used to assess the
 #'   height of the peak, either the minimum (maximum) value within the window or
@@ -90,8 +96,10 @@ find_peaks <-
            span = 3,
            strict = FALSE,
            na.rm = FALSE) {
+    # keep track
+    threshold.delta.computed <- FALSE
     # find peaks
-    if(is.null(span)) {
+    if(is.null(span) || span >= length(x)) {
       pks <- x == max(x, na.rm = na.rm)
       if (strict && sum(pks) != 1L) {
         pks <- logical(length(x)) # all FALSE
@@ -99,25 +107,45 @@ find_peaks <-
     } else {
       pks <- splus2R::peaks(x = x, span = span, strict = strict)
     }
-    if (abs(global.threshold) >= 1e-5 ||
-        local.threshold >= 1e-5) {
+
+    x <- ifelse(!is.finite(x), min(x, na.rm = TRUE), x)
+    # discard peaks that are low or not locally prominent
+    if (abs(global.threshold) >= 1e-5 || abs(local.threshold) >= 1e-5) {
       if (is.null(threshold.range)) {
         threshold.range <- range(x)
       } else {
         threshold.range <- range(threshold.range)
       }
-      # add validation of threshold.range
-      threshold.delta <- threshold.range[2] - threshold.range[1]
-      x <- ifelse(!is.finite(x), threshold.range[1], x)
+      if (all(abs(threshold.range < 1e-5))) {
+        if (!inherits(global.threshold, "AsIs")) {
+          global.threshold <- I(global.threshold)
+        }
+      } else {
+        threshold.delta <- threshold.range[2] - threshold.range[1]
+        threshold.delta.computed <- TRUE
+        if (length(unique(threshold.range)) != 2L ||
+            !all(is.finite(threshold.range))) {
+          threshold.range <- signif(threshold.range, digits = 3)
+          stop("Bad 'threshold.range' value: (",
+               threshold.range[1], ", ", threshold.range[2], ")")
+        }
+      }
       # apply global height threshold test to found peaks
       if (abs(global.threshold) >= 1e-5) {
         # this can cater for the case when max_x < 0, as with logs
-        top_flag <- global.threshold > 0.0
-        scaled_threshold <- threshold.delta * abs(global.threshold)
-        if (top_flag) {
-          pks <- ifelse(x - threshold.range[1] > scaled_threshold, pks , FALSE)
+        if (inherits(global.threshold, "AsIs")) {
+          pks <- ifelse(x > global.threshold, pks , FALSE)
         } else {
-          pks <- ifelse(threshold.range[2] - x > scaled_threshold, pks , FALSE)
+          scaled.global.threshold <- threshold.delta * abs(global.threshold)
+          if (global.threshold > 0.0) {
+            pks <- ifelse(x - threshold.range[1] > scaled.global.threshold,
+                          pks ,
+                          FALSE)
+          } else {
+            pks <- ifelse(x - threshold.range[1] <= scaled.global.threshold,
+                          pks ,
+                          FALSE)
+          }
         }
       }
       # apply local.threshold height test to found peaks
@@ -126,14 +154,33 @@ find_peaks <-
         if (local.reference == "maximum") {
           local.reference <- "minimum"
         }
-        local.threshold <- local.threshold * threshold.delta
-        smooth_x <-
-          switch(local.reference,
-                 minimum = caTools::runmin(x, k = span, endrule = "min"),
-                 median = runmed(x, k = span, endrule = "median"))
-        pks <- ifelse(pks,
-                      (x - smooth_x) > local.threshold,
-                      pks)
+
+        if (all(threshold.range == 0) && !inherits(local.threshold, "AsIs")) {
+          local.threshold <- I(local.threshold)
+        } else if (!threshold.delta.computed) {
+          threshold.delta <- threshold.range[2] - threshold.range[1]
+          if (length(unique(threshold.range)) != 2L ||
+              !all(is.finite(threshold.range))) {
+            threshold.range <- signif(threshold.range, digits = 3)
+            stop("Bad 'threshold.range' value: (",
+                 threshold.range[1], ", ",
+                 threshold.range[2], ")")
+          }
+        }
+        # apply local height threshold test to found peaks
+        if (abs(local.threshold) >= 1e-5) {
+          smooth_x <-
+            switch(local.reference,
+                   minimum = caTools::runmin(x, k = span, endrule = "min"),
+                   median = runmed(x, k = span, endrule = "median"))
+
+          if (inherits(local.threshold, "AsIs")) {
+            pks <- ifelse(x > local.threshold, pks , FALSE)
+          } else {
+            scaled.local.threshold <- threshold.delta * abs(local.threshold)
+              pks <- ifelse(x - smooth_x > scaled.local.threshold, pks , FALSE)
+          }
+        }
       }
     }
     pks
@@ -245,13 +292,12 @@ find_spikes <-
 #' @param na.rm	a logical value indicating whether NA values should be
 #'   stripped before the computation proceeds.
 #' @inheritParams find_peaks
-#' @param threshold.scaling character or numeric If \code{character} one of
-#'   \code{"data.range"} or \code{"scale.range"}, if \code{numeric} a vector of
-#'   length one or two.
+#' @param threshold.scaling character One of \code{"data.range"},
+#'   \code{"scale.range"}, or \code{"none"}.
 #' @param label.fmt character  string giving a format definition for converting
 #'   values into character strings by means of function \code{\link{sprintf}}
 #'   or \code{\link{strptime}}, its use is deprecated.
-#' @param x.label.fmt character  string giving a format definition for
+#' @param x.label.fmt character string giving a format definition for
 #'   converting $x$-values into character strings by means of function
 #'   \code{\link{sprintf}} or \code{\link{strftime}}. The default argument
 #'   varies depending on the scale in use.
@@ -282,18 +328,15 @@ find_spikes <-
 #'   A problem faced when identifying peaks is their relevance. One approach is
 #'   to ignore peaks based on their height, which can be done either globally for
 #'   the whole variable mapped to the \emph{y} aesthetic or within a narrower
-#'   window. These two approaches can be combined. The size can be given in data
-#'   units by passing \code{threshold.scaling = 1}, relative to
-#'   the range of \emph{y} by passing \code{threshold.scaling = "data.range"},
+#'   window. These two approaches can be combined. The threshold height (depth)
+#'   can be given in data units by protecting the argument in a call to
+#'   \code{I()} or by passing \code{threshold.scaling = "none"}. They can be
+#'   also expressed relative to the range of \emph{y} by passing
+#'   \code{threshold.scaling = "data.range"}, or
 #'   relative to the range of the scale used for \emph{y} by passing
-#'   \code{threshold.scaling = "scale.range"}, or relative to an arbitrary
-#'   range by passing a \code{numeric} vector. A numeric vector of length one
-#'   is interpreted as a scaling factor, and equivalent to a vector of length
-#'   two that includes this number and zero. The default
+#'   \code{threshold.scaling = "scale.range"}. The default
 #'   \code{threshold.scaling = "data.range"} is the same as the fixed value in
-#'   versions <= 0.6.1 of 'ggpmisc'. However, being dependent on the data can
-#'   lead to inconsistencies among plots, and between groups and panels within a
-#'   single plot.
+#'   versions <= 0.6.1 of 'ggpmisc'.
 #'
 #' @note These statistics check the scale of the \code{x} aesthetic and if it is
 #'   Date or Datetime they correctly generate the labels by transforming the
@@ -502,7 +545,7 @@ peaks_compute_group_fun <- function(data,
       x.label.fmt <- "%.4g"
     }
   }
-  if (is.null(span)) {
+  if (is.null(span) || span >= nrow(data)) {
     peaks.df <- data[which.max(data$y), , drop = FALSE]
   } else {
     # for span to work as expected the data should be in the order they
@@ -512,13 +555,9 @@ peaks_compute_group_fun <- function(data,
       threshold.range <-
         switch(threshold.scaling,
                data.range = range(data$y),
-               scale.range = scales$x$range)
-    } else if (is.numeric(threshold.scaling)) {
-      if (length(threshold.scaling) == 1L) {
-        threshold.range <- c(0, threshold.scaling)
-      } else {
-        threshold.range <- threshold.scaling
-      }
+               scale.range = scales$y$range$range,
+               none = c(0, 1),
+               stop("'threshold.scaling' argument invalid: ", threshold.scaling))
     } else {
       stop ("Unrecognized value for 'threshold.scaling': ",
             threshold.scaling)
@@ -532,12 +571,16 @@ peaks_compute_group_fun <- function(data,
                                 strict = strict,
                                 na.rm = TRUE), , drop = FALSE]
   }
-  peaks.df$flipped_aes <- flipped_aes
-  peaks.df <- ggplot2::flip_data(peaks.df, flipped_aes)
+  if (nrow(peaks.df)) {
+    peaks.df$flipped_aes <- flipped_aes
+    peaks.df <- ggplot2::flip_data(peaks.df, flipped_aes)
 
-  peaks.df[["x.label"]] <- as_label(x.label.fmt, peaks.df[["x"]])
-  peaks.df[["y.label"]] <- sprintf(y.label.fmt, peaks.df[["y"]])
-  peaks.df
+    peaks.df[["x.label"]] <- as_label(x.label.fmt, peaks.df[["x"]])
+    peaks.df[["y.label"]] <- sprintf(y.label.fmt, peaks.df[["y"]])
+    peaks.df
+  } else {
+    data.frame()
+  }
 }
 
 # Define here to avoid a note in check as the imports are not seen by checks
@@ -602,28 +645,33 @@ valleys_compute_group_fun <- function(data,
       x.label.fmt <- "%.4g"
     }
   }
-  if (is.null(span)) {
+  if (is.null(span) || span >= nrow(data)) {
     valleys.df <- data[which.min(data$y), , drop = FALSE]
   } else {
     # for span to work as expected the data should be in the order they
     # will be plotted
     data <- data[order(data$x), ]
     if (is.character(threshold.scaling)) {
-      threshold.range <-
-        switch(threshold.scaling,
-               data.range = range(data$y),
-               scale.range = scales$x$range)
-    } else if (is.numeric(threshold.scaling)) {
-      if (length(threshold.scaling) == 1L) {
-        threshold.range <- c(0, threshold.scaling)
+      if (threshold.scaling == "data.range") {
+        threshold.range <- range(data$y)
+      } else if (threshold.scaling == "scale.range") {
+        threshold.range <- scales$y$range$range
+      } else if (threshold.scaling == "none") {
+        threshold.range <- c(0, 0)
+        if (!inherits(global.threshold, "AsIs")) {
+          global.threshold <- I(global.threshold)
+        }
       } else {
-        threshold.range <- threshold.scaling
+        stop("'threshold.scaling' argument invalid: ", threshold.scaling)
       }
     } else {
-      stop ("Unrecognized value for 'threshold.scaling': ",
-            threshold.scaling)
+      stop ("'threshold.scaling' must be character, but is: ",
+            class(threshold.scaling)[1])
     }
     # we search for peaks in -y
+    if (inherits(global.threshold, "AsIs")) {
+      global.threshold <- -global.threshold
+    }
     valleys.df <- data[find_peaks(-data$y,
                                   span = span,
                                   global.threshold = global.threshold,
@@ -633,13 +681,16 @@ valleys_compute_group_fun <- function(data,
                                   strict = strict,
                                   na.rm = TRUE), , drop = FALSE]
   }
+  if (nrow(valleys.df)) {
+    valleys.df$flipped_aes <- flipped_aes
+    valleys.df <- ggplot2::flip_data(valleys.df, flipped_aes)
 
-  valleys.df$flipped_aes <- flipped_aes
-  valleys.df <- ggplot2::flip_data(valleys.df, flipped_aes)
-
-  valleys.df[["x.label"]] <- as_label(x.label.fmt, valleys.df[["x"]])
-  valleys.df[["y.label"]] <- sprintf(y.label.fmt, valleys.df[["y"]])
-  valleys.df
+    valleys.df[["x.label"]] <- as_label(x.label.fmt, valleys.df[["x"]])
+    valleys.df[["y.label"]] <- sprintf(y.label.fmt, valleys.df[["y"]])
+    valleys.df
+  } else {
+    data.frame()
+  }
 }
 
 #' \code{Stat*} Objects

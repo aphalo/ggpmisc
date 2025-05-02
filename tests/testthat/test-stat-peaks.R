@@ -18,7 +18,11 @@ make_data_tbl <- function(nrow = 100, rfun = rnorm, ...) {
   )
 }
 
+data.rows <- 30
+my.data <- make_data_tbl(data.rows)
+
 shuffle_data <- function(data) {
+  set.seed(123)
   data[sample(1:nrow(data), nrow(data)), ]
 }
 
@@ -28,7 +32,7 @@ if (isNamespaceLoaded(name = "package:ggplot2")) detach(package:ggplot2, unload 
 
 test_that("peaks_noload", {
   vdiffr::expect_doppelganger("stat_peaks_numeric_noload",
-                              ggplot2::ggplot(data = make_data_tbl(30), aes(x, y)) +
+                              ggplot2::ggplot(data = my.data, aes(x, y)) +
                                 ggplot2::geom_point() +
                                 ggplot2::geom_line() +
                                 ggpmisc::stat_peaks(colour = "red") +
@@ -39,29 +43,32 @@ test_that("peaks_noload", {
 library(ggpmisc)
 
 test_that("numbers_tb", {
+  # defaults
   vdiffr::expect_doppelganger("stat_peaks_numeric_01",
-                              ggplot(data = make_data_tbl(30), aes(x, y)) +
+                              ggplot(data = my.data, aes(x, y)) +
                                 geom_point() +
                                 geom_line() +
                                 stat_peaks(colour = "red") +
                                 expand_limits(y = c(-2.5, 2.5))
   )
+  # row order insensitive
   vdiffr::expect_doppelganger("stat_peaks_numeric_s01",
-                              ggplot(data = shuffle_data(make_data_tbl(30)), aes(x, y)) +
+                              ggplot(data = shuffle_data(my.data), aes(x, y)) +
                                 geom_point() +
                                 geom_line() +
                                 stat_peaks(colour = "red") +
                                 expand_limits(y = c(-2.5, 2.5))
   )
+  # labels
   vdiffr::expect_doppelganger("stat_peaks_numeric__02",
-                              ggplot(data = make_data_tbl(30), aes(x, y)) +
+                              ggplot(data = my.data, aes(x, y)) +
                                 geom_point() +
                                 geom_line() +
                                 stat_peaks(geom = "text", vjust = -0.5) +
                                 expand_limits(y = c(-2.5, 2.5))
   )
   vdiffr::expect_doppelganger("stat_peaks_numeric__03",
-                              ggplot(data = make_data_tbl(30), aes(x, y)) +
+                              ggplot(data = my.data, aes(x, y)) +
                                 geom_point() +
                                 geom_line() +
                                 stat_peaks(geom = "text", vjust = -0.5,
@@ -69,7 +76,7 @@ test_that("numbers_tb", {
                                 expand_limits(y = c(-2.5, 2.5))
   )
   vdiffr::expect_doppelganger("stat_peaks_numeric__04",
-                              ggplot(data = make_data_tbl(30), aes(x, y)) +
+                              ggplot(data = my.data, aes(x, y)) +
                                 geom_point() +
                                 geom_line() +
                                 stat_peaks(mapping = aes(label = after_stat(y.label)),
@@ -79,46 +86,167 @@ test_that("numbers_tb", {
                                            parse = TRUE) +
                               expand_limits(y = c(-2.5, 2.5))
   )
+  # span
+  # message triggered by handled by 'ggplot2'
+  # expect_message(ggplot(data = my.data, aes(x, y)) +
+  #                  stat_peaks(colour = "red", span = 10))
   vdiffr::expect_doppelganger("stat_peaks_numeric__05",
-                              ggplot(data = make_data_tbl(30), aes(x, y)) +
+                              ggplot(data = my.data, aes(x, y)) +
                                 geom_point() +
                                 geom_line() +
                                 stat_peaks(colour = "red", span = NULL) +
                                 expand_limits(y = c(-2.5, 2.5))
   )
+  vdiffr::expect_doppelganger("stat_peaks_numeric__05a",
+                              ggplot(data = my.data, aes(x, y)) +
+                                geom_point() +
+                                geom_line() +
+                                stat_peaks(colour = "red", span = data.rows) +
+                                expand_limits(y = c(-2.5, 2.5))
+  )
+  vdiffr::expect_doppelganger("stat_peaks_numeric__05b",
+                              ggplot(data = my.data, aes(x, y)) +
+                                geom_point() +
+                                geom_line() +
+                                stat_peaks(colour = "red", span = data.rows + 1) +
+                                expand_limits(y = c(-2.5, 2.5))
+  )
   vdiffr::expect_doppelganger("stat_peaks_numeric__06",
-                              ggplot(data = make_data_tbl(30), aes(x, y)) +
+                              ggplot(data = my.data, aes(x, y)) +
                                 geom_point() +
                                 geom_line() +
                                 stat_peaks(colour = "red", span = 11) +
+                                expand_limits(y = c(-2.5, 2.5))
+  )
+  # global threshold
+  vdiffr::expect_doppelganger("stat_peaks_numeric_07",
+                              ggplot(data = my.data, aes(x, y)) +
+                                geom_point() +
+                                geom_line() +
+                                stat_peaks(colour = "red",
+                                           global.threshold = 0.9) +
+                                expand_limits(y = c(-2.5, 2.5))
+  )
+  vdiffr::expect_doppelganger("stat_peaks_numeric_08",
+                              ggplot(data = my.data, aes(x, y)) +
+                                geom_point() +
+                                geom_line() +
+                                stat_peaks(colour = "red",
+                                           global.threshold = -0.9) +
+                                expand_limits(y = c(-2.5, 2.5))
+  )
+  # error triggered by handled by 'ggplot2'
+  # expect_error(ggplot(data = my.data, aes(x, y)) +
+  #                stat_peaks(colour = "red",
+  #                           global.threshold = 0.5,
+  #                           threshold.scaling = "bad.input"))
+  vdiffr::expect_doppelganger("stat_peaks_numeric_09",
+                              ggplot(data = my.data, aes(x, y)) +
+                                geom_point() +
+                                geom_line() +
+                                stat_peaks(colour = "red",
+                                           global.threshold = 0.5,
+                                           threshold.scaling = "none") +
+                                expand_limits(y = c(-2.5, 2.5))
+  )
+  vdiffr::expect_doppelganger("stat_peaks_numeric_10",
+                              ggplot(data = my.data, aes(x, y)) +
+                                geom_point() +
+                                geom_line() +
+                                stat_peaks(colour = "red",
+                                           global.threshold = -1,
+                                           threshold.scaling = "none") +
+                                expand_limits(y = c(-2.5, 2.5))
+  )
+  vdiffr::expect_doppelganger("stat_peaks_numeric_10a",
+                              ggplot(data = my.data, aes(x, y)) +
+                                geom_point() +
+                                geom_line() +
+                                stat_peaks(colour = "red",
+                                           global.threshold = I(-1),
+                                           threshold.scaling = "none") +
+                                expand_limits(y = c(-2.5, 2.5))
+  )
+  vdiffr::expect_doppelganger("stat_peaks_numeric_11",
+                              ggplot(data = my.data, aes(x, y)) +
+                                geom_point() +
+                                geom_line() +
+                                stat_peaks(colour = "red",
+                                           global.threshold = 0.5,
+                                           threshold.scaling = "data.range") +
+                                expand_limits(y = c(-2.5, 2.5))
+  )
+  vdiffr::expect_doppelganger("stat_peaks_numeric_12",
+                              ggplot(data = my.data, aes(x, y)) +
+                                geom_point() +
+                                geom_line() +
+                                stat_peaks(colour = "red",
+                                           global.threshold = 0.5,
+                                           threshold.scaling = "scale.range") +
+                                expand_limits(y = c(-2.5, 2.5))
+  )
+  # local threshold
+  vdiffr::expect_doppelganger("stat_peaks_numeric_13",
+                              ggplot(data = my.data, aes(x, y)) +
+                                geom_point() +
+                                geom_line() +
+                                stat_peaks(colour = "red",
+                                           local.threshold = 0.02) +
+                                expand_limits(y = c(-2.5, 2.5))
+  )
+  vdiffr::expect_doppelganger("stat_peaks_numeric_14",
+                              ggplot(data = my.data, aes(x, y)) +
+                                geom_point() +
+                                geom_line() +
+                                stat_peaks(colour = "red",
+                                           local.threshold = 0.07,
+                                           threshold.scaling = "none") +
+                                expand_limits(y = c(-2.5, 2.5))
+  )
+  vdiffr::expect_doppelganger("stat_peaks_numeric_15",
+                              ggplot(data = my.data, aes(x, y)) +
+                                geom_point() +
+                                geom_line() +
+                                stat_peaks(colour = "red",
+                                           local.threshold = 0.02,
+                                           threshold.scaling = "data.range") +
+                                expand_limits(y = c(-2.5, 2.5))
+  )
+  vdiffr::expect_doppelganger("stat_peaks_numeric_16",
+                              ggplot(data = my.data, aes(x, y)) +
+                                geom_point() +
+                                geom_line() +
+                                stat_peaks(colour = "red",
+                                           local.threshold = 0.07,
+                                           threshold.scaling = "scale.range") +
                                 expand_limits(y = c(-2.5, 2.5))
   )
 })
 
 test_that("dates_tb", {
   vdiffr::expect_doppelganger("stat_peaks_date_01",
-                              ggplot(data = make_data_tbl(30), aes(x.date, y)) +
+                              ggplot(data = my.data, aes(x.date, y)) +
                                 geom_point() +
                                 geom_line() +
                                 stat_peaks(colour = "red") +
                                 expand_limits(y = c(-2.5, 2.5))
   )
   vdiffr::expect_doppelganger("stat_peaks_date_s01",
-                              ggplot(data = shuffle_data(make_data_tbl(30)), aes(x.date, y)) +
+                              ggplot(data = shuffle_data(my.data), aes(x.date, y)) +
                                 geom_point() +
                                 geom_line() +
                                 stat_peaks(colour = "red") +
                                 expand_limits(y = c(-2.5, 2.5))
   )
   vdiffr::expect_doppelganger("stat_peaks_date_02",
-                              ggplot(data = make_data_tbl(30), aes(x.date, y)) +
+                              ggplot(data = my.data, aes(x.date, y)) +
                                 geom_point() +
                                 geom_line() +
                                 stat_peaks(geom = "text", vjust = -0.5) +
                                 expand_limits(y = c(-2.5, 2.5))
   )
   vdiffr::expect_doppelganger("stat_peaks_date_03",
-                              ggplot(data = make_data_tbl(30), aes(x.datetime, y)) +
+                              ggplot(data = my.data, aes(x.datetime, y)) +
                                 geom_point() +
                                 geom_line() +
                                 stat_peaks(geom = "text", vjust = -0.5,
@@ -126,7 +254,7 @@ test_that("dates_tb", {
                                 expand_limits(y = c(-2.5, 2.5))
   )
   vdiffr::expect_doppelganger("stat_peaks_date_04",
-                              ggplot(data = make_data_tbl(30), aes(x.datetime, y)) +
+                              ggplot(data = my.data, aes(x.datetime, y)) +
                                 geom_point() +
                                 geom_line() +
                                 stat_peaks(geom = "text", vjust = -0.5,
@@ -135,7 +263,7 @@ test_that("dates_tb", {
                                 expand_limits(y = c(-2.5, 2.5))
   )
   vdiffr::expect_doppelganger("stat_peaks_date_05",
-                              ggplot(data = make_data_tbl(30), aes(x, y)) +
+                              ggplot(data = my.data, aes(x, y)) +
                                 geom_point() +
                                 geom_line() +
                                 stat_peaks(mapping = aes(label = after_stat(y.label)),
@@ -146,14 +274,14 @@ test_that("dates_tb", {
                                 expand_limits(y = c(-2.5, 2.5))
   )
   vdiffr::expect_doppelganger("stat_peaks_date_06",
-                              ggplot(data = make_data_tbl(30), aes(x, y)) +
+                              ggplot(data = my.data, aes(x, y)) +
                                 geom_point() +
                                 geom_line() +
                                 stat_peaks(colour = "red", span = NULL) +
                                 expand_limits(y = c(-2.5, 2.5))
   )
   vdiffr::expect_doppelganger("stat_peaks_date_07",
-                              ggplot(data = make_data_tbl(30), aes(x, y)) +
+                              ggplot(data = my.data, aes(x, y)) +
                                 geom_point() +
                                 geom_line() +
                                 stat_peaks(colour = "red", span = 11) +
@@ -163,28 +291,28 @@ test_that("dates_tb", {
 
 test_that("datetimes_tb", {
   vdiffr::expect_doppelganger("stat_peaks_datetime_01",
-                              ggplot(data = make_data_tbl(30), aes(x.datetime, y)) +
+                              ggplot(data = my.data, aes(x.datetime, y)) +
                                 geom_point() +
                                 geom_line() +
                                 stat_peaks(colour = "red") +
                                 expand_limits(y = c(-2.5, 2.5))
   )
   vdiffr::expect_doppelganger("stat_peaks_datetime_s01",
-                              ggplot(data = shuffle_data(make_data_tbl(30)), aes(x.datetime, y)) +
+                              ggplot(data = shuffle_data(my.data), aes(x.datetime, y)) +
                                 geom_point() +
                                 geom_line() +
                                 stat_peaks(colour = "red") +
                                 expand_limits(y = c(-2.5, 2.5))
   )
   vdiffr::expect_doppelganger("stat_peaks_datetime_02",
-                              ggplot(data = make_data_tbl(30), aes(x.datetime, y)) +
+                              ggplot(data = my.data, aes(x.datetime, y)) +
                                 geom_point() +
                                 geom_line() +
                                 stat_peaks(geom = "text", vjust = -0.5) +
                                 expand_limits(y = c(-2.5, 2.5))
   )
   vdiffr::expect_doppelganger("stat_peaks_datetime_03",
-                              ggplot(data = make_data_tbl(30), aes(x.datetime, y)) +
+                              ggplot(data = my.data, aes(x.datetime, y)) +
                                 geom_point() +
                                 geom_line() +
                                 stat_peaks(geom = "text", vjust = -0.5,
@@ -192,7 +320,7 @@ test_that("datetimes_tb", {
                                 expand_limits(y = c(-2.5, 2.5))
   )
   vdiffr::expect_doppelganger("stat_peaks_datetime_04",
-                              ggplot(data = make_data_tbl(30), aes(x.datetime, y)) +
+                              ggplot(data = my.data, aes(x.datetime, y)) +
                                 geom_point() +
                                 geom_line() +
                                 stat_peaks(geom = "text", vjust = -0.5,
@@ -201,7 +329,7 @@ test_that("datetimes_tb", {
                                 expand_limits(y = c(-2.5, 2.5))
   )
   vdiffr::expect_doppelganger("stat_peaks_datetime_05",
-                              ggplot(data = make_data_tbl(30), aes(x, y)) +
+                              ggplot(data = my.data, aes(x, y)) +
                                 geom_point() +
                                 geom_line() +
                                 stat_peaks(mapping = aes(label = after_stat(y.label)),
@@ -212,14 +340,14 @@ test_that("datetimes_tb", {
                                 expand_limits(y = c(-2.5, 2.5))
   )
   vdiffr::expect_doppelganger("stat_peaks_datetime_06",
-                              ggplot(data = make_data_tbl(30), aes(x, y)) +
+                              ggplot(data = my.data, aes(x, y)) +
                                 geom_point() +
                                 geom_line() +
                                 stat_peaks(colour = "red", span = NULL) +
                                 expand_limits(y = c(-2.5, 2.5))
   )
   vdiffr::expect_doppelganger("stat_peaks_datetime_07",
-                              ggplot(data = make_data_tbl(30), aes(x, y)) +
+                              ggplot(data = my.data, aes(x, y)) +
                                 geom_point() +
                                 geom_line() +
                                 stat_peaks(colour = "red", span = 11) +
