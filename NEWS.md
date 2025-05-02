@@ -17,7 +17,7 @@ A significant new feature in this release is the support of additional model fit
 -   Update `scale_x_logFC()`and `scale_y_logFC()` for improved compatibility with 'ggplot2' (== 3.5.1.9000).
 -   Implement a local (within-window span) threshold for peak height and valley depth in `stat_peaks()`  and `stat_valleys()`, using parameters `local.threshold` and `local.reference`.
 -   **Code breaking:** Rename parameter `ignore_threshold` into `global.threshold` in `find_peaks()`, `stat_peaks()`  and `stat_valleys()` for naming consistency and clarity.
--   The scaling applied to user-supplied values for `global.threshold` and `local.threshold` can be modified by passing an argument to `threshold.scaling`.
+-   The scaling applied to user-supplied values for `global.threshold` and `local.threshold` can be controlled by passing a `character` argument to `threshold.scaling`. Non-scaled thresholds are also supported.
 -   Add HTML Cheat Sheet.
 -   Add article 'Custom polynomial models' as on-line only documentation.
 

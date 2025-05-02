@@ -28,9 +28,9 @@
 #'   \code{NULL}, the default, \code{range(x)} is used.
 #' @param span odd integer A peak is defined as an element in a sequence which
 #'   is greater than all other elements within a moving window of width
-#'   \code{span} centred at that element. The default value is 3, meaning that a
-#'   peak is bigger than both of its neighbours. \code{span = NULL} extends the
-#'   span to the whole length of \code{x}.
+#'   \code{span} centred at that element. The default value is 5, meaning that a
+#'   peak is taller than its four nearest neighbours. \code{span = NULL} extends
+#'   the span to the whole length of \code{x}.
 #' @param strict logical flag: if TRUE, an element must be strictly greater than
 #'   all other values in its window to be considered a peak. Default: TRUE.
 #' @param na.rm logical indicating whether \code{NA} values should be stripped
@@ -70,12 +70,22 @@
 #'              col.names = c("year", "lynx"),
 #'              as.numeric = TRUE) # years -> as numeric
 #'
-#' which(find_peaks(lynx_num.df$lynx, span = 31))
-#' lynx_num.df[find_peaks(lynx_num.df$lynx, span = 15), ]
+#' which(find_peaks(lynx_num.df$lynx, span = 5))
+#' lynx_num.df[find_peaks(lynx_num.df$lynx, span = 5), ]
+#' lynx_num.df[find_peaks(lynx_num.df$lynx, span = 51), ]
 #' lynx_num.df[find_peaks(lynx_num.df$lynx, span = NULL), ]
 #' lynx_num.df[find_peaks(lynx_num.df$lynx,
-#'                        span = 31,
-#'                        global.threshold = 0.75), ]
+#'                        span = 15,
+#'                        global.threshold = 2/3), ]
+#' lynx_num.df[find_peaks(lynx_num.df$lynx,
+#'                        span = 15,
+#'                        global.threshold = I(4000)), ]
+#' lynx_num.df[find_peaks(lynx_num.df$lynx,
+#'                        span = 15,
+#'                        local.threshold = 0.5), ]
+#' lynx_num.df[find_peaks(lynx_num.df$lynx,
+#'                        span = 15,
+#'                        local.threshold = I(2000)), ]
 #'
 #' lynx_datetime.df <-
 #'    try_tibble(lynx,
@@ -175,7 +185,7 @@ find_peaks <-
                    median = runmed(x, k = span, endrule = "median"))
 
           if (inherits(local.threshold, "AsIs")) {
-            pks <- ifelse(x > local.threshold, pks , FALSE)
+            pks <- ifelse(x - smooth_x > local.threshold, pks , FALSE)
           } else {
             scaled.local.threshold <- threshold.delta * abs(local.threshold)
               pks <- ifelse(x - smooth_x > scaled.local.threshold, pks , FALSE)
@@ -365,21 +375,62 @@ find_spikes <-
 #'
 #' @examples
 #' # lynx is a time.series object
+#' # we convert it to a data frame
 #' lynx_num.df <-
 #'   try_tibble(lynx,
 #'              col.names = c("year", "lynx"),
 #'              as.numeric = TRUE) # years -> as numeric
 #'
+#' # using defaults
 #' ggplot(lynx_num.df, aes(year, lynx)) +
 #'   geom_line() +
 #'   stat_peaks(colour = "red") +
 #'   stat_valleys(colour = "blue")
 #'
+#' # global threshold for peak height
+#' ggplot(lynx_num.df, aes(year, lynx)) +
+#'   geom_line() +
+#'   stat_peaks(colour = "red",
+#'              global.threshold = 0.5,
+#'              threshold.scaling = "data.range") # half data range
+#'
+#' ggplot(lynx_num.df, aes(year, lynx)) +
+#'   geom_line() +
+#'   stat_peaks(colour = "red",
+#'              global.threshold = 0.5,
+#'              threshold.scaling = "scale.range") + # half scale range
+#'              expand_limits(y = c(0, 8000))
+#'
+#' ggplot(lynx_num.df, aes(year, lynx)) +
+#'   geom_line() +
+#'   stat_peaks(colour = "red",
+#'   global.threshold = I(4000))
+#'
+#' # local (within window) threshold for peak height
+#' ggplot(lynx_num.df, aes(year, lynx)) +
+#'   geom_line() +
+#'   stat_peaks(colour = "red",
+#'              local.threshold = 1/3,
+#'              local.reference = "minimum")
+#'
+#' ggplot(lynx_num.df, aes(year, lynx)) +
+#'   geom_line() +
+#'   stat_peaks(colour = "red",
+#'              local.threshold = 1/5,
+#'              local.reference = "median")
+#'
+#' ggplot(lynx_num.df, aes(year, lynx)) +
+#'   geom_line() +
+#'   stat_peaks(colour = "red",
+#'   global.threshold = I(3000))
+#'
+#' # orientation is supported
 #' ggplot(lynx_num.df, aes(lynx, year)) +
 #'   geom_line(orientation = "y") +
 #'   stat_peaks(colour = "red", orientation = "y") +
 #'   stat_valleys(colour = "blue", orientation = "y")
 #'
+#' # default aesthetic mapping supports additional geoms
 #' ggplot(lynx_num.df, aes(year, lynx)) +
 #'   geom_line() +
 #'   stat_peaks(colour = "red") +
@@ -396,6 +447,7 @@ find_spikes <-
 #'   stat_peaks(colour = "red", orientation = "y",
 #'              geom = "text", hjust = -0.1)
 #'
+#' # date times and dates are also supported for x aesthetic
 #' lynx_datetime.df <-
 #'    try_tibble(lynx,
 #'               col.names = c("year", "lynx")) # years -> POSIXct
