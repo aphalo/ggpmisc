@@ -1,0 +1,127 @@
+---
+title: "Peaks and Valleys"
+subtitle: "'ggpmisc' `r packageVersion('ggpmisc')`"
+author: "Pedro J. Aphalo"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+    toc: yes
+vignette: >
+  %\VignetteIndexEntry{Peaks and Valleys}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+```{r, include=FALSE, echo=FALSE}
+knitr::opts_chunk$set(fig.align = 'center', 
+                      collapse = TRUE,
+                      comment = "#>",
+                      fig.show = 'hold', fig.width = 7, fig.height = 4)
+
+options(warnPartialMatchArgs = FALSE,
+        tibble.print.max = 4,
+        tibble.print.min = 4,
+        dplyr.summarise.inform = FALSE)
+
+eval_flag <- TRUE # evaluate all code chunks
+```
+
+## Aims of 'ggpmisc' and caveats
+
+Package 'ggpmisc' makes it easier to add to plots created using 'ggplot2' annotations. It does this in part by wrapping existing functions. In this article I describe how to highlight and label peaks and labels in 2D plots of data.
+
+_To avoid confusion it is good to make clear what may seem obvious to some: if no plot is needed, then there is no reason to use the ggplot statistics from this package. The values shown as annotations are computed using function `find_peaks()`, which builds onto function `splus2R::peaks()`._
+
+It is also important to remember that in most cases data analysis including exploratory and other stages should take place before annotated plots for publication are produced. Even though data analysis can benefit from combined numerical and graphical representation of the results, the use I envision for 'ggpmisc' is mainly for the production of plots for publication or communication of a completed analysis.
+
+## Preliminaries
+
+We load all the packages used in the examples.
+
+```{r, message=FALSE}
+library(ggpmisc)
+library(ggrepel)
+```
+
+Attaching package 'ggpmisc' also attaches package 'ggpp', which provides some of the geometries and positions used in the examples below. Package 'ggpp' can be loaded and attached on its own, and has [separate documentation](https://docs.r4photobiology.info/ggpp/).
+
+As we will use text and labels on the plotting area we change the default theme to an uncluttered one.
+
+```{r}
+old_theme <- theme_set(theme_bw())
+```
+
+## `stat_peaks()` and `stat_valleys()`
+
+Two statistics, `stat_peaks()` and `stat_valleys()`, are described together in this section as they are very similar. In the current implementation they do not support fitting, and they simply find local or global, maxima and minima. They require data to be mapped to aesthetics _x_ and _y_, with _y_ being `numeric` and _x_, `numeric`, datetime or date as supported by 'ggplot2'. The support flipping with an argument to `orientation` as in 'ggplot2' (>= 3.4.0).
+
+They simplify/automate the labelling of peaks and valleys and add the possibility of ignoring some peaks or valleys based on their height or depth using thresholds.
+
+In the example below we use a time series, taking advantge of a especilization of method `ggplot()` defined in package 'ggpp'.
+
+```{r}
+p0 <- 
+  ggplot(lynx, as.numeric = TRUE) +
+  geom_line() +
+  geom_point(shape = "bullet")
+p0
+```
+
+```{r}
+p0 +
+  stat_peaks(colour = "red")
+```
+
+```{r}
+p0 +
+  stat_valleys(colour = "blue")
+```
+
+
+```{r}
+p0 +
+  stat_peaks(geom = "text", 
+             position = position_nudge(y = 100), 
+             hjust = "left", 
+             angle = 90) +
+  expand_limits(y = 8000)
+```
+
+
+```{r}
+p0 +
+  stat_peaks(geom = "text_repel",
+             position = position_nudge_keep(y = 100)) +
+  expand_limits(y = 7500)
+```
+
+
+```{r}
+p0 +
+  stat_peaks(geom = "text_repel",
+             box.padding = 0.1,
+             point.padding = 4,
+             position = position_nudge_keep(y = 100)) +
+  stat_peaks(colour = "red") +
+  stat_valleys(geom = "text_repel",
+               box.padding = 0.1,
+               point.padding = 4,
+               position = position_nudge_keep(y = -100)) +
+  stat_valleys(colour = "blue") +
+  expand_limits(y = c(-500, 7500))
+```
+
+
+```{r}
+p0 +
+  stat_peaks(aes(label = after_stat(y.label)),
+             y.label.fmt = "n=%i",
+             geom = "text_repel",
+             direction = "y",
+             box.padding = 0.1,
+             point.padding = 4,
+             position = position_nudge_keep(y = 150),
+             angle = 90) +
+  stat_peaks(colour = "red") +
+  expand_limits(y = 8100)
+```
