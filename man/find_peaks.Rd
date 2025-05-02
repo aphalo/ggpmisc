@@ -46,9 +46,9 @@ on which a call to \code{range()} returns a numeric vector of length 2. If
 
 \item{span}{odd integer A peak is defined as an element in a sequence which
 is greater than all other elements within a moving window of width
-\code{span} centred at that element. The default value is 3, meaning that a
-peak is bigger than both of its neighbours. \code{span = NULL} extends the
-span to the whole length of \code{x}.}
+\code{span} centred at that element. The default value is 5, meaning that a
+peak is taller than its four nearest neighbours. \code{span = NULL} extends
+the span to the whole length of \code{x}.}
 
 \item{strict}{logical flag: if TRUE, an element must be strictly greater than
 all other values in its window to be considered a peak. Default: TRUE.}
@@ -91,12 +91,22 @@ lynx_num.df <-
              col.names = c("year", "lynx"),
              as.numeric = TRUE) # years -> as numeric
 
-which(find_peaks(lynx_num.df$lynx, span = 31))
-lynx_num.df[find_peaks(lynx_num.df$lynx, span = 15), ]
+which(find_peaks(lynx_num.df$lynx, span = 5))
+lynx_num.df[find_peaks(lynx_num.df$lynx, span = 5), ]
+lynx_num.df[find_peaks(lynx_num.df$lynx, span = 51), ]
 lynx_num.df[find_peaks(lynx_num.df$lynx, span = NULL), ]
 lynx_num.df[find_peaks(lynx_num.df$lynx,
-                       span = 31,
-                       global.threshold = 0.75), ]
+                       span = 15,
+                       global.threshold = 2/3), ]
+lynx_num.df[find_peaks(lynx_num.df$lynx,
+                       span = 15,
+                       global.threshold = I(4000)), ]
+lynx_num.df[find_peaks(lynx_num.df$lynx,
+                       span = 15,
+                       local.threshold = 0.5), ]
+lynx_num.df[find_peaks(lynx_num.df$lynx,
+                       span = 15,
+                       local.threshold = I(2000)), ]
 
 lynx_datetime.df <-
    try_tibble(lynx,

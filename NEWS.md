@@ -6,7 +6,7 @@ editor_options:
 
 # ggpmisc 0.6.2
 
-A significant new feature in this release is the support of additional model fit functions, both explicitly and by handling missing methods and values more gracefully. Another enhancement is the more flexible approach to the filtering with thresholds of peaks and valleys, which improves the detection of prominent or major peaks in noisy data by reducing or preventing "false positives".
+A significant new feature in this release is the support of additional model fit functions, both explicitly and by handling missing methods and values more gracefully. Another important enhancement is a more flexible approach to the filtering of peaks and valleys using height and depth thresholds, which improves the detection of prominent or major (true?) peaks in noisy data by reducing or preventing "false positives".
 
 -   In `stat_poly_line()` and `stat_poly_eq()` a fitted model object of an unexpected class triggers a warning instead of an error.
 -   Support `MASS::lqs()`, `nlme::gls()`, `robustbase::lmrob()` and `robustbase::lstReg()` in `stat_poly_line()`, `stat_poly_eq()`, `stat_fit_deviations()`, stat_fit_residuals()` and `stat_fit_fitted()`. 
@@ -18,6 +18,7 @@ A significant new feature in this release is the support of additional model fit
 -   Implement a local (within-window span) threshold for peak height and valley depth in `stat_peaks()`  and `stat_valleys()`, using parameters `local.threshold` and `local.reference`.
 -   **Code breaking:** Rename parameter `ignore_threshold` into `global.threshold` in `find_peaks()`, `stat_peaks()`  and `stat_valleys()` for naming consistency and clarity.
 -   The scaling applied to user-supplied values for `global.threshold` and `local.threshold` can be controlled by passing a `character` argument to `threshold.scaling`. Non-scaled thresholds are also supported.
+-   Support repulsive geoms from 'ggrepel' in `stat_peaks()` and `stat_valleys()` by making extraction of rows conditional.
 -   Add HTML Cheat Sheet.
 -   Add article 'Custom polynomial models' as on-line only documentation.
 

@@ -20,6 +20,7 @@ stat_peaks(
   label.fmt = NULL,
   x.label.fmt = NULL,
   y.label.fmt = NULL,
+  extract.peaks = NULL,
   orientation = "x",
   na.rm = FALSE,
   show.legend = FALSE,
@@ -41,6 +42,7 @@ stat_valleys(
   label.fmt = NULL,
   x.label.fmt = NULL,
   y.label.fmt = NULL,
+  extract.valleys = NULL,
   orientation = "x",
   na.rm = FALSE,
   show.legend = FALSE,
@@ -66,9 +68,9 @@ can include aesthetics whose values you want to set, not map. See
 
 \item{span}{odd integer A peak is defined as an element in a sequence which
 is greater than all other elements within a moving window of width
-\code{span} centred at that element. The default value is 3, meaning that a
-peak is bigger than both of its neighbours. \code{span = NULL} extends the
-span to the whole length of \code{x}.}
+\code{span} centred at that element. The default value is 5, meaning that a
+peak is taller than its four nearest neighbours. \code{span = NULL} extends
+the span to the whole length of \code{x}.}
 
 \item{global.threshold}{numeric A value between 0.0 and 1.0, relative to
 \code{threshold.range} indicating the
@@ -110,6 +112,10 @@ varies depending on the scale in use.}
 converting $y$-values into character strings by means of function
 \code{\link{sprintf}}.}
 
+\item{extract.peaks, extract.valleys}{logical If \code{TRUE} only the rows of
+\code{data} matching peaks or valleys are returned, if \code{FALSE} all
+rows are returned.}
+
 \item{orientation}{character Either "x" or "y".}
 
 \item{na.rm}{a logical value indicating whether NA values should be
@@ -125,11 +131,12 @@ that define both data and aesthetics and shouldn't inherit behaviour from
 the default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
 }
 \description{
-\code{stat_peaks} finds at which x positions local y maxima are located and
-\code{stat_valleys} finds at which x positions local y minima are located.
-Both stats return a subset of \code{data} with rows matching for peaks or
-valleys with formatted character labels added. The formatting is determined
-by a format string compatible with \code{sprintf()} or \code{strftime()}.
+\code{stat_peaks} finds local y maxima and \code{stat_valleys} finds local y
+minima. Both stats identify in \code{data} or extract from \code{data} rows
+matching peaks or valleys adding formatted character labels to the returned
+data frame. The formatting is controlled by a format string compatible with
+\code{sprintf()} or \code{strftime()}. When all rows in data are returned,
+labels are set to \code{""} for observations that are not peaks or valleys.
 }
 \details{
 These stats use \code{geom_point} by default as it is the geom most
@@ -155,6 +162,15 @@ These stats use \code{geom_point} by default as it is the geom most
   \code{threshold.scaling = "scale.range"}. The default
   \code{threshold.scaling = "data.range"} is the same as the fixed value in
   versions <= 0.6.1 of 'ggpmisc'.
+
+  While when highlighting or labelling peaks and/or valleys with other geoms
+  the best approach is to extract the observations, when using repulsive
+  geoms from 'ggrepel' to avoid overlaps it is necessary to retain all
+  observations and to set the label to \code{""} for observations not to be
+  labelled. By default the switch between these two approaches is automatic,
+  based on the argument passed to \code{geom}. However, either behaviour can
+  be forced by passing an argument to \code{extract.peaks} or
+  \code{extract.valleys}.
 }
 \note{
 These statistics check the scale of the \code{x} aesthetic and if it is
@@ -162,8 +178,8 @@ These statistics check the scale of the \code{x} aesthetic and if it is
   numeric \code{x} values to Date or POSIXct objects, respectively. In which
   case the \code{x.label.fmt} must follow the syntax supported by
   \code{strftime()} rather than by \code{sprintf()}. Overlap of labels with
-  points can be avoided by use of one of the nudge positions, possibly together
-  with geometry \code{\link[ggpp]{geom_text_s}} from package
+  points can be avoided by use of one of the nudge positions, possibly
+  together with geometry \code{\link[ggpp]{geom_text_s}} from package
   \code{\link[ggpp]{ggpp}}, or with \code{\link[ggrepel]{geom_text_repel}} or
   \code{\link[ggrepel]{geom_label_repel}} from package
   \code{\link[ggrepel]{ggrepel}}. To discard overlapping labels use
@@ -179,6 +195,7 @@ These statistics check the scale of the \code{x} aesthetic and if it is
 \describe{
   \item{x}{x-value at the peak (or valley) as numeric}
   \item{y}{y-value at the peak (or valley) as numeric}
+  \item{is.peak/is.valley}{logical value}
   \item{x.label}{x-value at the peak (or valley) as character}
   \item{y.label}{y-value at the peak (or valley) as character}
 }
@@ -193,21 +210,62 @@ These statistics check the scale of the \code{x} aesthetic and if it is
 
 \examples{
 # lynx is a time.series object
+# we convert it to a data frame
 lynx_num.df <-
   try_tibble(lynx,
              col.names = c("year", "lynx"),
              as.numeric = TRUE) # years -> as numeric
 
+# using defaults
 ggplot(lynx_num.df, aes(year, lynx)) +
   geom_line() +
   stat_peaks(colour = "red") +
   stat_valleys(colour = "blue")
 
+# global threshold for peak height
+ggplot(lynx_num.df, aes(year, lynx)) +
+  geom_line() +
+  stat_peaks(colour = "red",
+             global.threshold = 0.5,
+             threshold.scaling = "data.range") # half data range
+
+ggplot(lynx_num.df, aes(year, lynx)) +
+  geom_line() +
+  stat_peaks(colour = "red",
+             global.threshold = 0.5,
+             threshold.scaling = "scale.range") + # half scale range
+             expand_limits(y = c(0, 8000))
+
+ggplot(lynx_num.df, aes(year, lynx)) +
+  geom_line() +
+  stat_peaks(colour = "red",
+  global.threshold = I(4000))
+
+# local (within window) threshold for peak height
+ggplot(lynx_num.df, aes(year, lynx)) +
+  geom_line() +
+  stat_peaks(colour = "red",
+             local.threshold = 1/3,
+             local.reference = "minimum")
+
+ggplot(lynx_num.df, aes(year, lynx)) +
+  geom_line() +
+  stat_peaks(colour = "red",
+             local.threshold = 1/5,
+             local.reference = "median")
+
+ggplot(lynx_num.df, aes(year, lynx)) +
+  geom_line() +
+  stat_peaks(colour = "red",
+  global.threshold = I(3000))
+
+# orientation is supported
 ggplot(lynx_num.df, aes(lynx, year)) +
   geom_line(orientation = "y") +
   stat_peaks(colour = "red", orientation = "y") +
   stat_valleys(colour = "blue", orientation = "y")
 
+# default aesthetic mapping supports additional geoms
 ggplot(lynx_num.df, aes(year, lynx)) +
   geom_line() +
   stat_peaks(colour = "red") +
@@ -224,6 +282,7 @@ ggplot(lynx_num.df, aes(lynx, year)) +
   stat_peaks(colour = "red", orientation = "y",
              geom = "text", hjust = -0.1)
 
+# date times and dates are also supported for x aesthetic
 lynx_datetime.df <-
    try_tibble(lynx,
               col.names = c("year", "lynx")) # years -> POSIXct

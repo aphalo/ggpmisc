@@ -275,11 +275,12 @@ find_spikes <-
 
 #' Local maxima (peaks) or minima (valleys)
 #'
-#' \code{stat_peaks} finds at which x positions local y maxima are located and
-#' \code{stat_valleys} finds at which x positions local y minima are located.
-#' Both stats return a subset of \code{data} with rows matching for peaks or
-#' valleys with formatted character labels added. The formatting is determined
-#' by a format string compatible with \code{sprintf()} or \code{strftime()}.
+#' \code{stat_peaks} finds local y maxima and \code{stat_valleys} finds local y
+#' minima. Both stats identify in \code{data} or extract from \code{data} rows
+#' matching peaks or valleys adding formatted character labels to the returned
+#' data frame. The formatting is controlled by a format string compatible with
+#' \code{sprintf()} or \code{strftime()}. When all rows in data are returned,
+#' labels are set to \code{""} for observations that are not peaks or valleys.
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}}. Only needs to be
@@ -314,12 +315,16 @@ find_spikes <-
 #' @param y.label.fmt character  string giving a format definition for
 #'   converting $y$-values into character strings by means of function
 #'   \code{\link{sprintf}}.
+#' @param extract.peaks,extract.valleys logical If \code{TRUE} only the rows of
+#'   \code{data} matching peaks or valleys are returned, if \code{FALSE} all
+#'   rows are returned.
 #' @param orientation character Either "x" or "y".
 #'
 #' @section Returned and computed variables:
 #' \describe{
 #'   \item{x}{x-value at the peak (or valley) as numeric}
 #'   \item{y}{y-value at the peak (or valley) as numeric}
+#'   \item{is.peak/is.valley}{logical value}
 #'   \item{x.label}{x-value at the peak (or valley) as character}
 #'   \item{y.label}{y-value at the peak (or valley) as character}
 #' }
@@ -348,13 +353,22 @@ find_spikes <-
 #'   \code{threshold.scaling = "data.range"} is the same as the fixed value in
 #'   versions <= 0.6.1 of 'ggpmisc'.
 #'
+#'   While when highlighting or labelling peaks and/or valleys with other geoms
+#'   the best approach is to extract the observations, when using repulsive
+#'   geoms from 'ggrepel' to avoid overlaps it is necessary to retain all
+#'   observations and to set the label to \code{""} for observations not to be
+#'   labelled. By default the switch between these two approaches is automatic,
+#'   based on the argument passed to \code{geom}. However, either behaviour can
+#'   be forced by passing an argument to \code{extract.peaks} or
+#'   \code{extract.valleys}.
+#'
 #' @note These statistics check the scale of the \code{x} aesthetic and if it is
 #'   Date or Datetime they correctly generate the labels by transforming the
 #'   numeric \code{x} values to Date or POSIXct objects, respectively. In which
 #'   case the \code{x.label.fmt} must follow the syntax supported by
 #'   \code{strftime()} rather than by \code{sprintf()}. Overlap of labels with
-#'   points can be avoided by use of one of the nudge positions, possibly together
-#'   with geometry \code{\link[ggpp]{geom_text_s}} from package
+#'   points can be avoided by use of one of the nudge positions, possibly
+#'   together with geometry \code{\link[ggpp]{geom_text_s}} from package
 #'   \code{\link[ggpp]{ggpp}}, or with \code{\link[ggrepel]{geom_text_repel}} or
 #'   \code{\link[ggrepel]{geom_label_repel}} from package
 #'   \code{\link[ggrepel]{ggrepel}}. To discard overlapping labels use
@@ -504,10 +518,15 @@ stat_peaks <- function(mapping = NULL,
                        label.fmt = NULL,
                        x.label.fmt = NULL,
                        y.label.fmt = NULL,
+                       extract.peaks = NULL,
                        orientation = "x",
                        na.rm = FALSE,
                        show.legend = FALSE,
                        inherit.aes = TRUE) {
+
+  if (is.null(extract.peaks)) {
+    extract.peaks <- !grepl("^text_repel$|^label_repel$", "geom")
+  }
   ggplot2::layer(
     stat = StatPeaks,
     data = data,
@@ -527,6 +546,7 @@ stat_peaks <- function(mapping = NULL,
         label.fmt = label.fmt,
         x.label.fmt = x.label.fmt,
         y.label.fmt = y.label.fmt,
+        extract.peaks = extract.peaks,
         orientation = orientation,
         na.rm = na.rm,
         ...
@@ -552,6 +572,7 @@ peaks_compute_group_fun <- function(data,
                                     label.fmt = NULL,
                                     x.label.fmt = NULL,
                                     y.label.fmt = NULL,
+                                    extract.peaks = TRUE,
                                     flipped_aes = FALSE) {
   data <- ggplot2::flip_data(data, flipped_aes)
   if (!is.null(label.fmt)) {
@@ -598,7 +619,7 @@ peaks_compute_group_fun <- function(data,
     }
   }
   if (is.null(span) || span >= nrow(data)) {
-    peaks.df <- data[which.max(data$y), , drop = FALSE]
+    peaks.selector <- data$y == max(data$y)
   } else {
     # for span to work as expected the data should be in the order they
     # will be plotted
@@ -614,21 +635,33 @@ peaks_compute_group_fun <- function(data,
       stop ("Unrecognized value for 'threshold.scaling': ",
             threshold.scaling)
     }
-    peaks.df <- data[find_peaks(data$y,
-                                span = span,
-                                global.threshold = global.threshold,
-                                local.threshold = local.threshold,
-                                local.reference = local.reference,
-                                threshold.range = threshold.range,
-                                strict = strict,
-                                na.rm = TRUE), , drop = FALSE]
+
+    peaks.selector <- find_peaks(data$y,
+                                 span = span,
+                                 global.threshold = global.threshold,
+                                 local.threshold = local.threshold,
+                                 local.reference = local.reference,
+                                 threshold.range = threshold.range,
+                                 strict = strict,
+                                 na.rm = TRUE)
   }
+  peaks.df <- data
+  peaks.df$is.peak <- peaks.selector
+
+  if (extract.peaks) {
+    peaks.df <- peaks.df[peaks.df$is.peak, , drop = FALSE]
+  }
+
   if (nrow(peaks.df)) {
     peaks.df$flipped_aes <- flipped_aes
     peaks.df <- ggplot2::flip_data(peaks.df, flipped_aes)
 
-    peaks.df[["x.label"]] <- as_label(x.label.fmt, peaks.df[["x"]])
-    peaks.df[["y.label"]] <- sprintf(y.label.fmt, peaks.df[["y"]])
+    peaks.df[["x.label"]] <- ifelse(peaks.df$is.peak,
+                                    as_label(x.label.fmt, peaks.df[["x"]]),
+                                    "")
+    peaks.df[["y.label"]] <- ifelse(peaks.df$is.peak,
+                                    sprintf(y.label.fmt, peaks.df[["y"]]),
+                                    "")
     peaks.df
   } else {
     data.frame()
@@ -653,6 +686,7 @@ valleys_compute_group_fun <- function(data,
                                       label.fmt,
                                       x.label.fmt,
                                       y.label.fmt,
+                                      extract.valleys,
                                       flipped_aes = FALSE) {
   data <- ggplot2::flip_data(data, flipped_aes)
   if (!is.null(label.fmt)) {
@@ -698,7 +732,7 @@ valleys_compute_group_fun <- function(data,
     }
   }
   if (is.null(span) || span >= nrow(data)) {
-    valleys.df <- data[which.min(data$y), , drop = FALSE]
+    valleys.selector <- data$y == min(data$y)
   } else {
     # for span to work as expected the data should be in the order they
     # will be plotted
@@ -724,21 +758,33 @@ valleys_compute_group_fun <- function(data,
     if (inherits(global.threshold, "AsIs")) {
       global.threshold <- -global.threshold
     }
-    valleys.df <- data[find_peaks(-data$y,
-                                  span = span,
-                                  global.threshold = global.threshold,
-                                  local.threshold = local.threshold,
-                                  local.reference = local.reference,
-                                  threshold.range = threshold.range,
-                                  strict = strict,
-                                  na.rm = TRUE), , drop = FALSE]
+
+    valleys.selector <- find_peaks(-data$y,
+                                   span = span,
+                                   global.threshold = global.threshold,
+                                   local.threshold = local.threshold,
+                                   local.reference = local.reference,
+                                   threshold.range = threshold.range,
+                                   strict = strict,
+                                   na.rm = TRUE)
   }
+  valleys.df <- data
+  valleys.df$is.valley <- valleys.selector
+
+  if (extract.valleys) {
+    valleys.df <- valleys.df[valleys.df$is.valley, , drop = FALSE]
+  }
+
   if (nrow(valleys.df)) {
     valleys.df$flipped_aes <- flipped_aes
     valleys.df <- ggplot2::flip_data(valleys.df, flipped_aes)
 
-    valleys.df[["x.label"]] <- as_label(x.label.fmt, valleys.df[["x"]])
-    valleys.df[["y.label"]] <- sprintf(y.label.fmt, valleys.df[["y"]])
+    valleys.df[["x.label"]] <- ifelse(valleys.df$is.valley,
+                                      as_label(x.label.fmt, valleys.df[["x"]]),
+                                      "")
+    valleys.df[["y.label"]] <- ifelse(valleys.df$is.valley,
+                                      sprintf(y.label.fmt, valleys.df[["y"]]),
+                                      "")
     valleys.df
   } else {
     data.frame()
@@ -801,11 +847,15 @@ stat_valleys <- function(mapping = NULL,
                          label.fmt = NULL,
                          x.label.fmt = NULL,
                          y.label.fmt = NULL,
+                         extract.valleys = NULL,
                          orientation = "x",
                          na.rm = FALSE,
                          show.legend = FALSE,
                          inherit.aes = TRUE) {
-  ggplot2::layer(
+   if (is.null(extract.valleys)) {
+     extract.valleys <- !grepl("^text_repel$|^label_repel$", "geom")
+   }
+   ggplot2::layer(
     stat = StatValleys,
     data = data,
     mapping = mapping,
@@ -824,6 +874,7 @@ stat_valleys <- function(mapping = NULL,
         label.fmt = label.fmt,
         x.label.fmt = x.label.fmt,
         y.label.fmt = y.label.fmt,
+        extract.valleys = extract.valleys,
         orientation = orientation,
         na.rm = na.rm,
         ...
