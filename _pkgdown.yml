@@ -88,8 +88,10 @@ navbar:
         href: articles/cheat-sheet.html
       - text: 'User Guide'
         href: articles/user-guide.html
-      - text: 'Custom polynomial models'
+      - text: 'Custom Polynomial Models'
         href: articles/poly-advanced.html
+      - text: 'Peaks and Valleys'
+        href: articles/peaks-and-valleys.html
     tutorials:
       text: Resources
       menu:

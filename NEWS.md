@@ -20,7 +20,7 @@ A significant new feature in this release is the support of additional model fit
 -   The scaling applied to user-supplied values for `global.threshold` and `local.threshold` can be controlled by passing a `character` argument to `threshold.scaling`. Non-scaled thresholds are also supported.
 -   Support repulsive geoms from 'ggrepel' in `stat_peaks()` and `stat_valleys()` by making extraction of rows conditional.
 -   Add HTML Cheat Sheet.
--   Add article 'Custom polynomial models' as on-line only documentation.
+-   Add articles 'Custom Polynomial Models' and 'Peaks and Valleys' as on-line only documentation.
 
 # ggpmisc 0.6.1
 
