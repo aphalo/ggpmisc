@@ -13,8 +13,8 @@
 #' \item Stats for locating and tagging "peaks" and "valleys" (local or global
 #'  maxima and minima).
 #' \item Stat for generating labels from model fit objects, including
-#' formatted equations. By default labels are R's plotmath expressions but LaTeX, markdown
-#' and plain text formatted labels are optionaly assembled.
+#' formatted equations. By default labels are R's plotmath expressions but LaTeX,
+#' markdown and plain text formatted labels are optionaly assembled.
 #' \item Stats for extracting information from a any model fit supported by
 #' package 'broom' and using it to generate various annotations and data labels.
 #' \item Stat for computing and generating labels for the results from multiple

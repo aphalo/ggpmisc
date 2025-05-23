@@ -65,11 +65,11 @@ coef.lmodel2 <- function(object,
 #'
 #' @seealso \code{\link[lmodel2]{lmodel2}}
 #'
-confint.lmodel2 <- function (object,
-                             parm,
-                             level = 0.95,
-                             method = "MA",
-                             ...) {
+confint.lmodel2 <- function(object,
+                            parm,
+                            level = 0.95,
+                            method = "MA",
+                            ...) {
   if (! method %in% object[["regression.results"]][["Method"]]) {
     stop("Method '", method, "' not in fit object ", call. = FALSE)
   }
@@ -120,12 +120,12 @@ confint.lmodel2 <- function (object,
 #'
 #' @seealso \code{\link[lmodel2]{lmodel2}}
 #'
-predict.lmodel2 <-function(object,
-                           method = "MA",
-                           newdata = NULL,
-                           interval = c("none", "confidence"),
-                           level = 0.95,
-                           ...) {
+predict.lmodel2 <- function(object,
+                            method = "MA",
+                            newdata = NULL,
+                            interval = c("none", "confidence"),
+                            level = 0.95,
+                            ...) {
   # this code is in most part borrowed from lmodel2::plot.lmodel2()
   stopifnot(interval %in% c("none", "confidence"))
   y <- object$y

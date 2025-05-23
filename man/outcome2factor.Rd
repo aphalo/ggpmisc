@@ -10,9 +10,9 @@ outcome2factor(x, n.levels = 3L)
 threshold2factor(x, n.levels = 3L, threshold = 0)
 }
 \arguments{
-\item{x}{a numeric vector of -1, 0, and +1 values, indicating down-regulation,
-uncertain response or up-regulation, or a numeric vector that can be
-converted into such values using a pair of thresholds.}
+\item{x}{a numeric vector of -1, 0, and +1 values, indicating
+down-regulation, uncertain response or up-regulation, or a numeric vector
+that can be converted into such values using a pair of thresholds.}
 
 \item{n.levels}{numeric Number of levels to create, either 3 or 2.}
 

@@ -1,8 +1,8 @@
 #' Convert numeric ternary outcomes into a factor
 #'
-#' @param x a numeric vector of -1, 0, and +1 values, indicating down-regulation,
-#'   uncertain response or up-regulation, or a numeric vector that can be
-#'   converted into such values using a pair of thresholds.
+#' @param x a numeric vector of -1, 0, and +1 values, indicating
+#'   down-regulation, uncertain response or up-regulation, or a numeric vector
+#'   that can be converted into such values using a pair of thresholds.
 #' @param n.levels numeric Number of levels to create, either 3 or 2.
 #' @param threshold numeric vector Range enclosing the values to be considered
 #'   uncertain.
@@ -38,7 +38,7 @@
 outcome2factor <- function(x, n.levels = 3L) {
   stopifnot(all(unique(stats::na.omit(x)) %in% -1:1))
   if (n.levels == 3L) {
-    fct.labels <- c( "up", "uncertain","down")
+    fct.labels <- c("up", "uncertain", "down")
   } else if (n.levels == 2) {
     fct.labels <- c("de", "uncertain", "de")
   }
@@ -107,13 +107,11 @@ xy_thresholds2factor <- function(x, y,
                                  y_threshold = 0) {
   x_threshold <- range(x_threshold)
   xx <- ifelse(x < x_threshold[1], -1,
-              ifelse(x > x_threshold[2], 1,
-                     0))
+               ifelse(x > x_threshold[2], 1,
+                      0))
   y_threshold <- range(y_threshold)
   yy <- ifelse(y < y_threshold[1], -1,
                ifelse(y > y_threshold[2], 1,
                       0))
   xy_outcomes2factor(xx, yy)
 }
-
-

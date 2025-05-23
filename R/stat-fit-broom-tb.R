@@ -44,8 +44,8 @@
 #'   returned.
 #' @param label.x,label.y \code{numeric} Coordinates in data units or with range
 #'   0..1, expressed in "normalized parent coordinates" or as character strings
-#'   depending on the geometry used. If too short they will be recycled. They set
-#'   the \code{x} and \code{y} coordinates at the \code{after_stat} stage.
+#'   depending on the geometry used. If too short they will be recycled. They
+#'   set the \code{x} and \code{y} coordinates at the \code{after_stat} stage.
 #' @param table.theme NULL, list or function A 'gridExtra' \code{ttheme}
 #'   definition, or a constructor for a \code{ttheme} or NULL for default.
 #' @param table.rownames,table.colnames logical flag to enable or disabling
@@ -282,7 +282,8 @@
 #'   ggplot(my.df, aes(group, x)) +
 #'     geom_point() +
 #'     stat_fit_tb(method = "t.test",
-#'               tb.vars = c("italic(t)" = "statistic", "italic(P)" = "p.value"),
+#'               tb.vars = c("italic(t)" = "statistic",
+#'                           "italic(P)" = "p.value"),
 #'               parse = TRUE)
 #'
 #' # t-test, more detailed output, with manual table formatting
@@ -292,17 +293,20 @@
 #'     stat_fit_tb(method = "t.test",
 #'               tb.vars = c("\"Delta \"*italic(x)" = "estimate",
 #'                           "CI low" = "conf.low", "CI high" = "conf.high",
-#'                           "italic(t)" = "statistic", "italic(P)" = "p.value"),
+#'                           "italic(t)" = "statistic",
+#'                           "italic(P)" = "p.value"),
 #'               parse = TRUE) +
 #'     expand_limits(y = 67)
 #'
-#' # t-test (equal variances assumed), minimal output, with manual table formatting
+#' # t-test (equal variances assumed), minimal output, with manual
+#' # table formatting
 #' if (broom.installed)
 #'   ggplot(my.df, aes(group, x)) +
 #'     geom_point() +
 #'     stat_fit_tb(method = "t.test",
 #'                 method.args = list(formula = y ~ x, var.equal = TRUE),
-#'                 tb.vars = c("italic(t)" = "statistic", "italic(P)" = "p.value"),
+#'                 tb.vars = c("italic(t)" = "statistic",
+#'                             "italic(P)" = "p.value"),
 #'                 parse = TRUE)
 #'
 #' ## covariate is a numeric or continuous variable
@@ -418,16 +422,19 @@ fit_tb_compute_panel_fun <- function(data,
     message("External 'data' passed can be inconsistent with plot!\n",
             "These data must be available at the time of printing!!!")
   } else if (any(grepl("formula|fixed|random|model", names(method.args)))) {
-    #    method.args <- c(method.args, list(data = quote(data)))  works in most cases and avoids copying data
-    method.args <- c(method.args, list(data = data)) # cor.test() needs the actual data
+    method.args <- c(method.args, list(data = data))
   } else {
-    if (method.name == "cor.test" ) {
-      warning("Only the 'formula' interface of methods is supported. No formula found, using '~ x + y'")
+    if (method.name == "cor.test") {
+      warning("Only the 'formula' interface of methods is supported. ",
+              "No formula found, using '~ x + y'")
       selector <- setdiff(names(method.args), c("x", "y"))
-      method.args <- c(method.args[selector], list(formula = ~ x + y, data = data)) # cor.test() needs the actual data
+      method.args <-
+        c(method.args[selector], list(formula = ~ x + y, data = data))
     } else {
-      warning("Only the 'formula' interface of methods is supported. No formula found, using 'y ~ x' default")
-      method.args <- c(method.args, list(formula = y ~ x, data = data)) # cor.test() needs the actual data
+      warning("Only the 'formula' interface of methods is supported. ",
+              "No formula found, using 'y ~ x' default")
+      method.args <-
+        c(method.args, list(formula = y ~ x, data = data))
     }
   }
   fm <- do.call(method, method.args)
@@ -592,7 +599,8 @@ fit_tb_compute_panel_fun <- function(data,
 #' @usage NULL
 #' @export
 StatFitTb <-
-  ggplot2::ggproto("StatFitTb", ggplot2::Stat,
+  ggplot2::ggproto("StatFitTb", 
+                   ggplot2::Stat,
                    compute_panel = fit_tb_compute_panel_fun,
                    dropped_aes = "weight",
                    default_aes =

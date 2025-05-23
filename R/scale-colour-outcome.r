@@ -72,7 +72,7 @@ scale_colour_outcome <- function(...,
                                  values = "outcome:updown",
                                  drop = TRUE,
                                  aesthetics = "colour") {
-  if (length(values) == 1L & grepl("outcome:", values)) {
+  if (length(values) == 1L && grepl("outcome:", values)) {
     if (values == "outcome:updown") {
       values <- c("down" = down.colour,
                   "uncertain" = ns.colour,
@@ -119,7 +119,7 @@ scale_fill_outcome <- function(...,
                                values = "outcome:both",
                                drop = TRUE,
                                aesthetics = "fill") {
-  if (length(values) == 1L & grepl("outcome:", values)) {
+  if (length(values) == 1L && grepl("outcome:", values)) {
     if (values == "outcome:updown") {
       values <- c("down" = down.colour,
                   "uncertain" = ns.colour,
@@ -144,4 +144,3 @@ scale_fill_outcome <- function(...,
                              drop = drop,
                              aesthetics = aesthetics)
 }
-

@@ -176,6 +176,9 @@ ggplot(cars, aes(speed, dist)) +
   stat_fit_deviations(formula = formula, colour = "red") +
   stat_poly_line(formula = formula) +
   stat_poly_eq(use_label(c("eq", "adj.R2", "P")), formula = formula)
+#> Warning: Computation failed in `stat_fit_deviations()`.
+#> Caused by error in `compute_group()`:
+#> ! object 'weight.vals' not found
 ```
 
 ![](man/figures/README-readme-04-1.png)<!-- -->
@@ -192,10 +195,10 @@ ggplot(cars, aes(speed, dist)) +
   stat_fit_tb(method = "lm",
               method.args = list(formula = formula),
               tb.type = "fit.anova",
-              tb.vars = c(Effect = "term", 
+              tb.vars = c(Effect = "term",
                           "df",
-                          "M.S." = "meansq", 
-                          "italic(F)" = "statistic", 
+                          "M.S." = "meansq",
+                          "italic(F)" = "statistic",
                           "italic(P)" = "p.value"),
               tb.params = c(x = 1, "x^2" = 2),
               label.y = "top", label.x = "left",
@@ -240,7 +243,7 @@ ggplot(quadrant_example.df, aes(logFC.x, logFC.y)) +
   geom_quadrant_lines() +
   stat_quadrant_counts() +
   stat_dens2d_filter(color = "red", keep.fraction = 0.02) +
-  stat_dens2d_labels(aes(label = gene), keep.fraction = 0.02, 
+  stat_dens2d_labels(aes(label = gene), keep.fraction = 0.02,
                      geom = "text_repel", size = 2, colour = "red") +
   scale_x_logFC(name = "Transcript abundance after A%unit") +
   scale_y_logFC(name = "Transcript abundance after B%unit",
@@ -257,7 +260,7 @@ automatically. We also highlight and label the peaks using
 `stat_peaks()`.
 
 ``` r
-ggplot(lynx, as.numeric = FALSE) + geom_line() + 
+ggplot(lynx, as.numeric = FALSE) + geom_line() +
   stat_peaks(colour = "red") +
   stat_peaks(geom = "text", colour = "red", angle = 66,
              hjust = -0.1, x.label.fmt = "%Y") +
@@ -281,15 +284,15 @@ repository (binaries for Mac, Win, Webassembly, and Linux, as well as
 sources available):
 
 ``` r
-install.packages('ggpmisc', 
-                 repos = c('https://aphalo.r-universe.dev', 
-                           'https://cloud.r-project.org'))
+install.packages("ggpmisc",
+                 repos = c("https://aphalo.r-universe.dev",
+                           "https://cloud.r-project.org"))
 ```
 
 Installation of the current unstable version from GitHub (from sources):
 
 ``` r
-# install.packages("remotes")
+# install.packages("remotes") # nolint: commented_code_linter.
 remotes::install_github("aphalo/ggpmisc")
 ```
 
@@ -323,7 +326,7 @@ citation("ggpmisc")
 #> To cite package 'ggpmisc' in publications use:
 #> 
 #>   Aphalo P (2025). _ggpmisc: Miscellaneous Extensions to 'ggplot2'_. R
-#>   package version 0.6.1.9000, https://github.com/aphalo/ggpmisc,
+#>   package version 0.6.1.9002,
 #>   <https://docs.r4photobiology.info/ggpmisc/>.
 #> 
 #> A BibTeX entry for LaTeX users is
@@ -332,8 +335,7 @@ citation("ggpmisc")
 #>     title = {ggpmisc: Miscellaneous Extensions to 'ggplot2'},
 #>     author = {Pedro J. Aphalo},
 #>     year = {2025},
-#>     note = {R package version 0.6.1.9000, 
-#> https://github.com/aphalo/ggpmisc},
+#>     note = {R package version 0.6.1.9002},
 #>     url = {https://docs.r4photobiology.info/ggpmisc/},
 #>   }
 ```

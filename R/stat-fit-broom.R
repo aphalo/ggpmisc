@@ -288,16 +288,18 @@ fit_glance_compute_group_fun <- function(data,
     message("External 'data' passed can be inconsistent with plot!\n",
             "These data must be available at the time of printing!!!")
   } else if (any(grepl("formula|fixed|random|model", names(method.args)))) {
-#    method.args <- c(method.args, list(data = quote(data)))  works in most cases and avoids copying data
-    method.args <- c(method.args, list(data = data)) # cor.test() needs the actual data
+    method.args <- c(method.args, list(data = data))
   } else {
-    if (method.name == "cor.test" ) {
-      warning("Only the 'formula' interface of methods is supported. No formula found, using '~ x + y'")
+    if (method.name == "cor.test") {
+      warning("Only the 'formula' interface of methods is supported. ",
+              "No formula found, using '~ x + y'")
       selector <- setdiff(names(method.args), c("x", "y"))
-      method.args <- c(method.args[selector], list(formula = ~ x + y, data = data)) # cor.test() needs the actual data
+      method.args <-
+        c(method.args[selector], list(formula = ~ x + y, data = data))
     } else {
-      warning("Only the 'formula' interface of methods is supported. No formula found, using 'y ~ x' default")
-      method.args <- c(method.args, list(formula = y ~ x, data = data)) # cor.test() needs the actual data
+      warning("Only the 'formula' interface of methods is supported. ",
+              "No formula found, using 'y ~ x' default")
+      method.args <- c(method.args, list(formula = y ~ x, data = data))
     }
   }
   fm <- do.call(method, method.args)
@@ -657,16 +659,17 @@ fit_augment_compute_group_fun <- function(data,
     message("External 'data' passed can be inconsistent with plot!\n",
             "These data must be available at the time of printing!!!")
   } else if (any(grepl("formula|fixed|random|model", names(method.args)))) {
-    #    method.args <- c(method.args, list(data = quote(data)))  works in most cases and avoids copying data
-    method.args <- c(method.args, list(data = data)) # cor.test() needs the actual data
+    method.args <- c(method.args, list(data = data))
   } else {
-    if (method.name == "cor.test" ) {
-      warning("Only the 'formula' interface of methods is supported. No formula found, using '~ x + y'")
+    if (method.name == "cor.test") {
+      warning("Only the 'formula' interface of methods is supported. ",
+              "No formula found, using '~ x + y'")
       selector <- setdiff(names(method.args), c("x", "y"))
-      method.args <- c(method.args[selector], list(formula = ~ x + y, data = data)) # cor.test() needs the actual data
+      method.args <- 
+        c(method.args[selector], list(formula = ~ x + y, data = data))
     } else {
       warning("Only the 'formula' interface of methods is supported. No formula found, using 'y ~ x' default")
-      method.args <- c(method.args, list(formula = y ~ x, data = data)) # cor.test() needs the actual data
+      method.args <- c(method.args, list(formula = y ~ x, data = data))
     }
   }
   fm <- do.call(method, method.args)
@@ -1021,16 +1024,18 @@ fit_tidy_compute_group_fun <- function(data,
     message("External 'data' passed can be inconsistent with plot!\n",
             "These data must be available at the time of printing!!!")
   } else if (any(grepl("formula|fixed|random|model", names(method.args)))) {
-    #    method.args <- c(method.args, list(data = quote(data)))  works in most cases and avoids copying data
-    method.args <- c(method.args, list(data = data)) # cor.test() needs the actual data
+    method.args <- c(method.args, list(data = data))
   } else {
-    if (method.name == "cor.test" ) {
-      warning("Only the 'formula' interface of methods is supported. No formula found, using '~ x + y'")
+    if (method.name == "cor.test") {
+      warning("Only the 'formula' interface of methods is supported. ",
+              "No formula found, using '~ x + y'")
       selector <- setdiff(names(method.args), c("x", "y"))
-      method.args <- c(method.args[selector], list(formula = ~ x + y, data = data)) # cor.test() needs the actual data
+      method.args <- 
+        c(method.args[selector], list(formula = ~ x + y, data = data))
     } else {
-      warning("Only the 'formula' interface of methods is supported. No formula found, using 'y ~ x' default")
-      method.args <- c(method.args, list(formula = y ~ x, data = data)) # cor.test() needs the actual data
+      warning("Only the 'formula' interface of methods is supported. ",
+              "No formula found, using 'y ~ x' default")
+      method.args <- c(method.args, list(formula = y ~ x, data = data))
     }
   }
   fm <- do.call(method, method.args)
@@ -1111,7 +1116,7 @@ fit_tidy_compute_group_fun <- function(data,
   if (sanitize.names) {
     names(z) <- make.names(names(z), unique = TRUE)
   }
-  z[["fm.class"]] <-rep_len(fm.class[1], nrow(z))
+  z[["fm.class"]] <- rep_len(fm.class[1], nrow(z))
   z[["fm.method"]] <- rep_len(method.name, nrow(z))
   z[["fm.formula"]] <- rep_len(fail_safe_formula(fm, method.args), nrow(z))
   z[["fm.formula.chr"]] <- format(z[["fm.formula"]])
@@ -1134,4 +1139,3 @@ StatFitTidy <-
                                   vjust = "inward"),
                    required_aes = c("x", "y")
   )
-

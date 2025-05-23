@@ -67,9 +67,9 @@ positions. The default is function that uses the arguments passed to
 \code{log.base.data} and \code{log.base.labels} to generate suitable
 labels.}
 
-\item{limits}{Use one of: \code{NULL} to use the default scale range, a numeric
-vector of length two providing limits of the scale; NA to refer to the
-existing minimum or maximum; a function that accepts the existing
+\item{limits}{Use one of: \code{NULL} to use the default scale range, a
+numeric vector of length two providing limits of the scale; NA to refer
+to the existing minimum or maximum; a function that accepts the existing
 (automatic) limits and returns new limits.}
 
 \item{oob}{Function that handles limits outside of the scale limits (out of

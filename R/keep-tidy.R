@@ -53,8 +53,8 @@ keep_tidy <-
            ...,
            to.keep = c("call", "terms", "formula", "fixed", "random")) {
     z <- generics::tidy(x, ...)
-    # avoid error if fields are missing to allow a default suitable for different
-    # model fit functions
+    # avoid error if fields are missing to allow a default suitable for
+    # different model fit functions
     keep <- intersect(names(x), to.keep)
     attr(z, "fm") <- c(x[keep], list(class = class(x)))
     z
@@ -69,8 +69,8 @@ keep_glance <-
            ...,
            to.keep = c("call", "terms", "formula", "fixed", "random")) {
     z <- generics::glance(x, ...)
-    # avoid error if fields are missing to allow a default suitable for different
-    # model fit functions
+    # avoid error if fields are missing to allow a default suitable for
+    # different model fit functions
     keep <- intersect(names(x), to.keep)
     attr(z, "fm") <- c(x[keep], list(class = class(x)))
     z
@@ -85,8 +85,8 @@ keep_augment <-
            ...,
            to.keep = c("call", "terms", "formula", "fixed", "random")) {
     z <- generics::augment(x, ...)
-    # avoid error if fields are missing to allow a default suitable for different
-    # model fit functions
+    # avoid error if fields are missing to allow a default suitable for
+    # different model fit functions
     keep <- intersect(names(x), to.keep)
     attr(z, "fm") <- c(x[keep], list(class = class(x)))
     z

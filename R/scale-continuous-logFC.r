@@ -29,10 +29,10 @@ FC_format <- function(log.base.data = 2,
                       log.base.labels = 10,
                       digits = 3,
                       ...) {
-  function(x) FC_plain(x,
+  function(x) {FC_plain(x,
                        log.base.data = log.base.data,
                        log.base.labels = log.base.labels,
-                       digits = digits, ...)
+                       digits = digits, ...)}
 }
 
 #' @export

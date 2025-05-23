@@ -377,7 +377,7 @@ cor_test_compute_fun <- function(data,
   force(data)
 
   if (length(unique(data$x)) < n.min ||
-      length(unique(data$y)) < n.min) {
+        length(unique(data$y)) < n.min) {
     return(data.frame())
   }
 
@@ -391,15 +391,16 @@ cor_test_compute_fun <- function(data,
   }
   range.sep <- c("." = ", ", "," = "; ")[decimal.mark]
 
-  formula = ~ y + x
+  formula <- ~ y + x
 
   output.type <- tolower(output.type)
   stopifnot(output.type %in%
-              c("expression", "text", "markdown", "numeric", "latex", "tex", "tikz"))
+    c("expression", "text", "markdown", "numeric", "latex", "tex", "tikz"))
 
   if (exists("grp.label", data)) {
     if (length(unique(data[["grp.label"]])) > 1L) {
-      warning("Non-unique value in 'data$grp.label' using group index ", data[["group"]][1], " as label.")
+      warning("Non-unique value in 'data$grp.label' using group index ",
+              data[["group"]][1], " as label.")
       grp.label <- as.character(data[["group"]][1])
     } else {
       grp.label <- data[["grp.label"]][1]
@@ -412,7 +413,7 @@ cor_test_compute_fun <- function(data,
   if (is.integer(data$group)) {
     group.idx <- abs(data$group[1])
   } else if (is.character(data$group) &&
-             grepl("^(-1|[0-9]+).*$", data$group[1])) {
+               grepl("^(-1|[0-9]+).*$", data$group[1])) {
     # likely that 'gganimate' has set the groups for scenes
     # we assume first characters give the original group
     group.idx <- abs(as.numeric(gsub("^(-1|[0-9]+).*$", "\\1", data$group[1])))
@@ -496,7 +497,8 @@ cor_test_compute_fun <- function(data,
     z[["r.label"]] <- NA_character_
   } else {
     # build the character strings
-    r <- z[[unname(c(pearson = "cor", kendall = "tau", spearman = "rho")[method])]]
+    r <-
+      z[[unname(c(pearson = "cor", kendall = "tau", spearman = "rho")[method])]]
 
     z[["p.value.label"]] <- p_value_label(value = z[["p.value"]],
                                           small.p = small.p,
@@ -569,7 +571,9 @@ cor_test_compute_fun <- function(data,
       # margin set by scale
       margin.npc <- 0
     }
-    label.x <- ggpp::compute_npcx(x = label.x, group = group.idx, h.step = hstep,
+    label.x <- ggpp::compute_npcx(x = label.x,
+                                  group = group.idx,
+                                  h.step = hstep,
                                   margin.npc = margin.npc)
     if (!npc.used) {
       # we need to use scale limits as observations are not necessarily plotted
@@ -584,7 +588,9 @@ cor_test_compute_fun <- function(data,
       # margin set by scale
       margin.npc <- 0
     }
-    label.y <- ggpp::compute_npcy(y = label.y, group = group.idx, v.step = vstep,
+    label.y <- ggpp::compute_npcy(y = label.y,
+                                  group = group.idx,
+                                  v.step = vstep,
                                   margin.npc = margin.npc)
     if (!npc.used) {
       # we need to use scale limits as observations are not necessarily plotted

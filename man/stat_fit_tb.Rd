@@ -72,8 +72,8 @@ possible value preceded by "<". If \code{p.digits} is outside the range
 
 \item{label.x, label.y}{\code{numeric} Coordinates in data units or with range
 0..1, expressed in "normalized parent coordinates" or as character strings
-depending on the geometry used. If too short they will be recycled. They set
-the \code{x} and \code{y} coordinates at the \code{after_stat} stage.}
+depending on the geometry used. If too short they will be recycled. They
+set the \code{x} and \code{y} coordinates at the \code{after_stat} stage.}
 
 \item{table.theme}{NULL, list or function A 'gridExtra' \code{ttheme}
 definition, or a constructor for a \code{ttheme} or NULL for default.}
@@ -326,7 +326,8 @@ if (broom.installed)
   ggplot(my.df, aes(group, x)) +
     geom_point() +
     stat_fit_tb(method = "t.test",
-              tb.vars = c("italic(t)" = "statistic", "italic(P)" = "p.value"),
+              tb.vars = c("italic(t)" = "statistic",
+                          "italic(P)" = "p.value"),
               parse = TRUE)
 
 # t-test, more detailed output, with manual table formatting
@@ -336,17 +337,20 @@ if (broom.installed)
     stat_fit_tb(method = "t.test",
               tb.vars = c("\"Delta \"*italic(x)" = "estimate",
                           "CI low" = "conf.low", "CI high" = "conf.high",
-                          "italic(t)" = "statistic", "italic(P)" = "p.value"),
+                          "italic(t)" = "statistic",
+                          "italic(P)" = "p.value"),
               parse = TRUE) +
     expand_limits(y = 67)
 
-# t-test (equal variances assumed), minimal output, with manual table formatting
+# t-test (equal variances assumed), minimal output, with manual
+# table formatting
 if (broom.installed)
   ggplot(my.df, aes(group, x)) +
     geom_point() +
     stat_fit_tb(method = "t.test",
                 method.args = list(formula = y ~ x, var.equal = TRUE),
-                tb.vars = c("italic(t)" = "statistic", "italic(P)" = "p.value"),
+                tb.vars = c("italic(t)" = "statistic",
+                            "italic(P)" = "p.value"),
                 parse = TRUE)
 
 ## covariate is a numeric or continuous variable

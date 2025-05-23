@@ -6,7 +6,7 @@ output:
 
 ```{r readme-01, echo = FALSE}
 knitr::opts_chunk$set(
-  fig.asp = 2/3,
+  fig.asp = 2 / 3,
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/README-"
@@ -198,10 +198,10 @@ ggplot(cars, aes(speed, dist)) +
   stat_fit_tb(method = "lm",
               method.args = list(formula = formula),
               tb.type = "fit.anova",
-              tb.vars = c(Effect = "term", 
+              tb.vars = c(Effect = "term",
                           "df",
-                          "M.S." = "meansq", 
-                          "italic(F)" = "statistic", 
+                          "M.S." = "meansq",
+                          "italic(F)" = "statistic",
                           "italic(P)" = "p.value"),
               tb.params = c(x = 1, "x^2" = 2),
               label.y = "top", label.x = "left",
@@ -237,7 +237,7 @@ ggplot(quadrant_example.df, aes(logFC.x, logFC.y)) +
   geom_quadrant_lines() +
   stat_quadrant_counts() +
   stat_dens2d_filter(color = "red", keep.fraction = 0.02) +
-  stat_dens2d_labels(aes(label = gene), keep.fraction = 0.02, 
+  stat_dens2d_labels(aes(label = gene), keep.fraction = 0.02,
                      geom = "text_repel", size = 2, colour = "red") +
   scale_x_logFC(name = "Transcript abundance after A%unit") +
   scale_y_logFC(name = "Transcript abundance after B%unit",
@@ -250,7 +250,7 @@ and `y` aesthetics automatically. We also highlight and label the peaks
 using `stat_peaks()`.
 
 ```{r readme-03}
-ggplot(lynx, as.numeric = FALSE) + geom_line() + 
+ggplot(lynx, as.numeric = FALSE) + geom_line() +
   stat_peaks(colour = "red") +
   stat_peaks(geom = "text", colour = "red", angle = 66,
              hjust = -0.1, x.label.fmt = "%Y") +
@@ -272,15 +272,15 @@ repository (binaries for Mac, Win, Webassembly, and Linux, as well as sources
 available):
 
 ```{r, eval=FALSE}
-install.packages('ggpmisc', 
-                 repos = c('https://aphalo.r-universe.dev', 
-                           'https://cloud.r-project.org'))
+install.packages("ggpmisc",
+                 repos = c("https://aphalo.r-universe.dev",
+                           "https://cloud.r-project.org"))
 ```
 
 Installation of the current unstable version from GitHub (from sources):
 
 ```{r bb-instalation, eval=FALSE}
-# install.packages("remotes")
+# install.packages("remotes") # nolint: commented_code_linter.
 remotes::install_github("aphalo/ggpmisc")
 ```
 
