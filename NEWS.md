@@ -6,16 +6,16 @@ editor_options:
 
 # ggpmisc 0.6.2
 
-A significant new feature in this release is the support of additional model fit functions, both explicitly and by handling missing methods and values more gracefully. Another important enhancement is a more flexible approach to the filtering of peaks and valleys using height and depth thresholds, which improves the detection of prominent or major (true?) peaks in noisy data by reducing or preventing "false positives".
+A significant new feature in this release is the support of additional model fitting functions, both explicitly and by handling missing methods and values more gracefully. Another important enhancement is a more flexible approach to the filtering of peaks and valleys using height and depth thresholds, which improves the detection of prominent or major (true?) peaks in noisy data by reducing or preventing "false positives".
 
 -   In `stat_poly_line()` and `stat_poly_eq()` a fitted model object of an unexpected class triggers a warning instead of an error.
--   Support `MASS::lqs()`, `nlme::gls()`, `robustbase::lmrob()` and `robustbase::lstReg()` in `stat_poly_line()`, `stat_poly_eq()`, `stat_fit_deviations()`, stat_fit_residuals()` and `stat_fit_fitted()`. 
+-   Support `MASS::lqs()`, `nlme::gls()`, `robustbase::lmrob()` and `robustbase::lstReg()` in `stat_poly_line()`, `stat_poly_eq()`, `stat_fit_deviations()`, `stat_fit_residuals()` and `stat_fit_fitted()`. 
 -   Support `nlme::gls()`, `MASS::lqs()`, `robustbase::lmrob()`, `robustbase::ltsReg()` and model fit objects of classes for which method `weights()` is not available in `stat_fit_deviations()`, `stat_fit_fitted()`, `stat_fit_residuals()`.
 -   If `predict()` is not available for a `method`, function `stat_poly_line()` uses `fitted()` instead.
 -   Code breaking change in `stat_fit_deviations()`: consistently return prior weights in variable `weights` and new variable `robustness.weights` for the implicit weights used by robust fit methods.
 -   Bug fix: the value of 'method.label' not always set.
--   Update `scale_x_logFC()`and `scale_y_logFC()` for improved compatibility with 'ggplot2' (== 3.5.1.9000).
--   Implement a local (within-window span) threshold for peak height and valley depth in `stat_peaks()`  and `stat_valleys()`, using parameters `local.threshold` and `local.reference`.
+-   Update `scale_x_logFC()`and `scale_y_logFC()` for improved compatibility with 'ggplot2' (>= 3.5.2).
+-   Implement a local (within-window span) threshold for peak height and valley depth in `stat_peaks()` and `stat_valleys()`, using parameters `local.threshold` and `local.reference`.
 -   **Code breaking:** Rename parameter `ignore_threshold` into `global.threshold` in `find_peaks()`, `stat_peaks()`  and `stat_valleys()` for naming consistency and clarity.
 -   The scaling applied to user-supplied values for `global.threshold` and `local.threshold` can be controlled by passing a `character` argument to `threshold.scaling`. Non-scaled thresholds are also supported.
 -   Support repulsive geoms from 'ggrepel' in `stat_peaks()` and `stat_valleys()` by making extraction of rows conditional.
