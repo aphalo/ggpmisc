@@ -3,6 +3,7 @@ url: https://docs.r4photobiology.info/ggpmisc/
 
 template:
   bootstrap: 5
+  math-rendering: katex
 
 reference:
   - title: Package overview
