@@ -58,11 +58,11 @@
 <circle cx='662.01' cy='239.57' r='1.95' style='stroke-width: 0.71; fill: #000000;' />
 <circle cx='683.44' cy='236.64' r='1.95' style='stroke-width: 0.71; fill: #000000;' />
 <polyline points='61.91,314.91 83.34,231.48 104.77,348.05 126.20,263.59 147.64,254.43 169.07,172.46 190.50,225.18 211.93,294.65 233.36,196.86 254.80,305.15 276.23,233.95 297.66,359.43 319.09,148.36 340.53,423.25 361.96,306.43 383.39,302.31 404.82,364.65 426.26,278.40 447.69,361.60 469.12,478.66 490.55,299.50 511.99,216.66 533.42,309.40 554.85,422.98 576.28,213.25 597.71,417.89 619.15,239.59 640.58,295.28 662.01,239.57 683.44,236.64 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
-<text x='104.77' y='359.44' text-anchor='middle' style='font-size: 11.04px; font-family: sans;' textLength='24.25px' lengthAdjust='spacingAndGlyphs'>x = 2</text>
-<text x='340.53' y='434.65' text-anchor='middle' style='font-size: 11.04px; font-family: sans;' textLength='30.39px' lengthAdjust='spacingAndGlyphs'>x = 13</text>
-<text x='404.82' y='376.04' text-anchor='middle' style='font-size: 11.04px; font-family: sans;' textLength='30.39px' lengthAdjust='spacingAndGlyphs'>x = 16</text>
-<text x='469.12' y='490.06' text-anchor='middle' style='font-size: 11.04px; font-family: sans;' textLength='30.39px' lengthAdjust='spacingAndGlyphs'>x = 19</text>
-<text x='554.85' y='434.37' text-anchor='middle' style='font-size: 11.04px; font-family: sans;' textLength='30.39px' lengthAdjust='spacingAndGlyphs'>x = 23</text>
+<text x='104.77' y='359.40' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='24.16px' lengthAdjust='spacingAndGlyphs'>x = 2</text>
+<text x='340.53' y='434.61' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='30.28px' lengthAdjust='spacingAndGlyphs'>x = 13</text>
+<text x='404.82' y='376.00' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='30.28px' lengthAdjust='spacingAndGlyphs'>x = 16</text>
+<text x='469.12' y='490.02' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='30.28px' lengthAdjust='spacingAndGlyphs'>x = 19</text>
+<text x='554.85' y='434.33' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='30.28px' lengthAdjust='spacingAndGlyphs'>x = 23</text>
 <rect x='30.83' y='22.78' width='683.69' height='522.33' style='stroke-width: 1.07; stroke: #333333;' />
 </g>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>

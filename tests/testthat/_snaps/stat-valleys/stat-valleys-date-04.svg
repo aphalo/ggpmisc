@@ -58,31 +58,31 @@
 <circle cx='662.01' cy='239.57' r='1.95' style='stroke-width: 0.71; fill: #000000;' />
 <circle cx='683.44' cy='236.64' r='1.95' style='stroke-width: 0.71; fill: #000000;' />
 <polyline points='61.91,314.91 83.34,231.48 104.77,348.05 126.20,263.59 147.64,254.43 169.07,172.46 190.50,225.18 211.93,294.65 233.36,196.86 254.80,305.15 276.23,233.95 297.66,359.43 319.09,148.36 340.53,423.25 361.96,306.43 383.39,302.31 404.82,364.65 426.26,278.40 447.69,361.60 469.12,478.66 490.55,299.50 511.99,216.66 533.42,309.40 554.85,422.98 576.28,213.25 597.71,417.89 619.15,239.59 640.58,295.28 662.01,239.57 683.44,236.64 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
-<text x='79.09' y='360.15' style='font-size: 11.04px; font-family: sans;' textLength='5.62px' lengthAdjust='spacingAndGlyphs'>λ</text>
-<text x='84.71' y='360.15' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='87.48' y='360.15' style='font-size: 11.04px; font-family: sans;' textLength='6.45px' lengthAdjust='spacingAndGlyphs'>=</text>
-<text x='93.93' y='360.15' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='96.69' y='360.15' style='font-size: 11.04px; font-family: sans;' textLength='33.76px' lengthAdjust='spacingAndGlyphs'>Jan-03</text>
-<text x='314.85' y='435.35' style='font-size: 11.04px; font-family: sans;' textLength='5.62px' lengthAdjust='spacingAndGlyphs'>λ</text>
-<text x='320.47' y='435.35' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='323.23' y='435.35' style='font-size: 11.04px; font-family: sans;' textLength='6.45px' lengthAdjust='spacingAndGlyphs'>=</text>
-<text x='329.68' y='435.35' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='332.45' y='435.35' style='font-size: 11.04px; font-family: sans;' textLength='33.76px' lengthAdjust='spacingAndGlyphs'>Jan-14</text>
-<text x='379.14' y='376.75' style='font-size: 11.04px; font-family: sans;' textLength='5.62px' lengthAdjust='spacingAndGlyphs'>λ</text>
-<text x='384.77' y='376.75' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='387.53' y='376.75' style='font-size: 11.04px; font-family: sans;' textLength='6.45px' lengthAdjust='spacingAndGlyphs'>=</text>
-<text x='393.98' y='376.75' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='396.74' y='376.75' style='font-size: 11.04px; font-family: sans;' textLength='33.76px' lengthAdjust='spacingAndGlyphs'>Jan-17</text>
-<text x='443.44' y='490.76' style='font-size: 11.04px; font-family: sans;' textLength='5.62px' lengthAdjust='spacingAndGlyphs'>λ</text>
-<text x='449.06' y='490.76' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='451.83' y='490.76' style='font-size: 11.04px; font-family: sans;' textLength='6.45px' lengthAdjust='spacingAndGlyphs'>=</text>
-<text x='458.28' y='490.76' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='461.04' y='490.76' style='font-size: 11.04px; font-family: sans;' textLength='33.76px' lengthAdjust='spacingAndGlyphs'>Jan-20</text>
-<text x='529.17' y='435.07' style='font-size: 11.04px; font-family: sans;' textLength='5.62px' lengthAdjust='spacingAndGlyphs'>λ</text>
-<text x='534.79' y='435.07' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='537.55' y='435.07' style='font-size: 11.04px; font-family: sans;' textLength='6.45px' lengthAdjust='spacingAndGlyphs'>=</text>
-<text x='544.01' y='435.07' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='546.77' y='435.07' style='font-size: 11.04px; font-family: sans;' textLength='33.76px' lengthAdjust='spacingAndGlyphs'>Jan-24</text>
+<text x='79.18' y='360.10' style='font-size: 11.00px; font-family: sans;' textLength='5.60px' lengthAdjust='spacingAndGlyphs'>λ</text>
+<text x='84.79' y='360.10' style='font-size: 11.00px; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='87.54' y='360.10' style='font-size: 11.00px; font-family: sans;' textLength='6.43px' lengthAdjust='spacingAndGlyphs'>=</text>
+<text x='93.97' y='360.10' style='font-size: 11.00px; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='96.72' y='360.10' style='font-size: 11.00px; font-family: sans;' textLength='33.64px' lengthAdjust='spacingAndGlyphs'>Jan-03</text>
+<text x='314.94' y='435.31' style='font-size: 11.00px; font-family: sans;' textLength='5.60px' lengthAdjust='spacingAndGlyphs'>λ</text>
+<text x='320.54' y='435.31' style='font-size: 11.00px; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='323.29' y='435.31' style='font-size: 11.00px; font-family: sans;' textLength='6.43px' lengthAdjust='spacingAndGlyphs'>=</text>
+<text x='329.72' y='435.31' style='font-size: 11.00px; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='332.47' y='435.31' style='font-size: 11.00px; font-family: sans;' textLength='33.64px' lengthAdjust='spacingAndGlyphs'>Jan-14</text>
+<text x='379.24' y='376.70' style='font-size: 11.00px; font-family: sans;' textLength='5.60px' lengthAdjust='spacingAndGlyphs'>λ</text>
+<text x='384.84' y='376.70' style='font-size: 11.00px; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='387.59' y='376.70' style='font-size: 11.00px; font-family: sans;' textLength='6.43px' lengthAdjust='spacingAndGlyphs'>=</text>
+<text x='394.02' y='376.70' style='font-size: 11.00px; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='396.77' y='376.70' style='font-size: 11.00px; font-family: sans;' textLength='33.64px' lengthAdjust='spacingAndGlyphs'>Jan-17</text>
+<text x='443.53' y='490.72' style='font-size: 11.00px; font-family: sans;' textLength='5.60px' lengthAdjust='spacingAndGlyphs'>λ</text>
+<text x='449.14' y='490.72' style='font-size: 11.00px; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='451.89' y='490.72' style='font-size: 11.00px; font-family: sans;' textLength='6.43px' lengthAdjust='spacingAndGlyphs'>=</text>
+<text x='458.32' y='490.72' style='font-size: 11.00px; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='461.07' y='490.72' style='font-size: 11.00px; font-family: sans;' textLength='33.64px' lengthAdjust='spacingAndGlyphs'>Jan-20</text>
+<text x='529.26' y='435.03' style='font-size: 11.00px; font-family: sans;' textLength='5.60px' lengthAdjust='spacingAndGlyphs'>λ</text>
+<text x='534.86' y='435.03' style='font-size: 11.00px; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='537.62' y='435.03' style='font-size: 11.00px; font-family: sans;' textLength='6.43px' lengthAdjust='spacingAndGlyphs'>=</text>
+<text x='544.05' y='435.03' style='font-size: 11.00px; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='546.80' y='435.03' style='font-size: 11.00px; font-family: sans;' textLength='33.64px' lengthAdjust='spacingAndGlyphs'>Jan-24</text>
 <rect x='30.83' y='22.78' width='683.69' height='522.33' style='stroke-width: 1.07; stroke: #333333;' />
 </g>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>

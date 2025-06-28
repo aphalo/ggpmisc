@@ -58,36 +58,36 @@
 <circle cx='662.01' cy='239.57' r='1.95' style='stroke-width: 0.71; fill: #000000;' />
 <circle cx='683.44' cy='236.64' r='1.95' style='stroke-width: 0.71; fill: #000000;' />
 <polyline points='61.91,314.91 83.34,231.48 104.77,348.05 126.20,263.59 147.64,254.43 169.07,172.46 190.50,225.18 211.93,294.65 233.36,196.86 254.80,305.15 276.23,233.95 297.66,359.43 319.09,148.36 340.53,423.25 361.96,306.43 383.39,302.31 404.82,364.65 426.26,278.40 447.69,361.60 469.12,478.66 490.55,299.50 511.99,216.66 533.42,309.40 554.85,422.98 576.28,213.25 597.71,417.89 619.15,239.59 640.58,295.28 662.01,239.57 683.44,236.64 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
-<text transform='translate(173.01,168.55) rotate(-90)' style='font-size: 11.04px; font-family: sans;' textLength='5.62px' lengthAdjust='spacingAndGlyphs'>λ</text>
-<text transform='translate(173.01,162.93) rotate(-90)' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
-<text transform='translate(173.01,160.16) rotate(-90)' style='font-size: 11.04px; font-family: sans;' textLength='6.45px' lengthAdjust='spacingAndGlyphs'>=</text>
-<text transform='translate(173.01,153.71) rotate(-90)' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
-<text transform='translate(173.01,150.95) rotate(-90)' style='font-size: 11.04px; font-family: sans;' textLength='21.49px' lengthAdjust='spacingAndGlyphs'>1.17</text>
-<text transform='translate(237.31,192.95) rotate(-90)' style='font-size: 11.04px; font-family: sans;' textLength='5.62px' lengthAdjust='spacingAndGlyphs'>λ</text>
-<text transform='translate(237.31,187.33) rotate(-90)' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
-<text transform='translate(237.31,184.56) rotate(-90)' style='font-size: 11.04px; font-family: sans;' textLength='6.45px' lengthAdjust='spacingAndGlyphs'>=</text>
-<text transform='translate(237.31,178.11) rotate(-90)' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
-<text transform='translate(237.31,175.35) rotate(-90)' style='font-size: 11.04px; font-family: sans;' textLength='21.49px' lengthAdjust='spacingAndGlyphs'>0.92</text>
-<text transform='translate(323.04,144.45) rotate(-90)' style='font-size: 11.04px; font-family: sans;' textLength='5.62px' lengthAdjust='spacingAndGlyphs'>λ</text>
-<text transform='translate(323.04,138.82) rotate(-90)' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
-<text transform='translate(323.04,136.06) rotate(-90)' style='font-size: 11.04px; font-family: sans;' textLength='6.45px' lengthAdjust='spacingAndGlyphs'>=</text>
-<text transform='translate(323.04,129.61) rotate(-90)' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
-<text transform='translate(323.04,126.85) rotate(-90)' style='font-size: 11.04px; font-family: sans;' textLength='21.49px' lengthAdjust='spacingAndGlyphs'>1.43</text>
-<text transform='translate(430.20,274.49) rotate(-90)' style='font-size: 11.04px; font-family: sans;' textLength='5.62px' lengthAdjust='spacingAndGlyphs'>λ</text>
-<text transform='translate(430.20,268.86) rotate(-90)' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
-<text transform='translate(430.20,266.10) rotate(-90)' style='font-size: 11.04px; font-family: sans;' textLength='6.45px' lengthAdjust='spacingAndGlyphs'>=</text>
-<text transform='translate(430.20,259.65) rotate(-90)' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
-<text transform='translate(430.20,256.89) rotate(-90)' style='font-size: 11.04px; font-family: sans;' textLength='21.49px' lengthAdjust='spacingAndGlyphs'>0.06</text>
-<text transform='translate(515.93,212.75) rotate(-90)' style='font-size: 11.04px; font-family: sans;' textLength='5.62px' lengthAdjust='spacingAndGlyphs'>λ</text>
-<text transform='translate(515.93,207.13) rotate(-90)' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
-<text transform='translate(515.93,204.37) rotate(-90)' style='font-size: 11.04px; font-family: sans;' textLength='6.45px' lengthAdjust='spacingAndGlyphs'>=</text>
-<text transform='translate(515.93,197.91) rotate(-90)' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
-<text transform='translate(515.93,195.15) rotate(-90)' style='font-size: 11.04px; font-family: sans;' textLength='21.49px' lengthAdjust='spacingAndGlyphs'>0.71</text>
-<text transform='translate(580.23,209.34) rotate(-90)' style='font-size: 11.04px; font-family: sans;' textLength='5.62px' lengthAdjust='spacingAndGlyphs'>λ</text>
-<text transform='translate(580.23,203.72) rotate(-90)' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
-<text transform='translate(580.23,200.96) rotate(-90)' style='font-size: 11.04px; font-family: sans;' textLength='6.45px' lengthAdjust='spacingAndGlyphs'>=</text>
-<text transform='translate(580.23,194.50) rotate(-90)' style='font-size: 11.04px; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
-<text transform='translate(580.23,191.74) rotate(-90)' style='font-size: 11.04px; font-family: sans;' textLength='21.49px' lengthAdjust='spacingAndGlyphs'>0.74</text>
+<text transform='translate(173.00,168.56) rotate(-90)' style='font-size: 11.00px; font-family: sans;' textLength='5.60px' lengthAdjust='spacingAndGlyphs'>λ</text>
+<text transform='translate(173.00,162.96) rotate(-90)' style='font-size: 11.00px; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
+<text transform='translate(173.00,160.21) rotate(-90)' style='font-size: 11.00px; font-family: sans;' textLength='6.43px' lengthAdjust='spacingAndGlyphs'>=</text>
+<text transform='translate(173.00,153.78) rotate(-90)' style='font-size: 11.00px; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
+<text transform='translate(173.00,151.03) rotate(-90)' style='font-size: 11.00px; font-family: sans;' textLength='21.41px' lengthAdjust='spacingAndGlyphs'>1.17</text>
+<text transform='translate(237.30,192.96) rotate(-90)' style='font-size: 11.00px; font-family: sans;' textLength='5.60px' lengthAdjust='spacingAndGlyphs'>λ</text>
+<text transform='translate(237.30,187.36) rotate(-90)' style='font-size: 11.00px; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
+<text transform='translate(237.30,184.61) rotate(-90)' style='font-size: 11.00px; font-family: sans;' textLength='6.43px' lengthAdjust='spacingAndGlyphs'>=</text>
+<text transform='translate(237.30,178.18) rotate(-90)' style='font-size: 11.00px; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
+<text transform='translate(237.30,175.43) rotate(-90)' style='font-size: 11.00px; font-family: sans;' textLength='21.41px' lengthAdjust='spacingAndGlyphs'>0.92</text>
+<text transform='translate(323.02,144.46) rotate(-90)' style='font-size: 11.00px; font-family: sans;' textLength='5.60px' lengthAdjust='spacingAndGlyphs'>λ</text>
+<text transform='translate(323.02,138.86) rotate(-90)' style='font-size: 11.00px; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
+<text transform='translate(323.02,136.11) rotate(-90)' style='font-size: 11.00px; font-family: sans;' textLength='6.43px' lengthAdjust='spacingAndGlyphs'>=</text>
+<text transform='translate(323.02,129.68) rotate(-90)' style='font-size: 11.00px; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
+<text transform='translate(323.02,126.92) rotate(-90)' style='font-size: 11.00px; font-family: sans;' textLength='21.41px' lengthAdjust='spacingAndGlyphs'>1.43</text>
+<text transform='translate(430.19,274.50) rotate(-90)' style='font-size: 11.00px; font-family: sans;' textLength='5.60px' lengthAdjust='spacingAndGlyphs'>λ</text>
+<text transform='translate(430.19,268.90) rotate(-90)' style='font-size: 11.00px; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
+<text transform='translate(430.19,266.15) rotate(-90)' style='font-size: 11.00px; font-family: sans;' textLength='6.43px' lengthAdjust='spacingAndGlyphs'>=</text>
+<text transform='translate(430.19,259.72) rotate(-90)' style='font-size: 11.00px; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
+<text transform='translate(430.19,256.96) rotate(-90)' style='font-size: 11.00px; font-family: sans;' textLength='21.41px' lengthAdjust='spacingAndGlyphs'>0.06</text>
+<text transform='translate(515.92,212.77) rotate(-90)' style='font-size: 11.00px; font-family: sans;' textLength='5.60px' lengthAdjust='spacingAndGlyphs'>λ</text>
+<text transform='translate(515.92,207.16) rotate(-90)' style='font-size: 11.00px; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
+<text transform='translate(515.92,204.41) rotate(-90)' style='font-size: 11.00px; font-family: sans;' textLength='6.43px' lengthAdjust='spacingAndGlyphs'>=</text>
+<text transform='translate(515.92,197.98) rotate(-90)' style='font-size: 11.00px; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
+<text transform='translate(515.92,195.23) rotate(-90)' style='font-size: 11.00px; font-family: sans;' textLength='21.41px' lengthAdjust='spacingAndGlyphs'>0.71</text>
+<text transform='translate(580.21,209.36) rotate(-90)' style='font-size: 11.00px; font-family: sans;' textLength='5.60px' lengthAdjust='spacingAndGlyphs'>λ</text>
+<text transform='translate(580.21,203.75) rotate(-90)' style='font-size: 11.00px; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
+<text transform='translate(580.21,201.00) rotate(-90)' style='font-size: 11.00px; font-family: sans;' textLength='6.43px' lengthAdjust='spacingAndGlyphs'>=</text>
+<text transform='translate(580.21,194.57) rotate(-90)' style='font-size: 11.00px; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
+<text transform='translate(580.21,191.82) rotate(-90)' style='font-size: 11.00px; font-family: sans;' textLength='21.41px' lengthAdjust='spacingAndGlyphs'>0.74</text>
 <rect x='30.83' y='22.78' width='683.69' height='522.33' style='stroke-width: 1.07; stroke: #333333;' />
 </g>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
