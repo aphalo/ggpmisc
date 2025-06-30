@@ -14,8 +14,7 @@ stat_peaks(
   span = 5,
   global.threshold = 0,
   local.threshold = 0,
-  local.reference = "minimum",
-  threshold.scaling = "data.range",
+  local.reference = "median",
   strict = FALSE,
   label.fmt = NULL,
   x.label.fmt = NULL,
@@ -34,10 +33,9 @@ stat_valleys(
   position = "identity",
   ...,
   span = 5,
-  global.threshold = 0,
-  local.threshold = 0,
-  local.reference = "maximum",
-  threshold.scaling = "data.range",
+  global.threshold = 0.01,
+  local.threshold = NULL,
+  local.reference = "median",
   strict = FALSE,
   label.fmt = NULL,
   x.label.fmt = NULL,
@@ -51,72 +49,66 @@ stat_valleys(
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
-\code{\link[ggplot2]{aes}}. Only needs to be
-set at the layer level if you are overriding the plot defaults.}
+\code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs to be set
+at the layer level if you are overriding the plot defaults.}
 
 \item{data}{A layer specific dataset - only needed if you want to override
 the plot defaults.}
 
-\item{geom}{The geometric object to use display the data.}
+\item{geom}{The geometric object to use display the data}
 
 \item{position}{The position adjustment to use for overlapping points
-on this layer.}
+on this layer}
 
-\item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This
-can include aesthetics whose values you want to set, not map. See
+\item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This can
+include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 
-\item{span}{odd integer A peak is defined as an element in a sequence which
-is greater than all other elements within a moving window of width
-\code{span} centred at that element. The default value is 5, meaning that a
-peak is taller than its four nearest neighbours. \code{span = NULL} extends
-the span to the whole length of \code{x}.}
+\item{span}{odd positive integer A peak is defined as an element in a
+sequence which is greater than all other elements within a moving window of
+width \code{span} centred at that element. The default value is 5, meaning
+that a peak is taller than its four nearest neighbours. \code{span = NULL}
+extends the span to the whole length of \code{x}.}
 
-\item{global.threshold}{numeric A value between 0.0 and 1.0, relative to
-\code{threshold.range} indicating the
-\emph{global} height (depth) threshold below which peaks (valleys) will be
-ignored, or a negative value, between 0.0 and -1.0 indicating the
-\emph{global} height (depth) threshold above which peaks (valleys) will be
-ignored. If \code{threshold.range = 0} or the value passed as argument
-belongs to class \code{"AsIs"} the value is interpreted as an
-absolute value expressed in data units.}
+\item{global.threshold}{numeric A value belonging to class
+\code{"AsIs"} is interpreted as an absolute minimum height or depth
+expressed in data units. A bare \code{numeric} value (normally between 0.0
+and 1.0), is interpreted as relative to the range of the data. In both
+cases it sets a \emph{global} height (depth) threshold below which peaks
+(valleys) are ignored. A bare negative \code{numeric} value indicates the
+\emph{global} height (depth) threshold below which peaks (valleys) are be
+ignored. If \code{global.threshold = NULL}, no threshold is applied and all
+peaks are returned.}
 
-\item{local.threshold}{numeric A value between 0.0 and 1.0, relative to
-\code{threshold.range}, indicating the
-\emph{within-window} height (depth) threshold below which peaks (valleys)
-will be ignored.  If \code{threshold.range = 0} or the value passed
-as argument belongs to class \code{"AsIs"} the value is interpreted as an
-absolute value expressed in data units.}
+\item{local.threshold}{numeric A value belonging to class \code{"AsIs"} is
+interpreted as an absolute minimum height (depth) expressed in data units
+relative to the within-window computed minimum (maximum) value. A bare
+\code{numeric} value (normally between 0.0 and 1.0), is interpreted as
+expressed in units relative to the range of the data. In both cases
+\code{local.threshold} sets a \emph{local} height (depth) threshold below
+which peaks (valleys) are ignored. If \code{local.threshold = NULL} or if
+\code{span} spans the whole of \code{x}, no threshold is applied.}
 
-\item{local.reference}{character One of \code{"minimum"} (eqv.
-\code{"maximum"}) or \code{"median"}. The reference used to assess the
-height of the peak, either the minimum (maximum) value within the window or
-the median of all values in the window.}
+\item{local.reference}{character One of \code{"minimum"}/\code{maximum} or
+\code{"median"}. The reference used to assess the height of the peak,
+either the minimum value within the window or the median of all values in
+the window.}
 
-\item{threshold.scaling}{character One of \code{"data.range"},
-\code{"scale.range"}, or \code{"none"}.}
+\item{strict}{logical flag: if \code{TRUE}, an element must be strictly
+greater than all other values in its window to be considered a peak.}
 
-\item{strict}{logical flag: if TRUE, an element must be strictly greater than
-all other values in its window to be considered a peak. Default: TRUE.}
+\item{label.fmt, x.label.fmt, y.label.fmt}{character  strings giving a format
+definition for construction of character strings labels with function
+\code{\link{sprintf}} from \code{x} and/or \code{y} values.}
 
-\item{label.fmt}{character  string giving a format definition for converting
-values into character strings by means of function \code{\link{sprintf}}
-or \code{\link{strptime}}, its use is deprecated.}
+\item{extract.peaks, extract.valleys}{If \code{TRUE} only the rows containing
+peaks or valleys are returned. If \code{FALSE} the whole of \code{data} is
+returned but with labels set to \code{NA} in rows not containing peaks or
+valleys. If \code{NULL}, the default, \code{TRUE}, is used unless the geom
+name passed as argument is \code{"text_repel"} or \code{"label_repel"}.}
 
-\item{x.label.fmt}{character string giving a format definition for
-converting $x$-values into character strings by means of function
-\code{\link{sprintf}} or \code{\link{strftime}}. The default argument
-varies depending on the scale in use.}
-
-\item{y.label.fmt}{character  string giving a format definition for
-converting $y$-values into character strings by means of function
-\code{\link{sprintf}}.}
-
-\item{extract.peaks, extract.valleys}{logical If \code{TRUE} only the rows of
-\code{data} matching peaks or valleys are returned, if \code{FALSE} all
-rows are returned.}
-
-\item{orientation}{character Either "x" or "y".}
+\item{orientation}{character The orientation of the layer can be set to
+either \code{"x"}, the default, or \code{"y"}.}
 
 \item{na.rm}{a logical value indicating whether NA values should be
 stripped before the computation proceeds.}
@@ -129,14 +121,21 @@ stripped before the computation proceeds.}
 rather than combining with them. This is most useful for helper functions
 that define both data and aesthetics and shouldn't inherit behaviour from
 the default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
+
+\item{x.label.transform, y.label.transform, x.colour.transform}{function Applied
+to \code{x} or \code{y} values when constructing the character labels or
+computing matching colours.}
+}
+\value{
+A data frame with one row for each peak (or valley) found in the
+  data extracted from the input \code{data} or all rows in data. Added
+  columns contain the labels.
 }
 \description{
-\code{stat_peaks} finds local y maxima and \code{stat_valleys} finds local y
-minima. Both stats identify in \code{data} or extract from \code{data} rows
-matching peaks or valleys adding formatted character labels to the returned
-data frame. The formatting is controlled by a format string compatible with
-\code{sprintf()} or \code{strftime()}. When all rows in data are returned,
-labels are set to \code{""} for observations that are not peaks or valleys.
+\code{stat_peaks} finds at which x positions the global y maximun or local
+y maxima are located. \code{stat_valleys} finds at which x positions the
+global y minimum or local y minima located. They both support filtering
+of relevant peaks. \strong{Axis flipping is supported.}
 }
 \details{
 These stats use \code{geom_point} by default as it is the geom most
@@ -146,66 +145,60 @@ These stats use \code{geom_point} by default as it is the geom most
   \code{geom_hline} and \code{geom_vline}. The formatting of the labels
   returned can be controlled by the user.
 
-  The default for parameter \code{strict} is \code{TRUE} in functions
-  \code{splus2R::peaks()} and \code{find_peaks()}, while the default is \code{FALSE}
-  in \code{stat_peaks()} and in \code{stat_valleys()}.
-
-  A problem faced when identifying peaks is their relevance. One approach is
-  to ignore peaks based on their height, which can be done either globally for
-  the whole variable mapped to the \emph{y} aesthetic or within a narrower
-  window. These two approaches can be combined. The threshold height (depth)
-  can be given in data units by protecting the argument in a call to
-  \code{I()} or by passing \code{threshold.scaling = "none"}. They can be
-  also expressed relative to the range of \emph{y} by passing
-  \code{threshold.scaling = "data.range"}, or
-  relative to the range of the scale used for \emph{y} by passing
-  \code{threshold.scaling = "scale.range"}. The default
-  \code{threshold.scaling = "data.range"} is the same as the fixed value in
-  versions <= 0.6.1 of 'ggpmisc'.
-
-  While when highlighting or labelling peaks and/or valleys with other geoms
-  the best approach is to extract the observations, when using repulsive
-  geoms from 'ggrepel' to avoid overlaps it is necessary to retain all
-  observations and to set the label to \code{""} for observations not to be
-  labelled. By default the switch between these two approaches is automatic,
-  based on the argument passed to \code{geom}. However, either behaviour can
-  be forced by passing an argument to \code{extract.peaks} or
-  \code{extract.valleys}.
+  Two tests make it possible to ignore irrelevant peaks or valleys. One test
+  controlled by (\code{global.threshold}) is based on the absolute
+  height/depth  of peaks/valleys and can be used in all cases to ignore
+  globally low peaks and shallow valleys. A second test controlled by
+  (\code{local.threshold}) is available when the window defined by `span`
+  does not include all observations and can be used to ignore peaks/valleys
+  that are not locally prominent. In this second approach the height/depth of
+  each peak/valley is compared to a summary computed from other values within
+  the window where it was found. In this second case, the reference value
+  used is the summary indicated by \code{local.reference}. The values
+  \code{global.threshold} and \code{local.threshold} if bare numeric are
+  relative to the range of \emph{y}. Thresholds for ignoring too small peaks
+  are applied after peaks are searched for, and threshold values can in some
+  cases result in no peaks being displayed.
 }
 \note{
-These statistics check the scale of the \code{x} aesthetic and if it is
-  Date or Datetime they correctly generate the labels by transforming the
-  numeric \code{x} values to Date or POSIXct objects, respectively. In which
-  case the \code{x.label.fmt} must follow the syntax supported by
-  \code{strftime()} rather than by \code{sprintf()}. Overlap of labels with
-  points can be avoided by use of one of the nudge positions, possibly
-  together with geometry \code{\link[ggpp]{geom_text_s}} from package
-  \code{\link[ggpp]{ggpp}}, or with \code{\link[ggrepel]{geom_text_repel}} or
-  \code{\link[ggrepel]{geom_label_repel}} from package
-  \code{\link[ggrepel]{ggrepel}}. To discard overlapping labels use
-  \code{check_overlap = TRUE} as argument to \code{geom_text} or
-  \code{geom_text_s}. By default the labels are character values suitable to
-  be plotted as is, but with a suitable format passed as argument to
-  \code{label.fmt} labels suitable for parsing by the geoms (e.g., into
-  expressions containing Greek letters, super- or subscripts, maths symbols
-  or maths constructs) can be also easily obtained.
+These stats work nicely together with geoms \code{geom_text_repel} and
+  \code{geom_label_repel} from package \code{\link[ggrepel]{ggrepel}} to
+  solve the problem of overlapping labels
+  by displacing them. To discard overlapping labels use \code{check_overlap =
+  TRUE} as argument to \code{geom_text}.
+
+  By default the labels are character values ready to be added as is, but
+  with a suitable \code{label.fmt} labels suitable for parsing by the geoms
+  (e.g. into expressions containing Greek letters or super or subscripts) can
+  be also easily obtained.
 }
-\section{Returned and computed variables}{
+\section{Computed and copied variables in the returned data frame}{
 
 \describe{
   \item{x}{x-value at the peak (or valley) as numeric}
   \item{y}{y-value at the peak (or valley) as numeric}
-  \item{is.peak/is.valley}{logical value}
-  \item{x.label}{x-value at the peak (or valley) as character}
-  \item{y.label}{y-value at the peak (or valley) as character}
+  \item{x.label}{x-value at the peak (or valley) formatted as character}
+  \item{y.label}{y-value at the peak (or valley) formatted as character}
 }
 }
 
-\section{Warning!}{
- The current version of these statistics does not support
-  passing \code{nudge_x} or \code{nurge_y} named parameters to the geometry.
-  Instead, use as an argument to parameter `position` one of the position
-  functions such as \code{\link[ggpp]{position_nudge_keep}}.
+\section{Default aesthetics}{
+
+Set by the statistic and available to geoms.
+\describe{
+  \item{label}{stat(x.label)}
+  \item{xintercept}{stat(x)}
+  \item{yintercept}{stat(y)}
+}
+}
+
+\section{Required aesthetics}{
+
+Required by the statistic and need to be set with \code{aes()}.
+\describe{
+  \item{x}{numeric, wavelength in nanometres}
+  \item{y}{numeric, a spectral quantity}
+}
 }
 
 \examples{
@@ -325,6 +318,8 @@ ggplot(lynx_datetime.df, aes(year, lynx)) +
 
 }
 \seealso{
-\code{\link{find_peaks}} for details on how peaks and valleys are
-  found.
+\code{\link[photobiology]{find_peaks}}, which is used internally.
+
+\code{\link{find_peaks}}, for the functions used to located the
+  peaks and valleys.
 }

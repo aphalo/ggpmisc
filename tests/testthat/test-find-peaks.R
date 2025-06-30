@@ -67,12 +67,12 @@ test_that("local.threshold works", {
   expect_equal(which(find_peaks(rivers,
                                 span = 5,
                                 local.threshold = 0.5,
-                                local.reference = "minimum")),
+                                local.reference = "farthest")),
                68)
   expect_equal(which(find_peaks(rivers,
                                 span = 11,
                                 local.threshold = 0.5,
-                                local.reference = "maximum")),
+                                local.reference = "farthest")),
                68)
   expect_equal(which(find_peaks(rivers,
                                 span = 11,
@@ -82,7 +82,7 @@ test_that("local.threshold works", {
   expect_equal(which(find_peaks(rivers,
                                 span = 11,
                                 local.threshold = 0.25,
-                                local.reference = "minimum")),
+                                local.reference = "farthest")),
                c(7, 23, 68, 83, 101, 115))
   expect_equal(which(find_peaks(rivers,
                                 span = 11,
@@ -106,11 +106,9 @@ test_that("local.threshold works", {
                68)
   expect_error(find_peaks(rivers,
                           span = 11,
-                          local.threshold = 2000,
-                          threshold.range = 1))
+                          local.threshold = 2000))
   expect_equal(which(find_peaks(rivers,
                                 span = 5,
-                                local.threshold = 0.5,
-                                threshold.range = 0:max(rivers))),
+                                local.threshold = 0.5)),
                68)
 })

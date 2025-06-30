@@ -145,8 +145,7 @@ test_that("numbers_tb", {
                                 geom_point() +
                                 geom_line() +
                                 stat_valleys(colour = "red",
-                                             global.threshold = 0.5,
-                                             threshold.scaling = "none") +
+                                             global.threshold = 0.5) +
                                 expand_limits(y = c(-2.5, 2.5))
   )
   vdiffr::expect_doppelganger("stat_valleys_numeric_09a",
@@ -154,8 +153,7 @@ test_that("numbers_tb", {
                                 geom_point() +
                                 geom_line() +
                                 stat_valleys(colour = "red",
-                                           global.threshold = -Inf,
-                                           threshold.scaling = "none") +
+                                           global.threshold = -Inf) +
                                 expand_limits(y = c(-2.5, 2.5))
   )
   vdiffr::expect_doppelganger("stat_valleys_numeric_10",
@@ -163,8 +161,7 @@ test_that("numbers_tb", {
                                 geom_point() +
                                 geom_line() +
                                 stat_valleys(colour = "red",
-                                           global.threshold = 1,
-                                           threshold.scaling = "none") +
+                                           global.threshold = 1) +
                                 expand_limits(y = c(-2.5, 2.5))
   )
   vdiffr::expect_doppelganger("stat_valleys_numeric_10a",
@@ -172,8 +169,7 @@ test_that("numbers_tb", {
                                 geom_point() +
                                 geom_line() +
                                 stat_valleys(colour = "red",
-                                             global.threshold = I(-1),
-                                             threshold.scaling = "none") +
+                                             global.threshold = I(-1)) +
                                 expand_limits(y = c(-2.5, 2.5))
   )
   vdiffr::expect_doppelganger("stat_valleys_numeric_11",
@@ -181,8 +177,7 @@ test_that("numbers_tb", {
                                 geom_point() +
                                 geom_line() +
                                 stat_valleys(colour = "red",
-                                           global.threshold = 0.5,
-                                           threshold.scaling = "data.range") +
+                                           global.threshold = 0.5) +
                                 expand_limits(y = c(-2.5, 2.5))
   )
   vdiffr::expect_doppelganger("stat_valleys_numeric_12",
@@ -190,8 +185,7 @@ test_that("numbers_tb", {
                                 geom_point() +
                                 geom_line() +
                                 stat_valleys(colour = "red",
-                                           global.threshold = 0.5,
-                                           threshold.scaling = "scale.range") +
+                                           global.threshold = 0.5) +
                                 expand_limits(y = c(-2.5, 2.5))
   )
   # local threshold
@@ -208,8 +202,7 @@ test_that("numbers_tb", {
                                 geom_point() +
                                 geom_line() +
                                 stat_valleys(colour = "red",
-                                           local.threshold = 0.07,
-                                           threshold.scaling = "none") +
+                                           local.threshold = 0.07) +
                                 expand_limits(y = c(-2.5, 2.5))
   )
   vdiffr::expect_doppelganger("stat_valleys_numeric_15",
@@ -217,8 +210,7 @@ test_that("numbers_tb", {
                                 geom_point() +
                                 geom_line() +
                                 stat_valleys(colour = "red",
-                                           local.threshold = 0.02,
-                                           threshold.scaling = "data.range") +
+                                           local.threshold = 0.02) +
                                 expand_limits(y = c(-2.5, 2.5))
   )
   vdiffr::expect_doppelganger("stat_valleys_numeric_16",
@@ -226,8 +218,7 @@ test_that("numbers_tb", {
                                 geom_point() +
                                 geom_line() +
                                 stat_valleys(colour = "red",
-                                           local.threshold = 0.07,
-                                           threshold.scaling = "scale.range") +
+                                           local.threshold = 0.07) +
                                 expand_limits(y = c(-2.5, 2.5))
   )
 })
