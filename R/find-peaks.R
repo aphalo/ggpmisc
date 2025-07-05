@@ -144,13 +144,22 @@ find_peaks <-
     if (!is.null(span) && (is.na(span) || !is.numeric(span) || span < 1)) {
       stop("'span' must be NULL or a positive odd integer, not: ", format(span))
     }
-    if (!is.null(local.threshold) && !is.numeric(local.threshold)) {
-      stop("'local.threshold' must be NULL or a number, not: ", format(local.threshold))
+    if (!is.null(local.threshold) &&
+        (!is.numeric(local.threshold) || length(local.threshold) > 1L ||
+         local.threshold < 0 || local.threshold > 1)) {
+      stop("'local.threshold' must be NULL or a single number in [0..1], not: ",
+           format(local.threshold))
     }
-    if (!is.null(global.threshold) && !is.numeric(global.threshold)) {
-      stop("'global.threshold' must be NULL or a number, not: ", format(local.threshold))
+    if (!is.null(global.threshold)) {
+      if (!is.numeric(global.threshold) || length(global.threshold) > 1L) {
+        stop("'global.threshold' must be NULL or a single number, not: ",
+             format(local.threshold))
+      } else if (!inherits(global.threshold, "AsIs") &&
+                 (global.threshold < -1 || global.threshold > 1)) {
+        stop("'global.threshold' when not \"AsIs\" must be a number in [-1..1] not: ",
+             global.threshold)
+      }
     }
-
     # Replace NA, NaN and Inf with smallest finite value
     if (na.rm) {
       x <- ifelse(!is.finite(x), min(x, na.rm = TRUE), x)
@@ -178,8 +187,12 @@ find_peaks <-
         global.multiplier <- 1
         global.base <- 0
       } else {
-        global.multiplier <- threshold.range[2] - threshold.range[1]
-        global.base <- threshold.range[1]
+        global.multiplier <- abs(threshold.range[2] - threshold.range[1])
+        if (global.threshold >= 0) {
+          global.base <- threshold.range[1]
+        } else {
+          global.base <- threshold.range[2]
+        }
       }
     }
     # compute only if needed
@@ -207,16 +220,16 @@ find_peaks <-
         splus2R::peaks(x = x, span = span, strict = strict, endbehavior = 0)
     }
 
-    # apply global height threshold test
+    # apply global height/depth threshold test
     if (!is.null(global.threshold)) {
-      if (global.threshold >= 0 || inherits(global.threshold, "AsIs")) {
+      if (global.threshold < 0) {
         pks <- pks &
-          x > global.base + global.threshold * global.multiplier
+          x < global.base + global.threshold * global.multiplier
       } else {
         pks <- pks &
-          x <= global.base + abs(global.threshold) * global.multiplier
+          x > global.base + global.threshold * global.multiplier
       }
-    }
+     }
 
     # apply local.threshold height test to found peaks
     if (!is.null(local.threshold)) {

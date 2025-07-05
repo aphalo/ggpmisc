@@ -132,41 +132,51 @@
 #'   peaks and valleys.
 #'
 #' @examples
-#' # lynx is a time.series object
-#' # we convert it to a data frame
-#' lynx_num.df <-
-#'   try_tibble(lynx,
-#'              col.names = c("year", "lynx"),
-#'              as.numeric = TRUE) # years -> as numeric
+#' # lynx and Nile are time.series object recognized by
+#' # ggpp::ggplot.ts() and converted on-the-fly with default mapping
+#'
+#' # numeric, date times and dates are supported with data frames
 #'
 #' # using defaults
-#' ggplot(lynx_num.df, aes(year, lynx)) +
+#' ggplot(Nile) +
 #'   geom_line() +
 #'   stat_peaks(colour = "red") +
 #'   stat_valleys(colour = "blue")
 #'
+#' # using wider window
+#' ggplot(Nile) +
+#'   geom_line() +
+#'   stat_peaks(colour = "red", span = 11) +
+#'   stat_valleys(colour = "blue", span = 11)
+#'
 #' # global threshold for peak height
-#' ggplot(lynx_num.df, aes(year, lynx)) +
+#' ggplot(Nile) +
 #'   geom_line() +
 #'   stat_peaks(colour = "red",
 #'              global.threshold = 0.5) # half of data range
 #'
-#' ggplot(lynx_num.df, aes(year, lynx)) +
+#' ggplot(Nile) +
 #'   geom_line() +
 #'   stat_peaks(colour = "red",
-#'              global.threshold = I(4000)) + # data unit
-#'              expand_limits(y = c(0, 8000))
-#'
-#' ggplot(lynx_num.df, aes(year, lynx)) +
-#'   geom_line() +
-#'   stat_peaks(colour = "red",
-#'   global.threshold = I(4000))
+#'              global.threshold = I(1100)) + # data unit
+#'              expand_limits(y = c(0, 1500))
 #'
 #' # local (within window) threshold for peak height
-#' ggplot(lynx_num.df, aes(year, lynx)) +
+#' # narrow peaks at the tip and locally tall
+#'
+#' ggplot(Nile) +
 #'   geom_line() +
 #'   stat_peaks(colour = "red",
-#'              local.threshold = 1/3,
+#'              span = 9,
+#'              local.threshold = 0.3,
+#'              local.reference = "farthest")
+#'
+#' # with narrower window
+#' ggplot(Nile) +
+#'   geom_line() +
+#'   stat_peaks(colour = "red",
+#'              span = 5,
+#'              local.threshold = 0.25,
 #'              local.reference = "farthest")
 #'
 #' ggplot(lynx_num.df, aes(year, lynx)) +
@@ -175,45 +185,36 @@
 #'              local.threshold = 1/5,
 #'              local.reference = "median")
 #'
-#' ggplot(lynx_num.df, aes(year, lynx)) +
+#' ggplot(Nile) +
 #'   geom_line() +
 #'   stat_valleys(colour = "blue",
-#'                global.threshold = I(100))
+#'                global.threshold = I(700))
 #'
 #' # orientation is supported
-#' ggplot(lynx_num.df, aes(lynx, year)) +
+#' ggplot(lynx, aes(lynx, time)) +
 #'   geom_line(orientation = "y") +
 #'   stat_peaks(colour = "red", orientation = "y") +
 #'   stat_valleys(colour = "blue", orientation = "y")
 #'
 #' # default aesthetic mapping supports additional geoms
-#' ggplot(lynx_num.df, aes(year, lynx)) +
+#' ggplot(lynx) +
 #'   geom_line() +
 #'   stat_peaks(colour = "red") +
 #'   stat_peaks(colour = "red", geom = "rug")
 #'
-#' ggplot(lynx_num.df, aes(year, lynx)) +
+#' ggplot(lynx) +
 #'   geom_line() +
 #'   stat_peaks(colour = "red") +
 #'   stat_peaks(colour = "red", geom = "text", hjust = -0.1, angle = 33)
 #'
-#' ggplot(lynx_num.df, aes(lynx, year)) +
+#' ggplot(lynx, aes(lynx, time)) +
 #'   geom_line(orientation = "y") +
 #'   stat_peaks(colour = "red", orientation = "y") +
 #'   stat_peaks(colour = "red", orientation = "y",
 #'              geom = "text", hjust = -0.1)
 #'
-#' # date times and dates are also supported for x aesthetic
-#' lynx_datetime.df <-
-#'    try_tibble(lynx,
-#'               col.names = c("year", "lynx")) # years -> POSIXct
-#'
-#' ggplot(lynx_datetime.df, aes(year, lynx)) +
-#'   geom_line() +
-#'   stat_peaks(colour = "red") +
-#'   stat_valleys(colour = "blue")
-#'
-#' ggplot(lynx_datetime.df, aes(year, lynx)) +
+#' # Force conversion of time series time into POSIXct date time
+#' ggplot(lynx, as.numeric = FALSE) +
 #'   geom_line() +
 #'   stat_peaks(colour = "red") +
 #'   stat_peaks(colour = "red",
@@ -222,18 +223,18 @@
 #'              x.label.fmt = "%Y",
 #'              angle = 33)
 #'
-#' ggplot(lynx_datetime.df, aes(year, lynx)) +
+#' ggplot(Nile, as.numeric = FALSE) +
 #'   geom_line() +
 #'   stat_peaks(colour = "red") +
 #'   stat_peaks(colour = "red",
 #'              geom = "text_s",
-#'              position = position_nudge_keep(x = 0, y = 200),
+#'              position = position_nudge_keep(x = 0, y = 60),
 #'              hjust = -0.1,
 #'              x.label.fmt = "%Y",
 #'              angle = 90) +
-#'   expand_limits(y = 8000)
+#'   expand_limits(y = 2000)
 #'
-#' ggplot(lynx_datetime.df, aes(year, lynx)) +
+#' ggplot(lynx, as.numeric = FALSE) +
 #'   geom_line() +
 #'   stat_peaks(colour = "red",
 #'              geom = "text_s",

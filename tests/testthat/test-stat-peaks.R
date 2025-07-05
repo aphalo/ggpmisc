@@ -153,7 +153,7 @@ test_that("numbers_tb", {
                                 geom_point() +
                                 geom_line() +
                                 stat_peaks(colour = "red",
-                                           global.threshold = -1) +
+                                           global.threshold = -0.85) +
                                 expand_limits(y = c(-2.5, 2.5))
   )
   vdiffr::expect_doppelganger("stat_peaks_numeric_10a",
