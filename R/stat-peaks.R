@@ -132,8 +132,8 @@
 #'   peaks and valleys.
 #'
 #' @examples
-#' # lynx and Nile are time.series object recognized by
-#' # ggpp::ggplot.ts() and converted on-the-fly with default mapping
+#' # lynx and Nile are time.series objects recognized by
+#' # ggpp::ggplot.ts() and converted on-the-fly with a default mapping
 #'
 #' # numeric, date times and dates are supported with data frames
 #'
@@ -179,7 +179,7 @@
 #'              local.threshold = 0.25,
 #'              local.reference = "farthest")
 #'
-#' ggplot(lynx_num.df, aes(year, lynx)) +
+#' ggplot(lynx) +
 #'   geom_line() +
 #'   stat_peaks(colour = "red",
 #'              local.threshold = 1/5,

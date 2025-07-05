@@ -66,22 +66,17 @@
 #'   equal to \code{span} where it was found. In this second case, the reference
 #'   value used within each window containing a peak is given by
 #'   \code{local.reference}. Parameter \code{threshold.range} determines how the
-#'   values passed as argument to \code{global.threshold} and
-#'   \code{local.threshold} are scaled. The default, \code{NULL} uses the range
-#'   of \code{x}. Thresholds for ignoring too small peaks are applied after
-#'   peaks are searched for, and threshold values can in some cases
-#'   result in no peaks being returned.
-#'
-#'   While functions \code{find_peaks} and \code{find_valleys()} accept as input
-#'   a \code{numeric} vector and return a \code{logical} vector, methods
-#'   \code{\link{peaks}} and \code{\link{valleys}} accept as input different R
-#'   objects, including spectra and collections of spectra and return a subset
-#'   of the object. These methods are implemented using calls to functions
-#'   \code{find_peaks} and \code{\link{fit_peaks}}.
+#'   bare \code{numeric} values passed as argument to \code{global.threshold}
+#'   and \code{local.threshold} are scaled. The default, \code{NULL} uses the
+#'   range of \code{x}. Thresholds for ignoring too small peaks are applied
+#'   after peaks are searched for, and threshold values can in some cases
+#'   result in no peaks being found. If either threshold is not available
+#'   (\code{NA}) the returned value is a \code{NA} vector of the same length as
+#'   \code{x}.
 #'
 #' @note The default for parameter \code{strict} is \code{FALSE} in functions
-#'   \code{find_peaks()} and \code{find_valleys()}, while the default in
-#'   \code{\link[splus2R]{peaks}} is \code{strict = TRUE}.
+#'   \code{find_peaks()} and \code{find_valleys()}, while it is
+#'   \code{strict = TRUE} in \code{\link[splus2R]{peaks}}.
 #'
 #' @seealso \code{\link[splus2R]{peaks}}.
 #'
@@ -110,19 +105,6 @@
 #' lynx_num.df[find_peaks(lynx_num.df$lynx,
 #'                        span = 15,
 #'                        local.threshold = 0.5), ]
-#' lynx_num.df[find_peaks(lynx_num.df$lynx,
-#'                        span = 15,
-#'                        local.threshold = I(2000)), ]
-#'
-#' lynx_datetime.df <-
-#'    try_tibble(lynx,
-#'               col.names = c("year", "lynx")) # years -> POSIXct
-#'
-#' which(find_peaks(lynx_datetime.df$lynx, span = 31))
-#' lynx_datetime.df[find_peaks(lynx_datetime.df$lynx, span = 31), ]
-#' lynx_datetime.df[find_peaks(lynx_datetime.df$lynx,
-#'                             span = 31,
-#'                             global.threshold = 0.75), ]
 #'
 find_peaks <-
   function(x,
@@ -144,22 +126,36 @@ find_peaks <-
     if (!is.null(span) && (is.na(span) || !is.numeric(span) || span < 1)) {
       stop("'span' must be NULL or a positive odd integer, not: ", format(span))
     }
-    if (!is.null(local.threshold) &&
-        (!is.numeric(local.threshold) || length(local.threshold) > 1L ||
-         local.threshold < 0 || local.threshold > 1)) {
-      stop("'local.threshold' must be NULL or a single number in [0..1], not: ",
-           format(local.threshold))
-    }
-    if (!is.null(global.threshold)) {
-      if (!is.numeric(global.threshold) || length(global.threshold) > 1L) {
-        stop("'global.threshold' must be NULL or a single number, not: ",
-             format(local.threshold))
-      } else if (!inherits(global.threshold, "AsIs") &&
-                 (global.threshold < -1 || global.threshold > 1)) {
-        stop("'global.threshold' when not \"AsIs\" must be a number in [-1..1] not: ",
-             global.threshold)
+
+    if (!is.null(local.threshold)) {
+      if (is.na(local.threshold)) {
+        return(rep(NA, length(x)))
+      }
+      if (!is.numeric(local.threshold) || length(local.threshold) > 1L ||
+          local.threshold < 0 || local.threshold > 1) {
+        stop("'local.threshold' must be NULL or a single number in [0..1], not: ",
+             local.threshold)
       }
     }
+
+    if (!is.null(global.threshold)) {
+      if (is.na(global.threshold)) {
+        return(rep(NA, length(x)))
+      }
+      if (!is.numeric(global.threshold) || length(global.threshold) > 1L) {
+        stop("'global.threshold' must be NULL or a single number, not: ",
+             local.threshold)
+      } else if (!inherits(global.threshold, "AsIs") &&
+                 (global.threshold < -1 || global.threshold > 1)) {
+        stop("'global.threshold' when not \"AsIs\" must be a number in [-1..1]",
+             "not: ", global.threshold)
+      }
+      if (inherits(global.threshold, "AsIs") && !is.finite(global.threshold)) {
+        # accept all peaks/valleys
+        global.threshold <- NULL
+      }
+    }
+
     # Replace NA, NaN and Inf with smallest finite value
     if (na.rm) {
       x <- ifelse(!is.finite(x), min(x, na.rm = TRUE), x)
@@ -181,7 +177,7 @@ find_peaks <-
         return(logical(length(x)))
       }
     }
-    # compute only if needed
+    # compute global multiplier and base only if needed
     if (!is.null(global.threshold)) {
       if (inherits(global.threshold, "AsIs")) {
         global.multiplier <- 1
@@ -195,7 +191,7 @@ find_peaks <-
         }
       }
     }
-    # compute only if needed
+    # compute local multiplier and base only if needed
     if (!is.null(local.threshold)) {
       if (inherits(local.threshold, "AsIs")) {
         local.multiplier <- 1

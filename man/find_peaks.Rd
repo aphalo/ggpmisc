@@ -104,23 +104,18 @@ Function \code{find_peaks} is a wrapper built onto function
   equal to \code{span} where it was found. In this second case, the reference
   value used within each window containing a peak is given by
   \code{local.reference}. Parameter \code{threshold.range} determines how the
-  values passed as argument to \code{global.threshold} and
-  \code{local.threshold} are scaled. The default, \code{NULL} uses the range
-  of \code{x}. Thresholds for ignoring too small peaks are applied after
-  peaks are searched for, and threshold values can in some cases
-  result in no peaks being returned.
-
-  While functions \code{find_peaks} and \code{find_valleys()} accept as input
-  a \code{numeric} vector and return a \code{logical} vector, methods
-  \code{\link{peaks}} and \code{\link{valleys}} accept as input different R
-  objects, including spectra and collections of spectra and return a subset
-  of the object. These methods are implemented using calls to functions
-  \code{find_peaks} and \code{\link{fit_peaks}}.
+  bare \code{numeric} values passed as argument to \code{global.threshold}
+  and \code{local.threshold} are scaled. The default, \code{NULL} uses the
+  range of \code{x}. Thresholds for ignoring too small peaks are applied
+  after peaks are searched for, and threshold values can in some cases
+  result in no peaks being found. If either threshold is not available
+  (\code{NA}) the returned value is a \code{NA} vector of the same length as
+  \code{x}.
 }
 \note{
 The default for parameter \code{strict} is \code{FALSE} in functions
-  \code{find_peaks()} and \code{find_valleys()}, while the default in
-  \code{\link[splus2R]{peaks}} is \code{strict = TRUE}.
+  \code{find_peaks()} and \code{find_valleys()}, while it is
+  \code{strict = TRUE} in \code{\link[splus2R]{peaks}}.
 }
 \examples{
 # lynx is a time.series object
@@ -143,19 +138,6 @@ lynx_num.df[find_peaks(lynx_num.df$lynx,
 lynx_num.df[find_peaks(lynx_num.df$lynx,
                        span = 15,
                        local.threshold = 0.5), ]
-lynx_num.df[find_peaks(lynx_num.df$lynx,
-                       span = 15,
-                       local.threshold = I(2000)), ]
-
-lynx_datetime.df <-
-   try_tibble(lynx,
-              col.names = c("year", "lynx")) # years -> POSIXct
-
-which(find_peaks(lynx_datetime.df$lynx, span = 31))
-lynx_datetime.df[find_peaks(lynx_datetime.df$lynx, span = 31), ]
-lynx_datetime.df[find_peaks(lynx_datetime.df$lynx,
-                            span = 31,
-                            global.threshold = 0.75), ]
 
 }
 \seealso{
