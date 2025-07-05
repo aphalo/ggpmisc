@@ -1,4 +1,4 @@
-context("stat_poly_line")
+context("stat_poly_line_lm")
 
 library(tibble)
 
@@ -137,25 +137,57 @@ test_that("poly_methods", {
   vdiffr::expect_doppelganger("stat_poly_line_lm_chr",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
-                                stat_poly_line(formula = y ~ x, method = "lm")
+                                stat_poly_line(formula = y ~ poly(x, 2),
+                                               method = "lm")
   )
 
   vdiffr::expect_doppelganger("stat_poly_line_lm_fun",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
-                                stat_poly_line(formula = y ~ x, method = stats::lm)
+                                stat_poly_line(formula = y ~ poly(x, 2),
+                                               method = stats::lm)
   )
 
   vdiffr::expect_doppelganger("stat_poly_line_rlm_chr",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
-                                stat_poly_line(formula = y ~ x, method = "rlm")
+                                stat_poly_line(formula = y ~ poly(x, 2),
+                                               method = "rlm")
   )
 
   vdiffr::expect_doppelganger("stat_poly_line_rlm_fun",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
-                                stat_poly_line(formula = y ~ x, method = MASS::rlm)
+                                stat_poly_line(formula = y ~ poly(x, 2),
+                                               method = MASS::rlm)
+  )
+
+  vdiffr::expect_doppelganger("stat_poly_line_lqs_chr",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_line(formula = y ~ poly(x, 2),
+                                               method = "lqs")
+  )
+
+  vdiffr::expect_doppelganger("stat_poly_line_lqs_fun",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_line(formula = y ~ poly(x, 2),
+                                               method = MASS::lqs)
+  )
+
+  vdiffr::expect_doppelganger("stat_poly_line_gls_chr",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_line(formula = y ~ poly(x, 2),
+                                               method = "gls")
+  )
+
+  vdiffr::expect_doppelganger("stat_poly_line_gls_fun",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_line(formula = y ~ poly(x, 2),
+                                               method = MASS::lqs)
   )
 
   vdiffr::expect_doppelganger("stat_poly_line_empty_fm",

@@ -153,7 +153,15 @@ test_that("numbers_tb", {
                                 geom_point() +
                                 geom_line() +
                                 stat_valleys(colour = "red",
-                                           global.threshold = -Inf) +
+                                           global.threshold = I(-Inf)) +
+                                expand_limits(y = c(-2.5, 2.5))
+  )
+  vdiffr::expect_doppelganger("stat_valleys_numeric_09b",
+                              ggplot(data = my.data, aes(x, y)) +
+                                geom_point() +
+                                geom_line() +
+                                stat_valleys(colour = "red",
+                                             global.threshold = I(Inf)) +
                                 expand_limits(y = c(-2.5, 2.5))
   )
   vdiffr::expect_doppelganger("stat_valleys_numeric_10",
