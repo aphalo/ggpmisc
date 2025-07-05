@@ -37,7 +37,7 @@ test_that("global.threshold works", {
                c(7, 23, 68, 101))
   expect_equal(which(find_peaks(rivers,
                                 span = 11,
-                                global.threshold = -0.75)),
+                                global.threshold = -0.25)),
                c(32, 38, 44, 50, 131))
   expect_equal(which(find_peaks(rivers,
                                 span = 11,

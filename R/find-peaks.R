@@ -184,21 +184,15 @@ find_peaks <-
         global.base <- 0
       } else {
         global.multiplier <- abs(threshold.range[2] - threshold.range[1])
-        if (global.threshold >= 0) {
-          global.base <- threshold.range[1]
-        } else {
-          global.base <- threshold.range[2]
-        }
+        global.base <- threshold.range[1]
       }
     }
     # compute local multiplier and base only if needed
     if (!is.null(local.threshold)) {
       if (inherits(local.threshold, "AsIs")) {
         local.multiplier <- 1
-        local.base <- 0
       } else {
         local.multiplier <- threshold.range[2] - threshold.range[1]
-        local.base <- threshold.range[1]
       }
     }
 
@@ -216,16 +210,16 @@ find_peaks <-
         splus2R::peaks(x = x, span = span, strict = strict, endbehavior = 0)
     }
 
-    # apply global height/depth threshold test
+    # apply global height threshold test
     if (!is.null(global.threshold)) {
-      if (global.threshold < 0) {
-        pks <- pks &
-          x < global.base + global.threshold * global.multiplier
-      } else {
+      if (global.threshold >= 0 || inherits(global.threshold, "AsIs")) {
         pks <- pks &
           x > global.base + global.threshold * global.multiplier
+      } else {
+        pks <- pks &
+          x <= global.base + abs(global.threshold) * global.multiplier
       }
-     }
+    }
 
     # apply local.threshold height test to found peaks
     if (!is.null(local.threshold)) {
