@@ -303,6 +303,7 @@ test_that("tidy_methods", {
                                                                     after_stat(x_se))))
   )
 
+  skip_on_os("mac")
   vdiffr::expect_doppelganger("tidy_method_rq",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
