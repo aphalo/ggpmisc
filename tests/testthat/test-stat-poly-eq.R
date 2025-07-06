@@ -2,6 +2,20 @@ context("stat_poly_eq_lm")
 
 library(tibble)
 
+# versioning of snaps
+ggplot2_version <- packageVersion("ggplot2")
+if (grepl("^3\\.5\\.2\\.9|^4\\.0\\.[0-1]", ggplot2_version)) {
+  ggplot2_version <- "ggplot2-4.0.x"
+} else if (grepl("^3\\.5\\.[0-2]", ggplot2_version)) {
+  ggplot2_version <- "ggplot2-3.5.x"
+} else {
+  ggplot2_version <- paste("ggplot2", ggplot2_version, sep = "-")
+}
+R_version <- paste("R",
+                   substr(as.character(getRversion()), start = 1, stop = 3),
+                   sep = "-")
+snap_version <- paste(R_version, ggplot2_version, sep = "_")
+
 old.out.dec <- options(OutDec = ".")
 on.exit(options(old.out.dec), add = TRUE, after = FALSE)
 
@@ -30,7 +44,8 @@ test_that("poly_eq_noload", {
                                                         ggplot2::aes(label = paste(ggplot2::after_stat(eq.label),
                                                                                    ggplot2::after_stat(AIC.label),
                                                                                    ggplot2::after_stat(BIC.label),
-                                                                                   sep = "~~")))
+                                                                                   sep = "~~"))),
+                              variant = snap_version
   )
 
   vdiffr::expect_doppelganger("stat_poly_eq_noload_more",
@@ -45,21 +60,24 @@ test_that("poly_eq_noload", {
                                                                                    ggplot2::after_stat(p.value.label),
                                                                                    ggplot2::after_stat(n.label),
                                                                                    ggplot2::after_stat(method.label),
-                                                                                   sep = "~~")))
+                                                                                   sep = "~~"))),
+                              variant = snap_version
   )
   vdiffr::expect_doppelganger("stat_poly_eq_noload_use_label",
                               ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
                                 ggplot2::geom_point() +
                                 ggpmisc::stat_poly_eq(formula = y ~ x, parse = TRUE,
                                                       mapping = ggpmisc::use_label(c("eq", "AIC", "BIC"),
-                                                                                   sep = "~~"))
+                                                                                   sep = "~~")),
+                              variant = snap_version
   )
   vdiffr::expect_doppelganger("stat_poly_eq_noload_use_label_more",
                               ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
                                 ggplot2::geom_point() +
                                 ggpmisc::stat_poly_eq(formula = y ~ x, parse = TRUE,
                                                       mapping = ggpmisc::use_label(c("R2", "R2.CI", "adj.R2", "F", "P"),
-                                                                                   sep = "~~"))
+                                                                                   sep = "~~")),
+                              variant = snap_version
   )
 })
 
@@ -289,7 +307,8 @@ test_that("poly_formulas", {
                                                     after_stat(adj.rr.label),
                                                     after_stat(AIC.label),
                                                     after_stat(BIC.label),
-                                                    sep = "~~")))
+                                                    sep = "~~"))),
+                              variant = snap_version
   )
 
   vdiffr::expect_doppelganger("stat_poly_eq_formula_1a",
@@ -303,7 +322,8 @@ test_that("poly_formulas", {
                                                                  after_stat(p.value.label),
                                                                  after_stat(n.label),
                                                                  after_stat(method.label),
-                                                                 sep = "~~")))
+                                                                 sep = "~~"))),
+                              variant = snap_version
   )
 
   vdiffr::expect_doppelganger("stat_poly_eq_formula_x",
@@ -315,7 +335,8 @@ test_that("poly_formulas", {
                                                                  after_stat(adj.rr.label),
                                                                  after_stat(f.value.label),
                                                                  after_stat(p.value.label),
-                                                                 sep = "~~")))
+                                                                 sep = "~~"))),
+                              variant = snap_version
   )
 
   vdiffr::expect_doppelganger("stat_poly_eq_formula_x_Iy",
@@ -327,7 +348,8 @@ test_that("poly_formulas", {
                                                                  after_stat(adj.rr.label),
                                                                  after_stat(f.value.label),
                                                                  after_stat(p.value.label),
-                                                                 sep = "~~")))
+                                                                 sep = "~~"))),
+                              variant = snap_version
   )
 
   vdiffr::expect_doppelganger("stat_poly_eq_formula_x_Ix",
@@ -339,7 +361,8 @@ test_that("poly_formulas", {
                                                                  after_stat(adj.rr.label),
                                                                  after_stat(f.value.label),
                                                                  after_stat(p.value.label),
-                                                                 sep = "~~")))
+                                                                 sep = "~~"))),
+                              variant = snap_version
   )
 
   vdiffr::expect_doppelganger("stat_poly_eq_formula_xminus1",
@@ -351,7 +374,8 @@ test_that("poly_formulas", {
                                                                  after_stat(adj.rr.label),
                                                                  after_stat(f.value.label),
                                                                  after_stat(p.value.label),
-                                                                 sep = "~~")))
+                                                                 sep = "~~"))),
+                              variant = snap_version
   )
 
   vdiffr::expect_doppelganger("stat_poly_eq_formula_xminus1a",
@@ -363,7 +387,8 @@ test_that("poly_formulas", {
                                                                  after_stat(adj.rr.label),
                                                                  after_stat(f.value.label),
                                                                  after_stat(p.value.label),
-                                                                 sep = "~~")))
+                                                                 sep = "~~"))),
+                              variant = snap_version
   )
 
   vdiffr::expect_doppelganger("stat_poly_eq_formula_xminus1b",
@@ -375,7 +400,8 @@ test_that("poly_formulas", {
                                                                  after_stat(adj.rr.label),
                                                                  after_stat(f.value.label),
                                                                  after_stat(p.value.label),
-                                                                 sep = "~~")))
+                                                                 sep = "~~"))),
+                              variant = snap_version
   )
 
   vdiffr::expect_doppelganger("stat_poly_eq_formula_xplus0",
@@ -387,7 +413,8 @@ test_that("poly_formulas", {
                                                                  after_stat(adj.rr.label),
                                                                  after_stat(f.value.label),
                                                                  after_stat(p.value.label),
-                                                                 sep = "~~")))
+                                                                 sep = "~~"))),
+                              variant = snap_version
   )
 
   vdiffr::expect_doppelganger("stat_poly_eq_formula_xplus0a",
@@ -399,7 +426,8 @@ test_that("poly_formulas", {
                                                                  after_stat(adj.rr.label),
                                                                  after_stat(f.value.label),
                                                                  after_stat(p.value.label),
-                                                                 sep = "~~")))
+                                                                 sep = "~~"))),
+                              variant = snap_version
   )
 
   vdiffr::expect_doppelganger("stat_poly_eq_formula_xplus0b",
@@ -411,7 +439,8 @@ test_that("poly_formulas", {
                                                                  after_stat(adj.rr.label),
                                                                  after_stat(f.value.label),
                                                                  after_stat(p.value.label),
-                                                                 sep = "~~")))
+                                                                 sep = "~~"))),
+                              variant = snap_version
   )
 
   vdiffr::expect_doppelganger("stat_poly_eq_formula_poly1",
@@ -423,7 +452,8 @@ test_that("poly_formulas", {
                                                                  after_stat(adj.rr.label),
                                                                  after_stat(f.value.label),
                                                                  after_stat(p.value.label),
-                                                                 sep = "~~")))
+                                                                 sep = "~~"))),
+                              variant = snap_version
   )
 
   vdiffr::expect_doppelganger("stat_poly_eq_formula_poly3",
@@ -435,7 +465,8 @@ test_that("poly_formulas", {
                                                                  after_stat(adj.rr.label),
                                                                  after_stat(f.value.label),
                                                                  after_stat(p.value.label),
-                                                                 sep = "~~")))
+                                                                 sep = "~~"))),
+                              variant = snap_version
   )
 
   vdiffr::expect_doppelganger("stat_poly_eq_formula_x1",
@@ -447,7 +478,8 @@ test_that("poly_formulas", {
                                                                  after_stat(adj.rr.label),
                                                                  after_stat(AIC.label),
                                                                  after_stat(BIC.label),
-                                                                 sep = "~~")))
+                                                                 sep = "~~"))),
+                              variant = snap_version
   )
 
   vdiffr::expect_doppelganger("stat_poly_eq_formula_y",
@@ -459,7 +491,8 @@ test_that("poly_formulas", {
                                                                  after_stat(adj.rr.label),
                                                                  after_stat(f.value.label),
                                                                  after_stat(p.value.label),
-                                                                 sep = "~~")))
+                                                                 sep = "~~"))),
+                              variant = snap_version
   )
 
   vdiffr::expect_doppelganger("stat_poly_eq_formula_yminus1",
@@ -471,7 +504,8 @@ test_that("poly_formulas", {
                                                                  after_stat(adj.rr.label),
                                                                  after_stat(f.value.label),
                                                                  after_stat(p.value.label),
-                                                                 sep = "~~")))
+                                                                 sep = "~~"))),
+                              variant = snap_version
   )
 
   vdiffr::expect_doppelganger("stat_poly_eq_formula_yplus0",
@@ -483,7 +517,8 @@ test_that("poly_formulas", {
                                                                  after_stat(adj.rr.label),
                                                                  after_stat(f.value.label),
                                                                  after_stat(p.value.label),
-                                                                 sep = "~~")))
+                                                                 sep = "~~"))),
+                              variant = snap_version
   )
 
   vdiffr::expect_doppelganger("stat_poly_eq_formula_ypoly1",
@@ -495,7 +530,8 @@ test_that("poly_formulas", {
                                                                  after_stat(adj.rr.label),
                                                                  after_stat(f.value.label),
                                                                  after_stat(p.value.label),
-                                                                 sep = "~~")))
+                                                                 sep = "~~"))),
+                              variant = snap_version
   )
 
   old.out.dec <- options(OutDec = ",")
@@ -509,7 +545,8 @@ test_that("poly_formulas", {
                                                                  after_stat(rr.confint.label),
                                                                  after_stat(f.value.label),
                                                                  after_stat(p.value.label),
-                                                                 sep = "~~")))
+                                                                 sep = "~~"))),
+                              variant = snap_version
   )
   vdiffr::expect_doppelganger("stat_poly_eq_more_comma",
                               ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
@@ -521,7 +558,8 @@ test_that("poly_formulas", {
                                                                                    after_stat(p.value.label),
                                                                                    after_stat(n.label),
                                                                                    after_stat(method.label),
-                                                                                   sep = "~~")))
+                                                                                   sep = "~~"))),
+                              variant = snap_version
   )
   options(old.out.dec)
 })
@@ -541,7 +579,8 @@ test_that("poly_methods", {
                                                                  after_stat(n.label),
                                                                  after_stat(AIC.label),
                                                                  after_stat(BIC.label),
-                                                                 sep = "~~")))
+                                                                 sep = "~~"))),
+                              variant = snap_version
   )
 
   vdiffr::expect_doppelganger("stat_poly_eq_lm_fun",
@@ -558,7 +597,8 @@ test_that("poly_methods", {
                                                                  after_stat(n.label),
                                                                  after_stat(AIC.label),
                                                                  after_stat(BIC.label),
-                                                                 sep = "~~")))
+                                                                 sep = "~~"))),
+                              variant = snap_version
   )
 
   vdiffr::expect_doppelganger("stat_poly_eq_rlm_chr",
@@ -575,7 +615,8 @@ test_that("poly_methods", {
                                                                  after_stat(n.label),
                                                                  after_stat(AIC.label),
                                                                  after_stat(BIC.label),
-                                                                 sep = "~~")))
+                                                                 sep = "~~"))),
+                              variant = snap_version
   )
 
   vdiffr::expect_doppelganger("stat_poly_eq_rlm_fun",
@@ -592,7 +633,8 @@ test_that("poly_methods", {
                                                                  after_stat(n.label),
                                                                  after_stat(AIC.label),
                                                                  after_stat(BIC.label),
-                                                                 sep = "~~")))
+                                                                 sep = "~~"))),
+                              variant = snap_version
   )
 
   vdiffr::expect_doppelganger("stat_poly_eq_lqs_chr",
@@ -609,7 +651,8 @@ test_that("poly_methods", {
                                                                  after_stat(n.label),
                                                                  after_stat(AIC.label),
                                                                  after_stat(BIC.label),
-                                                                 sep = "~~")))
+                                                                 sep = "~~"))),
+                              variant = snap_version
   )
 
   vdiffr::expect_doppelganger("stat_poly_eq_lqs_fun",
@@ -626,7 +669,8 @@ test_that("poly_methods", {
                                                                  after_stat(n.label),
                                                                  after_stat(AIC.label),
                                                                  after_stat(BIC.label),
-                                                                 sep = "~~")))
+                                                                 sep = "~~"))),
+                              variant = snap_version
   )
 
   vdiffr::expect_doppelganger("stat_poly_eq_gls_chr",
@@ -643,7 +687,8 @@ test_that("poly_methods", {
                                                                  after_stat(n.label),
                                                                  after_stat(AIC.label),
                                                                  after_stat(BIC.label),
-                                                                 sep = "~~")))
+                                                                 sep = "~~"))),
+                              variant = snap_version
   )
 
   vdiffr::expect_doppelganger("stat_poly_eq_gls_fun",
@@ -660,7 +705,8 @@ test_that("poly_methods", {
                                                                  after_stat(n.label),
                                                                  after_stat(AIC.label),
                                                                  after_stat(BIC.label),
-                                                                 sep = "~~")))
+                                                                 sep = "~~"))),
+                              variant = snap_version
   )
 
   vdiffr::expect_doppelganger("stat_poly_eq_missing_fm",
@@ -691,35 +737,40 @@ test_that("textual_positions", {
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
                                 stat_smooth(method = "lm", formula = formula) +
-                                stat_poly_eq(formula = formula, parse = TRUE)
+                                stat_poly_eq(formula = formula, parse = TRUE),
+                              variant = snap_version
   )
   vdiffr::expect_doppelganger("stat_poly_eq_1",
                                ggplot(my.data, aes(x, y)) +
                                 geom_point() +
                                 stat_smooth(method = "lm", formula = formula) +
                                 stat_poly_eq(formula = formula, parse = TRUE,
-                                             geom = "text_npc")
+                                             geom = "text_npc"),
+                              variant = snap_version
   )
   vdiffr::expect_doppelganger("stat_poly_eq_2",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
                                 stat_smooth(method = "lm", formula = formula) +
                                 stat_poly_eq(formula = formula, parse = TRUE,
-                                             geom = "label_npc")
+                                             geom = "label_npc"),
+                              variant = snap_version
   )
   vdiffr::expect_doppelganger("stat_poly_eq_3",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
                                 stat_smooth(method = "lm", formula = formula) +
                                 stat_poly_eq(formula = formula, parse = TRUE,
-                                             geom = "text")
+                                             geom = "text"),
+                              variant = snap_version
   )
   vdiffr::expect_doppelganger("stat_poly_eq_4",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
                                 stat_smooth(method = "lm", formula = formula) +
                                 stat_poly_eq(formula = formula, parse = TRUE,
-                                             geom = "label")
+                                             geom = "label"),
+                              variant = snap_version
   )
   vdiffr::expect_doppelganger("stat_poly_eq_5",
                               ggplot(my.data, aes(x, y)) +
@@ -727,7 +778,8 @@ test_that("textual_positions", {
                                 stat_smooth(method = "lm", formula = formula) +
                                 stat_poly_eq(formula = formula, parse = TRUE,
                                              label.x = "right", label.y = "bottom",
-                                             geom = "text_npc")
+                                             geom = "text_npc"),
+                              variant = snap_version
   )
   vdiffr::expect_doppelganger("stat_poly_eq_6",
                               ggplot(my.data, aes(x, y)) +
@@ -735,7 +787,8 @@ test_that("textual_positions", {
                                 stat_smooth(method = "lm", formula = formula) +
                                 stat_poly_eq(formula = formula, parse = TRUE,
                                              label.x = "right", label.y = "bottom",
-                                             geom = "label_npc")
+                                             geom = "label_npc"),
+                              variant = snap_version
   )
   vdiffr::expect_doppelganger("stat_poly_eq_7",
                               ggplot(my.data, aes(x, y)) +
@@ -743,7 +796,8 @@ test_that("textual_positions", {
                                 stat_smooth(method = "lm", formula = formula) +
                                 stat_poly_eq(formula = formula, parse = TRUE,
                                              label.x = "right", label.y = "bottom",
-                                             geom = "text")
+                                             geom = "text"),
+                              variant = snap_version
   )
   vdiffr::expect_doppelganger("stat_poly_eq_8",
                               ggplot(my.data, aes(x, y)) +
@@ -751,7 +805,8 @@ test_that("textual_positions", {
                                 stat_smooth(method = "lm", formula = formula) +
                                 stat_poly_eq(formula = formula, parse = TRUE,
                                              label.x = "right", label.y = "bottom",
-                                             geom = "label")
+                                             geom = "label"),
+                              variant = snap_version
   )
 })
 
@@ -762,7 +817,8 @@ test_that("numeric_positions", {
                                 stat_smooth(method = "lm", formula = formula) +
                                 stat_poly_eq(formula = formula, parse = TRUE,
                                              label.x = 0, label.y = 0,
-                                             geom = "text_npc")
+                                             geom = "text_npc"),
+                              variant = snap_version
   )
   vdiffr::expect_doppelganger("stat_poly_eq_n2",
                               ggplot(my.data, aes(x, y)) +
@@ -770,7 +826,8 @@ test_that("numeric_positions", {
                                 stat_smooth(method = "lm", formula = formula) +
                                 stat_poly_eq(formula = formula, parse = TRUE,
                                              label.x = 0, label.y = 0,
-                                             geom = "label_npc")
+                                             geom = "label_npc"),
+                              variant = snap_version
   )
   vdiffr::expect_doppelganger("stat_poly_eq_n3",
                               ggplot(my.data, aes(x, y)) +
@@ -778,7 +835,8 @@ test_that("numeric_positions", {
                                 stat_smooth(method = "lm", formula = formula) +
                                 stat_poly_eq(formula = formula, parse = TRUE,
                                              label.x = 0, label.y = -1e5,
-                                             geom = "text")
+                                             geom = "text"),
+                              variant = snap_version
   )
   vdiffr::expect_doppelganger("stat_poly_eq_n4",
                               ggplot(my.data, aes(x, y)) +
@@ -786,7 +844,8 @@ test_that("numeric_positions", {
                                 stat_smooth(method = "lm", formula = formula) +
                                 stat_poly_eq(formula = formula, parse = TRUE,
                                              label.x = 0, label.y = -1e5,
-                                             geom = "label")
+                                             geom = "label"),
+                              variant = snap_version
   )
   vdiffr::expect_doppelganger("stat_poly_eq_n5",
                               ggplot(my.data, aes(x, y)) +
@@ -794,7 +853,8 @@ test_that("numeric_positions", {
                                 stat_smooth(method = "lm", formula = formula) +
                                 stat_poly_eq(formula = formula, parse = TRUE,
                                              label.x = 1, label.y = 0.5,
-                                             geom = "text_npc")
+                                             geom = "text_npc"),
+                              variant = snap_version
   )
   vdiffr::expect_doppelganger("stat_poly_eq_n6",
                               ggplot(my.data, aes(x, y)) +
@@ -802,7 +862,8 @@ test_that("numeric_positions", {
                                 stat_smooth(method = "lm", formula = formula) +
                                 stat_poly_eq(formula = formula, parse = TRUE,
                                              label.x = 1, label.y = 0.5,
-                                             geom = "label_npc")
+                                             geom = "label_npc"),
+                              variant = snap_version
   )
   vdiffr::expect_doppelganger("stat_poly_eq_n7",
                               ggplot(my.data, aes(x, y)) +
@@ -810,7 +871,8 @@ test_that("numeric_positions", {
                                 stat_smooth(method = "lm", formula = formula) +
                                 stat_poly_eq(formula = formula, parse = TRUE,
                                              label.x = 100, label.y = 5e5,
-                                             geom = "text")
+                                             geom = "text"),
+                              variant = snap_version
   )
   vdiffr::expect_doppelganger("stat_poly_eq_n8",
                               ggplot(my.data, aes(x, y)) +
@@ -818,7 +880,8 @@ test_that("numeric_positions", {
                                 stat_smooth(method = "lm", formula = formula) +
                                 stat_poly_eq(formula = formula, parse = TRUE,
                                              label.x = 100, label.y = 5e5,
-                                             geom = "label")
+                                             geom = "label"),
+                              variant = snap_version
   )
 })
 
@@ -837,7 +900,8 @@ test_that("rounding_signif", {
                                                                  after_stat(adj.rr.label),
                                                                  after_stat(f.value.label),
                                                                  after_stat(p.value.label),
-                                                                 sep = "~~")))
+                                                                 sep = "~~"))),
+                              variant = snap_version
   )
 
   vdiffr::expect_doppelganger("stat_poly_eq_formula_1_round",
@@ -854,7 +918,8 @@ test_that("rounding_signif", {
                                                                  after_stat(adj.rr.label),
                                                                  after_stat(f.value.label),
                                                                  after_stat(p.value.label),
-                                                                 sep = "~~")))
+                                                                 sep = "~~"))),
+                              variant = snap_version
   )
 
   vdiffr::expect_doppelganger("stat_poly_eq_formula_x_round_Inf",
@@ -871,7 +936,8 @@ test_that("rounding_signif", {
                                                                  after_stat(adj.rr.label),
                                                                  after_stat(f.value.label),
                                                                  after_stat(p.value.label),
-                                                                 sep = "~~")))
+                                                                 sep = "~~"))),
+                              variant = snap_version
   )
 
 })
@@ -889,7 +955,8 @@ if (requireNamespace("ggtext", quietly = TRUE)) {
                                   stat_poly_eq(geom = "richtext",
                                                formula = formula,
                                                hjust = 0, vjust = 1,
-                                               label.x = 0, label.y = 10e5)
+                                               label.x = 0, label.y = 10e5),
+                                variant = snap_version
     )
     vdiffr::expect_doppelganger("stat_poly_eq_n2_markdown",
                                 ggplot(my.data, aes(x, y)) +
@@ -899,7 +966,8 @@ if (requireNamespace("ggtext", quietly = TRUE)) {
                                                geom = "richtext",
                                                formula = formula,
                                                hjust = 0, vjust = 1,
-                                               label.x = 0, label.y = 10e5)
+                                               label.x = 0, label.y = 10e5),
+                                variant = snap_version
     )
     vdiffr::expect_doppelganger("stat_poly_eq_n3_markdown",
                                 ggplot(my.data, aes(x, y)) +
@@ -910,7 +978,8 @@ if (requireNamespace("ggtext", quietly = TRUE)) {
                                                geom = "richtext",
                                                formula = formula,
                                                hjust = 0, vjust = 1,
-                                               label.x = 0, label.y = 10e5)
+                                               label.x = 0, label.y = 10e5),
+                                variant = snap_version
     )
     vdiffr::expect_doppelganger("stat_poly_eq_n4_markdown",
                                 ggplot(my.data, aes(x, y)) +
@@ -920,7 +989,8 @@ if (requireNamespace("ggtext", quietly = TRUE)) {
                                                geom = "richtext",
                                                formula = formula,
                                                hjust = 0, vjust = 1,
-                                               label.x = 0, label.y = 10e5)
+                                               label.x = 0, label.y = 10e5),
+                                variant = snap_version
     )
   })
 }

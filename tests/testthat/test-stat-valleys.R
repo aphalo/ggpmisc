@@ -2,6 +2,20 @@ context("stat_valleys")
 
 library(lubridate)
 
+# versioning of snaps
+ggplot2_version <- packageVersion("ggplot2")
+if (grepl("^3\\.5\\.2\\.9|^4\\.0\\.[0-1]", ggplot2_version)) {
+  ggplot2_version <- "ggplot2-4.0.x"
+} else if (grepl("^3\\.5\\.[0-2]", ggplot2_version)) {
+  ggplot2_version <- "ggplot2-3.5.x"
+} else {
+  ggplot2_version <- paste("ggplot2", ggplot2_version, sep = "-")
+}
+R_version <- paste("R",
+                   substr(as.character(getRversion()), start = 1, stop = 3),
+                   sep = "-")
+snap_version <- paste(R_version, ggplot2_version, sep = "_")
+
 make_data_tbl <- function(nrow = 100, rfun = rnorm, ...) {
   if (nrow %% 2) {
     nrow <- nrow + 1
@@ -65,7 +79,8 @@ test_that("numbers_tb", {
                                 geom_point() +
                                 geom_line() +
                                 stat_valleys(geom = "text", vjust = +1.5) +
-                                expand_limits(y = c(-2.5, 2.5))
+                                expand_limits(y = c(-2.5, 2.5)),
+                              variant = snap_version
   )
   vdiffr::expect_doppelganger("stat_valleys_numeric__03",
                               ggplot(data = my.data, aes(x, y)) +
@@ -73,7 +88,8 @@ test_that("numbers_tb", {
                                 geom_line() +
                                 stat_valleys(geom = "text", vjust = +1.5,
                                            x.label.fmt = "x = %.0f") +
-                                expand_limits(y = c(-2.5, 2.5))
+                                expand_limits(y = c(-2.5, 2.5)),
+                              variant = snap_version
   )
   vdiffr::expect_doppelganger("stat_valleys_numeric__04",
                               ggplot(data = my.data, aes(x, y)) +
@@ -84,7 +100,8 @@ test_that("numbers_tb", {
                                            y.label.fmt = "lambda~`=`~%.2f",
                                            angle = 90,
                                            parse = TRUE) +
-                              expand_limits(y = c(-3.5, 2.5))
+                              expand_limits(y = c(-3.5, 2.5)),
+                              variant = snap_version
   )
   # span
   # message triggered by handled by 'ggplot2'
@@ -251,7 +268,8 @@ test_that("dates_tb", {
                                 geom_point() +
                                 geom_line() +
                                 stat_valleys(geom = "text", vjust = +1.5) +
-                                expand_limits(y = c(-2.5, 2.5))
+                                expand_limits(y = c(-2.5, 2.5)),
+                              variant = snap_version
   )
   vdiffr::expect_doppelganger("stat_valleys_date_03",
                               ggplot(data = my.data, aes(x.datetime, y)) +
@@ -259,7 +277,8 @@ test_that("dates_tb", {
                                 geom_line() +
                                 stat_valleys(geom = "text", vjust = +1.5,
                                            x.label.fmt = "%b-%d") +
-                                expand_limits(y = c(-2.5, 2.5))
+                                expand_limits(y = c(-2.5, 2.5)),
+                              variant = snap_version
   )
   vdiffr::expect_doppelganger("stat_valleys_date_04",
                               ggplot(data = my.data, aes(x.datetime, y)) +
@@ -268,7 +287,8 @@ test_that("dates_tb", {
                                 stat_valleys(geom = "text", vjust = +1.5,
                                            x.label.fmt = "lambda~`=`~\"%b-%d\"",
                                            parse = TRUE) +
-                                expand_limits(y = c(-2.5, 2.5))
+                                expand_limits(y = c(-2.5, 2.5)),
+                              variant = snap_version
   )
   vdiffr::expect_doppelganger("stat_valleys_date_05",
                               ggplot(data = my.data, aes(x, y)) +
@@ -279,7 +299,8 @@ test_that("dates_tb", {
                                            y.label.fmt = "lambda~`=`~%.2f",
                                            angle = 90,
                                            parse = TRUE) +
-                                expand_limits(y =  c(-3.5, 2.5))
+                                expand_limits(y =  c(-3.5, 2.5)),
+                              variant = snap_version
   )
   vdiffr::expect_doppelganger("stat_valleys_date_06",
                               ggplot(data = my.data, aes(x, y)) +
@@ -317,7 +338,8 @@ test_that("datetimes_tb", {
                                 geom_point() +
                                 geom_line() +
                                 stat_valleys(geom = "text", vjust = +1.5) +
-                                expand_limits(y = c(-2.5, 2.5))
+                                expand_limits(y = c(-2.5, 2.5)),
+                              variant = snap_version
   )
   vdiffr::expect_doppelganger("stat_valleys_datetime_03",
                               ggplot(data = my.data, aes(x.datetime, y)) +
@@ -325,7 +347,8 @@ test_that("datetimes_tb", {
                                 geom_line() +
                                 stat_valleys(geom = "text", vjust = +1.5,
                                            x.label.fmt = "%b-%d") +
-                                expand_limits(y = c(-2.5, 2.5))
+                                expand_limits(y = c(-2.5, 2.5)),
+                              variant = snap_version
   )
   vdiffr::expect_doppelganger("stat_valleys_datetime_04",
                               ggplot(data = my.data, aes(x.datetime, y)) +
@@ -334,7 +357,8 @@ test_that("datetimes_tb", {
                                 stat_valleys(geom = "text", vjust = +1.5,
                                            x.label.fmt = "lambda~`=`~\"%b-%d\"",
                                            parse = TRUE) +
-                                expand_limits(y = c(-2.5, 2.5))
+                                expand_limits(y = c(-2.5, 2.5)),
+                              variant = snap_version
   )
   vdiffr::expect_doppelganger("stat_valleys_datetime_05",
                               ggplot(data = my.data, aes(x, y)) +
@@ -345,7 +369,8 @@ test_that("datetimes_tb", {
                                            y.label.fmt = "lambda~`=`~%.2f",
                                            angle = 90,
                                            parse = TRUE) +
-                                expand_limits(y = c(-3.5, 2.5))
+                                expand_limits(y = c(-3.5, 2.5)),
+                              variant = snap_version
   )
   vdiffr::expect_doppelganger("stat_valleys_datetime_06",
                               ggplot(data = my.data, aes(x, y)) +
@@ -391,7 +416,8 @@ test_that("many_layers", {
                                              arrow = grid::arrow(length = unit(0.1, "inches")),
                                              position = position_nudge_keep(x = 1, y = 0),
                                              hjust = 0) +
-                                  expand_limits(y = 0)
+                                  expand_limits(y = 0),
+                                variant = snap_version
     )
   }
 })

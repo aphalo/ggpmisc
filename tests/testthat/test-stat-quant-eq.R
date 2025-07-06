@@ -2,6 +2,20 @@ context("stat_quant_eq")
 
 library(tibble)
 
+# versioning of snaps
+ggplot2_version <- packageVersion("ggplot2")
+if (grepl("^3\\.5\\.2\\.9|^4\\.0\\.[0-1]", ggplot2_version)) {
+  ggplot2_version <- "ggplot2-4.0.x"
+} else if (grepl("^3\\.5\\.[0-2]", ggplot2_version)) {
+  ggplot2_version <- "ggplot2-3.5.x"
+} else {
+  ggplot2_version <- paste("ggplot2", ggplot2_version, sep = "-")
+}
+R_version <- paste("R",
+                   substr(as.character(getRversion()), start = 1, stop = 3),
+                   sep = "-")
+snap_version <- paste(R_version, ggplot2_version, sep = "_")
+
 old.out.dec <- options(OutDec = ".")
 on.exit(options(old.out.dec), add = TRUE, after = FALSE)
 
@@ -32,7 +46,8 @@ test_that("quant_eq_noload", {
                                                                     ggplot2::after_stat(rho.label),
                                                                     ggplot2::after_stat(AIC.label),
                                                                     ggplot2::after_stat(method.label),
-                                                                    sep = "~~")))
+                                                                    sep = "~~"))),
+                                variant = snap_version
     )
     vdiffr::expect_doppelganger("stat_quant_eq_noload_use_label",
                                 ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
@@ -40,7 +55,8 @@ test_that("quant_eq_noload", {
                                   ggpmisc::stat_quant_eq(formula = y ~ x, parse = TRUE,
                                                          mapping = ggpmisc::use_label(c("qtl", "eq", "rho", "AIC", "method"),
                                                                                       ggplot2::aes(colour = ggplot2::after_stat(qtl.label)),
-                                                                                      sep = "~~"))
+                                                                                      sep = "~~")),
+                                variant = snap_version
     )
   }, warning=function(w) {
     if (grepl("Solution may be nonunique|2 non-positive fis", conditionMessage(w)))
@@ -155,7 +171,8 @@ test_that("quant_formulas", {
                                                   aes(label = paste(after_stat(eq.label),
                                                                     after_stat(rho.label),
                                                                     after_stat(AIC.label),
-                                                                    sep = "~~")))
+                                                                    sep = "~~"))),
+                                variant = snap_version
     )
 
     vdiffr::expect_doppelganger("stat_quant_eq_formula_1a",
@@ -166,7 +183,8 @@ test_that("quant_formulas", {
                                                   aes(label = paste(after_stat(eq.label),
                                                                     after_stat(rho.label),
                                                                     after_stat(AIC.label),
-                                                                    sep = "~~")))
+                                                                    sep = "~~"))),
+                                variant = snap_version
     )
 
     vdiffr::expect_doppelganger("stat_quant_eq_formula_x",
@@ -177,7 +195,8 @@ test_that("quant_formulas", {
                                                   aes(label = paste(after_stat(eq.label),
                                                                     after_stat(rho.label),
                                                                     after_stat(AIC.label),
-                                                                    sep = "~~")))
+                                                                    sep = "~~"))),
+                                variant = snap_version
     )
 
     vdiffr::expect_doppelganger("stat_quant_eq_formula_x_Iy",
@@ -188,7 +207,8 @@ test_that("quant_formulas", {
                                                   aes(label = paste(after_stat(eq.label),
                                                                     after_stat(rho.label),
                                                                     after_stat(AIC.label),
-                                                                    sep = "~~")))
+                                                                    sep = "~~"))),
+                                variant = snap_version
     )
 
     vdiffr::expect_doppelganger("stat_quant_eq_formula_x_Ix",
@@ -199,7 +219,8 @@ test_that("quant_formulas", {
                                                   aes(label = paste(after_stat(eq.label),
                                                                     after_stat(rho.label),
                                                                     after_stat(AIC.label),
-                                                                    sep = "~~")))
+                                                                    sep = "~~"))),
+                                variant = snap_version
     )
 
     vdiffr::expect_doppelganger("stat_quant_eq_formula_xminus1",
@@ -210,7 +231,8 @@ test_that("quant_formulas", {
                                                   aes(label = paste(after_stat(eq.label),
                                                                     after_stat(rho.label),
                                                                     after_stat(AIC.label),
-                                                                    sep = "~~")))
+                                                                    sep = "~~"))),
+                                variant = snap_version
     )
 
     vdiffr::expect_doppelganger("stat_quant_eq_formula_xminus1a",
@@ -221,7 +243,8 @@ test_that("quant_formulas", {
                                                   aes(label = paste(after_stat(eq.label),
                                                                     after_stat(rho.label),
                                                                     after_stat(AIC.label),
-                                                                    sep = "~~")))
+                                                                    sep = "~~"))),
+                                variant = snap_version
     )
 
     vdiffr::expect_doppelganger("stat_quant_eq_formula_xminus1b",
@@ -232,7 +255,8 @@ test_that("quant_formulas", {
                                                   aes(label = paste(after_stat(eq.label),
                                                                     after_stat(rho.label),
                                                                     after_stat(AIC.label),
-                                                                    sep = "~~")))
+                                                                    sep = "~~"))),
+                                variant = snap_version
     )
 
     vdiffr::expect_doppelganger("stat_quant_eq_formula_xplus0",
@@ -243,7 +267,8 @@ test_that("quant_formulas", {
                                                   aes(label = paste(after_stat(eq.label),
                                                                     after_stat(rho.label),
                                                                     after_stat(AIC.label),
-                                                                    sep = "~~")))
+                                                                    sep = "~~"))),
+                                variant = snap_version
     )
 
     vdiffr::expect_doppelganger("stat_quant_eq_formula_xplus0a",
@@ -254,7 +279,8 @@ test_that("quant_formulas", {
                                                   aes(label = paste(after_stat(eq.label),
                                                                     after_stat(rho.label),
                                                                     after_stat(AIC.label),
-                                                                    sep = "~~")))
+                                                                    sep = "~~"))),
+                                variant = snap_version
     )
 
     vdiffr::expect_doppelganger("stat_quant_eq_formula_xplus0b",
@@ -265,7 +291,8 @@ test_that("quant_formulas", {
                                                   aes(label = paste(after_stat(eq.label),
                                                                     after_stat(rho.label),
                                                                     after_stat(AIC.label),
-                                                                    sep = "~~")))
+                                                                    sep = "~~"))),
+                                variant = snap_version
     )
 
     vdiffr::expect_doppelganger("stat_quant_eq_formula_poly1",
@@ -276,7 +303,8 @@ test_that("quant_formulas", {
                                                   aes(label = paste(after_stat(eq.label),
                                                                     after_stat(rho.label),
                                                                     after_stat(AIC.label),
-                                                                    sep = "~~")))
+                                                                    sep = "~~"))),
+                                variant = snap_version
     )
 
     vdiffr::expect_doppelganger("stat_quant_eq_formula_poly3",
@@ -287,7 +315,8 @@ test_that("quant_formulas", {
                                                   aes(label = paste(after_stat(eq.label),
                                                                     after_stat(rho.label),
                                                                     after_stat(AIC.label),
-                                                                    sep = "~~")))
+                                                                    sep = "~~"))),
+                                variant = snap_version
     )
 
     ###
@@ -300,7 +329,8 @@ test_that("quant_formulas", {
                                                   aes(label = paste(after_stat(eq.label),
                                                                     after_stat(rho.label),
                                                                     after_stat(AIC.label),
-                                                                    sep = "~~")))
+                                                                    sep = "~~"))),
+                                variant = snap_version
     )
 
     vdiffr::expect_doppelganger("stat_quant_eq_formula_y",
@@ -311,7 +341,8 @@ test_that("quant_formulas", {
                                                   aes(label = paste(after_stat(eq.label),
                                                                     after_stat(rho.label),
                                                                     after_stat(AIC.label),
-                                                                    sep = "~~")))
+                                                                    sep = "~~"))),
+                                variant = snap_version
     )
 
     vdiffr::expect_doppelganger("stat_quant_eq_formula_y_Ix",
@@ -322,7 +353,8 @@ test_that("quant_formulas", {
                                                   aes(label = paste(after_stat(eq.label),
                                                                     after_stat(rho.label),
                                                                     after_stat(AIC.label),
-                                                                    sep = "~~")))
+                                                                    sep = "~~"))),
+                                variant = snap_version
     )
 
     vdiffr::expect_doppelganger("stat_quant_eq_formula_y_Iy",
@@ -333,7 +365,8 @@ test_that("quant_formulas", {
                                                   aes(label = paste(after_stat(eq.label),
                                                                     after_stat(rho.label),
                                                                     after_stat(AIC.label),
-                                                                    sep = "~~")))
+                                                                    sep = "~~"))),
+                                variant = snap_version
     )
 
     vdiffr::expect_doppelganger("stat_quant_eq_formula_yminus1",
@@ -344,7 +377,8 @@ test_that("quant_formulas", {
                                                   aes(label = paste(after_stat(eq.label),
                                                                     after_stat(rho.label),
                                                                     after_stat(AIC.label),
-                                                                    sep = "~~")))
+                                                                    sep = "~~"))),
+                                variant = snap_version
     )
 
     vdiffr::expect_doppelganger("stat_quant_eq_formula_yplus0",
@@ -355,7 +389,8 @@ test_that("quant_formulas", {
                                                   aes(label = paste(after_stat(eq.label),
                                                                     after_stat(rho.label),
                                                                     after_stat(AIC.label),
-                                                                    sep = "~~")))
+                                                                    sep = "~~"))),
+                                variant = snap_version
     )
 
     vdiffr::expect_doppelganger("stat_quant_eq_formula_ypoly1",
@@ -366,7 +401,8 @@ test_that("quant_formulas", {
                                                   aes(label = paste(after_stat(eq.label),
                                                                     after_stat(rho.label),
                                                                     after_stat(AIC.label),
-                                                                    sep = "~~")))
+                                                                    sep = "~~"))),
+                                variant = snap_version
     )
 
   }, warning=function(w) {
@@ -407,7 +443,8 @@ test_that("quant_formulas", {
                                                 aes(label = paste(after_stat(eq.label),
                                                                   after_stat(rho.label),
                                                                   after_stat(AIC.label),
-                                                                  sep = "~~")))
+                                                                  sep = "~~"))),
+                              variant = snap_version
   )
   vdiffr::expect_doppelganger("stat_quant_eq_fm_NULL",
                               ggplot(my.data, aes(x, y)) +
@@ -418,7 +455,8 @@ test_that("quant_formulas", {
                                                 aes(label = paste(after_stat(eq.label),
                                                                   after_stat(rho.label),
                                                                   after_stat(AIC.label),
-                                                                  sep = "~~")))
+                                                                  sep = "~~"))),
+                              variant = snap_version
   )
   vdiffr::expect_doppelganger("stat_quant_eq_fm_missing",
                               ggplot(my.data, aes(x, y)) +
@@ -429,7 +467,8 @@ test_that("quant_formulas", {
                                                 aes(label = paste(after_stat(eq.label),
                                                                   after_stat(rho.label),
                                                                   after_stat(AIC.label),
-                                                                  sep = "~~")))
+                                                                  sep = "~~"))),
+                              variant = snap_version
   )
 
 })
@@ -452,7 +491,8 @@ test_that("numeric_values", {
                                                   aes(label = sprintf(my.format,
                                                                       after_stat(b_0), after_stat(b_1),
                                                                       after_stat(b_2), after_stat(b_3)))) +
-                                  facet_wrap(~group, ncol = 1)
+                                  facet_wrap(~group, ncol = 1),
+                                variant = snap_version
     )
   }, warning=function(w) {
     if (startsWith(conditionMessage(w), "Solution may be nonunique"))
@@ -467,35 +507,40 @@ test_that("textual_positions", {
                                 ggplot(my.data, aes(x, y)) +
                                   geom_point() +
                                   stat_quantile(formula = formula) +
-                                  stat_quant_eq(formula = formula, parse = TRUE)
+                                  stat_quant_eq(formula = formula, parse = TRUE),
+                                variant = snap_version
     )
     vdiffr::expect_doppelganger("stat_quant_eq_1",
                                 ggplot(my.data, aes(x, y)) +
                                   geom_point() +
                                   stat_quantile(formula = formula) +
                                   stat_quant_eq(formula = formula, parse = TRUE,
-                                                geom = "text_npc")
+                                                geom = "text_npc"),
+                                variant = snap_version
     )
     vdiffr::expect_doppelganger("stat_quant_eq_2",
                                 ggplot(my.data, aes(x, y)) +
                                   geom_point() +
                                   stat_quantile(formula = formula) +
                                   stat_quant_eq(formula = formula, parse = TRUE,
-                                                geom = "label_npc")
+                                                geom = "label_npc"),
+                                variant = snap_version
     )
     vdiffr::expect_doppelganger("stat_quant_eq_3",
                                 ggplot(my.data, aes(x, y)) +
                                   geom_point() +
                                   stat_smooth(method = "lm", formula = formula) +
                                   stat_quant_eq(formula = formula, parse = TRUE,
-                                                geom = "text")
+                                                geom = "text"),
+                                variant = snap_version
     )
     vdiffr::expect_doppelganger("stat_quant_eq_4",
                                 ggplot(my.data, aes(x, y)) +
                                   geom_point() +
                                   stat_quantile(formula = formula) +
                                   stat_quant_eq(formula = formula, parse = TRUE,
-                                                geom = "label")
+                                                geom = "label"),
+                                variant = snap_version
     )
     vdiffr::expect_doppelganger("stat_quant_eq_5",
                                 ggplot(my.data, aes(x, y)) +
@@ -503,7 +548,8 @@ test_that("textual_positions", {
                                   stat_smooth(method = "lm", formula = formula) +
                                   stat_quant_eq(formula = formula, parse = TRUE,
                                                 label.x = "right", label.y = "bottom",
-                                                geom = "text_npc")
+                                                geom = "text_npc"),
+                                variant = snap_version
     )
     vdiffr::expect_doppelganger("stat_quant_eq_6",
                                 ggplot(my.data, aes(x, y)) +
@@ -511,7 +557,8 @@ test_that("textual_positions", {
                                   stat_quantile(formula = formula) +
                                   stat_quant_eq(formula = formula, parse = TRUE,
                                                 label.x = "right", label.y = "bottom",
-                                                geom = "label_npc")
+                                                geom = "label_npc"),
+                                variant = snap_version
     )
     vdiffr::expect_doppelganger("stat_quant_eq_7",
                                 ggplot(my.data, aes(x, y)) +
@@ -519,7 +566,8 @@ test_that("textual_positions", {
                                   stat_quantile(formula = formula) +
                                   stat_quant_eq(formula = formula, parse = TRUE,
                                                 label.x = "right", label.y = "bottom",
-                                                geom = "text")
+                                                geom = "text"),
+                                variant = snap_version
     )
     vdiffr::expect_doppelganger("stat_quant_eq_8",
                                 ggplot(my.data, aes(x, y)) +
@@ -527,7 +575,8 @@ test_that("textual_positions", {
                                   stat_quantile(formula = formula) +
                                   stat_quant_eq(formula = formula, parse = TRUE,
                                                 label.x = "right", label.y = "bottom",
-                                                geom = "label")
+                                                geom = "label"),
+                                variant = snap_version
     )
   }, warning=function(w) {
     if (startsWith(conditionMessage(w), "Solution may be nonunique"))
@@ -544,7 +593,8 @@ test_that("numeric_positions", {
                                   stat_quantile(formula = formula) +
                                   stat_quant_eq(formula = formula, parse = TRUE,
                                                 label.x = 0.05, label.y = 0.05,
-                                                geom = "text_npc")
+                                                geom = "text_npc"),
+                                variant = snap_version
     )
     vdiffr::expect_doppelganger("stat_quant_eq_n2",
                                 ggplot(my.data, aes(x, y)) +
@@ -552,7 +602,8 @@ test_that("numeric_positions", {
                                   stat_quantile(formula = formula) +
                                   stat_quant_eq(formula = formula, parse = TRUE,
                                                 label.x = 0.05, label.y = 0.05,
-                                                geom = "label_npc")
+                                                geom = "label_npc"),
+                                variant = snap_version
     )
     vdiffr::expect_doppelganger("stat_quant_eq_n3",
                                 ggplot(my.data, aes(x, y)) +
@@ -560,7 +611,8 @@ test_that("numeric_positions", {
                                   stat_quantile(formula = formula) +
                                   stat_quant_eq(formula = formula, parse = TRUE,
                                                 label.x = 0, label.y = -1e5,
-                                                geom = "text")
+                                                geom = "text"),
+                                variant = snap_version
     )
     vdiffr::expect_doppelganger("stat_quant_eq_n4",
                                 ggplot(my.data, aes(x, y)) +
@@ -568,7 +620,8 @@ test_that("numeric_positions", {
                                   stat_quantile(formula = formula) +
                                   stat_quant_eq(formula = formula, parse = TRUE,
                                                 label.x = 0, label.y = -1e5,
-                                                geom = "label")
+                                                geom = "label"),
+                                variant = snap_version
     )
     vdiffr::expect_doppelganger("stat_quant_eq_n5",
                                 ggplot(my.data, aes(x, y)) +
@@ -576,7 +629,8 @@ test_that("numeric_positions", {
                                   stat_quantile(formula = formula) +
                                   stat_quant_eq(formula = formula, parse = TRUE,
                                                 label.x = 0.95, label.y = 0.5,
-                                                geom = "text_npc")
+                                                geom = "text_npc"),
+                                variant = snap_version
     )
     vdiffr::expect_doppelganger("stat_quant_eq_n6",
                                 ggplot(my.data, aes(x, y)) +
@@ -584,7 +638,8 @@ test_that("numeric_positions", {
                                   stat_quantile(formula = formula) +
                                   stat_quant_eq(formula = formula, parse = TRUE,
                                                 label.x = 1, label.y = 0.5,
-                                                geom = "label_npc")
+                                                geom = "label_npc"),
+                                variant = snap_version
     )
     vdiffr::expect_doppelganger("stat_quant_eq_n7",
                                 ggplot(my.data, aes(x, y)) +
@@ -592,7 +647,8 @@ test_that("numeric_positions", {
                                   stat_quantile(formula = formula) +
                                   stat_quant_eq(formula = formula, parse = TRUE,
                                                 label.x = 95, label.y = 5e5,
-                                                geom = "text")
+                                                geom = "text"),
+                                variant = snap_version
     )
     vdiffr::expect_doppelganger("stat_quant_eq_n8",
                                 ggplot(my.data, aes(x, y)) +
@@ -600,7 +656,8 @@ test_that("numeric_positions", {
                                   stat_quantile(formula = formula) +
                                   stat_quant_eq(formula = formula, parse = TRUE,
                                                 label.x = 95, label.y = 5e5,
-                                                geom = "label")
+                                                geom = "label"),
+                                variant = snap_version
     )
   }, warning=function(w) {
     if (startsWith(conditionMessage(w), "Solution may be nonunique"))
@@ -623,7 +680,8 @@ test_that("rounding_signif", {
                                                   aes(label = paste(after_stat(eq.label),
                                                                     after_stat(rho.label),
                                                                     after_stat(AIC.label),
-                                                                    sep = "~~")))
+                                                                    sep = "~~"))),
+                                variant = snap_version
     )
 
     vdiffr::expect_doppelganger("stat_quant_eq_formula_1_round",
@@ -637,7 +695,8 @@ test_that("rounding_signif", {
                                                   aes(label = paste(after_stat(eq.label),
                                                                     after_stat(rho.label),
                                                                     after_stat(AIC.label),
-                                                                    sep = "~~")))
+                                                                    sep = "~~"))),
+                                variant = snap_version
     )
   }, warning=function(w) {
     if (startsWith(conditionMessage(w), "Solution may be nonunique"))
@@ -662,7 +721,8 @@ if (requireNamespace("ggtext", quietly = TRUE)) {
                                                   formula = formula,
                                                   hjust = 0, vjust = 1,
                                                   vstep = .1,
-                                                  label.x = 0, label.y = 115)
+                                                  label.x = 0, label.y = 115),
+                                  variant = snap_version
       )
     vdiffr::expect_doppelganger("stat_quant_eq_n2_markdown",
                                 ggplot(my.data, aes(x, y)) +
@@ -674,7 +734,8 @@ if (requireNamespace("ggtext", quietly = TRUE)) {
                                                 formula = formula,
                                                 hjust = 0, vjust = 1,
                                                 vstep = .1,
-                                                label.x = 0, label.y = 115)
+                                                label.x = 0, label.y = 115),
+                                variant = snap_version
     )
     vdiffr::expect_doppelganger("stat_quant_eq_n3_markdown",
                                 ggplot(my.data, aes(x, y)) +
@@ -685,7 +746,8 @@ if (requireNamespace("ggtext", quietly = TRUE)) {
                                                 formula = formula,
                                                 hjust = 0, vjust = 1,
                                                 vstep = .1,
-                                                label.x = 0, label.y = 115)
+                                                label.x = 0, label.y = 115),
+                                variant = snap_version
     )
     }, warning=function(w) {
       if (startsWith(conditionMessage(w), "Solution may be nonunique"))

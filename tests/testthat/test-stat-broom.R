@@ -9,6 +9,20 @@ library(quantreg)
 library(broom)
 library(broom.mixed)
 
+# versioning of snaps
+ggplot2_version <- packageVersion("ggplot2")
+if (grepl("^3\\.5\\.2\\.9|^4\\.0\\.[0-1]", ggplot2_version)) {
+  ggplot2_version <- "ggplot2-4.0.x"
+} else if (grepl("^3\\.5\\.[0-2]", ggplot2_version)) {
+  ggplot2_version <- "ggplot2-3.5.x"
+} else {
+  ggplot2_version <- paste("ggplot2", ggplot2_version, sep = "-")
+}
+R_version <- paste("R",
+                   substr(as.character(getRversion()), start = 1, stop = 3),
+                   sep = "-")
+snap_version <- paste(R_version, ggplot2_version, sep = "_")
+
 set.seed(4321)
 # generate artificial data
 x <- 1:100
@@ -72,7 +86,8 @@ test_that("broom_noload", {
   vdiffr::expect_doppelganger("augment_method_default_noload",
                               ggplot2::ggplot(my.data, aes(x, y)) +
                                 ggplot2::geom_point() +
-                                ggpmisc::stat_fit_augment()
+                                ggpmisc::stat_fit_augment(),
+                              variant = snap_version
   )
 })
 
@@ -315,40 +330,46 @@ test_that("augment_methods", {
   vdiffr::expect_doppelganger("augment_method_default",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
-                                stat_fit_augment()
+                                stat_fit_augment(),
+                              variant = snap_version
   )
 
   vdiffr::expect_doppelganger("augment_method_lm_fun",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
-                                stat_fit_augment(method = lm)
+                                stat_fit_augment(method = lm),
+                              variant = snap_version
   )
 
   vdiffr::expect_doppelganger("augment_method_lm_char",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
-                                stat_fit_augment(method = "lm")
+                                stat_fit_augment(method = "lm"),
+                              variant = snap_version
   )
 
   vdiffr::expect_doppelganger("augment_method_args",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
                                 stat_fit_augment(method = "lm",
-                                                 method.args = list(formula = y ~ x + I(x^2)))
+                                                 method.args = list(formula = y ~ x + I(x^2))),
+                              variant = snap_version
   )
 
   old.options <- options(warn = -1)
   vdiffr::expect_doppelganger("augment_method_rq",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
-                                stat_fit_augment(method = "rq")
+                                stat_fit_augment(method = "rq"),
+                              variant = snap_version
   )
 
   vdiffr::expect_doppelganger("augment_rqmethod__args",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
                                 stat_fit_augment(method = "rq",
-                                                 method.args = list(formula = y ~ x + I(x^2)))
+                                                 method.args = list(formula = y ~ x + I(x^2))),
+                              variant = snap_version
   )
   options(old.options)
 
