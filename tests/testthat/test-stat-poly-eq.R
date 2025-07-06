@@ -1,15 +1,15 @@
-context("stat_poly_eq_lm")
+context("stat_poly_eq")
 
 library(tibble)
 
 # versioning of snaps
 ggplot2_version <- packageVersion("ggplot2")
 if (grepl("^3\\.5\\.2\\.9|^4\\.0\\.[0-1]", ggplot2_version)) {
-  ggplot2_version <- "ggplot2-4.0.x"
+  ggplot2_version <- "gg-4.0.x"
 } else if (grepl("^3\\.5\\.[0-2]", ggplot2_version)) {
-  ggplot2_version <- "ggplot2-3.5.x"
+  ggplot2_version <- "gg-3.5.x"
 } else {
-  ggplot2_version <- paste("ggplot2", ggplot2_version, sep = "-")
+  ggplot2_version <- paste("gg", ggplot2_version, sep = "-")
 }
 R_version <- paste("R",
                    substr(as.character(getRversion()), start = 1, stop = 3),

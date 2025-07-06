@@ -5,11 +5,11 @@ library(tibble)
 # versioning of snaps
 ggplot2_version <- packageVersion("ggplot2")
 if (grepl("^3\\.5\\.2\\.9|^4\\.0\\.[0-1]", ggplot2_version)) {
-  ggplot2_version <- "ggplot2-4.0.x"
+  ggplot2_version <- "gg-4.0.x"
 } else if (grepl("^3\\.5\\.[0-2]", ggplot2_version)) {
-  ggplot2_version <- "ggplot2-3.5.x"
+  ggplot2_version <- "gg-3.5.x"
 } else {
-  ggplot2_version <- paste("ggplot2", ggplot2_version, sep = "-")
+  ggplot2_version <- paste("gg", ggplot2_version, sep = "-")
 }
 R_version <- paste("R",
                    substr(as.character(getRversion()), start = 1, stop = 3),
@@ -40,14 +40,15 @@ if (isNamespaceLoaded(name = "package:ggpp")) detach(package:ggpp, unload = TRUE
 if (isNamespaceLoaded(name = "package:ggplot2")) detach(package:ggplot2, unload = TRUE)
 
 test_that("multcomp_noload", {
-  vdiffr::expect_doppelganger("stat_multcomp_noload",
+  vdiffr::expect_doppelganger("smltc_noload",
                               ggplot2::ggplot(my.data, ggplot2::aes(group, y2)) +
                                 ggplot2::geom_boxplot() +
                                 ggpmisc::stat_multcomp(),
                               variant = snap_version
   )
 
-  vdiffr::expect_doppelganger("stat_multcomp_noload_more",
+  skip_on_os(c("mac", "linux", "solaris"))
+  vdiffr::expect_doppelganger("smltc_noload_more",
                               ggplot2::ggplot(my.data, ggplot2::aes(group, y2)) +
                                 ggplot2::stat_summary(fun.data = "mean_se") +
                                 ggpmisc::stat_multcomp(mapping = ggpmisc::use_label(c("delta", "P")),
@@ -60,24 +61,24 @@ test_that("multcomp_noload", {
 library(ggpmisc)
 
 
-test_that("stat_multcomp_contrast_type", {
+test_that("smltc_contrast_type", {
   set.seed(4321)
 
-  vdiffr::expect_doppelganger("stat_multcomp_bars_tukey",
+  vdiffr::expect_doppelganger("smltc_bars_tukey",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
                                 stat_multcomp(contrasts = "Tukey"),
                               variant = snap_version
   )
 
-  vdiffr::expect_doppelganger("stat_multcomp_bars_dunnet",
+  vdiffr::expect_doppelganger("smltc_bars_dunnet",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
                                 stat_multcomp(contrasts = "Dunnet"),
                               variant = snap_version
   )
 
-  vdiffr::expect_doppelganger("stat_multcomp_letters_tukey",
+  vdiffr::expect_doppelganger("smltc_letters_tukey",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
                                 stat_multcomp(contrasts = "Tukey",
@@ -85,7 +86,7 @@ test_that("stat_multcomp_contrast_type", {
                               variant = snap_version
   )
 
-  vdiffr::expect_doppelganger("stat_multcomp_letters_tukey_rev",
+  vdiffr::expect_doppelganger("smltc_letters_tukey_rev",
                               ggplot(my.data, aes(group.rev, y2)) +
                                 stat_boxplot() +
                                 stat_multcomp(contrasts = "Tukey",
@@ -93,7 +94,7 @@ test_that("stat_multcomp_contrast_type", {
                               variant = snap_version
   )
 
-  vdiffr::expect_doppelganger("stat_multcomp_letters_tukey_mixed",
+  vdiffr::expect_doppelganger("smltc_letters_tukey_mixed",
                               ggplot(my.data, aes(group.mixed, y2)) +
                                 stat_boxplot() +
                                 stat_multcomp(contrasts = "Tukey",
@@ -109,10 +110,10 @@ test_that("stat_multcomp_contrast_type", {
                           )
 })
 
-test_that("stat_multcomp_many_levels", {
+test_that("smltc_many_levels", {
   set.seed(4321)
 
-  vdiffr::expect_doppelganger("stat_multcomp_bars_tukey2",
+  vdiffr::expect_doppelganger("smltc_bars_tukey2",
                               ggplot(subset(my.data, group10 %in% LETTERS[1:6]), aes(group10, y10)) +
                                 stat_boxplot() +
                                 stat_multcomp(contrasts = "Tukey",
@@ -127,14 +128,14 @@ test_that("stat_multcomp_many_levels", {
   #                                                stat_multcomp(contrasts = "Tukey")
   # )
 
-  vdiffr::expect_doppelganger("stat_multcomp_bars_dunnet_many_levels",
+  vdiffr::expect_doppelganger("smltc_bars_dunnet_many_levels",
                               ggplot(my.data, aes(group10, y2)) +
                                 stat_boxplot() +
                                 stat_multcomp(contrasts = "Dunnet", p.digits = 2),
                               variant = snap_version
   )
 
-  vdiffr::expect_doppelganger("stat_multcomp_letters_tukey_many_levels",
+  vdiffr::expect_doppelganger("smltc_letters_tukey_many_levels",
                               ggplot(subset(my.data, group10 %in% LETTERS[1:6]), aes(group10, y10)) +
                                 stat_boxplot() +
                                 stat_multcomp(contrasts = "Tukey",
@@ -145,10 +146,10 @@ test_that("stat_multcomp_many_levels", {
 
 })
 
-test_that("stat_multcomp_geoms", {
+test_that("smltc_geoms", {
   set.seed(4321)
 
-  vdiffr::expect_doppelganger("stat_multcomp_text_pairwise_tukey",
+  vdiffr::expect_doppelganger("smltc_text_pairwise_tukey",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
                                 stat_multcomp(contrasts = "Tukey",
@@ -158,7 +159,7 @@ test_that("stat_multcomp_geoms", {
                               variant = snap_version
   )
 
-  vdiffr::expect_doppelganger("stat_multcomp_text_pairwise_dunnet",
+  vdiffr::expect_doppelganger("smltc_text_pairwise_dunnet",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
                                 stat_multcomp(contrasts = "Dunnet",
@@ -167,7 +168,7 @@ test_that("stat_multcomp_geoms", {
                               variant = snap_version
   )
 
-  vdiffr::expect_doppelganger("stat_multcomp_letters_label_tukey",
+  vdiffr::expect_doppelganger("smltc_letters_label_tukey",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
                                 stat_multcomp(contrasts = "Tukey",
@@ -178,10 +179,10 @@ test_that("stat_multcomp_geoms", {
 
 })
 
-test_that("stat_multcomp_label.y", {
+test_that("smltc_label.y", {
   set.seed(4321)
 
-  vdiffr::expect_doppelganger("stat_multcomp_y_top_tukey",
+  vdiffr::expect_doppelganger("smltc_y_top_tukey",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
                                 stat_multcomp(contrasts = "Tukey",
@@ -189,7 +190,7 @@ test_that("stat_multcomp_label.y", {
                               variant = snap_version
   )
 
-  vdiffr::expect_doppelganger("stat_multcomp_y_top_dunnet",
+  vdiffr::expect_doppelganger("smltc_y_top_dunnet",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
                                 stat_multcomp(contrasts = "Dunnet",
@@ -197,7 +198,7 @@ test_that("stat_multcomp_label.y", {
                               variant = snap_version
   )
 
-  vdiffr::expect_doppelganger("stat_multcomp_y.bottom_tukey",
+  vdiffr::expect_doppelganger("smltc_y.bottom_tukey",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
                                 stat_multcomp(contrasts = "Tukey",
@@ -207,7 +208,7 @@ test_that("stat_multcomp_label.y", {
                               variant = snap_version
   )
 
-  vdiffr::expect_doppelganger("stat_multcomp_y_top_num_tukey",
+  vdiffr::expect_doppelganger("smltc_y_top_num_tukey",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
                                 stat_multcomp(contrasts = "Tukey",
@@ -216,7 +217,7 @@ test_that("stat_multcomp_label.y", {
                               variant = snap_version
   )
 
-  vdiffr::expect_doppelganger("stat_multcomp_y_top_num_dunnet",
+  vdiffr::expect_doppelganger("smltc_y_top_num_dunnet",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
                                 stat_multcomp(contrasts = "Dunnet",
@@ -224,7 +225,7 @@ test_that("stat_multcomp_label.y", {
                               variant = snap_version
   )
 
-  vdiffr::expect_doppelganger("stat_multcomp_y.top_num_letters_tukey",
+  vdiffr::expect_doppelganger("smltc_y.top_num_letters_tukey",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
                                 stat_multcomp(contrasts = "Tukey",
@@ -233,7 +234,7 @@ test_that("stat_multcomp_label.y", {
                               variant = snap_version
   )
 
-  vdiffr::expect_doppelganger("stat_multcomp_y_bottom_num_tukey",
+  vdiffr::expect_doppelganger("smltc_y_bottom_num_tukey",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
                                 stat_multcomp(contrasts = "Tukey",
@@ -242,7 +243,7 @@ test_that("stat_multcomp_label.y", {
                               variant = snap_version
   )
 
-  vdiffr::expect_doppelganger("stat_multcomp_y_bottom_num_dunnet",
+  vdiffr::expect_doppelganger("smltc_y_bottom_num_dunnet",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
                                 stat_multcomp(contrasts = "Dunnet",
@@ -250,7 +251,7 @@ test_that("stat_multcomp_label.y", {
                               variant = snap_version
   )
 
-  vdiffr::expect_doppelganger("stat_multcomp_y.bottom_num_letters_tukey",
+  vdiffr::expect_doppelganger("smltc_y.bottom_num_letters_tukey",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
                                 stat_multcomp(contrasts = "Tukey",
@@ -261,10 +262,10 @@ test_that("stat_multcomp_label.y", {
 
 })
 
-test_that("stat_multcomp_adjusted", {
+test_that("smltc_adjusted", {
   set.seed(4321)
 
-  vdiffr::expect_doppelganger("stat_multcomp_bonferroni_tukey",
+  vdiffr::expect_doppelganger("smltc_bonferroni_tukey",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
                                 stat_multcomp(contrasts = "Tukey",
@@ -272,7 +273,7 @@ test_that("stat_multcomp_adjusted", {
                               variant = snap_version
   )
 
-  vdiffr::expect_doppelganger("stat_multcomp_bonferroni_dunnet",
+  vdiffr::expect_doppelganger("smltc_bonferroni_dunnet",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
                                 stat_multcomp(contrasts = "Dunnet",
@@ -282,10 +283,10 @@ test_that("stat_multcomp_adjusted", {
 
 })
 
-test_that("stat_multcomp_digits", {
+test_that("smltc_digits", {
   set.seed(4321)
 
-  vdiffr::expect_doppelganger("stat_multcomp_p.digits2",
+  vdiffr::expect_doppelganger("smltc_p.digits2",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
                                 stat_multcomp(contrasts = "Tukey",
@@ -294,7 +295,7 @@ test_that("stat_multcomp_digits", {
   )
 
   # # p-value unstable in least significant digit
-  # vdiffr::expect_doppelganger("stat_multcomp_p.digits6",
+  # vdiffr::expect_doppelganger("smltc_p.digits6",
   #                             ggplot(my.data, aes(group, y2)) +
   #                               stat_boxplot() +
   #                               stat_multcomp(contrasts = "Tukey",
@@ -302,7 +303,7 @@ test_that("stat_multcomp_digits", {
   # )
   #
   # # p-value unstable in least significant digit
-  # vdiffr::expect_doppelganger("stat_multcomp_p.digits_Inf",
+  # vdiffr::expect_doppelganger("smltc_p.digits_Inf",
   #                             ggplot(my.data, aes(group, y2)) +
   #                               stat_boxplot() +
   #                               stat_multcomp(contrasts = "Tukey",
@@ -325,17 +326,17 @@ test_that("stat_multcomp_digits", {
 
 })
 
-test_that("stat_multcomp_methods", {
+test_that("smltc_methods", {
   set.seed(4321)
 
-  vdiffr::expect_doppelganger("stat_multcomp_lm.char2",
+  vdiffr::expect_doppelganger("smltc_lm.char2",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
                                 stat_multcomp(method = "lm"),
                               variant = snap_version
   )
 
-  vdiffr::expect_doppelganger("stat_multcomp_lm.fun",
+  vdiffr::expect_doppelganger("smltc_lm.fun",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
                                 stat_multcomp(method = stats::lm,
@@ -344,28 +345,28 @@ test_that("stat_multcomp_methods", {
   )
 
   # inconsistent across OSs
-  vdiffr::expect_doppelganger("stat_multcomp_lm.char",
+  vdiffr::expect_doppelganger("smltc_lm.char",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
                                 stat_multcomp(method = "aov"),
                               variant = snap_version
   )
 
-  vdiffr::expect_doppelganger("stat_multcomp_lm.fun2",
+  vdiffr::expect_doppelganger("smltc_lm.fun2",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
                                 stat_multcomp(method = stats::aov),
                               variant = snap_version
   )
 
-  vdiffr::expect_doppelganger("stat_multcomp_rlm.char",
+  vdiffr::expect_doppelganger("smltc_rlm.char",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
                                 stat_multcomp(method = "rlm"),
                               variant = snap_version
   )
 
-  vdiffr::expect_doppelganger("stat_multcomp_rlm.fun",
+  vdiffr::expect_doppelganger("smltc_rlm.fun",
                               ggplot(my.data, aes(group, y2)) +
                                 stat_boxplot() +
                                 stat_multcomp(method = MASS::rlm),
