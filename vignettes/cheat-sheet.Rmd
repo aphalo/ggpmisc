@@ -76,6 +76,6 @@ Most of the functions used to generate formatted labels in layers and scales are
 
 ------------------------------------------------------------------------
 
-Learn more at [docs.r4photobiology.info/ggpmisc](https://docs.r4photobiology.info/ggpmisc).
+Learn more at [docs.r4photobiology.info/ggpmisc/](https://docs.r4photobiology.info/ggpmisc/).
 
 ------------------------------------------------------------------------

@@ -13,10 +13,10 @@ Maintainer: Pedro J. Aphalo <pedro.aphalo@helsinki.fi>
 Description: Extensions to 'ggplot2' respecting the grammar of graphics
     paradigm. Statistics: locate and tag peaks and valleys; label plot with the
     equation of a fitted polynomial or other types of models including major
-    axis, quantile and robust and resistant regresion. Labels for P-value, 
+    axis, quantile and robust and resistant regression. Labels for P-value, 
     R^2 or adjusted R^2 or information criteria for fitted models; parametric
     and non-parametric correlation; label with ANOVA table for fitted models; 
-    label with summary table for fitted models; annotaions for multiple 
+    label with summary table for fitted models; annotations for multiple 
     comparisons with adjusted P-values. Model fit classes for which suitable 
     methods are provided by package 'broom' and 'broom.mixed' are supported as 
     well as user-defined wrappers on model fit functions. Annotations for peaks 

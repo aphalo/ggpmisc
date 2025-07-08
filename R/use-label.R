@@ -129,7 +129,7 @@
 #'                 formula = formula) +
 #'   geom_point()
 #'
-#' # major axis regresion
+#' # major axis regression
 #' ggplot(data = my.data, aes(x = x, y = y)) +
 #'   stat_ma_line() +
 #'   stat_ma_eq(mapping = use_label("eq", "n")) +
