@@ -55,44 +55,217 @@ old_theme <- theme_set(theme_bw())
 
 Two statistics, `stat_peaks()` and `stat_valleys()`, are described together in this section as they are very similar. In the current implementation they do not support fitting of peaks, and they simply find local or global, maxima and minima. They require data to be mapped to aesthetics _x_ and _y_, with _y_ being `numeric` and _x_, `numeric`, time, datetime or date as supported by 'ggplot2'. They support flipping with an argument to `orientation` as in 'ggplot2' (>= 3.4.0).
 
-They simplify/automate the labelling of peaks and valleys and add the possibility of ignoring some peaks or valleys based on their height or depth using thresholds. How different arguments to these statistics affect which observations are considered peaks and valleys is exemplified and discussed in their [help page](../reference/stat-peaks.html). Here the focus is on the different ways in which peaks and valleys can be annotated in plots.
+These two statistics simplify/automate the labelling of peaks and valleys and add the possibility of ignoring some peaks or valleys based on their height or depth using thresholds. The role of arguments passed to different parameters is described  in the [help page](../reference/stat-peaks.html). Here the focus is on explained examples of the different ways in which peaks and valleys can be annotated in plots.
 
-In the examples below a time series, `lynx`, is used taking advantage of a specialization of method `ggplot()` defined in package 'ggpp', which converts the time series into a data frame.
+Below the time series `lynx` and `Nile` are used taking advantage of specializations of method `ggplot()` defined in package 'ggpp', which automatically convert time series stored in objects of classes `ts` or `xts` into data frames. They by default also map `time` to the `x` aesthetic and the observed variable to the `y` aesthetic. An argument created by a call to `aes()` and passed as argument to formal parameter `mapping` overrides the default. Functions `stat_peaks()` and `stat_valleys()` from package 'ggpmisc' can be used with `numeric`, `date` or `datetime` values mapped to `x`. An argument passed to parameter `orientation` can be used to flip the data before the search of peaks and valleys.
 
-With start by creating a plain base plot to be used as a base for several different examples. Passing `as.numeric = FALSE` retains the time variable extracted from the time series as is rather than converting it into `numeric`. In this time series, the extracted time is a variable of class `Date`.
+It can be of interest to locate peaks an valleys not only in time series data, but also in spatial data, and other data indexed by a regular sequence of values of the independent variable. Package ['ggspectra'](https://docs.r4photobiology.info/ggspectra/) implements [variations of `stat_peaks()` and `stat_valleys()`](https://docs.r4photobiology.info/ggspectra/reference/stat_peaks.html) with additional features useful with light and optical spectra while assuming that the variable mapped to the `x` aesthetic described wavelengths.
+
+Plot `p.lx0` is used as a base for several different examples. Passing `as.numeric = FALSE` retains the variable extracted from the time series as a datetime object while  with `as.numeric = TRUE` it is converted into `numeric`. In this time series, the extracted time is a variable of class `Date`.
 
 ```{r}
-p0 <- 
+p.lx0 <- 
   ggplot(lynx, as.numeric = FALSE) +
   geom_line() +
-  geom_point(shape = "bullet")
+  geom_point(shape = "circle small")
 
-class(p0$data$time)
-class(p0$data$lynx)
+class(p.lx0$data$time)
+class(p.lx0$data$lynx)
 
-p0
+p.lx0
 ```
 
-By default `stat_peaks()` and `stat_valleys()` use `geom_point()`, which when adding a layer on top of the layers already in the plot, plots a subset of the observations onto top of layers added before. _Because of this, in most cases `stat_peaks()` and `stat_valleys()` are added to plots after any layers displaying all observations._ 
+By default `stat_peaks()` and `stat_valleys()` use `geom_point()`, which when adding a layer after (= on top) of the layers already added to `p.lx0` with `geom_line()` and `geom_point()` in the plot overplots the observations corresponding to peaks. They can be made visible by setting an aesthetic like `colour`, `size`, `shape`, etc., to a different constant value. _Unless other geometries are used `stat_peaks()` and `stat_valleys()` are added to plots after the layers displaying all observations._ 
 
-Function `stat_peaks()` identifies global or local maxima depending on the argument passed to `span`. With the default of `span = 5` a moving window of width 5 is used. Although suitable for `lynx`, the default window width and the thresholds for the size of peaks and valleys, in many cases will need to be adjusted to the characteristics of the data being plotted to avoid irrelevant or minor peaks and valleys to be highlighted together with the desired ones.
+### Minimal examples
+
+Function `stat_peaks()` identifies maxima of `y`.
 
 ```{r}
-p0 +
+p.lx0 +
   stat_peaks(colour = "red")
 ```
 
-Function `stat_valleys()` identifies global or local minima depending on the argument passed to `span`.
+Similarly, function `stat_valleys()` identifies minima of `y`.
 
 ```{r}
-p0 +
+p.lx0 +
   stat_valleys(colour = "blue")
 ```
 
-The default mappings to aesthetics support additional geometries, like `geom_text()` and `geom_label()`. In this example the `position`, `hjust` and `angle` arguments are passed along to the geom while the `x.label.format` argument is handled by the statistic, to create labels containing only the year component of variable `time`. In the case of variables of class `Date` like on this case, the format specification is that of function `strptime()` as described in its documentation. 
+
+### Flipping the statistics' orientation
+
+As in many statistics from package 'ggplot2', these statistics from package 'ggpmisc' support flipping by passing an argument to parameter `orientation`. In this contrived example, years are mapped to `y` and the number of lynx skins to `x`.
 
 ```{r}
-p0 +
+ggplot(lynx, aes(lynx, time)) +
+  geom_line(orientation = "y") +
+  geom_point(shape = "circle small") +
+  stat_peaks(colour = "red", orientation = "y") +
+  stat_valleys(colour = "blue", orientation = "y")
+```
+
+### Moving window span
+
+Peaks and valleys are the maximum and minimum value within a moving window. The width of the moving window as an odd number of observations is controlled by the argument passed to formal parameter `span`. Function `stat_peaks()` identifies the global maximum or local maxima depending on the value of `span`. With the default of `span = 5` a moving window of width 5 is used. Although suitable for `lynx`, the default window width in most cases will need to be adjusted to the characteristics of the data.
+
+Passing `span = NULL` in the call results in a search for the global maximum of `y` in a single window encompassing the whole vector of values. (Passing `span = Inf` or any integer larger than the length of the vector results in the same behaviour.)
+
+```{r}
+p.lx0 +
+  stat_peaks(colour = "red", span = NULL)
+```
+
+The cycle in the `lynx` time series is near 10, so using `span = 9` still detects the same peaks as with `span = 5` except for that for year 1915 as this peak is never the taller than all of its neighbours in the wider moving window. 
+
+```{r}
+p.lx0 +
+  stat_peaks(colour = "red", span = 9)
+```
+
+With `span = 51` `stat_peaks()` find only the two tallest peaks.
+
+```{r}
+p.lx0 +
+  stat_peaks(colour = "red", span = 51)
+```
+
+### Global height or depth threshold
+
+Arguments passed to `span` worked well with the very regular cycles and lack of major disturbances in the `lynx` time series.
+
+An alternative approach is to require a minimum height for peaks. The most direct approach is to pass an argument to `global.threshold` expressed in data units. We indicate this with `I()` which sets class `"AsIs"` in the numeric value passed as argument. (In the plot below `geom_hline()` was added to highlight the threshold value.)
+
+```{r}
+p.lx0 +
+  stat_peaks(colour = "red", global.threshold = I(4300)) +
+  geom_hline(yintercept = 4300, linetype = "dashed", colour = "red") +
+    scale_y_continuous(
+    sec.axis =
+      dup_axis(name = "global.threshold (\"AsIs\")",
+               breaks = 
+                 c(min(lynx), 4300, max(lynx)))) +
+  theme(axis.text.y.right = element_text(colour = "red"),
+        axis.title.y.right = element_text(colour = "red"))
+```
+
+If we simply pass an unprotected `numeric` value in the range $0\ldots1$ this value is taken as relative to the data range. The threshold is highlighted with a red line and on the right side axis ticks show values expressed relative to the data range.
+
+```{r}
+p.lx0 +
+  stat_peaks(colour = "red", global.threshold = 0.66) +
+  geom_hline(yintercept = min(lynx) + (max(lynx) - min(lynx)) * 0.66, 
+             linetype = "dashed", colour = "red") +
+  scale_y_continuous(
+    sec.axis =
+      dup_axis(name = "global.threshold (relative)",
+               breaks = 
+                 min(lynx) + 
+                     (max(lynx) - min(lynx)) * c(0, 0.25, 0.5, 0.66, 0.75, 1),
+               labels = c(0, 0.25, 0.5, 0.66, 0.75, 1))) +
+  theme(axis.text.y.right = element_text(colour = "red"),
+        axis.title.y.right = element_text(colour = "red"))
+```
+
+In the very unlikely cases of wanting to highlight only the shorter peaks, a value in $-1\ldots0$ can be passed as argument to `global.threshold`.
+
+```{r}
+p.lx0 +
+  stat_peaks(colour = "red", global.threshold = -0.66) +
+  geom_hline(yintercept = min(lynx) + (max(lynx) - min(lynx)) * 0.66, 
+             linetype = "dashed", colour = "red") +
+  scale_y_continuous(
+    sec.axis =
+      dup_axis(name = "global.threshold (negative, relative)",
+               breaks = 
+                 min(lynx) + 
+                     (max(lynx) - min(lynx)) * c(0, 0.25, 0.5, 0.66, 0.75, 1),
+               labels = -c(0, 0.25, 0.5, 0.66, 0.75, 1))) +
+  theme(axis.text.y.right = element_text(colour = "red"),
+        axis.title.y.right = element_text(colour = "red"))
+```
+
+The threshold works similarly for valleys and peaks, with larger values making the selection more strict. This is shown by the axis on the right, in which tick labels go in the reverse direction compared to with peaks.
+
+```{r}
+p.lx0 +
+  stat_valleys(colour = "blue", global.threshold = 0.97) +
+  geom_hline(yintercept = max(lynx) - (max(lynx) - min(lynx)) * 0.97, 
+             linetype = "dashed", colour = "blue") +
+  scale_y_continuous(
+    sec.axis =
+      dup_axis(name = "global.threshold (relative)",
+               breaks = 
+                 max(lynx) -
+                     (max(lynx) - min(lynx)) * c(0, 0.25, 0.5, 0.75, 0.97, 1),
+               labels = c(0, 0.25, 0.5, 0.75, 0.97, 1))) +
+  theme(axis.text.y.right = element_text(colour = "blue"),
+        axis.title.y.right = element_text(colour = "blue"))
+```
+
+### Within window height and depth threshold
+
+With a less regular time series with a superimposed trend or a change point like the `Nile` series of water flow, `span` and `global.threshold` are not able to separate prominent narrow peaks from broader or less prominent ones.
+
+```{r}
+p.nl0 <- 
+  ggplot(Nile, as.numeric = FALSE) +
+  geom_line() +
+  geom_point(shape = "circle small")
+
+class(p.nl0$data$time)
+class(p.nl0$data$Nile)
+
+p.nl0
+```
+
+With the default value of `span = 5` some locally small peaks are highlighted.
+Setting `global.threshold` would not help as a change point around year 1900 
+makes it impossible to find a suitable value.
+
+```{r}
+p.nl0 +
+  stat_peaks(colour = "red")
+```
+
+Parameter `local.threshold` makes it possible to add a threshold to use within the moving window, using a reference computed at each displacement of the window. The default is to compare the peak height to the median height of the observations in the window. The local threshold uses the same scaling as the global threshold: it is given as relative to the range of the data.
+
+Comparing to the median of the window tends to ignore the broader peaks. The running median for the same span is shown as a red dashed line. Peaks that are more than 0.15 relative units from the running median line are retained.
+
+```{r}
+p.nl0 +
+  stat_peaks(colour = "red", local.threshold = 0.15) +
+  geom_line(aes(y = stats::runmed(Nile, k = 5, endrule = "median")), colour = "red", linetype = "dashed")
+```
+
+Using `local.base = "farthest"` test for the range of values within the window, thus penalizing much less broad peaks as  long as they fit within the width of the window given by `span`. The example below works well for the `Nile` time series. The running minimum for the same span is shown as a red dashed line. Peaks that are more than 0.25 relative units from the running minimum line are retained.
+
+```{r}
+p.nl0 +
+  stat_peaks(colour = "red", 
+             local.threshold = 0.25, 
+             local.reference = "farthest") +
+  geom_line(aes(y = caTools::runmin(Nile, 
+                                    k = 5, 
+                                    endrule = "min")), 
+            colour = "red", linetype = "dashed")
+```
+
+Local thresholds work for valleys in the same way as for peaks. A larger value for `local.threshold` results in fewer valleys.
+
+```{r}
+p.nl0 +
+  stat_valleys(colour = "blue", local.threshold = 0.15) +
+  geom_line(aes(y = stats::runmed(Nile, k = 5, endrule = "median")), colour = "blue", linetype = "dashed")
+```
+
+### Labeling of peaks and valleys
+
+The default mappings to aesthetics support additional geometries, including `geom_text()` and `geom_label()`. In this example the `position`, `hjust` and `angle` arguments are passed along to the geom while the `x.label.format` argument is handled by the statistic, to create labels containing only the year component of variable `time`. In the case of variables of class `Date` like on this case, the format specification is that of function `strptime()` as described in its documentation. 
+
+```{r}
+p.lx0 +
   stat_peaks(geom = "text",
              x.label.fmt = "%Y",
              position = position_nudge(y = 100), 
@@ -104,17 +277,17 @@ p0 +
 The repulsive geoms from package ['ggrepel'](https://ggrepel.slowkow.com/) are also specifically supported. The two stats handle this as a special case, returning the coordinates of all observations to ensure that they are not overlapped by repulsed text or labels.
 
 ```{r}
-p0 +
+p.lx0 +
   stat_peaks(geom = "text_repel",
              x.label.fmt = "%Y",
              position = position_nudge_keep(y = 100)) +
   expand_limits(y = 7500)
 ```
 
-When calling `stat_valleys()`, what changes compared to when calling `stat_peaks()`, for this simple example is only the direction of the nudge applied to push labels above peaks and below valleys.
+When calling `stat_valleys()`, what needs to be changed compared to when calling `stat_peaks()` above is the direction of the nudge applied, to push labels above peaks and below valleys.
 
 ```{r}
-p0 +
+p.lx0 +
   stat_peaks(x.label.fmt = "%Y",
              geom = "text_repel",
              colour = "red",
@@ -135,30 +308,30 @@ p0 +
 As seen above, by default _x_-labels are mapped to aesthetic `label`. Labels for _y_ values at peaks are also generated and can be mapped as usual. In the case of variables of mode `numeric`, the format specification used is that of function `sprintf()`. 
 
 ```{r}
-p0 +
+p.lx0 +
   stat_peaks(aes(label = after_stat(y.label)),
              y.label.fmt = "n=%i",
              geom = "text_repel",
              direction = "y",
              box.padding = 0.1,
-             point.padding = 4,
+             point.padding = 1,
              position = position_nudge_keep(y = 150),
              angle = 90) +
   stat_peaks(colour = "red") +
   expand_limits(y = 8200)
 ```
 
-It is even easy to combine _x_ and _y_ labels within a call to `aes()`. Function `paste()` or any other character string manipulation function can be used within a call to `aes()` to "edit" the text to be added to the plot.
+It is easy to combine _x_ and _y_ labels within a call to `aes()`. Function `paste()` or any other character string manipulation function can be used within a call to `aes()` to "edit" the text to be added to the plot.
 
 ```{r}
-p0 +
+p.lx0 +
   stat_peaks(aes(label = paste(after_stat(x.label), after_stat(y.label))),
              x.label.fmt = "%Y:",
              y.label.fmt = "%i",
              geom = "text_repel",
              direction = "y",
              box.padding = 0.1,
-             point.padding = 4,
+             point.padding = 1,
              position = position_nudge_keep(y = 150),
              angle = 90) +
   stat_peaks(colour = "red") +
@@ -169,9 +342,8 @@ The default mappings support `geom_text()`, `geom_label()`, `geom_rug()`, `geom_
 
 Using `geom_rug()` the position of the peaks can be shown on the inside of the axis, and using `position_nudge_to()` the text annotations can be moved next to them. Using `geom_text_repel()` with `direction = "x"` we enable horizontal repulsion and with `min.segment.length = Inf` we disable the drawing of connecting line segments.
 
-
 ```{r}
-p0 +
+p.lx0 +
   stat_peaks(x.label.fmt = "%Y",
              geom = "text_repel",
              size = 3.2,
@@ -184,10 +356,10 @@ p0 +
   expand_limits(y = 7500)
 ```
 
-To use multiple geoms to annotate peaks, the stat must be called multiple times, once for each geom. Passing `span = NULL` sets the window where maxxima are searched for to encompass the whole data set, thus, only the global maximum and the global minimum are annotated. A more elaborate label is assembled in a call to `paste()` when specifying the aesthetic mapping with `aes()`. `geom_text_s()` differs from `geom_text()` in that a connecting segment is drawn together with the text.
+To use multiple geoms to annotate peaks, the stat must be called multiple times, once for each geom. Passing `span = NULL` sets the window where maxima are searched for to encompass the whole data set, thus, only the global maximum and the global minimum are annotated. A more elaborate label is assembled in a call to `paste()` when specifying the aesthetic mapping with `aes()`. `geom_text_s()` differs from `geom_text()` in that a connecting segment is drawn together with the text.
 
 ```{r}
-p0 +
+p.lx0 +
   stat_peaks(aes(label = paste(after_stat(y.label),
                                "lynx skins in year",
                                after_stat(x.label))),
@@ -234,7 +406,7 @@ p0 +
 With a few more tweaks we can modify the design of the annotations in the plot above. To use `geom_segment()` we need to map a constant to aesthetic `xend`.
 
 ```{r}
-p0 +
+p.lx0 +
   stat_peaks(aes(label = paste(after_stat(y.label),
                                "lynx skins in year",
                                after_stat(x.label))),
@@ -274,15 +446,15 @@ p0 +
   expand_limits(y = c(-500, 7500))
 ```
 
-## Function `find_peaks()`
+## Functions `find_peaks()` and `find_valleys()`
 
-Function `find_peaks()`, used internally in 'ggpmisc' to implement `stat_peaks()` and `stat_valleys()`, can be also used on its own. Because of of the value expected by scales' `breaks` parameter, it is not possible to call this function on the fly within a call to `sec_axis()` with the plot data as an implicit argument. However, `find_peaks()` can be used to generate vectors that can be passed as an argumet to parameter `breaks`. Below, to set breaks in the secondary axes, we first create vectors of dates and numbers of lynx skins at the peaks, and then use them as arguments in the call to `sec_axis()`. Currently, there is no support for repulsion of axis tick labels in packages 'ggplot2' or 'legendry', so to avoid overlaps fewer peaks have to be annotated than in the plots above. The use of `span = 11`, which is wider than the default `span = 5`, to search for peaks results in the peak in year 1916, adjacent to that in year 1913, to be ignored.
+Function `find_peaks()`, is used internally in 'ggpmisc' to implement `stat_peaks()` and `stat_valleys()`. It can also be used on its own. Because of of the value expected by scales' `breaks` parameter, it is not possible to call this function on the fly within a call to `sec_axis()` with the plot data as an implicit argument. However, `find_peaks()` can be used to generate vectors that can be passed as an argument to parameter `breaks`. Below, to set breaks in the secondary axes, we first create vectors of dates and numbers of lynx skins at the peaks, and then use them as arguments in the call to `sec_axis()`. Currently, there is no support for repulsion of axis tick labels in packages 'ggplot2' or 'legendry', so to avoid overlaps fewer peaks have to be annotated than in the plots above. The use of `span = 11`, which is wider than the default `span = 5`, to search for peaks results in the peak in year 1916, adjacent to that in year 1913, to be ignored.
 
 ```{r}
 lynx.tb <- try_tibble(lynx)
 my.time.breaks <- lynx.tb$time[find_peaks(lynx.tb$x, span = 11)]
 my.skins.breaks <- lynx.tb$x[find_peaks(lynx.tb$x, span = 11)]
-p0 +
+p.lx0 +
   scale_x_date(name = "Time (year)",
                sec.axis = sec_axis(~ ., 
                                    name = "Times of maxima (year)", 
@@ -296,6 +468,16 @@ p0 +
   
 ```
 
+Of course, `find_peaks()` and `find_valleys()` can be used to search for peaks and valleys independently of plotting.
+
+```{r}
+lynx[find_peaks(lynx)]
+```
+
+```{r}
+time(lynx)[find_peaks(lynx)]
+```
+
 ## Resources
 
-Documentation for packages [ggplot2](https://ggplot2.tidyverse.org/), [ggpp](https://docs.r4photobiology.info/ggpp/), [ggrepel](https://ggrepel.slowkow.com/), and [gginnards](https://docs.r4photobiology.info/gginnards/), as well as the [R Graphics Cookbook](https://r-graphics.org/), [Learn R: As a Language](https://www.learnr-book.info/) and [ggplot2: Elegant Graphics for Data Analysis](https://ggplot2-book.org/) books can help in finding/devicing additional uses for `stat_peaks()` and `stat_valleys()`.
+Documentation for packages [ggplot2](https://ggplot2.tidyverse.org/), [ggpp](https://docs.r4photobiology.info/ggpp/), [ggrepel](https://ggrepel.slowkow.com/), and [gginnards](https://docs.r4photobiology.info/gginnards/), as well as the [R Graphics Cookbook](https://r-graphics.org/), [Learn R: As a Language](https://www.learnr-book.info/) and [ggplot2: Elegant Graphics for Data Analysis](https://ggplot2-book.org/) books can help in finding/devising additional uses for `stat_peaks()` and `stat_valleys()`.
