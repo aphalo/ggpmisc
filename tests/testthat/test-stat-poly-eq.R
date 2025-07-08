@@ -730,6 +730,43 @@ test_that("poly_methods", {
                                              method = function(...) {NA})
   )
 
+  skip_if_not_installed("robustbase", minimum_version = NULL)
+  vdiffr::expect_doppelganger("stat_poly_eq_lmrob_fun",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_eq(formula = y ~ x, parse = TRUE,
+                                             method = robustbase::lmrob,
+                                             mapping =
+                                               aes(label = paste(after_stat(eq.label),
+                                                                 after_stat(rr.label),
+                                                                 after_stat(adj.rr.label),
+                                                                 after_stat(f.value.label),
+                                                                 after_stat(p.value.label),
+                                                                 after_stat(n.label),
+                                                                 after_stat(AIC.label),
+                                                                 after_stat(BIC.label),
+                                                                 sep = "~~"))),
+                              variant = snap_version
+  )
+
+  vdiffr::expect_doppelganger("stat_poly_eq_ltsReg_fun",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_eq(formula = y ~ x, parse = TRUE,
+                                             method = robustbase::ltsReg,
+                                             mapping =
+                                               aes(label = paste(after_stat(eq.label),
+                                                                 after_stat(rr.label),
+                                                                 after_stat(adj.rr.label),
+                                                                 after_stat(f.value.label),
+                                                                 after_stat(p.value.label),
+                                                                 after_stat(n.label),
+                                                                 after_stat(AIC.label),
+                                                                 after_stat(BIC.label),
+                                                                 sep = "~~"))),
+                              variant = snap_version
+  )
+
 })
 
 test_that("textual_positions", {

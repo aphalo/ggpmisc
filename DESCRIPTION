@@ -12,13 +12,16 @@ Authors@R:
 Maintainer: Pedro J. Aphalo <pedro.aphalo@helsinki.fi>
 Description: Extensions to 'ggplot2' respecting the grammar of graphics
     paradigm. Statistics: locate and tag peaks and valleys; label plot with the
-    equation of a fitted polynomial or other types of models; labels
-    with P-value, R^2 or adjusted R^2 or information criteria for fitted models;
-    label with ANOVA table for fitted models; label with summary for fitted
-    models. Model fit classes for which suitable methods are provided by package
-    'broom' and 'broom.mixed' are supported. Scales and stats to build volcano
-    and quadrant plots based on outcomes, fold changes, p-values and false 
-    discovery rates.
+    equation of a fitted polynomial or other types of models including major
+    axis, quantile and robust and resistant regresion. Labels for P-value, 
+    R^2 or adjusted R^2 or information criteria for fitted models; parametric
+    and non-parametric correlation; label with ANOVA table for fitted models; 
+    label with summary table for fitted models; annotaions for multiple 
+    comparisons with adjusted P-values. Model fit classes for which suitable 
+    methods are provided by package 'broom' and 'broom.mixed' are supported as 
+    well as user-defined wrappers on model fit functions. Annotations for peaks 
+    and valleys. Scales and stats to build volcano and quadrant plots based on
+    outcomes, fold changes, p-values and false discovery rates.
 License: GPL (>= 2)
 LazyLoad: TRUE
 ByteCompile: TRUE
@@ -54,6 +57,7 @@ Suggests:
     broom.mixed (>= 0.2.9.5),
     gginnards (>= 0.1.0-1),
     ggtext (>= 0.1.2),
+    robustbase (>= 0.99-4-1),
     testthat,
     vdiffr
 URL: https://docs.r4photobiology.info/ggpmisc/, 

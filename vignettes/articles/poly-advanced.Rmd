@@ -186,6 +186,28 @@ ggplot(mpg, aes(displ, hwy)) +
   theme(legend.position = "top")
 ```
 
+Least trimmed squares regression with `robbase::ltsReg`.
+
+```{r, fig.width = 7, fig.height = 5, message = FALSE}
+my.formula <- y ~ poly(x, 2, raw = TRUE)
+ggplot(mpg, aes(displ, hwy)) +
+  stat_poly_eq(use_label("eq", "R2", "method"), 
+               formula = my.formula,
+               label.x = "right",
+               method = robustbase::ltsReg) +
+  stat_poly_line(method = robustbase::ltsReg, 
+                 formula = my.formula,
+                 colour = "black") +
+  stat_fit_deviations(method = robustbase::ltsReg,
+                      mapping = aes(colour = after_stat(robustness.weights)),
+                      formula = my.formula,
+                      show.legend = TRUE,
+                      geom = "point") +
+  scale_color_gradient(name = "Robustness weights",
+                       low = "red", high = "blue", limits = c(0, 1)) +
+  theme(legend.position = "top")
+```
+
 
 ### Resistant regression ('MASS')
 

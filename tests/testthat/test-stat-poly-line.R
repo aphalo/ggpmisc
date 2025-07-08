@@ -187,7 +187,7 @@ test_that("poly_methods", {
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
                                 stat_poly_line(formula = y ~ poly(x, 2),
-                                               method = MASS::lqs)
+                                               method = nlme::gls)
   )
 
   vdiffr::expect_doppelganger("stat_poly_line_empty_fm",
@@ -206,6 +206,21 @@ test_that("poly_methods", {
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
                                 stat_poly_line(method = function(...) {NULL})
+  )
+
+  skip_if_not_installed("robustbase", minimum_version = NULL)
+  vdiffr::expect_doppelganger("stat_poly_line_lmrob_fun",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_line(formula = y ~ poly(x, 2),
+                                               method = robustbase::lmrob)
+  )
+
+  vdiffr::expect_doppelganger("stat_poly_line_ltsReg_fun",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_line(formula = y ~ poly(x, 2),
+                                               method = robustbase::ltsReg)
   )
 
 })

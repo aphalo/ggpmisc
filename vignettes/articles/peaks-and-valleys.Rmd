@@ -106,7 +106,7 @@ ggplot(lynx, aes(lynx, time)) +
   stat_valleys(colour = "blue", orientation = "y")
 ```
 
-### Moving window span
+### Moving-window span
 
 Peaks and valleys are the maximum and minimum value within a moving window. The width of the moving window as an odd number of observations is controlled by the argument passed to formal parameter `span`. Function `stat_peaks()` identifies the global maximum or local maxima depending on the value of `span`. With the default of `span = 5` a moving window of width 5 is used. Although suitable for `lynx`, the default window width in most cases will need to be adjusted to the characteristics of the data.
 
