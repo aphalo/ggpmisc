@@ -138,7 +138,6 @@ ggplot(mpg, aes(displ, hwy)) +
 
 Package 'robustbase' provides function `lmrob()` for "MM-type Estimators for Linear Regression". The returned value is an `"lmrob"` object. Class `"lmrob"` is derived from `"lm"` so the stats work mostly as expected. However, we need to be aware that no $R^2$ or $P$ estimates are available and the corresponding labels are empty strings.
 
-
 ```{r}
 ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
@@ -185,29 +184,6 @@ ggplot(mpg, aes(displ, hwy)) +
                        low = "red", high = "blue", limits = c(0, 1)) +
   theme(legend.position = "top")
 ```
-
-Least trimmed squares regression with `robbase::ltsReg`.
-
-```{r, fig.width = 7, fig.height = 5, message = FALSE}
-my.formula <- y ~ poly(x, 2, raw = TRUE)
-ggplot(mpg, aes(displ, hwy)) +
-  stat_poly_eq(use_label("eq", "R2", "method"), 
-               formula = my.formula,
-               label.x = "right",
-               method = robustbase::ltsReg) +
-  stat_poly_line(method = robustbase::ltsReg, 
-                 formula = my.formula,
-                 colour = "black") +
-  stat_fit_deviations(method = robustbase::ltsReg,
-                      mapping = aes(colour = after_stat(robustness.weights)),
-                      formula = my.formula,
-                      show.legend = TRUE,
-                      geom = "point") +
-  scale_color_gradient(name = "Robustness weights",
-                       low = "red", high = "blue", limits = c(0, 1)) +
-  theme(legend.position = "top")
-```
-
 
 ### Resistant regression ('MASS')
 
@@ -264,7 +240,7 @@ ggplot(mpg, aes(displ, hwy)) +
 
 ### Resistant regression ('robustbase')
 
-Package 'MASS' provides function `lqs()` for "Resistant Regression". The returned value is an `"lqs"` object. Class `"rlm"` is not derived from `"lm"` but the structure is similar. However, we need to be aware that no $R^2$ or $P$ estimates are available and the corresponding labels are empty strings.
+Package 'robustbase' provides function `ltsReg()` for "least trimmed squares" regression. The returned value is an `"lts"` object. The usual accessors functions are available for Class `"lts"`.
 
 ```{r}
 ggplot(mpg, aes(displ, hwy)) +
@@ -276,15 +252,14 @@ ggplot(mpg, aes(displ, hwy)) +
   facet_wrap(~class, ncol = 2)
 ```
 
-_If no `predict()` method is available, `stat_poly_line()` calls `fitted()`,
+_If no `predict()` method is found for a model fit object, `stat_poly_line()` searches for method `fitted()`,
 which is nearly always available. This is how the `"lts"` objects returned by
-`robustbase::ltsReg()` are by default supported._ For a linear regression,
-unless extrapolation is attempted this makes little, if any, difference to the
-plot. With higher degree polynomials and sparse data this approach can result in
+`robustbase::ltsReg()` are by default supported._ 
+
+For a linear regression, unless extrapolation is attempted this makes little, if any, difference to the
+line but no confidence band is displayed. With higher degree polynomials and sparse data this approach can result in
 a curve that is not smooth. It is possible for users to define the missing
-specialization for the `predict()` method. How difficult this is depends on the
-fitted model and on whether only a line for the prediction is plotted or a line
-plus a prediction confidence band.
+specialization for the `predict()` method. Predicting the fitted line using `coefficients()` and the known `formula` is straightforward, while estimating a prediction confidence band can be more difficult.
 
 ```{r, fig.width = 7, fig.height = 5}
 ggplot(mpg, aes(displ, hwy)) +
@@ -320,8 +295,6 @@ ggplot(mpg, aes(displ, hwy)) +
                      values = c("0" = "red", "1" = "blue")) +
   theme(legend.position = "top")
 ```
-
-One possibility is to define the missing `predict.lst()` method because if present it will be used. The call to `fitted()` takes place only if a search for a `predict()` method for the class of the fitted model object fails.
 
 ### Generalized Least Squares ('nlme')
 

@@ -995,7 +995,7 @@ ggplot(my.data, aes(x, y, colour = group)) +
                   parse = TRUE)
 ```
 
-It is also possible to fit a non-linear model with `method = "nls"`, and any other model for which a `broom::glance()` method exists. Do consult the documentation for package 'broom'. Here we fit the Michaelis-Menten equation to reaction rate versus concentration data.
+It is also possible to fit a non-linear model using least squares (LS) with `method = "nls"`, and any other model for which a `broom::glance()` method exists. Do consult the documentation for package 'broom'. Here we fit the Michaelis-Menten equation to reaction rate versus concentration data.
 
 ```{r, eval=eval_broom}
 micmen.formula <- y ~ SSmicmen(x, Vm, K) 

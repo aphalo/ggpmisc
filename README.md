@@ -22,13 +22,21 @@ site](https://img.shields.io/badge/documentation-ggpmisc-informational.svg)](htt
 Package ‘**ggpmisc**’ (Miscellaneous Extensions to ‘ggplot2’) is a set
 of extensions to R package ‘ggplot2’ (\>= 3.0.0) with emphasis on
 annotations and plotting related to fitted models. Estimates from model
-fit objects can be displayed in ggplots as text, tables or equations.
-Predicted values, residuals, deviations and weights can be plotted for
-various model fit functions. Linear models, quantile regression and
-major axis regression as well as those functions with accessors
-following the syntax of package ‘broom’ are supported. Package
-‘**ggpmisc**’ continues to give access to extensions moved as of version
-0.4.0 to package [‘**ggpp**’](https://docs.r4photobiology.info/ggpp/).
+fit objects can be displayed in ggplots as text, model equations, ANOVA
+and summary table. Predicted values, residuals, deviations and weights
+can be plotted for various model fit functions. Linear models,
+polynomial regression, quantile regression, major axis regression,
+non-linear regression and different approaches to robust and resistant
+regression, as well as user-defined wrapper functions based on them are
+supported. In addition, all model fit functions returning objects for
+which accessors are available or supported by package ‘broom’ and its
+extensions are also supported but not as automatically. Labelling based
+on multiple comparisons supports various *P* adjustment methods and
+contrast schemes. Annotation of peaks and valleys in time series, and
+scales for volcano and quadrant plots as used for gene expression data
+are also provided. Package ‘**ggpmisc**’ continues to give access to
+extensions moved as of version 0.4.0 to package
+[‘**ggpp**’](https://docs.r4photobiology.info/ggpp/).
 
 ## Philosophy
 
@@ -47,7 +55,7 @@ We follow R’s approach of expecting that users know what they need or
 want, and will usually want to adjust how results from model fits are
 presented both graphically and textually. The approach and mechanics of
 plot construction and rendering remain unchanged from those implemented
-in package ‘**ggplot2**’.
+in package [‘**ggplot2**’](https://ggplot2.tidyverse.org/).
 
 ## Statistics
 
@@ -86,7 +94,7 @@ method `residuals()` defined for returned value; (9) model fit functions
 if method `fitted()` is defined for the returned value.
 
 Statistics `stat_peaks()` and `stat_valleys()` can be used to highlight
-and/or label maxima and minima in a plot.
+and/or label global and/or local maxima and minima in a plot.
 
 ## Aesthetics and scales
 
