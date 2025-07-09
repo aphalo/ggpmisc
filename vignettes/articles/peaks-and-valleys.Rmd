@@ -135,9 +135,16 @@ p.lx0 +
 
 Arguments passed to `span` worked well with the very regular cycles and lack of major disturbances in the `lynx` time series.
 
-An alternative approach is to require a minimum height for peaks. The most direct approach is to pass an argument to `global.threshold` expressed in data units. We indicate this with `I()` which sets class `"AsIs"` in the numeric value passed as argument. (In the plot below `geom_hline()` was added to highlight the threshold value.)
+One approach to differentiate between major and minor peaks is to require a minimum height for them. The most direct approach is to pass an argument to `global.threshold` expressed in data units. We indicate this with `I()` which sets class `"AsIs"` in the numeric value passed as argument.
 
 ```{r}
+p.lx0 +
+  stat_peaks(colour = "red", global.threshold = I(4300))
+```
+
+The same plot as above, annotated with the threshold value passed as argument to `global.threshold` shown together with the range of the data.
+
+```{r, echo=FALSE}
 p.lx0 +
   stat_peaks(colour = "red", global.threshold = I(4300)) +
   geom_hline(yintercept = 4300, linetype = "dashed", colour = "red") +
@@ -150,9 +157,16 @@ p.lx0 +
         axis.title.y.right = element_text(colour = "red"))
 ```
 
-If we simply pass an unprotected `numeric` value in the range $0\ldots1$ this value is taken as relative to the data range. The threshold is highlighted with a red line and on the right side axis ticks show values expressed relative to the data range.
+If we simply pass an unprotected `numeric` value in the range $0\ldots1$ this value is taken as relative to the data range. 
 
 ```{r}
+p.lx0 +
+  stat_peaks(colour = "red", global.threshold = 0.66)
+```
+
+The same plot as above, annotated with the threshold value passed as argument to `global.threshold` shown together with the range of relative values accepted.
+
+```{r, echo=FALSE}
 p.lx0 +
   stat_peaks(colour = "red", global.threshold = 0.66) +
   geom_hline(yintercept = min(lynx) + (max(lynx) - min(lynx)) * 0.66, 
@@ -172,6 +186,13 @@ In the very unlikely cases of wanting to highlight only the shorter peaks, a val
 
 ```{r}
 p.lx0 +
+  stat_peaks(colour = "red", global.threshold = -0.66)
+```
+
+The threshold is highlighted with a red line and on the right side axis ticks show values expressed relative to the data range with a negative sign.
+
+```{r, echo=FALSE}
+p.lx0 +
   stat_peaks(colour = "red", global.threshold = -0.66) +
   geom_hline(yintercept = min(lynx) + (max(lynx) - min(lynx)) * 0.66, 
              linetype = "dashed", colour = "red") +
@@ -186,9 +207,16 @@ p.lx0 +
         axis.title.y.right = element_text(colour = "red"))
 ```
 
-The threshold works similarly for valleys and peaks, with larger values making the selection more strict. This is shown by the axis on the right, in which tick labels go in the reverse direction compared to with peaks.
+The threshold works similarly for valleys and peaks, with larger values making the selection more strict.
 
 ```{r}
+p.lx0 +
+  stat_valleys(colour = "blue", global.threshold = 0.97)
+```
+
+In the annotated plot below, the value of the argument passed to `global.threshold` is highlighted with a blue line. The range of accepted relative threshold values is shown on the axis on the right, in which tick labels go in the reverse direction compared to  peaks.
+
+```{r, echo=FALSE}
 p.lx0 +
   stat_valleys(colour = "blue", global.threshold = 0.97) +
   geom_hline(yintercept = max(lynx) - (max(lynx) - min(lynx)) * 0.97, 
@@ -231,33 +259,83 @@ p.nl0 +
 
 Parameter `local.threshold` makes it possible to add a threshold to use within the moving window, using a reference computed at each displacement of the window. The default is to compare the peak height to the median height of the observations in the window. The local threshold uses the same scaling as the global threshold: it is given as relative to the range of the data.
 
-Comparing to the median of the window tends to ignore the broader peaks. The running median for the same span is shown as a red dashed line. Peaks that are more than 0.15 relative units from the running median line are retained.
+Comparing to the median of the window tends to ignore the broader peaks.
 
 ```{r}
 p.nl0 +
-  stat_peaks(colour = "red", local.threshold = 0.15) +
-  geom_line(aes(y = stats::runmed(Nile, k = 5, endrule = "median")), colour = "red", linetype = "dashed")
+  stat_peaks(colour = "red", local.threshold = 0.15)
 ```
 
-Using `local.base = "farthest"` test for the range of values within the window, thus penalizing much less broad peaks as  long as they fit within the width of the window given by `span`. The example below works well for the `Nile` time series. The running minimum for the same span is shown as a red dashed line. Peaks that are more than 0.25 relative units from the running minimum line are retained.
+The same plot as above, annotated. The running median for the same span is shown as a red dashed line. Peaks that are more than 0.15 relative units from the running median line are retained.
+
+```{r, echo=FALSE}
+p.nl0 +
+  geom_line(aes(y = stats::runmed(Nile, k = 5, endrule = "median")), colour = "red") +
+  stat_peaks(colour = "red", local.threshold = 0.15) +
+  scale_y_continuous(
+    sec.axis =
+      dup_axis(name = "global.threshold (relative)",
+               breaks = 
+                 min(Nile) + 
+                     (max(Nile) - min(Nile)) * c(0, 0.25, 0.5, 0.75, 1),
+               labels = c(0, 0.25, 0.5, 0.75, 1))) +
+  theme(axis.text.y.right = element_text(colour = "red"),
+        axis.title.y.right = element_text(colour = "red"))
+```
+
+Using `local.base = "farthest"` test for the range of values within the window, thus penalizing much less broad peaks as  long as they fit within the width of the window given by `span`. The example below works well for the `Nile` time series.
 
 ```{r}
 p.nl0 +
   stat_peaks(colour = "red", 
              local.threshold = 0.25, 
-             local.reference = "farthest") +
+             local.reference = "farthest")
+```
+
+The same plot as above, annotated. The running minimum for the same span is shown as a red dashed line. Peaks that are more than 0.25 relative units from the running minimum line are retained.
+
+```{r, echo=FALSE}
+p.nl0 +
   geom_line(aes(y = caTools::runmin(Nile, 
                                     k = 5, 
                                     endrule = "min")), 
-            colour = "red", linetype = "dashed")
+            colour = "red") +
+  stat_peaks(colour = "red", 
+             local.threshold = 0.25, 
+             local.reference = "farthest") +
+  scale_y_continuous(
+    sec.axis =
+      dup_axis(name = "global.threshold (relative)",
+               breaks = 
+                 min(Nile) + 
+                     (max(Nile) - min(Nile)) * c(0, 0.25, 0.5, 0.75, 1),
+               labels = c(0, 0.25, 0.5, 0.75, 1))) +
+  theme(axis.text.y.right = element_text(colour = "red"),
+        axis.title.y.right = element_text(colour = "red"))
 ```
 
-Local thresholds work for valleys in the same way as for peaks. A larger value for `local.threshold` results in fewer valleys.
+Local thresholds work for valleys in the same way as for peaks. A larger value for `local.threshold` results in fewer valleys highlighted.
 
 ```{r}
 p.nl0 +
+  stat_valleys(colour = "blue", local.threshold = 0.15)
+```
+
+The same plot as above, annotated. The running median for the same span is shown as a blue dashed line. Peaks that are more than 0.15 relative units from the running median line are retained. The moving median line is the same as used for peaks, but the distance assessed for valleys is downwards from this line instead of upwards for peaks.
+
+```{r, echo=FALSE}
+p.nl0 +
+  geom_line(aes(y = stats::runmed(Nile, k = 5, endrule = "median")), colour = "blue") +
   stat_valleys(colour = "blue", local.threshold = 0.15) +
-  geom_line(aes(y = stats::runmed(Nile, k = 5, endrule = "median")), colour = "blue", linetype = "dashed")
+  scale_y_continuous(
+    sec.axis =
+      dup_axis(name = "global.threshold (relative)",
+               breaks = 
+                 min(Nile) + 
+                     (max(Nile) - min(Nile)) * c(0, 0.25, 0.5, 0.75, 1),
+               labels = 1 - c(0, 0.25, 0.5, 0.75, 1))) +
+  theme(axis.text.y.right = element_text(colour = "blue"),
+        axis.title.y.right = element_text(colour = "blue"))
 ```
 
 ### Labeling of peaks and valleys
