@@ -338,6 +338,8 @@ p.nl0 +
         axis.title.y.right = element_text(colour = "blue"))
 ```
 
+As shown above, the `local.threshold` argument is used _as is_ when the argument passed to `local.reference` is `"median"` or `"farthest"`, i.e., the same distance between peak and reference is used for cut-off irrespective of the value of the reference. In cases when the prominence of peaks is positively correlated with the baseline, a `local.threshold` that increases together with increasing `local.reference` makes it possible to apply a less stringent height requirement when the computed reference has a smaller value. Currently implemented ('ggpmisc' > 0.6.2) are natural logarithm and square root weighting with `"median.log"`, `"farthest.log"`, `"median.sqrt"`, and `"farthest.sqrt"` as argument for `local.reference`.
+
 ### Labeling of peaks and valleys
 
 The default mappings to aesthetics support additional geometries, including `geom_text()` and `geom_label()`. In this example the `position`, `hjust` and `angle` arguments are passed along to the geom while the `x.label.format` argument is handled by the statistic, to create labels containing only the year component of variable `time`. In the case of variables of class `Date` like on this case, the format specification is that of function `strptime()` as described in its documentation. 

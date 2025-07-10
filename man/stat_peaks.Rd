@@ -49,19 +49,19 @@ stat_valleys(
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
-\code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs to be set
-at the layer level if you are overriding the plot defaults.}
+\code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs to be
+set at the layer level if you are overriding the plot defaults.}
 
 \item{data}{A layer specific dataset - only needed if you want to override
 the plot defaults.}
 
 \item{geom}{The geometric object to use display the data}
 
-\item{position}{The position adjustment to use for overlapping points
-on this layer}
+\item{position}{The position adjustment to use for overlapping points on this
+layer}
 
-\item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This can
-include aesthetics whose values you want to set, not map. See
+\item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This
+can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 
 \item{span}{odd positive integer A peak is defined as an element in a
@@ -92,8 +92,8 @@ whole of \code{x}, no threshold is applied.}
 \item{local.reference}{character One of \code{"median"}, \code{"median.log"},
 \code{"median.sqrt"}, \code{"farthest"}, \code{"farthest.log"} or
 \code{"farthest.sqrt"}. The reference used to assess the height of the
-peak, either the minimum/maximum value within the window or the median of
-all values in the window.}
+peak, is either the minimum/maximum value within the window or the median
+of all values in the window.}
 
 \item{strict}{logical flag: if \code{TRUE}, an element must be strictly
 greater than all other values in its window to be considered a peak.
@@ -112,58 +112,77 @@ name passed as argument is \code{"text_repel"} or \code{"label_repel"}.}
 \item{orientation}{character The orientation of the layer can be set to
 either \code{"x"}, the default, or \code{"y"}.}
 
-\item{na.rm}{a logical value indicating whether NA values should be
-stripped before the computation proceeds.}
+\item{na.rm}{a logical value indicating whether NA values should be stripped
+before the computation proceeds.}
 
 \item{show.legend}{logical. Should this layer be included in the legends?
-\code{NA}, the default, includes if any aesthetics are mapped.
-\code{FALSE} never includes, and \code{TRUE} always includes.}
+\code{NA}, the default, includes if any aesthetics are mapped. \code{FALSE}
+never includes, and \code{TRUE} always includes.}
 
-\item{inherit.aes}{If \code{FALSE}, overrides the default aesthetics,
-rather than combining with them. This is most useful for helper functions
-that define both data and aesthetics and shouldn't inherit behaviour from
-the default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
+\item{inherit.aes}{If \code{FALSE}, overrides the default aesthetics, rather
+than combining with them. This is most useful for helper functions that
+define both data and aesthetics and shouldn't inherit behaviour from the
+default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
 }
 \value{
-A data frame with one row for each peak (or valley) found in the
-  data extracted from the input \code{data} or all rows in data. Added
-  columns contain the labels.
+A data frame with one row for each peak (or valley) found in the data
+  extracted from the input \code{data} or all rows in data. Added columns
+  contain the labels.
 }
 \description{
-\code{stat_peaks} finds at which x positions the global y maximun or local
-y maxima are located. \code{stat_valleys} finds at which x positions the
-global y minimum or local y minima located. They both support filtering
-of relevant peaks. \strong{Axis flipping is supported.}
+\code{stat_peaks} finds at which x positions the global y maximun or local y
+maxima are located. \code{stat_valleys} finds at which x positions the global
+y minimum or local y minima located. They both support filtering of relevant
+peaks. \strong{Axis flipping is supported.}
 }
 \details{
-These stats use \code{geom_point} by default as it is the geom most
-  likely to work well in almost any situation without need of tweaking. The
-  default aesthetics set by these stats allow their direct use with
-  \code{geom_text}, \code{geom_label}, \code{geom_line}, \code{geom_rug},
-  \code{geom_hline} and \code{geom_vline}. The formatting of the labels
-  returned can be controlled by the user.
+As \code{find_valleys}, \code{stat_peaks} and \code{stat_valleys}
+  call \code{find_peaks} to search for peaks or valleys, this description
+  applies to all four functions.
 
-  Two tests make it possible to ignore irrelevant peaks or valleys. One test
-  controlled by (\code{global.threshold}) is based on the absolute
-  height/depth  of peaks/valleys and can be used in all cases to ignore
-  globally low peaks and shallow valleys. A second test controlled by
+  Function \code{find_peaks} is a wrapper built onto function
+  \code{\link[splus2R]{peaks}} from \pkg{splus2R}, adds support for peak
+  height thresholds and handles \code{span = NULL} and non-finite (including
+  NA) values differently than \code{splus2R::peaks}. Instead of giving an
+  error when \code{na.rm = FALSE} and \code{x} contains \code{NA} values,
+  \code{NA} values are replaced with the smallest finite value in \code{x}.
+  \code{span = NULL} is treated as a special case and selects \code{max(x)}.
+  Passing `strict = TRUE` ensures that multiple global and within window
+  maxima are ignored, and can result in no peaks being returned.#'
+
+  Two tests make it possible to ignore irrelevant peaks. One test
+  (\code{global.threshold}) is based on the absolute height of the peaks and
+  can be used in all cases to ignore globally low peaks. A second test
   (\code{local.threshold}) is available when the window defined by `span`
-  does not include all observations and can be used to ignore peaks/valleys
-  that are not locally prominent. In this second approach the height/depth of
-  each peak/valley is compared to a summary computed from other values within
-  the window where it was found. In this second case, the reference value
-  used is the summary indicated by \code{local.reference}. The values
-  \code{global.threshold} and \code{local.threshold} if bare numeric are
-  relative to the range of \emph{y}. Thresholds for ignoring too small peaks
-  are applied after peaks are searched for, and threshold values can in some
-  cases result in no peaks being displayed.
+  does not include all observations and can be used to ignore peaks that are
+  not locally prominent. In this second approach the height of each peak is
+  compared to a summary computed from other values within the window of width
+  equal to \code{span} where it was found. In this second case, the reference
+  value used within each window containing a peak is given by
+  \code{local.reference}. Parameter \code{threshold.range} determines how the
+  bare \code{numeric} values passed as argument to \code{global.threshold}
+  and \code{local.threshold} are scaled. The default, \code{NULL} uses the
+  range of \code{x}. Thresholds for ignoring too small peaks are applied
+  after peaks are searched for, and threshold values can in some cases result
+  in no peaks being found. If either threshold is not available (\code{NA})
+  the returned value is a \code{NA} vector of the same length as \code{x}.
 
-  Date time scales are recognized and labels formatted accordingly.
+  The \code{local.threshold} argument is used \emph{as is} when
+  \code{local.reference} is \code{"median"} or \code{"farthest"}, i.e., the
+  same distance between peak and reference is used as cut-off irrespective of
+  the value of the reference. In cases when the prominence of peaks is
+  positively correlated with the baseline, a \code{local.threshold} that
+  increases together with increasing computed within window median or
+  farthest value applies apply a less stringent height requirement in regions
+  with overall low height. In this case, natural logarithm or square root
+  weighting can be requested with `local.reference` arguments `"median.log"`,
+  `"farthest.log"`, `"median.sqrt"`, and `"farthest.sqrt"` as arguments for
+  \code{local.reference}.
 }
 \note{
-These stats work nicely together with geoms \code{geom_text_repel} and
-  \code{geom_label_repel} from package \code{\link[ggrepel]{ggrepel}} to
-  solve the problem of overlapping labels
+\code{stat_peaks} and \code{stat_valleys} work nicely together with
+  geoms \code{geom_text_repel} and \code{geom_label_repel} from package
+  \code{\link[ggrepel]{ggrepel}} to solve the problem of overlapping labels
   by displacing them. To discard overlapping labels use \code{check_overlap =
   TRUE} as argument to \code{geom_text}.
 
@@ -183,8 +202,15 @@ These stats work nicely together with geoms \code{geom_text_repel} and
 }
 
 \section{Default aesthetics}{
+ These stats use \code{geom_point} by default as
+  it is the geom most likely to work well in almost any situation without.
+  The default aesthetics set by these stats allow their direct use with
+  \code{geom_text}, \code{geom_label}, \code{geom_line}, \code{geom_rug},
+  \code{geom_hline} and \code{geom_vline}. The formatting of the labels
+  returned can be controlled by the user.
 
-Set by the statistic and available to geoms.
+  Default aesthetics mapped by the statistic and available to geoms, in
+  addtion to the automatically set required aesthetics.
 \describe{
   \item{label}{stat(x.label)}
   \item{xintercept}{stat(x)}
@@ -193,11 +219,13 @@ Set by the statistic and available to geoms.
 }
 
 \section{Required aesthetics}{
+ Required by the statistic and need to be set
+  with \code{aes()}. Date time scales are recognized and labels
+  formatted accordingly.
 
-Required by the statistic and need to be set with \code{aes()}.
 \describe{
-  \item{x}{numeric, wavelength in nanometres}
-  \item{y}{numeric, a spectral quantity}
+  \item{x}{numeric or date time, independent variable}
+  \item{y}{numeric, response variable where peaks or valleys are searched}
 }
 }
 
