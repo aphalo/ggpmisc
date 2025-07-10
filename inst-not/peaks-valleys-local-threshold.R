@@ -52,9 +52,10 @@ dat %>%
 dat %>%
   ggplot(aes(x = dateTime, y = flow)) +
   geom_line() +
-  stat_peaks(color = 'red', span = 25,
-             local.reference = "median",
-             local.threshold = 0.015) +
+  geom_point(shape = "circle small") +
+  stat_peaks(color = 'red', span = 31,
+             local.reference = "farthest",
+             local.threshold = 0.01) +
   theme_bw()
 
 dat %>%

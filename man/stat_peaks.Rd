@@ -70,32 +70,34 @@ width \code{span} centred at that element. The default value is 5, meaning
 that a peak is taller than its four nearest neighbours. \code{span = NULL}
 extends the span to the whole length of \code{x}.}
 
-\item{global.threshold}{numeric A value belonging to class
-\code{"AsIs"} is interpreted as an absolute minimum height or depth
-expressed in data units. A bare \code{numeric} value (normally between 0.0
-and 1.0), is interpreted as relative to the range of the data. In both
-cases it sets a \emph{global} height (depth) threshold below which peaks
-(valleys) are ignored. A bare negative \code{numeric} value indicates the
-\emph{global} height (depth) threshold below which peaks (valleys) are be
-ignored. If \code{global.threshold = NULL}, no threshold is applied and all
-peaks are returned.}
+\item{global.threshold}{numeric A value belonging to class \code{"AsIs"} is
+interpreted as an absolute minimum height or depth expressed in data units.
+A bare \code{numeric} value (normally between 0.0 and 1.0), is interpreted
+as relative to \code{threshold.range}. In both cases it sets a
+\emph{global} height (depth) threshold below which peaks (valleys) are
+ignored. A bare negative \code{numeric} value indicates the \emph{global}
+height (depth) threshold below which peaks (valleys) are be ignored. If
+\code{global.threshold = NULL}, no threshold is applied and all peaks
+returned.}
 
 \item{local.threshold}{numeric A value belonging to class \code{"AsIs"} is
 interpreted as an absolute minimum height (depth) expressed in data units
-relative to the within-window computed minimum (maximum) value. A bare
-\code{numeric} value (normally between 0.0 and 1.0), is interpreted as
-expressed in units relative to the range of the data. In both cases
-\code{local.threshold} sets a \emph{local} height (depth) threshold below
-which peaks (valleys) are ignored. If \code{local.threshold = NULL} or if
-\code{span} spans the whole of \code{x}, no threshold is applied.}
+relative to a within-window computed reference value. A bare \code{numeric}
+value (normally between 0.0 and 1.0), is interpreted as expressed in units
+relative to \code{threshold.range}. In both cases \code{local.threshold}
+sets a \emph{local} height (depth) threshold below which peaks (valleys)
+are ignored. If \code{local.threshold = NULL} or if \code{span} spans the
+whole of \code{x}, no threshold is applied.}
 
-\item{local.reference}{character One of \code{"minimum"}/\code{maximum} or
-\code{"median"}. The reference used to assess the height of the peak,
-either the minimum value within the window or the median of all values in
-the window.}
+\item{local.reference}{character One of \code{"median"}, \code{"median.log"},
+\code{"median.sqrt"}, \code{"farthest"}, \code{"farthest.log"} or
+\code{"farthest.sqrt"}. The reference used to assess the height of the
+peak, either the minimum/maximum value within the window or the median of
+all values in the window.}
 
 \item{strict}{logical flag: if \code{TRUE}, an element must be strictly
-greater than all other values in its window to be considered a peak.}
+greater than all other values in its window to be considered a peak.
+Default: \code{FALSE} (since version 0.13.1).}
 
 \item{label.fmt, x.label.fmt, y.label.fmt}{character  strings giving a format
 definition for construction of character strings labels with function
@@ -315,7 +317,7 @@ ggplot(lynx, as.numeric = FALSE) +
 
 }
 \seealso{
-\code{\link[photobiology]{find_peaks}}, which is used internally.
+\code{\link{find_peaks}}, which is used internally.
 
 \code{\link{find_peaks}}, for the functions used to located the
   peaks and valleys.

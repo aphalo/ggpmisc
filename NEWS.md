@@ -6,6 +6,11 @@ editor_options:
 
 # ggpmisc 0.6.2
 
+-   Support `log()` and `sqrt()` transformations for `local.reference` in
+    `find_peaks()`, `find_valleys()`, `stat_peaks()` and `stat_valleys()`.
+
+# ggpmisc 0.6.2
+
 A significant new feature in this release is the support of additional model fitting functions, both explicitly and by handling missing methods and values more gracefully. Another important enhancement is a more flexible approach to the filtering of peaks and valleys using height and depth thresholds, which improves the detection of prominent or major (true?) peaks in noisy data by reducing or preventing "false positives".
 
 -   Check compatibility with 'ggplot2' 4.0.0.

@@ -49,10 +49,11 @@ sets a \emph{local} height (depth) threshold below which peaks (valleys)
 are ignored. If \code{local.threshold = NULL} or if \code{span} spans the
 whole of \code{x}, no threshold is applied.}
 
-\item{local.reference}{character One of \code{"median"} or \code{"farthest"}.
-The reference used to assess the height of the peak, either the
-minimum/maximum value within the window or the median of all values in the
-window.}
+\item{local.reference}{character One of \code{"median"}, \code{"median.log"},
+\code{"median.sqrt"}, \code{"farthest"}, \code{"farthest.log"} or
+\code{"farthest.sqrt"}. The reference used to assess the height of the
+peak, either the minimum/maximum value within the window or the median of
+all values in the window.}
 
 \item{threshold.range}{numeric vector If of length 2 or a longer vector
 \code{range(threshold.range)} is used to scale both thresholds. With

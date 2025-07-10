@@ -22,10 +22,11 @@
 #'   sets a \emph{local} height (depth) threshold below which peaks (valleys)
 #'   are ignored. If \code{local.threshold = NULL} or if \code{span} spans the
 #'   whole of \code{x}, no threshold is applied.
-#' @param local.reference character One of \code{"median"} or \code{"farthest"}.
-#'   The reference used to assess the height of the peak, either the
-#'   minimum/maximum value within the window or the median of all values in the
-#'   window.
+#' @param local.reference character One of \code{"median"}, \code{"median.log"},
+#'   \code{"median.sqrt"}, \code{"farthest"}, \code{"farthest.log"} or
+#'   \code{"farthest.sqrt"}. The reference used to assess the height of the
+#'   peak, either the minimum/maximum value within the window or the median of
+#'   all values in the window.
 #' @param threshold.range numeric vector If of length 2 or a longer vector
 #'   \code{range(threshold.range)} is used to scale both thresholds. With
 #'   \code{NULL}, the default, \code{range(x)} is used, and with a vector of
@@ -226,10 +227,22 @@ find_peaks <-
       # apply local height threshold test
       local.base <-
         switch(local.reference,
-               median = stats::runmed(x, k = span, endrule = "median"),
-               farthest = caTools::runmin(x, k = span, endrule = "min"),
+               median =,
+               median.sqrt =,
+               median.log = stats::runmed(x, k = span, endrule = "median"),
+               farthest =,
+               farthest.sqrt =,
+               farthest.log = caTools::runmin(x, k = span, endrule = "min"),
                stop("Bad 'local.reference': ", local.reference))
-      pks <- pks & x > local.base + local.threshold * local.multiplier
+      if (grepl("\\.log$", local.reference)) {
+        pks <- pks & log(x - local.base) >
+          (local.threshold * log(local.multiplier))
+      } else if (grepl("\\.sqrt$", local.reference)) {
+        pks <- pks & sqrt(x - local.base) >
+          (local.threshold * sqrt(local.multiplier))
+      } else {
+        pks <- pks & (x - local.base) > (local.threshold * local.multiplier)
+      }
     }
     pks
   }

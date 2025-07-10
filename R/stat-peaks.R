@@ -5,6 +5,8 @@
 #' global y minimum or local y minima located. They both support filtering
 #' of relevant peaks. \strong{Axis flipping is supported.}
 #'
+#' @inheritParams find_peaks
+#'
 #' @param mapping The aesthetic mapping, usually constructed with
 #'    \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. Only needs to be set
 #'    at the layer level if you are overriding the plot defaults.
@@ -25,34 +27,6 @@
 #'   \code{\link[ggplot2]{layer}} for more details.
 #' @param na.rm	a logical value indicating whether NA values should be
 #'   stripped before the computation proceeds.
-#' @param global.threshold numeric A value belonging to class
-#'   \code{"AsIs"} is interpreted as an absolute minimum height or depth
-#'   expressed in data units. A bare \code{numeric} value (normally between 0.0
-#'   and 1.0), is interpreted as relative to the range of the data. In both
-#'   cases it sets a \emph{global} height (depth) threshold below which peaks
-#'   (valleys) are ignored. A bare negative \code{numeric} value indicates the
-#'   \emph{global} height (depth) threshold below which peaks (valleys) are be
-#'   ignored. If \code{global.threshold = NULL}, no threshold is applied and all
-#'   peaks are returned.
-#' @param local.threshold numeric A value belonging to class \code{"AsIs"} is
-#'   interpreted as an absolute minimum height (depth) expressed in data units
-#'   relative to the within-window computed minimum (maximum) value. A bare
-#'   \code{numeric} value (normally between 0.0 and 1.0), is interpreted as
-#'   expressed in units relative to the range of the data. In both cases
-#'   \code{local.threshold} sets a \emph{local} height (depth) threshold below
-#'   which peaks (valleys) are ignored. If \code{local.threshold = NULL} or if
-#'   \code{span} spans the whole of \code{x}, no threshold is applied.
-#' @param local.reference character One of \code{"minimum"}/\code{maximum} or
-#'   \code{"median"}. The reference used to assess the height of the peak,
-#'   either the minimum value within the window or the median of all values in
-#'   the window.
-#' @param span odd positive integer A peak is defined as an element in a
-#'   sequence which is greater than all other elements within a moving window of
-#'   width \code{span} centred at that element. The default value is 5, meaning
-#'   that a peak is taller than its four nearest neighbours. \code{span = NULL}
-#'   extends the span to the whole length of \code{x}.
-#' @param strict logical flag: if \code{TRUE}, an element must be strictly
-#'   greater than all other values in its window to be considered a peak.
 #' @param label.fmt,x.label.fmt,y.label.fmt character  strings giving a format
 #'   definition for construction of character strings labels with function
 #'   \code{\link{sprintf}} from \code{x} and/or \code{y} values.
@@ -91,7 +65,7 @@
 #'   \item{y}{numeric, a spectral quantity}
 #' }
 #'
-#' @seealso \code{\link[photobiology]{find_peaks}}, which is used internally.
+#' @seealso \code{\link{find_peaks}}, which is used internally.
 #'
 #' @details These stats use \code{geom_point} by default as it is the geom most
 #'   likely to work well in almost any situation without need of tweaking. The
