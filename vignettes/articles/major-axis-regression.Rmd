@@ -1,0 +1,219 @@
+---
+title: "Major axis regression"
+subtitle: "'ggpmisc' `r packageVersion('ggpmisc')`"
+author: "Pedro J. Aphalo"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+    toc: yes
+vignette: >
+  %\VignetteIndexEntry{Major axis regression}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+```{r, include=FALSE, echo=FALSE}
+knitr::opts_chunk$set(fig.align = 'center', 
+                      collapse = TRUE,
+                      comment = "#>",
+                      fig.show = 'hold', fig.width = 7, fig.height = 7)
+
+options(warnPartialMatchArgs = FALSE,
+        tibble.print.max = 4,
+        tibble.print.min = 4,
+        dplyr.summarise.inform = FALSE)
+
+eval_flag <- TRUE # evaluate all code chunks
+```
+
+## Aims of 'ggpmisc' and caveats
+
+Package 'ggpmisc' makes it easier to add to plots created using 'ggplot2' annotations based on fitted models and other statistics. It does this by wrapping existing model fit and other functions. The same annotations can be produced by calling the model fit functions, extracting the desired estimates and adding them to plots. There are two advantages in wrapping these functions in an extension to package 'ggplot2': 1) we ensure the coupling of graphical elements and the annotations by building all elements of the plot using the same data and a consistent grammar and 2) we make it easier to annotate plots to the casual user of R, already familiar with the grammar of graphics.
+
+_To avoid confusion it is good to make clear what may seem obvious to some: if no plot is needed, then there is no reason to use this package. The values shown as annotations are not computed by 'ggpmisc' but instead by the usual model-fit and statistical functions from R and other packages. The same is true for model predictions, residuals, etc. that some of the functions in 'ggpmisc' display as lines, segments, or other graphical elements._
+
+It is also important to remember that in most cases data analysis including exploratory and other stages should take place before annotated plots for publication are produced. Even though data analysis can benefit from combined numerical and graphical representation of the results, the use I envision for 'ggpmisc' is mainly for the production of plots for publication or communication of a completed analysis.
+
+## Preliminaries
+
+We load all the packages used in the examples.
+
+```{r, message=FALSE}
+library(ggpmisc)
+library(smatr)
+library(lmodel2)
+```
+
+Attaching package 'ggpmisc' also attaches package 'ggpp' as it provides several of the geometries used by default in the statistics described below. Package 'ggpp' can be loaded and attached on its own, and has [separate documentation](https://docs.r4photobiology.info/ggpp/).
+
+As we will use text and labels on the plotting area we change the default theme to an uncluttered one.
+
+```{r}
+old_theme <- theme_set(theme_bw())
+```
+
+We generate artificial data to use in examples. Here `x0` is a deterministic
+sequence of integers in $1 \ldots 100$ and both `x` and `y` are derived from it
+by adding Normally distributed "noise" with mean zero and standard deviation 20.
+Thus, the expected slope is equal to 1. `yg` has a deterministic difference of
+10 between groups `A` and `B`.
+
+```{r}
+set.seed(4321)
+# generate artificial data
+x0 <- 1:100
+y <- x0 + rnorm(length(x0), mean = 0, sd = 20)
+x <- x0 + rnorm(length(x0), mean = 0, sd = 20)
+my.data <- data.frame(x0, 
+                      x,
+                      y,
+                      yg = y + c(-5, 5), 
+                      group = c("A", "B"))
+```
+
+## When and why use major axis regression
+
+In ordinary least squares and some other approaches the assumptions about the measuring errors for _x_ and _y_ differ.
+The assumption is that _x_ is measured without or with so small error, that measurement error can be safely attributed in whole to _y_. This does not mean that _X_ is necessarily free of variation, but instead that we know without error the _x_ value for each observation event. This situation is frequently, but
+not always, true for manipulative experiments where _x_ is an independent variable controlled by the researcher.
+
+When this assumption is not fulfilled the parameter estimates become biased. When $R^2 \approx 1$ the error is small, but the error increases as $R^2$ for a fit decreases. 
+
+To demonstrate how OLS assumptions about _x_ and _y_ affect a linear regression fit, the next figure shows fits to the same data with formula `y ~ x` and `x ~ y`. Swapping dependent (response) and independent (explanatory) variables.
+
+```{r}
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_poly_line(formula = y ~ x, 
+                 color = "blue") +
+  stat_poly_eq(mapping = use_label("eq", "R2", "n", "P"), 
+               color = "blue") +
+  stat_poly_line(formula = y ~ x, 
+                 color = "red",
+                 orientation = "y") +
+  stat_poly_eq(mapping = use_label("eq", "R2", "n", "P"),
+               color = "red", 
+               orientation = "y",
+               label.y = 0.9)
+```
+
+A different assumption is that both _x_ and _y_ are subjected to measurement errors of similar magnitude, which is usually the case in allometric models describing the size relationship between the different organs or parts of an organism. Other similar situation is the study of chemical composition and comparison of measurements from sensors of similar accuracy. This is where variations of major axis (MA) regression should be used instead of OLS approaches.
+
+### stat_ma_eq() and stat_ma_line()
+
+Package 'lmodel2' implements Model II fits for major axis (MA), standardised major axis (SMA) and ranged major axis (RMA) regression for linear relationships. These approaches of regression are used when both variables are subject to random variation and the intention is not to estimate *y* from *x* but instead to describe the slope of the relationship between them. A typical example in biology are allometric relationships. Rather frequently, OLS linear model fits are used in cases where Model II regression would be preferable.
+
+In the figure above we saw that the ordinary least squares (OLS) linear regression of *y* on *x* and *x* on *y* differ. Major axis regression provides an estimate of the slope that is independent of the direction of prediction, $x \to y$ or $y \to x$, while the estimate of $R^2$ remains the same in all three model fits.
+
+```{r}
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_ma_line() +
+  stat_ma_eq(mapping = use_label("eq", "R2", "n", "P"))
+```
+
+In the case of major axis regression while the coefficient estimates in the equation change, they correspond to exactly the same line.
+ 
+```{r}
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_ma_line(color = "blue") +
+  stat_ma_eq(mapping = use_label("eq", "R2", "n", "P"), 
+             color = "blue") +
+  stat_ma_line(color = "red", 
+               orientation = "y", 
+               linetype = "dashed") +
+  stat_ma_eq(mapping = use_label("eq", "R2", "n", "P"), 
+             color = "red", 
+             orientation = "y",
+             label.y = 0.9)
+```
+
+The data contain two groups of fake observations and factor `group` as group id.
+
+```{r}
+ggplot(my.data, aes(x, yg, colour = group)) +
+  geom_point() +
+  stat_ma_line() +
+  stat_ma_eq(mapping = use_label("eq", "R2", "n", "P"))
+```
+
+While major axis (MA) regression takes the observations as is, xxxx major axis
+(SMA) regression and ranged major axis (RMA) regression scale them to balance
+the error on _x_ and _y_. SMA xxx while RMA uses the range or interval of the
+values in each variable.
+
+```{r}
+ggplot(my.data, aes(x, yg, colour = group)) +
+  geom_point() +
+  stat_ma_line(method = "SMA") +
+  stat_ma_eq(method = "SMA", 
+             mapping = use_label("eq", "R2", "n", "P"))
+```
+
+```{r}
+ggplot(my.data, aes(x, yg * 10, colour = group)) +
+  geom_point() +
+  stat_ma_line(method = "RMA", 
+               range.x = "interval", range.y = "interval") +
+  stat_ma_eq(method = "RMA", 
+             range.x = "interval", range.y = "interval", 
+             mapping = use_label("eq", "R2", "n", "P"))
+```
+
+These statistics can also fit the same model by OLS, which demonstrates the 
+strong bias in the slope estimate as from how we constructed the data applying
+equal normally distributed pseudo random variation to both _x_ and _y_ we
+know the "true" slope is equal to 1.
+
+```{r}
+ggplot(my.data, aes(x, yg, colour = group)) +
+  geom_point() +
+  stat_ma_line(method = "OLS") +
+  stat_ma_eq(method = "OLS", 
+             mapping = use_label("eq", "R2", "n", "P"))
+```
+
+In our data `x0` has no random variation added, and using it we get the
+expected unbiased estimates using OLS.
+
+```{r}
+ggplot(my.data, aes(x0, yg, colour = group)) +
+  geom_point() +
+  stat_ma_line(method = "OLS") +
+  stat_ma_eq(method = "OLS", 
+             mapping = use_label("eq", "R2", "n", "P"))
+```
+
+## Using package 'smatr'
+
+The functions for major axis regression from package 'smatr' behave similarly
+to `lm` and other R model fit functions and accessors to the components of the
+model fit object are available.
+
+```{r}
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_poly_line(method = smatr::ma) +
+  stat_poly_eq(method = smatr::ma, 
+             mapping = use_label("eq", "R2", "n", "AIC", "BIC"))
+```
+
+
+```{r}
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_poly_line(method = smatr::ma, 
+                 formula = y ~ x - 1) +
+  stat_poly_eq(method = smatr::ma, 
+                 formula = y ~ x - 1, 
+             mapping = use_label("eq", "R2", "n"))
+```
+
+```{r}
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_poly_line(method = smatr::sma) +
+  stat_poly_eq(method = smatr::sma, 
+             mapping = use_label("eq", "R2", "n"))
+```
