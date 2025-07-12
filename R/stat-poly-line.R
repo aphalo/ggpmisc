@@ -353,13 +353,16 @@ poly_line_compute_group_fun <-
       return(data.frame())
     } else if (!(inherits(fm, "lm") || inherits(fm, "lmrob") ||
                  inherits(fm, "gls") || inherits(fm, "lqs") ||
-                 inherits(fm, "lts"))) {
+                 inherits(fm, "lts") || inherits(fm, "sma"))) {
       message("Method \"", method.name,
-              "\" did not return a \"lm\", \"lmrob\", \"lqs\", \"lts\" or \"gls\" object, possible failure ahead.")
+              "\" did not return a ",
+              "\"lm\", \"lmrob\", \"lqs\", \"lts\", \"gls\" or \"sma\" ",
+              "object, possible failure ahead.")
     }
 
     has.predict.method <- FALSE
     for (cl in class(fm)) {
+      if (cl == "sma") break() # has dummy predict() method
       if (any(grepl("^predict", utils::methods(class = cl)))) {
         has.predict.method <- TRUE
         break()
@@ -399,8 +402,16 @@ poly_line_compute_group_fun <-
       }
       prediction <- cbind(newdata, prediction)
     } else {
-      message("Fitted values returned")
-      prediction <- data.frame(x = data[["x"]], y = fitted(fm))
+      message("Fitted line plotted")
+      if (class(fm)[1] == "sma") {
+        coefs <- stats::coefficients(fm)
+        prediction <-
+          data.frame(x = data[["x"]],
+                     y = coefs["elevation"] + coefs["slope"] * data[["x"]])
+      } else {
+        prediction <-
+          data.frame(x = data[["x"]], y = fitted(fm))
+      }
     }
 
     if (fm.values) {

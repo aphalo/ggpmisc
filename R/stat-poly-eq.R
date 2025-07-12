@@ -29,13 +29,13 @@
 #' @param formula a formula object. Using aesthetic names \code{x} and \code{y}
 #'   instead of original variable names.
 #' @param method function or character If character, "lm", "rlm", "lqs". "gls"
-#'   or the name of a model fit function are accepted, possibly followed by the
-#'   fit function's \code{method} argument separated by a colon (e.g.
-#'   \code{"rlm:M"}). If a function is different to \code{lm()}, \code{rlm()},
-#'   \code{lqs()} or \code{gls()}, it must have formal parameters named
-#'   \code{formula}, \code{data}, \code{weights}, and \code{method}, and return
-#'   a model fit object of class \code{"lm"}, class \code{"lqs"} or class
-#'   \code{"gls"}.
+#'   "ma", "sma", or the name of a model fit function are accepted, possibly
+#'   followed by the fit function's \code{method} argument separated by a colon
+#'   (e.g. \code{"rlm:M"}). If a function is different to \code{lm()},
+#'   \code{rlm()}, \code{lqs()}, \code{gls()}, \code{ma}, \code{sma}, it must
+#'   have formal parameters named \code{formula}, \code{data}, \code{weights},
+#'   and \code{method}, and return a model fit object of class \code{"lm"},
+#'   class \code{"lqs"}, class \code{"gls"} or \code{"sma"}.
 #' @param method.args named list with additional arguments.
 #' @param n.min integer Minimum number of distinct values in the explanatory
 #'   variable (on the rhs of formula) for fitting to the attempted.
@@ -159,13 +159,13 @@
 #'   similar to that of function \code{lm()} (with parameters \code{formula},
 #'   \code{data}, \code{weights} and any other arguments passed by name through
 #'   \code{method.args}) and 2) that the value returned by the function is an
-#'   object of class \code{"lm"} or an atomic \code{NA} value.
+#'   object of a class such as \code{"lm"} or an atomic \code{NA} value.
 #'
 #'   The \code{formula} used to build the equation label is extracted from the
-#'   returned \code{"lm"} object and can safely differ from the argument passed to
-#'   parameter \code{formula} in the call to \code{stat_poly_eq()}. Thus,
-#'   user-defined methods can implement both model selection or conditional
-#'   skipping of labelling.
+#'   returned fitted model object such as \code{lm} when possible and can
+#'   safely differ from the argument passed to parameter \code{formula} in the
+#'   call to \code{stat_poly_eq()}. Thus, user-defined methods can implement
+#'   both model selection or conditional skipping of labelling.
 #'
 #' @references Originally written as an answer to question 7549694 at
 #'   Stackoverflow but enhanced based on suggestions from users and my own
@@ -781,13 +781,20 @@ poly_eq_compute_group_fun <- function(data,
     return(data.frame())
   } else if (!(inherits(fm, "lm") || inherits(fm, "lmrob") ||
                inherits(fm, "gls") || inherits(fm, "lqs") ||
-               inherits(fm, "lts"))) {
+               inherits(fm, "lts") || inherits(fm, "sma"))) {
     warning("Method \"", method.name,
-            "\" did not return a \"lm\", \"lmrob\", \"lqs\", \"lts\" or \"gls\" object, possible failure ahead.")
+            "\" did not return a ",
+            "\"lm\", \"lmrob\", \"lqs\", \"lts\", \"gls\" or \"sma\" ",
+            "object, possible failure ahead.")
   }
 
-  fm.summary <- summary(fm)
   fm.class <- class(fm)
+  if (fm.class[1] == "sma") {
+    # summary.sma prints results and returns NULL
+    fm.summary <- NULL
+  } else {
+    fm.summary <- summary(fm)
+  }
 
   # allow model formula selection by the model fit method
   # extract formula from fitted model if possible, but fall back on argument if needed
@@ -799,8 +806,13 @@ poly_eq_compute_group_fun <- function(data,
     f.df2 <- fm.summary[["fstatistic"]]["dendf"]
     p.value <- stats::pf(q = f.value, f.df1, f.df2, lower.tail = FALSE)
   } else {
-    f.value <- f.df1 <- f.df2 <- p.value <- NA_real_
-  }
+    if (fm.class[1] == "sma") {
+      p.value <- unlist(fm[["pval"]])
+      f.value <- f.df1 <- f.df2 <- NA_real_
+    } else {
+      f.value <- f.df1 <- f.df2 <- p.value <- NA_real_
+    }
+   }
   if ("r.squared" %in% names(fm.summary)) {
     rr <- fm.summary[["r.squared"]]
     if (!all(is.finite(c(f.value, f.df1, f.df2))) ||
@@ -825,7 +837,12 @@ poly_eq_compute_group_fun <- function(data,
       }
     }
   } else {
-    rr <- rr.confint.low <- rr.confint.high <- NA_real_
+    if (fm.class[1] == "sma") {
+      rr <- unlist(fm[["r2"]])
+      rr.confint.low <- rr.confint.high <- NA_real_
+    } else {
+      rr <- rr.confint.low <- rr.confint.high <- NA_real_
+    }
   }
   if ("adj.r.squared" %in% names(fm.summary)) {
     adj.rr <- fm.summary[["adj.r.squared"]]
@@ -1034,4 +1051,5 @@ StatPolyEq <-
                    required_aes = c("x", "y"),
                    optional_aes = "grp.label"
   )
+
 

@@ -59,13 +59,13 @@ can include aesthetics whose values you want to set, not map. See
 instead of original variable names.}
 
 \item{method}{function or character If character, "lm", "rlm", "lqs". "gls"
-or the name of a model fit function are accepted, possibly followed by the
-fit function's \code{method} argument separated by a colon (e.g.
-\code{"rlm:M"}). If a function is different to \code{lm()}, \code{rlm()},
-\code{lqs()} or \code{gls()}, it must have formal parameters named
-\code{formula}, \code{data}, \code{weights}, and \code{method}, and return
-a model fit object of class \code{"lm"}, class \code{"lqs"} or class
-\code{"gls"}.}
+"ma", "sma", or the name of a model fit function are accepted, possibly
+followed by the fit function's \code{method} argument separated by a colon
+(e.g. \code{"rlm:M"}). If a function is different to \code{lm()},
+\code{rlm()}, \code{lqs()}, \code{gls()}, \code{ma}, \code{sma}, it must
+have formal parameters named \code{formula}, \code{data}, \code{weights},
+and \code{method}, and return a model fit object of class \code{"lm"},
+class \code{"lqs"}, class \code{"gls"} or \code{"sma"}.}
 
 \item{method.args}{named list with additional arguments.}
 
@@ -233,13 +233,13 @@ For backward compatibility a logical is accepted as argument for
   similar to that of function \code{lm()} (with parameters \code{formula},
   \code{data}, \code{weights} and any other arguments passed by name through
   \code{method.args}) and 2) that the value returned by the function is an
-  object of class \code{"lm"} or an atomic \code{NA} value.
+  object of a class such as \code{"lm"} or an atomic \code{NA} value.
 
   The \code{formula} used to build the equation label is extracted from the
-  returned \code{"lm"} object and can safely differ from the argument passed to
-  parameter \code{formula} in the call to \code{stat_poly_eq()}. Thus,
-  user-defined methods can implement both model selection or conditional
-  skipping of labelling.
+  returned fitted model object such as \code{lm} when possible and can
+  safely differ from the argument passed to parameter \code{formula} in the
+  call to \code{stat_poly_eq()}. Thus, user-defined methods can implement
+  both model selection or conditional skipping of labelling.
 }
 
 \section{Aesthetics}{

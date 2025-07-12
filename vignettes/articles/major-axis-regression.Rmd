@@ -187,27 +187,32 @@ ggplot(my.data, aes(x0, yg, colour = group)) +
 
 ## Using package 'smatr'
 
-The functions for major axis regression from package 'smatr' behave similarly
-to `lm` and other R model fit functions and accessors to the components of the
-model fit object are available.
+The functions for major axis regression from package 'smatr' behave similarly to
+`lm` and other R model fit functions and accessors to the components of the
+model fit object are available. However, `summary.sma()` prints a summary and
+returns `NULL` and `predict.sma()` displays a message and returns `NULL`. Calls
+to these methods are skipped, and as `fitted()` does not return values in data
+units they are computed using the fitted coefficients. The differences are small
+enough to work around them within `stat_poly_eq()` and `stat_poly_line()`.
 
 ```{r}
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(method = smatr::ma) +
   stat_poly_eq(method = smatr::ma, 
-             mapping = use_label("eq", "R2", "n", "AIC", "BIC"))
+             mapping = use_label("eq", "R2", "P", "AIC", "BIC")) +
+  expand_limits(y = 150)
 ```
 
 
 ```{r}
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  stat_poly_line(method = smatr::ma, 
-                 formula = y ~ x - 1) +
+  stat_poly_line(method = smatr::ma, formula = y ~ x - 1) +
   stat_poly_eq(method = smatr::ma, 
                  formula = y ~ x - 1, 
-             mapping = use_label("eq", "R2", "n"))
+             mapping = use_label("eq", "R2", "P", "AIC", "BIC")) +
+  expand_limits(y = 150)
 ```
 
 ```{r}
@@ -215,5 +220,6 @@ ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(method = smatr::sma) +
   stat_poly_eq(method = smatr::sma, 
-             mapping = use_label("eq", "R2", "n"))
+             mapping = use_label("eq", "R2", "P", "AIC", "BIC")) +
+  expand_limits(y = 150)
 ```

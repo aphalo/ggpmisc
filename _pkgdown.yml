@@ -91,6 +91,8 @@ navbar:
         href: articles/user-guide.html
       - text: 'Custom Polynomial Models'
         href: articles/poly-advanced.html
+      - text: 'Major Axis Regression'
+        href: articles/major-axis-regression.html
       - text: 'Peaks and Valleys'
         href: articles/peaks-and-valleys.html
     tutorials:

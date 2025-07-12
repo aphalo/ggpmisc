@@ -4,10 +4,13 @@ editor_options:
     wrap: 72
 ---
 
-# ggpmisc 0.6.2
+# ggpmisc 0.6.3
 
 -   Support `log()` and `sqrt()` transformations for `local.reference` in
     `find_peaks()`, `find_valleys()`, `stat_peaks()` and `stat_valleys()`.
+-   Support `smatr::ma()` and `smatr::sma()` in `stat_poly_line()` and in
+    `stat_poly_line()`.
+-   Add on-line only article on major axis regression in plots.
 
 # ggpmisc 0.6.2
 
