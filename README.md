@@ -63,14 +63,14 @@ Statistics that help with reporting the results of model fits are:
 
 | Statistic | Returned values (*default geometry*) | Methods |
 |----|----|----|
-| `stat_poly_eq()` | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lm, rlm, lqs, gls, etc. (1, 2, 7) |
+| `stat_poly_eq()` | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lm, rlm, lqs, gls, ma, sma, etc. (1, 2, 7) |
 | `stat_ma_eq()` | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lmodel2 (6, 7) |
 | `stat_quant_eq()` | equation, *P*, etc. (`text_npc`) | rq (1, 3, 4, 7) |
 | `stat_correlation()` | correlation, *P*-value, CI (`text_npc`) | Pearson (*t*), Kendall (*z*), Spearman (*S*) |
-| `stat_poly_line()` | line + conf. (`smooth`) | lm, rlm, lqs, gls, etc. (1, 2, 7) |
-| `stat_ma_line()` | line + conf. (`smooth`) | lmodel2 (6, 7) |
-| `stat_quant_line()` | line + conf. (`smooth`) | rq, rqss (1, 3, 4, 7) |
-| `stat_quant_band()` | median + quartiles (`smooth`) | rq, rqss (1, 4, 5, 7) |
+| `stat_poly_line()` | line + conf. (`smooth`) | lm, rlm, lqs, gls, ma, sma, etc. (1, 2, 7) |
+| `stat_ma_line()` | line + slope conf. (`smooth`) | lmodel2 (6, 7) |
+| `stat_quant_line()` | line(s) + conf. (`smooth`) | rq, rqss (1, 3, 4, 7) |
+| `stat_quant_band()` | line + band, 3 quantiles (`smooth`) | rq, rqss (1, 4, 5, 7) |
 | `stat_fit_residuals()` | residuals (`point`) | lm, rlm, rq (1, 2, 4, 7, 8) |
 | `stat_fit_deviations()` | deviations from observations (`segment`) | lm, rlm, lqs, rq (1, 2, 4, 7, 9) |
 | `stat_fit_fitted()` | fitted values (`point`) | lm, rlm, lqs, rq (1, 2, 4, 7, 9) |
