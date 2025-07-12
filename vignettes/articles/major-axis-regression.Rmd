@@ -105,6 +105,8 @@ Package 'lmodel2' implements Model II fits for major axis (MA), standardised maj
 
 In the figure above we saw that the ordinary least squares (OLS) linear regression of *y* on *x* and *x* on *y* differ. Major axis regression provides an estimate of the slope that is independent of the direction of prediction, $x \to y$ or $y \to x$, while the estimate of $R^2$ remains the same in all three model fits.
 
+**The prediction bands computed by package 'lmodel2' only consider the standard error of the estimate of the slope. They ignore the error in the estimation of the intercept. If for your data analysis both types of error are relevant, or for comparisons against OLS fits with `lm()`, package 'smatr' can be used as described later in this article.**
+
 ```{r}
 ggplot(my.data, aes(x, y)) +
   geom_point() +
@@ -192,8 +194,10 @@ The functions for major axis regression from package 'smatr' behave similarly to
 model fit object are available. However, `summary.sma()` prints a summary and
 returns `NULL` and `predict.sma()` displays a message and returns `NULL`. Calls
 to these methods are skipped, and as `fitted()` does not return values in data
-units they are computed using the fitted coefficients. The differences are small
+units they are computed using the fitted coefficients and their confidence
+interval extracted from the fitted model object. The differences are small
 enough to work around them within `stat_poly_eq()` and `stat_poly_line()`.
+Just remember that only model formulas for a straight line can be used.
 
 ```{r}
 ggplot(my.data, aes(x, y)) +
@@ -204,6 +208,18 @@ ggplot(my.data, aes(x, y)) +
   expand_limits(y = 150)
 ```
 
+As with 'lmodel2', grouping is supported.
+
+```{r}
+ggplot(my.data, aes(x, yg, colour = group)) +
+  geom_point() +
+  stat_poly_line(method = smatr::ma) +
+  stat_poly_eq(method = smatr::ma, 
+             mapping = use_label("eq", "R2", "P", "AIC", "BIC")) +
+  expand_limits(y = 150)
+```
+
+Major axis regression through the origin is supported by 'smatr'.
 
 ```{r}
 ggplot(my.data, aes(x, y)) +
@@ -215,6 +231,8 @@ ggplot(my.data, aes(x, y)) +
   expand_limits(y = 150)
 ```
 
+Standardised major axis regression (SMA) is also supported.
+
 ```{r}
 ggplot(my.data, aes(x, y)) +
   geom_point() +
@@ -223,3 +241,33 @@ ggplot(my.data, aes(x, y)) +
              mapping = use_label("eq", "R2", "P", "AIC", "BIC")) +
   expand_limits(y = 150)
 ```
+
+A robust estimation method can be enabled by passing an argument to be forwarded
+to the the model fit function, in this case `sma()` or `ma()`.
+
+```{r}
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_poly_line(method = "sma", method.args = list(robust = TRUE)) +
+  stat_poly_eq(method = "sma", method.args = list(robust = TRUE), 
+             mapping = use_label("eq", "R2", "P", "AIC", "BIC")) +
+  expand_limits(y = 150)
+```
+
+As with LM fits with `lm()` level of significance of the confidence band of the
+regression line can be set by passing an argument to parameter `level`. Below,
+two different values for `level` result in bands of different widths.
+
+```{r}
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_poly_line(method = "sma", level = 0.99) +
+  stat_poly_line(method = "sma", level = 0.80) +
+  expand_limits(y = 150)
+```
+
+### Caveats
+
+_Currently labels for $F$-value or $R^2_\mathrm{adj}$ are not available when using 'smatr' together with `stat_poly_eq()`._
+
+_Attempts to pass invalid model formulas will trigger errors within 'smatr' code._

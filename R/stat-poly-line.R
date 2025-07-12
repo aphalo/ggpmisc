@@ -341,6 +341,9 @@ poly_line_compute_group_fun <-
                        data = quote(data))
     }
     fun.args <- c(fun.args, method.args)
+    if (grepl("^ma$|^sma$", method.name) && !"alpha" %in% names(fun.args)) {
+      fun.args <- c(fun.args, list(alpha = 1 - level))
+    }
 
     # gls() parameter for formula is called 'model'
     if (grepl("gls", method.name)) {
@@ -402,13 +405,41 @@ poly_line_compute_group_fun <-
       }
       prediction <- cbind(newdata, prediction)
     } else {
-      message("Fitted line plotted")
       if (class(fm)[1] == "sma") {
-        coefs <- stats::coefficients(fm)
-        prediction <-
-          data.frame(x = data[["x"]],
-                     y = coefs["elevation"] + coefs["slope"] * data[["x"]])
+        if (se) {
+          b0 <- unlist(fm$coef[[1]]["elevation", ])
+          b0 <- ifelse(is.na(b0), 0, b0)
+          b1 <- unlist(fm$coef[[1]]["slope", ])
+          # centering is needed
+          b0delta <- b0 - b0[1]
+          if (all(b0 == 0)) {
+            # center on zero
+            center.y <- 0
+            center.x <- 0
+          } else {
+            # center on data means
+            center.y <- mean(data[["y"]])
+            center.x <- mean(data[["x"]])
+          }
+          rightside <- xseq > center.x
+          leftside <- !rightside
+          prediction <- data.frame(x = xseq,
+                                   y = center.y + b0delta[1] +
+                                     b1[1] * (xseq - center.x),
+                                   ymin = center.y + b0delta[2] +
+                                     (rightside * b1[2] + leftside * b1[3]) *
+                                     (xseq - center.x),
+                                   ymax = center.y + b0delta[3] +
+                                     (rightside * b1[3] + leftside * b1[2]) *
+                                     (xseq - center.x))
+        } else {
+          coefs <- stats::coefficients(fm)
+          prediction <-
+            data.frame(x = xseq, # data[["x"]]
+                       y = coefs["elevation"] + coefs["slope"] * xseq)
+        }
       } else {
+        message("Fitted line plotted")
         prediction <-
           data.frame(x = data[["x"]], y = fitted(fm))
       }
