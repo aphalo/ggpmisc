@@ -290,7 +290,8 @@ the variable is set to \code{NA_real_}.
   \item{r.squared, rr.confint.level, rr.confint.low, rr.confint.high, adj.r.squared, f.value, f.df1, f.df2, p.value, AIC, BIC, n}{numeric values, from the model fit object}
   \item{grp.label}{Set according to mapping in \code{aes}.}
   \item{b_0.constant}{TRUE is polynomial is forced through the origin}
-  \item{b_i}{One or columns with the coefficient estimates}}
+  \item{b_i}{One or more columns with the coefficient estimates}
+  \item{knots}{list containing a numeric vector of knot or "psi" \emph{x}-value for linear splines}}
 
 To explore the computed values returned for a given input we suggest the use
 of \code{\link[gginnards]{geom_debug}} as shown in the last examples below.
@@ -383,6 +384,7 @@ ggplot(my.data, aes(x, y)) +
 
 # modifying the explanatory variable within the model formula
 # modifying the response variable within aes()
+# eq.x.rhs and eq.with.lhs defaults must be overridden!!
 formula.trans <- y ~ I(x^2)
 ggplot(my.data, aes(x, y + 1)) +
   geom_point() +
@@ -476,7 +478,8 @@ if (gginnards.installed)
   ggplot(my.data, aes(x, y)) +
     geom_point() +
     stat_poly_line(formula = formula) +
-    stat_poly_eq(formula = formula, geom = "debug")
+    stat_poly_eq(formula = formula,
+                 geom = "debug")
 
 if (gginnards.installed)
   ggplot(my.data, aes(x, y)) +
@@ -545,10 +548,15 @@ Originally written as an answer to question 7549694 at
 }
 \seealso{
 This statistics fits a model with function \code{\link[stats]{lm}},
-  function \code{\link[MASS]{rlm}} or a user supplied function returning an
-  object of class \code{"lm"}. Consult the documentation of these functions
-  for the details and additional arguments that can be passed to them by name
-  through parameter \code{method.args}.
+  function \code{\link[MASS]{rlm}} and several other function returning an
+  object of class \code{"lm"} or objects of classes for which the common R
+  fitted-model-object extraction/query methods are available. Consult the
+  documentation of these functions for the details and additional arguments
+  that can be passed to them by name through parameter \code{method.args}.
+  User-defined model-fitting functions are also supported. Please, see examples in
+  article
+  \href{https://docs.r4photobiology.info/ggpmisc/articles/poly-advanced.html}{Custom Polynomial Models}
+  included in the on-line documentation.
 
   For quantile regression \code{\link{stat_quant_eq}} should be used instead
   of \code{stat_poly_eq} while for model II or major axis regression

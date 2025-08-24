@@ -51,6 +51,7 @@ This validation check could fail to validate some valid formulas as
   issued. The caller always receives a length-1 logical as return value.
 }
 \examples{
+# polynomials
 check_poly_formula(y ~ 1)
 check_poly_formula(y ~ x)
 check_poly_formula(y ~ x^3)
@@ -59,14 +60,22 @@ check_poly_formula(y ~ x - 1)
 check_poly_formula(y ~ x + 1)
 check_poly_formula(y ~ x + I(x^2))
 check_poly_formula(y ~ 1 + x + I(x^2))
-check_poly_formula(y ~ I(x^2) + x)
 check_poly_formula(y ~ x + I(x^2) + I(x^3))
 check_poly_formula(y ~ I(x) + I(x^2) + I(x^3))
+
+# transformations on x, first degree polynomials
+check_poly_formula(y ~ sqrt(x))
+check_poly_formula(y ~ log(x))
+check_poly_formula(y ~ I(x^2))
+
+# incomplete or terms in decreasing/mixed order
+check_poly_formula(y ~ I(x^2) + x)
 check_poly_formula(y ~ I(x^2) + I(x^3))
 check_poly_formula(y ~ I(x^2) + I(x^4))
 check_poly_formula(y ~ x + I(x^3) + I(x^2))
 
-check_poly_formula(y ~ poly(x, 2, raw = TRUE)) # use for label
-check_poly_formula(y ~ poly(x, 2)) # orthogonal polynomial
+# polynomials using poly()
+check_poly_formula(y ~ poly(x, 2, raw = TRUE)) # label o.k.
+check_poly_formula(y ~ poly(x, 2)) # orthogonal polynomial -> bad label
 
 }

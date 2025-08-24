@@ -30,18 +30,20 @@ eval_flag <- TRUE # evaluate all code chunks
 
 Package 'ggpmisc' makes it easier to add to plots created using 'ggplot2' annotations based on fitted models and other statistics. It does this by wrapping existing model fit and other functions. The same annotations can be produced by calling the model fit functions, extracting the desired estimates and adding them to plots. There are two advantages in wrapping these functions in an extension to package 'ggplot2': 1) we ensure the coupling of graphical elements and the annotations by building all elements of the plot using the same data and a consistent grammar and 2) we make it easier to annotate plots to the casual user of R, already familiar with the grammar of graphics.
 
-_To avoid confusion it is good to make clear what may seem obvious to some: if no plot is needed, then there is no reason to use this package. The values shown as annotations are not computed by 'ggpmisc' but instead by the usual model-fit and statistical functions from R and other packages. The same is true for model predictions, residuals, etc. that some of the functions in 'ggpmisc' display as lines, segments, or other graphical elements._
+_To avoid confusion it is good to make clear what may seem obvious to some: if no plot is needed, then there is no reason to use this package. The values shown as annotations are not computed by 'ggpmisc' but instead by the usual model-fit and statistical functions from R and R packages. The same is true for model predictions, residuals, etc. that some of the functions in 'ggpmisc' display as lines, segments, or other graphical elements._
 
-It is also important to remember that in most cases data analysis including exploratory and other stages should take place before annotated plots for publication are produced. Even though data analysis can benefit from combined numerical and graphical representation of the results, the use I envision for 'ggpmisc' is mainly for the production of plots for publication or communication of a completed analysis.
+It is also important to remember that in most cases data analysis including exploratory and other stages should take place before annotated plots for publication are produced. Even though data analysis can benefit from combined numerical and graphical representation of the results, the use I envision for 'ggpmisc' is mainly for the production of plots for publication or communication. In case case, whether used for analysis or communication, it is crucial that users cite and refer both to 'ggpmisc' and to the underlying R and R packages when publishing plots created with functions and methods from 'ggpmisc'.
+
+```{r}
+print(citation(package = "ggpmisc", auto = TRUE), bibtex = FALSE)
+```
 
 ## Preliminaries
 
-We load all the packages used in the examples.
+Other packages are loaded in the section they are used.
 
 ```{r, message=FALSE}
 library(ggpmisc)
-library(nlme)
-library(refitME)
 ```
 
 Attaching package 'ggpmisc' also attaches package 'ggpp' as it provides several of the geometries used by default in the statistics described below. Package 'ggpp' can be loaded and attached on its own, and has [separate documentation](https://docs.r4photobiology.info/ggpp/).
@@ -88,9 +90,15 @@ As all these methods use different penalty functions when fitting a model to obs
 
 ### Robust regression ('MASS')
 
+```{r}
+print(citation(package = "MASS", auto = TRUE), bibtex = FALSE)
+```
+
 Package 'MASS' provides function `rlm()` for "Robust Fitting of Linear Models". The returned value is an `"rlm"` object. Class `"rlm"` is derived from `"lm"` so the stats work mostly as expected. However, we need to be aware that no $R^2$ or $P$ estimates are available and the corresponding labels are empty strings.
 
 ```{r}
+library(MASS)
+
 ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
   stat_poly_line(method = MASS::rlm) +
@@ -136,9 +144,15 @@ ggplot(mpg, aes(displ, hwy)) +
 
 ### Robust regression ('robustbase')
 
+```{r}
+print(citation(package = "robustbase", auto = TRUE), bibtex = FALSE)
+```
+
 Package 'robustbase' provides function `lmrob()` for "MM-type Estimators for Linear Regression". The returned value is an `"lmrob"` object. Class `"lmrob"` is derived from `"lm"` so the stats work mostly as expected. However, we need to be aware that no $R^2$ or $P$ estimates are available and the corresponding labels are empty strings.
 
 ```{r}
+library(robustbase)
+
 ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
   stat_poly_line(method = robustbase::lmrob) +
@@ -187,9 +201,15 @@ ggplot(mpg, aes(displ, hwy)) +
 
 ### Resistant regression ('MASS')
 
+```{r}
+print(citation(package = "MASS", auto = TRUE), bibtex = FALSE)
+```
+
 Package 'MASS' provides function `lqs()` for "Resistant Regression". The returned value is an `"lqs"` object. Class `"rlm"` is not derived from `"lm"` but the structure is similar. However, we need to be aware that no $R^2$ or $P$ estimates are available and the corresponding labels are empty strings.
 
 ```{r}
+library(MASS)
+
 ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
   stat_poly_line(method = MASS::lqs, se = FALSE) +
@@ -240,9 +260,15 @@ ggplot(mpg, aes(displ, hwy)) +
 
 ### Resistant regression ('robustbase')
 
+```{r}
+print(citation(package = "robustbase", auto = TRUE), bibtex = FALSE)
+```
+
 Package 'robustbase' provides function `ltsReg()` for "least trimmed squares" regression. The returned value is an `"lts"` object. The usual accessors functions are available for Class `"lts"`.
 
 ```{r}
+library(robustbase)
+
 ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
   stat_poly_line(method = robustbase::ltsReg, se = FALSE) +
@@ -298,9 +324,15 @@ ggplot(mpg, aes(displ, hwy)) +
 
 ### Generalized Least Squares ('nlme')
 
+```{r}
+print(citation(package = "nlme", auto = TRUE), bibtex = FALSE)
+```
+
 In 'ggpmisc' (>= 0.6.2) function `gls()` from package 'nlme' is supported natively by functions `stat_poly_line()` and `stat_poly_eq()`. In this example, using a variance covariate, the computations do not converge with the data in one of the plot panels.
 
 ```{r}
+library(nlme)
+
 ggplot(mpg, aes(displ, hwy)) +
    geom_point() +
    stat_poly_line(method = gls, 
@@ -312,6 +344,147 @@ ggplot(mpg, aes(displ, hwy)) +
    label.x = "right") +
    theme(legend.position = "bottom") +
    facet_wrap(~class, ncol = 2)
+```
+
+### Linear Splines ('lspline')
+
+```{r}
+print(citation(package = "lspline", auto = TRUE), bibtex = FALSE)
+```
+
+Package 'lspline' provides functions that can be used to fit linear splines with function `lm()`. These functions are called from the model formula, and do not fit the change points where the knots are located. These functions, `lspline()`, `qlspline()` amd `elspline()` can be used
+directly in the model formula passed to `stat_poly_line()`. They can be used also with `stat_poly_eq()` but the equation label returned is incorrect, with the terms for the different segments displayed as the terms for the powers of a polynomial. Thus, it is necessary to construct in the call to `aes()` the equations for the different segments. The other labels are correctly generated.
+
+```{r, fig.width = 7, fig.height = 5}
+library(lspline) # attachment needed for methods to be available
+
+cp <- 4.1 # a guess
+my.formula <- y ~ lspline(x, knots = cp)
+
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  stat_poly_eq(aes(label = 
+                     paste("\"L : \"*y~`=`~", round(after_stat(b_0), 2),
+                           round(after_stat(b_1), 2), "~x",
+                           "*\"; R: \"*y~`=`~", 
+                           round(after_stat(b_0) + cp * after_stat(b_1), 2), 
+                           round(after_stat(b_2), 2), "~x",
+                           sep = "")), 
+               parse = TRUE, output.type = "numeric",
+               label.x = "right",
+               formula = my.formula,
+               method = "lm") +
+  stat_poly_eq(use_label("R2", "P", "AIC"), 
+               label.x = "right",
+               label.y = 0.87,
+               formula = my.formula,
+               method = "lm") +
+  stat_poly_line(method = "lm", 
+                 formula = my.formula)
+```
+
+It is posisble to use `rlm()` instead of `lm()`.
+
+```{r, fig.width = 7, fig.height = 5}
+cp <- 4.1
+my.formula <- y ~ lspline(x, knots = cp)
+
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  stat_poly_eq(aes(label =
+                     paste("\"L : \"*y~`=`~", round(after_stat(b_0), 2),
+                           round(after_stat(b_1), 2), "~x",
+                           "*\"; R: \"*y~`=`~", 
+                           round(after_stat(b_0) + cp * after_stat(b_1), 2), 
+                           round(after_stat(b_2), 2), "~x",
+                           sep = "")), 
+               parse = TRUE, output.type = "numeric",
+               label.x = "right",
+               formula = my.formula,
+               method = "rlm") +
+  stat_poly_eq(use_label("AIC"), 
+               label.x = "right",
+               label.y = 0.87,
+               formula = my.formula,
+               method = "rlm") +
+  stat_poly_line(method = "rlm", 
+                 formula = my.formula)
+```
+
+### Linear Splines ('segmented')
+
+```{r}
+print(citation(package = "segmented", auto = TRUE), bibtex = FALSE)
+```
+
+Function `segreg()` makes it possible to fit LM and GLM that segmented. 
+Differently to 'lspline', the knots can be fitted as well as the segment slopes
+and intecept. As 'lspline' it used a model formula to set the model including
+control of the segmentation. Differently to `lspline()`, `segreg()` is a model
+fit function.
+
+```{r, fig.width = 7, fig.height = 5}
+library(segmented)
+
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  stat_poly_eq(aes(label = 
+                     paste("x[knot]~`=`~", 
+                           round(after_stat(knots)[[1]][[2]], 2), 
+                           "*\"; L: \"*y~`=`~", 
+                           round(after_stat(b_0), 2), # "+",
+                           round(after_stat(b_1), 2), "~x",
+                           "*\"; R: \"*y~`=`~", 
+                           round(after_stat(b_0) + 
+                                   after_stat(knots)[[1]][[2]] * 
+                                   (after_stat(b_1) - after_stat(b_2)),
+                                 2),
+                           "+",
+                           round(after_stat(b_2), 2), "~x",
+                           sep = "")), 
+               parse = TRUE, output.type = "numeric",
+               label.x = "right",
+               formula = y ~ seg(x, npsi = 1),
+               method = segreg) +
+  stat_poly_eq(use_label("R2", "P", "AIC"), 
+               label.x = "right",
+               label.y = 0.87,
+               formula = y ~ seg(x, npsi = 1),
+               method = segreg) +
+  stat_poly_line(method = segreg, 
+                 formula = y ~ seg(x, npsi = 1))
+```
+
+In the next example we fix the slope of the second segment at zero to keep it
+horizontal. Because of how the parameters are returned, the code to assemble
+the equation needs to be rewritten.
+
+```{r, fig.width = 7, fig.height = 5}
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  stat_poly_eq(aes(label = 
+                     paste("x[knot]~`=`~", 
+                           round(after_stat(knots)[[1]][[2]], 2), 
+                           "*\"; L: \"*y~`=`~", 
+                           round(after_stat(b_1), 2), # "+",
+                           round(after_stat(b_2), 2), "~x",
+                           "*\"; R: \"*y~`=`~", 
+                           round(after_stat(b_1) + 
+                                   after_stat(knots)[[1]][[2]] *
+                                   after_stat(b_2),
+                                 2),
+                           sep = "")), 
+               parse = TRUE, output.type = "numeric",
+               label.x = "right",
+               formula = y ~ seg(x, npsi = 1, est = c(1, 0)),
+               method = segreg) +
+  stat_poly_eq(use_label("R2", "P", "AIC"), 
+               label.x = "right",
+               label.y = 0.87,
+               formula = y ~ seg(x, npsi = 1, est = c(1, 0)),
+               method = segreg) +
+  stat_poly_line(method = segreg, 
+                 formula = y ~ seg(x, npsi = 1, est = c(1, 0)))
 ```
 
 ## User defined functions
@@ -438,11 +611,122 @@ ggplot(mpg, aes(displ, hwy, color = class)) +
   theme(legend.position = "top")
 ```
 
+### Functions that re-fit a fitted model
+
+The examples in this section are for package 'segmented', however, a similar
+approach can be useful with any model fitting that involves calls to more than
+one function in sequence, such as computing starting values for a numerical
+method, or modifying the model fit object.
+
+### Segmented ('segmented')
+
+Package 'segmented' implements methods for fitting models with change points. The location of the change points themselves are fitted with estimates and their standard deviations computed.
+
+```{r}
+print(citation(package = "segmented", auto = TRUE), bibtex = FALSE)
+```
+The code here, is equivalent to that shown above based on model-fit function
+`segreg()` also from package 'segmented'. The difference is that when using
+`segmented()` the fitting is done in two steps. In this case there is no need 
+to use this approach, but it can be useful when segmentation is to be applied 
+only to some plot panels or applied conditionally in single panel plots. Another
+use is when fitting segmented linear regressions based on model-fit functions
+other than `lm()` or `glm()`. However, in this second case, some of the
+necessary model-fit query functions can be unavailable and may need to be
+defined by the user. There are also model fit methods that do not compute or
+provide the estimates required by the segmentation computations.
+
+Package 'segmented' provides several specializations of method `segmented()`.
+These methods are dispathed according the model fit object passed to parameter
+`obj`. As this package provides all the expected query functions for the object
+`segmented()` methods return, their use is not too difficult. It is possible to
+write a wrapper function to pass as argument to `stat_poly_line()` and
+`stat_poly_eq()` and in addition, if used, construct the fitted equation labels
+within a call to `aes()`. This function, that I named lm2segmented.lm, calls
+first `lm()` and then calls `segmented()` with the fitted model as argument. It
+accepts additional arguments that make it possible to control the number and
+initial values of the knots. As in the case of other model fit functions, models
+with multiple explanatory variables are rarely used with 'ggplot2' stats.
+
+```{r, fig.width = 7, fig.height = 5}
+library(segmented)
+
+lm2segmented.lm <- 
+  function(formula,
+           data, 
+           seg.Z = ~ x, # explanatory variable used for segmentation
+           psi = median(data$x), # starting value(s) for knot(s)
+           npsi = 1, # number of knots if psi is not given
+           fixed.psi = NULL, # breakpoint not to be modified by fitting
+           control = segmented::seg.control(), 
+           ...) {
+    obj <- lm(formula = formula, data = data, ...)
+    segmented(obj = obj, 
+              seg.Z = seg.Z, 
+              psi = psi, 
+              npsi = npsi, 
+              fixed.psi = fixed.psi, 
+              control = control, 
+              model = TRUE, 
+              keep.class = FALSE)
+}
+
+# using defaults, one breakpoint
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  stat_poly_line(method = lm2segmented.lm)
+
+# requesting two breakpoints with starting values
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  stat_poly_line(method = lm2segmented.lm,
+  method.args = list(psi = c(3, 5)))
+```
+
+A more complex example with labels, assembled within the call to `aes()`. In addition to the intercept and slope for the leftmost segment, it returns the slope for each segment to the right of the first one, but not their intercepts. As `segment()` fits and returns the position of the knots, which are also returned by
+`stat_poly_eq()` in 'ggpmisc' (>= 0.6.3). A label is added with the knot position, and two regression equations, one for each segment of the linear spline.
+
+```{r, fig.width = 7, fig.height = 5}
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  stat_poly_eq(aes(label = 
+                     paste("x[knot]~`=`~", 
+                           round(after_stat(knots)[[1]][[2]], 2), 
+                           "*\"; L: \"*y~`=`~", 
+                           round(after_stat(b_0), 2), #"+",
+                           round(after_stat(b_1), 2), "~x",
+                           "*\"; R: \"*y~`=`~", 
+                           round(after_stat(b_0) + 
+                                   after_stat(knots)[[1]][[2]] *
+                                   (after_stat(b_1) - after_stat(b_2)),
+                                 2),
+                           "+",
+                           round(after_stat(b_2), 2), "~x",
+                           sep = "")), 
+               parse = TRUE, output.type = "numeric",
+               label.x = "right",
+               formula = y ~ x,
+               method = lm2segmented.lm) +
+  stat_poly_eq(use_label("R2", "P", "AIC"), 
+               label.x = "right",
+               label.y = 0.87,
+               formula = y ~ x,
+               method = lm2segmented.lm) +
+  stat_poly_line(method = lm2segmented.lm, 
+                 formula = y ~ x,)
+```
+
 ## Work-arounds
 
-Some model fit functions return object for which no `predict()` method exist. In such cases, as users we can define such a method. More difficult situations can be faced. In this last section I show a situation I faced when trying to use package 'refitME'. The functions exported by this package fail when called from within a function, so they do not currently work if passed as an argument for `method`. Below, a temporary work-around based on a solution provided by the maintainer of 'refitME' is shown.
+Some model-fit functions return objects for which no `predict()` method exist. In such cases, as users we can define such a method. More difficult situations can also be faced. 
 
 ### Errors in variables ('refitME')
+
+In this section I show a situation I faced when trying to use package 'refitME'. The functions exported by this package fail when called from within a function, so they do not currently work if passed as an argument for `method`. Below, a temporary work-around based on a solution provided by the maintainer of 'refitME' is shown.
+
+```{r}
+print(citation(package = "refitME", auto = TRUE), bibtex = FALSE)
+```
 
 As 'refitME' functions return a model fit object of the same class as that received as input, a model fitted with `lm()` could be, in principle, refit in a user-defined wrapper function as those above, calling first `lm()` and re-fitting the obtained model with a `refitME::refitME()` as shown in the code chunk below. However, at the moment the functions in package 'refitME' fail when called from within another function.
 
@@ -479,8 +763,6 @@ I have reported the problem through a [GitHub issue](https://github.com/JakubSta
 ```{r}
 rm(list = ls(pattern = "*"))
 
-library(ggplot2)
-library(ggpmisc)
 library(refitME)
 
 lm_EIV <- function(formula, data, ..., sigma.sq.u) {
@@ -551,4 +833,37 @@ ggplot(mpg, aes(x = displ, y = hwy)) +
                method.args = list(sigma.sq.u = 0.01),
                label.x = "right") +
   facet_wrap(~class, ncol = 2)
+```
+
+## Transformations and `eq.label`
+
+In 'ggplot2' setting transformations in _X_ and _y_ scales results in statistics receiving transformed data as input. The data "seen" by statistics is the same as if the transformation had been applied within a call to `aes()`. However, the scales
+automatically adjust breaks and tick labels to display the values in the untransformed scale. When the transformation is applied in the model `formula`
+definition, the transformation is applied later, but still before the model is fit. all these cases, the model fit is based on transformed values and thus the
+estimates refer to them. This is why, a linear fit remains linear in spite of the transformations. 
+
+Only `eq.label` is affected by transformations in the sense that the _x_ and _y_ in the default equation refer to transformed values, rather than those shown in the tick labels of the axes, i.e., the default model equation label is incorrect. The correction to apply is to override the _x_ and/or _y_ symbols in the equation label by an expression that includes the transformation used. In these examples we
+fit polynomials by OLS using `lm()`, the default method.
+
+```{r, fig.width = 7, fig.height = 5}
+ggplot(mpg, aes(x = displ, y = hwy)) +
+  geom_point() +
+  stat_poly_line() +
+  stat_poly_eq(mapping = use_label("eq", "R2", "n", "P"),
+             eq.with.lhs = "log[10]~hwy~`=`~",
+             eq.x.rhs = "~displ") +
+  scale_y_log10() + 
+  expand_limits(y = 50)
+```
+
+```{r, fig.width = 7, fig.height = 5}
+ggplot(mpg, aes(x = displ, y = hwy)) +
+  geom_point() +
+  stat_poly_line(formula = y ~ poly(x, 3, raw = TRUE)) +
+  stat_poly_eq(mapping = use_label("eq"),
+               formula = y ~ poly(x, 3, raw = TRUE),
+               eq.with.lhs = "hwy~`=`~",
+               eq.x.rhs = "~(log[10]~displ)") +
+  scale_x_log10(name = "displ") + 
+  expand_limits(y = 50)
 ```

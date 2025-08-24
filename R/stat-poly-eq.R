@@ -221,7 +221,8 @@
 #'   \item{r.squared, rr.confint.level, rr.confint.low, rr.confint.high, adj.r.squared, f.value, f.df1, f.df2, p.value, AIC, BIC, n}{numeric values, from the model fit object}
 #'   \item{grp.label}{Set according to mapping in \code{aes}.}
 #'   \item{b_0.constant}{TRUE is polynomial is forced through the origin}
-#'   \item{b_i}{One or columns with the coefficient estimates}}
+#'   \item{b_i}{One or more columns with the coefficient estimates}
+#'   \item{knots}{list containing a numeric vector of knot or "psi" \emph{x}-value for linear splines}}
 #'
 #' To explore the computed values returned for a given input we suggest the use
 #' of \code{\link[gginnards]{geom_debug}} as shown in the last examples below.
@@ -233,10 +234,15 @@
 #'   and contains bugs that have been fixed in \code{stat_poly_eq()}.
 #'
 #' @seealso This statistics fits a model with function \code{\link[stats]{lm}},
-#'   function \code{\link[MASS]{rlm}} or a user supplied function returning an
-#'   object of class \code{"lm"}. Consult the documentation of these functions
-#'   for the details and additional arguments that can be passed to them by name
-#'   through parameter \code{method.args}.
+#'   function \code{\link[MASS]{rlm}} and several other function returning an
+#'   object of class \code{"lm"} or objects of classes for which the common R
+#'   fitted-model-object extraction/query methods are available. Consult the
+#'   documentation of these functions for the details and additional arguments
+#'   that can be passed to them by name through parameter \code{method.args}.
+#'   User-defined model-fitting functions are also supported. Please, see examples in
+#'   article
+#'   \href{https://docs.r4photobiology.info/ggpmisc/articles/poly-advanced.html}{Custom Polynomial Models}
+#'   included in the on-line documentation.
 #'
 #'   For quantile regression \code{\link{stat_quant_eq}} should be used instead
 #'   of \code{stat_poly_eq} while for model II or major axis regression
@@ -327,6 +333,7 @@
 #'
 #' # modifying the explanatory variable within the model formula
 #' # modifying the response variable within aes()
+#' # eq.x.rhs and eq.with.lhs defaults must be overridden!!
 #' formula.trans <- y ~ I(x^2)
 #' ggplot(my.data, aes(x, y + 1)) +
 #'   geom_point() +
@@ -420,7 +427,8 @@
 #'   ggplot(my.data, aes(x, y)) +
 #'     geom_point() +
 #'     stat_poly_line(formula = formula) +
-#'     stat_poly_eq(formula = formula, geom = "debug")
+#'     stat_poly_eq(formula = formula,
+#'                  geom = "debug")
 #'
 #' if (gginnards.installed)
 #'   ggplot(my.data, aes(x, y)) +
@@ -555,7 +563,7 @@ stat_poly_eq <- function(mapping = NULL,
     } else if (grepl("y", as.character(formula)[2])) {
       orientation <- "x"
     } else {
-      stop("The model formula should use 'x' and 'y' as variables")
+      stop("'formula' must refer to aesthetics 'x' and 'y', not names in 'data'")
     }
   }
 
@@ -571,8 +579,10 @@ stat_poly_eq <- function(mapping = NULL,
     parse <- output.type == "expression"
   }
 
-  # is the model formula that of complete and increasing polynomial?
-  mk.eq.label <- output.type != "numeric" && check_poly_formula(formula, orientation)
+  # is the model formula that of an increasing polynomial?
+  mk.eq.label <- output.type != "numeric" &&
+                   check_poly_formula(formula, orientation) && # is 'formula' a polynomial?
+                   !any(grepl("lspline", as.character(formula))) # not a linear spline
 
   if (is.null(rsquared.conf.level) || !is.finite(rsquared.conf.level)) {
     rsquared.conf.level <- 0
@@ -775,6 +785,7 @@ poly_eq_compute_group_fun <- function(data,
   }
 
   fm <- do.call(method, args = fun.args)
+  mk.eq.label <- mk.eq.label && class(fm)[1] != "segmented" # not segmented into a spline?
 
   # allow skipping of output if returned value from model fit function is missing
   if (!length(fm) || (is.atomic(fm) && is.na(fm))) {
@@ -864,6 +875,14 @@ poly_eq_compute_group_fun <- function(data,
     n <- NA_real_
   }
   coefs <- stats::coefficients(fm)
+  if ("psi" %in% names(fm.summary)) { # package segmented
+    knots <- fm.summary[["psi"]]
+    if (!is.list(knots)) {
+      knots <- list(knots)
+    }
+  } else {
+    knots <- NA_real_
+  }
 
   formula <- formula.ls[[1L]]
   stopifnot(inherits(formula, what = "formula"))
@@ -894,6 +913,7 @@ poly_eq_compute_group_fun <- function(data,
                         AIC = AIC,
                         BIC = BIC,
                         n = n,
+                        knots = knots,
                         rr.label = "",  # needed for default 'label' mapping
                         b_0.constant = forced.origin)
     z <- cbind(z, tibble::as_tibble_row(coefs))
@@ -979,7 +999,8 @@ poly_eq_compute_group_fun <- function(data,
                     r.squared = rr,
                     adj.r.squared = adj.rr,
                     p.value = p.value,
-                    n = n)
+                    n = n,
+                    knots = knots)
   }
 
   # add members common to numeric and other output types

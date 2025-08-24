@@ -5,6 +5,16 @@ test_that("check poly passed with constants", {
   expect_true(check_poly_formula(y ~ 0))
  })
 
+test_that("check poly passed with transformed x", {
+  expect_true(check_poly_formula(y ~ log(x)))
+  expect_true(check_poly_formula(y ~ sqrt(x)))
+  expect_true(check_poly_formula(y ~ I(x)))
+  expect_true(check_poly_formula(y ~ I(x * 2)))
+  expect_true(check_poly_formula(y ~ I(x + 2L)))
+  expect_true(check_poly_formula(y ~ I(x^2)))
+  expect_true(check_poly_formula(y ~ I(x^3)))
+})
+
 test_that("check poly passed with x", {
   expect_true(check_poly_formula(y ~ x))
   expect_true(check_poly_formula(y ~ 1 + x))

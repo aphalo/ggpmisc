@@ -8,59 +8,127 @@ editor_options:
 
 -   Support `log()` and `sqrt()` transformations for `local.reference` in
     `find_peaks()`, `find_valleys()`, `stat_peaks()` and `stat_valleys()`.
--   Support `smatr::ma()` and `smatr::sma()` in `stat_poly_line()` and in
+-   Support `smatr::ma()` and `smatr::sma()` in `stat_poly_eq()` and in
     `stat_poly_line()`.
--   Add on-line only article on major axis regression in plots.
+-   Support `segmented::segmented()` and `segmented::segreg()` in 
+    `stat_poly_eq()` and in `stat_poly_line()`.
+-   Support `lspline::lspline()` in `stat_poly_eq()` and in `stat_poly_line()`.
+-   Add on-line only article _Major axis regression_.
+-   Add examples of fitted linear splines to on-line only article 
+    _Custom Polynomial Models_.
 
 # ggpmisc 0.6.2
 
-A significant new feature in this release is the support of additional model fitting functions, both explicitly and by handling missing methods and values more gracefully. Another important enhancement is a more flexible approach to the filtering of peaks and valleys using height and depth thresholds, which improves the detection of prominent or major (true?) peaks in noisy data by reducing or preventing "false positives".
+A significant new feature in this release is the support of additional model
+fitting functions, both explicitly and by handling missing methods and values 
+more gracefully. Another important enhancement is a more flexible approach to
+the filtering of peaks and valleys using height and depth thresholds, which 
+improves the detection of prominent or major (true?) peaks in noisy data by 
+reducing or preventing "false positives".
 
 -   Check compatibility with 'ggplot2' 4.0.0.
--   In `stat_poly_line()` and `stat_poly_eq()` a fitted model object of an unexpected class triggers a warning instead of an error.
--   Support `MASS::lqs()`, `nlme::gls()`, `robustbase::lmrob()` and `robustbase::lstReg()` in `stat_poly_line()`, `stat_poly_eq()`, `stat_fit_deviations()`, `stat_fit_residuals()` and `stat_fit_fitted()`. 
--   Support `nlme::gls()`, `MASS::lqs()`, `robustbase::lmrob()`, `robustbase::ltsReg()` and model fit objects of classes for which method `weights()` is not available in `stat_fit_deviations()`, `stat_fit_fitted()`, `stat_fit_residuals()`.
--   If `predict()` is not available for a `method`, function `stat_poly_line()` uses `fitted()` instead.
--   Code breaking change in `stat_fit_deviations()`: consistently return prior weights in variable `weights` and new variable `robustness.weights` for the implicit weights used by robust fit methods.
+-   In `stat_poly_line()` and `stat_poly_eq()` a fitted model object of an 
+unexpected class triggers a warning instead of an error.
+-   Support `MASS::lqs()`, `nlme::gls()`, `robustbase::lmrob()` and 
+`robustbase::lstReg()` in `stat_poly_line()`, `stat_poly_eq()`, 
+`stat_fit_deviations()`, `stat_fit_residuals()` and `stat_fit_fitted()`.
+-   Support `nlme::gls()`, `MASS::lqs()`, `robustbase::lmrob()`, 
+`robustbase::ltsReg()` and model fit objects of classes for which method
+`weights()` is not available in `stat_fit_deviations()`, `stat_fit_fitted()`,
+`stat_fit_residuals()`.
+-   If `predict()` is not available for a `method`, function `stat_poly_line()`
+uses `fitted()` instead.
+-   Code breaking change in `stat_fit_deviations()`: consistently return prior 
+weights in variable `weights` and in new variable `robustness.weights` for the 
+implicit weights computed by robust fit methods.
 -   Bug fix: the value of 'method.label' not always set.
--   Update `scale_x_logFC()`and `scale_y_logFC()` for improved compatibility with 'ggplot2' (>= 3.5.2).
--   Implement a local (within-window span) threshold for peak height and valley depth in `stat_peaks()` and `stat_valleys()`, using parameters `local.threshold` and `local.reference`.
--   **Code breaking:** Rename parameter `ignore_threshold` into `global.threshold` in `find_peaks()`, `stat_peaks()`  and `stat_valleys()` for naming consistency and clarity.
--   The scaling applied to user-supplied values for `global.threshold` and `local.threshold` can be controlled by passing a `character` argument to `threshold.scaling`. Non-scaled thresholds are also supported.
--   Support repulsive geoms from 'ggrepel' in `stat_peaks()` and `stat_valleys()` by making extraction of rows conditional.
+-   Update `scale_x_logFC()`and `scale_y_logFC()` for improved compatibility
+with 'ggplot2' (>= 3.5.2).
+-   Implement a local (within-window span) threshold for peak height and valley
+depth in `stat_peaks()` and `stat_valleys()`, using parameters `local.threshold`
+and `local.reference`.
+-   **Code breaking:** Rename parameter `ignore_threshold` into 
+`global.threshold` in `find_peaks()`, `stat_peaks()`  and `stat_valleys()` 
+for naming consistency and clarity.
+-   The scaling applied to user-supplied values for `global.threshold` and 
+`local.threshold` can be controlled by passing a `character` argument to 
+`threshold.scaling`. Non-scaled thresholds are also supported.
+-   Support repulsive geoms from 'ggrepel' in `stat_peaks()` and 
+`stat_valleys()` by making extraction of rows conditional.
 -   Add HTML Cheat Sheet.
--   Add articles 'Custom Polynomial Models' and 'Peaks and Valleys' as on-line only documentation.
+-   Add articles _Custom Polynomial Models_ and _Peaks and Valleys_ as on-line 
+only documentation.
 
 # ggpmisc 0.6.1
 
 -   Fix warning with current 'broom' and upcoming 'ggplot2'.
--   Make order of formal parameters in stats consistent with that in current 'ggplot2'.
+-   Make order of formal parameters in stats consistent with that in current 
+'ggplot2'.
 
 # ggpmisc 0.6.0-1
 
--   Add ellipsis parameter (`...`) to `use_label()` so that in addition to a character vector of label names passed to parameter `labels`, separate strings for each name are now also accepted.
--   Support decreasing-power order of polynomial terms in the labels generated by `stat_poly_eq()`, `stat_quant_eq()` and `stat_ma_eq()` (not in the input!).
--   In `stat_quant_eq()` return new `qtl.label` for quantiles, separately from `grp.label`, which now works only based on a pseudo aesthetic, as in `stat_poly_eq()` and `stat_ma_eq()`. **This is a soft code breaking change affecting the rendering of model equation labels in some plots.**
--   Define function `check_poly_formula()` and use it in `stat_poly_eq()` and `stat_quant_eq()` to validate that the user-supplied model formula is a polynomial with terms in order of increasing powers, except when `output.type = "numeric"`. If not validated, `NA` is returned as formatted character string for the equation label. 
--   Statistics `stat_poly_eq()`, `stat_ma_eq()`, `stat_quant_eq()`, `stat_correlation()`, and `stat_multcomp()` were in part reimplemented, introducing small visual changes in the formatting of labels, including changes in the default number of digits in very few cases.
--   Export the new utility functions now used internally for formatting parameter estimates into character strings in `stat_poly_eq()`, `stat_ma_eq()`, `stat_quant_eq()`, `stat_correlation()`, and `stat_multcomp()`.
--   Implement R options `ggpmisc.small.p`, `ggpmisc.small.r` and `ggpmisc.decreasing.poly.eq`. Obey R option "verbose" by displaying additional informative messages.
--   Allow user-defined fit methods passed as argument to `stat_poly_eq()`, `stat_poly_line()`, `stat_ma_eq()`, `stat_ma_line()`, `stat_quant_eq()`, `stat_quant_line()`, and `stat_quant_band()` to return an atomic `NA` or a length zero object to skip labelling or plotting related to the attempted model fit.
--   The redundant, and for a long time deprecated formal parameters `label.x.npc` and `label.y.npc` have been removed. **This is a code breaking change, preceded by a long deprecation period.** _To update broken code, simply replace `label.y.npc` by `label.y` and `label.x.npc` by `label.x` in the call still passing the same arguments._
+-   Add ellipsis parameter (`...`) to `use_label()` so that in addition to a 
+character vector of label names passed to parameter `labels`, separate strings
+for each name are now also accepted.
+-   Support decreasing-power order of polynomial terms in the labels generated
+by `stat_poly_eq()`, `stat_quant_eq()` and `stat_ma_eq()` (not in the input!).
+-   In `stat_quant_eq()` return new `qtl.label` for quantiles, separately from 
+`grp.label`, which now works only based on a pseudo aesthetic, as in 
+`stat_poly_eq()` and `stat_ma_eq()`. **This is a soft code breaking change 
+affecting the rendering of model equation labels in some plots.**
+-   Define function `check_poly_formula()` and use it in `stat_poly_eq()` and 
+`stat_quant_eq()` to validate that the user-supplied model formula is a 
+polynomial with terms in order of increasing powers, except when 
+`output.type = "numeric"`. If not validated, `NA` is returned as formatted 
+character string for the equation label. 
+-   Statistics `stat_poly_eq()`, `stat_ma_eq()`, `stat_quant_eq()`,
+`stat_correlation()`, and `stat_multcomp()` were in part reimplemented, 
+introducing small visual changes in the formatting of labels, including changes
+in the default number of digits in very few cases.
+-   Export the new utility functions now used internally for formatting 
+parameter estimates into character strings in `stat_poly_eq()`, `stat_ma_eq()`, 
+`stat_quant_eq()`, `stat_correlation()`, and `stat_multcomp()`.
+-   Implement R options `ggpmisc.small.p`, `ggpmisc.small.r` and 
+`ggpmisc.decreasing.poly.eq`. Obey R option "verbose" by displaying additional
+informative messages.
+-   Allow user-defined fit methods passed as argument to `stat_poly_eq()`, 
+`stat_poly_line()`, `stat_ma_eq()`, `stat_ma_line()`, `stat_quant_eq()`, 
+`stat_quant_line()`, and `stat_quant_band()` to return an atomic `NA` or a
+length zero object to skip labelling or plotting related to the attempted model
+fit.
+-   The redundant, and for a long time deprecated formal parameters 
+`label.x.npc` and `label.y.npc` have been removed. **This is a code breaking
+change, preceded by a long deprecation period.** _To update broken code, simply
+replace `label.y.npc` by `label.y` and `label.x.npc` by `label.x` in the call 
+still passing the same arguments._
 -   Fix bug in tests of availability of suggested package 'broom'.
 
 # ggpmisc 0.5.6
 
--   Rename parameter `trans` of `scale_y_Pvalue()` into `transform` to track deprecation in 'ggplot2' 3.5.0.
--   Revise `stat_multcomp()` to flexibly include in labels, both when using "bars" and "letters", the abbreviated name of the method used to adjust _P_-values (suggested by _markbneal_, Mark Neal).
--   Revise `stat_multcomp()` to flexibly include only when using "letters" an additional label with the critical _P_-value and the method used to adjust the empirical _P_-values (suggested by _markbneal_, Mark Neal).
+-   Rename parameter `trans` of `scale_y_Pvalue()` into `transform` to track 
+deprecation in 'ggplot2' 3.5.0.
+-   Revise `stat_multcomp()` to flexibly include in labels, both when using 
+"bars" and "letters", the abbreviated name of the method used to adjust 
+_P_-values (suggested by _markbneal_, Mark Neal).
+-   Revise `stat_multcomp()` to flexibly include only when using "letters" an
+additional label with the critical _P_-value and the method used to adjust the 
+empirical _P_-values (suggested by _markbneal_, Mark Neal).
 -   Revise `stat_multcomp()` to support arbitrary sets of pairwise contrasts.
--   Rename parameters  of `stat_multcomp()`: `adjusted.type` to `p.adjust.method`, and `constrast.type` to `contrasts`.
--   Change defaults used for `p.adjust.method` so that they depend on the argument passed to `contrasts`.
--   Accept in `stat_correlation()`, `stat_poly_eq()`, `stat_ma_eq()`, and `stat_multcomp()`, `p.digits = Inf` as a request to use scientific notation for `p.value.label` (suggested by _wbvguo_, Wenbin Guo).
--   Fix bug in `stat_multcomp()`: **wrongly encoded letters** in Tukey contrasts in case of grouping factors with more than nine levels.
--   Fix bug in `stat_multcomp()`: **warning** issued by `mvtnorm::pmvnorm()` because of convergence failure in Tukey contrasts in case of grouping factors with more than approximately 5 to 7 levels. Convergence failure also meant slightly different _P_-values returned in different runs in these cases.
--   Fix bug in `stat_multcomp()`: off-plot letter labels with Tukey contrasts in some plots with more than five groups.
+-   Rename parameters  of `stat_multcomp()`: `adjusted.type` to 
+`p.adjust.method`, and `constrast.type` to `contrasts`.
+-   Change defaults used for `p.adjust.method` so that they depend on the 
+argument passed to `contrasts`.
+-   Accept in `stat_correlation()`, `stat_poly_eq()`, `stat_ma_eq()`, and
+`stat_multcomp()`, `p.digits = Inf` as a request to use scientific notation for 
+`p.value.label` (suggested by _wbvguo_, Wenbin Guo).
+-   Fix bug in `stat_multcomp()`: **wrongly encoded letters** in Tukey contrasts
+in case of grouping factors with more than nine levels.
+-   Fix bug in `stat_multcomp()`: **warning** issued by `mvtnorm::pmvnorm()` 
+because of convergence failure in Tukey contrasts in case of grouping factors
+with more than approximately 5 to 7 levels. Convergence failure also meant
+slightly different _P_-values returned in different runs in these cases.
+-   Fix bug in `stat_multcomp()`: off-plot letter labels with Tukey contrasts
+in some plots with more than five groups.
 
 # ggpmisc 0.5.5
 

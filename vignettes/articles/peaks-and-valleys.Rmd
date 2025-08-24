@@ -32,7 +32,11 @@ Package 'ggpmisc' makes it easier to add to plots created using 'ggplot2' annota
 
 _To avoid confusion it is good to make clear what may seem obvious to some: if no plot is needed, then there is no reason to use the ggplot statistics from this package. The values shown as annotations are computed using function `find_peaks()`, which builds onto function `splus2R::peaks()`._
 
-It is also important to remember that in most cases data analysis including exploratory and other stages should take place before annotated plots for publication are produced. Even though data analysis can benefit from combined numerical and graphical representation of the results, the use I envision for 'ggpmisc' is mainly for the production of plots for publication or communication of a completed analysis.
+It is also important to remember that in most cases data analysis including exploratory and other stages should take place before annotated plots for publication are produced. Even though data analysis can benefit from combined numerical and graphical representation of the results, the use I envision for 'ggpmisc' is mainly for the production of plots for publication or communication. In case case, whether used for analysis or communication, it is crucial that users cite and refer both to 'ggpmisc' and to the underlying R and R packages when publishing plots created with functions and methods from 'ggpmisc'.
+
+```{r}
+print(citation(package = "ggpmisc", auto = TRUE), bibtex = FALSE)
+```
 
 ## Preliminaries
 
