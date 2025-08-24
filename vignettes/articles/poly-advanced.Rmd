@@ -430,7 +430,7 @@ ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
   stat_poly_eq(aes(label = 
                      paste("x[knot]~`=`~", 
-                           round(after_stat(knots)[[1]][[2]], 2), 
+                           round(after_stat(knots)[[1]][1, 2], 2), 
                            "*\"; L: \"*y~`=`~", 
                            round(after_stat(b_0), 2), # "+",
                            round(after_stat(b_1), 2), "~x",
@@ -464,7 +464,7 @@ ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
   stat_poly_eq(aes(label = 
                      paste("x[knot]~`=`~", 
-                           round(after_stat(knots)[[1]][[2]], 2), 
+                           round(after_stat(knots)[[1]][1, 2], 2), 
                            "*\"; L: \"*y~`=`~", 
                            round(after_stat(b_1), 2), # "+",
                            round(after_stat(b_2), 2), "~x",
@@ -691,7 +691,7 @@ ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
   stat_poly_eq(aes(label = 
                      paste("x[knot]~`=`~", 
-                           round(after_stat(knots)[[1]][[2]], 2), 
+                           round(after_stat(knots)[[1]][1, 2], 2), 
                            "*\"; L: \"*y~`=`~", 
                            round(after_stat(b_0), 2), #"+",
                            round(after_stat(b_1), 2), "~x",

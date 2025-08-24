@@ -875,13 +875,17 @@ poly_eq_compute_group_fun <- function(data,
     n <- NA_real_
   }
   coefs <- stats::coefficients(fm)
+  stopifnot(is.numeric(coefs))
+  coefs.names <- names(coefs)
   if ("psi" %in% names(fm.summary)) { # package segmented
-    knots <- fm.summary[["psi"]]
-    if (!is.list(knots)) {
-      knots <- list(knots)
-    }
+    knots.mat <- fm.summary[["psi"]]
+    knots <- knots.mat[ , 2]
+    knots.names <- names(knots)
+    knots.se <- knots.mat[ , 3]
   } else {
     knots <- NA_real_
+    knots.se <- NA_real_
+    knots.names <- NA_character_
   }
 
   formula <- formula.ls[[1L]]
@@ -894,13 +898,13 @@ poly_eq_compute_group_fun <- function(data,
   }
   selector <- !is.na(coefs)
   coefs <- coefs[selector]
-  names(coefs) <- paste("b", (which(selector)) - 1, sep = "_")
   if (!all(selector)) {
     message("Terms dropped from model (singularity); n = ", nrow(data), " in group.")
   }
   if (output.type == "numeric") {
-    z <- tibble::tibble(coef.ls = list(summary(fm)[["coefficients"]]),
-                        coefs = list(coef(fm)),
+    z <- tibble::tibble(coef.ls = list(fm.summary[["coefficients"]]),
+                        coefs = list(coefs),
+                        coefs.names = list(coefs.names),
                         r.squared = rr,
                         rr.confint.level = rsquared.conf.level,
                         rr.confint.low = rr.confint.low,
@@ -913,9 +917,12 @@ poly_eq_compute_group_fun <- function(data,
                         AIC = AIC,
                         BIC = BIC,
                         n = n,
-                        knots = knots,
+                        knots = list(knots),
+                        knots.se = list(knots.se),
+                        knots.names = list(knots.names),
                         rr.label = "",  # needed for default 'label' mapping
                         b_0.constant = forced.origin)
+    names(coefs) <- paste("b", (which(selector)) - 1, sep = "_")
     z <- cbind(z, tibble::as_tibble_row(coefs))
   } else {
     if (mk.eq.label) {
@@ -1000,7 +1007,7 @@ poly_eq_compute_group_fun <- function(data,
                     adj.r.squared = adj.rr,
                     p.value = p.value,
                     n = n,
-                    knots = knots)
+                    knots = list(knots))
   }
 
   # add members common to numeric and other output types
