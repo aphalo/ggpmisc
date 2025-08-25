@@ -177,7 +177,8 @@ r_ci_label(
 )
 }
 \arguments{
-\item{value}{numeric The value of the estimate.}
+\item{value}{numeric vector The value of the estimate(s), accepted vector
+length depends on the function.}
 
 \item{value.name}{character The symbol used to represent the value, or its
 name.}
@@ -232,6 +233,12 @@ bold_label(value = 123, value.name = "n", output.type = "expression")
 bold_label(value = 123, value.name = "n", output.type = "markdown")
 bold_label(value = 123, value.name = "n", output.type = "latex")
 
+plain_label(value = NA, value.name = "n", output.type = "expression")
+plain_label(value = c(123, NA), value.name = "n", output.type = "latex")
+
+plain_label(value = c(123, 1.2), value.name = "n", output.type = "expression")
+plain_label(value = c(123, 1.2), value.name = "n", output.type = "markdown")
+plain_label(value = c(123, 1.2), value.name = "n", output.type = "latex")
 p_value_label(value = 0.345, digits = 2, output.type = "expression")
 p_value_label(value = 0.345, digits = Inf, output.type = "expression")
 p_value_label(value = 0.345, digits = 6, output.type = "expression")

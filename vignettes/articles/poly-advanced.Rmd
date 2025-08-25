@@ -413,15 +413,29 @@ ggplot(mpg, aes(displ, hwy)) +
 
 ### Linear Splines ('segmented')
 
+Package 'segmented' has a design that makes it easy to use. The fitted model
+used has a structure consistent with that returned by `lm()`. Any differences
+are smoothed by query/extract functions that are consistent with those for
+`"lm"` objects. As segmented linear models are not polynomials, no `eq.label`
+is automatically generated. Another difference is that the location of change
+points is estimated and returned. Starting from 'ggpmisc' (>= 0.6.3) this
+information is returned by `stat_poly_eq()` and can be used to in user-assembled
+labels as shown in the examples below.
+
 ```{r}
 print(citation(package = "segmented", auto = TRUE), bibtex = FALSE)
 ```
 
-Function `segreg()` makes it possible to fit LM and GLM that segmented. 
-Differently to 'lspline', the knots can be fitted as well as the segment slopes
-and intecept. As 'lspline' it used a model formula to set the model including
-control of the segmentation. Differently to `lspline()`, `segreg()` is a model
-fit function.
+Function `segreg()` makes it possible to fit LM and GLM models that are
+segmented. Differently to 'lspline', the location of the change points or spline
+knots is estimated during model fitting in addition to estimating segment slopes
+and intercept. As 'lspline' it uses a model formula to set the model including
+control of the segmentation through `seg()`. Differently to `lspline()`,
+`segreg()` is a model fit function that returns a fitted model object with
+additional information on change points and slopes.
+
+The model `formula = y ~ seg(x, npsi = 1)` requests a fit with a single change
+point, which being the default is equivalent to `formula = y ~ seg(x)`.
 
 ```{r, fig.width = 7, fig.height = 5}
 library(segmented)
@@ -429,14 +443,16 @@ library(segmented)
 ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
   stat_poly_eq(aes(label = 
-                     paste("x[knot]~`=`~", 
-                           round(after_stat(knots)[[1]][[2]], 2), 
+                     paste("x[cp]~`=`~", 
+                           round(after_stat(knots)[[1]][1], 2), 
+                           " %+-% ",
+                           round(after_stat(knots.se)[[1]][1], 2),
                            "*\"; L: \"*y~`=`~", 
                            round(after_stat(b_0), 2), # "+",
                            round(after_stat(b_1), 2), "~x",
                            "*\"; R: \"*y~`=`~", 
                            round(after_stat(b_0) + 
-                                   after_stat(knots)[[1]][[2]] * 
+                                   after_stat(knots)[[1]][1] * 
                                    (after_stat(b_1) - after_stat(b_2)),
                                  2),
                            "+",
@@ -455,22 +471,26 @@ ggplot(mpg, aes(displ, hwy)) +
                  formula = y ~ seg(x, npsi = 1))
 ```
 
-In the next example we fix the slope of the second segment at zero to keep it
-horizontal. Because of how the parameters are returned, the code to assemble
-the equation needs to be rewritten.
+In the next example the slope of the second segment is fixed at zero to keep it
+horizontal using `formula = y ~ seg(x, npsi = 1, est = c(1, 0))` where 1
+indicates a fitted slope and 0 a slope fixed at this value. Because of how the
+parameters are returned, the code to assemble the equation needs to be
+rewritten.
 
 ```{r, fig.width = 7, fig.height = 5}
 ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
   stat_poly_eq(aes(label = 
-                     paste("x[knot]~`=`~", 
-                           round(after_stat(knots)[[1]][[2]], 2), 
+                     paste("x[cp]~`=`~",
+                           round(after_stat(knots)[[1]][1], 2),
+                           " %+-% ",
+                           round(after_stat(knots.se)[[1]][1], 2),
                            "*\"; L: \"*y~`=`~", 
                            round(after_stat(b_1), 2), # "+",
                            round(after_stat(b_2), 2), "~x",
                            "*\"; R: \"*y~`=`~", 
                            round(after_stat(b_1) + 
-                                   after_stat(knots)[[1]][[2]] *
+                                   after_stat(knots)[[1]][1] *
                                    after_stat(b_2),
                                  2),
                            sep = "")), 
@@ -690,14 +710,14 @@ A more complex example with labels, assembled within the call to `aes()`. In add
 ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
   stat_poly_eq(aes(label = 
-                     paste("x[knot]~`=`~", 
-                           round(after_stat(knots)[[1]][[2]], 2), 
+                     paste("italic(x)[cp]~`=`~", 
+                           round(after_stat(knots)[[1]][1], 2), 
                            "*\"; L: \"*y~`=`~", 
                            round(after_stat(b_0), 2), #"+",
                            round(after_stat(b_1), 2), "~x",
                            "*\"; R: \"*y~`=`~", 
                            round(after_stat(b_0) + 
-                                   after_stat(knots)[[1]][[2]] *
+                                   after_stat(knots)[[1]][1] *
                                    (after_stat(b_1) - after_stat(b_2)),
                                  2),
                            "+",
@@ -711,7 +731,8 @@ ggplot(mpg, aes(displ, hwy)) +
                label.x = "right",
                label.y = 0.87,
                formula = y ~ x,
-               method = lm2segmented.lm) +
+               method = lm2segmented.lm,
+               method.args = list(psi = c(3, 5))) +
   stat_poly_line(method = lm2segmented.lm, 
                  formula = y ~ x,)
 ```
