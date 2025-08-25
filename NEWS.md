@@ -13,6 +13,8 @@ editor_options:
 -   Support `segmented::segmented()` and `segmented::segreg()` in 
     `stat_poly_eq()` and in `stat_poly_line()`.
 -   Support `lspline::lspline()` in `stat_poly_eq()` and in `stat_poly_line()`.
+-   In `stat_poly_eq()` return for all `output.type`s many fitted numerical 
+    values that previously were only returned for `output.type = "numeric"`.
 -   Add on-line only article _Major axis regression_.
 -   Add examples of fitted linear splines to on-line only article 
     _Custom Polynomial Models_.
