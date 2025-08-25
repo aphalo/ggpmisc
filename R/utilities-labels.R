@@ -104,7 +104,8 @@ value2char <- function(value,
 #' labels can be formatted as strings to be parsed as plotmath expressions,
 #' or encoded using LaTeX or Markdown.
 #'
-#' @param value numeric The value of the estimate.
+#' @param value numeric vector The value of the estimate(s), accepted vector
+#'   length depends on the function.
 #' @param value.name character The symbol used to represent the value, or its
 #'   name.
 #' @param df,df1,df2 numeric The degrees of freedom of the estimate.
@@ -138,6 +139,13 @@ value2char <- function(value,
 #' bold_label(value = 123, value.name = "n", output.type = "markdown")
 #' bold_label(value = 123, value.name = "n", output.type = "latex")
 #'
+#' plain_label(value = NA, value.name = "n", output.type = "expression")
+#' plain_label(value = c(123, NA), value.name = "n", output.type = "latex")
+#'
+#' plain_label(value = c(123, 1.2), value.name = "n", output.type = "expression")
+#' plain_label(value = c(123, 1.2), value.name = "n", output.type = "markdown")
+#' plain_label(value = c(123, 1.2), value.name = "n", output.type = "latex")
+
 plain_label <- function(value,
                         value.name,
                         digits = 3,
@@ -145,29 +153,45 @@ plain_label <- function(value,
                         output.type = "expression",
                         decimal.mark = getOption("OutDec", default = ".")) {
 
-  if (length(value) == 0 || any(is.na(value) | is.nan(value))) {
+  if (length(value) == 0 || all(is.na(value))) {
     return(NA_character_)
   }
 
-  stopifnot(length(value) == 1L,
-            "Negative value of 'digits'" = digits >= 0)
+  stopifnot("Negative value of 'digits'" = digits >= 0)
 
   if (is.integer(value)) {
     value.char <- as.character(value)
   } else {
-    value.char <- value2char(value = value,
-                             digits = digits,
-                             output.type = output.type,
-                             decimal.mark = decimal.mark,
-                             format = ifelse(fixed, "f", "g"))
+    value.char <- sapply(value,
+                         value2char,
+                         digits = digits,
+                         output.type = output.type,
+                         decimal.mark = decimal.mark,
+                         format = ifelse(fixed, "f", "g")
+                     )
   }
 
   if (output.type == "expression") {
-    paste("plain(", value.name, ")~`=`~", value.char, sep = "")
+    z <- paste("plain(", value.name, ")~`=`~", value.char, sep = "")
+    if (length(z) > 1L) {
+      paste(z, collapse = "*\"; \"*")
+    } else {
+      z
+    }
   } else if (output.type %in% c("latex", "tex", "tikz")) {
-    paste("\\mathrm{", value.name, "} = ", value.char, sep = "")
+    z <- paste("\\mathrm{", value.name, "} = ", value.char, sep = "")
+    if (length(z) > 1L) {
+      paste(z, collapse = "\\mathrm{; }")
+    } else {
+      z
+    }
   } else if (output.type %in% c("text", "markdown")) {
-    paste(value.name, " = ", value.char, sep = "")
+    z <- paste(value.name, " = ", value.char, sep = "")
+    if (length(z) > 1L) {
+      paste(z, collapse = "; ")
+    } else {
+      z
+    }
   }
 }
 
@@ -182,31 +206,56 @@ italic_label <- function(value,
                          output.type = "expression",
                          decimal.mark = getOption("OutDec", default = ".")) {
 
-  if (length(value) == 0 || is.na(value) || is.nan(value)) {
+  if (length(value) == 0 || all(is.na(value))) {
     return(NA_character_)
   }
 
-  stopifnot(length(value) == 1L,
-            "Negative value of 'digits'" = digits >= 0)
+  stopifnot("Negative value of 'digits'" = digits >= 0)
 
   if (is.integer(value)) {
     value.char <- as.character(value)
   } else {
-    value.char <- value2char(value = value,
+    if (is.integer(value)) {
+      value.char <- as.character(value)
+    } else {
+      value.char <- sapply(value,
+                           value2char,
                            digits = digits,
                            output.type = output.type,
                            decimal.mark = decimal.mark,
-                           format = ifelse(fixed, "f", "g"))
+                           format = ifelse(fixed, "f", "g")
+      )
+    }
   }
 
   if (output.type == "expression") {
-    paste("italic(", value.name, ")~`=`~", value.char, sep = "")
+    z <- paste("italic(", value.name, ")~`=`~", value.char, sep = "")
+    if (length(z) > 1L) {
+      paste(z, collapse = "*\"; \"*")
+    } else {
+      z
+    }
   } else if (output.type %in% c("latex", "tex", "tikz")) {
-    paste("\\mathit{", value.name, "} = ", value.char, sep = "")
+    z <- paste("\\mathit{", value.name, "} = ", value.char, sep = "")
+    if (length(z) > 1L) {
+      paste(z, collapse = "\\mathrm{; }")
+    } else {
+      z
+    }
   } else if (output.type == "markdown") {
-    paste("_", value.name, "_ = ", value.char, sep = "")
+    z <- paste("_", value.name, "_ = ", value.char, sep = "")
+    if (length(z) > 1L) {
+      paste(z, collapse = "; ")
+    } else {
+      z
+    }
   } else {
-    paste(value.name, " = ", value.char, sep = "")
+    z <- paste(value.name, " = ", value.char, sep = "")
+    if (length(z) > 1L) {
+      paste(z, collapse = "; ")
+    } else {
+      z
+    }
   }
 }
 
@@ -221,12 +270,11 @@ bold_label <- function(value,
                        output.type = "expression",
                        decimal.mark = getOption("OutDec", default = ".")) {
 
-  if (length(value) == 0 || is.na(value) || is.nan(value)) {
+  if (length(value) == 0 || all(is.na(value))) {
     return(NA_character_)
   }
 
-  stopifnot(length(value) == 1L,
-            "Negative value of 'digits'" = digits >= 0)
+  stopifnot("Negative value of 'digits'" = digits >= 0)
 
   if (is.integer(value)) {
     value.char <- as.character(value)
@@ -239,13 +287,33 @@ bold_label <- function(value,
   }
 
   if (output.type == "expression") {
-    paste("bold(", value.name, ")~`=`~", value.char, sep = "")
+    z <- paste("bold(", value.name, ")~`=`~", value.char, sep = "")
+    if (length(z) > 1L) {
+      paste(z, collapse = "*\"; \"*")
+    } else {
+      z
+    }
   } else if (output.type %in% c("latex", "tex", "tikz")) {
-    paste("\\mathbf{", value.name, "} = ", value.char, sep = "")
+    z <- paste("\\mathbf{", value.name, "} = ", value.char, sep = "")
+    if (length(z) > 1L) {
+      paste(z, collapse = "\\mathrm{; }")
+    } else {
+      z
+    }
   } else if (output.type == "markdown") {
-    paste("**", value.name, "** = ", value.char, sep = "")
+    z <- paste("**", value.name, "** = ", value.char, sep = "")
+    if (length(z) > 1L) {
+      paste(z, collapse = "; ")
+    } else {
+      z
+    }
   } else {
-    paste(value.name, " = ", value.char, sep = "")
+    z <- paste(value.name, " = ", value.char, sep = "")
+    if (length(z) > 1L) {
+      paste(z, collapse = "; ")
+    } else {
+      z
+    }
   }
 }
 
@@ -274,7 +342,7 @@ p_value_label <- function(value,
                           output.type = "expression",
                           decimal.mark = getOption("OutDec", default = ".")) {
 
-  if (length(value) == 0 || is.na(value) || is.nan(value)) {
+  if (length(value) == 0 || all(is.na(value))) {
     return(NA_character_)
   }
 
@@ -401,7 +469,7 @@ f_value_label <- function(value,
                           output.type = "expression",
                           decimal.mark = getOption("OutDec", default = ".")) {
 
-  if (length(value) == 0 || is.na(value) || is.nan(value)) {
+  if (length(value) == 0 || all(is.na(value))) {
     return(NA_character_)
   }
 
@@ -475,7 +543,7 @@ t_value_label <- function(value,
                           output.type = "expression",
                           decimal.mark = getOption("OutDec", default = ".")) {
 
-  if (length(value) == 0 || is.na(value) || is.nan(value)) {
+  if (length(value) == 0 || all(is.na(value))) {
     return(NA_character_)
   }
 
@@ -676,7 +744,7 @@ r_label <- function(value,
                     output.type = "expression",
                     decimal.mark = getOption("OutDec", default = ".")) {
 
-  if (length(value) == 0 || is.na(value) || is.nan(value)) {
+  if (length(value) == 0 || all(is.na(value))) {
     return(NA_character_)
   }
 
@@ -797,7 +865,7 @@ rr_label <- function(value,
                      output.type = "expression",
                      decimal.mark = getOption("OutDec", default = ".")) {
 
-  if (length(value) == 0 || is.na(value) || is.nan(value)) {
+  if (length(value) == 0 || all(is.na(value))) {
     return(NA_character_)
   }
 
@@ -878,7 +946,7 @@ adj_rr_label <- function(value,
                          output.type = "expression",
                          decimal.mark = getOption("OutDec", default = ".")) {
 
-  if (length(value) == 0 || is.na(value) || is.nan(value)) {
+  if (length(value) == 0 || all(is.na(value))) {
     return(NA_character_)
   }
 
@@ -955,7 +1023,7 @@ rr_ci_label <- function(value,
                         output.type = "expression",
                         decimal.mark = getOption("OutDec", default = ".")) {
 
-  if (length(value) == 0L || any(is.na(value) | is.nan(value))) {
+  if (length(value) < 2L || anyNA(value)) {
     return(NA_character_)
   }
 
@@ -1038,7 +1106,7 @@ r_ci_label <- function(value,
                        output.type = "expression",
                        decimal.mark = getOption("OutDec", default = ".")) {
 
-  if (length(value) == 0L || any(is.na(value) | is.nan(value))) {
+  if (length(value) == 0 || anyNA(value)) {
     return(NA_character_)
   }
 

@@ -901,27 +901,23 @@ poly_eq_compute_group_fun <- function(data,
   if (!all(selector)) {
     message("Terms dropped from model (singularity); n = ", nrow(data), " in group.")
   }
+  # z is the object to be returned, i.e., passed to the geometry function
+  # it must be a data.frame, and here we use one row per group
+  # to pass embedded object like in a list, we embed single member lists
   if (output.type == "numeric") {
-    z <- tibble::tibble(coef.ls = list(fm.summary[["coefficients"]]),
-                        coefs = list(coefs),
-                        coefs.names = list(coefs.names),
-                        r.squared = rr,
-                        rr.confint.level = rsquared.conf.level,
-                        rr.confint.low = rr.confint.low,
-                        rr.confint.high = rr.confint.high,
-                        adj.r.squared = adj.rr,
-                        f.value = f.value,
-                        f.df1 = f.df1,
-                        f.df2 = f.df2,
-                        p.value = p.value,
-                        AIC = AIC,
-                        BIC = BIC,
-                        n = n,
-                        knots = list(knots),
-                        knots.se = list(knots.se),
-                        knots.names = list(knots.names),
-                        rr.label = "",  # needed for default 'label' mapping
-                        b_0.constant = forced.origin)
+    z <- tibble::tibble(
+      rr.label = "",  # needed for default 'label' mapping
+      coef.ls = list(fm.summary[["coefficients"]]), # a matrix
+      coefs = list(coefs), # numeric vector
+      coefs.names = list(coefs.names), # character vector
+      rr.confint.level = rsquared.conf.level,
+      rr.confint.low = rr.confint.low,
+      rr.confint.high = rr.confint.high,
+      f.value = f.value,
+      f.df1 = f.df1,
+      f.df2 = f.df2,
+      b_0.constant = forced.origin
+    )
     names(coefs) <- paste("b", (which(selector)) - 1, sep = "_")
     z <- cbind(z, tibble::as_tibble_row(coefs))
   } else {
@@ -955,66 +951,83 @@ poly_eq_compute_group_fun <- function(data,
       eq.char <- NA_character_
     }
 
-    # assemble the data frame to return
-    z <- data.frame(eq.label = eq.char,
-                    rr.label = rr_label(value = rr,
-                                        small.r = small.r,
-                                        digits = rr.digits,
-                                        output.type = output.type,
-                                        decimal.mark = decimal.mark),
-                    adj.rr.label = adj_rr_label(value = adj.rr,
-                                                small.r = small.r,
-                                                digits = rr.digits,
-                                                output.type = output.type,
-                                                decimal.mark = decimal.mark),
-                    rr.confint.label = rr_ci_label(value = c(rr.confint.low, rr.confint.high),
-                                                   conf.level = rsquared.conf.level,
-                                                   range.brackets = CI.brackets,
-                                                   range.sep = NULL,
-                                                   digits = rr.digits,
-                                                   output.type = output.type,
-                                                   decimal.mark = decimal.mark),
-                    AIC.label = plain_label(value = AIC,
-                                            value.name = "AIC",
-                                            digits = 4,
-                                            output.type = output.type,
-                                            decimal.mark = decimal.mark),
-                    BIC.label = plain_label(value = BIC,
-                                            value.name = "BIC",
-                                            digits = 4,
-                                            output.type = output.type,
-                                            decimal.mark = decimal.mark),
-                    f.value.label = f_value_label(value = f.value,
-                                                  df1 = f.df1,
-                                                  df2 = f.df2,
-                                                  digits = f.digits,
-                                                  output.type = output.type,
-                                                  decimal.mark = decimal.mark),
-                    p.value.label = p_value_label(value = p.value,
-                                                  small.p = small.p,
-                                                  digits = p.digits,
-                                                  output.type = output.type,
-                                                  decimal.mark = decimal.mark),
-                    n.label = italic_label(value = n,
-                                           value.name = "n",
-                                           digits = 0,
-                                           fixed = TRUE,
-                                           output.type = output.type,
-                                           decimal.mark = decimal.mark),
-                    grp.label = grp.label,
-                    method.label = paste("\"method: ", method.name, "\"", sep = ""),
-                    r.squared = rr,
-                    adj.r.squared = adj.rr,
-                    p.value = p.value,
-                    n = n,
-                    knots = list(knots))
+    # assemble the tible to return
+    z <- tibble::tibble(
+      eq.label = eq.char,
+      rr.label = rr_label(value = rr,
+                          small.r = small.r,
+                          digits = rr.digits,
+                          output.type = output.type,
+                          decimal.mark = decimal.mark),
+      adj.rr.label = adj_rr_label(value = adj.rr,
+                                  small.r = small.r,
+                                  digits = rr.digits,
+                                  output.type = output.type,
+                                  decimal.mark = decimal.mark),
+      rr.confint.label = rr_ci_label(value = c(rr.confint.low, rr.confint.high),
+                                     conf.level = rsquared.conf.level,
+                                     range.brackets = CI.brackets,
+                                     range.sep = NULL,
+                                     digits = rr.digits,
+                                     output.type = output.type,
+                                     decimal.mark = decimal.mark),
+      AIC.label = plain_label(value = AIC,
+                              value.name = "AIC",
+                              digits = 4,
+                              output.type = output.type,
+                              decimal.mark = decimal.mark),
+      BIC.label = plain_label(value = BIC,
+                              value.name = "BIC",
+                              digits = 4,
+                              output.type = output.type,
+                              decimal.mark = decimal.mark),
+      f.value.label = f_value_label(value = f.value,
+                                    df1 = f.df1,
+                                    df2 = f.df2,
+                                    digits = f.digits,
+                                    output.type = output.type,
+                                    decimal.mark = decimal.mark),
+      p.value.label = p_value_label(value = p.value,
+                                    small.p = small.p,
+                                    digits = p.digits,
+                                    output.type = output.type,
+                                    decimal.mark = decimal.mark),
+      n.label = italic_label(value = n,
+                             value.name = "n",
+                             digits = 0,
+                             fixed = TRUE,
+                             output.type = output.type,
+                             decimal.mark = decimal.mark),
+      knots.label = italic_label(value = knots,
+                                 "x",
+                                 digits = 3,
+                                 output.type = output.type,
+                                 decimal.mark = decimal.mark),
+      grp.label = grp.label,
+      method.label = paste("\"method: ", method.name, "\"", sep = ""),
+    )
   }
 
-  # add members common to numeric and other output types
-  z[["fm.method"]] <- method.name
-  z[["fm.class"]] <- fm.class[1]
-  z[["fm.formula"]] <- formula.ls
-  z[["fm.formula.chr"]] <- format(formula.ls)
+  # add members common to all output types
+  # as we support user-defined fit functions, and user assembled labels,
+  # some of the numeric values can be necessary for conditional composing
+  # of labels in all output types.
+  zz <- tibble::tibble(
+    r.squared = rr,
+    adj.r.squared = adj.rr,
+    p.value = p.value,
+    AIC = AIC,
+    BIC = BIC,
+    n = n,
+    knots = list(knots),
+    knots.se = list(knots.se),
+    knots.names = list(knots.names),
+    fm.method = method.name,
+    fm.class = fm.class[1],
+    fm.formula = formula.ls,
+    fm.formula.chr = format(formula.ls)
+  )
+  z <- cbind(z, zz)
 
   # Compute label positions
   if (is.character(label.x)) {
