@@ -507,19 +507,22 @@ ggplot(mpg, aes(displ, hwy)) +
                  formula = y ~ seg(x, npsi = 1, est = c(1, 0)))
 ```
 
+**Note:** The lines for cubic and other smoothing splines can be added to plots
+with `stat_smooth()` from package 'ggplot2'.
+
 ## User defined functions
 
 As mentioned above, layer functions `stat_poly_line()` and `stat_poly_eq()` support the use of several different model fit functions, as long as the estimates and predictions can be extracted. In the case of `stat_poly_eq()`, the model formula embedded in this object must be a polynomial. The variables mapped to _x_ and _y_ aesthetics must be continuous numeric, times or dates. Models are fitted separately to each group and plot panel, similarly as by `ggplot2::stat_smooth()`. 'ggpmisc' provides additional flexibility by delaying some decisions until after the models have been fit to the observations.
 
 **`stat_poly_line()` and `stat_poly_eq()` adjust their behaviour based on the class of the model object returned by the method, not the name of the method passed in the call as argument.** Thus, the class of the model fit object returned can vary in response to data, and thus also be different for different panels or groups in the same plot. 
 
-**`stat_poly_eq()` builds the fitted model equation based on the model formula extracted from the model fit object, which can differ from that passed as argument to `formula` when calling the statistic.** Thus, the model formula returned by the function passed as argument for `method` vary by group and/or panel.As the examples below demonstrate, this approach can be very useful. In addition, `NA` can be used to signal to `stat_poly_line()` and `stat_poly_eq()` that no model has been fit for a group or panel.
+**`stat_poly_eq()` builds the fitted model equation based on the model formula extracted from the model fit object, which can differ from that passed as argument to `formula` when calling the statistic.** Thus, the model formula returned by the function passed as argument for `method` can vary by group and/or panel. As the examples below demonstrate, this approach can be very useful. In addition, `NA` as return value from the function passed as argument to `method` can be used to signal to `stat_poly_line()` and `stat_poly_eq()` that no model has been fit for a group or panel.
 
-Below I use `lm()` and `"lm"` model fit objects in most examples, but the same approaches can be applied to objects of other classes, including `"rlm"`, `"lmrob"`, '"lqs"`, `"lts"`, `"gls"`.
+Below I use `lm()` and `"lm"` model fit objects in most examples, but the same approaches can be applied to objects of other classes, including `"rlm"`, `"lmrob"`, '"lqs"`, `"lts"`, and `"gls"`.
 
 ### Fit or not
 
-In the first example we fit a model only if a minimum number of distinct _x_ values are present in `data`. We define a function that instead of fitting the model, returns `NA` when the condition is not fulfilled. Here `"x"` is the aesthetic, and has to be replaced by `"y"` depending on `orientation`.
+In the first example we fit a model only if a minimum number of distinct _x_ values are present in `data`. We define a function that instead of fitting the model, returns `NA` when the condition is not fulfilled. Here `"x"` is the aesthetic corresponding to the explanatory variable, and has to be replaced by `"y"` if `orientation = y` is passed as argument to the statistic.
 
 ```{r}
 fit_or_not <- function(formula, data, ..., orientation = "x") {
@@ -531,7 +534,7 @@ fit_or_not <- function(formula, data, ..., orientation = "x") {
 }
 ```
 
-Instead of using `stats::lm()` as method, we pass our wrapper function `fit_or_not()` as the method. As the function returns either an `"lm"` object from the wrapped call to `lm()` or `NA`, the call to the statistics can make use of all other features as needed.
+Instead of using `lm()` as method, we pass our wrapper function `fit_or_not()` as method. As the function returns either an `"lm"` object from the wrapped call to `lm()` or `NA`, the call to the statistics can make use of all other features as needed.
 
 ```{r}
 ggplot(mpg, aes(displ, hwy)) +
@@ -547,12 +550,12 @@ ggplot(mpg, aes(displ, hwy)) +
 
 ### Degree of polynomial
 
-Not fitting a model, is a drastic solution. An alternative that we implement next, is to plot the mean when the slope of the linear regression is not significantly different from zero. In the example below instead of using `stats::lm()` as method, we define a different wrapper function that tests for the significance of the slope in linear regression, and if not significant, fits the mean instead. _This works because the model formula is extracted from the fitted model rather than using the argument passed by the user in the call to the statistics.
+Not fitting a model, is a drastic solution. An alternative is implemented next, to plot the mean when the slope of the linear regression is not significantly different from zero. In the example below instead of using `stats::lm()` as method, we define a different wrapper function that tests for the significance of the slope in linear regression, and if not significant, fits the mean instead. _This works because the model formula is extracted from the fitted model rather than using the argument passed by the user in the call to the statistics._
 
 
-_Fitting different models to different panels is supported._ User-defined method functions are required to return an object that inherits from class `"lm"`. The function is applied per group and panel, and the model `formula` fitted can differ among them, as it is retrieved from this object to construct the equation label.
+_Fitting different models to different panels is supported._ User-defined method functions are required to return an object that inherits from class `"lm"` or of another supported method. The function is applied per group and panel, and the model `formula` fitted and can differ among them, as it is retrieved from this object to construct the equation label.
 
-In the example below instead of using `stats::lm()` as method, we define a wrapper function that tests for the significance of the slope in linear regression, and if not significant, fits the mean instead. 
+In the example below instead of using `stats::lm()` as method, a wrapper function is defined and used, which tests for the significance of the slope in linear regression, and if not significant, fits the mean instead. 
 
 ```{r}
 poly_or_mean <- function(formula, data, ...) {
@@ -565,7 +568,7 @@ poly_or_mean <- function(formula, data, ...) {
 }
 ```
 
-We then use our function `poly_or_mean()` as the method.
+Function `poly_or_mean()`, just defined, or its name is paased as the argument for `method`.
 
 ```{r}
 ggplot(mpg, aes(displ, hwy)) +
@@ -631,6 +634,9 @@ ggplot(mpg, aes(displ, hwy, color = class)) +
   theme(legend.position = "top")
 ```
 
+**Note:** Other approaches are possible because additional arbitrary arguments can be passed by name to the method function. Thus a more flexible approach
+would be to use R's function `step()` in the wrapper.
+
 ### Functions that re-fit a fitted model
 
 The examples in this section are for package 'segmented', however, a similar
@@ -657,16 +663,17 @@ defined by the user. There are also model fit methods that do not compute or
 provide the estimates required by the segmentation computations.
 
 Package 'segmented' provides several specializations of method `segmented()`.
-These methods are dispathed according the model fit object passed to parameter
-`obj`. As this package provides all the expected query functions for the object
-`segmented()` methods return, their use is not too difficult. It is possible to
-write a wrapper function to pass as argument to `stat_poly_line()` and
-`stat_poly_eq()` and in addition, if used, construct the fitted equation labels
-within a call to `aes()`. This function, that I named lm2segmented.lm, calls
-first `lm()` and then calls `segmented()` with the fitted model as argument. It
-accepts additional arguments that make it possible to control the number and
-initial values of the knots. As in the case of other model fit functions, models
-with multiple explanatory variables are rarely used with 'ggplot2' stats.
+These methods are dispatched according to the model fit object passed to
+parameter `obj`. As this package provides all the expected query functions for
+the object `segmented()` methods return, their use is not too difficult. It is
+possible to write a wrapper function to pass as argument to `stat_poly_line()`
+and `stat_poly_eq()` and in addition, if used, construct the fitted equation
+labels within a call to `aes()`. This function, that I named lm2segmented.lm,
+calls first `lm()` and then calls `segmented()` with the fitted model as
+argument. It accepts additional arguments that make it possible to control the
+number and initial values of the knots. As in the case of other model fit
+functions, models with multiple explanatory variables are rarely used with
+'ggplot2' stats.
 
 ```{r, fig.width = 7, fig.height = 5}
 library(segmented)
@@ -771,7 +778,7 @@ ggplot(mpg, aes(displ, hwy)) +
    facet_wrap(~class, ncol = 2)
 ```
 
-Produces one warning like below for each call of the statistics.
+However, it prints one warning like the one below for each call of the statistics.
 
 ```
 Warning: Computation failed in `stat_poly_eq()`.
@@ -858,7 +865,7 @@ ggplot(mpg, aes(x = displ, y = hwy)) +
 
 ## Transformations and `eq.label`
 
-In 'ggplot2' setting transformations in _X_ and _y_ scales results in statistics receiving transformed data as input. The data "seen" by statistics is the same as if the transformation had been applied within a call to `aes()`. However, the scales
+In 'ggplot2' setting transformations in _x_ and _y_ scales results in statistics receiving transformed data as input. The data "seen" by statistics is the same as if the transformation had been applied within a call to `aes()`. However, the scales
 automatically adjust breaks and tick labels to display the values in the untransformed scale. When the transformation is applied in the model `formula`
 definition, the transformation is applied later, but still before the model is fit. all these cases, the model fit is based on transformed values and thus the
 estimates refer to them. This is why, a linear fit remains linear in spite of the transformations. 

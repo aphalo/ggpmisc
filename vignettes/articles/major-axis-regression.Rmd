@@ -28,16 +28,31 @@ eval_flag <- TRUE # evaluate all code chunks
 
 ## Aims of 'ggpmisc' and caveats
 
-Package 'ggpmisc' makes it easier to add to plots created using 'ggplot2' annotations based on fitted models and other statistics. It does this by wrapping existing model fit and other functions. The same annotations can be produced by calling the model fit functions, extracting the desired estimates and adding them to plots. There are two advantages in wrapping these functions in an extension to package 'ggplot2': 1) we ensure the coupling of graphical elements and the annotations by building all elements of the plot using the same data and a consistent grammar and 2) we make it easier to annotate plots to the casual user of R, already familiar with the grammar of graphics.
+Package 'ggpmisc' makes it easier to add to plots created using 'ggplot2' annotations based on fitted models and other statistics. It does this by wrapping existing model fit and other functions from base R and various R packages. The same annotations can be produced by calling the model fit functions, extracting the desired estimates and adding them to plots. There are two advantages in wrapping these functions in an extension to package 'ggplot2': 1) it ensures the coupling of graphical elements and the annotations by building all elements of the plot using the same data and a consistent grammar and 2) it makes it easier to annotate plots to the casual user of R, already familiar with the grammar of graphics.
 
 _To avoid confusion it is good to make clear what may seem obvious to some: if no plot is needed, then there is no reason to use this package. The values shown as annotations are not computed by 'ggpmisc' but instead by the usual model-fit and statistical functions from R and other packages. The same is true for model predictions, residuals, etc. that some of the functions in 'ggpmisc' display as lines, segments, or other graphical elements._
 
-It is also important to remember that in most cases data analysis including exploratory and other stages should take place before annotated plots for publication are produced. Even though data analysis can benefit from combined numerical and graphical representation of the results, the use I envision for 'ggpmisc' is mainly for the production of plots for publication or communication. In case case, whether used for analysis or communication, it is crucial that users cite and refer both to 'ggpmisc' and to the underlying R and R packages when publishing plots created with functions and methods from 'ggpmisc'.
+It is also important to remember that in most cases data analysis including exploratory and other stages should take place before annotated plots for publication are produced. Even though data analysis can benefit from combined numerical and graphical representation of the results, the use I envision for 'ggpmisc' is mainly for the production of plots for publication or communication. In any case, whether plots created with functions and methods from 'ggpmisc' are used for analysis or communication, it is crucial that users cite and refer both to 'ggpmisc' and to the underlying R and R packages used to fit models or to do other statistical computations.
 
 ```{r}
 print(citation(package = "ggpmisc", auto = TRUE), bibtex = FALSE)
 ```
 
+## Introduction
+
+Warton et al. (2006) provides a gentle introduction to Major Axis (MA), Standardized Major Axis (SMA) and related regression methods, including criteria that help select among MA, SMA, and OLS methods for linear regression. It is advisable that users unfamiliar with these methods read this article before attempting their use as the decision about their use is not always straightforward.
+
+It is important to remember that linear regressions fitted with these methods do not differ in the amount of variation explained ($R^2$) or its significance ($P$-value) from those fitted by OLS. Only the estimate of the slope is affected.
+
+The examples below rely on packages 'lmodel2' and 'smatr' for fitting the
+models, and the documentation of these packages should be consulted in relation
+to the model fitting functions. However, not all features of these packages or
+of the functions defined in them, can be used through 'ggpmisc'.
+
+**Reference:**
+
+**Warton DI, Wright IJ, Falster DS, Westoby M.** (2006) Bivariate line‐fitting methods for allometry. _Biological Reviews_ 81, 259–291.
+ 
 ## Preliminaries
 
 We load all the packages used in the examples.
@@ -333,15 +348,20 @@ The same caveats as for `stat_ma_eq()` and `stat_ma_line()` apply. In addition:
 
 ## Transformations and `eq.label`
 
-In 'ggplot2' setting transformations in _X_ and _y_ scales results in statistics receiving transformed data as input. The data "seen" by statistics is the same as if the transformation had been applied within a call to `aes()`. However, the scales
-automatically adjust breaks and tick labels to display the values in the untransformed scale. When the transformation is applied in the model `formula`
-definition, the transformation is applied later, but still before the model is fit. all these cases, the model fit is based on transformed values and thus the
-estimates refer to them. This is why, a linear fit remains linear in spite of the transformations. 
+In 'ggplot2' setting transformations in _x_ and _y_ scales results in statistics
+receiving transformed data as input. The data "seen" by statistics is the same
+as if the transformation had been applied within a call to `aes()`. However, the
+scales automatically adjust breaks and tick labels to display the values in the
+untransformed scale. When the transformation is applied in the model `formula`
+definition, the transformation is applied later, but still before the model is
+fit. In all these cases, the model fit is based on transformed values and thus
+the estimates refer to them. This is why, a linear fit remains linear in spite
+of the transformations.
 
 Only `eq.label` is affected by transformations in the sense that the _x_ and _y_ in the default equation refer to transformed values, rather than those shown in the tick labels of the axes, i.e., the default model equation label is incorrect. The correction to apply is to override the _x_ and/ir _y_ symbols in the equation label by an expression that includes the transformation used.
 
-The code below, using a transformed scale for _y_, differs from earlier example in that we add `eq.with.lhs = "log[10]~y~`=`~"` to the call to `stat_ma_eq()` to
-replace the left-hand-side of the equation. By default equations are encoded as R's plotmath expressions, requiring a special syntax as described in `help(plotmath).
+The code below, using a transformed scale for _y_, differs from earlier examples in that pass `eq.with.lhs = "log[10]~y~`=`~"` in the call to `stat_ma_eq()` to
+replace the left-hand-side of the equation. By default equations are encoded as R's plotmath expressions, requiring a special syntax as described in `help(plotmath)`.
 
 ```{r}
 ggplot(my.data, aes(x, y + 50)) +
