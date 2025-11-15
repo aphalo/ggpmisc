@@ -152,5 +152,10 @@ ggplot(faithful, aes(x = waiting)) +
                      geom = "area", linewidth = 1, alpha = 0.25,
                      components = "members", se = FALSE)
 
+ggplot(faithful, aes(x = waiting)) +
+ stat_normalmix_line(geom = "area", linewidth = 1, alpha = 0.25,
+                     colour = "black", outline.type = "upper",
+                     components = "sum", se = FALSE)
+
 }
 \concept{ggplot statistics for mixture model fits.}

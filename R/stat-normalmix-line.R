@@ -100,6 +100,11 @@
 #'                      geom = "area", linewidth = 1, alpha = 0.25,
 #'                      components = "members", se = FALSE)
 #'
+#' ggplot(faithful, aes(x = waiting)) +
+#'  stat_normalmix_line(geom = "area", linewidth = 1, alpha = 0.25,
+#'                      colour = "black", outline.type = "upper",
+#'                      components = "sum", se = FALSE)
+#'
 #' @export
 #'
 stat_normalmix_line <- function(mapping = NULL,
@@ -267,17 +272,16 @@ poly_normalmix_compute_group_fun <-
     if (se) {
       # using bootstrap, standard errors are computed for the parameter estimates
       # B is the number of "trials" used to estimate the se
-      Nmix.param.se <- mixtools::boot.se(Nmix.ls, B = 100)
-      Nmix.param.se[grepv(".se$", names(Nmix.param.se))]
+      fm.param.se <- mixtools::boot.se(fm, B = 100)
+      fm.param.se[grepv(".se$", names(fm.param.se))]
 
-      params.tb <- c(Nmix.ls[c("lambda", "mu", "sigma")],
-                     list(mu.se = as.vector(Nmix.param.se[["mu.se"]])),
-                     Nmix.param.se[c("lambda.se", "sigma.se")]) |>
-        as.data.frame()
+      params.tb <- c(fm[c("lambda", "mu", "sigma")],
+                     list(mu.se = as.vector(fm.param.se[["mu.se"]])),
+                     fm.param.se[c("lambda.se", "sigma.se")])
     } else {
-      params.tb <- c(Nmix.ls[c("lambda", "mu", "sigma")]) |>
-        as.data.frame()
+      params.tb <- c(fm[c("lambda", "mu", "sigma")])
     }
+    params.tb <- as.data.frame()
 
     # x range usded for prediction
     if (fullrange) {
@@ -318,12 +322,13 @@ poly_normalmix_compute_group_fun <-
                           values_to = "density")
 
     if (components == "sum") {
-      prediction <- subset(prediction, component == "comp.sum")
+      selector <- which(prediction[["component"]] == "comp.sum")
+      prediction <- prediction[selector, ]
     } else if (components == "members") {
-      prediction <- subset(prediction, component != "comp.sum")
+      selector <- which(prediction[["component"]] != "comp.sum")
+      prediction <- prediction[selector, ]
     } else if (components != "all") {
-      warning("Ignoring bad 'components' = ", components)
-      components <- "all"
+      warning("Ignoring bad 'components' argument: \"", components, "\"")
     }
 
     if (fm.values) {
