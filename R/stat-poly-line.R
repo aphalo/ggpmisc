@@ -122,8 +122,6 @@
 #'
 #' @family ggplot statistics for linear and polynomial regression
 #'
-#' @export
-#'
 #' @examples
 #' ggplot(mpg, aes(displ, hwy)) +
 #'   geom_point() +
