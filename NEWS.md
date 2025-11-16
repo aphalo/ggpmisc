@@ -6,8 +6,8 @@ editor_options:
 
 # ggpmisc 0.6.3
 
--   Add `stat_normalmix_line()` supporting Normal mixture models fitted with
-    `mixtools::normalmixEM()`.
+-   Add `stat_normalmix_line()` and `stat_normalmix_eq()` supporting Normal 
+    mixture models fitted with `mixtools::normalmixEM()`.
 -   Support `log()` and `sqrt()` transformations for `local.reference` in
     `find_peaks()`, `find_valleys()`, `stat_peaks()` and `stat_valleys()`.
 -   Support `smatr::ma()` and `smatr::sma()` in `stat_poly_eq()` and in

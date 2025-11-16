@@ -178,7 +178,7 @@ if (broom.installed)
 if (broom.installed && gginnards.installed)
   ggplot(my.df, aes(covariate, x)) +
     geom_point() +
-    stat_fit_tb(geom = "debug", summary.fun = str) +
+    stat_fit_tb(geom = "debug", dbgfun.data = str) +
     expand_limits(y = 70)
 
 # Linear regression fit summary, with default formatting

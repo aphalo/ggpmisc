@@ -49,8 +49,8 @@
 #'   distributions, or just the range of the data?
 #' @param level Level of confidence interval to use (0.95 by default).
 #' @param n Number of points at which to evaluate smoother.
-#' @param orientation character Either "x" or "y" controlling the default for
-#'   \code{formula}.
+#' @param orientation character Either "x" or "y", the mapping of the values
+#'   to which the mixture model is to be fitetd. NOT YET IMPLEMENTED!
 #'
 #' @return The value returned by the statistic is a data frame, with \code{n}
 #'   rows of predicted density for each component of the mixture plus their
@@ -61,26 +61,34 @@
 #'   variables, some of which depend on the orientation:
 #'   \describe{\item{density}{predicted density values}
 #'   \item{x}{the \code{n} values for the quantiles}
-#'   \item{component}{A factor indexing the components and their sum}}
+#'   \item{component}{A factor indexing the components and/or their sum}}
 #'
-#'   If \code{fm.values = TRUE} is passed then columns with parameters estimates
-#'   are added, with the same value in each row within a group.
+#'   If \code{fm.values = TRUE} is passed then columns with diagnosis and
+#'   parameters estimates are added, with the same value in each row within a
+#'   group:
+#'   \describe{\item{converged}{\code{logical} indicating if convergence was achieved}
+#'   \item{n}{\code{numeric} the number of \code{x} values}
+#'   \item{.size}{\code{numeric} the number of \code{density} values}
+#'   \item{fm.class}{\code{character} the most derived class of the fitted model object}
+#'   \item{fm.method}{\code{character} the method, as given by the \code{ft}
+#'   field of the fitted model objects}}
 #'   This is wasteful and disabled by default, but provides a simple and robust
 #'   approach to achieve effects like colouring or hiding of the model fit line
-#'   by group.
+#'   by group depending on the outcome of model fitting.
 #'
-#' @section Aesthetics: \code{stat_normalmix_line} expects observations mapped
-#'   to \code{x} and \code{weight} passed as argument
-#'   to parameter \code{weights}. Both must be mapped to \code{numeric}
-#'   variables. In addition, the aesthetics understood by the geom
-#'   (\code{"geom_line"} is the default) are understood and grouping
-#'   respected.
+#' @section Aesthetics: \code{stat_normalmix_eq} expects observations mapped to
+#'   \code{x} from a \code{numeric} variable. A new grouping is added by mapping
+#'   \code{component} to the \code{group} aesthetic. Additional aesthetics as
+#'   understood by the geom (\code{"geom_line"} by default) can be set.
 #'
 #' @family ggplot statistics for mixture model fits.
 #'
 #' @examples
 #' ggplot(faithful, aes(x = waiting)) +
 #'   stat_normalmix_line()
+#'
+#' # ggplot(faithful, aes(y = waiting)) +
+#' #  stat_normalmix_line(orientation = "y")
 #'
 #' ggplot(faithful, aes(x = waiting)) +
 #'   stat_normalmix_line(components = "sum")
@@ -105,6 +113,28 @@
 #'                      colour = "black", outline.type = "upper",
 #'                      components = "sum", se = FALSE)
 #'
+#' # Inspecting the returned data using geom_debug()
+#' gginnards.installed <- requireNamespace("gginnards", quietly = TRUE)
+#'
+#' if (gginnards.installed)
+#'   library(gginnards)
+#'
+#' if (gginnards.installed)
+#'   ggplot(faithful, aes(x = waiting)) +
+#'     stat_normalmix_line(geom = "debug", components = "all")
+#'
+#' if (gginnards.installed)
+#'   ggplot(faithful, aes(x = waiting)) +
+#'     stat_normalmix_line(geom = "debug", components = "sum")
+#'
+#' if (gginnards.installed)
+#'   ggplot(faithful, aes(x = waiting)) +
+#'     stat_normalmix_line(geom = "debug", components = "members")
+#'
+#' if (gginnards.installed)
+#'   ggplot(faithful, aes(x = waiting)) +
+#'     stat_normalmix_line(geom = "debug", fm.values = TRUE)
+#'
 #' @export
 #'
 stat_normalmix_line <- function(mapping = NULL,
@@ -115,7 +145,7 @@ stat_normalmix_line <- function(mapping = NULL,
                                 method = "normalmixEM",
                                 se = NULL,
                                 fm.values = FALSE,
-                                n = 250,
+                                n = min(100 + 50 * k, 300),
                                 fullrange = TRUE,
                                 level = 0.95,
                                 method.args = list(),
@@ -125,10 +155,11 @@ stat_normalmix_line <- function(mapping = NULL,
                                 components = "all",
                                 n.min = 10L * k,
                                 na.rm = FALSE,
-                                orientation = NA,
+                                orientation = "x",
                                 show.legend = NA,
                                 inherit.aes = TRUE) {
-  stopifnot("Arg 'x' in 'method.args'" = !any("x" %in% names(method.args)))
+  stopifnot("Arg 'x' should not be in 'method.args'!" =
+              !any("x" %in% names(method.args)))
 
   if (is.character(method)) {
     method <- trimws(method, which = "both")
@@ -185,7 +216,7 @@ stat_normalmix_line <- function(mapping = NULL,
   )
 }
 
-poly_normalmix_compute_group_fun <-
+normalmix_compute_group_fun <-
   function(data,
            scales,
            method,
@@ -204,7 +235,8 @@ poly_normalmix_compute_group_fun <-
            n.min = 10L * k,
            na.rm = FALSE,
            flipped_aes = NA,
-           orientation = "x") {
+           orientation = "x",
+           value = "prediction") {
     data <- ggplot2::flip_data(data, flipped_aes)
     if (length(unique(data$x)) < n.min) {
       # Not enough data to perform fit
@@ -281,65 +313,83 @@ poly_normalmix_compute_group_fun <-
     } else {
       params.tb <- c(fm[c("lambda", "mu", "sigma")])
     }
-    params.tb <- as.data.frame()
+    params.tb <- as.data.frame(params.tb)
 
-    # x range usded for prediction
-    if (fullrange) {
-      # ensure that the component Normals are fully predicted
-      x.range <- range(qnorm(p = 0.0005,
-                             mean = params.tb[["mu"]],
-                             sd = params.tb[["sigma"]],
-                             lower.tail = TRUE),
-                       qnorm(p = 0.0005,
-                             mean = params.tb[["mu"]],
-                             sd = params.tb[["sigma"]],
-                             lower.tail = FALSE))
+    if (value == "prediction") {
+      # x range used for prediction
+      if (fullrange) {
+        # ensure that the component Normals are fully predicted
+        x.range <- range(qnorm(p = 0.0005,
+                               mean = params.tb[["mu"]],
+                               sd = params.tb[["sigma"]],
+                               lower.tail = TRUE),
+                         qnorm(p = 0.0005,
+                               mean = params.tb[["mu"]],
+                               sd = params.tb[["sigma"]],
+                               lower.tail = FALSE))
+      } else {
+        # predict the component normals in the data range
+        x.range <- range(data[["x"]])
+      }
+
+      k <- length(params.tb[["lambda"]])
+      prediction <- list()
+      prediction[["x"]] <-
+        seq(from = x.range[1], to = x.range[2], length.out = n)
+      prediction[["comp.sum"]] <- rep(0, n)
+      for (i in 1:k) {
+        comp.name <- paste("comp", i, sep = ".")
+        prediction[[comp.name]] <-
+          dnorm(prediction[["x"]],
+                mean = params.tb[["mu"]][i],
+                sd = params.tb[["sigma"]][i]) * params.tb[["lambda"]][i]
+        prediction[["comp.sum"]] <-
+          prediction[["comp.sum"]] + prediction[[comp.name]]
+      }
+      prediction <- as.data.frame(prediction)
+
+      prediction <-
+        tidyr::pivot_longer(prediction,
+                            cols = tidyr::starts_with("comp."),
+                            names_to = "component",
+                            values_to = "density")
+
+      if (components == "sum") {
+        selector <- which(prediction[["component"]] == "comp.sum")
+        prediction <- prediction[selector, ]
+      } else if (components == "members") {
+        selector <- which(prediction[["component"]] != "comp.sum")
+        prediction <- prediction[selector, ]
+      } else if (components != "all") {
+        warning("Ignoring bad 'components' argument: \"", components, "\"")
+      }
+
+      if (fm.values) {
+        prediction[["converged"]] <- converged
+        prediction[["n"]] <- nrow(data)
+        prediction[[".size"]] = nrow(prediction)
+        prediction[["fm.class"]] <- class(fm)[1]
+        prediction[["fm.method"]] <- fm[["ft"]]
+      }
+
+      prediction[["flipped_aes"]] <- flipped_aes
+      ggplot2::flip_data(prediction, flipped_aes)
+    } else if (value == "params") {
+      # add missing values for sum row
+      params.tb <- rbind(params.tb, rep(NA_real_, ncol(params.tb)))
+      # add id column
+      params.tb["component"] <- paste("comp", c(as.character(1:k), "sum"), sep = ".")
+
+      if (fm.values) {
+        params.tb[["converged"]] <- converged
+        params.tb[["n"]] <- nrow(data)
+        params.tb[["fm.class"]] <- class(fm)[1]
+        params.tb[["fm.method"]] <- fm[["ft"]]
+      }
+      params.tb
     } else {
-      # predict the component normals in the data range
-      x.range <- range(data[["x"]])
+      stop("'value' should be one of \"prediction\" or \"params\", not \"", value, "\"!")
     }
-
-    k <- length(params.tb[["lambda"]])
-    prediction <- list()
-    prediction[["x"]] <-
-      seq(from = x.range[1], to = x.range[2], length.out = n)
-    prediction[["comp.sum"]] <- rep(0, n)
-    for (i in 1:k) {
-      comp.name <- paste("comp", i, sep = ".")
-      prediction[[comp.name]] <-
-        dnorm(prediction[["x"]],
-              mean = params.tb[["mu"]][i],
-              sd = params.tb[["sigma"]][i]) * params.tb[["lambda"]][i]
-      prediction[["comp.sum"]] <-
-        prediction[["comp.sum"]] + prediction[[comp.name]]
-    }
-    prediction <- as.data.frame(prediction)
-
-    prediction <-
-      tidyr::pivot_longer(prediction,
-                          cols = tidyr::starts_with("comp."),
-                          names_to = "component",
-                          values_to = "density")
-
-    if (components == "sum") {
-      selector <- which(prediction[["component"]] == "comp.sum")
-      prediction <- prediction[selector, ]
-    } else if (components == "members") {
-      selector <- which(prediction[["component"]] != "comp.sum")
-      prediction <- prediction[selector, ]
-    } else if (components != "all") {
-      warning("Ignoring bad 'components' argument: \"", components, "\"")
-    }
-
-    if (fm.values) {
-      prediction[["converged"]] <- converged
-      prediction[["n.x"]] <- nrow(data)
-      prediction[["fm.class"]] <- class(fm)[1]
-      prediction[["fm.method"]] <- fm[["ft"]]
-    }
-
-    prediction[["flipped_aes"]] <- flipped_aes
-    ggplot2::flip_data(prediction, flipped_aes)
   }
 
 #' @rdname ggpmisc-ggproto
@@ -356,7 +406,7 @@ StatNormalmixLine <-
 
                    extra_params = c("na.rm", "orientation"),
 
-                   compute_group = poly_normalmix_compute_group_fun,
+                   compute_group = normalmix_compute_group_fun,
 
                    default_aes =
                      ggplot2::aes(y = after_stat(density),

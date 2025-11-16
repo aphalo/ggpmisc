@@ -37,6 +37,16 @@ params.tb <- c(Nparams[c("lambda", "mu", "sigma")],
                Nmix.param.se[c("lambda.se", "sigma.se")]) |>
   as.data.frame()
 
+eq.label <- character()
+k = 2
+for (i in 1:k) {
+  eq.label[i] <- sprintf("%.2f %%*%% ital{N}(mu = %.2g, sigma = %.2g)",
+                         params.tb[["lambda"]][i],
+                         params.tb[["mu"]][i],
+                         params.tb[["sigma"]][i])
+}
+eq.label <- paste(eq.label, collapse = " + ")
+
 # we use the parameter estimates to generate predictions for the distributions
 # 1) we find frpm the paremeter estimate the range of x covered by the Normal distributions
 x.range <- range(qnorm(p = 0.0005, mean = params.tb$mu, sd = params.tb$sigma),

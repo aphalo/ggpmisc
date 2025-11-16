@@ -101,9 +101,9 @@
 #'   also include additional values related to the model fit.
 #'
 #' @section Computed variables: `stat_poly_line()` provides the following
-#'   variables, some of which depend on the orientation: \describe{ \item{y *or*
-#'   x}{predicted value} \item{ymin *or* xmin}{lower pointwise confidence
-#'   interval around the mean} \item{ymax *or* xmax}{upper pointwise confidence
+#'   variables, some of which depend on the orientation: \describe{ \item{y \strong{or}
+#'   x}{predicted value} \item{ymin \strong{or} xmin}{lower pointwise confidence
+#'   interval around the mean} \item{ymax \strong{or} xmax}{upper pointwise confidence
 #'   interval around the mean} \item{se}{standard error} }
 #'
 #'   If \code{fm.values = TRUE} is passed then columns based on the summary of

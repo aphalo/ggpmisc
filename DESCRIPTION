@@ -2,7 +2,7 @@ Package: ggpmisc
 Type: Package
 Title: Miscellaneous Extensions to 'ggplot2'
 Version: 0.6.2.9002
-Date: 2025-11-15
+Date: 2025-11-16
 Authors@R:
     c(
     person("Pedro J.", "Aphalo", email = "pedro.aphalo@helsinki.fi", role = c("aut", "cre"), comment = c(ORCID = "0000-0003-3385-972X")),
@@ -57,7 +57,7 @@ Suggests:
     broom (>= 1.0.3),
     broom.mixed (>= 0.2.9.5),
     robustbase (>= 0.99-4-1),
-    gginnards (>= 0.1.0-1),
+    gginnards (>= 0.2.0),
     ggtext (>= 0.1.2),
     testthat,
     vdiffr
