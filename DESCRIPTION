@@ -19,7 +19,8 @@ Description: Extensions to 'ggplot2' respecting the grammar of graphics
     label with summary table for fitted models; annotations for multiple 
     comparisons with adjusted P-values. Model fit classes for which suitable 
     methods are provided by package 'broom' and 'broom.mixed' are supported as 
-    well as user-defined wrappers on model fit functions. Scales and stats to build volcano and quadrant plots based on
+    well as user-defined wrappers on model fit functions. Scales and stats to 
+    build volcano and quadrant plots based on
     outcomes, fold changes, p-values and false discovery rates.
 License: GPL (>= 2)
 LazyLoad: TRUE
