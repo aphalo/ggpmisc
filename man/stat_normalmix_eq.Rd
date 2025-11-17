@@ -18,6 +18,8 @@ stat_normalmix_eq(
   free.mean = TRUE,
   free.sd = TRUE,
   se = FALSE,
+  seed = NA,
+  fm.values = TRUE,
   components = NULL,
   eq.with.lhs = TRUE,
   eq.digits = 2,
@@ -69,6 +71,13 @@ fitted \code{sd} to vary among the component Normal distributions.}
 
 \item{se}{Currently ignored.}
 
+\item{seed}{RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
+Defaults to \code{NA}, which means that \code{set.seed()} will not be
+called.}
+
+\item{fm.values}{logical Add parameter estimates and their standard errors
+to the returned values (`FALSE` by default.)}
+
 \item{components}{character One of \code{"all"}, \code{"sum"}, or
 \code{members} select which densities are returned.}
 
@@ -93,8 +102,8 @@ used between labels for different mixture model components.}
 \item{na.rm}{a logical indicating whether NA values should be stripped before
 the computation proceeds.}
 
-\item{orientation}{character Either "x" or "y" controlling the default for
-\code{formula}.}
+\item{orientation}{character Either "x" or "y", the mapping of the values
+to which the mixture model is to be fitetd. NOT YET IMPLEMENTED!}
 
 \item{parse}{logical Passed to the geom. If \code{TRUE}, the labels will be
 parsed into expressions and displayed as described in \code{?plotmath}.
@@ -128,28 +137,35 @@ a mixture of two or more Normal distributions.
 Other defaults are consistent with those in \code{stat_normalmix_eq()}.
 }
 \section{Computed variables}{
- \code{stat_normalmix_eq()} provides the following
+ \code{stat_normalmix_eq()} provides the
+  following
   variables, some of which depend on the orientation:
   \describe{\item{x}{the location of text labels}
   \item{y}{the location of text labels}
   \item{eq.label}{\code{character} string for equations}
-  \item{lambda}{\code{numeric} the estimate of the contribution of the component of the mixture towards the joint density}
+  \item{lambda}{\code{numeric} the estimate of the contribution of the
+ component of the mixture towards the joint density}
   \item{mu}{\code{numeric} the estimate of the mean}
   \item{sigma}{\code{numeric} the estimate of the standard deviation}
-  \item{component}{A factor indexing the components of the mixture and/or their sum}}
+  \item{component}{A factor indexing the components of the mixture and/or
+  their sum}}
 
-  If \code{SE = TRUE} is passed then columns with standard errors for the parameter estimates:
-  \describe{\item{lambda.se}{\code{numeric} the estimate of the contribution of the component of the mixture towards the joint density}
+  If \code{SE = TRUE} is passed then columns with standard errors for the
+  parameter estimates:
+  \describe{\item{lambda.se}{\code{numeric} the estimate of the contribution
+  of the component of the mixture towards the joint density}
   \item{mu.se}{\code{numeric} the estimate of the mean}
   \item{sigma.se}{\code{numeric} the estimate of the standard deviation}}
 
   If \code{fm.values = TRUE} is passed then columns with diagnosis and
   parameters estimates are added, with the same value in each row within a
   group:
-  \describe{\item{converged}{\code{logical} indicating if convergence was achieved}
+  \describe{\item{converged}{\code{logical} indicating if convergence was
+  achieved}
   \item{n}{\code{numeric} the number of \code{x} values}
   \item{.size}{\code{numeric} the number of \code{density} values}
-  \item{fm.class}{\code{character} the most derived class of the fitted model object}
+  \item{fm.class}{\code{character} the most derived class of the fitted model
+   object}
   \item{fm.method}{\code{character} the method, as given by the \code{ft}
   field of the fitted model objects}}
   This is wasteful and disabled by default, but provides a simple and robust
@@ -222,7 +238,9 @@ if (gginnards.installed)
 
 if (gginnards.installed)
   ggplot(faithful, aes(x = waiting)) +
-    stat_normalmix_eq(geom = "debug", fm.values = TRUE)
+    stat_normalmix_eq(geom = "debug",
+                      components = "members",
+                      fm.values = TRUE)
 
 }
 \seealso{

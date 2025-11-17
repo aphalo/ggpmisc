@@ -12,6 +12,7 @@ stat_normalmix_line(
   ...,
   method = "normalmixEM",
   se = NULL,
+  seed = NA,
   fm.values = FALSE,
   n = min(100 + 50 * k, 300),
   fullrange = TRUE,
@@ -51,6 +52,10 @@ fit function's \code{method} argument separated by a colon. The function
 must return a model fit object of class \code{mixEM}.}
 
 \item{se}{Currently ignored.}
+
+\item{seed}{RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
+Defaults to \code{NA}, which means that \code{set.seed()} will not be
+called.}
 
 \item{fm.values}{logical Add parameter estimates and their standard errors
 to the returned values (`FALSE` by default.)}

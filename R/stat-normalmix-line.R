@@ -4,12 +4,6 @@
 #' \code{\link[mixtools]{normalmixEM}()}. Predicted values are
 #' computed and, by default, plotted.
 #'
-#' @details
-#' This statistic is similar to \code{\link[ggplot2]{stat_density}} with a
-#' Guassian kernel but instead of fitting a sinple Normal distribution it fits
-#' a mixture of two or more Normal distributions.
-#' Other defaults are consistent with those in \code{stat_normalmix_eq()}.
-#'
 #' @param mapping The aesthetic mapping, usually constructed with
 #'   \code{\link[ggplot2]{aes}}. Only needs to be set at the layer level if you
 #'   are overriding the plot defaults.
@@ -43,6 +37,9 @@
 #' @param n.min integer Minimum number of distinct values in the mapped
 #'   variable for fitting to the attempted.
 #' @param se Currently ignored.
+#' @param seed RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
+#'   Defaults to \code{NA}, which means that \code{set.seed()} will not be
+#'   called.
 #' @param fm.values logical Add parameter estimates and their standard errors
 #'   to the returned values (`FALSE` by default.)
 #' @param fullrange Should the prediction span the full range of the fitted
@@ -51,6 +48,12 @@
 #' @param n Number of points at which to evaluate smoother.
 #' @param orientation character Either "x" or "y", the mapping of the values
 #'   to which the mixture model is to be fitetd. NOT YET IMPLEMENTED!
+#'
+#' @details
+#' This statistic is similar to \code{\link[ggplot2]{stat_density}} with a
+#' Guassian kernel but instead of fitting a sinple Normal distribution it fits
+#' a mixture of two or more Normal distributions.
+#' Other defaults are consistent with those in \code{stat_normalmix_eq()}.
 #'
 #' @return The value returned by the statistic is a data frame, with \code{n}
 #'   rows of predicted density for each component of the mixture plus their
@@ -144,6 +147,7 @@ stat_normalmix_line <- function(mapping = NULL,
                                 ...,
                                 method = "normalmixEM",
                                 se = NULL,
+                                seed = NA,
                                 fm.values = FALSE,
                                 n = min(100 + 50 * k, 300),
                                 fullrange = TRUE,
@@ -199,6 +203,7 @@ stat_normalmix_line <- function(mapping = NULL,
       method = method,
       method.name = method.name,
       se = se,
+      seed = seed,
       fm.values = fm.values,
       n = n,
       fullrange = fullrange,
@@ -221,7 +226,8 @@ normalmix_compute_group_fun <-
            scales,
            method,
            method.name,
-           se,
+           se = FALSE,
+           seed = NA,
            fm.values = FALSE,
            n = 80,
            fullrange = FALSE,
@@ -235,16 +241,137 @@ normalmix_compute_group_fun <-
            n.min = 10L * k,
            na.rm = FALSE,
            flipped_aes = NA,
-           orientation = "x",
-           value = "prediction") {
+           orientation = "x") {
     data <- ggplot2::flip_data(data, flipped_aes)
     if (length(unique(data$x)) < n.min) {
       # Not enough data to perform fit
       return(data.frame())
     }
 
-#    if (is.null(data$weight)) data$weight <- 1
+    params.tb <-
+      normalmix_helper_fun(data = data,
+                           method = method,
+                           method.name = method.name,
+                           se = se,
+                           method.args = method.args,
+                           k = k,
+                           free.mean = free.mean,
+                           free.sd = free.sd,
+                           n.min = n.min,
+                           seed = seed,
+                           fm.values = TRUE)
 
+    params.tb <- params.tb[-nrow(params.tb), ]
+
+    # x range used for prediction
+    if (fullrange) {
+      # ensure that the component Normals are fully predicted
+      x.range <- range(qnorm(p = 0.0005,
+                             mean = params.tb[["mu"]],
+                             sd = params.tb[["sigma"]],
+                             lower.tail = TRUE),
+                       qnorm(p = 0.0005,
+                             mean = params.tb[["mu"]],
+                             sd = params.tb[["sigma"]],
+                             lower.tail = FALSE))
+    } else {
+      # predict the component normals in the data range
+      x.range <- range(data[["x"]])
+    }
+
+    k <- length(params.tb[["lambda"]])
+    prediction <- list()
+    prediction[["x"]] <-
+      seq(from = x.range[1], to = x.range[2], length.out = n)
+    prediction[["comp.sum"]] <- rep(0, n)
+    for (i in 1:k) {
+      comp.name <- paste("comp", i, sep = ".")
+      prediction[[comp.name]] <-
+        dnorm(prediction[["x"]],
+              mean = params.tb[["mu"]][i],
+              sd = params.tb[["sigma"]][i]) * params.tb[["lambda"]][i]
+      prediction[["comp.sum"]] <-
+        prediction[["comp.sum"]] + prediction[[comp.name]]
+    }
+    prediction <- as.data.frame(prediction)
+
+    prediction <-
+      tidyr::pivot_longer(prediction,
+                          cols = tidyr::starts_with("comp."),
+                          names_to = "component",
+                          values_to = "density")
+
+    if (components == "sum") {
+      selector <- which(prediction[["component"]] == "comp.sum")
+      prediction <- prediction[selector, ]
+    } else if (components == "members") {
+      selector <- which(prediction[["component"]] != "comp.sum")
+      prediction <- prediction[selector, ]
+    } else if (components != "all") {
+      warning("Ignoring bad 'components' argument: \"", components, "\"")
+    }
+
+    if (fm.values) {
+      prediction[["converged"]] <- params.tb[["converged"]][1]
+      prediction[["n"]] <- nrow(data)
+      prediction[[".size"]] = nrow(prediction)
+      prediction[["fm.class"]] <- params.tb[["fm.class"]][1]
+      prediction[["fm.method"]] <- params.tb[["fm.method"]][1]
+    }
+
+    prediction[["flipped_aes"]] <- flipped_aes
+    ggplot2::flip_data(prediction, flipped_aes)
+  }
+
+#' @rdname ggpmisc-ggproto
+#' @format NULL
+#' @usage NULL
+#' @export
+StatNormalmixLine <-
+  ggplot2::ggproto("StatNormalmixLine", Stat,
+                   setup_params = function(data, params) {
+                     params[["flipped_aes"]] <-
+                       ggplot2::has_flipped_aes(data, params, ambiguous = TRUE)
+                     params
+                   },
+
+                   extra_params = c("na.rm", "orientation"),
+
+                   compute_group = normalmix_compute_group_fun,
+
+                   default_aes =
+                     ggplot2::aes(y = after_stat(density),
+                                  group = after_stat(component)),
+                   dropped_aes = c("weight"),
+                   required_aes = "x|y"
+  )
+
+#' Helper function for fitting Normal mixture model
+#'
+#' Factored out code used in both stat_normalmix_line() and stat_normalmix_eq().
+#'
+#' @inheritParams stat_normalmix_line
+#'
+#' @keywords internal
+#'
+#' @details
+#' This function does the model fitting and returns a data frame with the
+#' estimates for the parameters. It is a wrapper on functions from package
+#' 'mixtools'.
+#'
+normalmix_helper_fun <-
+  function(data,
+           aes.name = "x",
+           method,
+           method.name,
+           se,
+           method.args = list(),
+           k = 2,
+           free.mean = TRUE,
+           free.sd = TRUE,
+           n.min = 10L * k,
+           seed = NA,
+           fm.values = TRUE) {
     # If method was specified as a character string, replace with
     # the corresponding function. Some model fit functions themselves have a
     # method parameter accepting character strings as argument. We support
@@ -274,7 +401,7 @@ normalmix_compute_group_fun <-
     } else {
       maxit <- 1e3
     }
-    fun.args <- list(x = data[["x"]],
+    fun.args <- list(x = data[[aes.name]],
                      k = k,
                      arbmean = free.mean,
                      arbvar = free.sd,
@@ -287,12 +414,15 @@ normalmix_compute_group_fun <-
     }
     fun.args <- c(fun.args, method.args)
 
+    if (!is.na(seed)) {
+      set.seed(seed)
+    }
     fm <- do.call(method, args = fun.args)
 
     converged <- length(fm[["all.loglik"]]) < maxit
 
     if (!length(fm) || (is.atomic(fm) && is.na(fm))) {
-      return(data.frame())
+      return(NA)
     } else if (!inherits(fm, "mixEM")) {
       warning("Method \"", method.name,
               "\" did not return a ",
@@ -314,104 +444,23 @@ normalmix_compute_group_fun <-
       params.tb <- c(fm[c("lambda", "mu", "sigma")])
     }
     params.tb <- as.data.frame(params.tb)
+    params.tb[["k"]] <- k
 
-    if (value == "prediction") {
-      # x range used for prediction
-      if (fullrange) {
-        # ensure that the component Normals are fully predicted
-        x.range <- range(qnorm(p = 0.0005,
-                               mean = params.tb[["mu"]],
-                               sd = params.tb[["sigma"]],
-                               lower.tail = TRUE),
-                         qnorm(p = 0.0005,
-                               mean = params.tb[["mu"]],
-                               sd = params.tb[["sigma"]],
-                               lower.tail = FALSE))
-      } else {
-        # predict the component normals in the data range
-        x.range <- range(data[["x"]])
-      }
+    # add row for sum
+    params.tb <- rbind(params.tb,
+                       c(1,  rep(NA_real_, ncol(params.tb) - 1)))
 
-      k <- length(params.tb[["lambda"]])
-      prediction <- list()
-      prediction[["x"]] <-
-        seq(from = x.range[1], to = x.range[2], length.out = n)
-      prediction[["comp.sum"]] <- rep(0, n)
-      for (i in 1:k) {
-        comp.name <- paste("comp", i, sep = ".")
-        prediction[[comp.name]] <-
-          dnorm(prediction[["x"]],
-                mean = params.tb[["mu"]][i],
-                sd = params.tb[["sigma"]][i]) * params.tb[["lambda"]][i]
-        prediction[["comp.sum"]] <-
-          prediction[["comp.sum"]] + prediction[[comp.name]]
-      }
-      prediction <- as.data.frame(prediction)
-
-      prediction <-
-        tidyr::pivot_longer(prediction,
-                            cols = tidyr::starts_with("comp."),
-                            names_to = "component",
-                            values_to = "density")
-
-      if (components == "sum") {
-        selector <- which(prediction[["component"]] == "comp.sum")
-        prediction <- prediction[selector, ]
-      } else if (components == "members") {
-        selector <- which(prediction[["component"]] != "comp.sum")
-        prediction <- prediction[selector, ]
-      } else if (components != "all") {
-        warning("Ignoring bad 'components' argument: \"", components, "\"")
-      }
-
-      if (fm.values) {
-        prediction[["converged"]] <- converged
-        prediction[["n"]] <- nrow(data)
-        prediction[[".size"]] = nrow(prediction)
-        prediction[["fm.class"]] <- class(fm)[1]
-        prediction[["fm.method"]] <- fm[["ft"]]
-      }
-
-      prediction[["flipped_aes"]] <- flipped_aes
-      ggplot2::flip_data(prediction, flipped_aes)
-    } else if (value == "params") {
-      # add missing values for sum row
-      params.tb <- rbind(params.tb, rep(NA_real_, ncol(params.tb)))
-      # add id column
-      params.tb["component"] <- paste("comp", c(as.character(1:k), "sum"), sep = ".")
-
-      if (fm.values) {
-        params.tb[["converged"]] <- converged
-        params.tb[["n"]] <- nrow(data)
-        params.tb[["fm.class"]] <- class(fm)[1]
-        params.tb[["fm.method"]] <- fm[["ft"]]
-      }
-      params.tb
-    } else {
-      stop("'value' should be one of \"prediction\" or \"params\", not \"", value, "\"!")
+    if (fm.values) {
+      params.tb[["converged"]] <- converged
+      params.tb[["n"]] <- nrow(data)
+      params.tb[["fm.class"]] <- class(fm)[1]
+      params.tb[["fm.method"]] <- fm[["ft"]]
     }
+
+    # add id column
+    params.tb[["component"]] <-
+      paste("comp", c(as.character(1:k), "sum"), sep = ".")
+
+    params.tb
+
   }
-
-#' @rdname ggpmisc-ggproto
-#' @format NULL
-#' @usage NULL
-#' @export
-StatNormalmixLine <-
-  ggplot2::ggproto("StatNormalmixLine", Stat,
-                   setup_params = function(data, params) {
-                     params[["flipped_aes"]] <-
-                       ggplot2::has_flipped_aes(data, params, ambiguous = TRUE)
-                     params
-                   },
-
-                   extra_params = c("na.rm", "orientation"),
-
-                   compute_group = normalmix_compute_group_fun,
-
-                   default_aes =
-                     ggplot2::aes(y = after_stat(density),
-                                  group = after_stat(component)),
-                   dropped_aes = c("weight"),
-                   required_aes = "x|y"
-  )
-
