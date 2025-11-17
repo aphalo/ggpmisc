@@ -95,6 +95,8 @@ navbar:
         href: articles/poly-advanced.html
       - text: 'Major Axis Regression'
         href: articles/major-axis-regression.html
+      - text: 'Mixture Models'
+        href: articles/mixture-models.html
       - text: 'Peaks and Valleys'
         href: articles/peaks-and-valleys.html
     tutorials:

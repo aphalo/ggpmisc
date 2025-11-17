@@ -1,0 +1,135 @@
+---
+title: "Mixture Models"
+subtitle: "'ggpmisc' `r packageVersion('ggpmisc')`"
+author: "Pedro J. Aphalo"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+    toc: yes
+vignette: >
+  %\VignetteIndexEntry{Mixture Models}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+```{r, include=FALSE, echo=FALSE}
+knitr::opts_chunk$set(fig.align = 'center', 
+                      collapse = TRUE,
+                      comment = "#>",
+                      fig.show = 'hold', fig.width = 7, fig.height = 5)
+
+options(warnPartialMatchArgs = FALSE,
+        tibble.print.max = 4,
+        tibble.print.min = 4,
+        dplyr.summarise.inform = FALSE)
+
+eval_flag <- TRUE # evaluate all code chunks
+```
+
+## Aims of 'ggpmisc' and caveats
+
+Package 'ggpmisc' makes it easier to add to plots created using 'ggplot2' annotations based on fitted models and other statistics. It does this by wrapping existing model fit and other functions. The same annotations can be produced by calling the model fit functions, extracting the desired estimates and adding them to plots. There are two advantages in wrapping these functions in an extension to package 'ggplot2': 1) we ensure the coupling of graphical elements and the annotations by building all elements of the plot using the same data and a consistent grammar and 2) we make it easier to annotate plots to the casual user of R, already familiar with the grammar of graphics.
+
+_To avoid confusion it is good to make clear what may seem obvious to some: if no plot is needed, then there is no reason to use this package. The values shown as annotations are not computed by 'ggpmisc' but instead by the usual model-fit and statistical functions from R and R packages. The same is true for model predictions, residuals, etc. that some of the functions in 'ggpmisc' display as lines, segments, or other graphical elements._
+
+It is also important to remember that in most cases data analysis including exploratory and other stages should take place before annotated plots for publication are produced. Even though data analysis can benefit from combined numerical and graphical representation of the results, the use I envision for 'ggpmisc' is mainly for the production of plots for publication or communication. In case case, whether used for analysis or communication, it is crucial that users cite and refer both to 'ggpmisc' and to the underlying R and R packages when publishing plots created with functions and methods from 'ggpmisc'.
+
+```{r}
+print(citation(package = "ggpmisc", auto = TRUE), bibtex = FALSE)
+```
+
+## Preliminaries
+
+Other packages are loaded in the section they are used.
+
+```{r, message=FALSE}
+library(ggpmisc)
+```
+
+Attaching package 'ggpmisc' also attaches package 'ggpp' as it provides several of the geometries used by default in the statistics described below. Package 'ggpp' can be loaded and attached on its own, and has [separate documentation](https://docs.r4photobiology.info/ggpp/).
+
+As we will use text and labels on the plotting area we change the default theme to an uncluttered one.
+
+```{r}
+old_theme <- theme_set(theme_classic())
+```
+
+## Introduction
+
+Mixture Models are relatives of clustering approaches, and can be applied in
+different situations. The overall idea is that the observations originate in
+one or more distinct populations but they are in a mixture, i.e., it is uknown
+which observation belongs to which group or population.
+
+These methods aim at estimating the parameters for the individual populations,
+without classifying the observations. This can be useful in many contexts
+including fitting of univariate and multivariate theoretical probability
+distributions like the Normal or Gamma, and also to regression problems.
+
+As of 'ggpmisc' (>= 0.6.3) the fitting of mixtures of Normal distributions is
+supported. Currently the only package supported is 'mixtools' and a single
+function from it `normalmixEM()`.
+
+## Fitted models in `stat_normalmix_line()` and `stat_normal_eq()`
+
+Both functions are designed for flexibility while still attempting to keep their implementation and use rather straightforward.
+
+These statistics differ from other model fit functions in 'ggpmisc' in that
+the prediction and equations from ungrouped data are grouped.
+They grouping has one more level than the number of components in the mixture,
+corresponding to the sum of the components. It is possible to select whether
+only the components, only the sum of the components or all, components plus 
+their sum, are included in the returned data frame passed to the geometries.
+
+In the current implementation the number of components in the mix, `k`, is
+an input. Other packages do provide ways of automating the selection of `k`
+but this requires knowledge on the shape of the individual distributions.
+
+One obvious case for fitting two components is a population formed by females
+and males. Another case could be a trait controlled by a single gene measured
+on single individuals, a case were there components could be expected, and
+means and standard deviations plus fraction of observations in each group are
+of interest.
+
+Non-the-less, I use for the first example the well known data for Yellowstone's
+geiser _Faithful_ on the waiting time between eruptions. Simpler examples
+are shown in the help page.
+
+```{r, warning=FALSE}
+ggplot(faithful, aes(x = waiting)) +
+  geom_histogram(aes(y = after_stat(density)), alpha = 0.33, bins = 20) +
+  stat_normalmix_line(aes(colour = after_stat(component),
+                          fill = after_stat(component)),
+                      outline.type = "upper",
+                      geom = "area", linewidth = 1, alpha = 0.25,
+                      seed = 123) +
+  stat_normalmix_eq(aes(colour = after_stat(component)), seed = 123) +
+  expand_limits(y = 0.06)
+```
+
+
+```{r, warning=FALSE, results='hide', fig.keep='all'}
+ggplot(faithful, aes(x = waiting)) +
+  geom_histogram(aes(y = after_stat(density)), alpha = 0.33, bins = 20) +
+  stat_normalmix_line(aes(colour = after_stat(component),
+                          fill = after_stat(component)),
+                      outline.type = "upper",
+                      geom = "area", linewidth = 1, alpha = 0.25,
+                      components = "members", seed = 123) +
+  stat_normalmix_eq(aes(colour = after_stat(component)), 
+                    components = "members", seed = 123, se = TRUE,
+                    eq.digits = 3) +
+  expand_limits(y = 0.06)
+                      
+
+```
+
+```{r}
+ ggplot(faithful, aes(x = waiting)) +
+  geom_histogram(aes(y = after_stat(density)), alpha = 0.33, bins = 20) +
+  stat_normalmix_line(geom = "area", linewidth = 1, alpha = 0.25,
+                      colour = "black", outline.type = "upper",
+                      components = "sum", se = FALSE, seed = 123) +
+  stat_normalmix_eq(components = "sum", seed = 123)
+
+```
