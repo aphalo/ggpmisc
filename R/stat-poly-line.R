@@ -100,6 +100,20 @@
 #'   rows of predicted values and their confidence limits. Optionally it will
 #'   also include additional values related to the model fit.
 #'
+#' @section Model fit methods supported: Several model fit functions are
+#'   supported explicitly, and some of their differences smoothed out. The
+#'   compatibility is checked late, based on the class of the returned fitted
+#'   model object. This makes it possible to use wrapper functions that do model
+#'   selection or other adjustments to the fit procedure on a per panel or per
+#'   group basis. In the case of fitted model objects of classes not explicitly
+#'   supported an attempt is made to find the usual accessors, and if found,
+#'   either complete or partial support frequently just works. The argument to
+#'   parameter \code{method} can be either the name of a function or a character
+#'   string giving the name. This approach makes it possible to support model
+#'   fit functions that are not dependencies of 'ggpmisc'. Either attach the
+#'   package where the function is defined and pass it by name or as string, or
+#'   use colon notation when passing the name of the function.
+#'
 #' @section Computed variables: `stat_poly_line()` provides the following
 #'   variables, some of which depend on the orientation: \describe{ \item{y \strong{or}
 #'   x}{predicted value} \item{ymin \strong{or} xmin}{lower pointwise confidence
@@ -120,16 +134,16 @@
 #'   (\code{"geom_smooth"} is the default) are understood and grouping
 #'   respected.
 #'
+#' @note Currently confidence bands for the regression band are not plotted in
+#'   some cases, and in the case of MA and SMA model, it only displays the
+#'   uncertainty of the slope.
+#'
 #' @family ggplot statistics for linear and polynomial regression
 #'
 #' @examples
 #' ggplot(mpg, aes(displ, hwy)) +
 #'   geom_point() +
 #'   stat_poly_line()
-#'
-#' ggplot(mpg, aes(displ, hwy)) +
-#'   geom_point() +
-#'   stat_poly_line(method = "sma", se = FALSE)
 #'
 #' ggplot(mpg, aes(displ, hwy)) +
 #'   geom_point() +
@@ -409,7 +423,7 @@ poly_line_compute_group_fun <-
     } else {
       if (class(fm)[1] == "sma") {
         if (se) {
-          message("Prediction line plotted, band is very oversized!")
+          message("SMA/MA, band is currently for slope only!")
           # fm$coef[[1]] is a data.frame
           #
           #           coef(SMA) lower limit upper limit
@@ -437,10 +451,10 @@ poly_line_compute_group_fun <-
           prediction <- data.frame(x = xseq,
                                    y = center.y + b0delta[1] +
                                      b1[1] * (xseq - center.x),
-                                   ymin = center.y + b0delta[2] +
+                                   ymin = center.y +
                                      (rightside * b1[2] + leftside * b1[3]) *
                                      (xseq - center.x),
-                                   ymax = center.y + b0delta[3] +
+                                   ymax = center.y +
                                      (rightside * b1[3] + leftside * b1[2]) *
                                      (xseq - center.x))
         } else { # se is FALSE

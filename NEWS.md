@@ -16,13 +16,14 @@ preliminarily tested, so additional bugs are likely still lurking.
 -   Support `log()` and `sqrt()` transformations for `local.reference` in
     `find_peaks()`, `find_valleys()`, `stat_peaks()` and `stat_valleys()`.
 -   Support `smatr::ma()` and `smatr::sma()` in `stat_poly_eq()` and in
-    `stat_poly_line()`.
+    `stat_poly_line()`. (Confidence band is only for slope.)
 -   Support `segmented::segmented()` and `segmented::segreg()` in 
     `stat_poly_eq()` and in `stat_poly_line()`.
 -   Support `lspline::lspline()` in `stat_poly_eq()` and in `stat_poly_line()`.
 -   In `stat_poly_eq()` return for all `output.type`s several fitted numerical 
     values that previously were only returned for `output.type = "numeric"`.
 -   Add on-line only article _Major axis regression_.
+-   Add on-line only article _Mixture Models_. (draft.)
 -   Add examples of fitted linear splines to on-line only article 
     _Custom Polynomial Models_.
 

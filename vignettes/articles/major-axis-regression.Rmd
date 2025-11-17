@@ -131,7 +131,7 @@ Package 'lmodel2' implements Model II fits for major axis (MA), standardised maj
 
 In the figure above we saw that the ordinary least squares (OLS) linear regression of *y* on *x* and *x* on *y* differ. Major axis regression provides an estimate of the slope that is independent of the direction of prediction, $x \to y$ or $y \to x$, while the estimate of $R^2$ remains the same in all three model fits.
 
-**The prediction bands computed by package 'lmodel2' only consider the standard error of the estimate of the slope. They ignore the error in the estimation of the intercept. If for your data analysis both types of error are relevant, or for comparisons against OLS fits with `lm()`, package 'smatr' can be used as described later in this article. _P_-values are estimated using permutations.**
+**The prediction bands computed by package 'lmodel2' only consider the standard error of the estimate of the slope. They ignore the error in the estimation of the intercept. Package 'smatr' has the same limitation. In either case bootstraping could be used. _P_-values for the parameters estimates are obtained using permutations.**
 
 ```{r}
 ggplot(my.data, aes(x, y)) +
@@ -266,10 +266,13 @@ The functions for major axis regression from package 'smatr' behave similarly to
 model fit object are available. However, `summary.sma()` prints a summary and
 returns `NULL` and `predict.sma()` displays a message and returns `NULL`. Calls
 to these methods are skipped, and as `fitted()` does not return values in data
-units they are computed using the fitted coefficients and their confidence
-interval extracted from the fitted model object. The differences are small
-enough to work around them within `stat_poly_eq()` and `stat_poly_line()`.
-Just remember that only model formulas for a straight line can be used.
+units they are computed using the fitted coefficients. The confidence band for
+is not currently available, the band displayed is for the uncertainty of the
+slope. 
+
+The differences in the model fit object are small enough to be worked around
+them `stat_poly_eq()` and `stat_poly_line()`. Just remember that only model
+formulas for a straight line can be used.
 
 ```{r}
 ggplot(my.data, aes(x, y)) +
