@@ -176,6 +176,10 @@ ggplot(mpg, aes(displ, hwy)) +
 
 ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
+  stat_poly_line(method = "sma", se = FALSE)
+
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
   stat_poly_line(formula = x ~ y)
 
 ggplot(mpg, aes(displ, hwy)) +

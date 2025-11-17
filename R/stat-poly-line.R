@@ -129,6 +129,10 @@
 #'
 #' ggplot(mpg, aes(displ, hwy)) +
 #'   geom_point() +
+#'   stat_poly_line(method = "sma", se = FALSE)
+#'
+#' ggplot(mpg, aes(displ, hwy)) +
+#'   geom_point() +
 #'   stat_poly_line(formula = x ~ y)
 #'
 #' ggplot(mpg, aes(displ, hwy)) +
@@ -405,9 +409,18 @@ poly_line_compute_group_fun <-
     } else {
       if (class(fm)[1] == "sma") {
         if (se) {
-          b0 <- unlist(fm$coef[[1]]["elevation", ])
+          message("Prediction line plotted, band is very oversized!")
+          # fm$coef[[1]] is a data.frame
+          #
+          #           coef(SMA) lower limit upper limit
+          # elevation 39.441685   38.011038    40.87233
+          # slope     -4.609003   -5.008148    -4.24167
+          ### parameter estimates assumed independent!!
+          ## bootstraping would be more appropriate
+          coef.sma <- fm$coef[[1]]
+          b0 <- unlist(coef.sma["elevation", ])
           b0 <- ifelse(is.na(b0), 0, b0)
-          b1 <- unlist(fm$coef[[1]]["slope", ])
+          b1 <- unlist(coef.sma["slope", ])
           # centering is needed
           b0delta <- b0 - b0[1]
           if (all(b0 == 0)) {
@@ -415,7 +428,7 @@ poly_line_compute_group_fun <-
             center.y <- 0
             center.x <- 0
           } else {
-            # center on data means
+            # data centroid
             center.y <- mean(data[["y"]])
             center.x <- mean(data[["x"]])
           }
@@ -430,8 +443,12 @@ poly_line_compute_group_fun <-
                                    ymax = center.y + b0delta[3] +
                                      (rightside * b1[3] + leftside * b1[2]) *
                                      (xseq - center.x))
-        } else {
+        } else { # se is FALSE
           coefs <- stats::coefficients(fm)
+          # named vector
+          #
+          # elevation     slope
+          # 39.441685 -4.609003
           prediction <-
             data.frame(x = xseq, # data[["x"]]
                        y = coefs["elevation"] + coefs["slope"] * xseq)

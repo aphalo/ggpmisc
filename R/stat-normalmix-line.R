@@ -45,15 +45,21 @@
 #' @param fullrange Should the prediction span the full range of the fitted
 #'   distributions, or just the range of the data?
 #' @param level Level of confidence interval to use (0.95 by default).
-#' @param n Number of points at which to evaluate smoother.
+#' @param n Number of points at which to evaluate the model prediction.
 #' @param orientation character Either "x" or "y", the mapping of the values
 #'   to which the mixture model is to be fitetd. NOT YET IMPLEMENTED!
 #'
-#' @details
-#' This statistic is similar to \code{\link[ggplot2]{stat_density}} with a
-#' Guassian kernel but instead of fitting a sinple Normal distribution it fits
-#' a mixture of two or more Normal distributions.
-#' Other defaults are consistent with those in \code{stat_normalmix_eq()}.
+#' @details This statistic is similar to \code{\link[ggplot2]{stat_density}}
+#'   with a Guassian kernel but instead of fitting a single Normal distribution
+#'   it fits a mixture of two or more Normal distributions. Defaults are
+#'   consistent with those in \code{stat_normalmix_eq()}. Parameter \code{seed}
+#'   if not \code{NA} is used in a call to \code{set.seed()} immediately before
+#'   calling the model fit function. As the fitting procedure makes use of the
+#'   (pseudo-)random number generator (RNG), convergence can depend on it, and
+#'   in such cases setting \code{seed} to the same value in
+#'   \code{\link{stat_normalmix_line}()} and in
+#'   \code{\link{stat_normalmix_eq}()} can ensure consistency, and more
+#'   generaly, reproducibility.
 #'
 #' @return The value returned by the statistic is a data frame, with \code{n}
 #'   rows of predicted density for each component of the mixture plus their

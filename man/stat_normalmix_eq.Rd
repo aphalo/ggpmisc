@@ -69,7 +69,8 @@ variable for fitting to the attempted.}
 \item{free.mean, free.sd}{logical If TRUE, allow the fitted \code{mean} and/or
 fitted \code{sd} to vary among the component Normal distributions.}
 
-\item{se}{Currently ignored.}
+\item{se}{logical, if \code{TRUE} standard errors for parameter estimates
+are obtained by bootstrapping.}
 
 \item{seed}{RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
 Defaults to \code{NA}, which means that \code{set.seed()} will not be
@@ -131,10 +132,17 @@ The value returned by the statistic is a data frame, with \code{n}
 computed and, by default, plotted.
 }
 \details{
-This statistic is similar to \code{\link[ggplot2]{stat_density}} with a
-Guassian kernel but instead of fitting a sinple Normal distribution it fits
-a mixture of two or more Normal distributions.
-Other defaults are consistent with those in \code{stat_normalmix_eq()}.
+This statistic is similar to \code{\link[ggplot2]{stat_density}}
+  with a Guassian kernel but instead of fitting a single Normal distribution
+  it fits a mixture of two or more Normal distributions. Defaults are
+  consistent with those in \code{stat_normalmix_eq()}. Parameter \code{seed}
+  if not \code{NA} is used in a call to \code{set.seed()} immediately before
+  calling the model fit function. As the fitting procedure makes use of the
+  (pseudo-)random number generator (RNG), convergence can depend on it, and
+  in such cases setting \code{seed} to the same value in
+  \code{\link{stat_normalmix_line}()} and in
+  \code{\link{stat_normalmix_eq}()} can ensure consistency, and more
+  generaly, reproducibility.
 }
 \section{Computed variables}{
  \code{stat_normalmix_eq()} provides the
@@ -187,6 +195,18 @@ ggplot(faithful, aes(x = waiting)) +
   stat_normalmix_eq()
 
 ggplot(faithful, aes(x = waiting)) +
+  stat_normalmix_line(components = "sum") +
+  stat_normalmix_eq(geom = "label_npc")
+
+ggplot(faithful, aes(x = waiting)) +
+  stat_normalmix_line(components = "sum") +
+  stat_normalmix_eq(geom = "text", label.x = "center", label.y = "bottom")
+
+ggplot(faithful, aes(x = waiting)) +
+  stat_normalmix_line(components = "sum") +
+  stat_normalmix_eq(geom = "text", hjust = "inward")
+
+ggplot(faithful, aes(x = waiting)) +
   stat_normalmix_line(components = "members") +
   stat_normalmix_eq(components = "members")
 
@@ -226,6 +246,7 @@ if (gginnards.installed)
 
 if (gginnards.installed)
   ggplot(faithful, aes(x = waiting)) +
+    stat_normalmix_line(geom = "debug", components = "all")
     stat_normalmix_eq(geom = "debug", components = "all")
 
 if (gginnards.installed)

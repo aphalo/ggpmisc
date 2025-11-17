@@ -8,7 +8,8 @@
 #'
 #' @param eq.with.lhs If \code{character} the string is pasted to the front of
 #'   the equation label before parsing or a \code{logical} (see note).
-#' @param se Currently ignored.
+#' @param se logical, if \code{TRUE} standard errors for parameter estimates
+#'   are obtained by bootstrapping.
 #' @param level Level of confidence interval to use (0.95 by default).
 #' @param eq.digits integer Number of digits after the decimal point to
 #'   use for parameters in labels. If \code{Inf}, use exponential
@@ -31,11 +32,7 @@
 #'   sum and the corresponding vector of \code{x} values. Optionally it will
 #'   also include additional values related to the model fit.
 #'
-#' @details
-#' This statistic is similar to \code{\link[ggplot2]{stat_density}} with a
-#' Guassian kernel but instead of fitting a sinple Normal distribution it fits
-#' a mixture of two or more Normal distributions.
-#' Other defaults are consistent with those in \code{stat_normalmix_eq()}.
+#' @inherit stat_normalmix_line details
 #'
 #' @section Computed variables: \code{stat_normalmix_eq()} provides the
 #'   following
@@ -86,6 +83,18 @@
 #'   stat_normalmix_eq()
 #'
 #' ggplot(faithful, aes(x = waiting)) +
+#'   stat_normalmix_line(components = "sum") +
+#'   stat_normalmix_eq(geom = "label_npc")
+#'
+#' ggplot(faithful, aes(x = waiting)) +
+#'   stat_normalmix_line(components = "sum") +
+#'   stat_normalmix_eq(geom = "text", label.x = "center", label.y = "bottom")
+#'
+#' ggplot(faithful, aes(x = waiting)) +
+#'   stat_normalmix_line(components = "sum") +
+#'   stat_normalmix_eq(geom = "text", hjust = "inward")
+#'
+#' ggplot(faithful, aes(x = waiting)) +
 #'   stat_normalmix_line(components = "members") +
 #'   stat_normalmix_eq(components = "members")
 #'
@@ -125,6 +134,7 @@
 #'
 #' if (gginnards.installed)
 #'   ggplot(faithful, aes(x = waiting)) +
+#'     stat_normalmix_line(geom = "debug", components = "all")
 #'     stat_normalmix_eq(geom = "debug", components = "all")
 #'
 #' if (gginnards.installed)
@@ -288,9 +298,9 @@ normalmix_eq_compute_group_fun <-
            vstep = 0.1,
            npc.used = TRUE,
            output.type = "expression",
+           parse = FALSE,
            na.rm = FALSE,
-           orientation = "x",
-           parse = FALSE) {
+           orientation = "x") {
 
     force(data)
 
@@ -421,13 +431,13 @@ normalmix_eq_compute_group_fun <-
 #' @export
 StatNormalmixEq <-
   ggplot2::ggproto("StatNormalmixEq", Stat,
+                   extra_params = c("na.rm", "orientation"),
+
                    setup_params = function(data, params) {
                      params[["flipped_aes"]] <-
                        ggplot2::has_flipped_aes(data, params, ambiguous = TRUE)
                      params
                    },
-
-                   extra_params = c("na.rm", "orientation"),
 
                    compute_group = normalmix_eq_compute_group_fun,
 

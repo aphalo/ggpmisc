@@ -6,6 +6,11 @@ editor_options:
 
 # ggpmisc 0.6.3
 
+This unreleased version adds support for additional model fitting approaches
+and packages. The new code is still UNSTABLE and contains some BUGS. The known
+bugs are related to unimplemented features and spurious warnings. Only
+preliminarily tested, so additional bugs are likely still lurking.
+
 -   Add `stat_normalmix_line()` and `stat_normalmix_eq()` supporting Normal 
     mixture models fitted with `mixtools::normalmixEM()`.
 -   Support `log()` and `sqrt()` transformations for `local.reference` in

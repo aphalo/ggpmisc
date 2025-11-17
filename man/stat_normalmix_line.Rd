@@ -60,7 +60,7 @@ called.}
 \item{fm.values}{logical Add parameter estimates and their standard errors
 to the returned values (`FALSE` by default.)}
 
-\item{n}{Number of points at which to evaluate smoother.}
+\item{n}{Number of points at which to evaluate the model prediction.}
 
 \item{fullrange}{Should the prediction span the full range of the fitted
 distributions, or just the range of the data?}
@@ -107,10 +107,17 @@ The value returned by the statistic is a data frame, with \code{n}
 computed and, by default, plotted.
 }
 \details{
-This statistic is similar to \code{\link[ggplot2]{stat_density}} with a
-Guassian kernel but instead of fitting a sinple Normal distribution it fits
-a mixture of two or more Normal distributions.
-Other defaults are consistent with those in \code{stat_normalmix_eq()}.
+This statistic is similar to \code{\link[ggplot2]{stat_density}}
+  with a Guassian kernel but instead of fitting a single Normal distribution
+  it fits a mixture of two or more Normal distributions. Defaults are
+  consistent with those in \code{stat_normalmix_eq()}. Parameter \code{seed}
+  if not \code{NA} is used in a call to \code{set.seed()} immediately before
+  calling the model fit function. As the fitting procedure makes use of the
+  (pseudo-)random number generator (RNG), convergence can depend on it, and
+  in such cases setting \code{seed} to the same value in
+  \code{\link{stat_normalmix_line}()} and in
+  \code{\link{stat_normalmix_eq}()} can ensure consistency, and more
+  generaly, reproducibility.
 }
 \section{Computed variables}{
  \code{stat_normalmix_line()} provides the following
