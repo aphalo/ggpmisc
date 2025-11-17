@@ -348,7 +348,7 @@ normalmix_eq_compute_group_fun <-
       if (se) {
         if (is.null(eq.format)) {
           eq.format <-
-            "%.*f*(%.*#g) %%*%% italic(N)(mu*`=`*%.*#g*(%.*#g), sigma*`=`*%.*#g*(%.*#g))"
+            "%.*f*(%.*g) %%*%% italic(N)(mu*`=`*%.*g*(%.*g), sigma*`=`*%.*g*(%.*g))"
         }
         for (i in 1:k) {
           eq.label[i] <- sprintf(eq.format,
@@ -361,7 +361,7 @@ normalmix_eq_compute_group_fun <-
         }
       } else {
         if (is.null(eq.format)) {
-          eq.format <- "%.*#g %%*%% italic(N)(mu*`=`*%.*#g, sigma*`=`*%.*#g)"
+          eq.format <- "%.*g %%*%% italic(N)(mu*`=`*%.*g, sigma*`=`*%.*g)"
         }
         for (i in 1:k) {
           eq.label[i] <- sprintf(eq.format,
