@@ -521,7 +521,7 @@ StatFitGlance <-
 #'       stat_fit_augment(method = "lm",
 #'                        method.args = list(formula = y ~ x),
 #'                        geom = "debug",
-#'                        summary.fun = colnames)
+#'                        dbgfun.data = colnames)
 #' }
 #'
 #' # Regression by panel example

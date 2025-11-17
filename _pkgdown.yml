@@ -33,6 +33,8 @@ reference:
     - stat_quant_line
     - stat_quant_band
     - stat_quant_eq
+    - stat_normalmix_line
+    - stat_normalmix_eq
     - stat_correlation
     - stat_fit_tb
     - stat_fit_tidy
@@ -93,6 +95,8 @@ navbar:
         href: articles/poly-advanced.html
       - text: 'Major Axis Regression'
         href: articles/major-axis-regression.html
+      - text: 'Mixture Models'
+        href: articles/mixture-models.html
       - text: 'Peaks and Valleys'
         href: articles/peaks-and-valleys.html
     tutorials:

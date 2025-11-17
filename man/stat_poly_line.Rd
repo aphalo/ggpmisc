@@ -145,11 +145,32 @@ statistics in the grammar of graphics.
   interest and using larger values of \code{n.min} than the default is
   wise.
 }
+\note{
+Currently confidence bands for the regression band are not plotted in
+  some cases, and in the case of MA and SMA model, it only displays the
+  uncertainty of the slope.
+}
+\section{Model fit methods supported}{
+ Several model fit functions are
+  supported explicitly, and some of their differences smoothed out. The
+  compatibility is checked late, based on the class of the returned fitted
+  model object. This makes it possible to use wrapper functions that do model
+  selection or other adjustments to the fit procedure on a per panel or per
+  group basis. In the case of fitted model objects of classes not explicitly
+  supported an attempt is made to find the usual accessors, and if found,
+  either complete or partial support frequently just works. The argument to
+  parameter \code{method} can be either the name of a function or a character
+  string giving the name. This approach makes it possible to support model
+  fit functions that are not dependencies of 'ggpmisc'. Either attach the
+  package where the function is defined and pass it by name or as string, or
+  use colon notation when passing the name of the function.
+}
+
 \section{Computed variables}{
  `stat_poly_line()` provides the following
-  variables, some of which depend on the orientation: \describe{ \item{y *or*
-  x}{predicted value} \item{ymin *or* xmin}{lower pointwise confidence
-  interval around the mean} \item{ymax *or* xmax}{upper pointwise confidence
+  variables, some of which depend on the orientation: \describe{ \item{y \strong{or}
+  x}{predicted value} \item{ymin \strong{or} xmin}{lower pointwise confidence
+  interval around the mean} \item{ymax \strong{or} xmax}{upper pointwise confidence
   interval around the mean} \item{se}{standard error} }
 
   If \code{fm.values = TRUE} is passed then columns based on the summary of

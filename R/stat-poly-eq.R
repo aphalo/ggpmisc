@@ -463,7 +463,7 @@
 #'     geom_point() +
 #'     stat_poly_line(formula = formula) +
 #'     stat_poly_eq(formula = formula, geom = "debug",
-#'                  summary.fun = colnames)
+#'                  dbgfun.data = colnames)
 #'
 #' # only data$eq.label
 #' if (gginnards.installed)
@@ -472,7 +472,7 @@
 #'     stat_poly_line(formula = formula) +
 #'     stat_poly_eq(formula = formula, geom = "debug",
 #'                  output.type = "expression",
-#'                  summary.fun = function(x) {x[["eq.label"]]})
+#'                  dbgfun.data = function(x) {x[["eq.label"]]})
 #'
 #' # only data$eq.label
 #' if (gginnards.installed)
@@ -482,7 +482,7 @@
 #'     stat_poly_eq(aes(label = after_stat(eq.label)),
 #'                  formula = formula, geom = "debug",
 #'                  output.type = "markdown",
-#'                  summary.fun = function(x) {x[["eq.label"]]})
+#'                  dbgfun.data = function(x) {x[["eq.label"]]})
 #'
 #' # only data$eq.label
 #' if (gginnards.installed)
@@ -491,7 +491,7 @@
 #'     stat_poly_line(formula = formula) +
 #'     stat_poly_eq(formula = formula, geom = "debug",
 #'                  output.type = "latex",
-#'                  summary.fun = function(x) {x[["eq.label"]]})
+#'                  dbgfun.data = function(x) {x[["eq.label"]]})
 #'
 #' # only data$eq.label
 #' if (gginnards.installed)
@@ -500,7 +500,7 @@
 #'     stat_poly_line(formula = formula) +
 #'     stat_poly_eq(formula = formula, geom = "debug",
 #'                  output.type = "text",
-#'                  summary.fun = function(x) {x[["eq.label"]]})
+#'                  dbgfun.data = function(x) {x[["eq.label"]]})
 #'
 #' # show the content of a list column
 #' if (gginnards.installed)
@@ -508,7 +508,7 @@
 #'     geom_point() +
 #'     stat_poly_line(formula = formula) +
 #'     stat_poly_eq(formula = formula, geom = "debug", output.type = "numeric",
-#'                  summary.fun = function(x) {x[["coef.ls"]][[1]]})
+#'                  dbgfun.data = function(x) {x[["coef.ls"]][[1]]})
 #'
 #' @export
 #'

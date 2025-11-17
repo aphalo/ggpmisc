@@ -1,8 +1,8 @@
 Package: ggpmisc
 Type: Package
 Title: Miscellaneous Extensions to 'ggplot2'
-Version: 0.6.2.9001
-Date: 2025-08-25
+Version: 0.6.2.9003
+Date: 2025-11-17
 Authors@R:
     c(
     person("Pedro J.", "Aphalo", email = "pedro.aphalo@helsinki.fi", role = c("aut", "cre"), comment = c(ORCID = "0000-0003-3385-972X")),
@@ -19,7 +19,8 @@ Description: Extensions to 'ggplot2' respecting the grammar of graphics
     label with summary table for fitted models; annotations for multiple 
     comparisons with adjusted P-values. Model fit classes for which suitable 
     methods are provided by package 'broom' and 'broom.mixed' are supported as 
-    well as user-defined wrappers on model fit functions. Scales and stats to build volcano and quadrant plots based on
+    well as user-defined wrappers on model fit functions. Scales and stats to 
+    build volcano and quadrant plots based on
     outcomes, fold changes, p-values and false discovery rates.
 License: GPL (>= 2)
 LazyLoad: TRUE
@@ -34,18 +35,20 @@ Imports:
     scales (>= 1.3.0),
     rlang (>= 1.1.3),
     generics (>= 0.1.3),
-    MASS (>= 7.3-60.0.1),
+    MASS (>= 7.3-60),
     confintr (>= 1.0.2),
     polynom (>= 1.4-1),
-    quantreg (>= 5.97),
-    lmodel2 (>= 1.7-3),
+    quantreg (>= 6.0),
+    lmodel2 (>= 1.7-4),
     nlme (>= 3.1-160),
     splus2R (>= 1.3-5),
     multcomp (>= 1.4-25),
     multcompView (>= 0.1-10),
+    mixtools (>= 2.0.0),
     tibble (>= 3.2.1),
     plyr (>= 1.8.9),
     dplyr (>= 1.1.4),
+    tidyr (>= 1.3.0),
     lubridate (>= 1.9.3),
     caTools (>= 1.18.3)
 Suggests:
@@ -54,15 +57,15 @@ Suggests:
     ggrepel (>= 0.9.5),
     broom (>= 1.0.3),
     broom.mixed (>= 0.2.9.5),
-    gginnards (>= 0.1.0-1),
-    ggtext (>= 0.1.2),
     robustbase (>= 0.99-4-1),
+    gginnards (>= 0.2.0),
+    ggtext (>= 0.1.2),
     testthat,
     vdiffr
 URL: https://docs.r4photobiology.info/ggpmisc/, 
      https://github.com/aphalo/ggpmisc
 BugReports: https://github.com/aphalo/ggpmisc/issues
 Encoding: UTF-8
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 VignetteBuilder: knitr
 Config/Needs/website: rmarkdown

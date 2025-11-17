@@ -79,25 +79,33 @@ These statistics support grouping and faceting. In the case of those that return
 
 Table 1 below summarizes the use of the model-fittings statistics and the type of plot-layer geometries they are most useful with them. The four statistics at the bottom of the table require in their use more effort as the mapping to aesthetics and conversion of numeric values into character strings must be coded in the layer function call, but on the other hand they support all model fit objects catered by package 'broom' itself or any of the packages extending 'broom' such as 'broom.mixed' (see next section).
 
-: **Table 1. Summary of features of the statistics.** Returned values can be accessed in `ggplot2::aes()` with function `ggplot2::after_stat(<variable name>)`, which has replaced `ggplot2::stat(<variable name>)` and the three dots notation (`...<variable name>...`) where `<variable name>` is the name of one of the variables in the data frame returned by the statistics. **Notes:** (1) *weight* aesthetic supported; (2) user defined fit functions that return an object of a class derived from `lm` are supported even if they override the statistic's *formula* argument; (3) unlimited quantiles supported; (4) user defined fit functions that return an object of a class derived from `rq` or `rqs` are supported even if they override the statistic's *formula* and/or *quantiles* argument; (5) two and three quantiles supported; (6) user defined fit functions that return an object of a class derived from `lmodel2` are supported; (7) `method` arguments support colon based notation; (8) various functions if method `residuals()` defined for returned value; (9) various functions if method `fitted()` defined for returned value.
+: **Table 1. Summary of features of the statistics.** Returned values can be accessed in `ggplot2::aes()` with function `ggplot2::after_stat(<variable name>)` where `<variable name>` is the name of one of a variable in the data frame returned by the statistics. Notes:  (1) *weight* aesthetic supported; (2) user defined model fit functions including wrappers of supported methods are accepted even if they modify the model *formula* (additional model fitting methods are likely to work, but have not been tested); (3) unlimited quantiles supported; (4) user defined fit functions that return an object of a class derived from `rq` or `rqs` are supported even if they override the statistic's *formula* and/or *quantiles* argument; (5) two and three quantiles supported; (6) user defined fit functions that return an object of a class derived from `lmodel2` are supported; (7) `method` arguments support colon based notation; (8) model fit functions if method `residuals()` defined for returned value; (9) model fit functions if method `fitted()` is defined for the returned value.
 
 | Statistic               | Returned values<br> (*default geometry*)          | Methods                                      |
-|:----------------|:----------------------------|:-------------------------|
-| `stat_poly_eq()`        | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lm, rlm (1, 2, 7)                            |
+|:------------------------|:--------------------------------------------------|:---------------------------------------------|
+| **Model equation**      | _parameter estimates_                             |                                              |
+| `stat_poly_eq()`        | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lm, rlm, lqs, gls, ma, sma, etc. (1, 2, 7)   |
 | `stat_ma_eq()`          | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lmodel2 (6, 7)                               |
 | `stat_quant_eq()`       | equation, *P*, etc. (`text_npc`)                  | rq (1, 3, 4, 7)                              |
+| `stat_normalmix_eq()`   | equation(s) (`text_npc`)                          | normalmixEM (2, 7)                           |
 | `stat_correlation()`    | correlation, *P*-value, CI (`text_npc`)           | Pearson (*t*), Kendall (*z*), Spearman (*S*) |
-| `stat_poly_line()`      | line + conf. (`smooth`)                           | lm, rlm (1, 2, 7)                            |
-| `stat_ma_line()`        | line + conf. (`smooth`)                           | lmodel2 (6, 7)                               |
+| `stat_fit_glance()`     | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | those supported by 'broom'                   |
+| **Model line**          | _predicted and fitted values_                     |                                              |
+| `stat_poly_line()`      | line + conf. (`smooth`)                           | lm, rlm, lqs, gls, ma, sma, etc. (1, 2, 7)   |
+| `stat_ma_line()`        | line + slope conf. (`smooth`)                     | lmodel2 (6, 7)                               |
 | `stat_quant_line()`     | line + conf. (`smooth`)                           | rq, rqss (1, 3, 4, 7)                        |
-| `stat_quant_band()`     | median + quartiles (`smooth`)                     | rq, rqss (1, 4, 5, 7)                        |
-| `stat_fit_residuals()`  | residuals (`point`)                               | lm, rlm, rq (1, 2, 4, 7, 8)                  |
+| `stat_quant_band()`     | line + band, 2 or 3 quantiles (`smooth`)          | rq, rqss (1, 4, 5, 7)                        |
+| `stat_normalmix_line()` | lines(s) (`line`)                                 | normalmixEM (2, 7)                           |
+| `stat_fit_augment()`    | predicted and other values (`smooth`)             | those supported by 'broom'                   |
+| `stat_fit_fitted()`     | fitted values (`point`)                           | lm, rlm, lqs, rq (1, 2, 4, 7, 9)             |
 | `stat_fit_deviations()` | deviations from observations (`segment`)          | lm, rlm, lqs, rq (1, 2, 4, 7, 9)             |
-| `stat_fit_glance()`     | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | those supported by 'broom'               |
-| `stat_fit_augment()`    | predicted and other values (`smooth`)             | those supported by 'broom'               |
-| `stat_fit_tidy()`       | fit results, e.g., for equation (`text_npc`)      | those supported by 'broom'               |
-| `stat_fit_tb()`         | ANOVA and summary tables (`table_npc`)            | those supported by 'broom'               |
-| `stat_multcomp()`       | Multiple comparisons (`label_pairwise`, `table_npc`) | those supported by `glht`             |
+| **Model table**         | _parameter estimates and significance_            |                                              |
+| `stat_fit_tb()`         | ANOVA and summary tables (`table_npc`)            | those supported by 'broom'                   |
+| `stat_fit_tidy()`       | fit results, e.g., for equation (`text_npc`)      | those supported by 'broom'                   |
+| **Contrasts**           | _Tukey, Dunnet and arbitrary pairwise_            |                                              |
+| `stat_multcomp()`       | Multiple comparisons (`label_pairwise` or `text`) | those supported by `glht` (1, 2, 7)          |
+| **Residuals**           | _model fit residuals_                             |                                              |
+| `stat_fit_residuals()`  | residuals (`point`)                               | lm, rlm, rq (1, 2, 4, 7, 8)                  |
 
 ### Model equations and other annotations
 

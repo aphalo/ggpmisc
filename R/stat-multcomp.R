@@ -705,7 +705,7 @@ multcomp_compute_fun <-
                                 adj.method.tag)
       }
     } else {
-      adj.label <- character()
+      adj.label <- "" # character() broken in ggplot2 >= 4.0.0
       # only "LETTERS" and "letters" generate legends, not "bars"
       adj.method.legend <- FALSE
     }
