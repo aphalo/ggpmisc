@@ -388,14 +388,14 @@ normalmix_helper_fun <-
            seed = NA,
            fm.values = TRUE) {
     if (k == 1) {
-      message("With k = 1 one Normal distribution is fitted. Irrelevant parameters are ignored!")
+      message("With k = 1 one Normal distribution is fitted. Irrelevant parameters ignored!")
       fm <- MASS::fitdistr(data[[aes.name]], "normal")
       # extract fitted parameter estimates
       if (se) {
         params.tb <- data.frame(lambda = 1,
                                 mu = fm[["estimate"]]["mean"],
                                 sigma = fm[["estimate"]]["sd"],
-                                lambda.se = NA_real_,
+                                lambda.se = 0,
                                 mu.se = fm[["sd"]]["mean"],
                                 sigma.se = fm[["sd"]]["sd"],
                                 k = k,
