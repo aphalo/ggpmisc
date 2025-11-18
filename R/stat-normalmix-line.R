@@ -49,17 +49,22 @@
 #' @param orientation character Either "x" or "y", the mapping of the values
 #'   to which the mixture model is to be fitetd. NOT YET IMPLEMENTED!
 #'
-#' @details This statistic is similar to \code{\link[ggplot2]{stat_density}}
-#'   with a Guassian kernel but instead of fitting a single Normal distribution
-#'   it fits a mixture of two or more Normal distributions. Defaults are
-#'   consistent with those in \code{stat_normalmix_eq()}. Parameter \code{seed}
-#'   if not \code{NA} is used in a call to \code{set.seed()} immediately before
-#'   calling the model fit function. As the fitting procedure makes use of the
-#'   (pseudo-)random number generator (RNG), convergence can depend on it, and
-#'   in such cases setting \code{seed} to the same value in
+#' @details This statistic is similar to \code{\link[ggplot2]{stat_density}} but
+#'   instead of fitting a single distribution it can fit a mixture of two or
+#'   more Normal distributions, using an approach related to clustering.
+#'   Defaults are consistent with those in \code{stat_normalmix_eq()}. Parameter
+#'   \code{seed} if not \code{NA} is used in a call to \code{set.seed()}
+#'   immediately before calling the model fit function. As the fitting procedure
+#'   makes use of the (pseudo-)random number generator (RNG), convergence can
+#'   depend on it, and in such cases setting \code{seed} to the same value in
 #'   \code{\link{stat_normalmix_line}()} and in
 #'   \code{\link{stat_normalmix_eq}()} can ensure consistency, and more
-#'   generaly, reproducibility.
+#'   generally, reproducibility.
+#'
+#'   A mixture model as described above, is fitted for \code{k >= 2}, while
+#'   \code{k == 1} is treated as a special case and a Normal distribution fitted
+#'   with function \code{\link[MASS]{fitdistr}()}. In this case the SE values
+#'   are exact estimates.
 #'
 #' @return The value returned by the statistic is a data frame, with \code{n}
 #'   rows of predicted density for each component of the mixture plus their
@@ -121,6 +126,10 @@
 #'  stat_normalmix_line(geom = "area", linewidth = 1, alpha = 0.25,
 #'                      colour = "black", outline.type = "upper",
 #'                      components = "sum", se = FALSE)
+#'
+#' # special case of no mixture
+#' ggplot(subset(faithful, waiting > 66), aes(x = waiting)) +
+#'   stat_normalmix_line(k = 1)
 #'
 #' # Inspecting the returned data using geom_debug()
 #' gginnards.installed <- requireNamespace("gginnards", quietly = TRUE)
@@ -193,8 +202,8 @@ stat_normalmix_line <- function(mapping = NULL,
 
   if (is.null(k)) {
     k <- k
-  } else if (k < 2) {
-    stop("Expected k >= 2, but k = ", k)
+  } else if (k < 1) {
+    stop("Expected k >= 1, but k = ", k)
   }
 
   ggplot2::layer(
@@ -378,90 +387,119 @@ normalmix_helper_fun <-
            n.min = 10L * k,
            seed = NA,
            fm.values = TRUE) {
-    # If method was specified as a character string, replace with
-    # the corresponding function. Some model fit functions themselves have a
-    # method parameter accepting character strings as argument. We support
-    # these by splitting strings passed as argument at a colon.
-    if (is.character(method)) {
-      method <- switch(method,
-                       normalmix = ,
-                       normalmixEM = "normalmixEM",
-                       method)
-      method.name <- method
-      method <- strsplit(x = method, split = ":", fixed = TRUE)[[1]]
-      if (length(method) > 1L) {
-        fun.method <- method[2]
-        method <- method[1]
+    if (k == 1) {
+      message("With k = 1 one Normal distribution is fitted. Irrelevant parameters are ignored!")
+      fm <- MASS::fitdistr(data[[aes.name]], "normal")
+      # extract fitted parameter estimates
+      if (se) {
+        params.tb <- data.frame(lambda = 1,
+                                mu = fm[["estimate"]]["mean"],
+                                sigma = fm[["estimate"]]["sd"],
+                                lambda.se = NA_real_,
+                                mu.se = fm[["sd"]]["mean"],
+                                sigma.se = fm[["sd"]]["sd"],
+                                k = k,
+                                row.names = 1L)
       } else {
+        params.tb <- data.frame(lambda = 1,
+                                mu = fm[["estimate"]]["mean"],
+                                sigma = fm[["estimate"]]["sd"],
+                                k = k,
+                                row.names = 1L)
+      }
+      params.tb <- rbind(params.tb, c(1, rep(NA_real_, ncol(params.tb) - 1)))
+      if (fm.values) {
+        params.tb[["converged"]] <- TRUE
+        params.tb[["n"]] <- fm[["n"]]
+        params.tb[["fm.class"]] <- class(fm)[1]
+        params.tb[["fm.method"]] <- "exact"
+      }
+    } else {
+      # If method was specified as a character string, replace with
+      # the corresponding function. Some model fit functions themselves have a
+      # method parameter accepting character strings as argument. We support
+      # these by splitting strings passed as argument at a colon.
+      if (is.character(method)) {
+        method <- switch(method,
+                         normalmix = ,
+                         normalmixEM = "normalmixEM",
+                         method)
+        method.name <- method
+        method <- strsplit(x = method, split = ":", fixed = TRUE)[[1]]
+        if (length(method) > 1L) {
+          fun.method <- method[2]
+          method <- method[1]
+        } else {
+          fun.method <- character()
+        }
+        method <- switch(method,
+                         normalmixEM = mixtools::normalmixEM,
+                         match.fun(method))
+      } else if (is.function(method)) {
         fun.method <- character()
       }
-      method <- switch(method,
-                       normalmixEM = mixtools::normalmixEM,
-                       match.fun(method))
-    } else if (is.function(method)) {
-      fun.method <- character()
-    }
 
-    if (exists("maxit", method.args)) {
-      maxit <- method.args[["maxit"]]
-    } else {
-      maxit <- 1e3
-    }
-    fun.args <- list(x = data[[aes.name]],
-                     k = k,
-                     arbmean = free.mean,
-                     arbvar = free.sd,
-                     maxit = maxit)
+      if (exists("maxit", method.args)) {
+        maxit <- method.args[["maxit"]]
+      } else {
+        maxit <- 1e3
+      }
+      fun.args <- list(x = data[[aes.name]],
+                       k = k,
+                       arbmean = free.mean,
+                       arbvar = free.sd,
+                       maxit = maxit)
 
-    if (length(intersect(fun.args, method.args))) {
-      warning("Skipped named arguments in 'method.args': ",
-              paste(intersect(fun.args, method.args), collapse = ", "))
-      method.args <- method.args[setdiff(names(method.args), names(fun.args))]
-    }
-    fun.args <- c(fun.args, method.args)
+      if (length(intersect(fun.args, method.args))) {
+        warning("Skipped named arguments in 'method.args': ",
+                paste(intersect(fun.args, method.args), collapse = ", "))
+        method.args <- method.args[setdiff(names(method.args), names(fun.args))]
+      }
+      fun.args <- c(fun.args, method.args)
 
-    if (!is.na(seed)) {
-      set.seed(seed)
-    }
-    fm <- do.call(method, args = fun.args)
+      if (!is.na(seed)) {
+        set.seed(seed)
+      }
+      fm <- do.call(method, args = fun.args)
 
-    converged <- length(fm[["all.loglik"]]) < maxit
+      converged <- length(fm[["all.loglik"]]) < maxit
 
-    if (!length(fm) || (is.atomic(fm) && is.na(fm))) {
-      return(NA)
-    } else if (!inherits(fm, "mixEM")) {
-      warning("Method \"", method.name,
-              "\" did not return a ",
-              "\"mixEM\" object, skipping.")
-      return(data.frame())
-    }
+      if (!length(fm) || (is.atomic(fm) && is.na(fm))) {
+        return(NA)
+      } else if (!inherits(fm, "mixEM")) {
+        warning("Method \"", method.name,
+                "\" did not return a ",
+                "\"mixEM\" object, skipping.")
+        return(data.frame())
+      }
 
-    # extract fitted parameter estimates
-    if (se) {
-      # using bootstrap, standard errors are computed for the parameter estimates
-      # B is the number of "trials" used to estimate the se
-      fm.param.se <- mixtools::boot.se(fm, B = 100)
-      fm.param.se[grepv(".se$", names(fm.param.se))]
+      # extract fitted parameter estimates
+      if (se) {
+        # using bootstrap, standard errors are computed for the parameter estimates
+        # B is the number of "trials" used to estimate the se
+        fm.param.se <- mixtools::boot.se(fm, B = 100)
+        fm.param.se[grepv(".se$", names(fm.param.se))]
 
-      params.tb <- c(fm[c("lambda", "mu", "sigma")],
-                     list(mu.se = as.vector(fm.param.se[["mu.se"]])),
-                     fm.param.se[c("lambda.se", "sigma.se")])
-    } else {
-      params.tb <- c(fm[c("lambda", "mu", "sigma")])
-    }
-    params.tb <- as.data.frame(params.tb)
-    params.tb[["k"]] <- k
+        params.tb <- c(fm[c("lambda", "mu", "sigma")],
+                       list(mu.se = as.vector(fm.param.se[["mu.se"]])),
+                       fm.param.se[c("lambda.se", "sigma.se")])
+      } else {
+        params.tb <- c(fm[c("lambda", "mu", "sigma")])
+      }
+      params.tb <- as.data.frame(params.tb)
+      params.tb[["k"]] <- k
 
-    # add row for sum
-    params.tb <- rbind(params.tb,
-                       c(1,  rep(NA_real_, ncol(params.tb) - 1)))
+      # add row for sum
+      params.tb <- rbind(params.tb,
+                         c(1,  rep(NA_real_, ncol(params.tb) - 1)))
 
-    if (fm.values) {
-      params.tb[["converged"]] <- converged
-      params.tb[["n"]] <- nrow(data)
-      params.tb[["fm.class"]] <- class(fm)[1]
-      params.tb[["fm.method"]] <- fm[["ft"]]
-    }
+      if (fm.values) {
+        params.tb[["converged"]] <- converged
+        params.tb[["n"]] <- nrow(data)
+        params.tb[["fm.class"]] <- class(fm)[1]
+        params.tb[["fm.method"]] <- fm[["ft"]]
+      }
+    } # end k > = 2
 
     # add id column
     params.tb[["component"]] <-
