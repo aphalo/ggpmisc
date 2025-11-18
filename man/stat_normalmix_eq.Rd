@@ -132,17 +132,22 @@ The value returned by the statistic is a data frame, with \code{n}
 computed and, by default, plotted.
 }
 \details{
-This statistic is similar to \code{\link[ggplot2]{stat_density}}
-  with a Guassian kernel but instead of fitting a single Normal distribution
-  it fits a mixture of two or more Normal distributions. Defaults are
-  consistent with those in \code{stat_normalmix_eq()}. Parameter \code{seed}
-  if not \code{NA} is used in a call to \code{set.seed()} immediately before
-  calling the model fit function. As the fitting procedure makes use of the
-  (pseudo-)random number generator (RNG), convergence can depend on it, and
-  in such cases setting \code{seed} to the same value in
+This statistic is similar to \code{\link[ggplot2]{stat_density}} but
+  instead of fitting a single distribution it can fit a mixture of two or
+  more Normal distributions, using an approach related to clustering.
+  Defaults are consistent with those in \code{stat_normalmix_eq()}. Parameter
+  \code{seed} if not \code{NA} is used in a call to \code{set.seed()}
+  immediately before calling the model fit function. As the fitting procedure
+  makes use of the (pseudo-)random number generator (RNG), convergence can
+  depend on it, and in such cases setting \code{seed} to the same value in
   \code{\link{stat_normalmix_line}()} and in
   \code{\link{stat_normalmix_eq}()} can ensure consistency, and more
-  generaly, reproducibility.
+  generally, reproducibility.
+
+  A mixture model as described above, is fitted for \code{k >= 2}, while
+  \code{k == 1} is treated as a special case and a Normal distribution fitted
+  with function \code{\link[MASS]{fitdistr}()}. In this case the SE values
+  are exact estimates.
 }
 \section{Computed variables}{
  \code{stat_normalmix_eq()} provides the
@@ -237,6 +242,11 @@ ggplot(faithful, aes(x = waiting)) +
                      colour = "black", outline.type = "upper",
                      components = "sum", se = FALSE) +
  stat_normalmix_eq(components = "sum")
+
+# special case of no mixture
+ggplot(subset(faithful, waiting > 66), aes(x = waiting)) +
+  stat_normalmix_line(k = 1) +
+  stat_normalmix_eq(k = 1)
 
 # Inspecting the returned data using geom_debug()
 gginnards.installed <- requireNamespace("gginnards", quietly = TRUE)

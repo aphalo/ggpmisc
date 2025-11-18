@@ -126,6 +126,11 @@
 #'                      components = "sum", se = FALSE) +
 #'  stat_normalmix_eq(components = "sum")
 #'
+#' # special case of no mixture
+#' ggplot(subset(faithful, waiting > 66), aes(x = waiting)) +
+#'   stat_normalmix_line(k = 1) +
+#'   stat_normalmix_eq(k = 1)
+#'
 #' # Inspecting the returned data using geom_debug()
 #' gginnards.installed <- requireNamespace("gginnards", quietly = TRUE)
 #'
@@ -212,8 +217,8 @@ stat_normalmix_eq <- function(mapping = NULL,
 
   if (is.null(k)) {
     k <- 2
-  } else if (k < 2) {
-    stop("Expected k >= 2, but k = ", k)
+  } else if (k < 1) {
+    stop("Expected k >= 1, but k = ", k)
   }
 
   if (is.null(output.type)) {
