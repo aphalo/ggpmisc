@@ -124,6 +124,7 @@ ggplot(faithful, aes(x = waiting)) +
 
 ```
 
+
 ```{r}
  ggplot(faithful, aes(x = waiting)) +
   geom_histogram(aes(y = after_stat(density)), alpha = 0.33, bins = 20) +
@@ -133,3 +134,5 @@ ggplot(faithful, aes(x = waiting)) +
   stat_normalmix_eq(components = "sum", seed = 123)
 
 ```
+
+In some cases it may be useful to fit a single Normal distribution and still show the equation in a plot consistently with those for Normal mixture models. This can be achieved by passing `k = 1` when calling these statistics.

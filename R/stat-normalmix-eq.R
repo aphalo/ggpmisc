@@ -131,6 +131,10 @@
 #'   stat_normalmix_line(k = 1) +
 #'   stat_normalmix_eq(k = 1)
 #'
+#' ggplot(subset(faithful, waiting > 66), aes(x = waiting)) +
+#'   stat_normalmix_line(k = 1) +
+#'   stat_normalmix_eq(k = 1, se = TRUE)
+#'
 #' # Inspecting the returned data using geom_debug()
 #' gginnards.installed <- requireNamespace("gginnards", quietly = TRUE)
 #'
