@@ -58,42 +58,61 @@ old_theme <- theme_set(theme_classic())
 
 Mixture Models are relatives of clustering approaches, and can be applied in
 different situations. The overall idea is that the observations originate in
-one or more distinct populations but they are in a mixture, i.e., it is uknown
-which observation belongs to which group or population.
+two or more distinct populations but they are in a mixture, i.e., it is not 
+known which observations belongs to which _component_ (distinct group or 
+population).
 
-These methods aim at estimating the parameters for the individual populations,
+Fitting of mixture models aims at estimating the value of the parameters for the individual populations,
 without classifying the observations. This can be useful in many contexts
 including fitting of univariate and multivariate theoretical probability
 distributions like the Normal or Gamma, and also to regression problems.
 
+One obvious case for fitting two components is a population formed by females
+and males. A different case,  with two or three components depending on dominance, is a trait controlled by a 
+single gene measured in an F2 population. Thus, in the case of Normal
+mixtures, if multiple distinct 
+_components_ are expected, estimates of the mean and standard deviation for
+each Normal distribution and
+their standard errors, plus an estimate of the fraction of observations in each group are
+estimates.
+
 As of 'ggpmisc' (>= 0.6.3) the fitting of mixtures of Normal distributions is
 supported. Currently the only package supported is 'mixtools' and a single
-function from it `normalmixEM()`.
+method from it `normalmixEM()`.
 
 ## Fitted models in `stat_normalmix_line()` and `stat_normal_eq()`
 
-Both functions are designed for flexibility while still attempting to keep their implementation and use rather straightforward.
+Both `stat_normalmix_line()` and `stat_normal_eq()` are designed for flexibility while still attempting to keep 
+their implementation and use rather straightforward. As much as possible, from
+a user's viewpoint, the interface is similar to other statistics in 'ggpmisc'.
+One key difference is that they their input from a single aesthetic, _x_, rather
+than from two aesthetics, _x_ and _y_.
 
-These statistics differ from other model fit functions in 'ggpmisc' in that
-the prediction and equations from ungrouped data are grouped.
-They grouping has one more level than the number of components in the mixture,
+These two statististics also differ from other model fit functions in 'ggpmisc' in that
+the prediction and equations from ungrouped data are grouped according to the
+fitted components of the mixture. 
+This grouping has one more level than the number of components in the mixture,
 corresponding to the sum of the components. It is possible to select whether
 only the components, only the sum of the components or all, components plus 
 their sum, are included in the returned data frame passed to the geometries.
 
 In the current implementation the number of components in the mix, `k`, is
-an input. Other packages do provide ways of automating the selection of `k`
-but this requires knowledge on the shape of the individual distributions.
+an input. Other R packages do provide ways of automating the selection of `k`
+but this requires knowledge on the shape of the individual distributions. The
+reason is that if there is a mismatch in shape, an automatic algorithm tends
+to select too large a value for `k` to compensate, as this can increase the
+proportion of variation that the fitted model explains. As in the wrapped
+fit function, the default is `k = 2`.
 
-One obvious case for fitting two components is a population formed by females
-and males. Another case could be a trait controlled by a single gene measured
-on single individuals, a case were there components could be expected, and
-means and standard deviations plus fraction of observations in each group are
-of interest.
-
-Non-the-less, I use for the first example the well known data for Yellowstone's
+I use for the first example the well known data for Yellowstone's
 geiser _Faithful_ on the waiting time between eruptions. Simpler examples
 are shown in the help page.
+
+The default mapping groups the data for the predicted lines without assigning
+a visible aesthetic. In these examples, a histogram is plotted in the first
+layer and the Normal distributions on top of it. By default the fitted model
+equation is formualted as the sum of the distributions, meanwhile lines
+for the components and their sums are plotted.
 
 ```{r, warning=FALSE}
 ggplot(faithful, aes(x = waiting)) +
@@ -104,9 +123,13 @@ ggplot(faithful, aes(x = waiting)) +
                       geom = "area", linewidth = 1, alpha = 0.25,
                       seed = 123) +
   stat_normalmix_eq(aes(colour = after_stat(component)), seed = 123) +
-  expand_limits(y = 0.06)
+  expand_limits(y = 0.06) # make space for the equation above the histogram
 ```
 
+An argument passed to parameter `components` can be used to select which
+components to plot, either `"members"`, their `"sum"` or `"all"`, i.e., the
+members plus their sum. Below, only the members are plotted and their
+individual equations.
 
 ```{r, warning=FALSE, results='hide', fig.keep='all'}
 ggplot(faithful, aes(x = waiting)) +
@@ -117,15 +140,13 @@ ggplot(faithful, aes(x = waiting)) +
                       geom = "area", linewidth = 1, alpha = 0.25,
                       components = "members", seed = 123) +
   stat_normalmix_eq(aes(colour = after_stat(component)), 
-                    components = "members", seed = 123, se = TRUE,
-                    eq.digits = 3) +
-  expand_limits(y = 0.06)
-                      
-
+                    components = "members", seed = 123,
+                    eq.digits = 3)
 ```
 
+Below, only the sum of the members is plotted.
 
-```{r}
+```{r, warning=FALSE, results='hide', fig.keep='all'}
  ggplot(faithful, aes(x = waiting)) +
   geom_histogram(aes(y = after_stat(density)), alpha = 0.33, bins = 20) +
   stat_normalmix_line(geom = "area", linewidth = 1, alpha = 0.25,
@@ -135,4 +156,87 @@ ggplot(faithful, aes(x = waiting)) +
 
 ```
 
-In some cases it may be useful to fit a single Normal distribution and still show the equation in a plot consistently with those for Normal mixture models. This can be achieved by passing `k = 1` when calling these statistics.
+By default standard errors for the estimated parameters are not computed, but
+their computation is controlled by parameter `se`. The SE is computed using
+bootstrap. SE is shown in the equation between parantheses following each
+parameter estimate.
+
+```{r, warning=FALSE, results='hide', fig.keep='all'}
+ ggplot(faithful, aes(x = waiting)) +
+  geom_histogram(aes(y = after_stat(density)), alpha = 0.33, bins = 20) +
+  stat_normalmix_line(geom = "area", linewidth = 1, alpha = 0.25,
+                      colour = "black", outline.type = "upper",
+                      components = "sum", se = FALSE, seed = 123) +
+  stat_normalmix_eq(components = "sum", seed = 123, se = TRUE) +
+  expand_limits(y = 0.06) # make space for the equation above the histogram
+```
+
+In some cases it may be useful to fit a single Normal distribution and still 
+show the equation in a plot consistently with those for Normal mixture models. 
+This can be achieved by passing `k = 1` when calling these statistics. Below,
+a single Normal distribution is fitted to the same data. The standard errors in
+this case are exact estimates, rather than from bootstrao. From the figure it is
+clear that the fit is not satisfactory. _This highlights that it is always
+good to plot a histogram in the background of a fitted Normal mixture._
+
+```{r, warning=FALSE, warning=FALSE, results='hide', fig.keep='all'}
+ggplot(faithful, aes(x = waiting)) +
+  geom_histogram(aes(y = after_stat(density)), alpha = 0.33, bins = 20) +
+  stat_normalmix_line(aes(colour = after_stat(component),
+                          fill = after_stat(component)),
+                      outline.type = "upper",
+                      geom = "area", linewidth = 1, alpha = 0.25,
+                      seed = 123, k = 1) +
+  stat_normalmix_eq(aes(colour = after_stat(component)), se = TRUE,
+                    seed = 123, k = 1)
+```
+
+With the `galaxies` data about the speed of galaxies, the fit is not very good,
+as some of the apparent minor peaks contain very few observations. Anyway, with
+`k = 3` we seem to get reasonable estimates of the location of the two main
+components.
+
+```{r, warning=FALSE, results='hide', fig.keep='all'}
+ggplot(data.frame(speed = galaxies * 1e-3), aes(x = speed)) +
+  geom_histogram(aes(y = after_stat(density)), alpha = 0.33, bins = 20) +
+  stat_normalmix_line(aes(colour = after_stat(component),
+                          fill = after_stat(component)),
+                      outline.type = "upper",
+                      geom = "area", linewidth = 0.5, alpha = 0.25,
+                      k = 3, seed = 123) +
+  stat_normalmix_eq(aes(colour = after_stat(component)), 
+                    k = 3, seed = 123, geom = "label_npc", size = 3.2) +
+  expand_limits(y = 0.27)
+```
+
+Increasing the number of components with `k = 6` gives us a different split into
+components. Which value of `k` is best depends on the actual nature of the data.
+Lacking estimates of AIC and BIC the choice is rather subjective unless it is
+supported by scientific theory that suggests a reasonable value for `k`.
+
+```{r, warning=FALSE, results='hide', fig.keep='all'}
+ggplot(data.frame(speed = galaxies * 1e-3), aes(x = speed)) +
+  geom_histogram(aes(y = after_stat(density)), alpha = 0.33, bins = 20) +
+  stat_normalmix_line(outline.type = "upper", colour = "black",
+                      geom = "area", linewidth = 1, alpha = 0.25,
+                      k = 6, seed = 123, components = "sum") +
+  stat_normalmix_line(outline.type = "upper", colour = "black",
+                      geom = "line", linewidth = 0.25,
+                      k = 6, seed = 123, components = "members") +
+  stat_normalmix_eq(k = 6, seed = 123, components = "members", 
+                    eq.with.lhs = FALSE, size = 3)
+```
+
+For comparison, `stat_density()` from 'ggplot2' uses R function `density()`,
+which computes kernel density estimates. Grossly oversimplifying things, these
+estimates are similar to a smoothed histogram, with bandwidth (`bw`) controlling
+the degree of smoothing. In this case no components are identified.
+
+```{r, warning=FALSE, results='hide', fig.keep='all'}
+ggplot(data.frame(speed = galaxies * 1e-3), aes(x = speed)) +
+  geom_histogram(aes(y = after_stat(density)), alpha = 0.33, bins = 20) +
+  stat_density(bw = 0.5,
+               geom = "area", outline.type = "upper",
+               colour = "black", linewidth = 1, alpha = 0.25) +
+  expand_limits(x = c(8.5, 35))
+```
