@@ -62,8 +62,8 @@ to the returned values (`FALSE` by default.)}
 
 \item{n}{Number of points at which to evaluate the model prediction.}
 
-\item{fullrange}{Should the prediction span the full range of the fitted
-distributions, or just the range of the data?}
+\item{fullrange}{Should the prediction span the combined range of the scale
+and of the fitted distributions, or just span the range of the data?}
 
 \item{level}{Level of confidence interval to use (0.95 by default).}
 
@@ -110,12 +110,12 @@ computed and, by default, plotted.
 This statistic is similar to \code{\link[ggplot2]{stat_density}} but
   instead of fitting a single distribution it can fit a mixture of two or
   more Normal distributions, using an approach related to clustering.
-  Defaults are consistent with those in \code{stat_normalmix_eq()}. Parameter
-  \code{seed} if not \code{NA} is used in a call to \code{set.seed()}
-  immediately before calling the model fit function. As the fitting procedure
-  makes use of the (pseudo-)random number generator (RNG), convergence can
-  depend on it, and in such cases setting \code{seed} to the same value in
-  \code{\link{stat_normalmix_line}()} and in
+  Defaults are consistent between \code{stat_normalmix_line()} and
+  \code{stat_normalmix_eq()}. Parameter \code{seed} if not \code{NA} is used
+  in a call to \code{set.seed()} immediately before calling the model fit
+  function. As the fitting procedure makes use of the (pseudo-)random number
+  generator (RNG), convergence can depend on it, and in such cases setting
+  \code{seed} to the same value in \code{\link{stat_normalmix_line}()} and in
   \code{\link{stat_normalmix_eq}()} can ensure consistency, and more
   generally, reproducibility.
 

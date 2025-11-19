@@ -135,12 +135,12 @@ computed and, by default, plotted.
 This statistic is similar to \code{\link[ggplot2]{stat_density}} but
   instead of fitting a single distribution it can fit a mixture of two or
   more Normal distributions, using an approach related to clustering.
-  Defaults are consistent with those in \code{stat_normalmix_eq()}. Parameter
-  \code{seed} if not \code{NA} is used in a call to \code{set.seed()}
-  immediately before calling the model fit function. As the fitting procedure
-  makes use of the (pseudo-)random number generator (RNG), convergence can
-  depend on it, and in such cases setting \code{seed} to the same value in
-  \code{\link{stat_normalmix_line}()} and in
+  Defaults are consistent between \code{stat_normalmix_line()} and
+  \code{stat_normalmix_eq()}. Parameter \code{seed} if not \code{NA} is used
+  in a call to \code{set.seed()} immediately before calling the model fit
+  function. As the fitting procedure makes use of the (pseudo-)random number
+  generator (RNG), convergence can depend on it, and in such cases setting
+  \code{seed} to the same value in \code{\link{stat_normalmix_line}()} and in
   \code{\link{stat_normalmix_eq}()} can ensure consistency, and more
   generally, reproducibility.
 
@@ -156,6 +156,8 @@ This statistic is similar to \code{\link[ggplot2]{stat_density}} but
   \describe{\item{x}{the location of text labels}
   \item{y}{the location of text labels}
   \item{eq.label}{\code{character} string for equations}
+  \item{eq.label}{\code{character} string for number of observations}
+  \item{eq.label}{\code{character} string for model fit method}
   \item{lambda}{\code{numeric} the estimate of the contribution of the
  component of the mixture towards the joint density}
   \item{mu}{\code{numeric} the estimate of the mean}
@@ -198,6 +200,10 @@ This statistic is similar to \code{\link[ggplot2]{stat_density}} but
 ggplot(faithful, aes(x = waiting)) +
   stat_normalmix_line(components = "sum") +
   stat_normalmix_eq()
+
+ggplot(faithful, aes(x = waiting)) +
+  stat_normalmix_line(components = "sum") +
+  stat_normalmix_eq(use_label("eq", "n", "method"))
 
 ggplot(faithful, aes(x = waiting)) +
   stat_normalmix_line(components = "sum") +

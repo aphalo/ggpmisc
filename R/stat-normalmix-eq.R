@@ -40,6 +40,8 @@
 #'   \describe{\item{x}{the location of text labels}
 #'   \item{y}{the location of text labels}
 #'   \item{eq.label}{\code{character} string for equations}
+#'   \item{eq.label}{\code{character} string for number of observations}
+#'   \item{eq.label}{\code{character} string for model fit method}
 #'   \item{lambda}{\code{numeric} the estimate of the contribution of the
 #'  component of the mixture towards the joint density}
 #'   \item{mu}{\code{numeric} the estimate of the mean}
@@ -81,6 +83,10 @@
 #' ggplot(faithful, aes(x = waiting)) +
 #'   stat_normalmix_line(components = "sum") +
 #'   stat_normalmix_eq()
+#'
+#' ggplot(faithful, aes(x = waiting)) +
+#'   stat_normalmix_line(components = "sum") +
+#'   stat_normalmix_eq(use_label("eq", "n", "method"))
 #'
 #' ggplot(faithful, aes(x = waiting)) +
 #'   stat_normalmix_line(components = "sum") +
@@ -301,6 +307,7 @@ normalmix_eq_compute_group_fun <-
            n.min = 10L * k,
            flipped_aes = NA,
            eq.digits = 2,
+           eq.format = NULL, # not yet a user visible parameter
            label.x = "left",
            label.y = "top",
            hstep = 0,
@@ -343,22 +350,17 @@ normalmix_eq_compute_group_fun <-
                            free.sd = free.sd,
                            n.min = n.min,
                            seed = seed,
-                           fm.values = TRUE)
+                           fm.values = TRUE) # values are used in labels!
 
     # update k in case it was modified during fitting
     k <- params.tb[["k"]][1]
-    # add id column
-    params.tb["component"] <- paste("comp", c(as.character(1:k), "sum"), sep = ".")
 
     if (output.type != "numeric") {
       # generate labels
-      eq.format <- NULL
-      eq.label <- character(k + 1L)
+      eq.label <- character(k + 1)
       if (se) {
-        if (is.null(eq.format)) {
-          eq.format <-
-            "%.*f*(%.*g) %%*%% italic(N)(mu*`=`*%.*g*(%.*g), sigma*`=`*%.*g*(%.*g))"
-        }
+        eq.format <-
+          "%.*f*(%.*g) %%*%% italic(N)(mu*`=`*%.*g*(%.*g), sigma*`=`*%.*g*(%.*g))"
         for (i in 1:k) {
           eq.label[i] <- sprintf(eq.format,
                                  eq.digits, params.tb[["lambda"]][i],
@@ -369,9 +371,7 @@ normalmix_eq_compute_group_fun <-
                                  eq.digits, params.tb[["sigma.se"]][i])
         }
       } else {
-        if (is.null(eq.format)) {
-          eq.format <- "%.*g %%*%% italic(N)(mu*`=`*%.*g, sigma*`=`*%.*g)"
-        }
+        eq.format <- "%.*g %%*%% italic(N)(mu*`=`*%.*g, sigma*`=`*%.*g)"
         for (i in 1:k) {
           eq.label[i] <- sprintf(eq.format,
                                  eq.digits, params.tb[["lambda"]][i],
@@ -391,6 +391,9 @@ normalmix_eq_compute_group_fun <-
 
       eq.label[k + 1] <- paste(eq.label[-(k + 1)], collapse = " + ", sep = "")
       params.tb[["eq.label"]] <- paste(lhs, eq.label, sep = "")
+      params.tb[["n.label"]] <- paste("n~`=`~", params.tb[["n"]], sep = "")
+      params.tb[["method.label"]] <-
+        paste("\"method: ", params.tb[["fm.method"]], "\"", sep = "")
     }
 
     if (components == "sum") {

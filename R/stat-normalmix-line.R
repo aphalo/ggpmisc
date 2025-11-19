@@ -42,8 +42,8 @@
 #'   called.
 #' @param fm.values logical Add parameter estimates and their standard errors
 #'   to the returned values (`FALSE` by default.)
-#' @param fullrange Should the prediction span the full range of the fitted
-#'   distributions, or just the range of the data?
+#' @param fullrange Should the prediction span the combined range of the scale
+#'   and of the fitted distributions, or just span the range of the data?
 #' @param level Level of confidence interval to use (0.95 by default).
 #' @param n Number of points at which to evaluate the model prediction.
 #' @param orientation character Either "x" or "y", the mapping of the values
@@ -52,12 +52,12 @@
 #' @details This statistic is similar to \code{\link[ggplot2]{stat_density}} but
 #'   instead of fitting a single distribution it can fit a mixture of two or
 #'   more Normal distributions, using an approach related to clustering.
-#'   Defaults are consistent with those in \code{stat_normalmix_eq()}. Parameter
-#'   \code{seed} if not \code{NA} is used in a call to \code{set.seed()}
-#'   immediately before calling the model fit function. As the fitting procedure
-#'   makes use of the (pseudo-)random number generator (RNG), convergence can
-#'   depend on it, and in such cases setting \code{seed} to the same value in
-#'   \code{\link{stat_normalmix_line}()} and in
+#'   Defaults are consistent between \code{stat_normalmix_line()} and
+#'   \code{stat_normalmix_eq()}. Parameter \code{seed} if not \code{NA} is used
+#'   in a call to \code{set.seed()} immediately before calling the model fit
+#'   function. As the fitting procedure makes use of the (pseudo-)random number
+#'   generator (RNG), convergence can depend on it, and in such cases setting
+#'   \code{seed} to the same value in \code{\link{stat_normalmix_line}()} and in
 #'   \code{\link{stat_normalmix_eq}()} can ensure consistency, and more
 #'   generally, reproducibility.
 #'
@@ -288,7 +288,8 @@ normalmix_compute_group_fun <-
                        qnorm(p = 0.0005,
                              mean = params.tb[["mu"]],
                              sd = params.tb[["sigma"]],
-                             lower.tail = FALSE))
+                             lower.tail = FALSE),
+                       scales[[orientation]]$dimension())
     } else {
       # predict the component normals in the data range
       x.range <- range(data[["x"]])
