@@ -43,6 +43,7 @@ print(citation(package = "ggpmisc", auto = TRUE), bibtex = FALSE)
 Other packages are loaded in the section they are used.
 
 ```{r, message=FALSE}
+library(MASS)
 library(ggpmisc)
 ```
 
