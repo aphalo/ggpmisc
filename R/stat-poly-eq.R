@@ -964,7 +964,7 @@ poly_eq_compute_group_fun <- function(data,
       eq.char <- NA_character_
     }
 
-    # assemble the tible to return
+    # assemble the tibble to return
     z <- tibble::tibble(
       eq.label = eq.char,
       rr.label = rr_label(value = rr,
