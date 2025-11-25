@@ -46,6 +46,9 @@
 #'   or to a function passed as argument to \code{method}.
 #' @param n.min integer Minimum number of observations needed for fiting a
 #'   the model.
+#' @param seed RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
+#'   Defaults to \code{NA}, which means that \code{set.seed()} will not be
+#'   called.
 #' @param eq.with.lhs If \code{character} the string is pasted to the front of
 #'   the equation label before parsing or a \code{logical} (see note).
 #' @param eq.x.rhs \code{character} this string will be used as replacement for
@@ -446,6 +449,7 @@ stat_quant_eq <- function(mapping = NULL,
                           method = "rq:br",
                           method.args = list(),
                           n.min = 3L,
+                          seed = NA,
                           eq.with.lhs = TRUE,
                           eq.x.rhs = NULL,
                           coef.digits = 3,
@@ -533,6 +537,7 @@ stat_quant_eq <- function(mapping = NULL,
                    method.name = method.name,
                    method.args = method.args,
                    n.min = n.min,
+                   seed = seed,
                    eq.with.lhs = eq.with.lhs,
                    eq.x.rhs = eq.x.rhs,
                    mk.eq.label = mk.eq.label,
@@ -572,6 +577,7 @@ quant_eq_compute_group_fun <- function(data,
                                        method.name,
                                        method.args = list(),
                                        n.min = 3L,
+                                       seed = NA,
                                        weight = 1,
                                        eq.with.lhs = TRUE,
                                        eq.x.rhs = NULL,
@@ -708,6 +714,9 @@ quant_eq_compute_group_fun <- function(data,
     fun.args[["method"]] <- fun.method
   }
 
+  if (!is.na(seed)) {
+    set.seed(seed)
+  }
   # quantreg contains code with partial matching of names!
   # so we silence selectively only these warnings
   withCallingHandlers({

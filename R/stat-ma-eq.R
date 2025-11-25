@@ -39,6 +39,9 @@
 #' @param n.min integer Minimum number of distinct values in the explanatory
 #'   variable (on the rhs of formula) for fitting to the attempted.
 #' @param nperm integer Number of permutation used to estimate significance.
+#' @param seed RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
+#'   Defaults to \code{NA}, which means that \code{set.seed()} will not be
+#'   called.
 #' @param eq.with.lhs If \code{character} the string is pasted to the front of
 #'   the equation label before parsing or a \code{logical} (see note).
 #' @param eq.x.rhs \code{character} this string will be used as replacement for
@@ -117,7 +120,10 @@
 #'   parameter \code{n.min}. The default \code{n.min = 2L} is the smallest
 #'   possible value. However, model fits with very few observations are of
 #'   little interest and using a larger number for \code{n.min} than the default
-#'   is usually wise.
+#'   is usually wise. As model fitting functions can depend on
+#'   the RNG, \code{seed} if different to \code{NA} is used as argument in a
+#'   call to \code{\link[base:Random]{set.seed}()} immediately ahead of model
+#'   fitting.
 #'
 #' @section User-defined methods: User-defined functions can be passed as
 #'   argument to \code{method}. The requirements are 1) that the signature is
@@ -317,6 +323,7 @@ stat_ma_eq <- function(mapping = NULL,
                        range.y = NULL,
                        range.x = NULL,
                        nperm = 99,
+                       seed = NA,
                        eq.with.lhs = TRUE,
                        eq.x.rhs = NULL,
                        small.r = getOption("ggpmisc.small.r", default = FALSE),
@@ -406,6 +413,7 @@ stat_ma_eq <- function(mapping = NULL,
                    range.y = range.y,
                    range.x = range.x,
                    nperm = nperm,
+                   seed = seed,
                    eq.with.lhs = eq.with.lhs,
                    eq.x.rhs = eq.x.rhs,
                    small.r = small.r,
@@ -449,6 +457,7 @@ ma_eq_compute_group_fun <- function(data,
                                     range.y = NULL,
                                     range.x = NULL,
                                     nperm = 99,
+                                    seed = NA,
                                     eq.with.lhs = TRUE,
                                     eq.x.rhs = NULL,
                                     small.r = FALSE,
@@ -590,6 +599,9 @@ ma_eq_compute_group_fun <- function(data,
     fit.args <- c(fit.args, method.args)
   }
 
+  if (!is.na(seed)) {
+    set.seed(seed)
+  }
   # lmodel2 issues a warning that is irrelevant here
   # so we silence it selectively
   withCallingHandlers({

@@ -17,6 +17,7 @@ stat_ma_line(
   range.y = NULL,
   range.x = NULL,
   se = TRUE,
+  seed = NA,
   fm.values = FALSE,
   n = 80,
   nperm = 99,
@@ -66,6 +67,10 @@ instead of original variable names.}
 
 \item{se}{logical Return confidence interval around smooth? (`TRUE` by
 default, see `level` to control.)}
+
+\item{seed}{RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
+Defaults to \code{NA}, which means that \code{set.seed()} will not be
+called.}
 
 \item{fm.values}{logical Add R2, p-value and n as columns to returned data?
 (`FALSE` by default.)}
@@ -132,7 +137,9 @@ This statistic fits major axis (\code{"MA"}) and other model II
   parameter \code{n.min}. The default \code{n.min = 2L} is the smallest
   possible value. However, model fits with very few observations are of
   little interest and using a larger number for \code{n.min} than the default
-  is wise.
+  is wise. As model fitting functions could depend on the RNG,
+  \code{seed} if different to \code{NA} is used as argument in a call to
+  \code{\link[base:Random]{set.seed}()} immediately ahead of model fitting.
 }
 \section{Computed variables}{
  `stat_ma_line()` provides the following

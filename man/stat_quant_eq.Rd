@@ -15,6 +15,7 @@ stat_quant_eq(
   method = "rq:br",
   method.args = list(),
   n.min = 3L,
+  seed = NA,
   eq.with.lhs = TRUE,
   eq.x.rhs = NULL,
   coef.digits = 3,
@@ -67,6 +68,10 @@ or to a function passed as argument to \code{method}.}
 
 \item{n.min}{integer Minimum number of observations needed for fiting a
 the model.}
+
+\item{seed}{RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
+Defaults to \code{NA}, which means that \code{set.seed()} will not be
+called.}
 
 \item{eq.with.lhs}{If \code{character} the string is pasted to the front of
 the equation label before parsing or a \code{logical} (see note).}
