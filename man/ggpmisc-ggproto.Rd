@@ -2,15 +2,15 @@
 % Please edit documentation in R/stat-correlation.R, R/stat-distrmix-eq.R,
 %   R/stat-distrmix-line.R, R/stat-fit-broom-tb.R, R/stat-fit-broom.R,
 %   R/stat-fit-deviations.R, R/stat-fit-residuals.R, R/stat-ma-eq.R,
-%   R/stat-ma-line.R, R/stat-mixture-eq.R, R/stat-mixture-line.R,
-%   R/stat-multcomp.R, R/stat-peaks.R, R/stat-poly-eq.R, R/stat-poly-line.R,
-%   R/stat-quant-band.r, R/stat-quant-eq.R, R/stat-quant-line.r
+%   R/stat-ma-line.R, R/stat-multcomp.R, R/stat-peaks.R, R/stat-poly-eq.R,
+%   R/stat-poly-line.R, R/stat-quant-band.r, R/stat-quant-eq.R,
+%   R/stat-quant-line.r
 \docType{data}
 \name{cor_test_compute_fun}
 \alias{cor_test_compute_fun}
 \alias{StatCorr}
-\alias{StatNormalmixEq}
-\alias{StatNormalmixLine}
+\alias{StatDistrmixEq}
+\alias{StatDistrmixLine}
 \alias{fit_tb_compute_panel_fun}
 \alias{StatFitTb}
 \alias{fit_glance_compute_group_fun}
@@ -29,8 +29,6 @@
 \alias{StatMaEq}
 \alias{ma_line_compute_group_fun}
 \alias{StatMaLine}
-\alias{StatDistrmixEq}
-\alias{StatDistrmixLine}
 \alias{multcomp_compute_fun}
 \alias{StatMultcomp}
 \alias{peaks_compute_group_fun}

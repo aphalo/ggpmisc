@@ -1,4 +1,4 @@
-#' Predicted line from Normal mixture model fit
+#' Predicted line from distribution mixture model fit
 #'
 #' \code{stat_distrmix_line()} fits a Normal mixture model, by default with
 #' \code{\link[mixtools]{normalmixEM}()}. Predicted values are
@@ -206,7 +206,7 @@ stat_distrmix_line <- function(mapping = NULL,
   ggplot2::layer(
     data = data,
     mapping = mapping,
-    stat = StatNormalmixLine,
+    stat = StatDistrmixLine,
     geom = geom,
     position = position,
     show.legend = show.legend,
@@ -233,7 +233,7 @@ stat_distrmix_line <- function(mapping = NULL,
   )
 }
 
-normalmix_compute_group_fun <-
+distrmix_compute_group_fun <-
   function(data,
            scales,
            method,
@@ -265,7 +265,7 @@ normalmix_compute_group_fun <-
     }
 
     fm_params.tb <-
-      normalmix_helper_fun(data = data,
+      distrmix_helper_fun(data = data,
                            method = method,
                            method.name = method.name,
                            se = se,
@@ -349,8 +349,8 @@ normalmix_compute_group_fun <-
 #' @format NULL
 #' @usage NULL
 #' @export
-StatNormalmixLine <-
-  ggplot2::ggproto("StatNormalmixLine", ggplot2::Stat,
+StatDistrmixLine <-
+  ggplot2::ggproto("StatDistrmixLine", ggplot2::Stat,
                    setup_params = function(data, params) {
                      params[["flipped_aes"]] <-
                        ggplot2::has_flipped_aes(data, params, ambiguous = TRUE)
@@ -359,7 +359,7 @@ StatNormalmixLine <-
 
                    extra_params = c("na.rm", "orientation"),
 
-                   compute_group = normalmix_compute_group_fun,
+                   compute_group = distrmix_compute_group_fun,
 
                    default_aes =
                      ggplot2::aes(y = after_stat(density),
@@ -381,7 +381,7 @@ StatNormalmixLine <-
 #' estimates for the parameters. It is a wrapper on functions from package
 #' 'mixtools'.
 #'
-normalmix_helper_fun <-
+distrmix_helper_fun <-
   function(data,
            aes.name = "x",
            method,

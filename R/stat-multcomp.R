@@ -583,8 +583,8 @@ multcomp_compute_fun <-
       fun.args[["method"]] <- fun.method
     }
 
-    if (!is.na(seed)) {
-      set.seed(seed)
+    if (!is.na(fit.seed)) {
+      set.seed(fit.seed)
     }
     # some model fit functions can contain code with partial matching of names!
     # so we silence selectively only these warnings

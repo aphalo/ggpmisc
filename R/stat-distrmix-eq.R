@@ -1,4 +1,4 @@
-#' Predicted equation from Normal mixture model fit
+#' Predicted equation from distribution mixture model fit
 #'
 #' \code{stat_distrmix_eq()} fits a Normal mixture model, by default with
 #' \code{\link[mixtools]{normalmixEM}()}. Predicted values are
@@ -246,7 +246,7 @@ stat_distrmix_eq <- function(mapping = NULL,
   ggplot2::layer(
     data = data,
     mapping = mapping,
-    stat = StatNormalmixEq,
+    stat = StatDistrmixEq,
     geom = geom,
     position = position,
     show.legend = show.legend,
@@ -283,7 +283,7 @@ stat_distrmix_eq <- function(mapping = NULL,
   )
 }
 
-normalmix_eq_compute_group_fun <-
+distrmix_eq_compute_group_fun <-
   function(data,
            scales,
            method,
@@ -331,7 +331,7 @@ normalmix_eq_compute_group_fun <-
                 c("expression", "text", "markdown", "numeric", "latex", "tex", "tikz"))
 
     fm_params.tb <-
-      normalmix_helper_fun(data = data,
+      distrmix_helper_fun(data = data,
                            aes.name = orientation,
                            method = method,
                            method.name = method.name,
@@ -438,8 +438,8 @@ normalmix_eq_compute_group_fun <-
 #' @format NULL
 #' @usage NULL
 #' @export
-StatNormalmixEq <-
-  ggplot2::ggproto("StatNormalmixEq", ggplot2::Stat,
+StatDistrmixEq <-
+  ggplot2::ggproto("StatDistrmixEq", ggplot2::Stat,
 
                    extra_params = c("na.rm", "orientation"),
 
@@ -449,7 +449,7 @@ StatNormalmixEq <-
                      params
                    },
 
-                   compute_group = normalmix_eq_compute_group_fun,
+                   compute_group = distrmix_eq_compute_group_fun,
 
                    default_aes =
                      ggplot2::aes(npcx = after_stat(npcx),
