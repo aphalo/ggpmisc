@@ -16,7 +16,7 @@ stat_correlation(
   exact = NULL,
   r.conf.level = ifelse(method == "pearson", 0.95, NA),
   continuity = FALSE,
-  seed = NA,
+  fit.seed = NA,
   small.r = getOption("ggpmisc.small.r", default = FALSE),
   small.p = getOption("ggpmisc.small.p", default = FALSE),
   coef.keep.zeros = TRUE,
@@ -69,7 +69,7 @@ interval. If set to \code{NA} computation of CI is skipped.}
 \item{continuity}{logical If TRUE , a continuity correction is used for
 Kendall's tau and Spearman's rho when not computed exactly.}
 
-\item{seed}{RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
+\item{fit.seed}{RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
 Defaults to \code{NA}, which means that \code{set.seed()} will not be
 called.}
 
@@ -136,7 +136,7 @@ This statistic can be used to annotate a plot with the correlation
   labels include the symbol describing the quantity together with the numeric
   value. For the confidence interval (CI) the default is to follow the APA
   recommendation of using square brackets. As the CI is computed by
-  bootstrapping, \code{seed} if different to \code{NA} immediately before
+  bootstrapping, \code{fit.seed} if different to \code{NA} immediately before
   this computation.
 
   The value of \code{parse} is set automatically based on \code{output-type},

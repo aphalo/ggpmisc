@@ -14,7 +14,7 @@ stat_poly_eq(
   method = "lm",
   method.args = list(),
   n.min = 2L,
-  seed = NA,
+  fit.seed = NA,
   eq.with.lhs = TRUE,
   eq.x.rhs = NULL,
   small.r = getOption("ggpmisc.small.r", default = FALSE),
@@ -73,7 +73,7 @@ class \code{"lqs"}, class \code{"gls"} or \code{"sma"}.}
 \item{n.min}{integer Minimum number of distinct values in the explanatory
 variable (on the rhs of formula) for fitting to the attempted.}
 
-\item{seed}{RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
+\item{fit.seed}{RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
 Defaults to \code{NA}, which means that \code{set.seed()} will not be
 called.}
 
@@ -162,7 +162,7 @@ This statistic can be used to automatically annotate a plot with
   on the availability of methods for the model fit objects. Lack of methods
   or explicit support results in individual parameters and matching labels
   being set to NA. As some model fitting results can depend on the RNG,
-  \code{seed} if different to \code{NA} is used as argument in a call to
+  \code{fit.seed} if different to \code{NA} is used as argument in a call to
   \code{\link[base:Random]{set.seed}()} immediately ahead of model fitting.
 
   While strings for \eqn{R^2}, adjusted \eqn{R^2}, \eqn{F}, and \eqn{P}

@@ -43,6 +43,9 @@
 #'   \code{\link[multcomp]{summary.glht}}. Accepted values are "single-step",
 #'   "Shaffer", "Westfall", "free", "holm", "hochberg", "hommel", "bonferroni",
 #'   "BH", "BY", "fdr", "none".
+#' @param fit.seed RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
+#'   Defaults to \code{NA}, which means that \code{set.seed()} will not be
+#'   called.
 #' @param small.p logical If true, use of lower case \emph{p} instead of capital
 #'   \emph{P} as the symbol for \emph{P}-value in labels.
 #' @param adj.method.tag numeric, character or function If \code{numeric}, the
@@ -333,13 +336,14 @@ stat_multcomp <- function(mapping = NULL,
                           method.args = list(),
                           contrasts = "Tukey",
                           p.adjust.method = NULL,
+                          fit.seed = NA,
+                          fm.cutoff.p.value = 1,
+                          mc.cutoff.p.value = 1,
+                          mc.critical.p.value = 0.05,
                           small.p = getOption("ggpmisc.small.p", default = FALSE),
                           adj.method.tag = 4,
                           p.digits = 3,
                           label.type = "bars",
-                          fm.cutoff.p.value = 1,
-                          mc.cutoff.p.value = 1,
-                          mc.critical.p.value = 0.05,
                           label.y = NULL,
                           vstep = NULL,
                           output.type = NULL,
@@ -404,6 +408,7 @@ stat_multcomp <- function(mapping = NULL,
                    method.args = method.args,
                    contrasts = contrasts,
                    p.adjust.method = p.adjust.method,
+                   fit.seed = fit.seed,
                    small.p = small.p,
                    adj.method.tag = adj.method.tag,
                    p.digits = p.digits,
@@ -439,6 +444,7 @@ multcomp_compute_fun <-
            weight = 1,
            small.p = FALSE,
            adj.method.tag = 4,
+           fit.seed = NA,
            p.digits = 3,
            label.type = "bars",
            fm.cutoff.p.value = 1,
@@ -577,6 +583,9 @@ multcomp_compute_fun <-
       fun.args[["method"]] <- fun.method
     }
 
+    if (!is.na(seed)) {
+      set.seed(seed)
+    }
     # some model fit functions can contain code with partial matching of names!
     # so we silence selectively only these warnings
     withCallingHandlers({

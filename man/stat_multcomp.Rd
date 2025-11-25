@@ -15,13 +15,14 @@ stat_multcomp(
   method.args = list(),
   contrasts = "Tukey",
   p.adjust.method = NULL,
+  fit.seed = NA,
+  fm.cutoff.p.value = 1,
+  mc.cutoff.p.value = 1,
+  mc.critical.p.value = 0.05,
   small.p = getOption("ggpmisc.small.p", default = FALSE),
   adj.method.tag = 4,
   p.digits = 3,
   label.type = "bars",
-  fm.cutoff.p.value = 1,
-  mc.cutoff.p.value = 1,
-  mc.critical.p.value = 0.05,
   label.y = NULL,
   vstep = NULL,
   output.type = NULL,
@@ -73,6 +74,25 @@ function \code{adjusted()} passed as argument to parameter \code{test} of
 "Shaffer", "Westfall", "free", "holm", "hochberg", "hommel", "bonferroni",
 "BH", "BY", "fdr", "none".}
 
+\item{fit.seed}{RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
+Defaults to \code{NA}, which means that \code{set.seed()} will not be
+called.}
+
+\item{fm.cutoff.p.value}{numeric [0..1] The \emph{P}-value for the main
+effect of factor \code{x} in the ANOVA test for the fitted model above
+which no pairwise comparisons are computed or labels generated. Be aware
+that recent literature tends to recommend to consider which testing
+approach is relevant to the problem at hand instead of requiring the
+significance of the main effect before applying multiple comparisons'
+tests. The default value is 1, imposing no restrictions.}
+
+\item{mc.cutoff.p.value}{numeric [0..1] The \emph{P}-value for the individual
+contrasts above which no labelled bars are generated. Default is 1,
+labelling all pairwise contrasts tested.}
+
+\item{mc.critical.p.value}{numeric The critical \emph{P}-value used for tests
+when encoded as letters.}
+
 \item{small.p}{logical If true, use of lower case \emph{p} instead of capital
 \emph{P} as the symbol for \emph{P}-value in labels.}
 
@@ -90,21 +110,6 @@ use for \eqn{R^2} and \emph{P}-value in labels.}
 \item{label.type}{character One of "bars", "letters" or "LETTERS", selects
 how the results of the multiple comparisons are displayed. Only "bars" can
 be used together with \code{contrasts = "Dunnet"}.}
-
-\item{fm.cutoff.p.value}{numeric [0..1] The \emph{P}-value for the main
-effect of factor \code{x} in the ANOVA test for the fitted model above
-which no pairwise comparisons are computed or labels generated. Be aware
-that recent literature tends to recommend to consider which testing
-approach is relevant to the problem at hand instead of requiring the
-significance of the main effect before applying multiple comparisons'
-tests. The default value is 1, imposing no restrictions.}
-
-\item{mc.cutoff.p.value}{numeric [0..1] The \emph{P}-value for the individual
-contrasts above which no labelled bars are generated. Default is 1,
-labelling all pairwise contrasts tested.}
-
-\item{mc.critical.p.value}{numeric The critical \emph{P}-value used for tests
-when encoded as letters.}
 
 \item{label.y}{numeric vector Values in native data units or if
 \code{character}, one of "top" or "bottom". Recycled if too short and

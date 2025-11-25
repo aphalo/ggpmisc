@@ -7,15 +7,17 @@ editor_options:
 # ggpmisc 0.6.3
 
 This version adds support for additional model fitting approaches
-and packages. Parameter `orientation` not yet supported in all statistics.
+and packages. _Parameter `orientation` is not yet supported in all statistics._
 
--   Add `stat_normalmix_line()` and `stat_normalmix_eq()` supporting Normal 
-    mixture models fitted with `mixtools::normalmixEM()`.
+-   Add `stat_distrmix_line()` and `stat_distrmix_eq()` currently supporting 
+    only Normal mixture models fitted with `mixtools::normalmixEM()`.
 -   Support `log()` and `sqrt()` transformations for `local.reference` in
     `find_peaks()`, `find_valleys()`, `stat_peaks()` and `stat_valleys()`.
--   Add parameter `seed` to `stat_poly_eq()` and `stat_poly_line()` as
-    some supported model fit methods depend on the RNG.
--   Add parameter `seed` to `stat_correlation()` as some supported CI
+-   Add parameter `fit.seed` to `stat_poly_eq()`, `stat_poly_line()`, 
+    `stat_ma_eq()`, `stat_ma_line()`, `stat_quant_eq()`, `stat_quant_line()`,
+    `stat_poly_band()` and  `stat_multcomp()` as some supported model fit 
+    methods depend on the RNG.
+-   Add parameter `fit.seed` to `stat_correlation()` as some supported CI
     computations depend on the RNG.
 -   Support `smatr::ma()` and `smatr::sma()` in `stat_poly_eq()` and in
     `stat_poly_line()`. (Confidence band is only for slope.)

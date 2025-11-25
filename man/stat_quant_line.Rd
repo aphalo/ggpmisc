@@ -13,7 +13,7 @@ stat_quant_line(
   quantiles = c(0.25, 0.5, 0.75),
   formula = NULL,
   se = length(quantiles) == 1L,
-  seed = NA,
+  fit.seed = NA,
   fm.values = FALSE,
   n = 80,
   method = "rq",
@@ -52,7 +52,7 @@ instead of original variable names.}
 
 \item{se}{logical Passed to \code{quantreg::predict.rq()}.}
 
-\item{seed}{RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
+\item{fit.seed}{RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
 Defaults to \code{NA}, which means that \code{set.seed()} will not be
 called.}
 

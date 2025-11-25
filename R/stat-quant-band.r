@@ -50,9 +50,9 @@
 #'   and return a model fit object of class \code{rq}, \code{rqs} or
 #'   \code{rqss}.
 #' @param method.args named list with additional arguments.
-#' @param seed RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
-#'   Defaults to \code{NA}, which means that \code{set.seed()} will not be
-#'   called.
+#' @param fit.seed RNG seed argument passed to
+#'   \code{\link[base:Random]{set.seed}()}. Defaults to \code{NA}, which means
+#'   that \code{set.seed()} will not be called.
 #' @param n Number of points at which to evaluate smoother.
 #' @param orientation character Either "x" or "y" controlling the default for
 #'   \code{formula}.
@@ -160,7 +160,7 @@ stat_quant_band <- function(mapping = NULL,
                             ...,
                             quantiles = c(0.25, 0.5, 0.75),
                             formula = NULL,
-                            seed = NA,
+                            fit.seed = NA,
                             fm.values = FALSE,
                             n = 80,
                             method = "rq",
@@ -236,7 +236,7 @@ stat_quant_band <- function(mapping = NULL,
         method = method,
         method.name = method.name,
         method.args = method.args,
-        seed = seed,
+        fit.seed = fit.seed,
         na.rm = na.rm,
         orientation = orientation,
         se = TRUE, # passed to geom_smooth
@@ -261,7 +261,7 @@ quant_band_compute_group_fun <- function(data,
                                          method.name,
                                          method.args = list(),
                                          lambda = 1,
-                                         seed = NA,
+                                         fit.seed = NA,
                                          fm.values = FALSE,
                                          na.rm = FALSE,
                                          flipped_aes = NA) {
@@ -310,8 +310,8 @@ quant_band_compute_group_fun <- function(data,
     method.args[["method"]] <- fun.method
   }
 
-  if (!is.na(seed)) {
-    set.seed(seed)
+  if (!is.na(fit.seed)) {
+    set.seed(fit.seed)
   }
   z.ls <- lapply(sort(quantiles), quant_pred, data = data, method = method,
                  formula = formula, weight = data[["weight"]], grid = grid,

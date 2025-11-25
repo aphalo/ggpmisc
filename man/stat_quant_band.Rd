@@ -12,7 +12,7 @@ stat_quant_band(
   ...,
   quantiles = c(0.25, 0.5, 0.75),
   formula = NULL,
-  seed = NA,
+  fit.seed = NA,
   fm.values = FALSE,
   n = 80,
   method = "rq",
@@ -46,9 +46,9 @@ quantiles at the  edges of the band and optionally a line within the band.}
 \item{formula}{a formula object. Using aesthetic names \code{x} and \code{y}
 instead of original variable names.}
 
-\item{seed}{RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
-Defaults to \code{NA}, which means that \code{set.seed()} will not be
-called.}
+\item{fit.seed}{RNG seed argument passed to
+\code{\link[base:Random]{set.seed}()}. Defaults to \code{NA}, which means
+that \code{set.seed()} will not be called.}
 
 \item{fm.values}{logical Add n as a column to returned data? (`FALSE` by
 default.)}

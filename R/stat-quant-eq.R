@@ -44,9 +44,9 @@
 #'   and return a model fit object of class \code{rq} or \code{rqs}.
 #' @param method.args named list with additional arguments passed to \code{rq()}
 #'   or to a function passed as argument to \code{method}.
-#' @param n.min integer Minimum number of observations needed for fiting a
+#' @param n.min integer Minimum number of observations needed for fitting a
 #'   the model.
-#' @param seed RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
+#' @param fit.seed RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
 #'   Defaults to \code{NA}, which means that \code{set.seed()} will not be
 #'   called.
 #' @param eq.with.lhs If \code{character} the string is pasted to the front of
@@ -449,7 +449,7 @@ stat_quant_eq <- function(mapping = NULL,
                           method = "rq:br",
                           method.args = list(),
                           n.min = 3L,
-                          seed = NA,
+                          fit.seed = NA,
                           eq.with.lhs = TRUE,
                           eq.x.rhs = NULL,
                           coef.digits = 3,
@@ -537,7 +537,7 @@ stat_quant_eq <- function(mapping = NULL,
                    method.name = method.name,
                    method.args = method.args,
                    n.min = n.min,
-                   seed = seed,
+                   fit.seed = fit.seed,
                    eq.with.lhs = eq.with.lhs,
                    eq.x.rhs = eq.x.rhs,
                    mk.eq.label = mk.eq.label,
@@ -577,7 +577,7 @@ quant_eq_compute_group_fun <- function(data,
                                        method.name,
                                        method.args = list(),
                                        n.min = 3L,
-                                       seed = NA,
+                                       fit.seed = NA,
                                        weight = 1,
                                        eq.with.lhs = TRUE,
                                        eq.x.rhs = NULL,
@@ -714,8 +714,8 @@ quant_eq_compute_group_fun <- function(data,
     fun.args[["method"]] <- fun.method
   }
 
-  if (!is.na(seed)) {
-    set.seed(seed)
+  if (!is.na(fit.seed)) {
+    set.seed(fit.seed)
   }
   # quantreg contains code with partial matching of names!
   # so we silence selectively only these warnings

@@ -13,7 +13,7 @@ stat_poly_line(
   method = "lm",
   formula = NULL,
   se = NULL,
-  seed = NA,
+  fit.seed = NA,
   fm.values = FALSE,
   n = 80,
   fullrange = FALSE,
@@ -56,7 +56,7 @@ instead of original variable names.}
 \item{se}{Display confidence interval around smooth? (`TRUE` by default only
 for fits with \code{lm()} and \code{rlm()}, see `level` to control.)}
 
-\item{seed}{RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
+\item{fit.seed}{RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
 Defaults to \code{NA}, which means that \code{set.seed()} will not be
 called.}
 
@@ -111,7 +111,7 @@ interprets the argument passed to \code{formula} differently than
 Other defaults are consistent with those in \code{stat_poly_eq()},
 \code{stat_quant_line()}, \code{stat_quant_band()}, \code{stat_quant_eq()},
 \code{stat_ma_line()}, \code{stat_ma_eq()}.  As some model fitting functions
-  can depend on the RNG, \code{seed} if different to \code{NA} is used
+  can depend on the RNG, \code{fit.seed} if different to \code{NA} is used
   as argument in a call to \code{\link[base:Random]{set.seed}()} immediately
   ahead of model fitting.
 

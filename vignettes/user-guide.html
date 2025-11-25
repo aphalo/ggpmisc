@@ -12,7 +12,7 @@
 
 <meta name="author" content="Pedro J. Aphalo" />
 
-<meta name="date" content="2025-11-17" />
+<meta name="date" content="2025-11-25" />
 
 <title>Fitted-Model-Based Annotations</title>
 
@@ -340,9 +340,9 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 <h1 class="title toc-ignore">Fitted-Model-Based Annotations</h1>
-<h3 class="subtitle">‘ggpmisc’ 0.6.2.9002</h3>
+<h3 class="subtitle">‘ggpmisc’ 0.6.2.9003</h3>
 <h4 class="author">Pedro J. Aphalo</h4>
-<h4 class="date">2025-11-17</h4>
+<h4 class="date">2025-11-25</h4>
 
 
 <div id="TOC">
@@ -599,7 +599,7 @@ defined for returned value; (9) model fit functions if method
 <td align="left">rq (1, 3, 4, 7)</td>
 </tr>
 <tr class="odd">
-<td align="left"><code>stat_normalmix_eq()</code></td>
+<td align="left"><code>stat_distrmix_eq()</code></td>
 <td align="left">equation(s) (<code>text_npc</code>)</td>
 <td align="left">normalmixEM (2, 7)</td>
 </tr>
@@ -643,7 +643,7 @@ defined for returned value; (9) model fit functions if method
 <td align="left">rq, rqss (1, 4, 5, 7)</td>
 </tr>
 <tr class="odd">
-<td align="left"><code>stat_normalmix_line()</code></td>
+<td align="left"><code>stat_distrmix_line()</code></td>
 <td align="left">lines(s) (<code>line</code>)</td>
 <td align="left">normalmixEM (2, 7)</td>
 </tr>
@@ -2969,8 +2969,8 @@ default.</p>
 <span id="cb93-13"><a href="#cb93-13" tabindex="-1"></a>                          <span class="st">&quot;italic(P)&quot;</span> <span class="ot">=</span> <span class="st">&quot;p.value&quot;</span>),</span>
 <span id="cb93-14"><a href="#cb93-14" tabindex="-1"></a>              <span class="at">label.y =</span> <span class="st">&quot;top&quot;</span>, <span class="at">label.x =</span> <span class="st">&quot;left&quot;</span>,</span>
 <span id="cb93-15"><a href="#cb93-15" tabindex="-1"></a>              <span class="at">parse =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-<pre><code>## Warning in stat_fit_tb(geom = &quot;debug&quot;, summary.fun = str, method = &quot;lm&quot;, : Ignoring unknown parameters: `table.theme`, `table.rownames`, `table.colnames`,
-## `table.hjust`, `parse`, and `summary.fun`</code></pre>
+<pre><code>## Warning in stat_fit_tb(geom = &quot;debug&quot;, summary.fun = str, method = &quot;lm&quot;, : Ignoring unknown parameters: `table.theme`, `table.rownames`, `table.colnames`, `table.hjust`,
+## `parse`, and `summary.fun`</code></pre>
 <pre><code>## [1] &quot;PANEL 1; group(s) NULL; &#39;draw_function()&#39; input &#39;data&#39; (head):&quot;
 ##   PANEL x y
 ## 1     1 1 1

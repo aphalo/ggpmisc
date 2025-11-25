@@ -81,9 +81,9 @@ As of 'ggpmisc' (>= 0.6.3) the fitting of mixtures of Normal distributions is
 supported. Currently the only package supported is 'mixtools' and a single
 method from it `normalmixEM()`.
 
-## Fitted models in `stat_normalmix_line()` and `stat_normal_eq()`
+## Fitted models in `stat_distrmix_line()` and `stat_normal_eq()`
 
-Both `stat_normalmix_line()` and `stat_normal_eq()` are designed for flexibility while still attempting to keep 
+Both `stat_distrmix_line()` and `stat_normal_eq()` are designed for flexibility while still attempting to keep 
 their implementation and use rather straightforward. As much as possible, from
 a user's viewpoint, the interface is similar to other statistics in 'ggpmisc'.
 One key difference is that they their input from a single aesthetic, _x_, rather
@@ -118,12 +118,12 @@ for the components and their sums are plotted.
 ```{r, warning=FALSE}
 ggplot(faithful, aes(x = waiting)) +
   geom_histogram(aes(y = after_stat(density)), alpha = 0.33, bins = 20) +
-  stat_normalmix_line(aes(colour = after_stat(component),
+  stat_distrmix_line(aes(colour = after_stat(component),
                           fill = after_stat(component)),
                       outline.type = "upper",
                       geom = "area", linewidth = 1, alpha = 0.25,
-                      seed = 123) +
-  stat_normalmix_eq(aes(colour = after_stat(component)), seed = 123) +
+                      fit.seed = 123) +
+  stat_distrmix_eq(aes(colour = after_stat(component)), fit.seed = 123) +
   expand_limits(y = 0.06) # make space for the equation above the histogram
 ```
 
@@ -135,13 +135,13 @@ individual equations.
 ```{r, warning=FALSE, results='hide', fig.keep='all'}
 ggplot(faithful, aes(x = waiting)) +
   geom_histogram(aes(y = after_stat(density)), alpha = 0.33, bins = 20) +
-  stat_normalmix_line(aes(colour = after_stat(component),
+  stat_distrmix_line(aes(colour = after_stat(component),
                           fill = after_stat(component)),
                       outline.type = "upper",
                       geom = "area", linewidth = 1, alpha = 0.25,
-                      components = "members", seed = 123) +
-  stat_normalmix_eq(aes(colour = after_stat(component)), 
-                    components = "members", seed = 123,
+                      components = "members", fit.seed = 123) +
+  stat_distrmix_eq(aes(colour = after_stat(component)), 
+                    components = "members", fit.seed = 123,
                     eq.digits = 3)
 ```
 
@@ -150,10 +150,10 @@ Below, only the sum of the members is plotted.
 ```{r, warning=FALSE, results='hide', fig.keep='all'}
  ggplot(faithful, aes(x = waiting)) +
   geom_histogram(aes(y = after_stat(density)), alpha = 0.33, bins = 20) +
-  stat_normalmix_line(geom = "area", linewidth = 1, alpha = 0.25,
+  stat_distrmix_line(geom = "area", linewidth = 1, alpha = 0.25,
                       colour = "black", outline.type = "upper",
-                      components = "sum", se = FALSE, seed = 123) +
-  stat_normalmix_eq(components = "sum", seed = 123)
+                      components = "sum", se = FALSE, fit.seed = 123) +
+  stat_distrmix_eq(components = "sum", fit.seed = 123)
 
 ```
 
@@ -165,10 +165,10 @@ parameter estimate.
 ```{r, warning=FALSE, results='hide', fig.keep='all'}
  ggplot(faithful, aes(x = waiting)) +
   geom_histogram(aes(y = after_stat(density)), alpha = 0.33, bins = 20) +
-  stat_normalmix_line(geom = "area", linewidth = 1, alpha = 0.25,
+  stat_distrmix_line(geom = "area", linewidth = 1, alpha = 0.25,
                       colour = "black", outline.type = "upper",
-                      components = "sum", se = FALSE, seed = 123) +
-  stat_normalmix_eq(components = "sum", seed = 123, se = TRUE) +
+                      components = "sum", se = FALSE, fit.seed = 123) +
+  stat_distrmix_eq(components = "sum", fit.seed = 123, se = TRUE) +
   expand_limits(y = 0.06) # make space for the equation above the histogram
 ```
 
@@ -183,13 +183,13 @@ good to plot a histogram in the background of a fitted Normal mixture._
 ```{r, warning=FALSE, warning=FALSE, results='hide', fig.keep='all'}
 ggplot(faithful, aes(x = waiting)) +
   geom_histogram(aes(y = after_stat(density)), alpha = 0.33, bins = 20) +
-  stat_normalmix_line(aes(colour = after_stat(component),
+  stat_distrmix_line(aes(colour = after_stat(component),
                           fill = after_stat(component)),
                       outline.type = "upper",
                       geom = "area", linewidth = 1, alpha = 0.25,
-                      seed = 123, k = 1) +
-  stat_normalmix_eq(aes(colour = after_stat(component)), se = TRUE,
-                    seed = 123, k = 1)
+                      fit.seed = 123, k = 1) +
+  stat_distrmix_eq(aes(colour = after_stat(component)), se = TRUE,
+                    fit.seed = 123, k = 1)
 ```
 
 With the `galaxies` data about the speed of galaxies, the fit is not very good,
@@ -200,13 +200,13 @@ components.
 ```{r, warning=FALSE, results='hide', fig.keep='all'}
 ggplot(data.frame(speed = galaxies * 1e-3), aes(x = speed)) +
   geom_histogram(aes(y = after_stat(density)), alpha = 0.33, bins = 20) +
-  stat_normalmix_line(aes(colour = after_stat(component),
+  stat_distrmix_line(aes(colour = after_stat(component),
                           fill = after_stat(component)),
                       outline.type = "upper",
                       geom = "area", linewidth = 0.5, alpha = 0.25,
-                      k = 3, seed = 123) +
-  stat_normalmix_eq(aes(colour = after_stat(component)), 
-                    k = 3, seed = 123, geom = "label_npc", size = 3.2) +
+                      k = 3, fit.seed = 123) +
+  stat_distrmix_eq(aes(colour = after_stat(component)), 
+                    k = 3, fit.seed = 123, geom = "label_npc", size = 3.2) +
   expand_limits(y = 0.27)
 ```
 
@@ -218,13 +218,13 @@ supported by scientific theory that suggests a reasonable value for `k`.
 ```{r, warning=FALSE, results='hide', fig.keep='all'}
 ggplot(data.frame(speed = galaxies * 1e-3), aes(x = speed)) +
   geom_histogram(aes(y = after_stat(density)), alpha = 0.33, bins = 20) +
-  stat_normalmix_line(outline.type = "upper", colour = "black",
+  stat_distrmix_line(outline.type = "upper", colour = "black",
                       geom = "area", linewidth = 1, alpha = 0.25,
-                      k = 6, seed = 123, components = "sum") +
-  stat_normalmix_line(outline.type = "upper", colour = "black",
+                      k = 6, fit.seed = 123, components = "sum") +
+  stat_distrmix_line(outline.type = "upper", colour = "black",
                       geom = "line", linewidth = 0.25,
-                      k = 6, seed = 123, components = "members") +
-  stat_normalmix_eq(k = 6, seed = 123, components = "members", 
+                      k = 6, fit.seed = 123, components = "members") +
+  stat_distrmix_eq(k = 6, fit.seed = 123, components = "members", 
                     eq.with.lhs = FALSE, size = 3)
 ```
 

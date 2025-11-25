@@ -78,7 +78,7 @@
 #' @param orientation character Either "x" or "y" controlling the default for
 #'   \code{formula}.
 #' @param se logical Passed to \code{quantreg::predict.rq()}.
-#' @param seed RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
+#' @param fit.seed RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
 #'   Defaults to \code{NA}, which means that \code{set.seed()} will not be
 #'   called.
 #' @param fm.values logical Add n as a column to returned data? (`FALSE` by
@@ -225,7 +225,7 @@ stat_quant_line <- function(mapping = NULL,
                             quantiles = c(0.25, 0.5, 0.75),
                             formula = NULL,
                             se = length(quantiles) == 1L,
-                            seed = NA,
+                            fit.seed = NA,
                             fm.values = FALSE,
                             n = 80,
                             method = "rq",
@@ -305,7 +305,7 @@ stat_quant_line <- function(mapping = NULL,
         quantiles = quantiles,
         formula = formula,
         se = se,
-        seed = seed,
+        fit.seed = fit.seed,
         fm.values = fm.values,
         n = n,
         method = method,
@@ -343,7 +343,7 @@ quant_line_compute_group_fun <- function(data,
                                          type = "none",
                                          interval = "none",
                                          se = TRUE,
-                                         seed = NA,
+                                         fit.seed = NA,
                                          fm.values = FALSE,
                                          na.rm = FALSE,
                                          flipped_aes = NA) {
@@ -396,8 +396,8 @@ quant_line_compute_group_fun <- function(data,
     method.args[["method"]] <- fun.method
   }
 
-  if (!is.na(seed)) {
-    set.seed(seed)
+  if (!is.na(fit.seed)) {
+    set.seed(fit.seed)
   }
   z <- lapply(quantiles, quant_pred, data = data, method = method,
               formula = formula, weight = data[["weight"]], grid = grid,

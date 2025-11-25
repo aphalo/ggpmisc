@@ -17,7 +17,7 @@ stat_ma_eq(
   range.y = NULL,
   range.x = NULL,
   nperm = 99,
-  seed = NA,
+  fit.seed = NA,
   eq.with.lhs = TRUE,
   eq.x.rhs = NULL,
   small.r = getOption("ggpmisc.small.r", default = FALSE),
@@ -78,7 +78,7 @@ variable (on the rhs of formula) for fitting to the attempted.}
 
 \item{nperm}{integer Number of permutation used to estimate significance.}
 
-\item{seed}{RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
+\item{fit.seed}{RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
 Defaults to \code{NA}, which means that \code{set.seed()} will not be
 called.}
 
@@ -174,7 +174,7 @@ This stat can be used to automatically annotate a plot with
   possible value. However, model fits with very few observations are of
   little interest and using a larger number for \code{n.min} than the default
   is usually wise. As model fitting functions can depend on
-  the RNG, \code{seed} if different to \code{NA} is used as argument in a
+  the RNG, \code{fit.seed} if different to \code{NA} is used as argument in a
   call to \code{\link[base:Random]{set.seed}()} immediately ahead of model
   fitting.
 }

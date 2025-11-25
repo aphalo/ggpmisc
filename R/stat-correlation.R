@@ -36,7 +36,7 @@
 #'   interval. If set to \code{NA} computation of CI is skipped.
 #' @param continuity logical If TRUE , a continuity correction is used for
 #'   Kendall's tau and Spearman's rho when not computed exactly.
-#' @param seed RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
+#' @param fit.seed RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
 #'   Defaults to \code{NA}, which means that \code{set.seed()} will not be
 #'   called.
 #' @param small.r,small.p logical Flags to switch use of lower case r and p for
@@ -74,7 +74,7 @@
 #'   labels include the symbol describing the quantity together with the numeric
 #'   value. For the confidence interval (CI) the default is to follow the APA
 #'   recommendation of using square brackets. As the CI is computed by
-#'   bootstrapping, \code{seed} if different to \code{NA} immediately before
+#'   bootstrapping, \code{fit.seed} if different to \code{NA} immediately before
 #'   this computation.
 #'
 #'   The value of \code{parse} is set automatically based on \code{output-type},
@@ -272,7 +272,7 @@ stat_correlation <-
            r.conf.level =
              ifelse(method == "pearson", 0.95, NA),
            continuity = FALSE,
-           seed = NA,
+           fit.seed = NA,
            small.r = getOption("ggpmisc.small.r", default = FALSE),
            small.p = getOption("ggpmisc.small.p", default = FALSE),
            coef.keep.zeros = TRUE,
@@ -320,7 +320,7 @@ stat_correlation <-
                      exact = exact,
                      conf.level = r.conf.level,
                      continuity = continuity,
-                     seed = seed,
+                     fit.seed = fit.seed,
                      small.r = small.r,
                      small.p = small.p,
                      coef.keep.zeros = coef.keep.zeros,
@@ -360,7 +360,7 @@ cor_test_compute_fun <- function(data,
                                  exact = NULL,
                                  conf.level = NA,
                                  continuity = FALSE,
-                                 seed = NA,
+                                 fit.seed = NA,
                                  small.r = FALSE,
                                  small.p = FALSE,
                                  coef.keep.zeros,
@@ -475,8 +475,8 @@ cor_test_compute_fun <- function(data,
   z[["method"]] <- method
   z[["r.conf.level"]] <- conf.level
 
-  if (!is.na(seed)) {
-    set.seed(seed)
+  if (!is.na(fit.seed)) {
+    set.seed(fit.seed)
   }
   if (boot.R >= 50 && conf.level > 0) {
     confint.boot <-

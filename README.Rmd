@@ -62,7 +62,7 @@ Statistics that help with reporting the results of model fits are:
 | `stat_poly_eq()`        | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lm, rlm, lqs, gls, ma, sma, etc. (1, 2, 7)   |
 | `stat_ma_eq()`          | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lmodel2 (6, 7)                               |
 | `stat_quant_eq()`       | equation, *P*, etc. (`text_npc`)                  | rq (1, 3, 4, 7)                              |
-| `stat_normalmix_eq()`   | equation(s) (`text_npc`)                          | normalmixEM (2, 7)                           |
+| `stat_distrmix_eq()`   | equation(s) (`text_npc`)                          | normalmixEM (2, 7)                           |
 | `stat_correlation()`    | correlation, *P*-value, CI (`text_npc`)           | Pearson (*t*), Kendall (*z*), Spearman (*S*) |
 | `stat_fit_glance()`     | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | those supported by 'broom'                   |
 | **Model line**          | _predicted and fitted values_                     |                                              |
@@ -70,7 +70,7 @@ Statistics that help with reporting the results of model fits are:
 | `stat_ma_line()`        | line + slope conf. (`smooth`)                     | lmodel2 (6, 7)                               |
 | `stat_quant_line()`     | line + conf. (`smooth`)                           | rq, rqss (1, 3, 4, 7)                        |
 | `stat_quant_band()`     | line + band, 2 or 3 quantiles (`smooth`)          | rq, rqss (1, 4, 5, 7)                        |
-| `stat_normalmix_line()` | lines(s) (`line`)                                 | normalmixEM (2, 7)                           |
+| `stat_distrmix_line()` | lines(s) (`line`)                                 | normalmixEM (2, 7)                           |
 | `stat_fit_augment()`    | predicted and other values (`smooth`)             | those supported by 'broom'                   |
 | `stat_fit_fitted()`     | fitted values (`point`)                           | lm, rlm, lqs, rq (1, 2, 4, 7, 9)             |
 | `stat_fit_deviations()` | deviations from observations (`segment`)          | lm, rlm, lqs, rq (1, 2, 4, 7, 9)             |

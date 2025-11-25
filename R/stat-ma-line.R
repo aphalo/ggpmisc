@@ -32,7 +32,7 @@
 #'   possible value. However, model fits with very few observations are of
 #'   little interest and using a larger number for \code{n.min} than the default
 #'   is wise. As model fitting functions could depend on the RNG,
-#'   \code{seed} if different to \code{NA} is used as argument in a call to
+#'   \code{fit.seed} if different to \code{NA} is used as argument in a call to
 #'   \code{\link[base:Random]{set.seed}()} immediately ahead of model fitting.
 #'
 #' @param mapping The aesthetic mapping, usually constructed with
@@ -72,7 +72,7 @@
 #' @param nperm integer Number of permutation used to estimate significance.
 #' @param se logical Return confidence interval around smooth? (`TRUE` by
 #'   default, see `level` to control.)
-#' @param seed RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
+#' @param fit.seed RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
 #'   Defaults to \code{NA}, which means that \code{set.seed()} will not be
 #'   called.
 #' @param fm.values logical Add R2, p-value and n as columns to returned data?
@@ -200,7 +200,7 @@ stat_ma_line <- function(mapping = NULL,
                          range.y = NULL,
                          range.x = NULL,
                          se = TRUE,
-                         seed = NA,
+                         fit.seed = NA,
                          fm.values = FALSE,
                          n = 80,
                          nperm = 99,
@@ -282,7 +282,7 @@ stat_ma_line <- function(mapping = NULL,
       range.y = range.y,
       range.x = range.x,
       se = se,
-      seed = seed,
+      fit.seed = fit.seed,
       fm.values = fm.values,
       n = n,
       nperm = nperm,
@@ -311,7 +311,7 @@ ma_line_compute_group_fun <-
            formula = NULL,
            range.y = NULL, range.x = NULL,
            se = TRUE,
-           seed = NA,
+           fit.seed = NA,
            fm.values = FALSE,
            n = 80,
            nperm = 99,
@@ -400,8 +400,8 @@ ma_line_compute_group_fun <-
       fit.args <- c(fit.args, method.args)
     }
 
-    if (!is.na(seed)) {
-      set.seed(seed)
+    if (!is.na(fit.seed)) {
+      set.seed(fit.seed)
     }
     # lmodel2 issues a warning that is irrelevant here
     # so we silence it selectively
