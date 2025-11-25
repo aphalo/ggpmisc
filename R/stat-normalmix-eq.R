@@ -211,10 +211,6 @@ stat_normalmix_eq <- function(mapping = NULL,
     method.name <- "missing"
   }
 
-  if (method.name != "normalmixEM") {
-    stop("Only method currently supported is \"normalmixEM\"")
-  }
-
   if (is.null(eq.with.lhs) || anyNA(eq.with.lhs)) {
     eq.with.lhs = FALSE
   } else if (!(is.logical(eq.with.lhs) || is.character(eq.with.lhs))) {
@@ -320,14 +316,12 @@ normalmix_eq_compute_group_fun <-
 
     force(data)
 
-    if (orientation == "x") {
-      if (length(unique(data$x)) < n.min) {
-        return(data.frame())
-      }
-    } else if (orientation == "y") {
-      if (length(unique(data$y)) < n.min) {
-        return(data.frame())
-      }
+    if (length(unique(data[[orientation]])) < n.min) {
+      message("Skipping! Fewer than 'n.min = ", n.min,
+              "' unique observations found 'n = ",
+              length(unique(data[[orientation]])), "'")
+      # Not enough data to perform fit
+      return(data.frame())
     }
 
     output.type <- if (!length(output.type)) {
@@ -338,7 +332,7 @@ normalmix_eq_compute_group_fun <-
     stopifnot(output.type %in%
                 c("expression", "text", "markdown", "numeric", "latex", "tex", "tikz"))
 
-    params.tb <-
+    fm_params.tb <-
       normalmix_helper_fun(data = data,
                            aes.name = orientation,
                            method = method,
@@ -352,8 +346,13 @@ normalmix_eq_compute_group_fun <-
                            seed = seed,
                            fm.values = TRUE) # values are used in labels!
 
+    if (length(fm_params.tb) == 1L && is.na(fm_params.tb)) {
+      # model fitting was skipped or failed
+      return(data.frame())
+    }
+
     # update k in case it was modified during fitting
-    k <- params.tb[["k"]][1]
+    k <- fm_params.tb[["k"]][1]
 
     if (output.type != "numeric") {
       # generate labels
@@ -363,20 +362,20 @@ normalmix_eq_compute_group_fun <-
           "%.*f*(%.*g) %%*%% italic(N)(mu*`=`*%.*g*(%.*g), sigma*`=`*%.*g*(%.*g))"
         for (i in 1:k) {
           eq.label[i] <- sprintf(eq.format,
-                                 eq.digits, params.tb[["lambda"]][i],
-                                 eq.digits, params.tb[["lambda.se"]][i],
-                                 eq.digits, params.tb[["mu"]][i],
-                                 eq.digits, params.tb[["mu.se"]][i],
-                                 eq.digits, params.tb[["sigma"]][i],
-                                 eq.digits, params.tb[["sigma.se"]][i])
+                                 eq.digits, fm_params.tb[["lambda"]][i],
+                                 eq.digits, fm_params.tb[["lambda.se"]][i],
+                                 eq.digits, fm_params.tb[["mu"]][i],
+                                 eq.digits, fm_params.tb[["mu.se"]][i],
+                                 eq.digits, fm_params.tb[["sigma"]][i],
+                                 eq.digits, fm_params.tb[["sigma.se"]][i])
         }
       } else {
         eq.format <- "%.*g %%*%% italic(N)(mu*`=`*%.*g, sigma*`=`*%.*g)"
         for (i in 1:k) {
           eq.label[i] <- sprintf(eq.format,
-                                 eq.digits, params.tb[["lambda"]][i],
-                                 eq.digits, params.tb[["mu"]][i],
-                                 eq.digits, params.tb[["sigma"]][i])
+                                 eq.digits, fm_params.tb[["lambda"]][i],
+                                 eq.digits, fm_params.tb[["mu"]][i],
+                                 eq.digits, fm_params.tb[["sigma"]][i])
         }
       }
       if (is.logical(eq.with.lhs)) {
@@ -390,18 +389,18 @@ normalmix_eq_compute_group_fun <-
       }
 
       eq.label[k + 1] <- paste(eq.label[-(k + 1)], collapse = " + ", sep = "")
-      params.tb[["eq.label"]] <- paste(lhs, eq.label, sep = "")
-      params.tb[["n.label"]] <- paste("n~`=`~", params.tb[["n"]], sep = "")
-      params.tb[["method.label"]] <-
-        paste("\"method: ", params.tb[["fm.method"]], "\"", sep = "")
+      fm_params.tb[["eq.label"]] <- paste(lhs, eq.label, sep = "")
+      fm_params.tb[["n.label"]] <- paste("n~`=`~", fm_params.tb[["n"]], sep = "")
+      fm_params.tb[["method.label"]] <-
+        paste("\"method: ", fm_params.tb[["fm.method"]], "\"", sep = "")
     }
 
     if (components == "sum") {
-      selector <- which(params.tb[["component"]] == "comp.sum")
-      params.tb <- params.tb[selector, ]
+      selector <- which(fm_params.tb[["component"]] == "comp.sum")
+      fm_params.tb <- fm_params.tb[selector, ]
     } else if (components == "members") {
-      selector <- which(params.tb[["component"]] != "comp.sum")
-      params.tb <- params.tb[selector, ]
+      selector <- which(fm_params.tb[["component"]] != "comp.sum")
+      fm_params.tb <- fm_params.tb[selector, ]
     } else if (components != "all") {
       warning("Ignoring bad 'components' argument: \"", components, "\"")
     }
@@ -410,31 +409,31 @@ normalmix_eq_compute_group_fun <-
     if (is.character(label.x)) {
       margin.npc <- 0.05
       label.x <- ggpp::compute_npcx(x = label.x,
-                                    group = seq_along(params.tb[["component"]]),
+                                    group = seq_along(fm_params.tb[["component"]]),
                                     h.step = hstep,
                                     margin.npc = margin.npc)
     }
     if (is.character(label.y)) {
       margin.npc <- 0.05
       label.y <- ggpp::compute_npcy(y = label.y,
-                                    group = seq_along(params.tb[["component"]]),
+                                    group = seq_along(fm_params.tb[["component"]]),
                                     v.step = vstep,
                                     margin.npc = margin.npc)
     }
 
     if (npc.used) {
-      params.tb$npcx <- label.x
-      params.tb$x <- NA_real_
-      params.tb$npcy <- label.y
-      params.tb$y <- NA_real_
+      fm_params.tb$npcx <- label.x
+      fm_params.tb$x <- NA_real_
+      fm_params.tb$npcy <- label.y
+      fm_params.tb$y <- NA_real_
     } else {
-      params.tb$npcx <- NA_real_
-      params.tb$x <- I(label.x)
-      params.tb$npcy <- NA_real_
-      params.tb$y <- I(label.y)
+      fm_params.tb$npcx <- NA_real_
+      fm_params.tb$x <- I(label.x)
+      fm_params.tb$npcy <- NA_real_
+      fm_params.tb$y <- I(label.y)
     }
 
-    params.tb
+    fm_params.tb
   }
 
 #' @rdname ggpmisc-ggproto
@@ -442,7 +441,8 @@ normalmix_eq_compute_group_fun <-
 #' @usage NULL
 #' @export
 StatNormalmixEq <-
-  ggplot2::ggproto("StatNormalmixEq", Stat,
+  ggplot2::ggproto("StatNormalmixEq", ggplot2::Stat,
+
                    extra_params = c("na.rm", "orientation"),
 
                    setup_params = function(data, params) {
@@ -462,4 +462,3 @@ StatNormalmixEq <-
                                   group = after_stat(component)),
                    required_aes = "x|y"
   )
-
