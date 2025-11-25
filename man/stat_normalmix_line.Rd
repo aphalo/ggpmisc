@@ -75,7 +75,7 @@ and of the fitted distributions, or just span the range of the data?}
 fitted \code{sd} to vary among the component Normal distributions.}
 
 \item{components}{character One of \code{"all"}, \code{"sum"}, or
-\code{members} select which densities are returned.}
+\code{"members"} select which densities are returned.}
 
 \item{n.min}{integer Minimum number of distinct values in the mapped
 variable for fitting to the attempted.}

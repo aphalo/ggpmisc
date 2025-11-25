@@ -80,7 +80,7 @@ called.}
 to the returned values (`FALSE` by default.)}
 
 \item{components}{character One of \code{"all"}, \code{"sum"}, or
-\code{members} select which densities are returned.}
+\code{"members"} select which densities are returned.}
 
 \item{eq.with.lhs}{If \code{character} the string is pasted to the front of
 the equation label before parsing or a \code{logical} (see note).}

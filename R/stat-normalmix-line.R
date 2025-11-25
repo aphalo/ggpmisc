@@ -33,7 +33,7 @@
 #' @param free.mean,free.sd logical If TRUE, allow the fitted \code{mean} and/or
 #'   fitted \code{sd} to vary among the component Normal distributions.
 #' @param components character One of \code{"all"}, \code{"sum"}, or
-#'   \code{members} select which densities are returned.
+#'   \code{"members"} select which densities are returned.
 #' @param n.min integer Minimum number of distinct values in the mapped
 #'   variable for fitting to the attempted.
 #' @param se Currently ignored.
@@ -177,6 +177,7 @@ stat_normalmix_line <- function(mapping = NULL,
                                 orientation = "x",
                                 show.legend = NA,
                                 inherit.aes = TRUE) {
+
   stopifnot("Arg 'x' should not be in 'method.args'!" =
               !any("x" %in% names(method.args)))
 
@@ -190,10 +191,6 @@ stat_normalmix_line <- function(mapping = NULL,
     }
   } else {
     method.name <- "missing"
-  }
-
-  if (method.name != "normalmixEM") {
-    stop("Only method currently supported is \"normalmixEM\"")
   }
 
   if (is.null(se)) {
@@ -257,13 +254,17 @@ normalmix_compute_group_fun <-
            na.rm = FALSE,
            flipped_aes = NA,
            orientation = "x") {
+
     data <- ggplot2::flip_data(data, flipped_aes)
+
     if (length(unique(data$x)) < n.min) {
+      message("Skipping! Fewer than 'n.min = ", n.min,
+              "' unique observations found 'n = ", length(unique(data$x)), "'")
       # Not enough data to perform fit
       return(data.frame())
     }
 
-    params.tb <-
+    fm_params.tb <-
       normalmix_helper_fun(data = data,
                            method = method,
                            method.name = method.name,
@@ -276,18 +277,23 @@ normalmix_compute_group_fun <-
                            seed = seed,
                            fm.values = TRUE)
 
-    params.tb <- params.tb[-nrow(params.tb), ]
+    if (length(fm_params.tb) == 1L && is.na(fm_params.tb)) {
+      # model fitting was skipped or failed
+      return(data.frame())
+    }
+
+    fm_params.tb <- fm_params.tb[-nrow(fm_params.tb), ]
 
     # x range used for prediction
     if (fullrange) {
       # ensure that the component Normals are fully predicted
       x.range <- range(qnorm(p = 0.0005,
-                             mean = params.tb[["mu"]],
-                             sd = params.tb[["sigma"]],
+                             mean = fm_params.tb[["mu"]],
+                             sd = fm_params.tb[["sigma"]],
                              lower.tail = TRUE),
                        qnorm(p = 0.0005,
-                             mean = params.tb[["mu"]],
-                             sd = params.tb[["sigma"]],
+                             mean = fm_params.tb[["mu"]],
+                             sd = fm_params.tb[["sigma"]],
                              lower.tail = FALSE),
                        scales[[orientation]]$dimension())
     } else {
@@ -295,7 +301,7 @@ normalmix_compute_group_fun <-
       x.range <- range(data[["x"]])
     }
 
-    k <- length(params.tb[["lambda"]])
+    k <- length(fm_params.tb[["lambda"]])
     prediction <- list()
     prediction[["x"]] <-
       seq(from = x.range[1], to = x.range[2], length.out = n)
@@ -304,8 +310,8 @@ normalmix_compute_group_fun <-
       comp.name <- paste("comp", i, sep = ".")
       prediction[[comp.name]] <-
         dnorm(prediction[["x"]],
-              mean = params.tb[["mu"]][i],
-              sd = params.tb[["sigma"]][i]) * params.tb[["lambda"]][i]
+              mean = fm_params.tb[["mu"]][i],
+              sd = fm_params.tb[["sigma"]][i]) * fm_params.tb[["lambda"]][i]
       prediction[["comp.sum"]] <-
         prediction[["comp.sum"]] + prediction[[comp.name]]
     }
@@ -328,11 +334,11 @@ normalmix_compute_group_fun <-
     }
 
     if (fm.values) {
-      prediction[["converged"]] <- params.tb[["converged"]][1]
+      prediction[["converged"]] <- fm_params.tb[["converged"]][1]
       prediction[["n"]] <- nrow(data)
       prediction[[".size"]] = nrow(prediction)
-      prediction[["fm.class"]] <- params.tb[["fm.class"]][1]
-      prediction[["fm.method"]] <- params.tb[["fm.method"]][1]
+      prediction[["fm.class"]] <- fm_params.tb[["fm.class"]][1]
+      prediction[["fm.method"]] <- fm_params.tb[["fm.method"]][1]
     }
 
     prediction[["flipped_aes"]] <- flipped_aes
@@ -344,7 +350,7 @@ normalmix_compute_group_fun <-
 #' @usage NULL
 #' @export
 StatNormalmixLine <-
-  ggplot2::ggproto("StatNormalmixLine", Stat,
+  ggplot2::ggproto("StatNormalmixLine", ggplot2::Stat,
                    setup_params = function(data, params) {
                      params[["flipped_aes"]] <-
                        ggplot2::has_flipped_aes(data, params, ambiguous = TRUE)
@@ -393,27 +399,27 @@ normalmix_helper_fun <-
       fm <- MASS::fitdistr(data[[aes.name]], "normal")
       # extract fitted parameter estimates
       if (se) {
-        params.tb <- data.frame(lambda = 1,
-                                mu = fm[["estimate"]]["mean"],
-                                sigma = fm[["estimate"]]["sd"],
-                                lambda.se = 0,
-                                mu.se = fm[["sd"]]["mean"],
-                                sigma.se = fm[["sd"]]["sd"],
-                                k = k,
-                                row.names = 1L)
+        fm_params.tb <- data.frame(lambda = 1,
+                                   mu = fm[["estimate"]]["mean"],
+                                   sigma = fm[["estimate"]]["sd"],
+                                   lambda.se = 0,
+                                   mu.se = fm[["sd"]]["mean"],
+                                   sigma.se = fm[["sd"]]["sd"],
+                                   k = k,
+                                   row.names = 1L)
       } else {
-        params.tb <- data.frame(lambda = 1,
-                                mu = fm[["estimate"]]["mean"],
-                                sigma = fm[["estimate"]]["sd"],
-                                k = k,
-                                row.names = 1L)
+        fm_params.tb <- data.frame(lambda = 1,
+                                   mu = fm[["estimate"]]["mean"],
+                                   sigma = fm[["estimate"]]["sd"],
+                                   k = k,
+                                   row.names = 1L)
       }
-      params.tb <- rbind(params.tb, c(1, rep(NA_real_, ncol(params.tb) - 1)))
+      fm_params.tb <- rbind(fm_params.tb, c(1, rep(NA_real_, ncol(fm_params.tb) - 1)))
       if (fm.values) {
-        params.tb[["converged"]] <- TRUE
-        params.tb[["n"]] <- fm[["n"]]
-        params.tb[["fm.class"]] <- class(fm)[1]
-        params.tb[["fm.method"]] <- "exact"
+        fm_params.tb[["converged"]] <- TRUE
+        fm_params.tb[["n"]] <- fm[["n"]]
+        fm_params.tb[["fm.class"]] <- class(fm)[1]
+        fm_params.tb[["fm.method"]] <- "exact"
       }
     } else {
       # If method was specified as a character string, replace with
@@ -463,16 +469,16 @@ normalmix_helper_fun <-
       }
       fm <- do.call(method, args = fun.args)
 
-      converged <- length(fm[["all.loglik"]]) < maxit
-
       if (!length(fm) || (is.atomic(fm) && is.na(fm))) {
         return(NA)
       } else if (!inherits(fm, "mixEM")) {
-        warning("Method \"", method.name,
+        warning("Skipping! Method \"", method.name,
                 "\" did not return a ",
-                "\"mixEM\" object, skipping.")
-        return(data.frame())
+                "\"mixEM\" object, but a \"", class(fm)[1], "\" object")
+        return(NA)
       }
+
+      converged <- length(fm[["all.loglik"]]) < maxit
 
       # extract fitted parameter estimates
       if (se) {
@@ -481,31 +487,31 @@ normalmix_helper_fun <-
         fm.param.se <- mixtools::boot.se(fm, B = 100)
         fm.param.se[grepv(".se$", names(fm.param.se))]
 
-        params.tb <- c(fm[c("lambda", "mu", "sigma")],
-                       list(mu.se = as.vector(fm.param.se[["mu.se"]])),
-                       fm.param.se[c("lambda.se", "sigma.se")])
+        fm_params.tb <- c(fm[c("lambda", "mu", "sigma")],
+                          list(mu.se = as.vector(fm.param.se[["mu.se"]])),
+                          fm.param.se[c("lambda.se", "sigma.se")])
       } else {
-        params.tb <- c(fm[c("lambda", "mu", "sigma")])
+        fm_params.tb <- c(fm[c("lambda", "mu", "sigma")])
       }
-      params.tb <- as.data.frame(params.tb)
-      params.tb[["k"]] <- k
+      fm_params.tb <- as.data.frame(fm_params.tb)
+      fm_params.tb[["k"]] <- k
 
       # add row for sum
-      params.tb <- rbind(params.tb,
-                         c(1,  rep(NA_real_, ncol(params.tb) - 1)))
+      fm_params.tb <- rbind(fm_params.tb,
+                            c(1,  rep(NA_real_, ncol(fm_params.tb) - 1)))
 
       if (fm.values) {
-        params.tb[["converged"]] <- converged
-        params.tb[["n"]] <- nrow(data)
-        params.tb[["fm.class"]] <- class(fm)[1]
-        params.tb[["fm.method"]] <- fm[["ft"]]
+        fm_params.tb[["converged"]] <- converged
+        fm_params.tb[["n"]] <- nrow(data)
+        fm_params.tb[["fm.class"]] <- class(fm)[1]
+        fm_params.tb[["fm.method"]] <- fm[["ft"]]
       }
     } # end k > = 2
 
     # add id column
-    params.tb[["component"]] <-
+    fm_params.tb[["component"]] <-
       paste("comp", c(as.character(1:k), "sum"), sep = ".")
 
-    params.tb
+    fm_params.tb
 
   }
