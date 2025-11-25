@@ -13,6 +13,7 @@ stat_poly_line(
   method = "lm",
   formula = NULL,
   se = NULL,
+  seed = NA,
   fm.values = FALSE,
   n = 80,
   fullrange = FALSE,
@@ -54,6 +55,10 @@ instead of original variable names.}
 
 \item{se}{Display confidence interval around smooth? (`TRUE` by default only
 for fits with \code{lm()} and \code{rlm()}, see `level` to control.)}
+
+\item{seed}{RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
+Defaults to \code{NA}, which means that \code{set.seed()} will not be
+called.}
 
 \item{fm.values}{logical Add R2, adjusted R2, p-value and n as columns to
 returned data? (`FALSE` by default.)}
@@ -97,15 +102,18 @@ least squares. Predicted values and a confidence band, if possible, are
 computed and, by default, plotted.
 }
 \details{
-This statistic is similar to \code{\link[ggplot2]{stat_smooth}} but has
-different defaults and supports additonal model fit functions. It also
+This statistic is similar to \code{\link[ggplot2]{stat_smooth}} but
+  has different defaults and supports additonal model fit functions. It also
 interprets the argument passed to \code{formula} differently than
 \code{stat_smooth()}, accepting \code{y} as explanatory variable and setting
 \code{orientation} automatically. The default for \code{method} is
 \code{"lm"} and spline-based smoothers like \code{loess} are not supported.
 Other defaults are consistent with those in \code{stat_poly_eq()},
 \code{stat_quant_line()}, \code{stat_quant_band()}, \code{stat_quant_eq()},
-\code{stat_ma_line()}, \code{stat_ma_eq()}.
+\code{stat_ma_line()}, \code{stat_ma_eq()}.  As some model fitting functions
+  can depend on the RNG, \code{seed} if different to \code{NA} is used
+  as argument in a call to \code{\link[base:Random]{set.seed}()} immediately
+  ahead of model fitting.
 
 \code{geom_poly_line()} treats the x and y aesthetics differently and can
 thus have two orientations. The orientation can be deduced from the argument

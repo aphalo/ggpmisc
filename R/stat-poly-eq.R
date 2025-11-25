@@ -40,6 +40,9 @@
 #' @param method.args named list with additional arguments.
 #' @param n.min integer Minimum number of distinct values in the explanatory
 #'   variable (on the rhs of formula) for fitting to the attempted.
+#' @param seed RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
+#'   Defaults to \code{NA}, which means that \code{set.seed()} will not be
+#'   called.
 #' @param eq.with.lhs If \code{character} the string is pasted to the front of
 #'   the equation label before parsing or a \code{logical} (see note).
 #' @param eq.x.rhs \code{character} this string will be used as replacement for
@@ -90,14 +93,16 @@
 #'
 #' @details This statistic can be used to automatically annotate a plot with
 #'   \eqn{R^2}, adjusted \eqn{R^2}, the fitted model equation, \eqn{P}, and
-#'   other parameters from a fitted model. It supports
-#'   linear regression and polynomial fits with \code{\link[stats]{lm}()},
-#'   segmented linear regression with package 'segmented' and major axis and
-#'   standardized major axis regression with package 'smatr', robust and
-#'   resistant regression with packages 'MASS' and 'robustbase'. The list is not
-#'   exhaustive, and depends on the availability of methods for the model
-#'   fit objects. Lack of methods or explicit support results in individual
-#'   parameters and matching labels being set to NA.
+#'   other parameters from a fitted model. It supports linear regression and
+#'   polynomial fits with \code{\link[stats]{lm}()}, segmented linear regression
+#'   with package 'segmented' and major axis and standardized major axis
+#'   regression with package 'smatr', robust and resistant regression with
+#'   packages 'MASS' and 'robustbase'. The list is not exhaustive, and depends
+#'   on the availability of methods for the model fit objects. Lack of methods
+#'   or explicit support results in individual parameters and matching labels
+#'   being set to NA. As some model fitting results can depend on the RNG,
+#'   \code{seed} if different to \code{NA} is used as argument in a call to
+#'   \code{\link[base:Random]{set.seed}()} immediately ahead of model fitting.
 #'
 #'   While strings for \eqn{R^2}, adjusted \eqn{R^2}, \eqn{F}, and \eqn{P}
 #'   annotations are returned for all valid linear models, A character string
@@ -521,6 +526,7 @@ stat_poly_eq <- function(mapping = NULL,
                          method = "lm",
                          method.args = list(),
                          n.min = 2L,
+                         seed = NA,
                          eq.with.lhs = TRUE,
                          eq.x.rhs = NULL,
                          small.r = getOption("ggpmisc.small.r", default = FALSE),
@@ -623,6 +629,7 @@ stat_poly_eq <- function(mapping = NULL,
                    method.name = method.name,
                    method.args = method.args,
                    n.min = n.min,
+                   seed = seed,
                    eq.with.lhs = eq.with.lhs,
                    eq.x.rhs = eq.x.rhs,
                    mk.eq.label = mk.eq.label,
@@ -667,6 +674,7 @@ poly_eq_compute_group_fun <- function(data,
                                       method.args = list(),
                                       formula = y ~ x,
                                       n.min =2L,
+                                      seed = NA,
                                       weight = 1,
                                       eq.with.lhs,
                                       eq.x.rhs = TRUE,
@@ -805,6 +813,9 @@ poly_eq_compute_group_fun <- function(data,
     names(fun.args)[1] <- "model"
   }
 
+  if (!is.na(seed)) {
+    set.seed(seed)
+  }
   fm <- do.call(method, args = fun.args)
   mk.eq.label <- mk.eq.label && class(fm)[1] != "segmented" # not segmented into a spline?
 

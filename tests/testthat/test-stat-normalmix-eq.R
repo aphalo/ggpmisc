@@ -20,9 +20,6 @@ if (isNamespaceLoaded(name = "package:ggpp")) detach(package:ggpp, unload = TRUE
 if (isNamespaceLoaded(name = "package:ggplot2")) detach(package:ggplot2, unload = TRUE)
 
 test_that("stat_normalmix_eq works not attached", {
-
-  skip(message = "Skipping tests because of spurious warning")
-
   vdiffr::expect_doppelganger("stat_normalmix_eq_2means",
                               ggplot2::ggplot(my.data, ggplot2::aes(x.2means)) +
                                 stat_normalmix_line(seed = 123) +
@@ -47,9 +44,6 @@ test_that("stat_normalmix_eq works not attached", {
 library(ggpmisc)
 
 test_that("normalmix_eq works attached", {
-
-  skip(message = "Skipping tests because of spurious warning")
-
   vdiffr::expect_doppelganger("stat_normalmix_eq_geom_text",
                               ggplot(my.data, aes(x.2means)) +
                                 stat_normalmix_line(seed = 123) +
@@ -71,7 +65,7 @@ test_that("normalmix_eq works attached", {
   vdiffr::expect_doppelganger("stat_normalmix_eq_fullrange",
                               ggplot(my.data, aes(x.2means)) +
                                 stat_normalmix_line(fullrange = FALSE, seed = 123) +
-                                stat_normalmix_eq(fullrange = FALSE, seed = 123)
+                                stat_normalmix_eq(seed = 123)
   )
 
   vdiffr::expect_doppelganger("stat_normalmix_eq_k4",

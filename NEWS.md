@@ -8,13 +8,15 @@ editor_options:
 
 This version adds support for additional model fitting approaches
 and packages. Parameter `orientation` not yet supported in all statistics.
-_In this pre-release version `stat_normalmix_eq()` triggers an unexpected
-warning that does not seem to affect the plots produced._ 
 
 -   Add `stat_normalmix_line()` and `stat_normalmix_eq()` supporting Normal 
     mixture models fitted with `mixtools::normalmixEM()`.
 -   Support `log()` and `sqrt()` transformations for `local.reference` in
     `find_peaks()`, `find_valleys()`, `stat_peaks()` and `stat_valleys()`.
+-   Add parameter `seed` to `stat_poly_eq()` and `stat_poly_line()` as
+    some supported model fit methods depend on the RNG.
+-   Add parameter `seed` to `stat_correlation()` as some supported CI
+    computations depend on the RNG.
 -   Support `smatr::ma()` and `smatr::sma()` in `stat_poly_eq()` and in
     `stat_poly_line()`. (Confidence band is only for slope.)
 -   Support `segmented::segmented()` and `segmented::segreg()` in 
