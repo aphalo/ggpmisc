@@ -383,6 +383,30 @@ ggplot(mpg, aes(displ, hwy)) +
                  formula = my.formula)
 ```
 
+Plotting fitted values and observations.
+
+```{r}
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  stat_fit_fitted(method = "lm", formula = my.formula, 
+                  colour = "red", alpha = 0.5)
+```
+
+Plotting of deviations not yet implemented.
+
+```{r, eval=FALSE}
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  stat_fit_deviations(method = "lm", formula = my.formula)
+```
+
+Plotting residuals not yet implemented.
+
+```{r, eval=FALSE}
+ggplot(mpg, aes(displ, hwy)) +
+  stat_fit_residuals(method = "lm", formula = my.formula)
+```
+
 It is posisble to use `rlm()` instead of `lm()`.
 
 ```{r, fig.width = 7, fig.height = 5}
@@ -505,6 +529,35 @@ ggplot(mpg, aes(displ, hwy)) +
                method = segreg) +
   stat_poly_line(method = segreg, 
                  formula = y ~ seg(x, npsi = 1, est = c(1, 0)))
+```
+
+Highlighting fitted values.
+
+```{r}
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  stat_fit_fitted(method = segreg, 
+                 formula = y ~ seg(x, npsi = 1, est = c(1, 0)),
+                 colour = "red")
+```
+
+Highlighting fitted deviations not yet implemented.
+
+```{r, eval=FALSE}
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  stat_fit_deviations(method = segreg, 
+                      formula = y ~ seg(x, npsi = 1, est = c(1, 0)),
+                      colour = "red")
+```
+
+Plot of residuals not yet implemented.
+
+```{r, eval=FALSE}
+ggplot(mpg, aes(displ, hwy)) +
+  stat_fit_residuals(method = segreg, 
+                      formula = y ~ seg(x, npsi = 1, est = c(1, 0)),
+                      colour = "red")
 ```
 
 **Note:** The lines for cubic and other smoothing splines can be added to plots

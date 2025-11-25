@@ -283,6 +283,8 @@ ggplot(my.data, aes(x, y)) +
   expand_limits(y = 150)
 ```
 
+Plotting of fitted values, deviations and residuals not implemented for `smatr::ma`.
+
 As with 'lmodel2', grouping is supported.
 
 ```{r}
