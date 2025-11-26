@@ -93,7 +93,10 @@ default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
 \value{
 The value returned by the statistic is a data frame, with \code{n}
   rows of predicted values and their confidence limits. Optionally it will
-  also include additional values related to the model fit.
+  also include additional values related to the model fit. When a
+  \code{predict()} method is not available for the fitted model class, the
+  value returned by calling \code{fitted()} is returned instead, with a
+  message.
 }
 \description{
 \code{stat_poly_line()} fits a polynomial, by default with
@@ -103,7 +106,7 @@ computed and, by default, plotted.
 }
 \details{
 This statistic is similar to \code{\link[ggplot2]{stat_smooth}} but
-  has different defaults and supports additonal model fit functions. It also
+  has different defaults and supports additional model fit functions. It also
 interprets the argument passed to \code{formula} differently than
 \code{stat_smooth()}, accepting \code{y} as explanatory variable and setting
 \code{orientation} automatically. The default for \code{method} is
@@ -171,7 +174,7 @@ Currently confidence bands for the regression band are not plotted in
   string giving the name. This approach makes it possible to support model
   fit functions that are not dependencies of 'ggpmisc'. Either attach the
   package where the function is defined and pass it by name or as string, or
-  use colon notation when passing the name of the function.
+  use double colon notation when passing the name of the function.
 }
 
 \section{Computed variables}{

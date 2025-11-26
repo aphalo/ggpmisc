@@ -7,26 +7,29 @@ editor_options:
 # ggpmisc 0.6.3
 
 This version adds support for additional model fitting approaches
-and packages. _Parameter `orientation` is not yet supported in all statistics._
+and packages. It also implements an optional call to `set.seed()` immediately
+ahead of calling model fit functions.
+
+_Parameter `orientation` is not yet supported in all statistics._
 
 -   Add `stat_distrmix_line()` and `stat_distrmix_eq()` currently supporting 
     only Normal mixture models fitted with `mixtools::normalmixEM()`.
 -   Support `log()` and `sqrt()` transformations for `local.reference` in
     `find_peaks()`, `find_valleys()`, `stat_peaks()` and `stat_valleys()`.
--   Add parameter `fit.seed` to `stat_poly_eq()`, `stat_poly_line()`, 
-    `stat_ma_eq()`, `stat_ma_line()`, `stat_quant_eq()`, `stat_quant_line()`,
-    `stat_poly_band()`, `stat_multcomp()`, `stat_fit_fitted()`, 
-    `stat_fit_deviations()` and `stat_fit_residuals()` as some supported model
-    fit methods depend on the RNG.
--   Add parameter `fit.seed` to `stat_correlation()` as some supported CI
-    computations depend on the RNG.
 -   Support `smatr::ma()` and `smatr::sma()` in `stat_poly_eq()` and in
     `stat_poly_line()`. (Confidence band is only for slope.)
 -   Support `segmented::segmented()` and `segmented::segreg()` in 
-    `stat_poly_eq()` and in `stat_poly_line()`.
--   Support `lspline::lspline()` in `stat_poly_eq()` and in `stat_poly_line()`.
--   In `stat_poly_eq()` return for all `output.type`s several fitted numerical 
+    `stat_poly_eq()`, `stat_poly_line()`, `stat_fit_fitted()`, 
+    `stat_fit_residuals()` and `stat_fit_deviations()`.
+-   Support `lspline::lspline()` in `stat_poly_eq()`, `stat_poly_line()`,
+    `stat_fit_fitted()`, `stat_fit_residuals()` and `stat_fit_deviations()`.
+-   `stat_poly_eq()` return for all `output.type`s several fitted numerical 
     values that previously were only returned for `output.type = "numeric"`.
+-   Add parameter `fit.seed` to all model-fitting statistics as supported model
+    fit methods include some that depend on the random number generator (RNG).
+-   Add parameter `fit.seed` to `stat_correlation()` as some supported CI
+    computations depend on the RNG.
+-   Edits to package documentation.
 -   Add on-line only article _Major axis regression_.
 -   Add on-line only article _Mixture Models_. (draft.)
 -   Add examples of fitted linear splines to on-line only article 
