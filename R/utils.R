@@ -54,6 +54,9 @@ guess_orientation <- function(orientation = NULL,
                               formula = NULL,
                               default.formula = y ~ x,
                               formula.on.x = FALSE) {
+  if (is.null(formula) && is.null(default.formula)) {
+    stop("'formula' missing with no default")
+  }
   # as.character(formula)[2] is the lhs of the formula
   if (formula.on.x) {
     # if we flip x and y in data, the formula should be with x as explanatory
