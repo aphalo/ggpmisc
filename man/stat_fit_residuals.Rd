@@ -14,6 +14,7 @@ stat_fit_residuals(
   method.args = list(),
   n.min = 2L,
   formula = NULL,
+  fit.seed = NA,
   resid.type = NULL,
   weighted = FALSE,
   na.rm = FALSE,
@@ -54,6 +55,10 @@ variable (on the rhs of formula) for fitting to the attempted.}
 
 \item{formula}{a "formula" object. Using aesthetic names instead of
 original variable names.}
+
+\item{fit.seed}{RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
+Defaults to \code{NA}, which means that \code{set.seed()} will not be
+called.}
 
 \item{resid.type}{character passed to \code{residuals()} as argument for
 \code{type} (defaults to \code{"working"} except if \code{weighted = TRUE}
