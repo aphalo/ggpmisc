@@ -598,20 +598,6 @@ quant_eq_compute_group_fun <- function(data,
     decimal.mark <- "."
   }
 
-  num.quantiles <- length(quantiles)
-
-  # make sure quantiles are ordered
-  quantiles <- sort(quantiles)
-
-  # factor with nicely formatted labels
-  quant.digits <- ifelse(min(quantiles) < 0.01 || max(quantiles) > 0.99, 3, 2)
-  quant.levels <- sort(unique(quantiles), decreasing = TRUE)
-  quant.labels <- sprintf_dm("%#.*f", quant.digits, quant.levels,
-                             decimal.mark = decimal.mark)
-  quantiles.f <- factor(quantiles,
-                        levels = quant.levels,
-                        labels = quant.labels)
-
   output.type <- if (!length(output.type)) {
     "expression"
   } else {
@@ -658,61 +644,20 @@ quant_eq_compute_group_fun <- function(data,
     label.y <- label.y[1]
   }
 
-  if (length(unique(data[[orientation]])) < n.min) {
-    return(data.frame())
-  }
+  # make sure quantiles are ordered
+  quantiles <- sort(quantiles)
 
-  # If method was specified as a character string, replace with
-  # the corresponding function. Some model fit functions themselves have a
-  # method parameter accepting character strings as argument. We support
-  # these by splitting strings passed as argument at a colon.
-  if (is.character(method)) {
-    if (method %in% c("br", "fn", "pfn", "sfn", "fnc", "conquer",
-                      "pfnb", "qfnb", "ppro", "lasso")) {
-      method <- paste("rq", method, sep = ":")
-      message("Using method: ", method)
-    }
-    method.name <- method
-    method <- strsplit(x = method, split = ":", fixed = TRUE)[[1]]
-    if (length(method) > 1L) {
-      fun.method <- method[2]
-      method <- method[1]
-    } else {
-      fun.method <- character()
-    }
-    method <- switch(method,
-                     rq = quantreg::rq,
-                     rqss = quantreg::rqss,
-                     match.fun(method))
-  } else if (is.function(method)) {
-    fun.method <- method.args[["method"]]
-    if (length(fun.method)) {
-      method.name <- paste(method.name, fun.method, sep = ":")
-    }
-  }
-
-  fun.args <- list(quote(formula),
-                   tau = quantiles,
-                   data = quote(data),
-                   weights = data[["weight"]])
-  fun.args <- c(fun.args, method.args)
-  if (length(fun.method)) {
-    fun.args[["method"]] <- fun.method
-  }
-
-  if (!is.na(fit.seed)) {
-    set.seed(fit.seed)
-  }
-  # quantreg contains code with partial matching of names!
-  # so we silence selectively only these warnings
-  withCallingHandlers({
-    fm <- do.call(method, args = fun.args)
-  }, warning = function(w) {
-    if (startsWith(conditionMessage(w), "partial match of") ||
-        startsWith(conditionMessage(w), "partial argument match of")) {
-      invokeRestart("muffleWarning")
-    }
-  })
+  fm <- quant_helper_fun(data = data,
+                         formula = formula,
+                         quantiles = quantiles,
+                         method = method,
+                         method.name = method.name,
+                         method.args = method.args,
+                         n.min = n.min,
+                         fit.seed = fit.seed,
+                         weight = weight,
+                         na.rm = na.rm,
+                         orientation = orientation)
 
   # allow model formula and tau selection by method functions
   if (!length(fm) || (is.atomic(fm) && is.na(fm))) {
@@ -767,6 +712,16 @@ quant_eq_compute_group_fun <- function(data,
   coefs.ls <- asplit(coefs.mt, 2)
   # located here so that names in coef.ls remain the same as in version 0.4.0
   rownames(coefs.mt) <- paste("b", (1:nrow(coefs.mt)) - 1, sep = "_")
+
+  # factor with nicely formatted labels
+  num.quantiles <- length(quantiles)
+  quant.digits <- ifelse(min(quantiles) < 0.01 || max(quantiles) > 0.99, 3, 2)
+  quant.levels <- sort(unique(quantiles), decreasing = TRUE)
+  quant.labels <- sprintf_dm("%#.*f", quant.digits, quant.levels,
+                             decimal.mark = decimal.mark)
+  quantiles.f <- factor(quantiles,
+                        levels = quant.levels,
+                        labels = quant.labels)
 
   z <- tibble::tibble()
   if (output.type == "numeric") {
