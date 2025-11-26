@@ -15,6 +15,7 @@ stat_fit_deviations(
   method.args = list(),
   n.min = 2L,
   formula = NULL,
+  fit.seed = NA,
   na.rm = FALSE,
   orientation = NA,
   show.legend = FALSE,
@@ -29,6 +30,7 @@ stat_fit_fitted(
   method.args = list(),
   n.min = 2L,
   formula = NULL,
+  fit.seed = NA,
   position = "identity",
   na.rm = FALSE,
   orientation = NA,
@@ -68,6 +70,10 @@ variable (on the rhs of formula) for fitting to the attempted.}
 
 \item{formula}{a "formula" object. Using aesthetic names instead of
 original variable names.}
+
+\item{fit.seed}{RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
+Defaults to \code{NA}, which means that \code{set.seed()} will not be
+called.}
 
 \item{na.rm}{a logical indicating whether NA values should be stripped
 before the computation proceeds.}

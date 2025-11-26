@@ -15,8 +15,9 @@ and packages. _Parameter `orientation` is not yet supported in all statistics._
     `find_peaks()`, `find_valleys()`, `stat_peaks()` and `stat_valleys()`.
 -   Add parameter `fit.seed` to `stat_poly_eq()`, `stat_poly_line()`, 
     `stat_ma_eq()`, `stat_ma_line()`, `stat_quant_eq()`, `stat_quant_line()`,
-    `stat_poly_band()` and  `stat_multcomp()` as some supported model fit 
-    methods depend on the RNG.
+    `stat_poly_band()`, `stat_multcomp()`, `stat_fit_fitted()`, 
+    `stat_fit_deviations()` and `stat_fit_residuals()` as some supported model
+    fit methods depend on the RNG.
 -   Add parameter `fit.seed` to `stat_correlation()` as some supported CI
     computations depend on the RNG.
 -   Support `smatr::ma()` and `smatr::sma()` in `stat_poly_eq()` and in

@@ -72,15 +72,15 @@ Statistics that help with reporting the results of model fits are:
 | `stat_quant_band()`     | line + band, 2 or 3 quantiles (`smooth`)          | rq, rqss (1, 4, 5, 7)                        |
 | `stat_distrmix_line()` | lines(s) (`line`)                                 | normalmixEM (2, 7)                           |
 | `stat_fit_augment()`    | predicted and other values (`smooth`)             | those supported by 'broom'                   |
-| `stat_fit_fitted()`     | fitted values (`point`)                           | lm, rlm, lqs, rq (1, 2, 4, 7, 9)             |
-| `stat_fit_deviations()` | deviations from observations (`segment`)          | lm, rlm, lqs, rq (1, 2, 4, 7, 9)             |
+| `stat_fit_fitted()`     | fitted values (`point`)                           | lm, rlm, lqs, rq, gls, ma, sma, etc. (1, 2, 4, 7, 9) |
+| `stat_fit_deviations()` | deviations from observations (`segment`)          | lm, rlm, lqs, rq, gls, ma, sma, etc. (1, 2, 4, 7, 9) |
 | **Model table**         | _parameter estimates and significance_            |                                              |
 | `stat_fit_tb()`         | ANOVA and summary tables (`table_npc`)            | those supported by 'broom'                   |
 | `stat_fit_tidy()`       | fit results, e.g., for equation (`text_npc`)      | those supported by 'broom'                   |
 | **Contrasts**           | _Tukey, Dunnet and arbitrary pairwise_            |                                              |
 | `stat_multcomp()`       | Multiple comparisons (`label_pairwise` or `text`) | those supported by `glht` (1, 2, 7)          |
 | **Residuals**           | _model fit residuals_                             |                                              |
-| `stat_fit_residuals()`  | residuals (`point`)                               | lm, rlm, rq (1, 2, 4, 7, 8)                  |
+| `stat_fit_residuals()`  | residuals (`point`)                               | lm, rlm, lqs, rq, gls, ma, sma, etc. (1, 2, 4, 7, 9) |
 
 : Notes:  (1) *weight* aesthetic supported; (2) user defined model fit functions
 including wrappers of supported methods are accepted even if they modify the
