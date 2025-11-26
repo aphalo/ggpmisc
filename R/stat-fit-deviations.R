@@ -334,6 +334,17 @@ deviations_compute_group_fun <- function(data,
     }
   })
 
+  if (!length(fm) || (is.atomic(fm) && is.na(fm))) {
+    return(data.frame())
+  } else if (!(inherits(fm, "lm") || inherits(fm, "lmrob") ||
+               inherits(fm, "gls") || inherits(fm, "lqs") ||
+               inherits(fm, "lts") || inherits(fm, "sma"))) {
+    message("Method \"", method.name,
+            "\" did not return a ",
+            "\"lm\", \"lmrob\", \"lqs\", \"lts\", \"gls\" or \"sma\" ",
+            "object, possible failure ahead.")
+  }
+
   # As users may use model fit functions that we have not tested
   # we try hard to extract the components from the model fit object
   try(fitted.vals <- stats::fitted(fm))
@@ -567,6 +578,17 @@ fitted_compute_group_fun <- function(data,
       invokeRestart("muffleWarning")
     }
   })
+
+  if (!length(fm) || (is.atomic(fm) && is.na(fm))) {
+    return(data.frame())
+  } else if (!(inherits(fm, "lm") || inherits(fm, "lmrob") ||
+               inherits(fm, "gls") || inherits(fm, "lqs") ||
+               inherits(fm, "lts") || inherits(fm, "sma"))) {
+    message("Method \"", method.name,
+            "\" did not return a ",
+            "\"lm\", \"lmrob\", \"lqs\", \"lts\", \"gls\" or \"sma\" ",
+            "object, possible failure ahead.")
+  }
 
   # As users may use model fit functions that we have not tested
   # we try hard to extract the components from the model fit object
