@@ -245,26 +245,11 @@ stat_poly_line <- function(mapping = NULL,
     se <- ifelse(grepl("gls|lqs", method.name), FALSE, TRUE)
   }
 
-  if (is.null(formula)) {
-    formula = y ~ x
-    if (is.na(orientation)) {
-      orientation = "x"
-    }
-  } else {
-    formula.chr <- as.character(formula)
-    if (is.na(orientation)) {
-      # we guess orientation from formula
-      if (grepl("y", formula.chr[2])) {
-        orientation <- "x"
-      } else if (grepl("x", formula.chr[2])) {
-        orientation <- "y"
-        formula <- swap_xy(formula)
-      }
-    } else if (!grepl("y", formula.chr[2])){
-      stop("When both 'orientation' and 'formula' are passed arguments ",
-           "the formula should have 'x' as explanatory variable.")
-    }
-  }
+  temp <- guess_orientation(orientation = orientation,
+                            formula = formula,
+                            formula.on.x = TRUE)
+  orientation <- temp[["orientation"]]
+  formula <-  temp[["formula"]]
 
   ggplot2::layer(
     data = data,
@@ -312,8 +297,8 @@ poly_line_compute_group_fun <-
            flipped_aes = NA,
            orientation = "x") {
     data <- ggplot2::flip_data(data, flipped_aes)
-    if (length(unique(data$x)) < n.min) {
-      # Not enough data to perform fit
+
+    if (length(unique(data[[orientation]])) < n.min) {
       return(data.frame())
     }
 
