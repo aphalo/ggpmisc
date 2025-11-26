@@ -32,6 +32,9 @@
 #'   to \code{tidy()}.
 #' @param n.min integer Minimum number of distinct values in the explanatory
 #'   variable (on the rhs of formula) for fitting to the attempted.
+#' @param fit.seed RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
+#'   Defaults to \code{NA}, which means that \code{set.seed()} will not be
+#'   called.
 #' @param tb.type character One of "fit.summary", "fit.anova" or "fit.coefs".
 #' @param digits integer indicating the number of significant digits to be used
 #'   for all numeric values in the table.
@@ -326,6 +329,7 @@ stat_fit_tb <- function(mapping = NULL,
                         method = "lm",
                         method.args = list(formula = y ~ x),
                         n.min = 2L,
+                        fit.seed = NA,
                         tidy.args = list(),
                         tb.type = "fit.summary",
                         tb.vars = NULL,
@@ -349,6 +353,7 @@ stat_fit_tb <- function(mapping = NULL,
       rlang::list2(method = method,
                    method.args = method.args,
                    n.min = n.min,
+                   fit.seed = fit.seed,
                    tidy.args = tidy.args,
                    tb.type = tb.type,
                    tb.vars = tb.vars,
@@ -380,6 +385,7 @@ fit_tb_compute_panel_fun <- function(data,
                                      method = "lm",
                                      method.args = list(formula = y ~ x),
                                      n.min = 2L,
+                                     fit.seed = NA,
                                      tidy.args = list(),
                                      tb.type = "fit.summary",
                                      tb.vars = NULL,
@@ -436,6 +442,10 @@ fit_tb_compute_panel_fun <- function(data,
       method.args <-
         c(method.args, list(formula = y ~ x, data = data))
     }
+  }
+
+  if (!is.na(fit.seed)) {
+    set.seed(fit.seed)
   }
   fm <- do.call(method, method.args)
   fm.class <- class(fm) # keep track of fitted model class
@@ -599,7 +609,7 @@ fit_tb_compute_panel_fun <- function(data,
 #' @usage NULL
 #' @export
 StatFitTb <-
-  ggplot2::ggproto("StatFitTb", 
+  ggplot2::ggproto("StatFitTb",
                    ggplot2::Stat,
                    compute_panel = fit_tb_compute_panel_fun,
                    dropped_aes = "weight",

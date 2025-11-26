@@ -13,6 +13,7 @@ stat_fit_tidy(
   method = "lm",
   method.args = list(formula = y ~ x),
   n.min = 2L,
+  fit.seed = NA,
   tidy.args = list(),
   label.x = "left",
   label.y = "top",
@@ -48,6 +49,10 @@ and to [generics::tidy], respectively.}
 
 \item{n.min}{integer Minimum number of distinct values in the explanatory
 variable (on the rhs of formula) for fitting to the attempted.}
+
+\item{fit.seed}{RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
+Defaults to \code{NA}, which means that \code{set.seed()} will not be
+called.}
 
 \item{label.x, label.y}{\code{numeric} with range 0..1 or character.
 Coordinates to be used for positioning the output, expressed in "normalized

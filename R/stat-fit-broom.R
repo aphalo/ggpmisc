@@ -31,6 +31,9 @@
 #'   and to [generics::glance()], respectively.
 #' @param n.min integer Minimum number of distinct values in the explanatory
 #'   variable (on the rhs of formula) for fitting to the attempted.
+#' @param fit.seed RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
+#'   Defaults to \code{NA}, which means that \code{set.seed()} will not be
+#'   called.
 #' @param label.x,label.y \code{numeric} with range 0..1 "normalized parent
 #'   coordinates" (npc units) or character if using \code{geom_text_npc()} or
 #'   \code{geom_label_npc()}. If using \code{geom_text()} or \code{geom_label()}
@@ -201,6 +204,7 @@ stat_fit_glance <- function(mapping = NULL,
                             method = "lm",
                             method.args = list(formula = y ~ x),
                             n.min = 2L,
+                            fit.seed = NA,
                             glance.args = list(),
                             label.x = "left",
                             label.y = "top",
@@ -217,6 +221,7 @@ stat_fit_glance <- function(mapping = NULL,
                    method.args = method.args,
                    glance.args = glance.args,
                    n.min = n.min,
+                   fit.seed = fit.seed,
                    label.x = label.x,
                    label.y = label.y,
                    hstep = hstep,
@@ -239,6 +244,7 @@ fit_glance_compute_group_fun <- function(data,
                                          method = "lm",
                                          method.args = list(formula = y ~ x),
                                          n.min = 2L,
+                                         fit.seed = NA,
                                          glance.args = list(),
                                          label.x = "left",
                                          label.y = "top",
@@ -301,6 +307,10 @@ fit_glance_compute_group_fun <- function(data,
               "No formula found, using 'y ~ x' default")
       method.args <- c(method.args, list(formula = y ~ x, data = data))
     }
+  }
+
+  if (!is.na(fit.seed)) {
+    set.seed(fit.seed)
   }
   fm <- do.call(method, method.args)
   fm.class <- class(fm) # keep track of fitted model class
@@ -437,6 +447,9 @@ StatFitGlance <-
 #'   and to to \code{broom::augment}.
 #' @param n.min integer Minimum number of distinct values in the explanatory
 #'   variable (on the rhs of formula) for fitting to the attempted.
+#' @param fit.seed RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
+#'   Defaults to \code{NA}, which means that \code{set.seed()} will not be
+#'   called.
 #' @param level numeric Level of confidence interval to use (0.95 by default)
 #' @param y.out character (or numeric) index to column to return as \code{y}.
 #'
@@ -595,6 +608,7 @@ stat_fit_augment <- function(mapping = NULL,
                              method = "lm",
                              method.args = list(formula = y ~ x),
                              n.min = 2L,
+                             fit.seed = NA,
                              augment.args = list(),
                              level = 0.95,
                              y.out = ".fitted",
@@ -609,6 +623,7 @@ stat_fit_augment <- function(mapping = NULL,
                    method.args = method.args,
                    augment.args = augment.args,
                    n.min = n.min,
+                   fit.seed = fit.seed,
                    level = level,
                    y.out = y.out,
                    na.rm = na.rm,
@@ -625,12 +640,13 @@ stat_fit_augment <- function(mapping = NULL,
 #'
 fit_augment_compute_group_fun <- function(data,
                                           scales,
-                                          method,
-                                          method.args,
-                                          n.min,
-                                          augment.args,
-                                          level,
-                                          y.out,
+                                          method = "lm",
+                                          method.args = list(formula = y ~ x),
+                                          n.min = 2L,
+                                          fit.seed = NA,
+                                          augment.args = list(),
+                                          level = 0.95,
+                                          y.out = ".fitted",
                                           ...) {
   unAsIs <- function(X) {
     if ("AsIs" %in% class(X)) {
@@ -665,12 +681,16 @@ fit_augment_compute_group_fun <- function(data,
       warning("Only the 'formula' interface of methods is supported. ",
               "No formula found, using '~ x + y'")
       selector <- setdiff(names(method.args), c("x", "y"))
-      method.args <- 
+      method.args <-
         c(method.args[selector], list(formula = ~ x + y, data = data))
     } else {
       warning("Only the 'formula' interface of methods is supported. No formula found, using 'y ~ x' default")
       method.args <- c(method.args, list(formula = y ~ x, data = data))
     }
+  }
+
+  if (!is.na(fit.seed)) {
+    set.seed(fit.seed)
   }
   fm <- do.call(method, method.args)
   fm.class <- class(fm) # keep track of fitted model class
@@ -750,6 +770,9 @@ StatFitAugment <-
 #'   and to [generics::tidy], respectively.
 #' @param n.min integer Minimum number of distinct values in the explanatory
 #'   variable (on the rhs of formula) for fitting to the attempted.
+#' @param fit.seed RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
+#'   Defaults to \code{NA}, which means that \code{set.seed()} will not be
+#'   called.
 #' @param label.x,label.y \code{numeric} with range 0..1 or character.
 #'   Coordinates to be used for positioning the output, expressed in "normalized
 #'   parent coordinates" or character string. If too short they will be
@@ -921,6 +944,7 @@ stat_fit_tidy <- function(mapping = NULL,
                           method = "lm",
                           method.args = list(formula = y ~ x),
                           n.min = 2L,
+                          fit.seed = NA,
                           tidy.args = list(),
                           label.x = "left",
                           label.y = "top",
@@ -937,6 +961,7 @@ stat_fit_tidy <- function(mapping = NULL,
       rlang::list2(method = method,
                    method.args = method.args,
                    n.min = n.min,
+                   fit.seed = fit.seed,
                    tidy.args = tidy.args,
                    label.x = label.x,
                    label.y = label.y,
@@ -962,16 +987,17 @@ stat_fit_tidy <- function(mapping = NULL,
 #'
 fit_tidy_compute_group_fun <- function(data,
                                        scales,
-                                       method,
-                                       method.args,
-                                       n.min,
-                                       tidy.args,
-                                       label.x,
-                                       label.y,
-                                       hstep,
-                                       vstep,
-                                       sanitize.names,
-                                       npc.used) {
+                                       method = "lm",
+                                       method.args = list(formula = y ~ x),
+                                       n.min = 2L,
+                                       fit.seed = NA,
+                                       tidy.args = list(),
+                                       label.x = "left",
+                                       label.y = "top",
+                                       hstep = 0,
+                                       vstep = NULL,
+                                       sanitize.names = FALSE,
+                                       npc.used = TRUE) {
   rlang::check_installed("broom", reason = "to use `stat_fit_tidy()`")
 
   force(data)
@@ -1030,13 +1056,17 @@ fit_tidy_compute_group_fun <- function(data,
       warning("Only the 'formula' interface of methods is supported. ",
               "No formula found, using '~ x + y'")
       selector <- setdiff(names(method.args), c("x", "y"))
-      method.args <- 
+      method.args <-
         c(method.args[selector], list(formula = ~ x + y, data = data))
     } else {
       warning("Only the 'formula' interface of methods is supported. ",
               "No formula found, using 'y ~ x' default")
       method.args <- c(method.args, list(formula = y ~ x, data = data))
     }
+  }
+
+  if (!is.na(fit.seed)) {
+    set.seed(fit.seed)
   }
   fm <- do.call(method, method.args)
   fm.class <- class(fm) # keep track of fitted model class

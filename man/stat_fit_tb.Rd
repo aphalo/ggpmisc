@@ -13,6 +13,7 @@ stat_fit_tb(
   method = "lm",
   method.args = list(formula = y ~ x),
   n.min = 2L,
+  fit.seed = NA,
   tidy.args = list(),
   tb.type = "fit.summary",
   tb.vars = NULL,
@@ -55,6 +56,10 @@ to \code{tidy()}.}
 
 \item{n.min}{integer Minimum number of distinct values in the explanatory
 variable (on the rhs of formula) for fitting to the attempted.}
+
+\item{fit.seed}{RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
+Defaults to \code{NA}, which means that \code{set.seed()} will not be
+called.}
 
 \item{tb.type}{character One of "fit.summary", "fit.anova" or "fit.coefs".}
 
