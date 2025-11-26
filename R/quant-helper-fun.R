@@ -77,7 +77,6 @@ quant_helper_fun <- function(data,
         startsWith(conditionMessage(w), "partial argument match of")) {
       invokeRestart("muffleWarning")
     }
-
   })
-  fm
+  list(fm = fm, fun.args = fun.args)
 }

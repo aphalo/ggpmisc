@@ -132,7 +132,7 @@ distrmix_helper_fun <-
           fm.param.se <- mixtools::boot.se(fm, B = 100)
         } else {
           printed.text <-
-            capture.output(fm.param.se <- mixtools::boot.se(fm, B = 100))
+            utils::capture.output(fm.param.se <- mixtools::boot.se(fm, B = 100))
         }
         fm.param.se[grepv(".se$", names(fm.param.se))]
 

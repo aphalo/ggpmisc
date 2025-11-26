@@ -647,17 +647,19 @@ quant_eq_compute_group_fun <- function(data,
   # make sure quantiles are ordered
   quantiles <- sort(quantiles)
 
-  fm <- quant_helper_fun(data = data,
-                         formula = formula,
-                         quantiles = quantiles,
-                         method = method,
-                         method.name = method.name,
-                         method.args = method.args,
-                         n.min = n.min,
-                         fit.seed = fit.seed,
-                         weight = weight,
-                         na.rm = na.rm,
-                         orientation = orientation)
+  fm.ls <- quant_helper_fun(data = data,
+                            formula = formula,
+                            quantiles = quantiles,
+                            method = method,
+                            method.name = method.name,
+                            method.args = method.args,
+                            n.min = n.min,
+                            fit.seed = fit.seed,
+                            weight = weight,
+                            na.rm = na.rm,
+                            orientation = orientation)
+  fm <- fm.ls[["fm"]]
+  fun.args <- fm.ls[["fun.args"]]
 
   # allow model formula and tau selection by method functions
   if (!length(fm) || (is.atomic(fm) && is.na(fm))) {
