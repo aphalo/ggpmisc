@@ -207,6 +207,13 @@ stat_fit_residuals <- function(mapping = NULL,
     method.name <- "missing"
   }
 
+  temp <- guess_orientation(orientation = orientation,
+                            formula = formula,
+                            default.formula = y ~ x,
+                            formula.on.x = FALSE)
+  orientation <- temp[["orientation"]]
+  formula <- temp[["formula"]]
+
   ggplot2::layer(
     stat = StatFitResiduals, data = data, mapping = mapping, geom = geom,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
@@ -244,19 +251,6 @@ residuals_compute_group_fun <- function(data,
   stopifnot(!any(c("formula", "data") %in% names(method.args)))
   if (is.null(data$weight)) {
     data$weight <- 1
-  }
-
-  # we guess formula from orientation
-  if (is.null(formula)) {
-    if (is.na(orientation) || orientation == "x") {
-      formula = y ~ x
-    } else if (orientation == "y") {
-      formula = x ~ y
-    }
-  }
-  # we guess orientation from formula
-  if (is.na(orientation)) {
-    orientation <- unname(c(x = "y", y = "x")[as.character(formula)[2]])
   }
 
   if (length(unique(data[[orientation]])) < n.min) {

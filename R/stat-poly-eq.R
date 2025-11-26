@@ -575,24 +575,10 @@ stat_poly_eq <- function(mapping = NULL,
     stop("Method 'lmodel2' not supported, please use 'stat_ma_eq()'.")
   }
 
-  # we guess formula from orientation
-  if (is.null(formula)) {
-    if (is.na(orientation) || orientation == "x") {
-      formula = y ~ x
-    } else if (orientation == "y") {
-      formula = x ~ y
-    }
-  }
-  # we guess orientation from formula
-  if (is.na(orientation)) {
-    if (grepl("x", as.character(formula)[2])) {
-      orientation <- "y"
-    } else if (grepl("y", as.character(formula)[2])) {
-      orientation <- "x"
-    } else {
-      stop("'formula' must refer to aesthetics 'x' and 'y', not names in 'data'")
-    }
-  }
+  temp <- guess_orientation(orientation = orientation,
+                            formula = formula)
+  orientation <- temp[["orientation"]]
+  formula <-  temp[["formula"]]
 
   if (is.null(output.type)) {
     if (geom %in% c("richtext", "textbox", "marquee")) {
@@ -708,14 +694,8 @@ poly_eq_compute_group_fun <- function(data,
     decimal.mark <- "."
   }
 
-  if (orientation == "x") {
-    if (length(unique(data$x)) < n.min) {
-      return(data.frame())
-    }
-  } else if (orientation == "y") {
-    if (length(unique(data$y)) < n.min) {
-      return(data.frame())
-    }
+  if (length(unique(data[[orientation]])) < n.min) {
+    return(data.frame())
   }
 
   output.type <- if (!length(output.type)) {

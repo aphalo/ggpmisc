@@ -488,25 +488,17 @@ stat_quant_eq <- function(mapping = NULL,
     stop("Method 'lmodel2' not supported, please use 'stat_ma_eq()'.")
   }
 
-  # we guess formula from orientation
-  if (is.null(formula)) {
-    if (is.na(orientation) || orientation == "x") {
-      formula <- y ~ x
-    } else if (orientation == "y") {
-      formula <- x ~ y
-    }
+  if (method.name == "rqss") {
+    default.formula <- y ~ qss(x)
+  } else {
+    default.formula <- y ~ x
   }
-
-  # we guess orientation from formula
-  if (is.na(orientation)) {
-    if (grepl("x", as.character(formula)[2])) {
-      orientation <- "y"
-    } else if (grepl("y", as.character(formula)[2])) {
-      orientation <- "x"
-    } else {
-      stop("The model formula should use 'x' and 'y' as variables")
-    }
-  }
+  temp <- guess_orientation(orientation = orientation,
+                            formula = formula,
+                            default.formula = default.formula,
+                            formula.on.x = FALSE)
+  orientation <- temp[["orientation"]]
+  formula <-  temp[["formula"]]
 
   if (is.null(output.type)) {
     if (geom %in% c("richtext", "textbox", "marquee")) {
@@ -666,14 +658,8 @@ quant_eq_compute_group_fun <- function(data,
     label.y <- label.y[1]
   }
 
-  if (orientation == "x") {
-    if (length(unique(data$x)) < n.min) {
-      return(data.frame())
-    }
-  } else if (orientation == "y") {
-    if (length(unique(data$y)) < n.min) {
-      return(data.frame())
-    }
+  if (length(unique(data[[orientation]])) < n.min) {
+    return(data.frame())
   }
 
   # If method was specified as a character string, replace with

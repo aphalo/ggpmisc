@@ -367,24 +367,12 @@ stat_ma_eq <- function(mapping = NULL,
       stop("Method 'rq' not supported, please use 'stat_quant_eq()'.")
   }
 
-  # we guess formula from orientation
-  if (is.null(formula)) {
-    if (is.na(orientation) || orientation == "x") {
-      formula = y ~ x
-    } else if (orientation == "y") {
-      formula = x ~ y
-    }
-  }
-  # we guess orientation from formula
-  if (is.na(orientation)) {
-    if (grepl("x", as.character(formula)[2])) {
-      orientation <- "y"
-    } else if (grepl("y", as.character(formula)[2])) {
-      orientation <- "x"
-    } else {
-      stop("The model formula should use 'x' and 'y' as variables")
-    }
-  }
+  temp <- guess_orientation(orientation = orientation,
+                            formula = formula,
+                            default.formula = y ~ x,
+                            formula.on.x = FALSE)
+  orientation <- temp[["orientation"]]
+  formula <-  temp[["formula"]]
 
   if (is.null(output.type)) {
     if (geom %in% c("richtext", "textbox", "marquee")) {

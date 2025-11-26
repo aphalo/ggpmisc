@@ -261,36 +261,17 @@ stat_quant_line <- function(mapping = NULL,
     stop("Method 'lmodel2' not supported, please use 'stat_ma_line()'.")
   }
 
-  if (is.null(formula)) {
-    if (is.character(method)) {
-      if (method == "rq") {
-        formula <- y ~ x
-      } else if (method == "rqss") {
-        qss <- quantreg::qss
-        formula <- y ~ qss(x)
-        # emit message only if formula is not y ~ x
-        message("Smoothing formula not specified. Using: ",
-                deparse(formula))
-      }
-    }
-    if (is.na(orientation)) {
-      orientation = "x"
-    }
+  if (method.name == "rqss") {
+    default.formula <- y ~ qss(x)
   } else {
-    formula.chr <- as.character(formula)
-    if (is.na(orientation)) {
-      # we guess orientation from formula
-      if (grepl("y", formula.chr[2])) {
-        orientation <- "x"
-      } else if (grepl("x", formula.chr[2])) {
-        orientation <- "y"
-        formula <- swap_xy(formula)
-      }
-    } else if (!grepl("y", formula.chr[2])){
-      stop("When both 'orientation' and 'formula' are passed arguments ",
-           "the formula should have 'x' as explanatory variable.")
-    }
+    default.formula <- y ~ x
   }
+  temp <- guess_orientation(orientation = orientation,
+                            formula = formula,
+                            default.formula = default.formula,
+                            formula.on.x = TRUE)
+  orientation <- temp[["orientation"]]
+  formula <-  temp[["formula"]]
 
   ggplot2::layer(
     data = data,

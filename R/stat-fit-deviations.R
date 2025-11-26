@@ -207,6 +207,13 @@ stat_fit_deviations <- function(mapping = NULL,
     method.name <- "missing"
   }
 
+  temp <- guess_orientation(orientation = orientation,
+                            formula = formula,
+                            default.formula = y ~ x,
+                            formula.on.x = FALSE)
+  orientation <- temp[["orientation"]]
+  formula <-  temp[["formula"]]
+
   ggplot2::layer(
     stat = StatFitDeviations, data = data, mapping = mapping, geom = geom,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
@@ -241,31 +248,13 @@ deviations_compute_group_fun <- function(data,
                                          orientation = "x") {
 
   stopifnot(!any(c("formula", "data") %in% names(method.args)))
+
   if (is.null(data$weight)) {
     data$weight <- 1
   }
 
-  # we guess formula from orientation
-  if (is.null(formula)) {
-    if (is.na(orientation) || orientation == "x") {
-      formula = y ~ x
-    } else if (orientation == "y") {
-      formula = x ~ y
-    }
-  }
-  # we guess orientation from formula
-  if (is.na(orientation)) {
-    orientation <- unname(c(x = "y", y = "x")[as.character(formula)[2]])
-  }
-
-  if (orientation == "x") {
-    if (length(unique(data$x)) < n.min) {
+  if (length(unique(data[[orientation]])) < n.min) {
       return(data.frame())
-    }
-  } else if (orientation == "y") {
-    if (length(unique(data$y)) < n.min) {
-      return(data.frame())
-    }
   }
 
   # If method was specified as a character string, replace with
@@ -449,6 +438,13 @@ stat_fit_fitted <- function(mapping = NULL, data = NULL, geom = "point",
     method.name <- "missing"
   }
 
+  temp <- guess_orientation(orientation = orientation,
+                            formula = formula,
+                            default.formula = y ~ x,
+                            formula.on.x = FALSE)
+  orientation <- temp[["orientation"]]
+  formula <-  temp[["formula"]]
+
   ggplot2::layer(
     stat = StatFitFitted, data = data, mapping = mapping, geom = geom,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
@@ -483,31 +479,13 @@ fitted_compute_group_fun <- function(data,
                                      orientation = "x",
                                      return.fitted = FALSE) {
   stopifnot(!any(c("formula", "data") %in% names(method.args)))
+
   if (is.null(data$weight)) {
     data$weight <- 1
   }
 
-  # we guess formula from orientation
-  if (is.null(formula)) {
-    if (is.na(orientation) || orientation == "x") {
-      formula = y ~ x
-    } else if (orientation == "y") {
-      formula = x ~ y
-    }
-  }
-  # we guess orientation from formula
-  if (is.na(orientation)) {
-    orientation <- unname(c(x = "y", y = "x")[as.character(formula)[2]])
-  }
-
-  if (orientation == "x") {
-    if (length(unique(data$x)) < n.min) {
-      return(data.frame())
-    }
-  } else if (orientation == "y") {
-    if (length(unique(data$y)) < n.min) {
-      return(data.frame())
-    }
+  if (length(unique(data[[orientation]])) < n.min) {
+    return(data.frame())
   }
 
   # If method was specified as a character string, replace with
