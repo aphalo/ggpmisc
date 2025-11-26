@@ -301,11 +301,11 @@ ggplot(my.data, aes(x, y2, colour = group)) +
 ## -----------------------------------------------------------------------------
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  stat_poly_line(formula = y ~ x, color = "blue") +
+  stat_poly_line(color = "blue") +
   stat_poly_eq(mapping = use_label("R2", "eq"), color = "blue") +
-  stat_poly_line(formula = y ~ x, color = "red", orientation = "y") +
-  stat_poly_eq(mapping = use_label("R2", "eq"), color = "red", orientation = "y",
-               label.y = 0.9)
+  stat_poly_line(color = "red", orientation = "y") +
+  stat_poly_eq(mapping = use_label("R2", "eq"), color = "red", 
+               orientation = "y", label.y = 0.9)
 
 ## -----------------------------------------------------------------------------
 ggplot(my.data, aes(x, y)) +
