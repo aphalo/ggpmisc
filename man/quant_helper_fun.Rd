@@ -2,12 +2,13 @@
 % Please edit documentation in R/quant-helper-fun.R
 \name{quant_helper_fun}
 \alias{quant_helper_fun}
-\title{Helper function for fitting qunatile regression}
+\title{Helper function for fitting quantile regression}
 \usage{
 quant_helper_fun(
   data,
   formula = y ~ x,
   quantiles = c(0.25, 0.5, 0.75),
+  fit.by.quantile = FALSE,
   method,
   method.name,
   method.args = list(),
@@ -26,6 +27,9 @@ the plot defaults.}
 instead of original variable names.}
 
 \item{quantiles}{numeric vector Values in 0..1 indicating the quantiles.}
+
+\item{fit.by.quantile}{logical If TRUE return a separate fitted model
+object for each quantile as needed for predictions with confidence bands.}
 
 \item{method}{function or character If character, "rq", "rqss" or the name of
 a model fit function are accepted, possibly followed by the fit function's
@@ -52,6 +56,11 @@ the computation proceeds.}
 \item{orientation}{character Either "x" or "y" controlling the default for
 \code{formula}.}
 }
+\value{
+A list, with members fm1, fm2, ... one for each fitted model and
+  fun.args1, fun.args2, ... with arguments passed in each call to the
+  model fit function.
+}
 \description{
 Factored out code used in both stat_quant_line(), stat_quant_band()
 and stat_quant_eq().
@@ -59,5 +68,10 @@ and stat_quant_eq().
 \details{
 This function does the model fitting and returns a fitted model object. It
 decodes the method, sorts the quantiles and does the fit.
+}
+\examples{
+
+ggpmisc:::quant_helper_fun(data.frame(x = mpg$displ, y = mpg$hwy), method = "br")
+
 }
 \keyword{internal}

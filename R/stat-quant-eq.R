@@ -650,6 +650,7 @@ quant_eq_compute_group_fun <- function(data,
   fm.ls <- quant_helper_fun(data = data,
                             formula = formula,
                             quantiles = quantiles,
+                            fit.by.quantile = FALSE,
                             method = method,
                             method.name = method.name,
                             method.args = method.args,
@@ -658,8 +659,8 @@ quant_eq_compute_group_fun <- function(data,
                             weight = weight,
                             na.rm = na.rm,
                             orientation = orientation)
-  fm <- fm.ls[["fm"]]
-  fun.args <- fm.ls[["fun.args"]]
+  fm <- fm.ls[["fm1"]]
+  fun.args <- fm.ls[["fun.args1"]]
 
   # allow model formula and tau selection by method functions
   if (!length(fm) || (is.atomic(fm) && is.na(fm))) {

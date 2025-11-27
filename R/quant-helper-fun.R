@@ -1,9 +1,15 @@
-#' Helper function for fitting qunatile regression
+#' Helper function for fitting quantile regression
 #'
 #' Factored out code used in both stat_quant_line(), stat_quant_band()
 #' and stat_quant_eq().
 #'
 #' @inheritParams stat_quant_line
+#' @param fit.by.quantile logical If TRUE return a separate fitted model
+#'   object for each quantile as needed for predictions with confidence bands.
+#'
+#' @return A list, with members fm1, fm2, ... one for each fitted model and
+#'   fun.args1, fun.args2, ... with arguments passed in each call to the
+#'   model fit function.
 #'
 #' @keywords internal
 #'
@@ -11,9 +17,14 @@
 #' This function does the model fitting and returns a fitted model object. It
 #' decodes the method, sorts the quantiles and does the fit.
 #'
+#' @examples
+#'
+#' ggpmisc:::quant_helper_fun(data.frame(x = mpg$displ, y = mpg$hwy), method = "br")
+#'
 quant_helper_fun <- function(data,
                              formula = y ~ x,
                              quantiles = c(0.25, 0.5, 0.75),
+                             fit.by.quantile = FALSE,
                              method,
                              method.name,
                              method.args = list(),
@@ -57,7 +68,6 @@ quant_helper_fun <- function(data,
   }
 
   fun.args <- list(quote(formula),
-                   tau = quantiles,
                    data = quote(data),
                    weights = data[["weight"]])
   fun.args <- c(fun.args, method.args)
@@ -65,18 +75,32 @@ quant_helper_fun <- function(data,
     fun.args[["method"]] <- fun.method
   }
 
+  if (fit.by.quantile) {
+    qs <- seq_along(quantiles)
+  } else {
+    qs <- 1L
+  }
+  z <- list()
   if (!is.na(fit.seed)) {
     set.seed(fit.seed)
   }
-  # quantreg contains code with partial matching of names!
-  # so we silence selectively only these warnings
-  withCallingHandlers({
-    fm <- do.call(method, args = fun.args)
-  }, warning = function(w) {
-    if (startsWith(conditionMessage(w), "partial match of") ||
-        startsWith(conditionMessage(w), "partial argument match of")) {
-      invokeRestart("muffleWarning")
+  for (i in qs) {
+    if (length(qs) == 1L) {
+      fun.args[["tau"]] <- quantiles
+    } else {
+      fun.args[["tau"]] <- quantiles[i]
     }
-  })
-  list(fm = fm, fun.args = fun.args)
+    # quantreg contains code with partial matching of names!
+    # so we silence selectively only these warnings
+    withCallingHandlers({
+      z[[paste("fm", i, sep ="")]] <- do.call(method, args = fun.args)
+    }, warning = function(w) {
+      if (startsWith(conditionMessage(w), "partial match of") ||
+          startsWith(conditionMessage(w), "partial argument match of")) {
+        invokeRestart("muffleWarning")
+      }
+    })
+    z[[paste("fun.args", i, sep ="")]] <- fun.args
+  }
+  z
 }
