@@ -18,46 +18,7 @@
 #' Package 'ggpmisc' does not define a new geometry matching this statistic as
 #' it is enough for the statistic to return suitable `x` and `y` values.
 #'
-#' @param mapping The aesthetic mapping, usually constructed with
-#'   \code{\link[ggplot2]{aes}}. Only needs to be
-#'   set at the layer level if you are overriding the plot defaults.
-#' @param data A layer specific dataset, only needed if you want to override
-#'   the plot defaults.
-#' @param geom The geometric object to use display the data.
-#' @param position The position adjustment to use for overlapping points on this
-#'   layer.
-#' @param show.legend logical. Should this layer be included in the legends?
-#'   \code{NA}, the default, includes if any aesthetics are mapped. \code{FALSE}
-#'   never includes, and \code{TRUE} always includes.
-#' @param inherit.aes If \code{FALSE}, overrides the default aesthetics, rather
-#'   than combining with them. This is most useful for helper functions that
-#'   define both data and aesthetics and shouldn't inherit behaviour from the
-#'   default plot specification, e.g. \code{\link[ggplot2]{borders}}.
-#' @param ... other arguments passed on to \code{\link[ggplot2]{layer}}. This
-#'   can include aesthetics whose values you want to set, not map. See
-#'   \code{\link[ggplot2]{layer}} for more details.
-#' @param na.rm	a logical indicating whether NA values should be stripped before
-#'   the computation proceeds.
-#' @param quantiles numeric vector Two or three values in 0..1 indicating the
-#'   quantiles at the  edges of the band and optionally a line within the band.
-#' @param formula a formula object. Using aesthetic names \code{x} and \code{y}
-#'   instead of original variable names.
-#' @param method function or character If character, "rq", "rqss" or the name of
-#'   a model fit function are accepted, possibly followed by the fit function's
-#'   \code{method} argument separated by a colon (e.g. \code{"rq:br"}). If a
-#'   function different to \code{rq()}, it must accept arguments named
-#'   \code{formula}, \code{data}, \code{weights}, \code{tau} and \code{method}
-#'   and return a model fit object of class \code{rq}, \code{rqs} or
-#'   \code{rqss}.
-#' @param method.args named list with additional arguments.
-#' @param fit.seed RNG seed argument passed to
-#'   \code{\link[base:Random]{set.seed}()}. Defaults to \code{NA}, which means
-#'   that \code{set.seed()} will not be called.
-#' @param n Number of points at which to evaluate smoother.
-#' @param orientation character Either "x" or "y" controlling the default for
-#'   \code{formula}.
-#' @param fm.values logical Add n as a column to returned data? (`FALSE` by
-#'   default.)
+#' @inheritParams stat_quant_line
 #'
 #' @return The value returned by the statistic is a data frame, that will have
 #'   \code{n} rows of predicted values for three quantiles as \code{y},
@@ -165,6 +126,7 @@ stat_quant_band <- function(mapping = NULL,
                             n = 80,
                             method = "rq",
                             method.args = list(),
+                            n.min = 3L,
                             na.rm = FALSE,
                             orientation = NA,
                             show.legend = NA,
@@ -204,6 +166,12 @@ stat_quant_band <- function(mapping = NULL,
   orientation <- temp[["orientation"]]
   formula <-  temp[["formula"]]
 
+  quantiles <- unique(quantiles)
+  if (!length(quantiles) %in% 2:3) {
+    stop("'quantiles' should be a vector of 2 or 3 unique quantiles, not ",
+         length(quantiles), " quantiles. See 'stat_quant_line()'")
+  }
+
   ggplot2::layer(
     data = data,
     mapping = mapping,
@@ -216,12 +184,13 @@ stat_quant_band <- function(mapping = NULL,
       rlang::list2(
         quantiles = quantiles,
         formula = formula,
+        fit.seed = fit.seed,
         fm.values = fm.values,
         n = n,
         method = method,
         method.name = method.name,
         method.args = method.args,
-        fit.seed = fit.seed,
+        n.min = n.min,
         na.rm = na.rm,
         orientation = orientation,
         se = TRUE, # passed to geom_smooth
@@ -245,6 +214,7 @@ quant_band_compute_group_fun <- function(data,
                                          method,
                                          method.name,
                                          method.args = list(),
+                                         n.min = 3L,
                                          lambda = 1,
                                          fit.seed = NA,
                                          fm.values = FALSE,
@@ -252,76 +222,74 @@ quant_band_compute_group_fun <- function(data,
                                          flipped_aes = NA) {
 
   data <- ggplot2::flip_data(data, flipped_aes)
+  if (length(unique(data$x)) < n.min) {
+    # Not enough data to perform fit
+    return(data.frame())
+  }
 
   if (is.null(data[["weight"]])) {
     data[["weight"]] <- 1
   }
 
-  min.indep <- min(data[["x"]], na.rm = TRUE)
-  max.indep <- max(data[["x"]], na.rm = TRUE)
-  seq.indep <- seq(min.indep, max.indep, length.out = n)
+  quantiles <- sort(unique(quantiles))
 
-  grid <- data.frame(x = seq.indep)
+  fms.ls <-  quant_helper_fun(data = data,
+                              formula = formula,
+                              quantiles = quantiles,
+                              fit.by.quantile = FALSE,
+                              method = method,
+                              method.name = method.name,
+                              method.args = method.args,
+                              n.min = n.min,
+                              fit.seed = fit.seed,
+                              weight = data[["weight"]],
+                              na.rm = na.rm,
+                              orientation = "x")
+  print(str(fms.ls))
 
-  # If method was specified as a character string, replace with
-  # the corresponding function. Some model fit functions themselves have a
-  # method parameter accepting character strings as argument. We support
-  # these by splitting strings passed as argument at a colon.
-  if (is.character(method)) {
-    if (method %in% c("br", "fn", "pfn", "sfn", "fnc", "conquer",
-                      "pfnb", "qfnb", "ppro", "lasso")) {
-      method <- paste("rq", method, sep = ":")
-      message("Using method: ", method)
-    }
-    method <- strsplit(x = method, split = ":", fixed = TRUE)[[1]]
-    if (length(method) > 1L) {
-      fun.method <- method[2]
-      method <- method[1]
-    } else {
-      fun.method <- NULL
-    }
-    method <- switch(method,
-                     rq = quantreg::rq,
-                     rqss = quantreg::rqss,
-                     match.fun(method))
-  } else if (is.function(method)) {
-    fun.method <- method.args[["method"]]
-    if (length(fun.method)) {
-      method.name <- paste(method.name, fun.method, sep = ":")
-    }
-  }
+  fm <- fms.ls[["fm1"]]
+#  method.args <- fms.ls[["fun.args1"]]
 
-  if (length(fun.method)) {
-    method.args[["method"]] <- fun.method
-  }
-
-  if (!is.na(fit.seed)) {
-    set.seed(fit.seed)
-  }
-  z.ls <- lapply(sort(quantiles), quant_pred, data = data, method = method,
-                 formula = formula, weight = data[["weight"]], grid = grid,
-                 method.args = method.args, orientation = "x",
-                 make.groups = FALSE)
-
-  missing <- sapply(X =  z.ls,
-                    FUN = function(x) {!nrow(x)})
-  if (any(missing)) {
+  if (!length(fm) || (is.atomic(fm) && is.na(fm))) {
     return(data.frame())
   }
 
-  z <- z.ls[[2]]
-  z[["ymin"]] <- z.ls[[1]][["y"]]
-  z[["quantile.ymin"]] <- z.ls[[1]][["quantile"]]
-  z[["ymax"]] <- z.ls[[3]][["y"]]
-  z[["quantile.ymax"]] <- z.ls[[3]][["quantile"]]
+  seq.indep <- seq(from = min(data[["x"]], na.rm = TRUE),
+                   to   = max(data[["x"]], na.rm = TRUE),
+                   length.out = n)
+  newdata <- data.frame(x = seq.indep)
 
-  if (fm.values) {
-    z[["n"]] <- nrow(na.omit(data[, c("x", "y")]))
-    z[["method"]] <- method.name
+  pred <- stats::predict(fm, newdata = newdata, level = 0.95,
+                         type = "none", interval = "none")
+
+  if (length(quantiles) == 1L && is.vector(pred)) {
+    newdata[["y"]] <- pred
+    newdata[["ymin"]] <- NA_real_
+    newdata[["ymax"]] <- NA_real_
+  } else if (ncol(pred) == 1L) {
+    newdata[["y"]] <- pred[ , 1]
+    newdata[["ymin"]] <- NA_real_
+    newdata[["ymax"]] <- NA_real_
+  } else if (ncol(pred) == 2L) {
+    newdata[["y"]] <- NA_real_
+    newdata[["ymin"]] <- pred[ , 1]
+    newdata[["ymax"]] <- pred[ , 2]
+  } else if (ncol(pred) == 3L) {
+    newdata[["y"]] <- pred[ , 2]
+    newdata[["ymin"]] <- pred[ , 1]
+    newdata[["ymax"]] <- pred[ , 3]
   }
 
-  z[["flipped_aes"]] <- flipped_aes
-  ggplot2::flip_data(z, flipped_aes)
+  if (fm.values) {
+    newdata[["n"]] <- length(resid(fm)) / length(fm[["tau"]])
+    newdata[["fm.class"]] <- class(fm)
+    newdata[["fm.method"]] <- method.name
+    newdata[["fm.formula"]] <- formula(fm)
+    newdata[["fm.formula.chr"]] <- format(formula(fm))
+  }
+
+  newdata[["flipped_aes"]] <- flipped_aes
+  ggplot2::flip_data(newdata, flipped_aes)
 }
 
 #' @rdname ggpmisc-ggproto

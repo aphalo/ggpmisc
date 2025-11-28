@@ -17,6 +17,7 @@ stat_quant_band(
   n = 80,
   method = "rq",
   method.args = list(),
+  n.min = 3L,
   na.rm = FALSE,
   orientation = NA,
   show.legend = NA,
@@ -31,24 +32,23 @@ set at the layer level if you are overriding the plot defaults.}
 \item{data}{A layer specific dataset, only needed if you want to override
 the plot defaults.}
 
-\item{geom}{The geometric object to use display the data.}
+\item{geom}{The geometric object to use display the data}
 
 \item{position}{The position adjustment to use for overlapping points on this
-layer.}
+layer}
 
 \item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This
 can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 
-\item{quantiles}{numeric vector Two or three values in 0..1 indicating the
-quantiles at the  edges of the band and optionally a line within the band.}
+\item{quantiles}{numeric vector Values in 0..1 indicating the quantiles.}
 
 \item{formula}{a formula object. Using aesthetic names \code{x} and \code{y}
 instead of original variable names.}
 
-\item{fit.seed}{RNG seed argument passed to
-\code{\link[base:Random]{set.seed}()}. Defaults to \code{NA}, which means
-that \code{set.seed()} will not be called.}
+\item{fit.seed}{RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
+Defaults to \code{NA}, which means that \code{set.seed()} will not be
+called.}
 
 \item{fm.values}{logical Add n as a column to returned data? (`FALSE` by
 default.)}
@@ -63,7 +63,12 @@ function different to \code{rq()}, it must accept arguments named
 and return a model fit object of class \code{rq}, \code{rqs} or
 \code{rqss}.}
 
-\item{method.args}{named list with additional arguments.}
+\item{method.args}{named list with additional arguments passed to
+\code{rq()}, \code{rqss()} or to a function passed as argument to
+\code{method}.}
+
+\item{n.min}{integer Minimum number of distinct values in the explanatory
+variable (on the rhs of formula) for fitting to the attempted.}
 
 \item{na.rm}{a logical indicating whether NA values should be stripped before
 the computation proceeds.}

@@ -341,6 +341,8 @@ quant_line_compute_group_fun <- function(data,
     data[["weight"]] <- 1
   }
 
+  quantiles <- sort(unique(quantiles))
+
   fms.ls <-  quant_helper_fun(data = data,
                               formula = formula,
                               quantiles = quantiles,
@@ -354,10 +356,9 @@ quant_line_compute_group_fun <- function(data,
                               na.rm = na.rm,
                               orientation = "x")
 
-  min.indep <- min(data[["x"]], na.rm = TRUE)
-  max.indep <- max(data[["x"]], na.rm = TRUE)
-  seq.indep <- seq(min.indep, max.indep, length.out = n)
-
+  seq.indep <- seq(from = min(data[["x"]], na.rm = TRUE),
+                   to   = max(data[["x"]], na.rm = TRUE),
+                   length.out = n)
   grid <- data.frame(x = seq.indep)
 
   preds.ls <- list()
