@@ -389,7 +389,6 @@ quant_line_compute_group_fun <- function(data,
       temp.grid[["n"]] <- length(resid(fm)) / length(fm[["tau"]])
       temp.grid[["fm.class"]] <- class(fm)
       temp.grid[["fm.method"]] <- method.name
-      temp.grid[["fm.formula"]] <- formula(fm)
       temp.grid[["fm.formula.chr"]] <- format(formula(fm))
     }
 
@@ -406,12 +405,8 @@ quant_line_compute_group_fun <- function(data,
     quant.labels <- sprintf("%#.*f", quant.digits, quant.levels)
     z[["quantile.f"]] <-
       factor(z[["quantile"]], levels = quant.levels, labels = quant.labels)
-    # if (length(quant.levels) < length(quantiles)) {
-    #   warning("Model fit partial failure!")
-    # }
-  } # else {
-  #   warning("Model fit failure!")
-  # }
+  }
+
   z[["flipped_aes"]] <- flipped_aes
   ggplot2::flip_data(z, flipped_aes)
 }

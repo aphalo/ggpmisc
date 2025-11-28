@@ -19,6 +19,7 @@
 #' it is enough for the statistic to return suitable `x` and `y` values.
 #'
 #' @inheritParams stat_quant_line
+#' @param quantiles A numeric vector of length 3, displayed as a line and band.
 #'
 #' @return The value returned by the statistic is a data frame, that will have
 #'   \code{n} rows of predicted values for three quantiles as \code{y},
@@ -167,8 +168,8 @@ stat_quant_band <- function(mapping = NULL,
   formula <-  temp[["formula"]]
 
   quantiles <- unique(quantiles)
-  if (!length(quantiles) %in% 2:3) {
-    stop("'quantiles' should be a vector of 2 or 3 unique quantiles, not ",
+  if (length(quantiles) != 3) {
+    stop("'quantiles' should be a vector of 3 unique quantiles, not ",
          length(quantiles), " quantiles. See 'stat_quant_line()'")
   }
 
@@ -231,12 +232,12 @@ quant_band_compute_group_fun <- function(data,
     data[["weight"]] <- 1
   }
 
-  quantiles <- sort(unique(quantiles))
+  quantiles <- sort(quantiles)
 
   fms.ls <-  quant_helper_fun(data = data,
                               formula = formula,
                               quantiles = quantiles,
-                              fit.by.quantile = FALSE,
+                              fit.by.quantile = TRUE,
                               method = method,
                               method.name = method.name,
                               method.args = method.args,
@@ -245,47 +246,47 @@ quant_band_compute_group_fun <- function(data,
                               weight = data[["weight"]],
                               na.rm = na.rm,
                               orientation = "x")
-  print(str(fms.ls))
-
-  fm <- fms.ls[["fm1"]]
-#  method.args <- fms.ls[["fun.args1"]]
-
-  if (!length(fm) || (is.atomic(fm) && is.na(fm))) {
-    return(data.frame())
-  }
 
   seq.indep <- seq(from = min(data[["x"]], na.rm = TRUE),
                    to   = max(data[["x"]], na.rm = TRUE),
                    length.out = n)
   newdata <- data.frame(x = seq.indep)
 
-  pred <- stats::predict(fm, newdata = newdata, level = 0.95,
-                         type = "none", interval = "none")
+  preds.ls <- list()
+  preds.names <- c("ymin", "y", "ymax")
+  fms.idxs <- grep("^fm", names(fms.ls))
+  for (i in seq_along(fms.idxs)) {
 
-  if (length(quantiles) == 1L && is.vector(pred)) {
-    newdata[["y"]] <- pred
-    newdata[["ymin"]] <- NA_real_
-    newdata[["ymax"]] <- NA_real_
-  } else if (ncol(pred) == 1L) {
-    newdata[["y"]] <- pred[ , 1]
-    newdata[["ymin"]] <- NA_real_
-    newdata[["ymax"]] <- NA_real_
-  } else if (ncol(pred) == 2L) {
+    fm <- fms.ls[[fms.idxs[i]]]
+    if (!length(fm) || (is.atomic(fm) && is.na(fm))) {
+      return(data.frame())
+    }
+    pred <- stats::predict(fm, newdata = newdata, level = .95,
+                           type = "none", interval = "none")
+
+    if (is.matrix(pred)) {
+      preds.ls[[preds.names[i]]] <- pred[ , 1L]
+    } else {
+      preds.ls[[preds.names[i]]] <- pred
+    }
+
+    if (fm.values) {
+      preds.ls[[paste(names(fms.ls)[[fms.idxs[i]]],
+                      "class", sep = ".")]] <- class(fm)
+      preds.ls[[paste(names(fms.ls)[[fms.idxs[i]]],
+                      "formula.chr", sep = ".")]] <- format(formula(fm))
+     }
+  }
+
+  newdata <- dplyr::bind_cols(newdata, preds.ls)
+  if (!"y" %in% colnames(newdata)) {
+    # y in required_aes
     newdata[["y"]] <- NA_real_
-    newdata[["ymin"]] <- pred[ , 1]
-    newdata[["ymax"]] <- pred[ , 2]
-  } else if (ncol(pred) == 3L) {
-    newdata[["y"]] <- pred[ , 2]
-    newdata[["ymin"]] <- pred[ , 1]
-    newdata[["ymax"]] <- pred[ , 3]
   }
 
   if (fm.values) {
     newdata[["n"]] <- length(resid(fm)) / length(fm[["tau"]])
-    newdata[["fm.class"]] <- class(fm)
     newdata[["fm.method"]] <- method.name
-    newdata[["fm.formula"]] <- formula(fm)
-    newdata[["fm.formula.chr"]] <- format(formula(fm))
   }
 
   newdata[["flipped_aes"]] <- flipped_aes

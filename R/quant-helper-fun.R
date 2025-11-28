@@ -91,7 +91,8 @@ quant_helper_fun <- function(data,
       # quantreg contains code with partial matching of names!
       # so we silence selectively only these warnings
       withCallingHandlers({
-        z[[paste("fm", i, sep ="")]] <- do.call(method, args = fun.args)
+        fm <- do.call(method, args = fun.args)
+        z[[paste("fm", i, sep ="")]] <- if (!is.null(fm)) fm else NA
       }, warning = function(w) {
         if (startsWith(conditionMessage(w), "partial match of") ||
             startsWith(conditionMessage(w), "partial argument match of")) {

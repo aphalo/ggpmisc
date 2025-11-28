@@ -41,7 +41,7 @@ layer}
 can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 
-\item{quantiles}{numeric vector Values in 0..1 indicating the quantiles.}
+\item{quantiles}{A numeric vector of length 3, displayed as a line and band.}
 
 \item{formula}{a formula object. Using aesthetic names \code{x} and \code{y}
 instead of original variable names.}
