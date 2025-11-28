@@ -39,28 +39,8 @@
 #'   approach described by Cardoso (2019) under the name of "Double quantile
 #'   regression".
 #'
-#' @param mapping The aesthetic mapping, usually constructed with
-#'   \code{\link[ggplot2]{aes}}. Only needs to be
-#'   set at the layer level if you are overriding the plot defaults.
-#' @param data A layer specific dataset, only needed if you want to override
-#'   the plot defaults.
-#' @param geom The geometric object to use display the data
-#' @param position The position adjustment to use for overlapping points on this
-#'   layer
-#' @param show.legend logical. Should this layer be included in the legends?
-#'   \code{NA}, the default, includes if any aesthetics are mapped. \code{FALSE}
-#'   never includes, and \code{TRUE} always includes.
-#' @param inherit.aes If \code{FALSE}, overrides the default aesthetics, rather
-#'   than combining with them. This is most useful for helper functions that
-#'   define both data and aesthetics and shouldn't inherit behaviour from the
-#'   default plot specification, e.g. \code{\link[ggplot2]{borders}}.
-#' @param ... other arguments passed on to \code{\link[ggplot2]{layer}}. This
-#'   can include aesthetics whose values you want to set, not map. See
-#'   \code{\link[ggplot2]{layer}} for more details.
-#' @param na.rm	a logical indicating whether NA values should be stripped before
-#'   the computation proceeds.
-#' @param formula a formula object. Using aesthetic names \code{x} and \code{y}
-#'   instead of original variable names.
+#' @inheritParams stat_poly_line
+#'
 #' @param quantiles numeric vector Values in 0..1 indicating the quantiles.
 #' @param method function or character If character, "rq", "rqss" or the name of
 #'   a model fit function are accepted, possibly followed by the fit function's
@@ -70,35 +50,27 @@
 #'   and return a model fit object of class \code{rq}, \code{rqs} or
 #'   \code{rqss}.
 #' @param method.args named list with additional arguments passed to
-#'   \code{rq()}, \code{rqss()} or to a function passed as argument to
+#'   \code{rq()}, \code{rqss()} or to another function passed as argument to
 #'   \code{method}.
-#' @param n.min integer Minimum number of distinct values in the explanatory
-#'   variable (on the rhs of formula) for fitting to the attempted.
-#' @param n Number of points at which to evaluate smoother.
-#' @param orientation character Either "x" or "y" controlling the default for
-#'   \code{formula}.
 #' @param se logical Passed to \code{quantreg::predict.rq()}.
-#' @param fit.seed RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
-#'   Defaults to \code{NA}, which means that \code{set.seed()} will not be
-#'   called.
-#' @param fm.values logical Add n as a column to returned data? (`FALSE` by
-#'   default.)
 #' @param level numeric in range [0..1] Passed to \code{quantreg::predict.rq()}.
 #' @param type character Passed to \code{quantreg::predict.rq()}.
 #' @param interval character Passed to \code{quantreg::predict.rq()}.
 #'
 #' @return The value returned by the statistic is a data frame, that will have
-#'   \code{n} rows of predicted values and and their confidence limits for each
-#'   quantile, with each quantile in a group. The variables are \code{x} and
+#'   \code{n} rows of predicted values and and their confidence limits
+#'   \emph{for each quantile}, with quantiles creating groups, or expanding
+#'   existing groups. The variables are \code{x} and
 #'   \code{y} with \code{y} containing predicted values. In addition,
-#'   \code{quantile} and \code{quantile.f} indicate the quantile used and
-#'   and edited \code{group} preserves the original grouping adding a new
-#'   "level" for each quantile. Is \code{se = TRUE}, a confidence band is
-#'   computed and values for it returned in \code{ymax} and \code{ymin}.
+#'   \code{quantile} and \code{quantile.f} indicate the quantile used and and
+#'   edited \code{group} preserves the original grouping adding a new "level"
+#'   for each quantile. Is \code{se = TRUE}, a confidence band is computed and
+#'   values for it returned in \code{ymax} and \code{ymin}.
 #'
-#' @return The value returned by the statistic is a data frame, that will have
-#'   \code{n} rows of predicted values and their confidence limits. Optionally
-#'   it will also include additional values related to the model fit.
+#' @return The value returned by the statistic is a data frame, that with
+#'   \code{n} times the number of quantiles rows of predicted values and their
+#'   confidence limits. Optionally it also includes additional values related
+#'   to the model fit.
 #'
 #' @section Computed variables: `stat_quant_line()` provides the following
 #'   variables, some of which depend on the orientation: \describe{ \item{y *or*

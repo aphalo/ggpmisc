@@ -19,7 +19,10 @@
 #' it is enough for the statistic to return suitable `x` and `y` values.
 #'
 #' @inheritParams stat_quant_line
-#' @param quantiles A numeric vector of length 3, displayed as a line and band.
+#' @param quantiles A numeric vector of length 3, with unique values in
+#'   \eqn{0\ldots 1}. The three quantile regressions are mapped to \code{y},
+#'   \code{ymax} and \code{ymin} aesthetics, and by default plotted as a line
+#'   and band.
 #'
 #' @return The value returned by the statistic is a data frame, that will have
 #'   \code{n} rows of predicted values for three quantiles as \code{y},

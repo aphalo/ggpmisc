@@ -26,34 +26,37 @@ stat_quant_band(
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
-\code{\link[ggplot2]{aes}}. Only needs to be
-set at the layer level if you are overriding the plot defaults.}
+\code{\link[ggplot2]{aes}}. Only needs to be set at the layer level if you
+are overriding the plot defaults.}
 
-\item{data}{A layer specific dataset, only needed if you want to override
-the plot defaults.}
+\item{data}{A layer specific dataset, only needed if you want to override the
+plot defaults.}
 
 \item{geom}{The geometric object to use display the data}
 
 \item{position}{The position adjustment to use for overlapping points on this
-layer}
+layer.}
 
 \item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This
 can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 
-\item{quantiles}{A numeric vector of length 3, displayed as a line and band.}
+\item{quantiles}{A numeric vector of length 3, with unique values in
+\eqn{0\ldots 1}. The three quantile regressions are mapped to \code{y},
+\code{ymax} and \code{ymin} aesthetics, and by default plotted as a line
+and band.}
 
 \item{formula}{a formula object. Using aesthetic names \code{x} and \code{y}
 instead of original variable names.}
 
-\item{fit.seed}{RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
-Defaults to \code{NA}, which means that \code{set.seed()} will not be
-called.}
+\item{fit.seed}{RNG seed argument passed to
+\code{\link[base:Random]{set.seed}()}. Defaults to \code{NA}, indicating
+that \code{set.seed()} should not be called.}
 
-\item{fm.values}{logical Add n as a column to returned data? (`FALSE` by
-default.)}
+\item{fm.values}{logical Add metadata and parameter estimates extracted from
+the fitted model object; \code{FALSE} by default.}
 
-\item{n}{Number of points at which to evaluate smoother.}
+\item{n}{Number of points at which to predict with the fitted model.}
 
 \item{method}{function or character If character, "rq", "rqss" or the name of
 a model fit function are accepted, possibly followed by the fit function's
@@ -64,7 +67,7 @@ and return a model fit object of class \code{rq}, \code{rqs} or
 \code{rqss}.}
 
 \item{method.args}{named list with additional arguments passed to
-\code{rq()}, \code{rqss()} or to a function passed as argument to
+\code{rq()}, \code{rqss()} or to another function passed as argument to
 \code{method}.}
 
 \item{n.min}{integer Minimum number of distinct values in the explanatory
@@ -74,7 +77,8 @@ variable (on the rhs of formula) for fitting to the attempted.}
 the computation proceeds.}
 
 \item{orientation}{character Either "x" or "y" controlling the default for
-\code{formula}.}
+\code{formula}. The letter indicates the aesthetic considered the
+explanatory variable in the model fit.}
 
 \item{show.legend}{logical. Should this layer be included in the legends?
 \code{NA}, the default, includes if any aesthetics are mapped. \code{FALSE}

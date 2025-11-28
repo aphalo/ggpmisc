@@ -43,12 +43,13 @@ layer.}
 can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 
-\item{method}{function or character If character, "lm", "rlm", "lqs", "gls"
-or the name of a model fit function are accepted, possibly followed by the
-fit function's \code{method} argument separated by a colon (e.g.
-\code{"rlm:M"}). If a function different to \code{lm()}, it must accept
-arguments named \code{formula}, \code{data}, \code{weights}, and
-\code{method} and return a model fit object of class \code{lm}.}
+\item{method}{function or character If character, "lm", "rlm", "lqs". "gls"
+"ma", "sma", or the name of a model fit function are accepted, possibly
+followed by the fit function's \code{method} argument separated by a colon
+(e.g. \code{"rlm:M"}). If a function is different to \code{lm()},
+\code{rlm()}, \code{lqs()}, \code{gls()}, \code{ma}, \code{sma}, it must
+have formal parameters named \code{formula}, \code{data}, \code{weights},
+and \code{method}. See Details.}
 
 \item{formula}{a formula object. Using aesthetic names \code{x} and \code{y}
 instead of original variable names.}
@@ -56,21 +57,22 @@ instead of original variable names.}
 \item{se}{Display confidence interval around smooth? (`TRUE` by default only
 for fits with \code{lm()} and \code{rlm()}, see `level` to control.)}
 
-\item{fit.seed}{RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
-Defaults to \code{NA}, which means that \code{set.seed()} will not be
-called.}
+\item{fit.seed}{RNG seed argument passed to
+\code{\link[base:Random]{set.seed}()}. Defaults to \code{NA}, indicating
+that \code{set.seed()} should not be called.}
 
-\item{fm.values}{logical Add R2, adjusted R2, p-value and n as columns to
-returned data? (`FALSE` by default.)}
+\item{fm.values}{logical Add metadata and parameter estimates extracted from
+the fitted model object; \code{FALSE} by default.}
 
-\item{n}{Number of points at which to evaluate smoother.}
+\item{n}{Number of points at which to predict with the fitted model.}
 
 \item{fullrange}{Should the fit span the full range of the plot, or just the
-data?}
+range of the data group used in each fit?}
 
 \item{level}{Level of confidence interval to use (0.95 by default).}
 
-\item{method.args}{named list with additional arguments.}
+\item{method.args}{named list with additional arguments. Not \code{data}
+or \code{weights} which are always passed through aesthetic mappings.}
 
 \item{n.min}{integer Minimum number of distinct values in the explanatory
 variable (on the rhs of formula) for fitting to the attempted.}
@@ -79,7 +81,8 @@ variable (on the rhs of formula) for fitting to the attempted.}
 the computation proceeds.}
 
 \item{orientation}{character Either "x" or "y" controlling the default for
-\code{formula}.}
+\code{formula}. The letter indicates the aesthetic considered the
+explanatory variable in the model fit.}
 
 \item{show.legend}{logical. Should this layer be included in the legends?
 \code{NA}, the default, includes if any aesthetics are mapped. \code{FALSE}

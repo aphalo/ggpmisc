@@ -20,8 +20,8 @@ quant_helper_fun(
 )
 }
 \arguments{
-\item{data}{A layer specific dataset, only needed if you want to override
-the plot defaults.}
+\item{data}{A layer specific dataset, only needed if you want to override the
+plot defaults.}
 
 \item{formula}{a formula object. Using aesthetic names \code{x} and \code{y}
 instead of original variable names.}
@@ -40,21 +40,22 @@ and return a model fit object of class \code{rq}, \code{rqs} or
 \code{rqss}.}
 
 \item{method.args}{named list with additional arguments passed to
-\code{rq()}, \code{rqss()} or to a function passed as argument to
+\code{rq()}, \code{rqss()} or to another function passed as argument to
 \code{method}.}
 
 \item{n.min}{integer Minimum number of distinct values in the explanatory
 variable (on the rhs of formula) for fitting to the attempted.}
 
-\item{fit.seed}{RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
-Defaults to \code{NA}, which means that \code{set.seed()} will not be
-called.}
+\item{fit.seed}{RNG seed argument passed to
+\code{\link[base:Random]{set.seed}()}. Defaults to \code{NA}, indicating
+that \code{set.seed()} should not be called.}
 
 \item{na.rm}{a logical indicating whether NA values should be stripped before
 the computation proceeds.}
 
 \item{orientation}{character Either "x" or "y" controlling the default for
-\code{formula}.}
+\code{formula}. The letter indicates the aesthetic considered the
+explanatory variable in the model fit.}
 }
 \value{
 A list, with members fm1, fm2, ... one for each fitted model and

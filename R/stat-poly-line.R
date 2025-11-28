@@ -78,28 +78,31 @@
 #'   the computation proceeds.
 #' @param formula a formula object. Using aesthetic names \code{x} and \code{y}
 #'   instead of original variable names.
-#' @param method function or character If character, "lm", "rlm", "lqs", "gls"
-#'   or the name of a model fit function are accepted, possibly followed by the
-#'   fit function's \code{method} argument separated by a colon (e.g.
-#'   \code{"rlm:M"}). If a function different to \code{lm()}, it must accept
-#'   arguments named \code{formula}, \code{data}, \code{weights}, and
-#'   \code{method} and return a model fit object of class \code{lm}.
-#' @param method.args named list with additional arguments.
+#' @param method function or character If character, "lm", "rlm", "lqs". "gls"
+#'   "ma", "sma", or the name of a model fit function are accepted, possibly
+#'   followed by the fit function's \code{method} argument separated by a colon
+#'   (e.g. \code{"rlm:M"}). If a function is different to \code{lm()},
+#'   \code{rlm()}, \code{lqs()}, \code{gls()}, \code{ma}, \code{sma}, it must
+#'   have formal parameters named \code{formula}, \code{data}, \code{weights},
+#'   and \code{method}. See Details.
+#' @param method.args named list with additional arguments. Not \code{data}
+#'   or \code{weights} which are always passed through aesthetic mappings.
 #' @param n.min integer Minimum number of distinct values in the explanatory
 #'   variable (on the rhs of formula) for fitting to the attempted.
 #' @param se Display confidence interval around smooth? (`TRUE` by default only
 #'   for fits with \code{lm()} and \code{rlm()}, see `level` to control.)
-#' @param fit.seed RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
-#'   Defaults to \code{NA}, which means that \code{set.seed()} will not be
-#'   called.
-#' @param fm.values logical Add R2, adjusted R2, p-value and n as columns to
-#'   returned data? (`FALSE` by default.)
+#' @param fit.seed RNG seed argument passed to
+#'   \code{\link[base:Random]{set.seed}()}. Defaults to \code{NA}, indicating
+#'   that \code{set.seed()} should not be called.
+#' @param fm.values logical Add metadata and parameter estimates extracted from
+#'   the fitted model object; \code{FALSE} by default.
 #' @param fullrange Should the fit span the full range of the plot, or just the
-#'   data?
+#'   range of the data group used in each fit?
 #' @param level Level of confidence interval to use (0.95 by default).
-#' @param n Number of points at which to evaluate smoother.
+#' @param n Number of points at which to predict with the fitted model.
 #' @param orientation character Either "x" or "y" controlling the default for
-#'   \code{formula}.
+#'   \code{formula}. The letter indicates the aesthetic considered the
+#'   explanatory variable in the model fit.
 #'
 #' @return The value returned by the statistic is a data frame, with \code{n}
 #'   rows of predicted values and their confidence limits. Optionally it will

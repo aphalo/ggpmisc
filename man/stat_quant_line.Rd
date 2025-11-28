@@ -30,16 +30,16 @@ stat_quant_line(
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
-\code{\link[ggplot2]{aes}}. Only needs to be
-set at the layer level if you are overriding the plot defaults.}
+\code{\link[ggplot2]{aes}}. Only needs to be set at the layer level if you
+are overriding the plot defaults.}
 
-\item{data}{A layer specific dataset, only needed if you want to override
-the plot defaults.}
+\item{data}{A layer specific dataset, only needed if you want to override the
+plot defaults.}
 
 \item{geom}{The geometric object to use display the data}
 
 \item{position}{The position adjustment to use for overlapping points on this
-layer}
+layer.}
 
 \item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This
 can include aesthetics whose values you want to set, not map. See
@@ -52,14 +52,14 @@ instead of original variable names.}
 
 \item{se}{logical Passed to \code{quantreg::predict.rq()}.}
 
-\item{fit.seed}{RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
-Defaults to \code{NA}, which means that \code{set.seed()} will not be
-called.}
+\item{fit.seed}{RNG seed argument passed to
+\code{\link[base:Random]{set.seed}()}. Defaults to \code{NA}, indicating
+that \code{set.seed()} should not be called.}
 
-\item{fm.values}{logical Add n as a column to returned data? (`FALSE` by
-default.)}
+\item{fm.values}{logical Add metadata and parameter estimates extracted from
+the fitted model object; \code{FALSE} by default.}
 
-\item{n}{Number of points at which to evaluate smoother.}
+\item{n}{Number of points at which to predict with the fitted model.}
 
 \item{method}{function or character If character, "rq", "rqss" or the name of
 a model fit function are accepted, possibly followed by the fit function's
@@ -70,7 +70,7 @@ and return a model fit object of class \code{rq}, \code{rqs} or
 \code{rqss}.}
 
 \item{method.args}{named list with additional arguments passed to
-\code{rq()}, \code{rqss()} or to a function passed as argument to
+\code{rq()}, \code{rqss()} or to another function passed as argument to
 \code{method}.}
 
 \item{n.min}{integer Minimum number of distinct values in the explanatory
@@ -86,7 +86,8 @@ variable (on the rhs of formula) for fitting to the attempted.}
 the computation proceeds.}
 
 \item{orientation}{character Either "x" or "y" controlling the default for
-\code{formula}.}
+\code{formula}. The letter indicates the aesthetic considered the
+explanatory variable in the model fit.}
 
 \item{show.legend}{logical. Should this layer be included in the legends?
 \code{NA}, the default, includes if any aesthetics are mapped. \code{FALSE}
@@ -99,17 +100,19 @@ default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
 }
 \value{
 The value returned by the statistic is a data frame, that will have
-  \code{n} rows of predicted values and and their confidence limits for each
-  quantile, with each quantile in a group. The variables are \code{x} and
+  \code{n} rows of predicted values and and their confidence limits
+  \emph{for each quantile}, with quantiles creating groups, or expanding
+  existing groups. The variables are \code{x} and
   \code{y} with \code{y} containing predicted values. In addition,
-  \code{quantile} and \code{quantile.f} indicate the quantile used and
-  and edited \code{group} preserves the original grouping adding a new
-  "level" for each quantile. Is \code{se = TRUE}, a confidence band is
-  computed and values for it returned in \code{ymax} and \code{ymin}.
+  \code{quantile} and \code{quantile.f} indicate the quantile used and and
+  edited \code{group} preserves the original grouping adding a new "level"
+  for each quantile. Is \code{se = TRUE}, a confidence band is computed and
+  values for it returned in \code{ymax} and \code{ymin}.
 
-The value returned by the statistic is a data frame, that will have
-  \code{n} rows of predicted values and their confidence limits. Optionally
-  it will also include additional values related to the model fit.
+The value returned by the statistic is a data frame, that with
+  \code{n} times the number of quantiles rows of predicted values and their
+  confidence limits. Optionally it also includes additional values related
+  to the model fit.
 }
 \description{
 Predicted values are computed and, by default, plotted. Depending on the

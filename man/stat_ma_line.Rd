@@ -34,13 +34,13 @@ stat_ma_line(
 \code{\link[ggplot2]{aes}}. Only needs to be set at the layer level if you
 are overriding the plot defaults.}
 
-\item{data}{A layer specific dataset, only needed if you want to override
-the plot defaults.}
+\item{data}{A layer specific dataset, only needed if you want to override the
+plot defaults.}
 
 \item{geom}{The geometric object to use display the data}
 
 \item{position}{The position adjustment to use for overlapping points on this
-layer}
+layer.}
 
 \item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This
 can include aesthetics whose values you want to set, not map. See
@@ -54,7 +54,8 @@ separated by a colon (e.g. \code{"lmodel2:MA"}). If a function different to
 \code{data}, \code{range.y}, \code{range.x} and \code{nperm} and return a
 model fit object of class \code{lmodel2}.}
 
-\item{method.args}{named list with additional arguments.}
+\item{method.args}{named list with additional arguments. Not \code{data}
+or \code{weights} which are always passed through aesthetic mappings.}
 
 \item{n.min}{integer Minimum number of distinct values in the explanatory
 variable (on the rhs of formula) for fitting to the attempted.}
@@ -68,19 +69,19 @@ instead of original variable names.}
 \item{se}{logical Return confidence interval around smooth? (`TRUE` by
 default, see `level` to control.)}
 
-\item{fit.seed}{RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
-Defaults to \code{NA}, which means that \code{set.seed()} will not be
-called.}
+\item{fit.seed}{RNG seed argument passed to
+\code{\link[base:Random]{set.seed}()}. Defaults to \code{NA}, indicating
+that \code{set.seed()} should not be called.}
 
-\item{fm.values}{logical Add R2, p-value and n as columns to returned data?
-(`FALSE` by default.)}
+\item{fm.values}{logical Add metadata and parameter estimates extracted from
+the fitted model object; \code{FALSE} by default.}
 
-\item{n}{Number of points at which to evaluate smoother.}
+\item{n}{Number of points at which to predict with the fitted model.}
 
 \item{nperm}{integer Number of permutation used to estimate significance.}
 
-\item{fullrange}{Should the fit span the full range of the plot, or just
-the data?}
+\item{fullrange}{Should the fit span the full range of the plot, or just the
+range of the data group used in each fit?}
 
 \item{level}{Level of confidence interval to use (only 0.95 currently).}
 
@@ -88,7 +89,8 @@ the data?}
 the computation proceeds.}
 
 \item{orientation}{character Either "x" or "y" controlling the default for
-\code{formula}.}
+\code{formula}. The letter indicates the aesthetic considered the
+explanatory variable in the model fit.}
 
 \item{show.legend}{logical. Should this layer be included in the legends?
 \code{NA}, the default, includes if any aesthetics are mapped. \code{FALSE}
