@@ -12,7 +12,7 @@
 
 <meta name="author" content="Pedro J. Aphalo" />
 
-<meta name="date" content="2025-07-08" />
+<meta name="date" content="2025-11-29" />
 
 <title>Fitted-Model-Based Annotations :: Cheat Sheet</title>
 
@@ -50,8 +50,9 @@ overflow: visible;
 }
 </style>
 <style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -62,7 +63,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
 { counter-reset: source-line 0; }
@@ -340,18 +341,17 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Fitted-Model-Based Annotations :: Cheat
 Sheet</h1>
-<h3 class="subtitle">‘ggpmisc’ 0.6.2</h3>
+<h3 class="subtitle">‘ggpmisc’ 0.6.2.9005</h3>
 <h4 class="author">Pedro J. Aphalo</h4>
-<h4 class="date">2025-07-08</h4>
+<h4 class="date">2025-11-29</h4>
 
 
 <div id="TOC">
 <ul>
 <li><a href="#basics" id="toc-basics">Basics</a></li>
 <li><a href="#correlation" id="toc-correlation">Correlation</a></li>
-<li><a href="#fitted-lines" id="toc-fitted-lines">Fitted lines</a></li>
-<li><a href="#fitted-equations-and-parameters" id="toc-fitted-equations-and-parameters">Fitted equations and
-parameters</a></li>
+<li><a href="#fitted-models" id="toc-fitted-models">Fitted
+models</a></li>
 <li><a href="#anova-or-summary-tables" id="toc-anova-or-summary-tables">ANOVA or summary tables</a></li>
 <li><a href="#multiple-comparisons" id="toc-multiple-comparisons">Multiple comparisons</a></li>
 <li><a href="#peaks-and-valleys" id="toc-peaks-and-valleys">Peaks and
@@ -387,44 +387,49 @@ with groups and facets.</p>
 <div id="correlation" class="section level2">
 <h2>Correlation</h2>
 <ul>
-<li><code>stat_correlation()</code> computes parametric or
-non-parametric regression coefficients and optionally their confidence
-interval.</li>
+<li><code>stat_correlation()</code> computes parametric <span class="math inline">\(r\)</span> or non-parametric correlation
+coefficients, <span class="math inline">\(\tau\)</span> and <span class="math inline">\(\rho\)</span>, and optionally their confidence
+intervals, <span class="math inline">\(P\)</span>, and <span class="math inline">\(n\)</span>, the number of observations, flexibly
+adding an annotation to the plot.</li>
 </ul>
 </div>
-<div id="fitted-lines" class="section level2">
-<h2>Fitted lines</h2>
-<p>In general these layer functions have additional features than those
-in <strong>ggplot2</strong> or support different kinds of models. They
-add one or more curves and confidence band.</p>
+<div id="fitted-models" class="section level2">
+<h2>Fitted models</h2>
+<p>The statistics for fitted models come in matched pairs, one that adds
+a plot layer with one or more curves and confidence band(s), and one
+that annotates the plot with the fitted model equation and/or other
+parameter estimates. These depend on the type of fitted model and
+include <span class="math inline">\(R^2\)</span>, <span class="math inline">\(F\)</span>, <span class="math inline">\(P\)</span>, <span class="math inline">\(AIC\)</span>, <span class="math inline">\(BIC\)</span>, and <span class="math inline">\(n\)</span>. The curve plotting stats are similar
+to <code>ggplot2::stat_smooth()</code> but the ones for textual
+annotations have no equivalent in ‘ggplot2’.</p>
 <ul>
-<li><p><code>stat_poly_line()</code> fits a linear model.</p></li>
-<li><p><code>stat_quant_line()</code> and <code>stat_quant_band()</code>
-fit a quantile regression model.</p></li>
-<li><p><code>stat_ma_line()</code> fits a major axis
-regression.</p></li>
-<li><p><code>stat_fit_augment()</code> fits any model supported by a
-<code>broom::augment()</code> method.</p></li>
-</ul>
-</div>
-<div id="fitted-equations-and-parameters" class="section level2">
-<h2>Fitted equations and parameters</h2>
-<p>These layer functions have no equivalent in <strong>ggplot2</strong>.
-They flexibly construct labels to add a layer with one or more equations
-and/or estimates of parameters a fitted model. In the model is a true
-polynomial, the “label” can be formatted to be parsed into an R
-expression, or as <span class="math inline">\(LaTeX\)</span> or <span class="math inline">\(markdown\)</span> encoded character strings. The
-numeric values of the estimates are also returned and can be used to
-construct a label within a call to <code>aes()</code>.</p>
-<ul>
-<li><p><code>stat_poly_eq()</code> is similar to
-<code>ggplot2::stat_smooth()</code> and fits a linear model.</p></li>
-<li><p><code>stat_quant_eq()</code> is similar to
-<code>ggplot2::stat_quantile()</code> and fits a quantile regression
-model.</p></li>
-<li><p><code>stat_ma_eq()</code> fits a major axis regression.</p></li>
-<li><p><code>stat_fit_tidy()</code> fits any model supported by a
-<code>broom::tidy()</code> method.</p></li>
+<li><p><code>stat_poly_line()</code> and <code>stat_poly_line()</code>
+are the pair supporting a broader set of model fit functions: e.g.,
+linear models (OLS, resistant and robust), linear splines, general
+linear model (gls), major axis (MA) and standardised major axis (SMA)
+regression, etc.</p></li>
+<li><p><code>stat_quant_line()</code>, <code>stat_quant_band()</code>
+and <code>stat_quant_eq()</code> support quantile regression (using
+‘quantreg’).</p></li>
+<li><p><code>stat_ma_line()</code> and <code>stat_ma_eq()</code> support
+major axis (MA), standardised major axis (SMA) and ranged major axis
+(RMA) regression (using ‘lmodel2’).</p></li>
+<li><p><code>stat_fit_augment()</code> works with model fit functions
+supported by <code>broom::augment()</code> methods including non-linear
+models.</p></li>
+<li><p><code>stat_fit_tidy()</code> works with model fit functions
+supported by <code>broom::tidy()</code> methods including non-linear
+models.</p></li>
+<li><p><code>stat_fit_fitted()</code> and
+<code>stat_fit_deviations()</code> can be used to highlight the fitted
+values and their distance to the observations in a scatterplot in
+combination with the statistics above.</p></li>
+<li><p><code>stat_fit_residuals()</code> can be used to create
+consistent plots of residuals for many different model fit
+functions.</p></li>
+<li><p><code>stat_distrmix_line()</code> and
+<code>stat_distrmix_eq()</code> support univariate Normal distribution
+mixture models.</p></li>
 </ul>
 </div>
 <div id="anova-or-summary-tables" class="section level2">
@@ -439,10 +444,10 @@ columns are included and their naming can be set by the user.</li>
 <h2>Multiple comparisons</h2>
 <ul>
 <li><code>stat_multcomp()</code> fits a model, computes ANOVA and
-subsequently calls <strong>multcomp</strong> to test the significance of
-Tukey, Dunnet or arbitrary sets of pairwise contrasts, with a choice of
-the adjustment method for the <em>P</em>-values. Significance of
-differences can be indicated with letters, asterisks or
+subsequently calls functions from package ‘multcomp’ to test the
+significance of Tukey, Dunnet or arbitrary sets of pairwise contrasts,
+with a choice of the adjustment method for the <em>P</em>-values.
+Significance of differences can be indicated with letters, asterisks or
 <em>P</em>-values. Sizes of differences are also computed and available
 for user-assembled labels.</li>
 </ul>
@@ -450,22 +455,22 @@ for user-assembled labels.</li>
 <div id="peaks-and-valleys" class="section level2">
 <h2>Peaks and valleys</h2>
 <ul>
-<li><p><code>stat_peaks()</code> finds and labels peaks (= local
-maxima).</p></li>
-<li><p><code>stat_valleys()</code> finds and labels valleys (= local
-minima).</p></li>
+<li><p><code>stat_peaks()</code> finds and labels peaks (= global or
+local maxima).</p></li>
+<li><p><code>stat_valleys()</code> finds and labels valleys (= global or
+local minima).</p></li>
 </ul>
 </div>
 <div id="volcano-and-quadrant-plots" class="section level2">
 <h2>Volcano and quadrant plots</h2>
 <p>These plots are frequently used with gene expression data, and each
 of the many genes labelled based on the ternary outcome from a
-statistical test. Data are usually, in addition transformed.
-<strong>ggpmisc</strong> provides several variations on continuous,
-colour, fill and shape scales, with defaults set as needed. Scales
-support log fold-change (<code>logFC</code>), false discovery ratio
-(<code>FDR</code>), <em>P</em>-value (<code>Pvalue</code>) and binary or
-ternary test outcomes (<code>outcome</code>).</p>
+statistical test. Data are usually, in addition transformed. ‘ggpmisc’
+provides several variations on continuous, colour, fill and shape
+scales, with defaults set as needed. Scales support log fold-change
+(<code>logFC</code>), false discovery ratio (<code>FDR</code>),
+<em>P</em>-value (<code>Pvalue</code>) and binary or ternary test
+outcomes (<code>outcome</code>).</p>
 </div>
 <div id="utility-functions" class="section level2">
 <h2>Utility functions</h2>

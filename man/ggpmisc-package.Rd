@@ -11,44 +11,43 @@
 Extensions to 'ggplot2' respecting the grammar of graphics paradigm. Statistics: locate and tag peaks and valleys; label plot with the equation of a fitted polynomial or other types of models including major axis, quantile and robust and resistant regression. Labels for P-value, R^2 or adjusted R^2 or information criteria for fitted models; parametric and non-parametric correlation; label with ANOVA table for fitted models; label with summary table for fitted models; annotations for multiple comparisons with adjusted P-values. Model fit classes for which suitable methods are provided by package 'broom' and 'broom.mixed' are supported as well as user-defined wrappers on model fit functions. Scales and stats to build volcano and quadrant plots based on outcomes, fold changes, p-values and false discovery rates.
 }
 \details{
-The new facilities for cleanly defining new stats and geoms added to
-  'ggplot2' in version 2.0.0 and the support for nested data frames and lists
-  and new syntax for mapping computed values to aesthetics added to 'ggplot2'
-  in version 3.0.0 are used in this package's code, as well as some features
-  added in more recent updates including 3.5.0. This means that current
-  'ggpmisc' versions require recent versions of ggplot2.
+Package 'ggpmisc' is over 10 years-old but its development has
+  tracked the changes in 'ggplot2' making use of new features. Although
+  fully compatible with 'ggplot2' (>= 4.0.0) its minimum requirement is
+  'ggplot2' (>= 3.5.0). Currently 'ggpmisc' focus is on statistical
+  annotations including fitted model equations and curves. Several special
+  geometries used are from package 'ggpp', which is imported and re-exported
+  in whole. These geometries and functions are documented in
+  \code{\link[ggpp]{ggpp-package}}.
 
 Extensions provided:
 \itemize{
-\item Function for conversion of time series data into tibbles that can be
-plotted with ggplot.
-\item \code{ggplot()} method for time series data.
-\item Stats for locating and tagging "peaks" and "valleys" (local or global
- maxima and minima).
-\item Stat for generating labels from model fit objects, including
+\item Stats for annotaions for parametric and non-parametric correlations.
+\item Statistics for generating labels for fitted models, including
 formatted equations. By default labels are R's plotmath expressions but LaTeX,
-markdown and plain text formatted labels are optionaly assembled.
-\item Stats for extracting information from a any model fit supported by
-package 'broom' and using it to generate various annotations and data labels.
-\item Stat for computing and generating labels for the results from multiple
-comparisons, including adjusted \emph{P}-values.}
+markdown and plain text formatted labels are optionally assembled.
+\item Matching statistics for plotting curves and confidence bands bands for
+the same fitted models.
+\item Statistics for adding ANOVA tables and fitted model summaries as inset
+tables in plots.
+\item Statistic for adding annotations based on pairwise multiple
+comparisons based on arbitrary contrasts and a choice of \emph{P} adjustment methods.
+\item Statistics for locating and tagging "peaks" and "valleys" (local or global
+ maxima and minima).
+\item Functions and objects exported by \code{\link[ggpp]{ggpp-package}}.}
 
 The stats for peaks and valleys are coded so as to work correctly both with
-numeric and POSIXct variables mapped to the x aesthetic. Special handling was
-needed as text labels are generated from the data.
+numeric and POSIXct variables mapped to the \emph{x} aesthetic.
 }
 \note{
 The signatures of \code{stat_peaks()} and \code{stat_valleys()} from
-  'ggpmisc' are identical to those of \code{stat_peaks} and
-  \code{stat_valleys} from package 'ggspectra' but the variables returned are
-  a subset as special handling of values related to light spectra is missing.
-  Furthermore the \code{stat_peaks()} and \code{stat_valleys()} from package
-  'ggpmisc' work correctly when date or datetime values are mapped to the
-  \emph{x} statistic, while those from package 'ggspectra' do not generate
-  correct labels in this case.
+  'ggpmisc' are identical to those of \code{stat_peaks()} and
+  \code{stat_valleys()} from package 'ggspectra'. While those from 'ggpmisc'
+  are designed for numeric or time objects mapped to the \emph{x} aesthetic,
+  those from 'ggspectra' are for light spectra and expect a numeric variable
+  describing wavelength mapped to the \emph{x} aesthetic.
 }
 \examples{
-library(tibble)
 
 ggplot(lynx, as.numeric = FALSE) + geom_line() +
 stat_peaks(colour = "red") +
@@ -82,10 +81,14 @@ ggplot(PlantGrowth, aes(group, weight)) +
 
 }
 \references{
-Package suite 'r4photobiology' web site at
-\url{https://www.r4photobiology.info/}\cr Package 'ggplot2' documentation at
-\url{https://ggplot2.tidyverse.org/}\cr Package 'ggplot2' source code at
-\url{https://github.com/tidyverse/ggplot2}
+Expanded on-line documentation for 'ggpmisc' at
+\url{https://docs.r4photobiology.info/ggpmisc/} and source code at
+\url{https://github.com/aphalo/ggpmisc} \cr
+Expanded on-line documentation for 'ggpp' at
+\url{https://docs.r4photobiology.info/ggpp/} and source code at
+\url{https://github.com/aphalo/ggpp} \cr
+Package 'ggplot2' documentation at
+\url{https://ggplot2.tidyverse.org/}
 }
 \seealso{
 Useful links:

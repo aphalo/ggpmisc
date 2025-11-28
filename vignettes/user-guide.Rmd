@@ -33,6 +33,8 @@ It is also important to remember that in most cases data analysis proper should 
 
 Attaching package 'ggpmisc' also attaches package 'ggpp' as this package was created as a spin-off from 'ggpmisc'. 'ggpp' provides several of the geometries used by default in the statistics described below. Package 'ggpp' can be loaded and attached on its own, and has [its own on-line documentation](https://docs.r4photobiology.info/ggpp/).
 
+The [on-line documentation of 'ggpmisc'](https://docs.r4photobiology.info/ggpp/) includes articles/vignettes not installed with the package containing use examples covering annotations based on additional model fitting functions, including user-defined ones.
+
 ## Preliminaries
 
 We load all the packages used in the examples.

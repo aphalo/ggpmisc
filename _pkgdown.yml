@@ -60,10 +60,6 @@ reference:
     - check_poly_formula
     - keep_tidy
     - swap_xy
-  - title: Changes
-    desc: List of geometries, statistics and functions moved to package 'gginnards'.
-    contents:
-    - Moved
 
 navbar:
   structure:

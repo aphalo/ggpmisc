@@ -26,31 +26,27 @@ Most of the layer functions in **ggpmisc** aim at making it easier to add to plo
 
 ## Correlation
 
-* `stat_correlation()` computes parametric or non-parametric regression coefficients and optionally their confidence interval.
+* `stat_correlation()` computes parametric $r$ or non-parametric correlation coefficients, $\tau$ and $\rho$, and optionally their confidence intervals, $P$, and $n$, the number of observations, flexibly adding an annotation to the plot.
 
-## Fitted lines
+## Fitted models
 
-In general these layer functions have additional features than those in **ggplot2** or support different kinds of models. They add one or more curves and confidence band.
+The statistics for fitted models come in matched pairs, one that adds a plot layer with one or more curves and confidence band(s), and one that annotates the plot with the fitted model equation and/or other parameter estimates. These depend on the type of fitted model and include $R^2$, $F$, $P$, $AIC$, $BIC$, and $n$. The curve plotting stats are similar to `ggplot2::stat_smooth()` but the ones for textual annotations have no equivalent in 'ggplot2'.
 
-* `stat_poly_line()` fits a linear model.
+* `stat_poly_line()` and `stat_poly_line()` are the pair supporting a broader set of model fit functions: e.g., linear models (OLS, resistant and robust), linear splines, general linear model (gls), major axis (MA) and standardised major axis (SMA) regression, etc.
 
-* `stat_quant_line()` and `stat_quant_band()` fit a quantile regression model.
+* `stat_quant_line()`, `stat_quant_band()` and `stat_quant_eq()` support quantile regression  (using 'quantreg').
 
-* `stat_ma_line()` fits a major axis regression.
+* `stat_ma_line()` and `stat_ma_eq()` support major axis (MA), standardised major axis (SMA) and ranged major axis (RMA) regression (using 'lmodel2').
 
-* `stat_fit_augment()` fits any model supported by a `broom::augment()` method.
+* `stat_fit_augment()` works with model fit functions supported by `broom::augment()` methods including non-linear models.
 
-## Fitted equations and parameters
+* `stat_fit_tidy()` works with model fit functions supported by `broom::tidy()` methods including non-linear models.
 
-These layer functions have no equivalent in **ggplot2**. They flexibly construct labels to add a layer with one or more equations and/or estimates of parameters a fitted model. In the model is a true polynomial, the "label" can be formatted to be parsed into an R expression, or as $LaTeX$ or $markdown$ encoded character strings. The numeric values of the estimates are also returned and can be used to construct a label within a call to `aes()`.
+* `stat_fit_fitted()` and `stat_fit_deviations()` can be used to highlight the fitted values and their distance to the observations in a scatterplot in combination with the statistics above.
 
-* `stat_poly_eq()` is similar to `ggplot2::stat_smooth()` and fits a linear model.
+* `stat_fit_residuals()` can be used to create consistent plots of residuals for many different model fit functions.
 
-* `stat_quant_eq()` is similar to `ggplot2::stat_quantile()` and fits a quantile regression model.
-
-* `stat_ma_eq()` fits a major axis regression.
-
-* `stat_fit_tidy()` fits any model supported by a `broom::tidy()` method.
+* `stat_distrmix_line()` and `stat_distrmix_eq()` support univariate Normal distribution mixture models.
 
 ## ANOVA or summary tables
 
@@ -58,17 +54,17 @@ These layer functions have no equivalent in **ggplot2**. They flexibly construct
 
 ## Multiple comparisons
 
-* `stat_multcomp()` fits a model, computes ANOVA and subsequently calls **multcomp** to test the significance of Tukey, Dunnet or arbitrary sets of pairwise contrasts, with a choice of the adjustment method for the _P_-values. Significance of differences can be indicated with letters, asterisks or _P_-values. Sizes of differences are also computed and available for user-assembled labels. 
+* `stat_multcomp()` fits a model, computes ANOVA and subsequently calls functions from package 'multcomp' to test the significance of Tukey, Dunnet or arbitrary sets of pairwise contrasts, with a choice of the adjustment method for the _P_-values. Significance of differences can be indicated with letters, asterisks or _P_-values. Sizes of differences are also computed and available for user-assembled labels. 
 
 ## Peaks and valleys
 
-* `stat_peaks()` finds and labels peaks (= local maxima).
+* `stat_peaks()` finds and labels peaks (= global or local maxima).
 
-* `stat_valleys()` finds and labels valleys (= local minima).
+* `stat_valleys()` finds and labels valleys (= global or local minima).
 
 ## Volcano and quadrant plots
 
-These plots are frequently used with gene expression data, and each of the many genes labelled based on the ternary outcome from a statistical test. Data are usually, in addition transformed. **ggpmisc** provides several variations on continuous, colour, fill and shape scales, with defaults set as needed. Scales support log fold-change (`logFC`), false discovery ratio (`FDR`), _P_-value (`Pvalue`) and binary or ternary test outcomes (`outcome`).
+These plots are frequently used with gene expression data, and each of the many genes labelled based on the ternary outcome from a statistical test. Data are usually, in addition transformed. 'ggpmisc' provides several variations on continuous, colour, fill and shape scales, with defaults set as needed. Scales support log fold-change (`logFC`), false discovery ratio (`FDR`), _P_-value (`Pvalue`) and binary or ternary test outcomes (`outcome`).
 
 ## Utility functions
 
