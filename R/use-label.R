@@ -27,6 +27,8 @@
 #'   \code{t.value.label}, \code{z.value.label}, \code{S.value.label} and
 #'   \code{p.value.label}. \code{R2} can be used in place of \code{rr}.
 #'   Furthermore, case is ignored.
+#'   Thus, \code{use_label("eq", "R2")} is equivalent to
+#'   \code{aes(label = paste(after_stat(eq.label), after_stat(rr.label), sep = ", "))}
 #'
 #'   Function \code{use_label()} calls \code{aes()} to create a mapping for
 #'   the \code{label} aesthetic, but it can in addition combine this mapping
