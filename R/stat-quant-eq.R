@@ -664,6 +664,7 @@ quant_eq_compute_group_fun <- function(data,
 
   # allow model formula and tau selection by method functions
   if (!length(fm) || (is.atomic(fm) && is.na(fm))) {
+#    warning("Model fit failure!")
     return(data.frame())
   } else if (inherits(fm, "rq") || inherits(fm, "rqs")) {
     # allow model formula selection by the model fit method

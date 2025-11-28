@@ -327,7 +327,9 @@ quant_line_compute_group_fun <- function(data,
                                          fit.seed = NA,
                                          fm.values = FALSE,
                                          na.rm = FALSE,
-                                         flipped_aes = NA) {
+                                         flipped_aes = NA,
+                                         orientation = "x",
+                                         make.groups = TRUE) {
 
   data <- ggplot2::flip_data(data, flipped_aes)
   if (length(unique(data$x)) < n.min) {
@@ -339,85 +341,76 @@ quant_line_compute_group_fun <- function(data,
     data[["weight"]] <- 1
   }
 
+  fms.ls <-  quant_helper_fun(data = data,
+                              formula = formula,
+                              quantiles = quantiles,
+                              fit.by.quantile = TRUE, # one fm per quantile
+                              method = method,
+                              method.name = method.name,
+                              method.args = method.args,
+                              n.min = n.min,
+                              fit.seed = fit.seed,
+                              weight = data[["weight"]],
+                              na.rm = na.rm,
+                              orientation = "x")
+
   min.indep <- min(data[["x"]], na.rm = TRUE)
   max.indep <- max(data[["x"]], na.rm = TRUE)
   seq.indep <- seq(min.indep, max.indep, length.out = n)
 
   grid <- data.frame(x = seq.indep)
 
-  # If method was specified as a character string, replace with
-  # the corresponding function. Some model fit functions themselves have a
-  # method parameter accepting character strings as argument. We support
-  # these by splitting strings passed as argument at a colon.
-  if (is.character(method)) {
-    if (method %in% c("br", "fn", "pfn", "sfn", "fnc", "conquer",
-                      "pfnb", "qfnb", "ppro", "lasso")) {
-      method <- paste("rq", method, sep = ":")
-      message("Using method: ", method)
+  preds.ls <- list()
+  fms.idxs <- grep("^fm", names(fms.ls))
+  for (i in seq_along(fms.idxs)) {
+    temp.grid <- grid
+
+    fm <- fms.ls[[fms.idxs[i]]]
+    if (!length(fm) || (is.atomic(fm) && is.na(fm))) {
+      next()
     }
-    method <- strsplit(x = method, split = ":", fixed = TRUE)[[1]]
-    if (length(method) > 1L) {
-      fun.method <- method[2]
-      method <- method[1]
+    pred <- stats::predict(fm, newdata = grid, level = level,
+                           type = type, interval = interval)
+
+    if (is.matrix(pred)) {
+      temp.grid[["y"]] <- pred[ , 1L]
+      temp.grid[["ymin"]] <- pred[ , 2L]
+      temp.grid[["ymax"]] <- pred[ , 3L]
     } else {
-      fun.method <- character()
+      temp.grid[["y"]] <- pred
+      temp.grid[["ymin"]] <- z[["ymax"]] <- NA_real_
     }
-    method <- switch(method,
-                     rq = quantreg::rq,
-                     rqss = quantreg::rqss,
-                     match.fun(method))
-  } else if (is.function(method)) {
-    fun.method <- method.args[["method"]]
-    if (length(fun.method)) {
-      method.name <- paste(method.name, fun.method, sep = ":")
+
+    temp.grid[["quantile"]] <- fm[["tau"]]
+    temp.grid[["group"]] <- paste(data[["group"]][1], fm[["tau"]], sep = "-")
+
+    if (fm.values) {
+      temp.grid[["n"]] <- length(resid(fm)) / length(fm[["tau"]])
+      temp.grid[["fm.class"]] <- class(fm)
+      temp.grid[["fm.method"]] <- method.name
+      temp.grid[["fm.formula"]] <- formula(fm)
+      temp.grid[["fm.formula.chr"]] <- format(formula(fm))
     }
+
+    preds.ls[[i]] <- temp.grid
   }
 
-  if (length(fun.method)) {
-    method.args[["method"]] <- fun.method
-  }
+  z <- dplyr::bind_rows(preds.ls)
 
-  if (!is.na(fit.seed)) {
-    set.seed(fit.seed)
-  }
-  z <- lapply(quantiles, quant_pred, data = data, method = method,
-              formula = formula, weight = data[["weight"]], grid = grid,
-              method.args = method.args, orientation = "x",
-              level = level, type = type, interval = interval)
-
-  missing <- sapply(X = z,
-                    FUN = function(x) {!nrow(x)})
-
-  if (any(missing)) {
-    return(data.frame())
-  } else {
-    z <- dplyr::bind_rows(z)
-  }
-
-  if (is.matrix(z[["y"]])) {
-    z[["ymin"]] <- z[["y"]][ , 2L]
-    z[["ymax"]] <- z[["y"]][ , 3L]
-    z[["y"]] <- z[["y"]][ , 1L]
-  } else {
-    z[["ymin"]] <- z[["ymax"]] <- NA_real_
-  }
-
-  if (fm.values) {
-      z[["n"]] <- nrow(na.omit(data[, c("x", "y")]))
-#      z[["fm.class"]] <- class(fm)[1] # fm gets dropped in quant_pred()
-      z[["fm.method"]] <- method.name
-      z[["fm.formula"]] <- list(formula) # fm gets dropped in quant_pred()
-      z[["fm.formula.chr"]] <- format(z[["fm.formula"]])
-  }
-
-  # a factor with nicely formatted labels for levels is helpful
-  quant.digits <- ifelse(min(z[["quantile"]]) < 0.01 || max(z[["quantile"]]) > 0.99,
-                         3, 2)
-  quant.levels <- sort(unique(z[["quantile"]]), decreasing = TRUE)
-  quant.labels <- sprintf("%#.*f", quant.digits, quant.levels)
-  z[["quantile.f"]] <-
-    factor(z[["quantile"]], levels = quant.levels, labels = quant.labels)
-
+  if (nrow(z) >= 1L) {
+    # a factor with nicely formatted labels for levels is helpful
+    quant.digits <- ifelse(min(z[["quantile"]]) < 0.01 || max(z[["quantile"]]) > 0.99,
+                           3, 2)
+    quant.levels <- sort(unique(z[["quantile"]]), decreasing = TRUE)
+    quant.labels <- sprintf("%#.*f", quant.digits, quant.levels)
+    z[["quantile.f"]] <-
+      factor(z[["quantile"]], levels = quant.levels, labels = quant.labels)
+    # if (length(quant.levels) < length(quantiles)) {
+    #   warning("Model fit partial failure!")
+    # }
+  } # else {
+  #   warning("Model fit failure!")
+  # }
   z[["flipped_aes"]] <- flipped_aes
   ggplot2::flip_data(z, flipped_aes)
 }
