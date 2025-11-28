@@ -34,73 +34,78 @@ quant_helper_fun <- function(data,
                              na.rm = FALSE,
                              orientation = "x") {
 
-  if (length(unique(data[[orientation]])) < n.min) {
-    return(data.frame())
-  }
+  if (length(unique(data[[orientation]])) >= n.min) {
 
-  # If method was specified as a character string, replace with
-  # the corresponding function. Some model fit functions themselves have a
-  # method parameter accepting character strings as argument. We support
-  # these by splitting strings passed as argument at a colon.
-  if (is.character(method)) {
-    if (method %in% c("br", "fn", "pfn", "sfn", "fnc", "conquer",
-                      "pfnb", "qfnb", "ppro", "lasso")) {
-      method <- paste("rq", method, sep = ":")
-      message("Using method: ", method)
-    }
-    method.name <- method
-    method <- strsplit(x = method, split = ":", fixed = TRUE)[[1]]
-    if (length(method) > 1L) {
-      fun.method <- method[2]
-      method <- method[1]
-    } else {
-      fun.method <- character()
-    }
-    method <- switch(method,
-                     rq = quantreg::rq,
-                     rqss = quantreg::rqss,
-                     match.fun(method))
-  } else if (is.function(method)) {
-    fun.method <- method.args[["method"]]
-    if (length(fun.method)) {
-      method.name <- paste(method.name, fun.method, sep = ":")
-    }
-  }
-
-  fun.args <- list(quote(formula),
-                   data = quote(data),
-                   weights = data[["weight"]])
-  fun.args <- c(fun.args, method.args)
-  if (length(fun.method)) {
-    fun.args[["method"]] <- fun.method
-  }
-
-  if (fit.by.quantile) {
-    qs <- seq_along(quantiles)
-  } else {
-    qs <- 1L
-  }
-  z <- list()
-  if (!is.na(fit.seed)) {
-    set.seed(fit.seed)
-  }
-  for (i in qs) {
-    if (length(qs) == 1L) {
-      fun.args[["tau"]] <- quantiles
-    } else {
-      fun.args[["tau"]] <- quantiles[i]
-    }
-    # quantreg contains code with partial matching of names!
-    # so we silence selectively only these warnings
-    withCallingHandlers({
-      z[[paste("fm", i, sep ="")]] <- do.call(method, args = fun.args)
-    }, warning = function(w) {
-      if (startsWith(conditionMessage(w), "partial match of") ||
-          startsWith(conditionMessage(w), "partial argument match of")) {
-        invokeRestart("muffleWarning")
+    # If method was specified as a character string, replace with
+    # the corresponding function. Some model fit functions themselves have a
+    # method parameter accepting character strings as argument. We support
+    # these by splitting strings passed as argument at a colon.
+    if (is.character(method)) {
+      if (method %in% c("br", "fn", "pfn", "sfn", "fnc", "conquer",
+                        "pfnb", "qfnb", "ppro", "lasso")) {
+        method <- paste("rq", method, sep = ":")
+        message("Using method: ", method)
       }
-    })
-    z[[paste("fun.args", i, sep ="")]] <- fun.args
+      method.name <- method
+      method <- strsplit(x = method, split = ":", fixed = TRUE)[[1]]
+      if (length(method) > 1L) {
+        fun.method <- method[2]
+        method <- method[1]
+      } else {
+        fun.method <- character()
+      }
+      method <- switch(method,
+                       rq = quantreg::rq,
+                       rqss = quantreg::rqss,
+                       match.fun(method))
+    } else if (is.function(method)) {
+      fun.method <- method.args[["method"]]
+      if (length(fun.method)) {
+        method.name <- paste(method.name, fun.method, sep = ":")
+      }
+    }
+
+    fun.args <- list(quote(formula),
+                     data = quote(data),
+                     weights = data[["weight"]])
+    fun.args <- c(fun.args, method.args)
+    if (length(fun.method)) {
+      fun.args[["method"]] <- fun.method
+    }
+
+    if (fit.by.quantile) {
+      qs <- seq_along(quantiles)
+    } else {
+      qs <- 1L
+    }
+    z <- list()
+    if (!is.na(fit.seed)) {
+      set.seed(fit.seed)
+    }
+    for (i in qs) {
+      if (length(qs) == 1L) {
+        fun.args[["tau"]] <- quantiles
+      } else {
+        fun.args[["tau"]] <- quantiles[i]
+      }
+      # quantreg contains code with partial matching of names!
+      # so we silence selectively only these warnings
+      withCallingHandlers({
+        fm <- do.call(method, args = fun.args)
+        z[[paste("fm", i, sep ="")]] <- if (!is.null(fm)) fm else NA
+      }, warning = function(w) {
+        if (startsWith(conditionMessage(w), "partial match of") ||
+            startsWith(conditionMessage(w), "partial argument match of")) {
+          invokeRestart("muffleWarning")
+        }
+      })
+      z[[paste("fun.args", i, sep ="")]] <- fun.args
+    }
+  } else {
+    for (i in qs) {
+      z[[paste("fm", i, sep ="")]] <- NA
+      z[[paste("fun.args", i, sep ="")]] <- fun.args
+    }
   }
   z
 }

@@ -29,6 +29,8 @@ _Parameter `orientation` is not yet supported in all statistics._
     fit methods include some that depend on the random number generator (RNG).
 -   Add parameter `fit.seed` to `stat_correlation()` as some supported CI
     computations depend on the RNG.
+-   Rewrite `stat_quant_line()`, `stat_quant_line()` and `stat_quant_band()` to
+    that they do the model fit consistently using a shared helper function.
 -   Edits to package documentation.
 -   Add on-line only article _Major axis regression_.
 -   Add on-line only article _Mixture Models_. (draft.)
