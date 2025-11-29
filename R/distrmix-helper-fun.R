@@ -134,7 +134,7 @@ distrmix_helper_fun <-
           printed.text <-
             utils::capture.output(fm.param.se <- mixtools::boot.se(fm, B = 100))
         }
-        fm.param.se[grepv(".se$", names(fm.param.se))]
+        fm.param.se[grep(".se$", names(fm.param.se), value = TRUE)]
 
         fm_params.tb <- c(fm[c("lambda", "mu", "sigma")],
                           list(mu.se = as.vector(fm.param.se[["mu.se"]])),
