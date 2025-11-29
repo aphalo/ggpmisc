@@ -389,21 +389,6 @@
 #'   stat_poly_eq(geom = "text", label.x = 100, label.y = 0, hjust = 1,
 #'                formula = formula)
 #'
-#' # using numeric values
-#' # Here we use columns b_0 ... b_3 for the coefficient estimates
-#' my.format <-
-#'   "b[0]~`=`~%.3g*\", \"*b[1]~`=`~%.3g*\", \"*b[2]~`=`~%.3g*\", \"*b[3]~`=`~%.3g"
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_point() +
-#'   stat_poly_line(formula = formula) +
-#'   stat_poly_eq(formula = formula,
-#'                output.type = "numeric",
-#'                parse = TRUE,
-#'                mapping =
-#'                 aes(label = sprintf(my.format,
-#'                                     after_stat(b_0), after_stat(b_1),
-#'                                     after_stat(b_2), after_stat(b_3))))
-#'
 #' # Inspecting the returned data using geom_debug()
 #' # This provides a quick way of finding out the names of the variables that
 #' # are available for mapping to aesthetics with after_stat().
@@ -424,14 +409,17 @@
 #'   ggplot(my.data, aes(x, y)) +
 #'     geom_point() +
 #'     stat_poly_line(formula = formula) +
-#'     stat_poly_eq(formula = formula, geom = "debug", output.type = "numeric")
+#'     stat_poly_eq(formula = formula,
+#'                  geom = "debug",
+#'                  output.type = "numeric")
 #'
 #' # names of the variables
 #' if (gginnards.installed)
 #'   ggplot(my.data, aes(x, y)) +
 #'     geom_point() +
 #'     stat_poly_line(formula = formula) +
-#'     stat_poly_eq(formula = formula, geom = "debug",
+#'     stat_poly_eq(formula = formula,
+#'                  geom = "debug",
 #'                  dbgfun.data = colnames)
 #'
 #' # only data$eq.label
@@ -439,7 +427,8 @@
 #'   ggplot(my.data, aes(x, y)) +
 #'     geom_point() +
 #'     stat_poly_line(formula = formula) +
-#'     stat_poly_eq(formula = formula, geom = "debug",
+#'     stat_poly_eq(formula = formula,
+#'                  geom = "debug",
 #'                  output.type = "expression",
 #'                  dbgfun.data = function(x) {x[["eq.label"]]})
 #'
@@ -448,36 +437,10 @@
 #'   ggplot(my.data, aes(x, y)) +
 #'     geom_point() +
 #'     stat_poly_line(formula = formula) +
-#'     stat_poly_eq(aes(label = after_stat(eq.label)),
-#'                  formula = formula, geom = "debug",
-#'                  output.type = "markdown",
-#'                  dbgfun.data = function(x) {x[["eq.label"]]})
-#'
-#' # only data$eq.label
-#' if (gginnards.installed)
-#'   ggplot(my.data, aes(x, y)) +
-#'     geom_point() +
-#'     stat_poly_line(formula = formula) +
-#'     stat_poly_eq(formula = formula, geom = "debug",
-#'                  output.type = "latex",
-#'                  dbgfun.data = function(x) {x[["eq.label"]]})
-#'
-#' # only data$eq.label
-#' if (gginnards.installed)
-#'   ggplot(my.data, aes(x, y)) +
-#'     geom_point() +
-#'     stat_poly_line(formula = formula) +
-#'     stat_poly_eq(formula = formula, geom = "debug",
+#'     stat_poly_eq(formula = formula,
+#'                  geom = "debug",
 #'                  output.type = "text",
 #'                  dbgfun.data = function(x) {x[["eq.label"]]})
-#'
-#' # show the content of a list column
-#' if (gginnards.installed)
-#'   ggplot(my.data, aes(x, y)) +
-#'     geom_point() +
-#'     stat_poly_line(formula = formula) +
-#'     stat_poly_eq(formula = formula, geom = "debug", output.type = "numeric",
-#'                  dbgfun.data = function(x) {x[["coef.ls"]][[1]]})
 #'
 #' @export
 #'
