@@ -1,0 +1,149 @@
+---
+title: "Using LaTeX for annotations"
+subtitle: "'ggpmisc' `r packageVersion('ggpmisc')`"
+author: "Pedro J. Aphalo"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+    toc: yes
+vignette: >
+  %\VignetteIndexEntry{Using LaTeX for annotations}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+```{r, include=FALSE, echo=FALSE}
+knitr::opts_chunk$set(fig.align = 'center', 
+                      collapse = TRUE,
+                      comment = "#>",
+                      fig.show = 'hold', fig.width = 6, fig.height = 4,
+                      dev = "svglite")
+
+options(warnPartialMatchArgs = FALSE,
+        tibble.print.max = 4,
+        tibble.print.min = 4,
+        dplyr.summarise.inform = FALSE)
+
+eval_flag <- TRUE # evaluate all code chunks
+```
+
+## Aims of 'ggpmisc' and caveats
+
+Package 'ggpmisc' makes it easier to add to plots created using 'ggplot2' annotations based on fitted models and other statistics. It does this by wrapping existing model fit and other functions. The same annotations can be produced by calling the model fit functions, extracting the desired estimates and adding them to plots. There are two advantages in wrapping these functions in an extension to package 'ggplot2': 1) we ensure the coupling of graphical elements and the annotations by building all elements of the plot using the same data and a consistent grammar and 2) we make it easier to annotate plots to the casual user of R, already familiar with the grammar of graphics.
+
+_To avoid confusion it is good to make clear what may seem obvious to some: if no plot is needed, then there is no reason to use this package. The values shown as annotations are not computed by 'ggpmisc' but instead by the usual model-fit and statistical functions from R and R packages. The same is true for model predictions, residuals, etc. that some of the functions in 'ggpmisc' display as lines, segments, or other graphical elements._
+
+It is also important to remember that in most cases data analysis including exploratory and other stages should take place before annotated plots for publication are produced. Even though data analysis can benefit from combined numerical and graphical representation of the results, the use I envision for 'ggpmisc' is mainly for the production of plots for publication or communication. In case case, whether used for analysis or communication, it is crucial that users cite and refer both to 'ggpmisc' and to the underlying R and R packages when publishing plots created with functions and methods from 'ggpmisc'.
+
+```{r}
+print(citation(package = "ggpmisc", auto = TRUE), bibtex = FALSE)
+```
+
+## $\LaTeX$
+
+R package 'xdvir' opens the door to easily using $\LaTeX$ to typeset labels and other text annotations and to convert the DVI device independent output into R's 'grid' graphical commands. This provides a big step forward in the quality of typesetting of mathematical expressions compared to R's plotmath expressions or markdown.
+
+Package 'ggpmisc' has supported $\LaTeX$ formatting of labels but it has been in the past complex to combine them with ggplots. Package 'xdvir' provides `geom_latex()` that makes using the $\LaTeX$-formatted labels from 'ggpmisc' extremely easy.
+
+Package 'xdvir' was created by Paul Murrel, the mind behind most of the improvements to R's graphics "engine" of the past two or three decades. Murrel (2025) describes 'xdvir' in detail, and I recommend reading this article. For other aspects of R graphics, see Murrel ().
+
+
+```{r}
+print(citation(package = "xdvir", auto = TRUE), bibtex = FALSE)
+```
+At the moment only some R graphic devices support the newer features of 'grid' graphics. The plots in this document have been rendered by 'svglite'. A reasonably recent version of R is also needed.
+
+## Advantages and disadvantages
+
+R plotmath expressions can be used to display mathematical equations in
+'ggplots' but the typesetting is not as refined as with $\LaTeX$. Plotmath supports changes between upright, italic and bold, but not changes in colour or font family. Most limiting in some cases in that labels can have a single line.
+
+Markdown makes possible to some extent multiline text, use multiple colours and fonts in a single label and also line breaks. However, maths typesetting is lacking.
+
+$\LaTeX$ does not have any of these limitations, but using it for individually typeset labels is more time consuming. This is not as bad as is could be because labels are cached and rendered only when they are modified.
+
+Murrel (2025) describes this in detail. The examples below show how much better the output is and some of the new possibilities.
+
+## Preliminaries
+
+There are two different pieces of software under the name TinyTeX. One is a distribution of $\TeX$ and relatives, including executables and a collection $\LaTeX$ packages. This is totally independent of R. There is also an R package 'tinytex' that makes it possible to compile from within R `.tex` documents, possibly generated and saved on-the-fly by R.
+
+To use the R package 'tinytex' an installation of $\TeX$ and relatives must be available. The author of 'tinytex' has created the TinyTeX distribution as a simple approach to using $\TeX$ and $\LaTeX$. The 'tinytex' package can also use other distributions. If you already have MikTeX or TeX Live installed, it is best NOT to install TinyTeX unless you are willing to first uninstall them.  
+
+Before installing the TinyTeX distribution, do check the [TinyTeX documentation](https://yihui.org/tinytex/).
+
+Package 'xdvir' depends on 'tinytex' and 'grid'.
+
+```{r, message=FALSE}
+library(grid)
+library(ggpmisc)
+library(xdvir)
+```
+
+For debugging, longer messages can be very helpful.
+
+```{r, include=FALSE}
+options(tinytex.verbose = TRUE)
+```
+
+Attaching package 'ggpmisc' also attaches package 'ggpp' as it provides several of the geometries used by default in the statistics described below. Package 'ggpp' can be loaded and attached on its own, and has [separate documentation](https://docs.r4photobiology.info/ggpp/).
+
+As we will use text and labels on the plotting area we change the default theme to an uncluttered one.
+
+```{r}
+old_theme <- theme_set(theme_bw())
+```
+
+## Correlation
+
+We first generate a set of artificial data suitable for the plotting examples in this and subsequent sections.
+
+```{r}
+set.seed(4321)
+x <- (1:100) / 10
+y <- x + rnorm(length(x))
+my.data <- data.frame(x = x,
+                      y = y,
+                      y.desc = - y,
+                      group = c("A", "B"))
+```
+
+We start by checking that 'xdvir' is working as expected. One thing to keep in mind is the need to escape especial characters, here using `\\` instead of `\`. This is necessary as the backslash has a especial "meaning" in R's character strings.
+
+```{r}
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  annotate(geom = "latex", label = "\\textbf{abc} $\\sqrt{10}^2$", x = 1, y = 9)
+```
+
+For the first example we use defaults to add an annotation with Pearson's correlation coefficient.
+
+```{r}
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_correlation(geom = "latex", hjust = "inward")
+```
+
+
+```{r}
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_poly_line() +
+  stat_poly_eq(geom = "latex", hjust = "inward")
+```
+
+```{r}
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_poly_line() +
+  stat_poly_eq(use_label("eq", "R2", sep = ", "),
+               geom = "latex", hjust = 0, vjust = 1)
+```
+
+```{r}
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_poly_line() +
+  stat_poly_eq(use_label("eq", "R2", sep = "\\\\"),
+               geom = "latex", hjust = 0, vjust = 1)
+```

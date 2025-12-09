@@ -34,6 +34,14 @@
 #'
 #' @inherit stat_distrmix_line details
 #'
+#' @inheritSection check_output_type Output types
+#'
+#' @section Aesthetics: \code{stat_distrmix_eq} expects observations mapped to
+#'   \code{x} from a \code{numeric} variable. A new grouping is added by mapping
+#'   as default \code{component} to the \code{group} aesthetic and
+#'   \code{eq.label} to the label aesthetic. Additional aesthetics as
+#'   understood by the geom (\code{"text_npc"} by default) can be set.
+#'
 #' @section Computed variables: \code{stat_distrmix_eq()} provides the
 #'   following
 #'   variables, some of which depend on the orientation:
@@ -70,12 +78,6 @@
 #'   This is wasteful and disabled by default, but provides a simple and robust
 #'   approach to achieve effects like colouring or hiding of the model fit line
 #'   by group depending on the outcome of model fitting.
-#'
-#' @section Aesthetics: \code{stat_distrmix_eq} expects observations mapped to
-#'   \code{x} from a \code{numeric} variable. A new grouping is added by mapping
-#'   as default \code{component} to the \code{group} aesthetic and
-#'   \code{eq.label} to the label aesthetic. Additional aesthetics as
-#'   understood by the geom (\code{"text_npc"} by default) can be set.
 #'
 #' @family ggplot statistics for mixture model fits.
 #'
@@ -227,13 +229,8 @@ stat_distrmix_eq <- function(mapping = NULL,
     stop("Expected k >= 1, but k = ", k)
   }
 
-  if (is.null(output.type)) {
-    if (geom %in% c("richtext", "textbox", "marquee")) {
-      output.type <- "markdown"
-    } else {
-      output.type <- "expression"
-    }
-  }
+  output.type <-
+    check_output_type(output.type = output.type, geom = geom)
 
   if (is.null(components)) {
     components <- ifelse(output.type == "numeric", "members", "sum")

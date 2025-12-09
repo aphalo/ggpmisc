@@ -183,13 +183,12 @@ This statistic can be used to automatically annotate a plot with
   label is generated. Thus, as the value returned for \code{eq.label} can be
   \code{NA}, the default aesthetic mapping to \emph{label} is \eqn{R^2}.
 
-  By default, the character strings are generated as suitable for parsing
-  into R's plotmath expressions. However, LaTeX (use TikZ device in R),
-  markdown (use package 'ggtext') and plain text are also supported, as well
-  as returning numeric values for user-generated text labels. The argument of
-  \code{parse} is set automatically based on \code{output-type}, but if you
-  assemble labels that need parsing from \code{numeric} output, the default
-  needs to be overridden.
+  The character strings mapped to the label aesthetic are encoded
+  differently depending on argument passed to \code{output.type}, or
+  if none passed based on the geom used. The argument of
+  \code{parse} is set automatically based on \code{output.type}. However,
+  if labels manually assembled from \code{numeric} output need parsing,
+  the default needs to be overridden.
 
   This statistic only generates annotation labels, the predicted values/line
   need to be added to the plot as a separate layer using
@@ -328,6 +327,28 @@ does not return a value, the variable is set to \code{NA_real_}.
 
 To explore the computed values returned for a given input we suggest the use
 of \code{\link[gginnards]{geom_debug}} as shown in the last examples below.
+}
+
+\section{Output types}{
+ The formatting of character strings to be displayed
+in plots are marked as mathematical equations. Depending on the geom used,
+the mark-up needs to be encoded differently, or in some cases mark-up not
+applied.
+\describe{
+  \item{\code{"expression"}}{The labels are encoded as character strings to be parsed into R's plotmath expressions.}
+  \item{\code{"LaTeX", "TeX", "tikz", "latex"}}{The labels are encode as \eqn{\LaTeX} maths equations, without the "fences" for switching in math mode.}
+  \item{\code{"latex.eqn"}}{Same as \code{"latex"} but enclosed in single \code{$}, i.e., as in-line maths.}
+  \item{\code{"latex.deqn"}}{Same as \code{"latex"} but enclosed in double \code{$$}, i.e., as display maths.}
+  \item{\code{"markdown"}}{The labels are encoded as character strings using markdown syntax, with some embedded HTML.}
+  \item{\code{"text"}}{The labels are plain ASCII character strings.}
+  \item{\code{"numeric"}}{No labels are generated. This value is accepted by the statistics, but not by the label formatting functions.}
+  \item{\code{NULL}}{The value used, \code{expression}, \code{latex.eqn} or \code{markup} depends on the argument passed to \code{geom}.}}
+
+If \code{geom = "latex"} (package 'xdvir') the output type used is \code{"latex.eqn"}.
+If \code{geom = "richtext"} (package 'ggtext'), \code{geom = "textbox"} (package 'ggtext')
+or \code{geom = "marquee"} (package 'marquee') the output type used is \code{"markdown"}. For
+all other values of \code{geom} the default is \code{"expression"} unless the user passes an
+argument. Invalid values as argument trigger an Error.
 }
 
 \examples{

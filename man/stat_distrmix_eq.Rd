@@ -149,6 +149,14 @@ This statistic is similar to \code{\link[ggplot2]{stat_density}} but
   with function \code{\link[MASS]{fitdistr}()}. In this case the SE values
   are exact estimates.
 }
+\section{Aesthetics}{
+ \code{stat_distrmix_eq} expects observations mapped to
+  \code{x} from a \code{numeric} variable. A new grouping is added by mapping
+  as default \code{component} to the \code{group} aesthetic and
+  \code{eq.label} to the label aesthetic. Additional aesthetics as
+  understood by the geom (\code{"text_npc"} by default) can be set.
+}
+
 \section{Computed variables}{
  \code{stat_distrmix_eq()} provides the
   following
@@ -188,12 +196,26 @@ This statistic is similar to \code{\link[ggplot2]{stat_density}} but
   by group depending on the outcome of model fitting.
 }
 
-\section{Aesthetics}{
- \code{stat_distrmix_eq} expects observations mapped to
-  \code{x} from a \code{numeric} variable. A new grouping is added by mapping
-  as default \code{component} to the \code{group} aesthetic and
-  \code{eq.label} to the label aesthetic. Additional aesthetics as
-  understood by the geom (\code{"text_npc"} by default) can be set.
+\section{Output types}{
+ The formatting of character strings to be displayed
+in plots are marked as mathematical equations. Depending on the geom used,
+the mark-up needs to be encoded differently, or in some cases mark-up not
+applied.
+\describe{
+  \item{\code{"expression"}}{The labels are encoded as character strings to be parsed into R's plotmath expressions.}
+  \item{\code{"LaTeX", "TeX", "tikz", "latex"}}{The labels are encode as \eqn{\LaTeX} maths equations, without the "fences" for switching in math mode.}
+  \item{\code{"latex.eqn"}}{Same as \code{"latex"} but enclosed in single \code{$}, i.e., as in-line maths.}
+  \item{\code{"latex.deqn"}}{Same as \code{"latex"} but enclosed in double \code{$$}, i.e., as display maths.}
+  \item{\code{"markdown"}}{The labels are encoded as character strings using markdown syntax, with some embedded HTML.}
+  \item{\code{"text"}}{The labels are plain ASCII character strings.}
+  \item{\code{"numeric"}}{No labels are generated. This value is accepted by the statistics, but not by the label formatting functions.}
+  \item{\code{NULL}}{The value used, \code{expression}, \code{latex.eqn} or \code{markup} depends on the argument passed to \code{geom}.}}
+
+If \code{geom = "latex"} (package 'xdvir') the output type used is \code{"latex.eqn"}.
+If \code{geom = "richtext"} (package 'ggtext'), \code{geom = "textbox"} (package 'ggtext')
+or \code{geom = "marquee"} (package 'marquee') the output type used is \code{"markdown"}. For
+all other values of \code{geom} the default is \code{"expression"} unless the user passes an
+argument. Invalid values as argument trigger an Error.
 }
 
 \examples{

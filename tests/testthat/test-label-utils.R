@@ -60,7 +60,7 @@ test_that("digits is obeyed", {
   expect_equal(value2char(100.123, format = "f", digits = Inf, output.type = "latex"),
                "100.12")
   expect_equal(value2char(100.123, format = "e", digits = 3, output.type = "latex"),
-               "1.001 \times 10^{+02}")
+               "1.001 \\times 10^{+02}")
   expect_equal(value2char(100.123, format = "g", digits = 3, output.type = "latex"),
                "100.")
 })
@@ -78,10 +78,10 @@ test_that("well-formatted simple labels", {
                "n = 123.")
   expect_equal(plain_label(value = 123, value.name = "n", output.type = "latex"),
                "\\mathrm{n} = 123.")
-  expect_equal(plain_label(value = 123, value.name = "n", output.type = "tex"),
-               "\\mathrm{n} = 123.")
-  expect_equal(plain_label(value = 123, value.name = "n", output.type = "tikz"),
-               "\\mathrm{n} = 123.")
+  expect_equal(plain_label(value = 123, value.name = "n", output.type = "latex.eqn"),
+               "$ \\mathrm{n} = 123. $")
+  expect_equal(plain_label(value = 123, value.name = "n", output.type = "latex.deqn"),
+               "$$ \\mathrm{n} = 123. $$")
   expect_equal(plain_label(value = 123, value.name = "n", output.type = "text"),
                "n = 123.")
 
@@ -96,10 +96,10 @@ test_that("well-formatted simple labels", {
                "_n_ = 123.")
   expect_equal(italic_label(value = 123, value.name = "n", output.type = "latex"),
                "\\mathit{n} = 123.")
-  expect_equal(italic_label(value = 123, value.name = "n", output.type = "tex"),
-               "\\mathit{n} = 123.")
-  expect_equal(italic_label(value = 123, value.name = "n", output.type = "tikz"),
-               "\\mathit{n} = 123.")
+  expect_equal(italic_label(value = 123, value.name = "n", output.type = "latex.eqn"),
+               "$ \\mathit{n} = 123. $")
+  expect_equal(italic_label(value = 123, value.name = "n", output.type = "latex.deqn"),
+               "$$ \\mathit{n} = 123. $$")
   expect_equal(italic_label(value = 123, value.name = "n", output.type = "text"),
                "n = 123.")
 
@@ -113,10 +113,6 @@ test_that("well-formatted simple labels", {
   expect_equal(bold_label(value = 123, value.name = "n", output.type = "markdown"),
                "**n** = 123.")
   expect_equal(bold_label(value = 123, value.name = "n", output.type = "latex"),
-               "\\mathbf{n} = 123.")
-  expect_equal(bold_label(value = 123, value.name = "n", output.type = "tex"),
-               "\\mathbf{n} = 123.")
-  expect_equal(bold_label(value = 123, value.name = "n", output.type = "tikz"),
                "\\mathbf{n} = 123.")
   expect_equal(bold_label(value = 123, value.name = "n", output.type = "text"),
                "n = 123.")
@@ -148,10 +144,14 @@ test_that("well-formatted P-value labels", {
 
   expect_equal(p_value_label(value = 0.5, output.type = "latex"),
                "P = 0.5000")
+  expect_equal(p_value_label(value = 0.5, output.type = "latex.eqn"),
+               "$ P = 0.5000 $")
+  expect_equal(p_value_label(value = 0.5, output.type = "latex.deqn"),
+               "$$ P = 0.5000 $$")
   expect_equal(p_value_label(value = 0.5, digits = 2, output.type = "latex"),
                "P = 0.50")
   expect_equal(p_value_label(value = 0.5, digits = 5, output.type = "latex"),
-               "P = 5.00000 \times 10^{-01}")
+               "P = 5.00000 \\times 10^{-01}")
   expect_equal(p_value_label(value = 0.5, digits = Inf, output.type = "latex"),
                "P = 0.500")
   expect_equal(p_value_label(value = 0.5, output.type = "latex", small.p = TRUE),
@@ -195,8 +195,16 @@ test_that("well-formatted F-value labels", {
 
   expect_equal(f_value_label(value = 100, output.type = "latex"),
                "\\mathit{F} = 100.0")
+  expect_equal(f_value_label(value = 100, output.type = "latex.eqn"),
+               "$ \\mathit{F} = 100.0 $")
+  expect_equal(f_value_label(value = 100, output.type = "latex.deqn"),
+               "$$ \\mathit{F} = 100.0 $$")
   expect_equal(f_value_label(value = 100, df1 = 1, df2 = 25, output.type = "latex"),
                "F_{1,25} = 100.0")
+  expect_equal(f_value_label(value = 100, df1 = 1, df2 = 25, output.type = "latex.eqn"),
+               "$ F_{1,25} = 100.0 $")
+  expect_equal(f_value_label(value = 100, df1 = 1, df2 = 25, output.type = "latex.deqn"),
+               "$$ F_{1,25} = 100.0 $$")
 
   expect_equal(f_value_label(value = 100, output.type = "markdown"),
                "_F_ = 100.0")
@@ -231,6 +239,10 @@ test_that("well-formatted t-value labels", {
 
   expect_equal(t_value_label(value = 12, output.type = "latex"),
                "\\mathit{t} = 12.00")
+  expect_equal(t_value_label(value = 12, output.type = "latex.eqn"),
+               "$ \\mathit{t} = 12.00 $")
+  expect_equal(t_value_label(value = 12, output.type = "latex.deqn"),
+               "$$ \\mathit{t} = 12.00 $$")
   expect_equal(t_value_label(value = 12, output.type = "markdown"),
                "_t_ = 12.00")
   expect_equal(t_value_label(value = 12, df = 5, output.type = "markdown"),
@@ -257,6 +269,10 @@ test_that("well-formatted sd labels", {
                "italic(sigma)~`=`~\"12.00\"")
   expect_equal(sd_value_label(value = 12, output.type = "latex"),
                "\\mathit{\\sigma} = 12.00")
+  expect_equal(sd_value_label(value = 12, output.type = "latex.eqn"),
+               "$ \\mathit{\\sigma} = 12.00 $")
+  expect_equal(sd_value_label(value = 12, output.type = "latex.deqn"),
+               "$$ \\mathit{\\sigma} = 12.00 $$")
   expect_equal(sd_value_label(value = 12, output.type = "markdown"),
                "_&sigma;_ = 12.00")
   expect_equal(sd_value_label(value = 12, output.type = "text"),
@@ -333,12 +349,16 @@ test_that("well-formatted R labels", {
 
   expect_equal(r_label(value = 0.5, output.type = "latex"),
                "R = 0.500")
+  expect_equal(r_label(value = 0.5, output.type = "latex.eqn"),
+               "$ R = 0.500 $")
+  expect_equal(r_label(value = 0.5, output.type = "latex.deqn"),
+               "$$ R = 0.500 $$")
   expect_equal(r_label(value = -1e-14, output.type = "latex"),
                "|R| < 0.001")
   expect_equal(r_label(value = 0.5, method = "kendall", output.type = "latex"),
-               "\tau = 0.500")
+               "\\tau = 0.500")
   expect_equal(r_label(value = 0.5, method = "spearman", output.type = "latex"),
-               "\rho = 0.500")
+               "\\rho = 0.500")
   expect_equal(r_label(value = 0.5, digits = 2, output.type = "latex"),
                "R = 0.50")
   expect_equal(r_label(value = 0.5, digits = 5, output.type = "latex"),
@@ -409,6 +429,10 @@ test_that("well-formatted R2 labels", {
 
   expect_equal(rr_label(value = 0.5, output.type = "latex"),
                "R^2 = 0.500")
+  expect_equal(rr_label(value = 0.5, output.type = "latex.eqn"),
+               "$ R^2 = 0.500 $")
+  expect_equal(rr_label(value = 0.5, output.type = "latex.deqn"),
+               "$$ R^2 = 0.500 $$")
   expect_equal(rr_label(value = 1e-14, output.type = "latex"),
                "R^2 < 0.001")
   expect_equal(rr_label(value = 0.5, digits = 2, output.type = "latex"),
@@ -466,6 +490,10 @@ test_that("well-formatted adjusted R2 labels", {
                "italic(R)[adj]^2~`=`~\"0.500\"")
   expect_equal(adj_rr_label(value = 0.5, output.type = "latex"),
                "R_{adj}^2 = 0.500")
+  expect_equal(adj_rr_label(value = 0.5, output.type = "latex.eqn"),
+               "$ R_{adj}^2 = 0.500 $")
+  expect_equal(adj_rr_label(value = 0.5, output.type = "latex.deqn"),
+               "$$ R_{adj}^2 = 0.500 $$")
   expect_equal(adj_rr_label(value = 0.5, output.type = "markdown"),
                "_R_<sup>2</sup><sub>adj</sub> = 0.500")
   expect_equal(adj_rr_label(value = 0.5, output.type = "text"),
@@ -499,7 +527,11 @@ test_that("well-formatted R2 CI labels", {
   expect_equal(rr_ci_label(value = c(0.5, 0.7), conf.level = .95, output.type = "expression"),
                "\"95% CI [0.50, 0.70]\"")
   expect_equal(rr_ci_label(value = c(0.5, 0.7), conf.level = .95, output.type = "latex"),
-               "95% CI [0.50, 0.70]")
+               "95\\% \\mathrm{CI} [0.50, 0.70]")
+  expect_equal(rr_ci_label(value = c(0.5, 0.7), conf.level = .95, output.type = "latex.eqn"),
+               "$ 95\\% \\mathrm{CI} [0.50, 0.70] $")
+  expect_equal(rr_ci_label(value = c(0.5, 0.7), conf.level = .95, output.type = "latex.deqn"),
+               "$$ 95\\% \\mathrm{CI} [0.50, 0.70] $$")
   expect_equal(rr_ci_label(value = c(0.5, 0.7), conf.level = .95, output.type = "markdown"),
                "95% CI [0.50, 0.70]")
   expect_equal(rr_ci_label(value = c(0.5, 0.7), conf.level = .95, output.type = "text"),
@@ -531,7 +563,11 @@ test_that("well-formatted R CI labels", {
   expect_equal(r_ci_label(value = c(0.5, 0.7), conf.level = .95, output.type = "expression"),
                "\"95% CI [0.50, 0.70]\"")
   expect_equal(r_ci_label(value = c(0.5, 0.7), conf.level = .95, output.type = "latex"),
-               "95% CI [0.50, 0.70]")
+               "95\\% \\mathrm{CI} [0.50, 0.70]")
+  expect_equal(r_ci_label(value = c(0.5, 0.7), conf.level = .95, output.type = "latex.eqn"),
+               "$ 95\\% \\mathrm{CI} [0.50, 0.70] $")
+  expect_equal(r_ci_label(value = c(0.5, 0.7), conf.level = .95, output.type = "latex.deqn"),
+               "$$ 95\\% \\mathrm{CI} [0.50, 0.70] $$")
   expect_equal(r_ci_label(value = c(0.5, 0.7), conf.level = .95, output.type = "markdown"),
                "95% CI [0.50, 0.70]")
   expect_equal(r_ci_label(value = c(0.5, 0.7), conf.level = .95, output.type = "text"),
@@ -539,3 +575,28 @@ test_that("well-formatted R CI labels", {
   expect_warning(r_ci_label(value = c(-0.5, 0.7), conf.level = .95, digits = 1))
 })
 
+test_that("check_output_type validates", {
+  expect_equal(check_output_type(NULL), "expression")
+  expect_equal(check_output_type("text"), "text")
+  expect_equal(check_output_type("latex"), "latex")
+  expect_equal(check_output_type("LaTex"), "latex")
+  expect_equal(check_output_type("latex.eqn"), "latex.eqn")
+  expect_equal(check_output_type("latex.deqn"), "latex.deqn")
+  expect_equal(check_output_type("tex"), "latex")
+  expect_equal(check_output_type("TeX"), "latex")
+  expect_equal(check_output_type("tikz"), "latex")
+  expect_equal(check_output_type("markdown"), "markdown")
+  expect_equal(check_output_type("Markdown"), "markdown")
+  expect_error(check_output_type("rmarkdown"))
+  expect_error(check_output_type("bad"))
+})
+
+test_that("check_output_type replaces NULL", {
+  expect_equal(check_output_type(NULL), "expression")
+  expect_equal(check_output_type(NULL, geom = "text"), "expression")
+  expect_equal(check_output_type(NULL, geom = "anything else"), "expression")
+  expect_equal(check_output_type(NULL, geom = "marquee"), "markdown")
+  expect_equal(check_output_type(NULL, geom = "richtext"), "markdown")
+  expect_equal(check_output_type(NULL, geom = "textbox"), "markdown")
+  expect_equal(check_output_type(NULL, "latex"), "latex.eqn")
+})

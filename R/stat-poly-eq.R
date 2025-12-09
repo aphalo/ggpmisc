@@ -85,13 +85,12 @@
 #'   label is generated. Thus, as the value returned for \code{eq.label} can be
 #'   \code{NA}, the default aesthetic mapping to \emph{label} is \eqn{R^2}.
 #'
-#'   By default, the character strings are generated as suitable for parsing
-#'   into R's plotmath expressions. However, LaTeX (use TikZ device in R),
-#'   markdown (use package 'ggtext') and plain text are also supported, as well
-#'   as returning numeric values for user-generated text labels. The argument of
-#'   \code{parse} is set automatically based on \code{output-type}, but if you
-#'   assemble labels that need parsing from \code{numeric} output, the default
-#'   needs to be overridden.
+#'   The character strings mapped to the label aesthetic are encoded
+#'   differently depending on argument passed to \code{output.type}, or
+#'   if none passed based on the geom used. The argument of
+#'   \code{parse} is set automatically based on \code{output.type}. However,
+#'   if labels manually assembled from \code{numeric} output need parsing,
+#'   the default needs to be overridden.
 #'
 #'   This statistic only generates annotation labels, the predicted values/line
 #'   need to be added to the plot as a separate layer using
@@ -151,9 +150,7 @@
 #'   \code{method.args} and conditional skipping of labelling on a by group
 #'   basis.
 #'
-#' @references Originally written as an answer to question 7549694 at
-#'   Stackoverflow but enhanced based on suggestions from users and my own
-#'   needs.
+#' @inheritSection check_output_type Output types
 #'
 #' @section Aesthetics: \code{stat_poly_eq()} understands \code{x} and \code{y},
 #'   to be referenced in the \code{formula} and \code{weight} passed as argument
@@ -220,6 +217,10 @@
 #'
 #' To explore the computed values returned for a given input we suggest the use
 #' of \code{\link[gginnards]{geom_debug}} as shown in the last examples below.
+#'
+#' @references Originally written as an answer to question 7549694 at
+#'   Stackoverflow but enhanced based on suggestions from users and my own
+#'   needs.
 #'
 #' @seealso This statistics fits a model with function \code{\link[stats]{lm}()}
 #'   as default, several other functions returning objects of class \code{"lm"}
@@ -507,13 +508,8 @@ stat_poly_eq <- function(mapping = NULL,
   orientation <- temp[["orientation"]]
   formula <-  temp[["formula"]]
 
-  if (is.null(output.type)) {
-    if (geom %in% c("richtext", "textbox", "marquee")) {
-      output.type <- "markdown"
-    } else {
-      output.type <- "expression"
-    }
-  }
+  output.type <-
+    check_output_type(output.type = output.type, geom = geom)
 
   if (is.null(parse)) {
     parse <- output.type == "expression"
@@ -624,14 +620,6 @@ poly_eq_compute_group_fun <- function(data,
   if (length(unique(data[[orientation]])) < n.min) {
     return(data.frame())
   }
-
-  output.type <- if (!length(output.type)) {
-    "expression"
-  } else {
-    tolower(output.type)
-  }
-  stopifnot(output.type %in%
-              c("expression", "text", "markdown", "numeric", "latex", "tex", "tikz"))
 
   if (is.null(data$weight)) {
     data$weight <- 1

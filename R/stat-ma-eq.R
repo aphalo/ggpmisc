@@ -94,6 +94,8 @@
 #'   \code{NA} value. Thus, user-defined methods can implement conditional
 #'   skipping of labelling.
 #'
+#' @inheritSection check_output_type Output types
+#'
 #' @section Aesthetics: \code{stat_ma_eq} understands \code{x} and \code{y}, to
 #'   be referenced in the \code{formula} while the \code{weight} aesthetic is
 #'   ignored. Both \code{x} and \code{y} must be mapped to \code{numeric}
@@ -336,13 +338,9 @@ stat_ma_eq <- function(mapping = NULL,
   orientation <- temp[["orientation"]]
   formula <-  temp[["formula"]]
 
-  if (is.null(output.type)) {
-    if (geom %in% c("richtext", "textbox", "marquee")) {
-      output.type <- "markdown"
-    } else {
-      output.type <- "expression"
-    }
-  }
+  output.type <-
+    check_output_type(output.type = output.type, geom = geom)
+
   if (is.null(parse)) {
     parse <- output.type == "expression"
   }
