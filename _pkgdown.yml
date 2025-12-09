@@ -47,6 +47,7 @@ reference:
   - title: Utilities
     desc: Low level functions used to build some of the functions above, but possibly useful also in other contexts.
     contents:
+    - check_output_type
     - sprintf_dm
     - plain_label
     - coefs2poly_eq
@@ -95,6 +96,8 @@ navbar:
         href: articles/mixture-models.html
       - text: 'Peaks and Valleys'
         href: articles/peaks-and-valleys.html
+      - text: 'Using LaTeX for annotations'
+        href: articles/latex-labels.html
     tutorials:
       text: Resources
       menu:

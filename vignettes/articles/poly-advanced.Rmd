@@ -16,7 +16,8 @@ vignette: >
 knitr::opts_chunk$set(fig.align = 'center', 
                       collapse = TRUE,
                       comment = "#>",
-                      fig.show = 'hold', fig.width = 7, fig.height = 7)
+                      fig.show = 'hold', fig.width = 7, fig.height = 7,
+                      dev = "svglite")
 
 options(warnPartialMatchArgs = FALSE,
         tibble.print.max = 4,
@@ -96,7 +97,7 @@ print(citation(package = "MASS", auto = TRUE), bibtex = FALSE)
 
 Package 'MASS' provides function `rlm()` for "Robust Fitting of Linear Models". The returned value is an `"rlm"` object. Class `"rlm"` is derived from `"lm"` so the stats work mostly as expected. However, we need to be aware that no $R^2$ or $P$ estimates are available and the corresponding labels are empty strings.
 
-```{r}
+```{r, fig.width = 7, fig.height = 5}
 library(MASS)
 
 ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
@@ -108,7 +109,7 @@ ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
 
 Fitted values and deviations highlighted.
 
-```{r}
+```{r, fig.width = 7, fig.height = 5}
 ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
   stat_fit_fitted(method = MASS::rlm, colour = "red") +
   stat_fit_deviations(method = MASS::rlm, colour = "red") +
@@ -117,7 +118,7 @@ ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
 
 Residuals plotted.
 
-```{r}
+```{r, fig.width = 7, fig.height = 5}
 ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
   stat_fit_residuals(method = MASS::rlm)
 ```
@@ -175,7 +176,7 @@ print(citation(package = "robustbase", auto = TRUE), bibtex = FALSE)
 
 Package 'robustbase' provides function `lmrob()` for "MM-type Estimators for Linear Regression". The returned value is an `"lmrob"` object. Class `"lmrob"` is derived from `"lm"` so the stats work mostly as expected. However, we need to be aware that no $R^2$ or $P$ estimates are available and the corresponding labels are empty strings.
 
-```{r}
+```{r, fig.width = 7, fig.height = 5}
 library(robustbase)
 
 ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
@@ -187,7 +188,7 @@ ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
 
 Fitted values and deviations highlighted.
 
-```{r}
+```{r, fig.width = 7, fig.height = 5}
 ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
   stat_fit_fitted(method = robustbase::lmrob, colour = "red") +
   stat_fit_deviations(method = robustbase::lmrob, colour = "red") +
@@ -196,7 +197,7 @@ ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
 
 Residuals plotted.
 
-```{r}
+```{r, fig.width = 7, fig.height = 5}
 ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
   stat_fit_residuals(method = robustbase::lmrob)
 ```
@@ -258,7 +259,7 @@ print(citation(package = "MASS", auto = TRUE), bibtex = FALSE)
 Package 'MASS' provides function `lqs()` for "Resistant Regression". The returned value is an `"lqs"` object. Class `"rlm"` is not derived from `"lm"` but the structure is similar. However, we need to be aware that no $R^2$ or $P$ estimates are available and the corresponding labels are empty strings.
 
 
-```{r}
+```{r, fig.width = 7, fig.height = 5}
 library(MASS)
 
 ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
@@ -270,7 +271,7 @@ ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
 
 Fitted values and deviations highlighted.
 
-```{r}
+```{r, fig.width = 7, fig.height = 5}
 ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
   stat_fit_fitted(method = MASS::lqs, colour = "red") +
   stat_fit_deviations(method = MASS::lqs, colour = "red") +
@@ -279,7 +280,7 @@ ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
 
 Residuals plotted.
 
-```{r}
+```{r, fig.width = 7, fig.height = 5}
 ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
   stat_fit_residuals(method = MASS::lqs)
 ```
@@ -342,7 +343,7 @@ print(citation(package = "robustbase", auto = TRUE), bibtex = FALSE)
 Package 'robustbase' provides function `ltsReg()` for "least trimmed squares" regression. The returned value is an `"lts"` object. The usual accessors functions are available for Class `"lts"`.
 
 
-```{r}
+```{r, fig.width = 7, fig.height = 5}
 library(robustbase)
 
 ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
@@ -354,7 +355,7 @@ ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
 
 Fitted values and deviations highlighted.
 
-```{r}
+```{r, fig.width = 7, fig.height = 5}
 ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
   stat_fit_fitted(method = robustbase::lmrob, colour = "red") +
   stat_fit_deviations(method = robustbase::lmrob, colour = "red") +
@@ -363,7 +364,7 @@ ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
 
 Residuals plotted.
 
-```{r}
+```{r, fig.width = 7, fig.height = 5}
 ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
   stat_fit_residuals(method = robustbase::ltsReg)
 ```
@@ -425,7 +426,7 @@ ggplot(mpg, aes(displ, hwy)) +
   theme(legend.position = "top")
 ```
 
-### Generalized Least Squares ('nlme')
+### General Least Squares ('nlme')
 
 ```{r}
 print(citation(package = "nlme", auto = TRUE), bibtex = FALSE)
@@ -434,7 +435,7 @@ print(citation(package = "nlme", auto = TRUE), bibtex = FALSE)
 In 'ggpmisc' (>= 0.6.2) function `gls()` from package 'nlme' is supported natively by functions `stat_poly_line()` and `stat_poly_eq()`. In this example, using a variance covariate, the computations do not converge with the data in one of the plot panels.
 
 
-```{r}
+```{r, fig.width = 7, fig.height = 5}
 library(nlme)
 
 ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
@@ -450,7 +451,7 @@ ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
 
 Fitted values and deviations highlighted.
 
-```{r}
+```{r, fig.width = 7, fig.height = 5}
 ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
   stat_fit_fitted(method = gls, 
                   method.args = list(weights = varPower()),
@@ -463,7 +464,7 @@ ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
 
 Residuals plotted.
 
-```{r}
+```{r, fig.width = 7, fig.height = 5}
 ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
   stat_fit_residuals(method = gls, 
                      method.args = list(weights = varPower()))
@@ -523,7 +524,7 @@ ggplot(mpg, aes(displ, hwy)) +
 
 Plotting fitted values and observations.
 
-```{r}
+```{r, fig.width = 7, fig.height = 5}
 ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
   stat_fit_fitted(method = "lm", formula = my.formula, 
@@ -532,7 +533,7 @@ ggplot(mpg, aes(displ, hwy)) +
 
 Adding deviations.
 
-```{r}
+```{r, fig.width = 7, fig.height = 5}
 ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
   stat_fit_deviations(method = "lm", formula = my.formula) +
@@ -542,7 +543,7 @@ ggplot(mpg, aes(displ, hwy)) +
 
 Plotting residuals.
 
-```{r}
+```{r, fig.width = 7, fig.height = 5}
 ggplot(mpg, aes(displ, hwy)) +
   stat_fit_residuals(method = "lm", formula = my.formula)
 ```
@@ -673,7 +674,7 @@ ggplot(mpg, aes(displ, hwy)) +
 
 Highlighting fitted values.
 
-```{r}
+```{r, fig.width = 7, fig.height = 5}
 ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
   stat_fit_fitted(method = segreg, 
@@ -683,7 +684,7 @@ ggplot(mpg, aes(displ, hwy)) +
 
 Highlighting fitted deviations.
 
-```{r}
+```{r, fig.width = 7, fig.height = 5}
 ggplot(mpg, aes(displ, hwy)) +
   stat_fit_deviations(method = segreg, 
                       formula = y ~ seg(x, npsi = 1, est = c(1, 0)),
@@ -696,7 +697,7 @@ ggplot(mpg, aes(displ, hwy)) +
 
 Plot of residuals.
 
-```{r}
+```{r, fig.width = 7, fig.height = 5}
 ggplot(mpg, aes(displ, hwy)) +
   stat_fit_residuals(method = segreg, 
                       formula = y ~ seg(x, npsi = 1, est = c(1, 0)))
@@ -839,7 +840,7 @@ ggplot(mpg, aes(displ, hwy, color = class)) +
   stat_poly_eq(formula = y ~ poly(x, 3, raw = TRUE), method = "best_poly_lm",
                mapping = use_label("eq", "AIC"),
                label.x = "right") +
-  expand_limits(y = c(0, 65)) +
+  expand_limits(y = c(0, 60)) +
   theme(legend.position = "top")
 ```
 
@@ -884,7 +885,7 @@ number and initial values of the knots. As in the case of other model fit
 functions, models with multiple explanatory variables are rarely used with
 'ggplot2' stats.
 
-```{r}
+```{r, fig.width = 7, fig.height = 5}
 library(segmented)
 
 lm2segmented.lm <- 
@@ -915,14 +916,14 @@ ggplot(mpg, aes(displ, hwy)) +
   stat_poly_line(method = lm2segmented.lm)
 ```
 
-```{r}
+```{r, fig.width = 7, fig.height = 5}
 ggplot(mpg, aes(displ, hwy)) +
   stat_fit_deviations(method = lm2segmented.lm, colour = "red") +
   geom_point() +
   stat_fit_fitted(method = lm2segmented.lm, colour = "red")
 ```
 
-```{r}
+```{r, fig.width = 7, fig.height = 5}
 ggplot(mpg, aes(displ, hwy)) +
   stat_fit_residuals(method = lm2segmented.lm)
 ```

@@ -560,14 +560,6 @@ quant_eq_compute_group_fun <- function(data,
     decimal.mark <- "."
   }
 
-  output.type <- if (!length(output.type)) {
-    "expression"
-  } else {
-    tolower(output.type)
-  }
-  stopifnot(output.type %in%
-              c("expression", "text", "markdown", "numeric", "latex", "tex", "tikz"))
-
   if (is.null(data[["weight"]])) {
     data[["weight"]] <- 1
   }

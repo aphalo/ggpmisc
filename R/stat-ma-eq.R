@@ -440,14 +440,6 @@ ma_eq_compute_group_fun <- function(data,
     decimal.mark <- "."
   }
 
-  output.type <- if (!length(output.type)) {
-    "expression"
-  } else {
-    tolower(output.type)
-  }
-  stopifnot(output.type %in%
-              c("expression", "text", "markdown", "numeric", "latex", "tex", "tikz"))
-
   if (exists("grp.label", data)) {
     if (length(unique(data[["grp.label"]])) > 1L) {
       warning("Non-unique value in 'data$grp.label' using group index ", data[["group"]][1], " as label.")
@@ -635,8 +627,8 @@ ma_eq_compute_group_fun <- function(data,
                                                   output.type = output.type,
                                                   decimal.mark = decimal.mark),
                     theta.label = italic_label(value = theta,
-                                               value.name = ifelse(output.type %in% c("latex", "text", "tikz"),
-                                                                   "\theta{}",
+                                               value.name = ifelse(grepl("^latex", output.type),
+                                                                   "\\theta{}",
                                                                    ifelse(output.type == "markdown",
                                                                           "&theta;",
                                                                           "theta")),

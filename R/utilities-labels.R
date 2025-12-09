@@ -241,9 +241,9 @@ italic_label <- function(value,
       z
     }
   } else if (grepl("^latex", output.type)) {
-    z <- paste("\\mathit{", value.name, "} = ", value.char, sep = "")
+    z <- paste(value.name, " = ", value.char, sep = "")
     if (length(z) > 1L) {
-      z <- paste(z, collapse = "\\mathrm{; }")
+      z <- paste(z, collapse = "; ")
     }
     if (output.type == "latex.eqn") {
       paste("$", z, "$")

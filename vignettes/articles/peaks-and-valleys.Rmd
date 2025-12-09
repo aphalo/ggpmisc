@@ -16,7 +16,8 @@ vignette: >
 knitr::opts_chunk$set(fig.align = 'center', 
                       collapse = TRUE,
                       comment = "#>",
-                      fig.show = 'hold', fig.width = 8, fig.height = 5)
+                      fig.show = 'hold', fig.width = 8, fig.height = 5,
+                      dev = "svglite")
 
 options(warnPartialMatchArgs = FALSE,
         tibble.print.max = 4,
