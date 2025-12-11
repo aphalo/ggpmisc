@@ -247,7 +247,7 @@ ggplot(my.data, aes(x, y)) +
 
 Replacing the *lhs*, requires $\LaTeX$ encoding.
 
-```{r, eval=eval_flag}
+```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
@@ -272,7 +272,7 @@ ggplot(my.data, aes(x, y)) +
                geom = "latex", hjust = 0, vjust = 1)
 ```
 
-```{r, eval=eval_flag}
+```{r}
 formula <- y ~ poly(x, 2, raw = TRUE)
 ggplot(my.data, aes(x, log10(y + 1e6))) +
   geom_point() +
