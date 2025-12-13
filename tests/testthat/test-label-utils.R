@@ -95,11 +95,11 @@ test_that("well-formatted simple labels", {
   expect_equal(italic_label(value = 123, value.name = "n", output.type = "markdown"),
                "_n_ = 123.")
   expect_equal(italic_label(value = 123, value.name = "n", output.type = "latex"),
-               "\\mathit{n} = 123.")
+               "n = 123.")
   expect_equal(italic_label(value = 123, value.name = "n", output.type = "latex.eqn"),
-               "$ \\mathit{n} = 123. $")
+               "$ n = 123. $")
   expect_equal(italic_label(value = 123, value.name = "n", output.type = "latex.deqn"),
-               "$$ \\mathit{n} = 123. $$")
+               "$$ n = 123. $$")
   expect_equal(italic_label(value = 123, value.name = "n", output.type = "text"),
                "n = 123.")
 
@@ -194,11 +194,11 @@ test_that("well-formatted F-value labels", {
                "italic(F)~`=`~\"1.0\" %*% 10^{\"+02\"}")
 
   expect_equal(f_value_label(value = 100, output.type = "latex"),
-               "\\mathit{F} = 100.0")
+               "F = 100.0")
   expect_equal(f_value_label(value = 100, output.type = "latex.eqn"),
-               "$ \\mathit{F} = 100.0 $")
+               "$ F = 100.0 $")
   expect_equal(f_value_label(value = 100, output.type = "latex.deqn"),
-               "$$ \\mathit{F} = 100.0 $$")
+               "$$ F = 100.0 $$")
   expect_equal(f_value_label(value = 100, df1 = 1, df2 = 25, output.type = "latex"),
                "F_{1,25} = 100.0")
   expect_equal(f_value_label(value = 100, df1 = 1, df2 = 25, output.type = "latex.eqn"),
@@ -238,11 +238,13 @@ test_that("well-formatted t-value labels", {
                "italic(t)[10]~`=`~\"1.0\" %*% 10^{\"+02\"}")
 
   expect_equal(t_value_label(value = 12, output.type = "latex"),
-               "\\mathit{t} = 12.00")
+               "t = 12.00")
+  expect_equal(t_value_label(value = 12, df = 5, output.type = "latex"),
+               "t_{5} = 12.00")
   expect_equal(t_value_label(value = 12, output.type = "latex.eqn"),
-               "$ \\mathit{t} = 12.00 $")
+               "$ t = 12.00 $")
   expect_equal(t_value_label(value = 12, output.type = "latex.deqn"),
-               "$$ \\mathit{t} = 12.00 $$")
+               "$$ t = 12.00 $$")
   expect_equal(t_value_label(value = 12, output.type = "markdown"),
                "_t_ = 12.00")
   expect_equal(t_value_label(value = 12, df = 5, output.type = "markdown"),
@@ -268,11 +270,11 @@ test_that("well-formatted sd labels", {
   expect_equal(sd_value_label(value = 12),
                "italic(sigma)~`=`~\"12.00\"")
   expect_equal(sd_value_label(value = 12, output.type = "latex"),
-               "\\mathit{\\sigma} = 12.00")
+               "\\sigma = 12.00")
   expect_equal(sd_value_label(value = 12, output.type = "latex.eqn"),
-               "$ \\mathit{\\sigma} = 12.00 $")
+               "$ \\sigma = 12.00 $")
   expect_equal(sd_value_label(value = 12, output.type = "latex.deqn"),
-               "$$ \\mathit{\\sigma} = 12.00 $$")
+               "$$ \\sigma = 12.00 $$")
   expect_equal(sd_value_label(value = 12, output.type = "markdown"),
                "_&sigma;_ = 12.00")
   expect_equal(sd_value_label(value = 12, output.type = "text"),
@@ -283,7 +285,7 @@ test_that("well-formatted se labels", {
   expect_equal(se_value_label(value = 12),
                "italic(s.e.)~`=`~\"12.00\"")
   expect_equal(se_value_label(value = 12, output.type = "latex"),
-               "\\mathit{s.e.} = 12.00")
+               "s.e. = 12.00")
   expect_equal(se_value_label(value = 12, output.type = "markdown"),
                "_s.e._ = 12.00")
   expect_equal(se_value_label(value = 12, output.type = "text"),
@@ -294,7 +296,7 @@ test_that("well-formatted var labels", {
   expect_equal(var_value_label(value = 12),
                "italic(sigma^2)~`=`~\"12.00\"")
   expect_equal(var_value_label(value = 12, output.type = "latex"),
-               "\\mathit{\\sigma^2} = 12.00")
+               "\\sigma^2 = 12.00")
   expect_equal(var_value_label(value = 12, output.type = "markdown"),
                "_&sigma;<sup>2</sup>_ = 12.00")
   expect_equal(var_value_label(value = 12, output.type = "text"),
@@ -305,7 +307,7 @@ test_that("well-formatted mean labels", {
   expect_equal(mean_value_label(value = 12),
                "italic(bar(x))~`=`~\"12.00\"")
   expect_equal(mean_value_label(value = 12, output.type = "latex"),
-               "\\mathit{\\bar{x}} = 12.00")
+               "\\bar{x} = 12.00")
   expect_equal(mean_value_label(value = 12, output.type = "markdown"),
                "_mean(x)_ = 12.00")
   expect_equal(mean_value_label(value = 12, output.type = "text"),
