@@ -203,6 +203,7 @@ coefs2poly_eq <- function(coefs,
   if (output.type != "expression") { # parse() does the conversion
     if (decimal.mark == ".") {
       eq.char <- gsub(",", decimal.mark, eq.char, fixed = TRUE)
+      eq.char <- gsub("\\.", "\\,", eq.char, fixed = TRUE) # kludge to undo bad substitution
     } else {
       eq.char <- gsub(".", decimal.mark, eq.char, fixed = TRUE)
     }
