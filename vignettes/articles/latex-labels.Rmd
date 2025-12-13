@@ -45,7 +45,7 @@ R package 'xdvir' opens the door to easily using $\LaTeX$ to typeset labels and 
 
 Package 'ggpmisc' has supported $\LaTeX$ formatting of labels but it has been in the past complex to combine them with ggplots. Package 'xdvir' provides `geom_latex()` that makes using the $\LaTeX$-formatted labels from 'ggpmisc' extremely easy.
 
-Package 'xdvir' was created by Paul Murrel, the mind behind most of the improvements to R's graphics "engine" of the past two or three decades. Murrel (2025) describes 'xdvir' in detail, and I recommend reading this article. For other aspects of R graphics, see Murrel ().
+Package 'xdvir' was created by Paul Murrell, the person behind most of the improvements to R's graphics "engine" of the past two or three decades. Murrell (2025) describes 'xdvir' in detail, and I recommend reading this article. For other aspects of R graphics, see Murrel's book ().
 
 ```{r}
 print(citation(package = "xdvir", auto = TRUE), bibtex = FALSE)
@@ -380,3 +380,29 @@ ggplot(my.data[sample(1:nrow(my.data), 12), ], aes(x, y)) +
   geom_latex(aes(label = sprintf("$ x = %.1f $", x)),
              hjust = -0.05, size = 3)
 ```
+
+### Geom element of theme
+
+Currently, to use 'ggplot2' (>= 4.0.0) theme's geom element, `GeomLatex` needs to be updated.
+
+```{r}
+update_geom_defaults(
+        GeomLatex,
+        ggplot2::aes(colour = from_theme(colour %||% ink),
+                     family = from_theme(family),
+                     size = from_theme(fontsize)))
+```
+
+
+```{r}
+update_theme(geom.latex = element_geom(colour = "blue"))
+
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_correlation(geom = "latex", hjust = 0, vjust = 1)
+```
+
+```{r}
+
+```
+
