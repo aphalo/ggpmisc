@@ -62,19 +62,19 @@
 <circle cx='356.47' cy='366.87' r='1.95' style='stroke-width: 0.71; fill: #000000;' />
 <line x1='566.91' y1='474.95' x2='592.11' y2='447.66' style='stroke-width: 1.42; stroke: #0000FF;' />
 <polyline points='590.53,454.69 592.11,447.66 585.24,449.80 ' style='stroke-width: 1.42; stroke: #0000FF;' />
-<text x='565.93' y='483.58' text-anchor='end' style='font-size: 11.00px; font-family: sans;' textLength='110.40px' lengthAdjust='spacingAndGlyphs'>hp = 52.0 at 30.4 mpg </text>
+<text x='565.93' y='483.61' text-anchor='end' style='font-size: 11.04px; font-family: sans;' textLength='110.80px' lengthAdjust='spacingAndGlyphs'>hp = 52.0 at 30.4 mpg </text>
 <line x1='213.39' y1='46.53' x2='188.90' y2='46.53' style='stroke-width: 1.42; stroke: #FF0000;' />
 <polyline points='195.13,42.93 188.90,46.53 195.13,50.13 ' style='stroke-width: 1.42; stroke: #FF0000;' />
-<text x='215.08' y='42.39' style='font-size: 11.00px; font-family: sans;' textLength='52.30px' lengthAdjust='spacingAndGlyphs'>hp = 335.0</text>
-<text x='215.08' y='58.23' style='font-size: 11.00px; font-family: sans;' textLength='61.16px' lengthAdjust='spacingAndGlyphs'> at 15.0 mpg</text>
+<text x='215.08' y='42.38' style='font-size: 11.04px; font-family: sans;' textLength='52.49px' lengthAdjust='spacingAndGlyphs'>hp = 335.0</text>
+<text x='215.08' y='58.27' style='font-size: 11.04px; font-family: sans;' textLength='61.38px' lengthAdjust='spacingAndGlyphs'> at 15.0 mpg</text>
 <line x1='234.33' y1='147.16' x2='209.84' y2='147.16' style='stroke-width: 1.42; stroke: #FF0000;' />
 <polyline points='216.08,143.56 209.84,147.16 216.08,150.76 ' style='stroke-width: 1.42; stroke: #FF0000;' />
-<text x='236.02' y='143.03' style='font-size: 11.00px; font-family: sans;' textLength='52.30px' lengthAdjust='spacingAndGlyphs'>hp = 264.0</text>
-<text x='236.02' y='158.87' style='font-size: 11.00px; font-family: sans;' textLength='61.16px' lengthAdjust='spacingAndGlyphs'> at 15.8 mpg</text>
+<text x='236.02' y='143.01' style='font-size: 11.04px; font-family: sans;' textLength='52.49px' lengthAdjust='spacingAndGlyphs'>hp = 264.0</text>
+<text x='236.02' y='158.91' style='font-size: 11.04px; font-family: sans;' textLength='61.38px' lengthAdjust='spacingAndGlyphs'> at 15.8 mpg</text>
 <line x1='616.61' y1='361.20' x2='592.11' y2='361.20' style='stroke-width: 1.42; stroke: #FF0000;' />
 <polyline points='598.35,357.60 592.11,361.20 598.35,364.80 ' style='stroke-width: 1.42; stroke: #FF0000;' />
-<text x='618.30' y='357.06' style='font-size: 11.00px; font-family: sans;' textLength='52.30px' lengthAdjust='spacingAndGlyphs'>hp = 113.0</text>
-<text x='618.30' y='372.90' style='font-size: 11.00px; font-family: sans;' textLength='61.16px' lengthAdjust='spacingAndGlyphs'> at 30.4 mpg</text>
+<text x='618.30' y='357.05' style='font-size: 11.04px; font-family: sans;' textLength='52.49px' lengthAdjust='spacingAndGlyphs'>hp = 113.0</text>
+<text x='618.30' y='372.95' style='font-size: 11.04px; font-family: sans;' textLength='61.38px' lengthAdjust='spacingAndGlyphs'> at 30.4 mpg</text>
 <rect x='37.69' y='22.78' width='676.83' height='522.33' style='stroke-width: 1.07; stroke: #333333;' />
 </g>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>

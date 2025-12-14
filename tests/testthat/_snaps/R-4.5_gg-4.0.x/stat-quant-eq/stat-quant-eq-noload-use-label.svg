@@ -127,112 +127,112 @@
 <circle cx='671.33' cy='46.53' r='1.95' style='stroke-width: 0.71; fill: #000000;' />
 <circle cx='677.54' cy='112.06' r='1.95' style='stroke-width: 0.71; fill: #000000;' />
 <circle cx='683.76' cy='63.92' r='1.95' style='stroke-width: 0.71; fill: #000000;' />
-<text x='71.53' y='109.11' style='font-size: 11.00px; font-style: italic; fill: #F8766D; font-family: sans;' textLength='6.12px' lengthAdjust='spacingAndGlyphs'>q</text>
-<text x='77.65' y='109.11' style='font-size: 11.00px; fill: #F8766D; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='80.40' y='109.11' style='font-size: 11.00px; fill: #F8766D; font-family: sans;' textLength='6.43px' lengthAdjust='spacingAndGlyphs'>=</text>
-<text x='86.83' y='109.11' style='font-size: 11.00px; fill: #F8766D; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='89.58' y='109.11' style='font-size: 11.00px; fill: #F8766D; font-family: sans;' textLength='21.41px' lengthAdjust='spacingAndGlyphs'>0.25</text>
-<text x='110.99' y='109.11' style='font-size: 11.00px; fill: #F8766D; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='113.74' y='109.11' style='font-size: 11.00px; fill: #F8766D; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='116.50' y='109.11' style='font-size: 11.00px; font-style: italic; fill: #F8766D; font-family: sans;' textLength='5.50px' lengthAdjust='spacingAndGlyphs'>y</text>
-<text x='122.00' y='109.11' style='font-size: 11.00px; fill: #F8766D; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='124.75' y='109.11' style='font-size: 11.00px; fill: #F8766D; font-family: sans;' textLength='6.43px' lengthAdjust='spacingAndGlyphs'>=</text>
-<text x='131.18' y='109.11' style='font-size: 11.00px; fill: #F8766D; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='133.93' y='109.11' style='font-size: 11.00px; fill: #F8766D; font-family: sans;' textLength='8.55px' lengthAdjust='spacingAndGlyphs'>−</text>
-<text x='144.01' y='109.11' style='font-size: 11.00px; fill: #F8766D; font-family: sans;' textLength='21.41px' lengthAdjust='spacingAndGlyphs'>2.73</text>
-<text x='167.46' y='109.11' style='font-size: 11.00px; fill: #F8766D; font-family: sans;' textLength='8.54px' lengthAdjust='spacingAndGlyphs'>+</text>
-<text x='178.03' y='109.11' style='font-size: 11.00px; fill: #F8766D; font-family: sans;' textLength='27.53px' lengthAdjust='spacingAndGlyphs'>0.965</text>
-<text x='205.56' y='109.11' style='font-size: 11.00px; fill: #F8766D; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='208.31' y='109.11' style='font-size: 11.00px; font-style: italic; fill: #F8766D; font-family: sans;' textLength='5.50px' lengthAdjust='spacingAndGlyphs'>x</text>
-<text x='213.82' y='109.11' style='font-size: 11.00px; fill: #F8766D; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='216.57' y='109.11' style='font-size: 11.00px; fill: #F8766D; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='219.32' y='109.11' style='font-size: 11.00px; fill: #F8766D; font-family: sans;' textLength='5.31px' lengthAdjust='spacingAndGlyphs'>ρ</text>
-<text x='224.64' y='109.11' style='font-size: 11.00px; fill: #F8766D; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='227.39' y='109.11' style='font-size: 11.00px; fill: #F8766D; font-family: sans;' textLength='6.43px' lengthAdjust='spacingAndGlyphs'>=</text>
-<text x='233.82' y='109.11' style='font-size: 11.00px; fill: #F8766D; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='236.57' y='109.11' style='font-size: 11.00px; fill: #F8766D; font-family: sans;' textLength='27.53px' lengthAdjust='spacingAndGlyphs'>294.3</text>
-<text x='264.10' y='109.11' style='font-size: 11.00px; fill: #F8766D; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='266.85' y='109.11' style='font-size: 11.00px; fill: #F8766D; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='269.60' y='109.11' style='font-size: 11.00px; fill: #F8766D; font-family: sans;' textLength='7.34px' lengthAdjust='spacingAndGlyphs'>A</text>
-<text x='276.94' y='109.11' style='font-size: 11.00px; fill: #F8766D; font-family: sans;' textLength='3.06px' lengthAdjust='spacingAndGlyphs'>I</text>
-<text x='280.00' y='109.11' style='font-size: 11.00px; fill: #F8766D; font-family: sans;' textLength='7.95px' lengthAdjust='spacingAndGlyphs'>C</text>
-<text x='287.94' y='109.11' style='font-size: 11.00px; fill: #F8766D; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='290.69' y='109.11' style='font-size: 11.00px; fill: #F8766D; font-family: sans;' textLength='6.43px' lengthAdjust='spacingAndGlyphs'>=</text>
-<text x='297.12' y='109.11' style='font-size: 11.00px; fill: #F8766D; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='299.88' y='109.11' style='font-size: 11.00px; fill: #F8766D; font-family: sans;' textLength='27.53px' lengthAdjust='spacingAndGlyphs'>754.7</text>
-<text x='327.40' y='109.11' style='font-size: 11.00px; fill: #F8766D; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='330.16' y='109.11' style='font-size: 11.00px; fill: #F8766D; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='332.91' y='109.11' style='font-size: 11.00px; fill: #F8766D; font-family: sans;' textLength='65.43px' lengthAdjust='spacingAndGlyphs'>method: rq:br</text>
-<text x='71.53' y='82.99' style='font-size: 11.00px; font-style: italic; fill: #00BA38; font-family: sans;' textLength='6.12px' lengthAdjust='spacingAndGlyphs'>q</text>
-<text x='77.65' y='82.99' style='font-size: 11.00px; fill: #00BA38; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='80.40' y='82.99' style='font-size: 11.00px; fill: #00BA38; font-family: sans;' textLength='6.43px' lengthAdjust='spacingAndGlyphs'>=</text>
-<text x='86.83' y='82.99' style='font-size: 11.00px; fill: #00BA38; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='89.58' y='82.99' style='font-size: 11.00px; fill: #00BA38; font-family: sans;' textLength='21.41px' lengthAdjust='spacingAndGlyphs'>0.50</text>
-<text x='110.99' y='82.99' style='font-size: 11.00px; fill: #00BA38; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='113.74' y='82.99' style='font-size: 11.00px; fill: #00BA38; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='116.50' y='82.99' style='font-size: 11.00px; font-style: italic; fill: #00BA38; font-family: sans;' textLength='5.50px' lengthAdjust='spacingAndGlyphs'>y</text>
-<text x='122.00' y='82.99' style='font-size: 11.00px; fill: #00BA38; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='124.75' y='82.99' style='font-size: 11.00px; fill: #00BA38; font-family: sans;' textLength='6.43px' lengthAdjust='spacingAndGlyphs'>=</text>
-<text x='131.18' y='82.99' style='font-size: 11.00px; fill: #00BA38; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='133.93' y='82.99' style='font-size: 11.00px; fill: #00BA38; font-family: sans;' textLength='27.53px' lengthAdjust='spacingAndGlyphs'>0.459</text>
-<text x='163.50' y='82.99' style='font-size: 11.00px; fill: #00BA38; font-family: sans;' textLength='8.54px' lengthAdjust='spacingAndGlyphs'>+</text>
-<text x='174.08' y='82.99' style='font-size: 11.00px; fill: #00BA38; font-family: sans;' textLength='21.41px' lengthAdjust='spacingAndGlyphs'>1.01</text>
-<text x='195.49' y='82.99' style='font-size: 11.00px; fill: #00BA38; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='198.24' y='82.99' style='font-size: 11.00px; font-style: italic; fill: #00BA38; font-family: sans;' textLength='5.50px' lengthAdjust='spacingAndGlyphs'>x</text>
-<text x='203.74' y='82.99' style='font-size: 11.00px; fill: #00BA38; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='206.50' y='82.99' style='font-size: 11.00px; fill: #00BA38; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='209.25' y='82.99' style='font-size: 11.00px; fill: #00BA38; font-family: sans;' textLength='5.31px' lengthAdjust='spacingAndGlyphs'>ρ</text>
-<text x='214.56' y='82.99' style='font-size: 11.00px; fill: #00BA38; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='217.31' y='82.99' style='font-size: 11.00px; fill: #00BA38; font-family: sans;' textLength='6.43px' lengthAdjust='spacingAndGlyphs'>=</text>
-<text x='223.74' y='82.99' style='font-size: 11.00px; fill: #00BA38; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='226.49' y='82.99' style='font-size: 11.00px; fill: #00BA38; font-family: sans;' textLength='27.53px' lengthAdjust='spacingAndGlyphs'>347.9</text>
-<text x='254.02' y='82.99' style='font-size: 11.00px; fill: #00BA38; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='256.77' y='82.99' style='font-size: 11.00px; fill: #00BA38; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='259.53' y='82.99' style='font-size: 11.00px; fill: #00BA38; font-family: sans;' textLength='7.34px' lengthAdjust='spacingAndGlyphs'>A</text>
-<text x='266.87' y='82.99' style='font-size: 11.00px; fill: #00BA38; font-family: sans;' textLength='3.06px' lengthAdjust='spacingAndGlyphs'>I</text>
-<text x='269.92' y='82.99' style='font-size: 11.00px; fill: #00BA38; font-family: sans;' textLength='7.95px' lengthAdjust='spacingAndGlyphs'>C</text>
-<text x='277.87' y='82.99' style='font-size: 11.00px; fill: #00BA38; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='280.62' y='82.99' style='font-size: 11.00px; fill: #00BA38; font-family: sans;' textLength='6.43px' lengthAdjust='spacingAndGlyphs'>=</text>
-<text x='287.05' y='82.99' style='font-size: 11.00px; fill: #00BA38; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='289.80' y='82.99' style='font-size: 11.00px; fill: #00BA38; font-family: sans;' textLength='27.53px' lengthAdjust='spacingAndGlyphs'>730.6</text>
-<text x='317.33' y='82.99' style='font-size: 11.00px; fill: #00BA38; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='320.08' y='82.99' style='font-size: 11.00px; fill: #00BA38; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='322.83' y='82.99' style='font-size: 11.00px; fill: #00BA38; font-family: sans;' textLength='65.43px' lengthAdjust='spacingAndGlyphs'>method: rq:br</text>
-<text x='71.53' y='56.87' style='font-size: 11.00px; font-style: italic; fill: #619CFF; font-family: sans;' textLength='6.12px' lengthAdjust='spacingAndGlyphs'>q</text>
-<text x='77.65' y='56.87' style='font-size: 11.00px; fill: #619CFF; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='80.40' y='56.87' style='font-size: 11.00px; fill: #619CFF; font-family: sans;' textLength='6.43px' lengthAdjust='spacingAndGlyphs'>=</text>
-<text x='86.83' y='56.87' style='font-size: 11.00px; fill: #619CFF; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='89.58' y='56.87' style='font-size: 11.00px; fill: #619CFF; font-family: sans;' textLength='21.41px' lengthAdjust='spacingAndGlyphs'>0.75</text>
-<text x='110.99' y='56.87' style='font-size: 11.00px; fill: #619CFF; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='113.74' y='56.87' style='font-size: 11.00px; fill: #619CFF; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='116.50' y='56.87' style='font-size: 11.00px; font-style: italic; fill: #619CFF; font-family: sans;' textLength='5.50px' lengthAdjust='spacingAndGlyphs'>y</text>
-<text x='122.00' y='56.87' style='font-size: 11.00px; fill: #619CFF; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='124.75' y='56.87' style='font-size: 11.00px; fill: #619CFF; font-family: sans;' textLength='6.43px' lengthAdjust='spacingAndGlyphs'>=</text>
-<text x='131.18' y='56.87' style='font-size: 11.00px; fill: #619CFF; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='133.93' y='56.87' style='font-size: 11.00px; fill: #619CFF; font-family: sans;' textLength='21.41px' lengthAdjust='spacingAndGlyphs'>6.47</text>
-<text x='157.38' y='56.87' style='font-size: 11.00px; fill: #619CFF; font-family: sans;' textLength='8.54px' lengthAdjust='spacingAndGlyphs'>+</text>
-<text x='167.96' y='56.87' style='font-size: 11.00px; fill: #619CFF; font-family: sans;' textLength='21.41px' lengthAdjust='spacingAndGlyphs'>1.03</text>
-<text x='189.37' y='56.87' style='font-size: 11.00px; fill: #619CFF; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='192.12' y='56.87' style='font-size: 11.00px; font-style: italic; fill: #619CFF; font-family: sans;' textLength='5.50px' lengthAdjust='spacingAndGlyphs'>x</text>
-<text x='197.62' y='56.87' style='font-size: 11.00px; fill: #619CFF; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='200.38' y='56.87' style='font-size: 11.00px; fill: #619CFF; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='203.13' y='56.87' style='font-size: 11.00px; fill: #619CFF; font-family: sans;' textLength='5.31px' lengthAdjust='spacingAndGlyphs'>ρ</text>
-<text x='208.44' y='56.87' style='font-size: 11.00px; fill: #619CFF; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='211.19' y='56.87' style='font-size: 11.00px; fill: #619CFF; font-family: sans;' textLength='6.43px' lengthAdjust='spacingAndGlyphs'>=</text>
-<text x='217.62' y='56.87' style='font-size: 11.00px; fill: #619CFF; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='220.38' y='56.87' style='font-size: 11.00px; fill: #619CFF; font-family: sans;' textLength='27.53px' lengthAdjust='spacingAndGlyphs'>283.9</text>
-<text x='247.90' y='56.87' style='font-size: 11.00px; fill: #619CFF; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='250.66' y='56.87' style='font-size: 11.00px; fill: #619CFF; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='253.41' y='56.87' style='font-size: 11.00px; fill: #619CFF; font-family: sans;' textLength='7.34px' lengthAdjust='spacingAndGlyphs'>A</text>
-<text x='260.75' y='56.87' style='font-size: 11.00px; fill: #619CFF; font-family: sans;' textLength='3.06px' lengthAdjust='spacingAndGlyphs'>I</text>
-<text x='263.80' y='56.87' style='font-size: 11.00px; fill: #619CFF; font-family: sans;' textLength='7.95px' lengthAdjust='spacingAndGlyphs'>C</text>
-<text x='271.75' y='56.87' style='font-size: 11.00px; fill: #619CFF; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='274.50' y='56.87' style='font-size: 11.00px; fill: #619CFF; font-family: sans;' textLength='6.43px' lengthAdjust='spacingAndGlyphs'>=</text>
-<text x='280.93' y='56.87' style='font-size: 11.00px; fill: #619CFF; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='283.68' y='56.87' style='font-size: 11.00px; fill: #619CFF; font-family: sans;' textLength='27.53px' lengthAdjust='spacingAndGlyphs'>747.5</text>
-<text x='311.21' y='56.87' style='font-size: 11.00px; fill: #619CFF; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='313.96' y='56.87' style='font-size: 11.00px; fill: #619CFF; font-family: sans;' textLength='2.75px' lengthAdjust='spacingAndGlyphs'> </text>
-<text x='316.72' y='56.87' style='font-size: 11.00px; fill: #619CFF; font-family: sans;' textLength='65.43px' lengthAdjust='spacingAndGlyphs'>method: rq:br</text>
+<text x='71.53' y='109.13' style='font-size: 11.04px; font-style: italic; fill: #F8766D; font-family: sans;' textLength='6.14px' lengthAdjust='spacingAndGlyphs'>q</text>
+<text x='77.67' y='109.13' style='font-size: 11.04px; fill: #F8766D; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='80.43' y='109.13' style='font-size: 11.04px; fill: #F8766D; font-family: sans;' textLength='6.45px' lengthAdjust='spacingAndGlyphs'>=</text>
+<text x='86.88' y='109.13' style='font-size: 11.04px; fill: #F8766D; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='89.65' y='109.13' style='font-size: 11.04px; fill: #F8766D; font-family: sans;' textLength='21.49px' lengthAdjust='spacingAndGlyphs'>0.25</text>
+<text x='111.13' y='109.13' style='font-size: 11.04px; fill: #F8766D; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='113.90' y='109.13' style='font-size: 11.04px; fill: #F8766D; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='116.66' y='109.13' style='font-size: 11.04px; font-style: italic; fill: #F8766D; font-family: sans;' textLength='5.52px' lengthAdjust='spacingAndGlyphs'>y</text>
+<text x='122.18' y='109.13' style='font-size: 11.04px; fill: #F8766D; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='124.94' y='109.13' style='font-size: 11.04px; fill: #F8766D; font-family: sans;' textLength='6.45px' lengthAdjust='spacingAndGlyphs'>=</text>
+<text x='131.40' y='109.13' style='font-size: 11.04px; fill: #F8766D; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='134.16' y='109.13' style='font-size: 11.04px; fill: #F8766D; font-family: sans;' textLength='8.58px' lengthAdjust='spacingAndGlyphs'>−</text>
+<text x='144.27' y='109.13' style='font-size: 11.04px; fill: #F8766D; font-family: sans;' textLength='21.49px' lengthAdjust='spacingAndGlyphs'>2.73</text>
+<text x='167.80' y='109.13' style='font-size: 11.04px; fill: #F8766D; font-family: sans;' textLength='8.57px' lengthAdjust='spacingAndGlyphs'>+</text>
+<text x='178.42' y='109.13' style='font-size: 11.04px; fill: #F8766D; font-family: sans;' textLength='27.63px' lengthAdjust='spacingAndGlyphs'>0.965</text>
+<text x='206.04' y='109.13' style='font-size: 11.04px; fill: #F8766D; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='208.81' y='109.13' style='font-size: 11.04px; font-style: italic; fill: #F8766D; font-family: sans;' textLength='5.52px' lengthAdjust='spacingAndGlyphs'>x</text>
+<text x='214.33' y='109.13' style='font-size: 11.04px; fill: #F8766D; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='217.09' y='109.13' style='font-size: 11.04px; fill: #F8766D; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='219.86' y='109.13' style='font-size: 11.04px; fill: #F8766D; font-family: sans;' textLength='5.33px' lengthAdjust='spacingAndGlyphs'>ρ</text>
+<text x='225.19' y='109.13' style='font-size: 11.04px; fill: #F8766D; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='227.95' y='109.13' style='font-size: 11.04px; fill: #F8766D; font-family: sans;' textLength='6.45px' lengthAdjust='spacingAndGlyphs'>=</text>
+<text x='234.40' y='109.13' style='font-size: 11.04px; fill: #F8766D; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='237.16' y='109.13' style='font-size: 11.04px; fill: #F8766D; font-family: sans;' textLength='27.63px' lengthAdjust='spacingAndGlyphs'>294.3</text>
+<text x='264.79' y='109.13' style='font-size: 11.04px; fill: #F8766D; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='267.55' y='109.13' style='font-size: 11.04px; fill: #F8766D; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='270.32' y='109.13' style='font-size: 11.04px; fill: #F8766D; font-family: sans;' textLength='7.37px' lengthAdjust='spacingAndGlyphs'>A</text>
+<text x='277.68' y='109.13' style='font-size: 11.04px; fill: #F8766D; font-family: sans;' textLength='3.07px' lengthAdjust='spacingAndGlyphs'>I</text>
+<text x='280.75' y='109.13' style='font-size: 11.04px; fill: #F8766D; font-family: sans;' textLength='7.98px' lengthAdjust='spacingAndGlyphs'>C</text>
+<text x='288.72' y='109.13' style='font-size: 11.04px; fill: #F8766D; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='291.49' y='109.13' style='font-size: 11.04px; fill: #F8766D; font-family: sans;' textLength='6.45px' lengthAdjust='spacingAndGlyphs'>=</text>
+<text x='297.94' y='109.13' style='font-size: 11.04px; fill: #F8766D; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='300.70' y='109.13' style='font-size: 11.04px; fill: #F8766D; font-family: sans;' textLength='27.63px' lengthAdjust='spacingAndGlyphs'>754.7</text>
+<text x='328.33' y='109.13' style='font-size: 11.04px; fill: #F8766D; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='331.09' y='109.13' style='font-size: 11.04px; fill: #F8766D; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='333.85' y='109.13' style='font-size: 11.04px; fill: #F8766D; font-family: sans;' textLength='65.66px' lengthAdjust='spacingAndGlyphs'>method: rq:br</text>
+<text x='71.53' y='83.02' style='font-size: 11.04px; font-style: italic; fill: #00BA38; font-family: sans;' textLength='6.14px' lengthAdjust='spacingAndGlyphs'>q</text>
+<text x='77.67' y='83.02' style='font-size: 11.04px; fill: #00BA38; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='80.43' y='83.02' style='font-size: 11.04px; fill: #00BA38; font-family: sans;' textLength='6.45px' lengthAdjust='spacingAndGlyphs'>=</text>
+<text x='86.88' y='83.02' style='font-size: 11.04px; fill: #00BA38; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='89.65' y='83.02' style='font-size: 11.04px; fill: #00BA38; font-family: sans;' textLength='21.49px' lengthAdjust='spacingAndGlyphs'>0.50</text>
+<text x='111.13' y='83.02' style='font-size: 11.04px; fill: #00BA38; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='113.90' y='83.02' style='font-size: 11.04px; fill: #00BA38; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='116.66' y='83.02' style='font-size: 11.04px; font-style: italic; fill: #00BA38; font-family: sans;' textLength='5.52px' lengthAdjust='spacingAndGlyphs'>y</text>
+<text x='122.18' y='83.02' style='font-size: 11.04px; fill: #00BA38; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='124.94' y='83.02' style='font-size: 11.04px; fill: #00BA38; font-family: sans;' textLength='6.45px' lengthAdjust='spacingAndGlyphs'>=</text>
+<text x='131.40' y='83.02' style='font-size: 11.04px; fill: #00BA38; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='134.16' y='83.02' style='font-size: 11.04px; fill: #00BA38; font-family: sans;' textLength='27.63px' lengthAdjust='spacingAndGlyphs'>0.459</text>
+<text x='163.83' y='83.02' style='font-size: 11.04px; fill: #00BA38; font-family: sans;' textLength='8.57px' lengthAdjust='spacingAndGlyphs'>+</text>
+<text x='174.45' y='83.02' style='font-size: 11.04px; fill: #00BA38; font-family: sans;' textLength='21.49px' lengthAdjust='spacingAndGlyphs'>1.01</text>
+<text x='195.93' y='83.02' style='font-size: 11.04px; fill: #00BA38; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='198.70' y='83.02' style='font-size: 11.04px; font-style: italic; fill: #00BA38; font-family: sans;' textLength='5.52px' lengthAdjust='spacingAndGlyphs'>x</text>
+<text x='204.22' y='83.02' style='font-size: 11.04px; fill: #00BA38; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='206.98' y='83.02' style='font-size: 11.04px; fill: #00BA38; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='209.74' y='83.02' style='font-size: 11.04px; fill: #00BA38; font-family: sans;' textLength='5.33px' lengthAdjust='spacingAndGlyphs'>ρ</text>
+<text x='215.08' y='83.02' style='font-size: 11.04px; fill: #00BA38; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='217.84' y='83.02' style='font-size: 11.04px; fill: #00BA38; font-family: sans;' textLength='6.45px' lengthAdjust='spacingAndGlyphs'>=</text>
+<text x='224.29' y='83.02' style='font-size: 11.04px; fill: #00BA38; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='227.05' y='83.02' style='font-size: 11.04px; fill: #00BA38; font-family: sans;' textLength='27.63px' lengthAdjust='spacingAndGlyphs'>347.9</text>
+<text x='254.68' y='83.02' style='font-size: 11.04px; fill: #00BA38; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='257.44' y='83.02' style='font-size: 11.04px; fill: #00BA38; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='260.20' y='83.02' style='font-size: 11.04px; fill: #00BA38; font-family: sans;' textLength='7.37px' lengthAdjust='spacingAndGlyphs'>A</text>
+<text x='267.57' y='83.02' style='font-size: 11.04px; fill: #00BA38; font-family: sans;' textLength='3.07px' lengthAdjust='spacingAndGlyphs'>I</text>
+<text x='270.64' y='83.02' style='font-size: 11.04px; fill: #00BA38; font-family: sans;' textLength='7.98px' lengthAdjust='spacingAndGlyphs'>C</text>
+<text x='278.61' y='83.02' style='font-size: 11.04px; fill: #00BA38; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='281.37' y='83.02' style='font-size: 11.04px; fill: #00BA38; font-family: sans;' textLength='6.45px' lengthAdjust='spacingAndGlyphs'>=</text>
+<text x='287.83' y='83.02' style='font-size: 11.04px; fill: #00BA38; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='290.59' y='83.02' style='font-size: 11.04px; fill: #00BA38; font-family: sans;' textLength='27.63px' lengthAdjust='spacingAndGlyphs'>730.6</text>
+<text x='318.22' y='83.02' style='font-size: 11.04px; fill: #00BA38; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='320.98' y='83.02' style='font-size: 11.04px; fill: #00BA38; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='323.74' y='83.02' style='font-size: 11.04px; fill: #00BA38; font-family: sans;' textLength='65.66px' lengthAdjust='spacingAndGlyphs'>method: rq:br</text>
+<text x='71.53' y='56.90' style='font-size: 11.04px; font-style: italic; fill: #619CFF; font-family: sans;' textLength='6.14px' lengthAdjust='spacingAndGlyphs'>q</text>
+<text x='77.67' y='56.90' style='font-size: 11.04px; fill: #619CFF; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='80.43' y='56.90' style='font-size: 11.04px; fill: #619CFF; font-family: sans;' textLength='6.45px' lengthAdjust='spacingAndGlyphs'>=</text>
+<text x='86.88' y='56.90' style='font-size: 11.04px; fill: #619CFF; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='89.65' y='56.90' style='font-size: 11.04px; fill: #619CFF; font-family: sans;' textLength='21.49px' lengthAdjust='spacingAndGlyphs'>0.75</text>
+<text x='111.13' y='56.90' style='font-size: 11.04px; fill: #619CFF; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='113.90' y='56.90' style='font-size: 11.04px; fill: #619CFF; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='116.66' y='56.90' style='font-size: 11.04px; font-style: italic; fill: #619CFF; font-family: sans;' textLength='5.52px' lengthAdjust='spacingAndGlyphs'>y</text>
+<text x='122.18' y='56.90' style='font-size: 11.04px; fill: #619CFF; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='124.94' y='56.90' style='font-size: 11.04px; fill: #619CFF; font-family: sans;' textLength='6.45px' lengthAdjust='spacingAndGlyphs'>=</text>
+<text x='131.40' y='56.90' style='font-size: 11.04px; fill: #619CFF; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='134.16' y='56.90' style='font-size: 11.04px; fill: #619CFF; font-family: sans;' textLength='21.49px' lengthAdjust='spacingAndGlyphs'>6.47</text>
+<text x='157.69' y='56.90' style='font-size: 11.04px; fill: #619CFF; font-family: sans;' textLength='8.57px' lengthAdjust='spacingAndGlyphs'>+</text>
+<text x='168.31' y='56.90' style='font-size: 11.04px; fill: #619CFF; font-family: sans;' textLength='21.49px' lengthAdjust='spacingAndGlyphs'>1.03</text>
+<text x='189.79' y='56.90' style='font-size: 11.04px; fill: #619CFF; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='192.56' y='56.90' style='font-size: 11.04px; font-style: italic; fill: #619CFF; font-family: sans;' textLength='5.52px' lengthAdjust='spacingAndGlyphs'>x</text>
+<text x='198.08' y='56.90' style='font-size: 11.04px; fill: #619CFF; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='200.84' y='56.90' style='font-size: 11.04px; fill: #619CFF; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='203.60' y='56.90' style='font-size: 11.04px; fill: #619CFF; font-family: sans;' textLength='5.33px' lengthAdjust='spacingAndGlyphs'>ρ</text>
+<text x='208.94' y='56.90' style='font-size: 11.04px; fill: #619CFF; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='211.70' y='56.90' style='font-size: 11.04px; fill: #619CFF; font-family: sans;' textLength='6.45px' lengthAdjust='spacingAndGlyphs'>=</text>
+<text x='218.15' y='56.90' style='font-size: 11.04px; fill: #619CFF; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='220.91' y='56.90' style='font-size: 11.04px; fill: #619CFF; font-family: sans;' textLength='27.63px' lengthAdjust='spacingAndGlyphs'>283.9</text>
+<text x='248.54' y='56.90' style='font-size: 11.04px; fill: #619CFF; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='251.30' y='56.90' style='font-size: 11.04px; fill: #619CFF; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='254.06' y='56.90' style='font-size: 11.04px; fill: #619CFF; font-family: sans;' textLength='7.37px' lengthAdjust='spacingAndGlyphs'>A</text>
+<text x='261.43' y='56.90' style='font-size: 11.04px; fill: #619CFF; font-family: sans;' textLength='3.07px' lengthAdjust='spacingAndGlyphs'>I</text>
+<text x='264.50' y='56.90' style='font-size: 11.04px; fill: #619CFF; font-family: sans;' textLength='7.98px' lengthAdjust='spacingAndGlyphs'>C</text>
+<text x='272.47' y='56.90' style='font-size: 11.04px; fill: #619CFF; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='275.23' y='56.90' style='font-size: 11.04px; fill: #619CFF; font-family: sans;' textLength='6.45px' lengthAdjust='spacingAndGlyphs'>=</text>
+<text x='281.69' y='56.90' style='font-size: 11.04px; fill: #619CFF; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='284.45' y='56.90' style='font-size: 11.04px; fill: #619CFF; font-family: sans;' textLength='27.63px' lengthAdjust='spacingAndGlyphs'>747.5</text>
+<text x='312.08' y='56.90' style='font-size: 11.04px; fill: #619CFF; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='314.84' y='56.90' style='font-size: 11.04px; fill: #619CFF; font-family: sans;' textLength='2.76px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='317.60' y='56.90' style='font-size: 11.04px; fill: #619CFF; font-family: sans;' textLength='65.66px' lengthAdjust='spacingAndGlyphs'>method: rq:br</text>
 <rect x='37.69' y='22.78' width='676.83' height='522.33' style='stroke-width: 1.07; stroke: #333333;' />
 </g>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
