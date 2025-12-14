@@ -68,4 +68,4 @@ BugReports: https://github.com/aphalo/ggpmisc/issues
 Encoding: UTF-8
 RoxygenNote: 7.3.3
 VignetteBuilder: knitr
-Config/Needs/website: rmarkdown
+Config/Needs/website: rmarkdown xdvir smatr ggrepel robustbase nlme lspline segmented refitME
