@@ -1035,8 +1035,8 @@ adj_rr_label <- function(value,
           sep = ifelse(adj.rr.value < 10^(-digits) & adj.rr.value != 0,
                        "~`<`~",
                        "~`=`~"))
-  } else if (grepl("^latex", output.type) || output.type == "text") {
-    z <- paste(ifelse(small.r, "r_{adj}^2", "R_{adj}^2"),
+  } else if (grepl("^latex", output.type)) {
+    z <- paste(ifelse(small.r, "r_\\mathrm{adj}^2", "R_\\mathrm{adj}^2"),
                ifelse(adj.rr.value < 10^(-digits),
                       sprintf_dm(format, digits, 10^(-digits), decimal.mark = decimal.mark),
                       adj.rr.value.char),
@@ -1048,6 +1048,12 @@ adj_rr_label <- function(value,
     } else {
       z
     }
+  } else if (output.type == "text") {
+    paste(ifelse(small.r, "r_adj^2", "R_adj^2"),
+          ifelse(adj.rr.value < 10^(-digits),
+                 sprintf_dm(format, digits, 10^(-digits), decimal.mark = decimal.mark),
+                 adj.rr.value.char),
+          sep = ifelse(adj.rr.value < 10^(-digits), " < ", " = "))
   } else if (output.type == "markdown") {
     paste(ifelse(small.r, "_r_<sup>2</sup><sub>adj</sub>", "_R_<sup>2</sup><sub>adj</sub>"),
           ifelse(adj.rr.value < 10^(-digits),
@@ -1293,10 +1299,13 @@ check_output_type <-
              c("expression", "text", "markdown", "numeric",
                "latex", "latex.eqn", "latex.deqn")) {
     if (is.null(output.type)) {
-      if (geom %in% c("richtext", "textbox", "marquee")) {
+      if (geom %in% c("richtext", "textbox")) { # , "marquee" needs different markup
         output.type <- "markdown"
       } else if (geom == "latex") { # package 'xdvir'
         output.type <- "latex.eqn"
+      } else if (geom == "marquee") { # package 'marquee'
+        message("Currently Markdown is supported with 'ggtext', not 'Marquee'")
+        output.type <- "text"
       } else {
         output.type <- "expression"
       }

@@ -491,15 +491,15 @@ test_that("well-formatted adjusted R2 labels", {
   expect_equal(adj_rr_label(value = 0.5, output.type = "expression"),
                "italic(R)[adj]^2~`=`~\"0.500\"")
   expect_equal(adj_rr_label(value = 0.5, output.type = "latex"),
-               "R_{adj}^2 = 0.500")
+               "R_\\mathrm{adj}^2 = 0.500")
   expect_equal(adj_rr_label(value = 0.5, output.type = "latex.eqn"),
-               "$ R_{adj}^2 = 0.500 $")
+               "$ R_\\mathrm{adj}^2 = 0.500 $")
   expect_equal(adj_rr_label(value = 0.5, output.type = "latex.deqn"),
-               "$$ R_{adj}^2 = 0.500 $$")
+               "$$ R_\\mathrm{adj}^2 = 0.500 $$")
   expect_equal(adj_rr_label(value = 0.5, output.type = "markdown"),
                "_R_<sup>2</sup><sub>adj</sub> = 0.500")
   expect_equal(adj_rr_label(value = 0.5, output.type = "text"),
-               "R_{adj}^2 = 0.500")
+               "R_adj^2 = 0.500")
   expect_warning(adj_rr_label(value = 0.5, digits = 1))
   expect_warning(adj_rr_label(value = 1.1))
   expect_no_warning(adj_rr_label(value = -0.1))
