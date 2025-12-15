@@ -49,7 +49,7 @@ print(citation(package = "xdvir", auto = TRUE), bibtex = FALSE)
 
 At the moment only some R graphic devices support the newer features of 'grid' graphics. The plots in this document have been rendered by 'svglite'. A reasonably recent version of R is also needed.
 
-Package 'xdvir' depends on R (>= 4.3.0) and has as system requirement 'freetype2'. In package 'ggpmisc' (< 0.6.0) the generation of labels with $\LaTeX$ markup had some bugs; 'ggpmisc' (>= 0.6.0) is better tested and also easier to use with `geom_latex()` from package 'xdvir'. 
+Package 'xdvir' depends on R (>= 4.3.0) and has as system requirement 'freetype2'. In package 'ggpmisc' (< 0.6.0) the generation of labels with $\LaTeX$ markup had some bugs; 'ggpmisc' (>= 0.6.0) is better tested and also easier to use with `geom_latex()` from package 'xdvir'. The geoms from 'ggpp' obey the geom element of themes from 'ggplot2' (>= 4.0.0).
 
 ## Advantages and disadvantages
 
@@ -62,7 +62,9 @@ $\LaTeX$ does not have any of these limitations, but using it for individually t
 
 Murrel (2025) describes this in detail in an [article](https://doi.org/10.32614/RJ-2025-028). The examples below show how much better the output is and some of the new possibilities.
 
-## Preliminaries
+## Examples
+
+### Preliminaries
 
 There are two different pieces of software under the name TinyTeX. One is a distribution of $\TeX$ and relatives, including executables and a collection $\LaTeX$ packages. This is totally independent of R. There is also an R package 'tinytex' that makes it possible to compile from within R `.tex` documents, possibly generated and saved on-the-fly by R.
 
@@ -85,6 +87,12 @@ library(ggpmisc)
 library(xdvir)
 ```
 
+We will also farther down compare $\LaTeX$ and Markdown markup, with 'ggtext'.
+
+```{r}
+library(ggtext)
+```
+
 For debugging, longer messages can be very helpful.
 
 ```{r, include=FALSE}
@@ -92,6 +100,8 @@ options(tinytex.verbose = TRUE)
 ```
 
 Attaching package 'ggpmisc' also attaches package 'ggpp' as it provides several of the geometries used by default in the statistics described below. Package 'ggpp' can be loaded and attached on its own, and has [separate documentation](https://docs.r4photobiology.info/ggpp/).
+
+This file was rendered using 'ggplot2' (== `r packageVersion("ggplot2")`), 'ggpmisc' (== `r packageVersion("ggpmisc")`), 'ggpp' (== `r packageVersion("ggpp")`), 'ggtext' (== `r packageVersion("ggtext")`), 'xdvir' (== `r packageVersion("xdvir")`), 'tinytex' (== `r packageVersion("tinytex")`), 'grid' (== `r packageVersion("grid")`), and 'ragg' (== `r packageVersion("ragg")`).
 
 As we will use text and labels on the plotting area we change the default theme to an uncluttered one. We also change titles to be treated as $\LaTeX$ encoded.
 
@@ -126,7 +136,7 @@ ggplot(my.data, aes(x, y)) +
   geom_point() +
   annotate(geom = "latex",
            label = "\\textbf{abc} $\\sqrt{10}^2$", x = 1, y = 9) +
-  labs(title = "Use of \\LaTeX\\ can be \\textcolor{red}{colourfull}!", 
+  labs(title = "Use of \\LaTeX\\ can be \\textcolor{red}{colourful}!", 
        subtitle = 
          paste("Math like $\\sqrt{12}^3$ as well as \\emph{italic} and", 
                "\\strong{bold} become available."),
@@ -389,7 +399,7 @@ ggplot(my.data[sample(1:nrow(my.data), 12), ], aes(x, y)) +
 
 ### Geom element of theme
 
-Currently, to use 'ggplot2' (>= 4.0.0) theme's geom element, `GeomLatex` needs to be updated.
+Currently, for it to use 'ggplot2' (>= 4.0.0) theme's geom element, `GeomLatex` from 'xdvir' needs to be updated.
 
 ```{r}
 update_geom_defaults(
@@ -408,7 +418,96 @@ ggplot(my.data, aes(x, y)) +
   stat_correlation(geom = "latex", hjust = 0, vjust = 1)
 ```
 
-```{r}
+## Comparison of markup formats
 
+The geoms from 'ggpmisc' support different markups for the annotation labels: plain text, R's plotmath expressions, Markdown and $\LaTeX$. 
+
+The most interesting comparison is on the fitted model equation, and parameters such a $R_\mathrm{adj}^2$ that when properly typeset include subscripts, superscripts and both italic and upright characters. For this comparison we do not consider the axis labels.
+
+We use a serif font so that the differences in typesetting are clearer, as the default math font in $\LaTeX$ is a serif font.
+
+```{r}
+set_theme(theme_classic(base_family = "serif"))
 ```
 
+We update `GeomRichText` from 'ggtext' so that it obeys the geom element of 'ggplot2' (>= 4.0.0) themes.
+
+```{r}
+update_geom_defaults(
+        GeomRichText,
+        ggplot2::aes(colour = from_theme(colour %||% ink),
+                     family = from_theme(family),
+                     size = from_theme(fontsize)))
+```
+
+
+The simplest labels are encoded as plain text, to force this type of output we pass `output.type = "text"` in the call and a suitable geom.
+
+```{r}
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_poly_line(formula = formula) +
+  stat_poly_eq(mapping = use_label("eq", "adj.R2", sep = "; "),
+               formula = formula,
+               output.type = "text",
+               geom = "text", 
+               size = 3.5, hjust = 0, vjust = 1)
+```
+
+The default is to generate R plotmath expressions for `geom_text()`, `geom_label()` and their variants from package 'ggpp'. Parsing is automatically enabled when `output.type = "expression"`, below we redundantly set the output type. This demonstrates how to force output as R expressions with unrecognized geoms.
+
+```{r}
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_poly_line(formula = formula) +
+  stat_poly_eq(mapping = use_label("eq", "adj.R2", sep = "*\", \"*"),
+               formula = formula,
+               output.type = "expression",
+               geom = "text", 
+               hjust = 0, vjust = 1)
+```
+
+In the last few years Markdown has become rather well supported in R plotting. Markdown lacks native standardised markup for subscripts and superscripts. This is problematic for equations. In 'ggpp', in calls with `output.type = "markdown"` super- and sub scripts are encoded using HTML (`<sub> and <sup>`), which several dialects of Markdown recognise. This is the case for `geom_richtext()` from package 'ggtext'. The output type switch is automatic for `geom = "richtext"`. Package 'Marquee' is not currently supported as it does not seem to support superscripts and subscripts.
+
+```{r}
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_poly_line(formula = formula) +
+  stat_poly_eq(mapping = use_label("eq", "adj.R2", sep = ", "),
+               formula = formula, 
+               geom = "richtext", hjust = 0, vjust = 1, label.size = 0) +
+  labs(x = expression(italic(x)), y = expression(italic(y)))
+```
+
+$\LaTeX$ provides the best typesetting, but is rather slow. Slowness is noticeable when many plots need to be created in a document, such as this article.
+
+```{r}
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_poly_line(formula = formula) +
+  stat_poly_eq(mapping = use_label("eq", "adj.R2", sep = ", "),
+               formula = formula, 
+               geom = "latex", hjust = 0, vjust = 1)
+```
+
+Finally `output.type = "numeric"` does not create `character` labels, it only returns numeric values that the user can convert into custom labels within a call to `aes()`.
+
+```{r}
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_poly_line(formula = formula) +
+  stat_poly_eq(mapping = 
+                 aes(label = sprintf("$R^2 = %.0f \\%%$",
+                                     after_stat(r.squared) * 100)),
+               formula = formula,
+               geom = "latex", # needs to accept the manual markup 
+               output.type = "numeric",
+               hjust = 0, vjust = 1)
+```
+
+Explanation for `\\%%`: to get a % sign in $\LaTeX$ the scape `\%` is used, because `%` is used to mark comments. However, `\` is also special in R character strings as it is used to encode non-printable characters such as new line (`\n`). Thus, the escape sequence `\\` encodes the single `\` character expected by $\LaTeX$. In addition, `%` is a special character in the format expected by `sprintf()` with `%.0f` above indicating a number formated with no decimal fraction. In the format string used by `sprintf()`, `%%` is the scape sequence that encodes a single `%` character!
