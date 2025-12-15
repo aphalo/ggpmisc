@@ -1,8 +1,8 @@
 Package: ggpmisc
 Type: Package
 Title: Miscellaneous Extensions to 'ggplot2'
-Version: 0.6.3
-Date: 2025-11-29
+Version: 0.6.3.9000
+Date: 2025-12-08
 Authors@R:
     c(
     person("Pedro J.", "Aphalo", email = "pedro.aphalo@helsinki.fi", role = c("aut", "cre"), comment = c(ORCID = "0000-0003-3385-972X")),
@@ -68,4 +68,4 @@ BugReports: https://github.com/aphalo/ggpmisc/issues
 Encoding: UTF-8
 RoxygenNote: 7.3.3
 VignetteBuilder: knitr
-Config/Needs/website: rmarkdown
+Config/Needs/website: rmarkdown xdvir smatr ggrepel robustbase nlme lspline segmented refitME

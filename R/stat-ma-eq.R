@@ -94,6 +94,8 @@
 #'   \code{NA} value. Thus, user-defined methods can implement conditional
 #'   skipping of labelling.
 #'
+#' @inheritSection check_output_type Output types
+#'
 #' @section Aesthetics: \code{stat_ma_eq} understands \code{x} and \code{y}, to
 #'   be referenced in the \code{formula} while the \code{weight} aesthetic is
 #'   ignored. Both \code{x} and \code{y} must be mapped to \code{numeric}
@@ -336,13 +338,9 @@ stat_ma_eq <- function(mapping = NULL,
   orientation <- temp[["orientation"]]
   formula <-  temp[["formula"]]
 
-  if (is.null(output.type)) {
-    if (geom %in% c("richtext", "textbox", "marquee")) {
-      output.type <- "markdown"
-    } else {
-      output.type <- "expression"
-    }
-  }
+  output.type <-
+    check_output_type(output.type = output.type, geom = geom)
+
   if (is.null(parse)) {
     parse <- output.type == "expression"
   }
@@ -441,14 +439,6 @@ ma_eq_compute_group_fun <- function(data,
     warning("Decimal mark must be one of '.' or ',', not: '", decimal.mark, "'")
     decimal.mark <- "."
   }
-
-  output.type <- if (!length(output.type)) {
-    "expression"
-  } else {
-    tolower(output.type)
-  }
-  stopifnot(output.type %in%
-              c("expression", "text", "markdown", "numeric", "latex", "tex", "tikz"))
 
   if (exists("grp.label", data)) {
     if (length(unique(data[["grp.label"]])) > 1L) {
@@ -637,8 +627,8 @@ ma_eq_compute_group_fun <- function(data,
                                                   output.type = output.type,
                                                   decimal.mark = decimal.mark),
                     theta.label = italic_label(value = theta,
-                                               value.name = ifelse(output.type %in% c("latex", "text", "tikz"),
-                                                                   "\theta{}",
+                                               value.name = ifelse(grepl("^latex", output.type),
+                                                                   "\\theta{}",
                                                                    ifelse(output.type == "markdown",
                                                                           "&theta;",
                                                                           "theta")),

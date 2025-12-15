@@ -39,7 +39,7 @@ build_lhs <- function(output.type = "expression",
   if (orientation == "x") {
     if (output.type == "expression") {
       "italic(y)~`=`~"
-    } else if (output.type %in% c("latex", "tex", "tikz", "text")) {
+    } else if (grepl("^latex", output.type) || output.type == "text") {
       "y = "
     } else if (output.type == "markdown") {
       "_y_ = "
@@ -47,7 +47,7 @@ build_lhs <- function(output.type = "expression",
   } else if (orientation == "y") {
     if (output.type == "expression") {
       "italic(x)~`=`~"
-    } else if (output.type %in% c("latex", "tex", "tikz", "text")) {
+    } else if (grepl("^latex", output.type) || output.type == "text") {
       "x = "
     } else if (output.type == "markdown") {
       "_x_ = "
@@ -139,9 +139,9 @@ typeset_numbers <- function(eq.char, output.type) {
   } else {
     eq.char <- gsub("e([+-]?[0-9]*)", "%*% 10^{\\1}", eq.char)
     # muliplication symbol
-    if (output.type %in% c("latex", "tikz")) {
+    if (grepl("^latex", output.type)) {
       eq.char <- gsub("%*%", "\\times{}", eq.char, fixed = TRUE)
-      eq.char <- gsub("*", "", eq.char, fixed = TRUE)
+      eq.char <- gsub("*", "\\,", eq.char, fixed = TRUE)
     } else if (output.type == "text") {
       eq.char <- gsub("[{]|[}]", "", eq.char, fixed = FALSE)
       eq.char <- gsub("%*%", "", eq.char, fixed = TRUE)
@@ -203,6 +203,7 @@ coefs2poly_eq <- function(coefs,
   if (output.type != "expression") { # parse() does the conversion
     if (decimal.mark == ".") {
       eq.char <- gsub(",", decimal.mark, eq.char, fixed = TRUE)
+      eq.char <- gsub("\\.", "\\,", eq.char, fixed = TRUE) # kludge to undo bad substitution
     } else {
       eq.char <- gsub(".", decimal.mark, eq.char, fixed = TRUE)
     }
@@ -214,7 +215,11 @@ coefs2poly_eq <- function(coefs,
   if (length(lhs)) {
     eq.char <- paste(lhs, eq.char, sep = "")
   }
-
-  eq.char
+  if (output.type == "latex.eqn") {
+    paste("$", eq.char, "$")
+  } else if (output.type == "latex.deqn") {
+    paste("$$", eq.char, "$$")
+  } else {
+    eq.char
+  }
 }
-

@@ -4,6 +4,22 @@ editor_options:
     wrap: 72
 ---
 
+# ggpmisc 0.7.0
+
+This version has been updated to work smoothly with `geom_latex()` from package
+'xdvir'.
+
+-   Automatic selection of `output.type = "latex.eqn"` when `"latex"` is passed
+as argument to parameter `geom` of statistics that generate labels, including
+fitted model equations.
+-   With new `output.type == "latex.eqn"` and `output.type == "latex.deqn"` 
+labels are fenced with `$` or `$$` to be readily formatted as $\LaTeX$ 
+in math mode. As earlier `output.type == "latex"` outputs the same labels without
+the fences in case they are to be combined into a larger math mode equation.
+-   Bugs in the $\LaTeX$ encodings of a couple of labels have been fixed.
+-   A new on-line-only article gives examples of the use of 'ggpmisc' together
+with R package 'xdvir'. 
+
 # ggpmisc 0.6.3
 
 This version adds support for additional model fitting approaches

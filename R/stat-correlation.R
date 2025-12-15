@@ -89,6 +89,8 @@
 #'   \code{x} and \code{y} should both be continuous scales rather than
 #'   discrete.
 #'
+#' @inheritSection check_output_type Output types
+#'
 #' @section Aesthetics: \code{stat_correaltion()} requires \code{x} and
 #'   \code{y}. In addition, the aesthetics understood by the geom
 #'   (\code{"text"} is the default) are understood and grouping respected.
@@ -291,13 +293,10 @@ stat_correlation <-
            parse = NULL,
            show.legend = FALSE,
            inherit.aes = TRUE) {
-    if (is.null(output.type)) {
-      if (geom %in% c("richtext", "textbox", "marquee")) {
-        output.type <- "markdown"
-      } else {
-        output.type <- "expression"
-      }
-    }
+
+    output.type <-
+      check_output_type(output.type = output.type, geom = geom)
+
     if (is.null(parse)) {
       parse <- output.type == "expression"
     }
@@ -400,10 +399,6 @@ cor_test_compute_fun <- function(data,
   range.sep <- c("." = ", ", "," = "; ")[decimal.mark]
 
   formula <- ~ y + x
-
-  output.type <- tolower(output.type)
-  stopifnot(output.type %in%
-    c("expression", "text", "markdown", "numeric", "latex", "tex", "tikz"))
 
   if (exists("grp.label", data)) {
     if (length(unique(data[["grp.label"]])) > 1L) {

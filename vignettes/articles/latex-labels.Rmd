@@ -1,0 +1,513 @@
+---
+title: "Using LaTeX for annotations"
+subtitle: "'ggpmisc' `r packageVersion('ggpmisc')`"
+author: "Pedro J. Aphalo"
+date: "`r Sys.Date()`"
+---
+
+```{r, include=FALSE, echo=FALSE}
+library(ragg)
+knitr::opts_chunk$set(fig.align = 'center', 
+                      collapse = TRUE,
+                      comment = "#>",
+                      dev = "ragg_png", 
+                      fig.show = 'hold',
+                      fig.width = 6, fig.height = 4)
+
+options(warnPartialMatchArgs = FALSE,
+        tibble.print.max = 4,
+        tibble.print.min = 4,
+        dplyr.summarise.inform = FALSE)
+```
+
+
+## Aims of 'ggpmisc' and caveats
+
+Package 'ggpmisc' makes it easier to add to plots created using 'ggplot2' annotations based on fitted models and other statistics. It does this by wrapping existing model fit and other functions. The same annotations can be produced by calling the model fit functions, extracting the desired estimates and adding them to plots. There are two advantages in wrapping these functions in an extension to package 'ggplot2': 1) we ensure the coupling of graphical elements and the annotations by building all elements of the plot using the same data and a consistent grammar and 2) we make it easier to annotate plots to the casual user of R, already familiar with the grammar of graphics.
+
+_To avoid confusion it is good to make clear what may seem obvious to some: if no plot is needed, then there is no reason to use this package. The values shown as annotations are not computed by 'ggpmisc' but instead by the usual model-fit and statistical functions from R and R packages. The same is true for model predictions, residuals, etc. that some of the functions in 'ggpmisc' display as lines, segments, or other graphical elements._
+
+It is also important to remember that in most cases data analysis including exploratory and other stages should take place before annotated plots for publication are produced. Even though data analysis can benefit from combined numerical and graphical representation of the results, the use I envision for 'ggpmisc' is mainly for the production of plots for publication or communication. In case case, whether used for analysis or communication, it is crucial that users cite and refer both to 'ggpmisc' and to the underlying R and R packages when publishing plots created with functions and methods from 'ggpmisc'.
+
+
+```{r}
+print(citation(package = "ggpmisc", auto = TRUE), bibtex = FALSE)
+```
+
+
+## Using $\LaTeX$
+
+R package 'xdvir' opens the door to easily using $\LaTeX$ to typeset labels and other text annotations and to convert the DVI device independent output into R's 'grid' graphical commands. This provides a big step forward in the quality of typesetting of mathematical expressions compared to R's plotmath expressions or markdown.
+
+Package 'ggpmisc' has supported $\LaTeX$ formatting of labels but it has been in the past complex to combine them with ggplots. Package 'xdvir' provides `geom_latex()` that makes using the $\LaTeX$-formatted labels from 'ggpmisc' extremely easy.
+
+Package 'xdvir' was created by Paul Murrell, the person behind most of the improvements to R's graphics "engine" of the past two or three decades. Murrell (2025) describes 'xdvir' in detail, and I recommend reading this article. For other aspects of R graphics, see Murrel's book ().
+
+```{r}
+print(citation(package = "xdvir", auto = TRUE), bibtex = FALSE)
+```
+
+At the moment only some R graphic devices support the newer features of 'grid' graphics. The plots in this document have been rendered by 'svglite'. A reasonably recent version of R is also needed.
+
+Package 'xdvir' depends on R (>= 4.3.0) and has as system requirement 'freetype2'. In package 'ggpmisc' (< 0.6.0) the generation of labels with $\LaTeX$ markup had some bugs; 'ggpmisc' (>= 0.6.0) is better tested and also easier to use with `geom_latex()` from package 'xdvir'. The geoms from 'ggpp' obey the geom element of themes from 'ggplot2' (>= 4.0.0).
+
+## Advantages and disadvantages
+
+R plotmath expressions can be used to display mathematical equations in
+'ggplots' but the typesetting is not as refined as with $\LaTeX$. Plotmath supports changes between upright, italic and bold, but not changes in colour or font family. Most limiting in some cases in that labels can have a single line.
+
+Markdown makes possible to some extent multiline text, use multiple colours and fonts in a single label and also line breaks. However, maths typesetting is lacking.
+
+$\LaTeX$ does not have any of these limitations, but using it for individually typeset labels is more time consuming. This is not as bad as is could be because labels are cached and rendered only when they are modified.
+
+Murrel (2025) describes this in detail in an [article](https://doi.org/10.32614/RJ-2025-028). The examples below show how much better the output is and some of the new possibilities.
+
+## Examples
+
+### Preliminaries
+
+There are two different pieces of software under the name TinyTeX. One is a distribution of $\TeX$ and relatives, including executables and a collection $\LaTeX$ packages. This is totally independent of R. There is also an R package 'tinytex' that makes it possible to compile from within R `.tex` documents, possibly generated and saved on-the-fly by R.
+
+To use the R package 'tinytex' an installation of $\TeX$ and relatives must be available. The author of 'tinytex' has created the TinyTeX distribution as a simple approach to using $\TeX$ and $\LaTeX$. The 'tinytex' package can also use other distributions. If you already have MikTeX or TeX Live installed, it is best NOT to install TinyTeX unless you are willing to first uninstall them.  
+
+Before installing the TinyTeX distribution, do check the [TinyTeX documentation](https://yihui.org/tinytex/).
+
+Package 'xdvir' depends on 'tinytex' and 'grid'. The default $\TeX$ engine is 'luatex', but as it is not yet fully supported, it is currentöy safer to use 'xetex' instead.
+
+```{r}
+## Math typesetting by LuaTeX can fall back into mode=base
+## (which we can't currently handle)
+## so use XeTeX engine for this vignette
+options("xdvir.engine"="xetex")
+```
+
+```{r, message=FALSE}
+library(grid)
+library(ggpmisc)
+library(xdvir)
+```
+
+We will also farther down compare $\LaTeX$ and Markdown markup, with 'ggtext'.
+
+```{r}
+library(ggtext)
+```
+
+For debugging, longer messages can be very helpful.
+
+```{r, include=FALSE}
+options(tinytex.verbose = TRUE)
+```
+
+Attaching package 'ggpmisc' also attaches package 'ggpp' as it provides several of the geometries used by default in the statistics described below. Package 'ggpp' can be loaded and attached on its own, and has [separate documentation](https://docs.r4photobiology.info/ggpp/).
+
+This file was rendered using 'ggplot2' (== `r packageVersion("ggplot2")`), 'ggpmisc' (== `r packageVersion("ggpmisc")`), 'ggpp' (== `r packageVersion("ggpp")`), 'ggtext' (== `r packageVersion("ggtext")`), 'xdvir' (== `r packageVersion("xdvir")`), 'tinytex' (== `r packageVersion("tinytex")`), 'grid' (== `r packageVersion("grid")`), and 'ragg' (== `r packageVersion("ragg")`).
+
+As we will use text and labels on the plotting area we change the default theme to an uncluttered one. We also change titles to be treated as $\LaTeX$ encoded.
+
+```{r}
+theme_set(theme_classic() +
+  theme(axis.title.y = element_latex(),
+        axis.title.x = element_latex(),
+        axis.text.y =  element_latex(),
+        axis.text.x =  element_latex(),
+        plot.title = element_latex(packages="xcolor"),
+        plot.subtitle = element_latex(packages="xcolor")))
+```
+
+### stat_correlation()
+
+We first generate a set of artificial data suitable for the plotting examples in this and subsequent sections.
+
+```{r}
+set.seed(4321)
+x <- (1:100) / 10
+y <- x + rnorm(length(x))
+my.data <- data.frame(x = x,
+                      y = y,
+                      y.desc = - y,
+                      group = c("A", "B"))
+```
+
+We start by checking that 'xdvir' is working as expected. One thing to keep in mind is the need to escape especial characters, here using `\\` instead of `\`. This is necessary as the backslash has a especial "meaning" in R's character strings.
+
+```{r}
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  annotate(geom = "latex",
+           label = "\\textbf{abc} $\\sqrt{10}^2$", x = 1, y = 9) +
+  labs(title = "Use of \\LaTeX\\ can be \\textcolor{red}{colourful}!", 
+       subtitle = 
+         paste("Math like $\\sqrt{12}^3$ as well as \\emph{italic} and", 
+               "\\strong{bold} become available."),
+       y = "$y = x + N(1, 1)$", x = "$x$")
+```
+
+For the first example we use defaults to add an annotation with Pearson's correlation coefficient.
+
+```{r}
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_correlation(geom = "latex", hjust = 0, vjust = 1)
+```
+
+Grouping is supported.
+
+```{r}
+ggplot(my.data, aes(x, y, color = group)) +
+  geom_point() +
+  stat_correlation(geom = "latex", hjust = 0, vjust = 1)
+```
+
+We can also compute Spearman's rank correlation. (The symbol used for it is the letter rho to distinguish it from Pearson's correlation for which *R* or *r* are used as symbols.)
+
+```{r}
+ggplot(my.data, aes(x, y, color = group)) +
+  geom_point() +
+  stat_correlation(method = "spearman", 
+                   geom = "latex", hjust = 0, vjust = 1)
+```
+
+Statistic `stat_correlation()` generates multiple labels as listed in the tables above. We can combine them freely within a call to `aes()` to customize the annotations, or we can use the convenience function `use_label()` to create the mapping.
+
+```{r}
+ggplot(my.data, aes(x, y, color = group)) +
+  geom_point() +
+  stat_correlation(mapping = use_label("R", "t", "P", "n", sep = ", "),
+                   geom = "latex", hjust = 0, vjust = 1)
+```
+
+Facets are also supported.
+
+```{r}
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_correlation(geom = "latex", hjust = 0, vjust = 1) +
+  facet_wrap(~group)
+```
+
+Using the numeric values returned it is possible to set other aesthetics on-the-fly.
+
+```{r}
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_correlation(mapping = aes(color = ifelse(after_stat(cor) > 0.955,
+                                                "red", "black")),
+                   geom = "latex", hjust = 0, vjust = 1) +
+  scale_color_identity() +
+  facet_wrap(~group)
+```
+
+### stat_poly_eq()
+
+We first generate a set of artificial data suitable for the plotting examples.
+
+```{r}
+set.seed(4321)
+# generate artificial data
+x <- 1:100
+y <- (x + x^2 + x^3) + rnorm(length(x), mean = 0, sd = mean(x^3) / 4)
+y <- y / max(y)
+my.data <- data.frame(x, 
+                      y, 
+                      group = c("A", "B"), 
+                      y2 = y * c(1, 2) + c(0, 0.2),
+                      block = c("a", "a", "b", "b"),
+                      wt = sqrt(x))
+```
+
+
+```{r}
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_poly_line(formula = formula) +
+  stat_poly_eq(formula = formula,
+               geom = "latex", hjust = 0, vjust = 1)
+```
+
+```{r}
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_poly_line(formula = formula) +
+  stat_poly_eq(mapping = use_label("eq"), formula = formula,
+               geom = "latex", hjust = 0, vjust = 1)
+```
+
+```{r}
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_poly_line(formula = formula) +
+  stat_poly_eq(mapping = use_label("eq", "adj.R2", sep = "\\\\"),
+               formula = formula, 
+               geom = "latex", hjust = 0, vjust = 1) +
+  labs(x = expression(italic(x)), y = expression(italic(y)))
+```
+
+```{r}
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_poly_line(formula = formula) +
+  stat_poly_eq(aes(label =  paste(after_stat(eq.label), "\\\\", 
+                                  after_stat(rr.label), ", ", 
+                                  after_stat(f.value.label), ", ",
+                                  after_stat(p.value.label),
+                                  sep = "")),
+               formula = formula, size = 4,
+               geom = "latex", hjust = 0, vjust = 1)
+```
+
+Replacing the *lhs*, requires $\LaTeX$ encoding.
+
+```{r}
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_poly_line(formula = formula) +
+  stat_poly_eq(mapping = use_label("eq"),
+               eq.with.lhs = "\\hat{y} = ",
+               formula = formula,
+               geom = "latex", hjust = 0, vjust = 1)
+```
+
+Replacing both the *lhs* and the variable symbol used on the *rhs*. 
+
+```{r}
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_poly_line(formula = formula) +
+  stat_poly_eq(mapping = use_label("eq", "R2", sep = "\\\\"),
+               eq.with.lhs = "h = ",
+               eq.x.rhs = "z",
+               formula = formula,
+               geom = "latex", hjust = 0, vjust = 1)
+```
+
+```{r}
+formula <- y ~ poly(x, 2, raw = TRUE)
+ggplot(my.data, aes(x, log10(y + 1e6))) +
+  geom_point() +
+  stat_poly_line(formula = formula) +
+  stat_poly_eq(mapping = use_label("eq"),
+               eq.with.lhs = "\\log_{10}(\\delta + 10^6) = ",
+               eq.x.rhs = "\\Omega",
+               formula = formula,
+               geom = "latex", hjust = 0, vjust = 1) +
+  labs(y = "$\\log_{10}(\\delta + 10^6)$", x = "$\\Omega$")
+```
+
+
+```{r}
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y2, linetype = group, grp.label = group)) +
+  geom_point() +
+  stat_poly_line(formula = formula, color = "black") +
+  stat_poly_eq(
+    aes(label = after_stat(paste("\\strong{", grp.label, ": }\\ ", 
+                                 eq.label, sep = ""))),
+    formula = formula,
+    geom = "latex", hjust = 0, vjust = 1, vstep = 0.07)
+```
+
+```{r}
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_poly_line(color = "blue") +
+  stat_poly_eq(mapping = use_label("R2", "eq", sep = ", "), 
+               color = "blue", 
+               geom = "latex", hjust = 0, vjust = 1) +
+  stat_poly_line(color = "red", orientation = "y") +
+  stat_poly_eq(mapping = use_label("R2", "eq", sep = ", "),
+               color = "red", 
+               geom = "latex", hjust = 0, vjust = 1, 
+               orientation = "y", label.y = 0.9)
+```
+
+### stat_ma_eq() and stat_ma_line()
+
+```{r}
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_ma_line() +
+  stat_ma_eq(mapping = use_label("eq", "R2", "P", "theta", sep = ", "),
+             geom = "latex", hjust = 0, vjust = 1)
+```
+
+
+### stat_quant_eq()
+
+```{r, warning=FALSE}
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_quant_band(formula = formula, color = "black", fill = "grey60") +
+  stat_quant_eq(formula = formula,
+                geom = "latex", hjust = 0, vjust = 1)
+```
+
+```{r, warning=FALSE}
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_quant_band(formula = formula, color = "black", fill = "grey60") +
+  stat_quant_eq(aes(label = paste(after_stat(qtl.label), ": ",
+                                  after_stat(eq.label), sep = "")),
+                formula = formula,
+                geom = "latex", hjust = 0, vjust = 1, vstep = 0.07)
+```
+
+### `stat_multcomp()`
+
+`stat_multcomp()` depends on `geom_text_pairwise()` from package 'ggpp', which does not have a $\LaTeX$-based equivalent.
+
+```{r}
+# position of contrasts' bars (manual)
+ggplot(mpg, aes(factor(cyl), hwy)) +
+  geom_boxplot(width = 0.33)  +
+  stat_multcomp(p.adjust.method = "bonferroni", 
+                adj.method.tag = 3,
+                size = 2.75) +
+  expand_limits(y = 0)
+```
+
+### Using other statistics
+
+The _label_ helper functions from 'ggpmisc' can be used in calls to `aes()` or elsewhere in user code to generate formated labels from numeric values. By passing `output.type = "latex.eqn"` the generated label is formatted as a $\LaTeX$ equation suitable for `geom_latex()`.
+
+```{r}
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_panel_counts(geom = "latex",
+                    label.x = "left",
+                    mapping = aes(
+                      label = italic_label(after_stat(count), "n",
+                                   output.type = "latex.eqn"))
+  )
+```
+
+We can, of course, just format the labels using R's functions.
+
+```{r}
+ggplot(my.data[sample(1:nrow(my.data), 12), ], aes(x, y)) +
+  geom_point(colour = "red", size = 0.7) +
+  geom_latex(aes(label = sprintf("$ x = %.1f $", x)),
+             hjust = -0.05, size = 3) +
+  expand_limits(x = 110)
+```
+
+### Geom element of theme
+
+Currently, for it to use 'ggplot2' (>= 4.0.0) theme's geom element, `GeomLatex` from 'xdvir' needs to be updated.
+
+```{r}
+update_geom_defaults(
+        GeomLatex,
+        ggplot2::aes(colour = from_theme(colour %||% ink),
+                     family = from_theme(family),
+                     size = from_theme(fontsize)))
+```
+
+
+```{r}
+update_theme(geom.latex = element_geom(colour = "blue"))
+
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_correlation(geom = "latex", hjust = 0, vjust = 1)
+```
+
+## Comparison of markup formats
+
+The geoms from 'ggpmisc' support different markups for the annotation labels: plain text, R's plotmath expressions, Markdown and $\LaTeX$. 
+
+The most interesting comparison is on the fitted model equation, and parameters such a $R_\mathrm{adj}^2$ that when properly typeset include subscripts, superscripts and both italic and upright characters. For this comparison we do not consider the axis labels.
+
+We use a serif font so that the differences in typesetting are clearer, as the default math font in $\LaTeX$ is a serif font.
+
+```{r}
+set_theme(theme_classic(base_family = "serif"))
+```
+
+We update `GeomRichText` from 'ggtext' so that it obeys the geom element of 'ggplot2' (>= 4.0.0) themes.
+
+```{r}
+update_geom_defaults(
+        GeomRichText,
+        ggplot2::aes(colour = from_theme(colour %||% ink),
+                     family = from_theme(family),
+                     size = from_theme(fontsize)))
+```
+
+
+The simplest labels are encoded as plain text, to force this type of output we pass `output.type = "text"` in the call and a suitable geom.
+
+```{r}
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_poly_line(formula = formula) +
+  stat_poly_eq(mapping = use_label("eq", "adj.R2", sep = "; "),
+               formula = formula,
+               output.type = "text",
+               geom = "text", 
+               size = 3.5, hjust = 0, vjust = 1)
+```
+
+The default is to generate R plotmath expressions for `geom_text()`, `geom_label()` and their variants from package 'ggpp'. Parsing is automatically enabled when `output.type = "expression"`, below we redundantly set the output type. This demonstrates how to force output as R expressions with unrecognized geoms.
+
+```{r}
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_poly_line(formula = formula) +
+  stat_poly_eq(mapping = use_label("eq", "adj.R2", sep = "*\", \"*"),
+               formula = formula,
+               output.type = "expression",
+               geom = "text", 
+               hjust = 0, vjust = 1)
+```
+
+In the last few years Markdown has become rather well supported in R plotting. Markdown lacks native standardised markup for subscripts and superscripts. This is problematic for equations. In 'ggpp', in calls with `output.type = "markdown"` super- and sub scripts are encoded using HTML (`<sub> and <sup>`), which several dialects of Markdown recognise. This is the case for `geom_richtext()` from package 'ggtext'. The output type switch is automatic for `geom = "richtext"`. Package 'Marquee' is not currently supported as it does not seem to support superscripts and subscripts.
+
+```{r}
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_poly_line(formula = formula) +
+  stat_poly_eq(mapping = use_label("eq", "adj.R2", sep = ", "),
+               formula = formula, 
+               geom = "richtext", hjust = 0, vjust = 1, label.size = 0) +
+  labs(x = expression(italic(x)), y = expression(italic(y)))
+```
+
+$\LaTeX$ provides the best typesetting, but is rather slow. Slowness is noticeable when many plots need to be created in a document, such as this article.
+
+```{r}
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_poly_line(formula = formula) +
+  stat_poly_eq(mapping = use_label("eq", "adj.R2", sep = ", "),
+               formula = formula, 
+               geom = "latex", hjust = 0, vjust = 1)
+```
+
+Finally `output.type = "numeric"` does not create `character` labels, it only returns numeric values that the user can convert into custom labels within a call to `aes()`.
+
+```{r}
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_poly_line(formula = formula) +
+  stat_poly_eq(mapping = 
+                 aes(label = sprintf("$R^2 = %.0f \\%%$",
+                                     after_stat(r.squared) * 100)),
+               formula = formula,
+               geom = "latex", # needs to accept the manual markup 
+               output.type = "numeric",
+               hjust = 0, vjust = 1)
+```
+
+Explanation for `\\%%`: to get a % sign in $\LaTeX$ the scape `\%` is used, because `%` is used to mark comments. However, `\` is also special in R character strings as it is used to encode non-printable characters such as new line (`\n`). Thus, the escape sequence `\\` encodes the single `\` character expected by $\LaTeX$. In addition, `%` is a special character in the format expected by `sprintf()` with `%.0f` above indicating a number formated with no decimal fraction. In the format string used by `sprintf()`, `%%` is the scape sequence that encodes a single `%` character!

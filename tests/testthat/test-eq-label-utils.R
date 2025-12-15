@@ -82,16 +82,16 @@ test_that("well-formatted polynomial numbers", {
 
   expect_equal(typeset_numbers("1.00 + 2.00*x + 3.00*x^2 + 4.00*x^3 + 5.00*x^4",
                                output.type = "latex"),
-               "1.00 + 2.00x + 3.00x^2 + 4.00x^3 + 5.00x^4")
+               "1.00 + 2.00\\,x + 3.00\\,x^2 + 4.00\\,x^3 + 5.00\\,x^4")
   expect_equal(typeset_numbers("0.00500*x^4 + 0.00400*x^3 + 0.00300*x^2 + 0.00200*x + 0.00100",
                                output.type = "latex"),
-               "0.00500x^4 + 0.00400x^3 + 0.00300x^2 + 0.00200x + 0.00100")
+               "0.00500\\,x^4 + 0.00400\\,x^3 + 0.00300\\,x^2 + 0.00200\\,x + 0.00100")
   expect_equal(typeset_numbers("5.00e-06*x^4 + 4.00e-06*x^3 + 3.00e-06*x^2 + 2.00e-06*x + 1.00e-06",
                                output.type = "latex"),
-               "5.00\\times{} 10^{-06}x^4 + 4.00\\times{} 10^{-06}x^3 + 3.00\\times{} 10^{-06}x^2 + 2.00\\times{} 10^{-06}x + 1.00\\times{} 10^{-06}")
+               "5.00\\times{} 10^{-06}\\,x^4 + 4.00\\times{} 10^{-06}\\,x^3 + 3.00\\times{} 10^{-06}\\,x^2 + 2.00\\times{} 10^{-06}\\,x + 1.00\\times{} 10^{-06}")
   expect_equal(typeset_numbers("5.00e+03*x^4 + 4.00e+03*x^3 + 3.00e+03*x^2 + 2.00e+03*x + 1.000e+03",
                                output.type = "latex"),
-               "5.00\\times{} 10^{+03}x^4 + 4.00\\times{} 10^{+03}x^3 + 3.00\\times{} 10^{+03}x^2 + 2.00\\times{} 10^{+03}x + 1.000\\times{} 10^{+03}")
+               "5.00\\times{} 10^{+03}\\,x^4 + 4.00\\times{} 10^{+03}\\,x^3 + 3.00\\times{} 10^{+03}\\,x^2 + 2.00\\times{} 10^{+03}\\,x + 1.000\\times{} 10^{+03}")
 
   expect_equal(typeset_numbers("1.00 + 2.00*x + 3.00*x^2 + 4.00*x^3 + 5.00*x^4",
                                output.type = "markdown"),
@@ -159,7 +159,7 @@ test_that("well-formatted equation labels", {
   expect_equal(coefs2poly_eq(coefs = 1:5,
                              lhs = "y = ",
                              output.type = "latex"),
-               "y = 1.00 + 2.00x + 3.00x^2 + 4.00x^3 + 5.00x^4")
+               "y = 1.00 + 2.00\\,x + 3.00\\,x^2 + 4.00\\,x^3 + 5.00\\,x^4")
   expect_equal(coefs2poly_eq(coefs = 1:5,
                              lhs = "y = ",
                              output.type = "markdown"),
@@ -175,7 +175,7 @@ test_that("well-formatted equation labels", {
                              lhs = "y = ",
                              output.type = "latex",
                              decimal.mark = ","),
-               "y = 1,00 + 2,00x + 3,00x^2 + 4,00x^3 + 5,00x^4")
+               "y = 1,00 + 2,00\\,x + 3,00\\,x^2 + 4,00\\,x^3 + 5,00\\,x^4")
   expect_equal(coefs2poly_eq(coefs = 1:5,
                              eq.x.rhs = "_x_",
                              lhs = "_y_ = ",

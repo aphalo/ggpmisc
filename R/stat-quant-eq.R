@@ -120,6 +120,8 @@
 #'   polynomial, in most cases a warning is issued. Failing to comply with this
 #'   requirement results in the return of \code{NA} as the formatted equation.
 #'
+#' @inheritSection check_output_type Output types
+#'
 #' @section Aesthetics: \code{stat_quant_eq()} understands \code{x} and \code{y},
 #'   to be referenced in the \code{formula} and \code{weight} passed as argument
 #'   to parameter \code{weights} of \code{rq()}. All three must be mapped to
@@ -464,13 +466,9 @@ stat_quant_eq <- function(mapping = NULL,
   orientation <- temp[["orientation"]]
   formula <-  temp[["formula"]]
 
-  if (is.null(output.type)) {
-    if (geom %in% c("richtext", "textbox", "marquee")) {
-      output.type <- "markdown"
-    } else {
-      output.type <- "expression"
-    }
-  }
+  output.type <-
+    check_output_type(output.type = output.type, geom = geom)
+
   if (is.null(parse)) {
     parse <- output.type == "expression"
   }
@@ -561,14 +559,6 @@ quant_eq_compute_group_fun <- function(data,
     warning("Decimal mark must be one of '.' or ',', not: '", decimal.mark, "'")
     decimal.mark <- "."
   }
-
-  output.type <- if (!length(output.type)) {
-    "expression"
-  } else {
-    tolower(output.type)
-  }
-  stopifnot(output.type %in%
-              c("expression", "text", "markdown", "numeric", "latex", "tex", "tikz"))
 
   if (is.null(data[["weight"]])) {
     data[["weight"]] <- 1

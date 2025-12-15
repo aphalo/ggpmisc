@@ -124,6 +124,8 @@
 #'   compared factor levels, or letter labels that discriminate significantly
 #'   different groups.
 #'
+#' @inheritSection check_output_type Output types
+#'
 #' @section Aesthetics: \code{stat_multcomp()} understands \code{x} and
 #'   \code{y}, to be referenced in the \code{formula} and \code{weight} passed
 #'   as argument to parameter \code{weights}. A factor must be mapped to
@@ -382,13 +384,8 @@ stat_multcomp <- function(mapping = NULL,
     warning("\"npc\"-based geometries not supported, using\"", geom, "\" instead.")
   }
 
-  if (is.null(output.type)) {
-    if (geom %in% c("richtext", "textbox", "marquee")) {
-      output.type <- "markdown"
-    } else {
-      output.type <- "expression"
-    }
-  }
+  output.type <-
+    check_output_type(output.type = output.type, geom = geom)
 
   if (is.null(parse)) {
     parse <- output.type == "expression"
