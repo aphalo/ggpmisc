@@ -3,27 +3,23 @@ title: "Using LaTeX for annotations"
 subtitle: "'ggpmisc' `r packageVersion('ggpmisc')`"
 author: "Pedro J. Aphalo"
 date: "`r Sys.Date()`"
-output: 
-  rmarkdown::html_vignette:
-    toc: yes
-vignette: >
-  %\VignetteIndexEntry{Using LaTeX for annotations}
-  %\VignetteEncoding{UTF-8}
-  %\VignetteEngine{knitr::rmarkdown}
 ---
 
 ```{r, include=FALSE, echo=FALSE}
+library(ragg)
 knitr::opts_chunk$set(fig.align = 'center', 
                       collapse = TRUE,
                       comment = "#>",
-                      fig.show = 'hold', fig.width = 6, fig.height = 4,
-                      dev = "svglite")
+                      dev = "ragg_png", 
+                      fig.show = 'hold',
+                      fig.width = 6, fig.height = 4)
 
 options(warnPartialMatchArgs = FALSE,
         tibble.print.max = 4,
         tibble.print.min = 4,
         dplyr.summarise.inform = FALSE)
 ```
+
 
 ## Aims of 'ggpmisc' and caveats
 
@@ -53,6 +49,8 @@ print(citation(package = "xdvir", auto = TRUE), bibtex = FALSE)
 
 At the moment only some R graphic devices support the newer features of 'grid' graphics. The plots in this document have been rendered by 'svglite'. A reasonably recent version of R is also needed.
 
+Package 'xdvir' depends on R (>= 4.3.0) and has as system requirement 'freetype2'. In package 'ggpmisc' (< 0.6.0) the generation of labels with $\LaTeX$ markup had some bugs; 'ggpmisc' (>= 0.6.0) is better tested and also easier to use with `geom_latex()` from package 'xdvir'. 
+
 ## Advantages and disadvantages
 
 R plotmath expressions can be used to display mathematical equations in
@@ -72,7 +70,14 @@ To use the R package 'tinytex' an installation of $\TeX$ and relatives must be a
 
 Before installing the TinyTeX distribution, do check the [TinyTeX documentation](https://yihui.org/tinytex/).
 
-Package 'xdvir' depends on 'tinytex' and 'grid'.
+Package 'xdvir' depends on 'tinytex' and 'grid'. The default $\TeX$ engine is 'luatex', but as it is not yet fully supported, it is currentöy safer to use 'xetex' instead.
+
+```{r}
+## Math typesetting by LuaTeX can fall back into mode=base
+## (which we can't currently handle)
+## so use XeTeX engine for this vignette
+options("xdvir.engine"="xetex")
+```
 
 ```{r, message=FALSE}
 library(grid)
@@ -378,7 +383,8 @@ We can, of course, just format the labels using R's functions.
 ggplot(my.data[sample(1:nrow(my.data), 12), ], aes(x, y)) +
   geom_point(colour = "red", size = 0.7) +
   geom_latex(aes(label = sprintf("$ x = %.1f $", x)),
-             hjust = -0.05, size = 3)
+             hjust = -0.05, size = 3) +
+  expand_limits(x = 110)
 ```
 
 ### Geom element of theme

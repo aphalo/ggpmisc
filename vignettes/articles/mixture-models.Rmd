@@ -3,21 +3,13 @@ title: "Mixture Models"
 subtitle: "'ggpmisc' `r packageVersion('ggpmisc')`"
 author: "Pedro J. Aphalo"
 date: "`r Sys.Date()`"
-output: 
-  rmarkdown::html_vignette:
-    toc: yes
-vignette: >
-  %\VignetteIndexEntry{Mixture Models}
-  %\VignetteEncoding{UTF-8}
-  %\VignetteEngine{knitr::rmarkdown}
 ---
 
 ```{r, include=FALSE, echo=FALSE}
 knitr::opts_chunk$set(fig.align = 'center', 
                       collapse = TRUE,
                       comment = "#>",
-                      fig.show = 'hold', fig.width = 7, fig.height = 5,
-                      dev = "svglite")
+                      fig.show = 'hold', fig.width = 7, fig.height = 5)
 
 options(warnPartialMatchArgs = FALSE,
         tibble.print.max = 4,
