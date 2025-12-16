@@ -344,11 +344,13 @@ applied.
   \item{\code{"numeric"}}{No labels are generated. This value is accepted by the statistics, but not by the label formatting functions.}
   \item{\code{NULL}}{The value used, \code{expression}, \code{latex.eqn} or \code{markup} depends on the argument passed to \code{geom}.}}
 
-If \code{geom = "latex"} (package 'xdvir') the output type used is \code{"latex.eqn"}.
-If \code{geom = "richtext"} (package 'ggtext'), \code{geom = "textbox"} (package 'ggtext')
-or \code{geom = "marquee"} (package 'marquee') the output type used is \code{"markdown"}. For
-all other values of \code{geom} the default is \code{"expression"} unless the user passes an
-argument. Invalid values as argument trigger an Error.
+If \code{geom = "latex"} (package 'xdvir') the output type used is
+\code{"latex.eqn"}. If \code{geom = "richtext"} (package 'ggtext') or
+\code{geom = "textbox"} (package 'ggtext') the output type used is
+\code{"markdown"}. If \code{geom = "marquee"} (package 'marquee') the output
+type used is \code{"text"}. For all other values of \code{geom} the default
+is \code{"expression"} unless the user passes an argument. Invalid values as
+argument trigger an Error.
 }
 
 \examples{
