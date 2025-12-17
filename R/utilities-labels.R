@@ -122,7 +122,7 @@ value2char <- function(value,
 #'
 #' @return A character string with formatting, encoded to be parsed as an R
 #'   plotmath expression, as plain text, as markdown or to be used with
-#'   \eqn{LaTeX} within \strong{math mode}.
+#'   'LaTeX' within \strong{math mode}.
 #'
 #' @seealso \code{\link{sprintf_dm}}
 #'

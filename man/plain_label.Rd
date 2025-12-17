@@ -214,7 +214,7 @@ selects the symbol used for the value.}
 \value{
 A character string with formatting, encoded to be parsed as an R
   plotmath expression, as plain text, as markdown or to be used with
-  \eqn{LaTeX} within \strong{math mode}.
+  'LaTeX' within \strong{math mode}.
 }
 \description{
 These functions format numeric values as character labels including the
