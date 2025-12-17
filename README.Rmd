@@ -25,6 +25,11 @@ knitr::opts_chunk$set(
 [![DOI](https://img.shields.io/badge/doi-10.32614/CRAN.package.ggpmisc-blue.svg)](https://doi.org/10.32614/CRAN.package.ggpmisc)
 <!-- badges: end -->
 
+**Current failure of `R-CMD-check.yaml` at GitHub is due to small visual
+differences in plots between versions of R, which are not fully addressed by 
+the currently implemented versioning of graphical "snaps" used as reference
+for tests.**
+
 ## Purpose
 
 Package '**ggpmisc**' (Miscellaneous Extensions to 'ggplot2') is a set of
