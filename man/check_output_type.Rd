@@ -36,7 +36,7 @@ the mark-up needs to be encoded differently, or in some cases mark-up not
 applied.
 \describe{
   \item{\code{"expression"}}{The labels are encoded as character strings to be parsed into R's plotmath expressions.}
-  \item{\code{"LaTeX", "TeX", "tikz", "latex"}}{The labels are encode as \eqn{\LaTeX} maths equations, without the "fences" for switching in math mode.}
+  \item{\code{"LaTeX", "TeX", "tikz", "latex"}}{The labels are encoded as 'LaTeX' maths equations, without the "fences" for switching in math mode.}
   \item{\code{"latex.eqn"}}{Same as \code{"latex"} but enclosed in single \code{$}, i.e., as in-line maths.}
   \item{\code{"latex.deqn"}}{Same as \code{"latex"} but enclosed in double \code{$$}, i.e., as display maths.}
   \item{\code{"markdown"}}{The labels are encoded as character strings using markdown syntax, with some embedded HTML.}

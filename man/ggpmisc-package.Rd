@@ -12,36 +12,55 @@ Extensions to 'ggplot2' respecting the grammar of graphics paradigm. Statistics 
 }
 \details{
 Package 'ggpmisc' is over 10 years-old but its development has
-  tracked the changes in 'ggplot2' making use of new features. Although
-  fully compatible with 'ggplot2' (>= 4.0.0) its minimum requirement is
-  'ggplot2' (>= 3.5.0). Currently 'ggpmisc' focus is on statistical
-  annotations including fitted model equations and curves. Several special
-  geometries used are from package 'ggpp', which is imported and re-exported
-  in whole. These geometries and functions are documented in
-  \code{\link[ggpp]{ggpp-package}}.
+  tracked the changes in 'ggplot2' making possible the use of several new
+  features soon after they became available in 'ggplot2'. Support for
+  additional model fitting functions is added regularly.
+
+  The focus of package 'ggpmisc' is on statistical annotations, providing
+  stats that generate labels useful to annotate plots. Model fitting is done
+  by calling functions already available in R and other R packages. No new
+  model fit method or algorithms are implemented, instead what 'ggpmisc'
+  provides are new simpler ways of adding fitted values and other statistics
+  as plot annotations.
+
+  Several geometries for annotations from package 'ggpp' are used by default
+  in 'ggpmisc' statistics, with labels formatted by default ready to be
+  parsed into R's plotmath expressions. However, other geometries can be also
+  used. Markdown-formatted labels work smoothly with geoms from package
+  'ggtext', but not with package 'Marquee'. LaTeX-formatted labels work
+  smoothly with package 'xdvir' and most likely also with other approaches to
+  the use of 'LaTeX' and 'TeX' formatted labels. 'LaTeX'-formatted labels can
+  be generated as bare maths-mode-encoded text, or enclosed in "fences" that
+  enable either in-line or display-maths modes.
+
+  The label formatting functions used to implement the statistics are
+  exported and can be used as an aid in building customised labels.
 
 Extensions provided:
 \itemize{
-\item Stats for annotaions for parametric and non-parametric correlations.
-\item Statistics for generating labels for fitted models, including
+\item Statistics for annotations for parametric and non-parametric
+correlations.
+\item Statistics for generation of labels for fitted models, including
 formatted equations. By default labels are R's plotmath expressions but LaTeX,
-markdown and plain text formatted labels are optionally assembled.
+markdown and plain text formatted labels are optionally returned.
 \item Matching statistics for plotting curves and confidence bands bands for
 the same fitted models.
 \item Statistics for adding ANOVA tables and fitted model summaries as inset
 tables in plots.
 \item Statistic for adding annotations based on pairwise multiple
-comparisons based on arbitrary contrasts and a choice of \emph{P} adjustment methods.
-\item Statistics for locating and tagging "peaks" and "valleys" (local or global
- maxima and minima).
-\item Functions and objects exported by \code{\link[ggpp]{ggpp-package}}.}
+comparisons based on arbitrary contrasts and a choice of \emph{P} adjustment
+methods.
+\item Statistics for locating and tagging "peaks" and "valleys" (local or
+global maxima and minima) and spikes (very narrow peaks or valleys).
+\item Access to functions and objects exported by
+\link[ggpp:ggpp-package]{package ggpp}.}
 
 The stats for peaks and valleys are coded so as to work correctly both with
 numeric and POSIXct variables mapped to the \emph{x} aesthetic.
 }
 \note{
 The signatures of \code{stat_peaks()} and \code{stat_valleys()} from
-  'ggpmisc' are identical to those of \code{stat_peaks()} and
+  'ggpmisc' are nearly identical to those of \code{stat_peaks()} and
   \code{stat_valleys()} from package 'ggspectra'. While those from 'ggpmisc'
   are designed for numeric or time objects mapped to the \emph{x} aesthetic,
   those from 'ggspectra' are for light spectra and expect a numeric variable
@@ -79,16 +98,6 @@ ggplot(PlantGrowth, aes(group, weight)) +
   labs(x = "Group", y = "Dry weight of plants") +
   theme_classic()
 
-}
-\references{
-Expanded on-line documentation for 'ggpmisc' at
-\url{https://docs.r4photobiology.info/ggpmisc/} and source code at
-\url{https://github.com/aphalo/ggpmisc} \cr
-Expanded on-line documentation for 'ggpp' at
-\url{https://docs.r4photobiology.info/ggpp/} and source code at
-\url{https://github.com/aphalo/ggpp} \cr
-Package 'ggplot2' documentation at
-\url{https://ggplot2.tidyverse.org/}
 }
 \seealso{
 Useful links:
