@@ -12,7 +12,7 @@ knitr::opts_chunk$set(fig.align = 'center',
                       comment = "#>",
                       dev = "ragg_png", 
                       fig.show = 'hold',
-                      fig.width = 6, fig.height = 4)
+                      fig.width = 7, fig.height = 5)
 
 options(warnPartialMatchArgs = FALSE,
         tibble.print.max = 4,

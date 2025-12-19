@@ -48,8 +48,8 @@
 #'   \describe{\item{x}{the location of text labels}
 #'   \item{y}{the location of text labels}
 #'   \item{eq.label}{\code{character} string for equations}
-#'   \item{eq.label}{\code{character} string for number of observations}
-#'   \item{eq.label}{\code{character} string for model fit method}
+#'   \item{n.label}{\code{character} string for number of observations}
+#'   \item{method.label}{\code{character} string for model fit method}
 #'   \item{lambda}{\code{numeric} the estimate of the contribution of the
 #'  component of the mixture towards the joint density}
 #'   \item{mu}{\code{numeric} the estimate of the mean}
