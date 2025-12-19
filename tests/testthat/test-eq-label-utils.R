@@ -12,9 +12,13 @@ test_that("eq rhs well formatted", {
   expect_equal(build_eq.x.rhs(output.type = "latex", orientation = "y"),
                " y")
   expect_equal(build_eq.x.rhs(output.type = "markdown", orientation = "x"),
-               "_x_")
+               " *x*")
   expect_equal(build_eq.x.rhs(output.type = "markdown", orientation = "y"),
-               "_y_")
+               " *y*")
+  expect_equal(build_eq.x.rhs(output.type = "marquee", orientation = "x"),
+               " *x*")
+  expect_equal(build_eq.x.rhs(output.type = "marquee", orientation = "y"),
+               " *y*")
   expect_equal(build_eq.x.rhs(output.type = "text", orientation = "x"),
                " x")
   expect_equal(build_eq.x.rhs(output.type = "text", orientation = "y"),
@@ -31,9 +35,13 @@ test_that("eq lhs well formatted", {
   expect_equal(build_lhs(output.type = "latex", orientation = "y"),
                "x = ")
   expect_equal(build_lhs(output.type = "markdown", orientation = "x"),
-               "_y_ = ")
+               "*y* = ")
   expect_equal(build_lhs(output.type = "markdown", orientation = "y"),
-               "_x_ = ")
+               "*x* = ")
+  expect_equal(build_lhs(output.type = "marquee", orientation = "x"),
+               "*y* = ")
+  expect_equal(build_lhs(output.type = "marquee", orientation = "y"),
+               "*x* = ")
   expect_equal(build_lhs(output.type = "text", orientation = "x"),
                "y = ")
   expect_equal(build_lhs(output.type = "text", orientation = "y"),
@@ -95,16 +103,29 @@ test_that("well-formatted polynomial numbers", {
 
   expect_equal(typeset_numbers("1.00 + 2.00*x + 3.00*x^2 + 4.00*x^3 + 5.00*x^4",
                                output.type = "markdown"),
-               "1.00+2.00&nbsp;x+3.00&nbsp;x<sup>2</sup>+4.00&nbsp;x<sup>3</sup>+5.00&nbsp;x<sup>4</sup>")
+               "1.00 + 2.00&nbsp;x + 3.00&nbsp;x<sup>2</sup> + 4.00&nbsp;x<sup>3</sup> + 5.00&nbsp;x<sup>4</sup>")
   expect_equal(typeset_numbers("0.00500*x^4 + 0.00400*x^3 + 0.00300*x^2 + 0.00200*x + 0.00100",
                                output.type = "markdown"),
-               "0.00500&nbsp;x<sup>4</sup>+0.00400&nbsp;x<sup>3</sup>+0.00300&nbsp;x<sup>2</sup>+0.00200&nbsp;x+0.00100")
+               "0.00500&nbsp;x<sup>4</sup> + 0.00400&nbsp;x<sup>3</sup> + 0.00300&nbsp;x<sup>2</sup> + 0.00200&nbsp;x + 0.00100")
   expect_equal(typeset_numbers("5.00e-06*x^4 + 4.00e-06*x^3 + 3.00e-06*x^2 + 2.00e-06*x + 1.00e-06",
                                output.type = "markdown"),
-               "5.00&times;10<sup>-6</sup>&nbsp;x<sup>4</sup>+4.00&times;10<sup>-6</sup>&nbsp;x<sup>3</sup>+3.00&times;10<sup>-6</sup>&nbsp;x<sup>2</sup>+2.00&times;10<sup>-6</sup>&nbsp;x+1.00&times;10<sup>-6</sup>")
+               "5.00&nbsp;&times;&nbsp;10<sup>&minus;6</sup>&nbsp;x<sup>4</sup> + 4.00&nbsp;&times;&nbsp;10<sup>&minus;6</sup>&nbsp;x<sup>3</sup> + 3.00&nbsp;&times;&nbsp;10<sup>&minus;6</sup>&nbsp;x<sup>2</sup> + 2.00&nbsp;&times;&nbsp;10<sup>&minus;6</sup>&nbsp;x + 1.00&nbsp;&times;&nbsp;10<sup>&minus;6</sup>")
   expect_equal(typeset_numbers("5.00e+03*x^4 + 4.00e+03*x^3 + 3.00e+03*x^2 + 2.00e+03*x + 1.000e+03",
                                output.type = "markdown"),
-               "5.00&times;10<sup>+3</sup>&nbsp;x<sup>4</sup>+4.00&times;10<sup>+3</sup>&nbsp;x<sup>3</sup>+3.00&times;10<sup>+3</sup>&nbsp;x<sup>2</sup>+2.00&times;10<sup>+3</sup>&nbsp;x+1.000&times;10<sup>+3</sup>")
+               "5.00&nbsp;&times;&nbsp;10<sup>+3</sup>&nbsp;x<sup>4</sup> + 4.00&nbsp;&times;&nbsp;10<sup>+3</sup>&nbsp;x<sup>3</sup> + 3.00&nbsp;&times;&nbsp;10<sup>+3</sup>&nbsp;x<sup>2</sup> + 2.00&nbsp;&times;&nbsp;10<sup>+3</sup>&nbsp;x + 1.000&nbsp;&times;&nbsp;10<sup>+3</sup>")
+
+  expect_equal(typeset_numbers("1.00 + 2.00*x + 3.00*x^2 + 4.00*x^3 + 5.00*x^4",
+                               output.type = "marquee"),
+               "1.00 + 2.00 x + 3.00 x{.sup 2} + 4.00 x{.sup 3} + 5.00 x{.sup 4}")
+  expect_equal(typeset_numbers("0.00500*x^4 + 0.00400*x^3 + 0.00300*x^2 + 0.00200*x + 0.00100",
+                               output.type = "marquee"),
+               "0.00500 x{.sup 4} + 0.00400 x{.sup 3} + 0.00300 x{.sup 2} + 0.00200 x + 0.00100")
+  expect_equal(typeset_numbers("5.00e-06*x^4 + 4.00e-06*x^3 + 3.00e-06*x^2 + 2.00e-06*x + 1.00e-06",
+                               output.type = "marquee"),
+               "5.00 × 10{.sup −6} x{.sup 4} + 4.00 × 10{.sup −6} x{.sup 3} + 3.00 × 10{.sup −6} x{.sup 2} + 2.00 × 10{.sup −6} x + 1.00 × 10{.sup −6}")
+  expect_equal(typeset_numbers("5.00e+03*x^4 + 4.00e+03*x^3 + 3.00e+03*x^2 + 2.00e+03*x + 1.000e+03",
+                               output.type = "marquee"),
+               "5.00 × 10{.sup +3} x{.sup 4} + 4.00 × 10{.sup +3} x{.sup 3} + 3.00 × 10{.sup +3} x{.sup 2} + 2.00 × 10{.sup +3} x + 1.000 × 10{.sup +3}")
 
   expect_equal(typeset_numbers("1.00 + 2.00*x + 3.00*x^2 + 4.00*x^3 + 5.00*x^4",
                                output.type = "text"),
@@ -163,7 +184,7 @@ test_that("well-formatted equation labels", {
   expect_equal(coefs2poly_eq(coefs = 1:5,
                              lhs = "y = ",
                              output.type = "markdown"),
-               "y = 1.00+2.00&nbsp;x+3.00&nbsp;x<sup>2</sup>+4.00&nbsp;x<sup>3</sup>+5.00&nbsp;x<sup>4</sup>")
+               "y = 1.00 + 2.00&nbsp;x + 3.00&nbsp;x<sup>2</sup> + 4.00&nbsp;x<sup>3</sup> + 5.00&nbsp;x<sup>4</sup>")
   expect_equal(coefs2poly_eq(coefs = 1:5,
                              lhs = "y = ",
                              output.type = "text"),
@@ -181,7 +202,7 @@ test_that("well-formatted equation labels", {
                              lhs = "_y_ = ",
                              output.type = "markdown",
                              decimal.mark = ","),
-               "_y_ = 1,00+2,00&nbsp;_x_+3,00&nbsp;_x_<sup>2</sup>+4,00&nbsp;_x_<sup>3</sup>+5,00&nbsp;_x_<sup>4</sup>")
+               "_y_ = 1,00 + 2,00&nbsp;_x_ + 3,00&nbsp;_x_<sup>2</sup> + 4,00&nbsp;_x_<sup>3</sup> + 5,00&nbsp;_x_<sup>4</sup>")
   expect_equal(coefs2poly_eq(coefs = 1:5,
                              lhs = "y = ",
                              output.type = "text",

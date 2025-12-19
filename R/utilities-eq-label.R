@@ -103,8 +103,8 @@ poly2character <- function (x,
   p <- p[as.numeric(p) != 0]
   if (decreasing)
     p <- rev(p)
-  signs <- ifelse(as.numeric(p) < 0, " - ", " + ")
-  signs[1] <- if (signs[1] == " - ") "-" else ""
+  signs <- ifelse(as.numeric(p) < 0, "- ", "+ ")
+  signs[1] <- if (signs[1] == "- ") "-" else ""
   np <- names(p)
   pow <- paste("x^", np, sep = "")
   pow[np == "0"] <- ""

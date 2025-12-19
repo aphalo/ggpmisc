@@ -450,7 +450,7 @@ p_value_label <- function(value,
       z
     }
   } else if (output.type == "markdown") {
-    paste(paste(ifelse(small.p, "_p_",  "_P_"),
+    paste(paste(ifelse(small.p, "*p*",  "*P*"),
                 ifelse(subscript != "",
                        paste("<sub>", subscript, "</sub>", sep = ""),
                        ""),
@@ -557,7 +557,7 @@ f_value_label <- function(value,
       z
     }
   } else if (output.type == "markdown") {
-    paste("_F_<sub>", df1.char, ",", df2.char,
+    paste("*F*<sub>", df1.char, ",", df2.char,
           "</sub> = ", f.value.char, sep = "")
   } else if (output.type == "marquee") {
     paste("*F*{.sub ", df1.char, ",", df2.char,
@@ -627,7 +627,7 @@ t_value_label <- function(value,
       z
     }
   } else if (output.type == "markdown") {
-    paste("_t_<sub>", df.char,
+    paste("*t*<sub>", df.char,
           "</sub> = ", t.value.char, sep = "")
   } else if (output.type == "marquee") {
     paste("*t*{.sub ", df.char,
@@ -898,9 +898,9 @@ r_label <- function(value,
       if (method == "pearson") {
         ifelse(small.r, "*r*", "*R*")
       } else if (method == "kendall") {
-        ifelse(output.type == "marquee", "*ρ*", "_&rho;_")
+        ifelse(output.type == "marquee", "*ρ*", "*&rho;*")
       } else if (method == "spearman") {
-        ifelse(output.type == "marquee", "*τ*", "_&tau;_")
+        ifelse(output.type == "marquee", "*τ*", "*&tau;*")
       } else {
         method
       }
@@ -994,7 +994,7 @@ rr_label <- function(value,
       z
     }
   } else if (output.type == "markdown") {
-    rr.symbol <- ifelse(small.r, "_r_<sup>2</sup>", "_R_<sup>2</sup>")
+    rr.symbol <- ifelse(small.r, "*r*<sup>2</sup>", "*R*<sup>2</sup>")
     if (rr.value < 10^(-digits) & rr.value != 0) {
       paste(rr.symbol,
             sprintf_dm(format,
@@ -1091,7 +1091,7 @@ adj_rr_label <- function(value,
                  adj.rr.value.char),
           sep = ifelse(adj.rr.value < 10^(-digits), " < ", " = "))
   } else if (output.type == "markdown") {
-    paste(ifelse(small.r, "_r_<sup>2</sup><sub>adj</sub>", "_R_<sup>2</sup><sub>adj</sub>"),
+    paste(ifelse(small.r, "*r*<sup>2</sup><sub>adj</sub>", "*R*<sup>2</sup><sub>adj</sub>"),
           ifelse(adj.rr.value < 10^(-digits),
                  sprintf_dm(protected.format, digits, 10^(-digits), decimal.mark = decimal.mark),
                  adj.rr.value.char),
