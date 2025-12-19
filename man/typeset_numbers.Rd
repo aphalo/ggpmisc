@@ -10,7 +10,7 @@ typeset_numbers(eq.char, output.type)
 \item{eq.char}{character A polynomial model equation as a character string.}
 
 \item{output.type}{character One of "expression", "latex", "tex", "text",
-"tikz", "markdown".}
+"tikz", "markdown", "marquee".}
 }
 \value{
 A \code{character} string.

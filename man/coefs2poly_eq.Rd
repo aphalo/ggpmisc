@@ -30,7 +30,7 @@ returned character string; in increasing (default) or decreasing powers.}
 \item{lhs}{character}
 
 \item{output.type}{character One of "expression", "latex", "tex", "text",
-"tikz", "markdown".}
+"tikz", "markdown", "marquee".}
 
 \item{decimal.mark}{character}
 }

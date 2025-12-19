@@ -13,12 +13,12 @@
 #'   Several geometries for annotations from package 'ggpp' are used by default
 #'   in 'ggpmisc' statistics, with labels formatted by default ready to be
 #'   parsed into R's plotmath expressions. However, other geometries can be also
-#'   used. Markdown-formatted labels work smoothly with geoms from package
-#'   'ggtext', but not with package 'Marquee'. LaTeX-formatted labels work
-#'   smoothly with package 'xdvir' and most likely also with other approaches to
-#'   the use of 'LaTeX' and 'TeX' formatted labels. 'LaTeX'-formatted labels can
-#'   be generated as bare maths-mode-encoded text, or enclosed in "fences" that
-#'   enable either in-line or display-maths modes.
+#'   used. Two variations of Markdown-formatted labels work smoothly with geoms
+#'   from package 'ggtext' or from package 'marquee'. LaTeX-formatted labels
+#'   work smoothly with package 'xdvir' and most likely also with other
+#'   approaches to the use of 'LaTeX' and 'TeX' formatted labels.
+#'   'LaTeX'-formatted labels can be generated as bare maths-mode-encoded text,
+#'   or enclosed in "fences" that enable either in-line or display-maths modes.
 #'
 #'   The label formatting functions used to implement the statistics are
 #'   exported and can be used as an aid in building customised labels.

@@ -43,7 +43,7 @@ sprintf_dm <- function(fmt,
 #' @param format character One of "e", "f" or "g" for exponential, fixed, or
 #' significant digits formatting.
 #' @param output.type character One of "expression", "latex", "tex", "text",
-#'   "tikz", "markdown".
+#'   "tikz", "markdown", "marquee".
 #'
 #' @examples
 #'
@@ -116,7 +116,7 @@ value2char <- function(value,
 #' @param fixed logical Interpret \code{digits} as indicating a number of
 #'   digits after the decimal mark or as the number of significant digits.
 #' @param output.type character One of "expression", "latex", "tex", "text",
-#'   "tikz", "markdown".
+#'   "tikz", "markdown". "marquee".
 #' @param decimal.mark character Defaults to the value of R option
 #'   \code{"OutDec"}.
 #'
@@ -190,7 +190,7 @@ plain_label <- function(value,
     } else {
       z
     }
-  } else if (output.type %in% c("text", "markdown")) {
+  } else if (output.type %in% c("text", "markdown", "marquee")) {
     z <- paste(value.name, " = ", value.char, sep = "")
     if (length(z) > 1L) {
       paste(z, collapse = "; ")
@@ -252,8 +252,8 @@ italic_label <- function(value,
     } else {
       z
     }
-  } else if (output.type == "markdown") {
-    z <- paste("_", value.name, "_ = ", value.char, sep = "")
+  } else if (output.type %in% c("markdown", "marquee")) {
+    z <- paste("*", value.name, "* = ", value.char, sep = "")
     if (length(z) > 1L) {
       paste(z, collapse = "; ")
     } else {
@@ -315,7 +315,7 @@ bold_label <- function(value,
     } else {
       z
     }
-  } else if (output.type == "markdown") {
+  } else if (output.type %in% c("markdown", "marquee")) {
     z <- paste("**", value.name, "** = ", value.char, sep = "")
     if (length(z) > 1L) {
       paste(z, collapse = "; ")
@@ -465,6 +465,22 @@ p_value_label <- function(value,
           sep = ifelse(p.value < 10^(-digits),
                        " < ",
                        " = "))
+  }  else if (output.type == "marquee") {
+    paste(paste(ifelse(small.p, "*p*",  "*P*"),
+                ifelse(subscript != "",
+                       paste("{.sub ", subscript, "}", sep = ""),
+                       ""),
+                ifelse(superscript != "",
+                       paste("{.sup ", superscript, "}", sep = ""),
+                       ""),
+                sep = ""),
+          ifelse(p.value < 10^(-digits),
+                 sprintf_dm(format, digits, 10^(-digits),
+                            decimal.mark = decimal.mark),
+                 p.value.char),
+          sep = ifelse(p.value < 10^(-digits),
+                       " < ",
+                       " = "))
   }
 }
 
@@ -543,6 +559,9 @@ f_value_label <- function(value,
   } else if (output.type == "markdown") {
     paste("_F_<sub>", df1.char, ",", df2.char,
           "</sub> = ", f.value.char, sep = "")
+  } else if (output.type == "marquee") {
+    paste("*F*{.sub ", df1.char, ",", df2.char,
+          "} = ", f.value.char, sep = "")
   } else {
     paste("F(", df1.char, ",", df2.char,
           ") = ", f.value.char, sep = "")
@@ -610,6 +629,9 @@ t_value_label <- function(value,
   } else if (output.type == "markdown") {
     paste("_t_<sub>", df.char,
           "</sub> = ", t.value.char, sep = "")
+  } else if (output.type == "marquee") {
+    paste("*t*{.sub ", df.char,
+          "} = ", t.value.char, sep = "")
   } else {
     paste("t(", df.char, ") = ", t.value.char, sep = "")
 
@@ -666,7 +688,7 @@ mean_value_label <- function(value,
     "bar(x)"
   } else if (output.type %in% c("latex", "tex", "tikz")) {
     "\\bar{x}"
-  } else if (output.type == "markdown") {
+  } else if (output.type %in% c("markdown", "marquee")) {
     "mean(x)"
   } else {
     "mean(x)"
@@ -696,6 +718,8 @@ var_value_label <- function(value,
     "\\sigma^2"
   } else if (output.type == "markdown") {
     "&sigma;<sup>2</sup>"
+  } else if (output.type == "marquee") {
+    "σ{.sup 2}"
   } else {
     "s^2"
   }
@@ -724,6 +748,8 @@ sd_value_label <- function(value,
     "\\sigma"
   } else if (output.type == "markdown") {
     "&sigma;"
+  } else if (output.type == "marquee") {
+    "σ"
   } else {
     "s.d."
   }
@@ -866,15 +892,15 @@ r_label <- function(value,
       z
     }
 
-  } else if (output.type == "markdown") {
+  } else if (output.type %in% c("markdown", "marquee")) {
 
     r.symbol <-
       if (method == "pearson") {
-        ifelse(small.r, "_r_", "_R_")
+        ifelse(small.r, "*r*", "*R*")
       } else if (method == "kendall") {
-        "_&rho;_"
+        ifelse(output.type == "marquee", "*ρ*", "_&rho;_")
       } else if (method == "spearman") {
-        "_&tau;_"
+        ifelse(output.type == "marquee", "*τ*", "_&tau;_")
       } else {
         method
       }
@@ -977,6 +1003,16 @@ rr_label <- function(value,
     } else {
       paste(rr.symbol, rr.value.char, sep = " = ")
     }
+  } else if (output.type == "marquee") {
+    rr.symbol <- ifelse(small.r, "*r*{.sup 2}", "*R*{.sup 2}")
+    if (rr.value < 10^(-digits) & rr.value != 0) {
+      paste(rr.symbol,
+            sprintf_dm(format,
+                       digits, 10^(-digits), decimal.mark = decimal.mark),
+            sep = " < ")
+    } else {
+      paste(rr.symbol, rr.value.char, sep = " = ")
+    }
   }
 }
 
@@ -1056,6 +1092,12 @@ adj_rr_label <- function(value,
           sep = ifelse(adj.rr.value < 10^(-digits), " < ", " = "))
   } else if (output.type == "markdown") {
     paste(ifelse(small.r, "_r_<sup>2</sup><sub>adj</sub>", "_R_<sup>2</sup><sub>adj</sub>"),
+          ifelse(adj.rr.value < 10^(-digits),
+                 sprintf_dm(protected.format, digits, 10^(-digits), decimal.mark = decimal.mark),
+                 adj.rr.value.char),
+          sep = ifelse(adj.rr.value < 10^(-digits), " < ", " = "))
+  } else if (output.type == "marquee") {
+    paste(ifelse(small.r, "*r*{.sup 2}{.sub adj}", "*R*{.sup 2}{.sub adj}"),
           ifelse(adj.rr.value < 10^(-digits),
                  sprintf_dm(protected.format, digits, 10^(-digits), decimal.mark = decimal.mark),
                  adj.rr.value.char),
@@ -1152,7 +1194,7 @@ rr_ci_label <- function(value,
     } else {
       z
     }
-  } else if (output.type %in% c("text", "markdown")) {
+  } else if (output.type %in% c("text", "markdown", "marquee")) {
     paste(conf.level.char, "% CI ",
           range.brackets[1], rr.ci.char, range.brackets[2], sep = "")
   }
@@ -1243,7 +1285,7 @@ r_ci_label <- function(value,
     } else {
       z
     }
-  } else if (output.type %in% c("text", "markdown")) {
+  } else if (output.type %in% c("text", "markdown", "marquee")) {
     z <- paste(conf.level.char, "% CI ",
                range.brackets[1], r.ci.char, range.brackets[2], sep = "")
   }
@@ -1274,6 +1316,7 @@ r_ci_label <- function(value,
 #'   \item{\code{"latex.eqn"}}{Same as \code{"latex"} but enclosed in single \code{$}, i.e., as in-line maths.}
 #'   \item{\code{"latex.deqn"}}{Same as \code{"latex"} but enclosed in double \code{$$}, i.e., as display maths.}
 #'   \item{\code{"markdown"}}{The labels are encoded as character strings using markdown syntax, with some embedded HTML.}
+#'   \item{\code{"marquee"}}{The labels are encoded as character strings using markdown syntax, with 'marquee' supported spans.}
 #'   \item{\code{"text"}}{The labels are plain ASCII character strings.}
 #'   \item{\code{"numeric"}}{No labels are generated. This value is accepted by the statistics, but not by the label formatting functions.}
 #'   \item{\code{NULL}}{The value used, \code{expression}, \code{latex.eqn} or \code{markup} depends on the argument passed to \code{geom}.}}
@@ -1282,7 +1325,7 @@ r_ci_label <- function(value,
 #' \code{"latex.eqn"}. If \code{geom = "richtext"} (package 'ggtext') or
 #' \code{geom = "textbox"} (package 'ggtext') the output type used is
 #' \code{"markdown"}. If \code{geom = "marquee"} (package 'marquee') the output
-#' type used is \code{"text"}. For all other values of \code{geom} the default
+#' type used is \code{"marquee"}. For all other values of \code{geom} the default
 #' is \code{"expression"} unless the user passes an argument. Invalid values as
 #' argument trigger an Error.
 #'
@@ -1298,7 +1341,7 @@ check_output_type <-
   function(output.type,
            geom = "text",
            supported.types =
-             c("expression", "text", "markdown", "numeric",
+             c("expression", "text", "markdown", "marquee", "numeric",
                "latex", "latex.eqn", "latex.deqn")) {
     if (is.null(output.type)) {
       if (geom %in% c("richtext", "textbox")) { # , "marquee" needs different markup
@@ -1306,8 +1349,7 @@ check_output_type <-
       } else if (geom == "latex") { # package 'xdvir'
         output.type <- "latex.eqn"
       } else if (geom == "marquee") { # package 'marquee'
-        message("Currently Markdown is supported with 'ggtext', not 'Marquee'")
-        output.type <- "text"
+        output.type <- "marquee"
       } else {
         output.type <- "expression"
       }

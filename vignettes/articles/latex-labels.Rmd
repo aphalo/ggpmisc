@@ -91,6 +91,7 @@ We will also farther down compare $\LaTeX$ and Markdown markup, with 'ggtext'.
 
 ```{r}
 library(ggtext)
+library(marquee)
 ```
 
 For debugging, longer messages can be very helpful.
@@ -417,97 +418,3 @@ ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_correlation(geom = "latex", hjust = 0, vjust = 1)
 ```
-
-## Comparison of markup formats
-
-The geoms from 'ggpmisc' support different markups for the annotation labels: plain text, R's plotmath expressions, Markdown and $\LaTeX$. 
-
-The most interesting comparison is on the fitted model equation, and parameters such a $R_\mathrm{adj}^2$ that when properly typeset include subscripts, superscripts and both italic and upright characters. For this comparison we do not consider the axis labels.
-
-We use a serif font so that the differences in typesetting are clearer, as the default math font in $\LaTeX$ is a serif font.
-
-```{r}
-set_theme(theme_classic(base_family = "serif"))
-```
-
-We update `GeomRichText` from 'ggtext' so that it obeys the geom element of 'ggplot2' (>= 4.0.0) themes.
-
-```{r}
-update_geom_defaults(
-        GeomRichText,
-        ggplot2::aes(colour = from_theme(colour %||% ink),
-                     family = from_theme(family),
-                     size = from_theme(fontsize)))
-```
-
-
-The simplest labels are encoded as plain text, to force this type of output we pass `output.type = "text"` in the call and a suitable geom.
-
-```{r}
-formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y)) +
-  geom_point() +
-  stat_poly_line(formula = formula) +
-  stat_poly_eq(mapping = use_label("eq", "adj.R2", sep = "; "),
-               formula = formula,
-               output.type = "text",
-               geom = "text", 
-               size = 3.5, hjust = 0, vjust = 1)
-```
-
-The default is to generate R plotmath expressions for `geom_text()`, `geom_label()` and their variants from package 'ggpp'. Parsing is automatically enabled when `output.type = "expression"`, below we redundantly set the output type. This demonstrates how to force output as R expressions with unrecognized geoms.
-
-```{r}
-formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y)) +
-  geom_point() +
-  stat_poly_line(formula = formula) +
-  stat_poly_eq(mapping = use_label("eq", "adj.R2", sep = "*\", \"*"),
-               formula = formula,
-               output.type = "expression",
-               geom = "text", 
-               hjust = 0, vjust = 1)
-```
-
-In the last few years Markdown has become rather well supported in R plotting. Markdown lacks native standardised markup for subscripts and superscripts. This is problematic for equations. In 'ggpp', in calls with `output.type = "markdown"` super- and sub scripts are encoded using HTML (`<sub> and <sup>`), which several dialects of Markdown recognise. This is the case for `geom_richtext()` from package 'ggtext'. The output type switch is automatic for `geom = "richtext"`. Package 'Marquee' is not currently supported as it does not seem to support superscripts and subscripts.
-
-```{r}
-formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y)) +
-  geom_point() +
-  stat_poly_line(formula = formula) +
-  stat_poly_eq(mapping = use_label("eq", "adj.R2", sep = ", "),
-               formula = formula, 
-               geom = "richtext", hjust = 0, vjust = 1, label.size = 0) +
-  labs(x = expression(italic(x)), y = expression(italic(y)))
-```
-
-$\LaTeX$ provides the best typesetting, but is rather slow. Slowness is noticeable when many plots need to be created in a document, such as this article.
-
-```{r}
-formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y)) +
-  geom_point() +
-  stat_poly_line(formula = formula) +
-  stat_poly_eq(mapping = use_label("eq", "adj.R2", sep = ", "),
-               formula = formula, 
-               geom = "latex", hjust = 0, vjust = 1)
-```
-
-Finally `output.type = "numeric"` does not create `character` labels, it only returns numeric values that the user can convert into custom labels within a call to `aes()`.
-
-```{r}
-formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y)) +
-  geom_point() +
-  stat_poly_line(formula = formula) +
-  stat_poly_eq(mapping = 
-                 aes(label = sprintf("$R^2 = %.0f \\%%$",
-                                     after_stat(r.squared) * 100)),
-               formula = formula,
-               geom = "latex", # needs to accept the manual markup 
-               output.type = "numeric",
-               hjust = 0, vjust = 1)
-```
-
-Explanation for `\\%%`: to get a % sign in $\LaTeX$ the scape `\%` is used, because `%` is used to mark comments. However, `\` is also special in R character strings as it is used to encode non-printable characters such as new line (`\n`). Thus, the escape sequence `\\` encodes the single `\` character expected by $\LaTeX$. In addition, `%` is a special character in the format expected by `sprintf()` with `%.0f` above indicating a number formated with no decimal fraction. In the format string used by `sprintf()`, `%%` is the scape sequence that encodes a single `%` character!

@@ -11,7 +11,7 @@ build_lhs(output.type = "expression", orientation = "x")
 }
 \arguments{
 \item{output.type}{character One of "expression", "latex", "tex", "text",
-"tikz", "markdown".}
+"tikz", "markdown", "marquee".}
 
 \item{orientation}{character \code{"x"} or \code{"y"}, indicating
 the aesthetic onto which the explanatory variable is mapped.}

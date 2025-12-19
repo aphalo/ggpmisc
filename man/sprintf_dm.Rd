@@ -31,7 +31,7 @@ attempted and the value returned by \code{sprintf()} is returned as is.}
 significant digits formatting.}
 
 \item{output.type}{character One of "expression", "latex", "tex", "text",
-"tikz", "markdown".}
+"tikz", "markdown", "marquee".}
 }
 \description{
 Using \code{\link{sprintf}} flexibly format numbers as character strings

@@ -1,7 +1,7 @@
 #' Left and right hand sides of model equations
 #'
 #' @param output.type character One of "expression", "latex", "tex", "text",
-#'   "tikz", "markdown".
+#'   "tikz", "markdown", "marquee".
 #' @param orientation character \code{"x"} or \code{"y"}, indicating
 #'   the aesthetic onto which the explanatory variable is mapped.
 #'
@@ -14,16 +14,16 @@ build_eq.x.rhs <- function(output.type = "expression",
   if (orientation == "x") {
     if (output.type == "expression") {
       "~italic(x)"
-    } else if (output.type == "markdown") {
-      "_x_"
+    } else if (output.type %in% c("markdown", "marquee")) {
+      " *x*"
     } else{
       " x"
     }
   } else if (orientation == "y") {
     if (output.type == "expression") {
       "~italic(y)"
-    } else if (output.type == "markdown") {
-      "_y_"
+    } else if (output.type %in% c("markdown", "marquee")) {
+      " *y*"
     } else{
       " y"
     }
@@ -41,16 +41,16 @@ build_lhs <- function(output.type = "expression",
       "italic(y)~`=`~"
     } else if (grepl("^latex", output.type) || output.type == "text") {
       "y = "
-    } else if (output.type == "markdown") {
-      "_y_ = "
+    } else if (output.type %in% c("markdown", "marquee")) {
+      "*y* = "
     }
   } else if (orientation == "y") {
     if (output.type == "expression") {
       "italic(x)~`=`~"
     } else if (grepl("^latex", output.type) || output.type == "text") {
       "x = "
-    } else if (output.type == "markdown") {
-      "_x_ = "
+    } else if (output.type %in% c("markdown", "marquee")) {
+      "*x* = "
     }
   }
 }
@@ -103,8 +103,8 @@ poly2character <- function (x,
   p <- p[as.numeric(p) != 0]
   if (decreasing)
     p <- rev(p)
-  signs <- ifelse(as.numeric(p) < 0, "- ", "+ ")
-  signs[1] <- if (signs[1] == "- ") "-" else ""
+  signs <- ifelse(as.numeric(p) < 0, " - ", " + ")
+  signs[1] <- if (signs[1] == " - ") "-" else ""
   np <- names(p)
   pow <- paste("x^", np, sep = "")
   pow[np == "0"] <- ""
@@ -120,7 +120,7 @@ poly2character <- function (x,
 #'
 #' @param eq.char character A polynomial model equation as a character string.
 #' @param output.type character One of "expression", "latex", "tex", "text",
-#'   "tikz", "markdown".
+#'   "tikz", "markdown", "marquee".
 #'
 #' @note exponential number notation to typeset equivalent: Protecting trailing
 #'   zeros in negative numbers is more involved than I would like. Not only we
@@ -132,10 +132,17 @@ poly2character <- function (x,
 #'
 typeset_numbers <- function(eq.char, output.type) {
   if (output.type == "markdown") {
-    eq.char <- gsub("e([+-]?)[0]([1-9]*)", "&times;10<sup>\\1\\2</sup>", eq.char)
+    eq.char <- gsub("e([+-]?)[0]([1-9]*)", "&nbsp;&times;&nbsp;10<sup>\\1\\2</sup>", eq.char)
     eq.char <- gsub("[:^]([0-9]*)", "<sup>\\1</sup>", eq.char)
     eq.char <- gsub("*", "&nbsp;", eq.char, fixed = TRUE)
-    eq.char <- gsub(" ", "", eq.char, fixed = TRUE)
+    eq.char <- gsub("  ", " ", eq.char, fixed = TRUE)
+    eq.char <- gsub("-", "&minus;", eq.char, fixed = TRUE)
+  } else if (output.type == "marquee") {
+    eq.char <- gsub("e([+-]?)[0]([1-9]*)", " × 10{.sup \\1\\2}", eq.char)
+    eq.char <- gsub("[:^]([0-9]*)", "{.sup \\1}", eq.char)
+    eq.char <- gsub("*", " ", eq.char, fixed = TRUE)
+    eq.char <- gsub("  ", " ", eq.char, fixed = TRUE)
+    eq.char <- gsub("-", "−", eq.char, fixed = TRUE) # use minus sign
   } else {
     eq.char <- gsub("e([+-]?[0-9]*)", "%*% 10^{\\1}", eq.char)
     # muliplication symbol
@@ -165,7 +172,7 @@ typeset_numbers <- function(eq.char, output.type) {
 #' @param eq.x.rhs character
 #' @param lhs character
 #' @param output.type character One of "expression", "latex", "tex", "text",
-#'   "tikz", "markdown".
+#'   "tikz", "markdown", "marquee".
 #' @param decimal.mark character
 #'
 #' @note Terms with zero-valued coefficients are dropped from the polynomial.

@@ -189,7 +189,7 @@ name.}
 digits after the decimal mark or as the number of significant digits.}
 
 \item{output.type}{character One of "expression", "latex", "tex", "text",
-"tikz", "markdown".}
+"tikz", "markdown". "marquee".}
 
 \item{decimal.mark}{character Defaults to the value of R option
 \code{"OutDec"}.}

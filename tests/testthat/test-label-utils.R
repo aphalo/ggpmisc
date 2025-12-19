@@ -597,7 +597,7 @@ test_that("check_output_type replaces NULL", {
   expect_equal(check_output_type(NULL), "expression")
   expect_equal(check_output_type(NULL, geom = "text"), "expression")
   expect_equal(check_output_type(NULL, geom = "anything else"), "expression")
-  expect_equal(check_output_type(NULL, geom = "marquee"), "text")
+  expect_equal(check_output_type(NULL, geom = "marquee"), "marquee")
   expect_equal(check_output_type(NULL, geom = "richtext"), "markdown")
   expect_equal(check_output_type(NULL, geom = "textbox"), "markdown")
   expect_equal(check_output_type(NULL, "latex"), "latex.eqn")
