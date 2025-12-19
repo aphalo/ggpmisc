@@ -8,7 +8,8 @@ editor_options:
 
 The main changes in this version improve and expand the generation of labels,
 adding support for `geom_latex()` from package 'xdvir' and for `geom_marquee()`
-from package 'marquee'.
+from package 'marquee', and enhance the maths rendering in labels generated
+with Markdown markup.
 
 -   Automatic selection of `output.type = "latex.eqn"` when `"latex"` is passed
 as argument to parameter `geom` of statistics that generate labels, including
@@ -24,9 +25,12 @@ fitted model equations.
 -   With new `output.type == "marquee"` sub- and superscripts are encoded using
 the span definitions used be 'marquee' instead of the embedded HTML used when
 `output.type == "mardown"`.
+-   With both `output.type == "markdown"` and `output.type == "marquee"` use
+formatting that results in typeset equations that better match those encoded as
+plotmath expressions. 
 -   A new on-line-only article gives examples of the use of 'ggpmisc' together
-with R package 'xdvir' and compares plot annotations created with the different
-output types and geometries. 
+with R package 'xdvir' and another one compares plot annotations created with
+the different output types and matching geometries. 
 
 # ggpmisc 0.6.3
 

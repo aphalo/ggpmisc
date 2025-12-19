@@ -138,11 +138,11 @@ typeset_numbers <- function(eq.char, output.type) {
     eq.char <- gsub("  ", " ", eq.char, fixed = TRUE)
     eq.char <- gsub("-", "&minus;", eq.char, fixed = TRUE)
   } else if (output.type == "marquee") {
-    eq.char <- gsub("e([+-]?)[0]([1-9]*)", " × 10{.sup \\1\\2}", eq.char)
+    eq.char <- gsub("e([+-]?)[0]([1-9]*)", " \u00D7 10{.sup \\1\\2}", eq.char)
     eq.char <- gsub("[:^]([0-9]*)", "{.sup \\1}", eq.char)
     eq.char <- gsub("*", " ", eq.char, fixed = TRUE)
     eq.char <- gsub("  ", " ", eq.char, fixed = TRUE)
-    eq.char <- gsub("-", "−", eq.char, fixed = TRUE) # use minus sign
+    eq.char <- gsub("-", "\u2212", eq.char, fixed = TRUE) # use minus sign
   } else {
     eq.char <- gsub("e([+-]?[0-9]*)", "%*% 10^{\\1}", eq.char)
     # muliplication symbol

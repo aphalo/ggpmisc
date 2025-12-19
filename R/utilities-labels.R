@@ -719,7 +719,7 @@ var_value_label <- function(value,
   } else if (output.type == "markdown") {
     "&sigma;<sup>2</sup>"
   } else if (output.type == "marquee") {
-    "σ{.sup 2}"
+    "\u03C3{.sup 2}"
   } else {
     "s^2"
   }
@@ -749,7 +749,7 @@ sd_value_label <- function(value,
   } else if (output.type == "markdown") {
     "&sigma;"
   } else if (output.type == "marquee") {
-    "σ"
+    "\u03C3"
   } else {
     "s.d."
   }
@@ -898,9 +898,9 @@ r_label <- function(value,
       if (method == "pearson") {
         ifelse(small.r, "*r*", "*R*")
       } else if (method == "kendall") {
-        ifelse(output.type == "marquee", "*ρ*", "*&rho;*")
+        ifelse(output.type == "marquee", "*\u03C1*", "*&rho;*")
       } else if (method == "spearman") {
-        ifelse(output.type == "marquee", "*τ*", "*&tau;*")
+        ifelse(output.type == "marquee", "*\u03C4*", "*&tau;*")
       } else {
         method
       }
