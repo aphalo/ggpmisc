@@ -707,7 +707,11 @@ test_that("rounding_signif", {
 
 # Markdown ----------------------------------------------------------------
 
+
 if (requireNamespace("ggtext", quietly = TRUE)) {
+
+  skip_on_os("mac") # output differs
+
   library(ggtext)
 
   test_that("markdown_richtext", {

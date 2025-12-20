@@ -48,6 +48,7 @@ test_that("multcomp_noload", {
   )
 
   skip_on_os(c("mac", "linux", "solaris"))
+
   vdiffr::expect_doppelganger("smltc_noload_more",
                               ggplot2::ggplot(my.data, ggplot2::aes(group, y2)) +
                                 ggplot2::stat_summary(fun.data = "mean_se") +
