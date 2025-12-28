@@ -177,13 +177,13 @@ if (broom.installed)
     stat_fit_tb() +
     expand_limits(y = 70)
 
-# we can use geom_debug() and str() to inspect the returned value
+# we can use geom_debug_panel() and str() to inspect the returned value
 # and discover the variables that can be mapped to aesthetics with
 # after_stat()
 if (broom.installed && gginnards.installed)
   ggplot(my.df, aes(covariate, x)) +
     geom_point() +
-    stat_fit_tb(geom = "debug", dbgfun.data = str) +
+    stat_fit_tb(geom = "debug_panel", dbgfun.data = str) +
     expand_limits(y = 70)
 
 # Linear regression fit summary, with default formatting

@@ -173,7 +173,7 @@
 #'   stat_quant_line(formula = y ~ poly(x, 2)) +
 #'   facet_wrap(~drv)
 #'
-#' # Inspecting the returned data using geom_debug()
+#' # Inspecting the returned data using geom_debug_group()
 #' gginnards.installed <- requireNamespace("gginnards", quietly = TRUE)
 #'
 #' if (gginnards.installed)
@@ -181,11 +181,11 @@
 #'
 #' if (gginnards.installed)
 #'   ggplot(mpg, aes(displ, hwy)) +
-#'     stat_quant_line(geom = "debug")
+#'     stat_quant_line(geom = "debug_group")
 #'
 #' if (gginnards.installed)
 #'   ggplot(mpg, aes(displ, hwy)) +
-#'     stat_quant_line(geom = "debug", fm.values = TRUE)
+#'     stat_quant_line(geom = "debug_group", fm.values = TRUE)
 #'
 #' @export
 #'

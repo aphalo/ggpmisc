@@ -169,12 +169,12 @@
 #' if (gginnards.installed)
 #'   ggplot(my.data, aes(x, y)) +
 #'    stat_fit_residuals(formula = my.formula, resid.type = "working",
-#'                       geom = "debug")
+#'                       geom = "debug_group")
 #'
 #' if (gginnards.installed)
 #'   ggplot(my.data, aes(x, y)) +
 #'     stat_fit_residuals(formula = my.formula, method = "rlm",
-#'                        geom = "debug")
+#'                        geom = "debug_group")
 #'
 #' @export
 #'

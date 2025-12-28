@@ -217,7 +217,7 @@ Even though the number of significant digits and some other formatting can be ad
 | b_1           | numeric   | y              | y            | y               | n                  | n             |
 | b_2...b_n     | numeric   | y              | y            | y               | n                  | n             |
 
-In the cases of the statistics based on the methods from package 'broom' and its extensions, the returned value depends on that of the method specialization that is automatically dispatched based on the class of the model fit object returned by the `method` function (Table 5). The expectation is that these statistics will be used only in cases when those described above cannot be used. Implementation based on generic methods from package 'broom' and its extensions provides support for very many different model fit procedures, but at the same time requires that the user consults the documentation of these broom methods and that the user builds the character strings for labels in his own code. The simplest way of discovering what variables are returned is to use `gginnards::geom_debug()` to explore the returned data frame. Examples are included in the help to some of the statistics and in a later section of this User Guide.
+In the cases of the statistics based on the methods from package 'broom' and its extensions, the returned value depends on that of the method specialization that is automatically dispatched based on the class of the model fit object returned by the `method` function (Table 5). The expectation is that these statistics will be used only in cases when those described above cannot be used. Implementation based on generic methods from package 'broom' and its extensions provides support for very many different model fit procedures, but at the same time requires that the user consults the documentation of these broom methods and that the user builds the character strings for labels in his own code. The simplest way of discovering what variables are returned is to use `gginnards::geom_debug_group()` to explore the returned data frame. Examples are included in the help to some of the statistics and in a later section of this User Guide.
 
 : **Table 5.** Values always returned by `stat_fit_tb()`, `stat_fit_tidy()`, `stat_fit_glance()` and `stat_fit_augment()`. As these statistics call generic methods and return their output, only a few variables are guaranteed to be consistently present in the returned `data`. **Note:** (1) Depending on the geometry in use either `x` and `y` or `npcx` and `npcy` are set to `NA`.
 
@@ -1369,9 +1369,9 @@ ggplot(Orange, aes(age, circumference, colour = Tree)) +
 
 ### How to find out what variables are computed
 
-When using `stat_fit_glance()`, `stat_fit_tidy()`, `stat_fit_augment()` and `stat_fit_tb()` the documentation cannot describe the variables present in the returned `data` because they call methods using their generic interface and the exact specialization used depends on the argument passed to method, which can be even one that I have not been aware of and never tested. Thanks to package 'gginnards' and its `gginnards::geom_debug()` we can find this out with a temporary change to the plot code.
+When using `stat_fit_glance()`, `stat_fit_tidy()`, `stat_fit_augment()` and `stat_fit_tb()` the documentation cannot describe the variables present in the returned `data` because they call methods using their generic interface and the exact specialization used depends on the argument passed to method, which can be even one that I have not been aware of and never tested. Thanks to package 'gginnards' and its `gginnards::geom_debug_group()` we can find this out with a temporary change to the plot code.
 
-`gginnards::geom_debug()` uses by default `head()` to echo to the R console the data it receives as input. It ignores the aesthetic mappings so it can be used with any statistics or directly as a layer function. However, unrecognised aesthetics can trigger warnings during plot rendering. These warnings can be ignored in most cases.
+`gginnards::geom_debug_group()` uses by default `head()` to echo to the R console the data it receives as input. It ignores the aesthetic mappings so it can be used with any statistics or directly as a layer function. However, unrecognised aesthetics can trigger warnings during plot rendering. These warnings can be ignored in most cases.
 
 ```{r, eval=(eval_broom && eval_gginnards)}
 # formula <- y ~ poly(x, 3, raw = TRUE)
@@ -1380,7 +1380,7 @@ formula <- y ~ x + I(x^2) + I(x^3)
 ggplot(my.data, aes(x, y, colour = group)) +
   geom_point() +
   stat_smooth(method = "lm", formula = formula) +
-  stat_fit_glance(geom = "debug",
+  stat_fit_glance(geom = "debug_group",
                   method = "lm", 
                   method.args = list(formula = formula),
                   label.x = "right",
@@ -1397,7 +1397,7 @@ formula <- y ~ x + I(x^2) + I(x^3)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_smooth(method = "lm", formula = formula) +
-  stat_fit_tb(geom = "debug",
+  stat_fit_tb(geom = "debug_panel",
               summary.fun = str,
               method = "lm",
               method.args = list(formula = formula),
@@ -1410,7 +1410,7 @@ ggplot(my.data, aes(x, y)) +
               parse = TRUE)
 ```
 
-`gginnards::geom_debug()` can be used with 'ggplot2' and its extensions. More examples are given in the [documentation of package 'gginnards'](https://docs.r4photobiology.info/gginnards/).
+`gginnards::geom_debug_group()` can be used with 'ggplot2' and its extensions. More examples are given in the [documentation of package 'gginnards'](https://docs.r4photobiology.info/gginnards/).
 
 ## Scales
 

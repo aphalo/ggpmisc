@@ -106,8 +106,7 @@ test_that("smltc_contrast_type", {
   testthat::expect_error(ggplot(my.data, aes(group.mixed, y2)) +
                               stat_boxplot() +
                               stat_multcomp(contrasts = "Dunnet",
-                                            label.type = "letters"),
-                         variant = snap_version
+                                            label.type = "letters")
                           )
 })
 

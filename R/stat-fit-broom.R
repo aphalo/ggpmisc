@@ -118,14 +118,14 @@
 #'     library(gginnards)
 #' }
 #'
-#' # Inspecting the returned data using geom_debug()
+#' # Inspecting the returned data using geom_debug_group()
 #'   if (broom.installed && gginnards.installed) {
 #'     ggplot(mtcars, aes(x = disp, y = mpg)) +
 #'       stat_smooth(method = "lm") +
 #'       geom_point(aes(colour = factor(cyl))) +
 #'       stat_fit_glance(method = "lm",
 #'                       method.args = list(formula = y ~ x),
-#'                       geom = "debug")
+#'                       geom = "debug_group")
 #' }
 #'
 #' if (broom.installed)
@@ -522,7 +522,7 @@ StatFitGlance <-
 #'   library(quantreg)
 #' }
 #'
-#' # Inspecting the returned data using geom_debug()
+#' # Inspecting the returned data using geom_debug_group()
 #'   if (gginnards.installed) {
 #'     library(gginnards)
 #' }
@@ -533,7 +533,7 @@ StatFitGlance <-
 #'       geom_point(aes(colour = factor(cyl))) +
 #'       stat_fit_augment(method = "lm",
 #'                        method.args = list(formula = y ~ x),
-#'                        geom = "debug",
+#'                        geom = "debug_group",
 #'                        dbgfun.data = colnames)
 #' }
 #'
@@ -862,7 +862,7 @@ StatFitAugment <-
 #'   library(quantreg)
 #' }
 #'
-#' # Inspecting the returned data using geom_debug()
+#' # Inspecting the returned data using geom_debug_group()
 #'   if (gginnards.installed) {
 #'     library(gginnards)
 #' }
@@ -876,7 +876,7 @@ StatFitAugment <-
 #'     geom_point(aes(colour = factor(cyl))) +
 #'     stat_fit_tidy(method = "lm",
 #'                   method.args = list(formula = y ~ x + I(x^2)),
-#'                   geom = "debug")
+#'                   geom = "debug_group")
 #'
 #' # Regression by panel, sanitized column names
 #'   ggplot(mtcars, aes(x = disp, y = mpg)) +
@@ -884,7 +884,7 @@ StatFitAugment <-
 #'     geom_point(aes(colour = factor(cyl))) +
 #'     stat_fit_tidy(method = "lm",
 #'                   method.args = list(formula = y ~ x + I(x^2)),
-#'                   geom = "debug", sanitize.names = TRUE)
+#'                   geom = "debug_group", sanitize.names = TRUE)
 #' }
 #'
 #' # Regression by panel example

@@ -131,13 +131,13 @@
 #'     stat_fit_tb() +
 #'     expand_limits(y = 70)
 #'
-#' # we can use geom_debug() and str() to inspect the returned value
+#' # we can use geom_debug_panel() and str() to inspect the returned value
 #' # and discover the variables that can be mapped to aesthetics with
 #' # after_stat()
 #' if (broom.installed && gginnards.installed)
 #'   ggplot(my.df, aes(covariate, x)) +
 #'     geom_point() +
-#'     stat_fit_tb(geom = "debug", dbgfun.data = str) +
+#'     stat_fit_tb(geom = "debug_panel", dbgfun.data = str) +
 #'     expand_limits(y = 70)
 #'
 #' # Linear regression fit summary, with default formatting
@@ -547,7 +547,8 @@ fit_tb_compute_panel_fun <- function(data,
 
   # enclose the tibble and the call in lists to make them acceptable as columns
   formula.ls <- fail_safe_formula(fm, method.args)
-  z <- tibble::tibble(fm.tb = list(fm.tb),
+  z <- tibble::tibble(group = -1L,
+                      fm.tb = list(fm.tb),
                       fm.tb.type = tb.type,
                       fm.class = fm.class[1],
                       fm.method = method.name,

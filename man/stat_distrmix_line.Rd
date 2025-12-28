@@ -186,7 +186,7 @@ ggplot(faithful, aes(x = waiting)) +
 ggplot(subset(faithful, waiting > 66), aes(x = waiting)) +
   stat_distrmix_line(k = 1)
 
-# Inspecting the returned data using geom_debug()
+# Inspecting the returned data using geom_debug_group()
 gginnards.installed <- requireNamespace("gginnards", quietly = TRUE)
 
 if (gginnards.installed)
@@ -194,19 +194,19 @@ if (gginnards.installed)
 
 if (gginnards.installed)
   ggplot(faithful, aes(x = waiting)) +
-    stat_distrmix_line(geom = "debug", components = "all")
+    stat_distrmix_line(geom = "debug_group", components = "all")
 
 if (gginnards.installed)
   ggplot(faithful, aes(x = waiting)) +
-    stat_distrmix_line(geom = "debug", components = "sum")
+    stat_distrmix_line(geom = "debug_group", components = "sum")
 
 if (gginnards.installed)
   ggplot(faithful, aes(x = waiting)) +
-    stat_distrmix_line(geom = "debug", components = "members")
+    stat_distrmix_line(geom = "debug_group", components = "members")
 
 if (gginnards.installed)
   ggplot(faithful, aes(x = waiting)) +
-    stat_distrmix_line(geom = "debug", fm.values = TRUE)
+    stat_distrmix_line(geom = "debug_group", fm.values = TRUE)
 
 }
 \seealso{

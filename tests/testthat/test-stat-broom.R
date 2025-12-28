@@ -45,19 +45,19 @@ if (isNamespaceLoaded(name = "package:ggplot2")) detach(package:ggplot2, unload 
 test_that("broom_noload", {
   # ggplot(my.data, aes(x, y)) +
   #   geom_point() +
-  #   stat_fit_glance(geom = "debug")
+  #   stat_fit_glance(geom = "debug_group")
   #
   # ggplot(my.data, aes(x, y)) +
   #   geom_point() +
-  #   stat_fit_glance(method = "rq", geom = "debug")
+  #   stat_fit_glance(method = "rq", geom = "debug_group")
   #
   # ggplot(my.data, aes(x, y)) +
   #   geom_point() +
-  #   stat_fit_glance(method = "cor.test", method.args = list(formula = ~ x + y), geom = "debug")
+  #   stat_fit_glance(method = "cor.test", method.args = list(formula = ~ x + y), geom = "debug_group")
   #
   # ggplot(my.data, aes(x, y)) +
   #   geom_point() +
-  #   stat_fit_glance(method = "cor.test", method.arg = list(x = "x", y = "y"), geom = "debug")
+  #   stat_fit_glance(method = "cor.test", method.arg = list(x = "x", y = "y"), geom = "debug_group")
 
   vdiffr::expect_doppelganger("glance_method_default_noload",
                               ggplot2::ggplot(my.data, aes(x, y)) +
@@ -98,19 +98,19 @@ library(ggpmisc)
 test_that("glance_methods", {
   # ggplot(my.data, aes(x, y)) +
   #   geom_point() +
-  #   stat_fit_glance(geom = "debug")
+  #   stat_fit_glance(geom = "debug_group")
   #
   # ggplot(my.data, aes(x, y)) +
   #   geom_point() +
-  #   stat_fit_glance(method = "rq", geom = "debug")
+  #   stat_fit_glance(method = "rq", geom = "debug_group")
   #
   # ggplot(my.data, aes(x, y)) +
   #   geom_point() +
-  #   stat_fit_glance(method = "cor.test", method.args = list(formula = ~ x + y), geom = "debug")
+  #   stat_fit_glance(method = "cor.test", method.args = list(formula = ~ x + y), geom = "debug_group")
   #
   # ggplot(my.data, aes(x, y)) +
   #   geom_point() +
-  #   stat_fit_glance(method = "cor.test", method.arg = list(x = "x", y = "y"), geom = "debug")
+  #   stat_fit_glance(method = "cor.test", method.arg = list(x = "x", y = "y"), geom = "debug_group")
 
   vdiffr::expect_doppelganger("glance_method_default",
                               ggplot(my.data, aes(x, y)) +
@@ -213,15 +213,15 @@ test_that("glance_methods", {
 test_that("tidy_methods", {
   # ggplot(my.data, aes(x, y)) +
   #   geom_point() +
-  #   stat_fit_tidy(geom = "debug")
+  #   stat_fit_tidy(geom = "debug_group")
   #
   # ggplot(my.data, aes(x, y)) +
   #   geom_point() +
-  #   stat_fit_tidy(method = "rq", geom = "debug")
+  #   stat_fit_tidy(method = "rq", geom = "debug_group")
   #
   # ggplot(my.data, aes(x, y)) +
   #   geom_point() +
-  #   stat_fit_tidy(method = "rq", tidy.args = list(se = "nid"), geom = "debug")
+  #   stat_fit_tidy(method = "rq", tidy.args = list(se = "nid"), geom = "debug_group")
 
   vdiffr::expect_doppelganger("tidy_method_default",
                               ggplot(my.data, aes(x, y)) +
@@ -328,7 +328,7 @@ test_that("tidy_methods", {
 test_that("augment_methods", {
   # ggplot(my.data, aes(x, y)) +
   #   geom_point() +
-  #   stat_fit_augment(geom = "debug")
+  #   stat_fit_augment(geom = "debug_group")
 
   vdiffr::expect_doppelganger("augment_method_default",
                               ggplot(my.data, aes(x, y)) +

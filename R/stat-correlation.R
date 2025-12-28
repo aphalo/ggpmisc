@@ -212,7 +212,7 @@
 #'                                        after_stat(p.value.label),
 #'                                        after_stat(t.value.label))))
 #'
-#' # Inspecting the returned data using geom_debug()
+#' # Inspecting the returned data using geom_debug_group()
 #' # This provides a quick way of finding out the names of the variables that
 #' # are available for mapping to aesthetics with after_stat().
 #'
@@ -225,37 +225,37 @@
 #' if (gginnards.installed)
 #'   ggplot(my.data, aes(x, y)) +
 #'     geom_point() +
-#'     stat_correlation(geom = "debug")
+#'     stat_correlation(geom = "debug_group")
 #'
 #' if (gginnards.installed)
 #'   ggplot(my.data, aes(x, y)) +
 #'     geom_point() +
-#'     stat_correlation(geom = "debug", method = "pearson")
+#'     stat_correlation(geom = "debug_group", method = "pearson")
 #'
 #' if (gginnards.installed)
 #'   ggplot(my.data, aes(x, y)) +
 #'     geom_point() +
-#'     stat_correlation(geom = "debug", method = "kendall")
+#'     stat_correlation(geom = "debug_group", method = "kendall")
 #'
 #' if (gginnards.installed)
 #'   ggplot(my.data, aes(x, y)) +
 #'     geom_point() +
-#'     stat_correlation(geom = "debug", method = "spearman")
+#'     stat_correlation(geom = "debug_group", method = "spearman")
 #'
 #' if (gginnards.installed)
 #'   ggplot(my.data, aes(x, y)) +
 #'     geom_point() +
-#'     stat_correlation(geom = "debug", output.type = "numeric")
+#'     stat_correlation(geom = "debug_group", output.type = "numeric")
 #'
 #' if (gginnards.installed)
 #'   ggplot(my.data, aes(x, y)) +
 #'     geom_point() +
-#'     stat_correlation(geom = "debug", output.type = "markdown")
+#'     stat_correlation(geom = "debug_group", output.type = "markdown")
 #'
 #' if (gginnards.installed)
 #'   ggplot(my.data, aes(x, y)) +
 #'     geom_point() +
-#'     stat_correlation(geom = "debug", output.type = "LaTeX")
+#'     stat_correlation(geom = "debug_group", output.type = "LaTeX")
 #'
 #' @family ggplot statistics for correlation.
 #'

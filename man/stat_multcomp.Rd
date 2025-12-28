@@ -379,7 +379,7 @@ p1 +
   stat_multcomp(label.type = "letters",
                 mc.critical.p.value = 0.01)
 
-# Inspecting the returned data using geom_debug()
+# Inspecting the returned data using geom_debug_panel()
 # This provides a quick way of finding out the names of the variables that
 # are available for mapping to aesthetics with after_stat().
 
@@ -391,18 +391,18 @@ if (gginnards.installed)
 if (gginnards.installed)
 p1 +
   stat_multcomp(label.type = "bars",
-                geom = "debug")
+                geom = "debug_panel")
 
 if (gginnards.installed)
 p1 +
   stat_multcomp(label.type = "letters",
-                geom = "debug")
+                geom = "debug_panel")
 
 if (gginnards.installed)
 p1 +
   stat_multcomp(label.type = "bars",
                 output.type = "numeric",
-                geom = "debug")
+                geom = "debug_panel")
 
 }
 \references{

@@ -165,7 +165,7 @@ if (broom.installed) {
   library(quantreg)
 }
 
-# Inspecting the returned data using geom_debug()
+# Inspecting the returned data using geom_debug_group()
   if (gginnards.installed) {
     library(gginnards)
 }
@@ -179,7 +179,7 @@ if (broom.installed && gginnards.installed) {
     geom_point(aes(colour = factor(cyl))) +
     stat_fit_tidy(method = "lm",
                   method.args = list(formula = y ~ x + I(x^2)),
-                  geom = "debug")
+                  geom = "debug_group")
 
 # Regression by panel, sanitized column names
   ggplot(mtcars, aes(x = disp, y = mpg)) +
@@ -187,7 +187,7 @@ if (broom.installed && gginnards.installed) {
     geom_point(aes(colour = factor(cyl))) +
     stat_fit_tidy(method = "lm",
                   method.args = list(formula = y ~ x + I(x^2)),
-                  geom = "debug", sanitize.names = TRUE)
+                  geom = "debug_group", sanitize.names = TRUE)
 }
 
 # Regression by panel example

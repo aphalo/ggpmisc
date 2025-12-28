@@ -29,7 +29,7 @@
 \alias{StatMaEq}
 \alias{ma_line_compute_group_fun}
 \alias{StatMaLine}
-\alias{multcomp_compute_fun}
+\alias{multcomp_compute_panel_fun}
 \alias{StatMultcomp}
 \alias{peaks_compute_group_fun}
 \alias{valleys_compute_group_fun}

@@ -157,14 +157,14 @@ if (gginnards.installed) {
     library(gginnards)
 }
 
-# Inspecting the returned data using geom_debug()
+# Inspecting the returned data using geom_debug_group()
   if (broom.installed && gginnards.installed) {
     ggplot(mtcars, aes(x = disp, y = mpg)) +
       stat_smooth(method = "lm") +
       geom_point(aes(colour = factor(cyl))) +
       stat_fit_glance(method = "lm",
                       method.args = list(formula = y ~ x),
-                      geom = "debug")
+                      geom = "debug_group")
 }
 
 if (broom.installed)

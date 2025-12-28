@@ -32,7 +32,7 @@ ggplot(my.data, aes(x, y)) +
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_eq(formula = y ~ poly(x, 3, raw = TRUE),
-                geom = "debug",
+                geom = "debug_group",
                 output.type = "markdown",
                 mapping =
                   aes(label = paste(after_stat(eq.label),

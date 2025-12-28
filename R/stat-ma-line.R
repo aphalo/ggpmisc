@@ -138,7 +138,7 @@
 #'   stat_ma_line() +
 #'   facet_wrap(~group)
 #'
-#' # Inspecting the returned data using geom_debug()
+#' # Inspecting the returned data using geom_debug_group()
 #' gginnards.installed <- requireNamespace("gginnards", quietly = TRUE)
 #'
 #' if (gginnards.installed)
@@ -146,11 +146,11 @@
 #'
 #' if (gginnards.installed)
 #'   ggplot(my.data, aes(x, y)) +
-#'     stat_ma_line(geom = "debug")
+#'     stat_ma_line(geom = "debug_group")
 #'
 #' if (gginnards.installed)
 #'   ggplot(my.data, aes(x, y)) +
-#'     stat_ma_line(geom = "debug", fm.values = TRUE)
+#'     stat_ma_line(geom = "debug_group", fm.values = TRUE)
 #'
 #' @export
 #'

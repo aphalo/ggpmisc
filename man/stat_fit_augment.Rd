@@ -143,7 +143,7 @@ if (broom.installed) {
   library(quantreg)
 }
 
-# Inspecting the returned data using geom_debug()
+# Inspecting the returned data using geom_debug_group()
   if (gginnards.installed) {
     library(gginnards)
 }
@@ -154,7 +154,7 @@ if (broom.installed & gginnards.installed) {
       geom_point(aes(colour = factor(cyl))) +
       stat_fit_augment(method = "lm",
                        method.args = list(formula = y ~ x),
-                       geom = "debug",
+                       geom = "debug_group",
                        dbgfun.data = colnames)
 }
 

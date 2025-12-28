@@ -301,7 +301,7 @@
 #'   stat_multcomp(label.type = "letters",
 #'                 mc.critical.p.value = 0.01)
 #'
-#' # Inspecting the returned data using geom_debug()
+#' # Inspecting the returned data using geom_debug_panel()
 #' # This provides a quick way of finding out the names of the variables that
 #' # are available for mapping to aesthetics with after_stat().
 #'
@@ -313,18 +313,18 @@
 #' if (gginnards.installed)
 #' p1 +
 #'   stat_multcomp(label.type = "bars",
-#'                 geom = "debug")
+#'                 geom = "debug_panel")
 #'
 #' if (gginnards.installed)
 #' p1 +
 #'   stat_multcomp(label.type = "letters",
-#'                 geom = "debug")
+#'                 geom = "debug_panel")
 #'
 #' if (gginnards.installed)
 #' p1 +
 #'   stat_multcomp(label.type = "bars",
 #'                 output.type = "numeric",
-#'                 geom = "debug")
+#'                 geom = "debug_panel")
 #'
 #' @export
 #'
@@ -430,7 +430,7 @@ stat_multcomp <- function(mapping = NULL,
 #' @format NULL
 #' @usage NULL
 #'
-multcomp_compute_fun <-
+multcomp_compute_panel_fun <-
   function(data,
            scales,
            method = "lm",
@@ -879,6 +879,10 @@ multcomp_compute_fun <-
       }
     }
 
+    if (!"group" %in% colnames(z)) {
+      # The data frame returned by a panel function must have a "group" column
+      z[["group"]] <- -1L
+    }
     z
   }
 
@@ -889,7 +893,7 @@ multcomp_compute_fun <-
 StatMultcomp <-
   ggplot2::ggproto("StatMultcomp", ggplot2::Stat,
                    extra_params = c("na.rm", "parse"),
-                   compute_panel = multcomp_compute_fun,
+                   compute_panel = multcomp_compute_panel_fun,
                    default_aes = ggplot2::aes(xmin = after_stat(x.left.tip),
                                               xmax = after_stat(x.right.tip),
                                               label = after_stat(default.label),

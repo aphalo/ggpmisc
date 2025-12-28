@@ -499,7 +499,7 @@ ggplot(my.data, aes(x, y)) +
   stat_poly_eq(geom = "text", label.x = 100, label.y = 0, hjust = 1,
                formula = formula)
 
-# Inspecting the returned data using geom_debug()
+# Inspecting the returned data using geom_debug_group()
 # This provides a quick way of finding out the names of the variables that
 # are available for mapping to aesthetics with after_stat().
 
@@ -513,14 +513,14 @@ if (gginnards.installed)
     geom_point() +
     stat_poly_line(formula = formula) +
     stat_poly_eq(formula = formula,
-                 geom = "debug")
+                 geom = "debug_group")
 
 if (gginnards.installed)
   ggplot(my.data, aes(x, y)) +
     geom_point() +
     stat_poly_line(formula = formula) +
     stat_poly_eq(formula = formula,
-                 geom = "debug",
+                 geom = "debug_group",
                  output.type = "numeric")
 
 # names of the variables
@@ -529,7 +529,7 @@ if (gginnards.installed)
     geom_point() +
     stat_poly_line(formula = formula) +
     stat_poly_eq(formula = formula,
-                 geom = "debug",
+                 geom = "debug_group",
                  dbgfun.data = colnames)
 
 # only data$eq.label
@@ -538,7 +538,7 @@ if (gginnards.installed)
     geom_point() +
     stat_poly_line(formula = formula) +
     stat_poly_eq(formula = formula,
-                 geom = "debug",
+                 geom = "debug_group",
                  output.type = "expression",
                  dbgfun.data = function(x) {x[["eq.label"]]})
 
@@ -548,7 +548,7 @@ if (gginnards.installed)
     geom_point() +
     stat_poly_line(formula = formula) +
     stat_poly_eq(formula = formula,
-                 geom = "debug",
+                 geom = "debug_group",
                  output.type = "text",
                  dbgfun.data = function(x) {x[["eq.label"]]})
 

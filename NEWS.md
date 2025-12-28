@@ -27,7 +27,8 @@ the span definitions used be 'marquee' instead of the embedded HTML used when
 `output.type == "mardown"`.
 -   With both `output.type == "markdown"` and `output.type == "marquee"` use
 formatting that results in typeset equations that better match those encoded as
-plotmath expressions. 
+plotmath expressions.
+-   Track changes in 'gginnards' (>= 0.2.0) in examples and docs.
 -   A new on-line-only article gives examples of the use of 'ggpmisc' together
 with R package 'xdvir' and another one compares plot annotations created with
 the different output types and matching geometries. 
@@ -758,7 +759,7 @@ CRAN version
 
 -   Revise `stat_fit_tidy()` so that it returns *p*-values for
     parameters, in addition to estimates and their standard errors.
--   BUG FIX: Revise `geom_debug()` adding missing default arguments.
+-   BUG FIX: Revise `geom_debug_group()` adding missing default arguments.
 -   Add functions for manipulation of layers in ggplot objects:
     `delete_layers()`, `append_layers()`, `move_layers()`,
     `shift_layers()`, `which_layers()`, `extract_layers()`,
@@ -824,7 +825,7 @@ expressions.
 
 -   Add support for *tikz* in `stat_poly_eq()`.
 -   Fix bug in `stat_poly_eq()`.
--   Fix bug in `geom_debug()`.
+-   Fix bug in `geom_debug_group()`.
 -   Fix bug in `stat_fit_augment()`.
 
 # ggpmisc 0.2.8
@@ -870,7 +871,7 @@ expressions.
 -   Improve `stat_debug_panel()` and stat_debug_group() so that they can
     optionally print to the console a summary of the data received as
     input.
--   Add `geom_debug()`, a geom that summarizes its data input to the
+-   Add `geom_debug_group()`, a geom that summarizes its data input to the
     console, and produces no visible graphical output.
 
 # ggpmisc 0.2.6

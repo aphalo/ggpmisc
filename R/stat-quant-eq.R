@@ -358,7 +358,7 @@
 #'                 formula = formula,
 #'                 quantiles = 0.5)
 #'
-#' # Inspecting the returned data using geom_debug()
+#' # Inspecting the returned data using geom_debug_group()
 #' # This provides a quick way of finding out the names of the variables that
 #' # are available for mapping to aesthetics using after_stat().
 #'
@@ -370,37 +370,37 @@
 #' if (gginnards.installed)
 #'   ggplot(my.data, aes(x, y)) +
 #'     geom_point() +
-#'     stat_quant_eq(formula = formula, geom = "debug")
+#'     stat_quant_eq(formula = formula, geom = "debug_group")
 #'
 #' \dontrun{
 #' if (gginnards.installed)
 #'   ggplot(my.data, aes(x, y)) +
 #'     geom_point() +
 #'     stat_quant_eq(mapping = aes(label = after_stat(eq.label)),
-#'                   formula = formula, geom = "debug",
+#'                   formula = formula, geom = "debug_group",
 #'                   output.type = "markdown")
 #'
 #' if (gginnards.installed)
 #'   ggplot(my.data, aes(x, y)) +
 #'     geom_point() +
-#'     stat_quant_eq(formula = formula, geom = "debug", output.type = "text")
+#'     stat_quant_eq(formula = formula, geom = "debug_group", output.type = "text")
 #'
 #' if (gginnards.installed)
 #'   ggplot(my.data, aes(x, y)) +
 #'     geom_point() +
-#'     stat_quant_eq(formula = formula, geom = "debug", output.type = "numeric")
-#'
-#' if (gginnards.installed)
-#'   ggplot(my.data, aes(x, y)) +
-#'     geom_point() +
-#'     stat_quant_eq(formula = formula, quantiles = c(0.25, 0.5, 0.75),
-#'                   geom = "debug", output.type = "text")
+#'     stat_quant_eq(formula = formula, geom = "debug_group", output.type = "numeric")
 #'
 #' if (gginnards.installed)
 #'   ggplot(my.data, aes(x, y)) +
 #'     geom_point() +
 #'     stat_quant_eq(formula = formula, quantiles = c(0.25, 0.5, 0.75),
-#'                   geom = "debug", output.type = "numeric")
+#'                   geom = "debug_group", output.type = "text")
+#'
+#' if (gginnards.installed)
+#'   ggplot(my.data, aes(x, y)) +
+#'     geom_point() +
+#'     stat_quant_eq(formula = formula, quantiles = c(0.25, 0.5, 0.75),
+#'                   geom = "debug_group", output.type = "numeric")
 #' }
 #'
 #' @export

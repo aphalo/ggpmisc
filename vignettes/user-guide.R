@@ -818,7 +818,7 @@ formula <- y ~ x + I(x^2) + I(x^3)
 ggplot(my.data, aes(x, y, colour = group)) +
   geom_point() +
   stat_smooth(method = "lm", formula = formula) +
-  stat_fit_glance(geom = "debug",
+  stat_fit_glance(geom = "debug_group",
                   method = "lm", 
                   method.args = list(formula = formula),
                   label.x = "right",
@@ -832,7 +832,7 @@ formula <- y ~ x + I(x^2) + I(x^3)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_smooth(method = "lm", formula = formula) +
-  stat_fit_tb(geom = "debug",
+  stat_fit_tb(geom = "debug_group",
               summary.fun = str,
               method = "lm",
               method.args = list(formula = formula),

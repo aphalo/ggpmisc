@@ -159,23 +159,23 @@
 #'                       method = "rq", method.args = list(tau = 0.75)) +
 #'   geom_point()
 #'
-#' # inspecting the returned data with geom_debug()
+#' # inspecting the returned data with geom_debug_group()
 #' gginnards.installed <- requireNamespace("gginnards", quietly = TRUE)
 #'
 #' if (gginnards.installed)
 #'   library(gginnards)
 #'
-#' # plot, using geom_debug() to explore the after_stat data
+#' # plot, using geom_debug_group() to explore the after_stat data
 #' if (gginnards.installed)
 #'   ggplot(my.data, aes(x, y)) +
 #'     geom_smooth(method = "lm", formula = my.formula) +
-#'     stat_fit_deviations(formula = my.formula, geom = "debug") +
+#'     stat_fit_deviations(formula = my.formula, geom = "debug_group") +
 #'     geom_point()
 #'
 #' if (gginnards.installed)
 #'   ggplot(my.data.outlier, aes(x, y)) +
 #'     stat_smooth(method = MASS::rlm, formula = my.formula) +
-#'     stat_fit_deviations(formula = my.formula, method = "rlm", geom = "debug") +
+#'     stat_fit_deviations(formula = my.formula, method = "rlm", geom = "debug_group") +
 #'     geom_point()
 #'
 #' @export

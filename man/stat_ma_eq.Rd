@@ -365,7 +365,7 @@ ggplot(my.data,
   stat_ma_eq(mapping = use_label("grp", "eq", "R2")) +
   theme_classic()
 
-# Inspecting the returned data using geom_debug()
+# Inspecting the returned data using geom_debug_group()
 # This provides a quick way of finding out the names of the variables that
 # are available for mapping to aesthetics with after_stat().
 
@@ -378,25 +378,25 @@ if (gginnards.installed)
 if (gginnards.installed)
   ggplot(my.data, aes(x, y)) +
     geom_point() +
-    stat_ma_eq(geom = "debug")
+    stat_ma_eq(geom = "debug_group")
 
 \dontrun{
 if (gginnards.installed)
   ggplot(my.data, aes(x, y)) +
     geom_point() +
     stat_ma_eq(mapping = aes(label = after_stat(eq.label)),
-               geom = "debug",
+               geom = "debug_group",
                output.type = "markdown")
 
 if (gginnards.installed)
   ggplot(my.data, aes(x, y)) +
     geom_point() +
-    stat_ma_eq(geom = "debug", output.type = "text")
+    stat_ma_eq(geom = "debug_group", output.type = "text")
 
 if (gginnards.installed)
   ggplot(my.data, aes(x, y)) +
     geom_point() +
-    stat_ma_eq(geom = "debug", output.type = "numeric")
+    stat_ma_eq(geom = "debug_group", output.type = "numeric")
 }
 
 }
