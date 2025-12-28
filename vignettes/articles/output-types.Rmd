@@ -59,6 +59,8 @@ library(ggpmisc)
 library(xdvir)
 library(ggtext)
 library(marquee)
+
+options(xdvir.engine="xetex") # luatex can fail
 ```
 
 For debugging 'xdvir' created plots, longer messages can be very helpful.
@@ -181,7 +183,7 @@ ggplot(my.data, aes(x, y)) +
 
 ## $\LaTeX$
 
-$\LaTeX$ provides the best typesetting, but is rather slow. Slowness is noticeable when many plots need to be created in a document, such as this article. Using defaults we produce, in this example, three equations in inline math mode and connected with normal text.
+$\LaTeX$ provides the best typesetting, but is rather slow. Slowness is noticeable when many plots need to be created in a document. Using defaults we produce, in this example, three equations in inline math mode, connected with normal text passed as `sep = ", "` in the call.
 
 ```{r}
 my.formula <- y ~ poly(x, 3, raw = TRUE)
@@ -193,7 +195,7 @@ ggplot(my.data, aes(x, y)) +
                geom = "latex", hjust = 0, vjust = 1)
 ```
 
-The display maths mode of $\LaTeX$ is intented to be used for equations displayed on there own rather than within within a flowing text paragraph. The typesetting differs in that diplayed equations expand more vertically, specially fractions. For polynomial this difference is subtle, with sub- and superscript text slightly larger. In display maths mode each equation is typeset on a separate line with line height depending on the equation.
+The display maths mode of $\LaTeX$ is intented to be used for equations displayed on there own rather than within within a flowing text paragraph. The typesetting differs in that diplayed equations expand more in the vertical direction, specially fractions, sum and square root symbols. For fitted polynomial equations this difference is subtle, with sub- and superscript text slightly larger. In display maths mode each equation is typeset on a separate line with line height depending on the vertical size of the equation.
 
 ```{r}
 my.formula <- y ~ poly(x, 3, raw = TRUE)
@@ -206,7 +208,7 @@ ggplot(my.data, aes(x, y)) +
                geom = "latex", hjust = 0, vjust = 1)
 ```
 
-To produce a single display-mode maths equation from multiple labels, we set `output.type = "latex"`.
+To produce a single display-mode maths equation from multiple labels, we set `output.type = "latex"`. This returns the math-mode-formatted equation without enabling math-mode. We paste the math-formatted labels, and enclose the combined labels in `$$` to enable math-mode, only once so that the pasted labels as a whole are typeset as a single equation.
 
 ```{r}
 my.formula <- y ~ poly(x, 3, raw = TRUE)
@@ -225,7 +227,7 @@ ggplot(my.data, aes(x, y)) +
 
 ## Numeric
 
-Finally `output.type = "numeric"` does not create `character` labels, it only returns numeric values that the user can convert into custom labels within a call to `aes()`.
+Finally `output.type = "numeric"` does not return `character` strings for labels, it only returns numeric values that the user can convert into custom labels within a call to `aes()`.
 
 ```{r}
 my.formula <- y ~ poly(x, 3, raw = TRUE)
@@ -242,3 +244,48 @@ ggplot(my.data, aes(x, y)) +
 ```
 
 Explanation for `\\%%`: to get a % sign in $\LaTeX$ the scape `\%` is used, because `%` is used to mark comments. However, `\` is also special in R character strings as it is used to encode non-printable characters such as new line (`\n`). Thus, the escape sequence `\\` encodes the single `\` character expected by $\LaTeX$. In addition, `%` is a special character in the format expected by `sprintf()` with `%.0f` above indicating a number formated with no decimal fraction. In the format string used by `sprintf()`, `%%` is the scape sequence that encodes a single `%` character!
+
+Package 'ggpmisc' does also export the label formatting functions used in the statistics. Using them directly can allow some additional control of the typesetting.
+
+```{r}
+my.formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_poly_line(formula = my.formula) +
+  stat_poly_eq(mapping = 
+                 aes(label = 
+                       paste("$ ",
+                             rr_label(value = after_stat(r.squared),
+                                      pc.out = TRUE,
+                                      fixed = TRUE,
+                                      digits = 0,
+                                      output.type = "latex"),
+                             "$ \\emph{for {\\color{blue}{polynomial}} OLS fit}",
+                             sep = "")),
+               packages = c("xcolor", "fontspec"),
+               family = "serif",
+               formula = my.formula,
+               geom = "latex", # needs to accept the manual markup 
+               output.type = "numeric",
+               hjust = 0, vjust = 1)
+```
+
+```{r}
+my.formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_poly_line(formula = my.formula) +
+  stat_poly_eq(mapping = 
+                 aes(label = 
+                       paste(rr_label(value = after_stat(r.squared),
+                                      pc.out = TRUE,
+                                      fixed = TRUE,
+                                      digits = 0,
+                                      output.type = "marquee"),
+                             " *for {.blue polynomial} OLS fit*", sep = "")),
+               family = "serif",
+               formula = my.formula,
+               geom = "marquee", 
+               output.type = "numeric",
+               hjust = 0, vjust = 1)
+```

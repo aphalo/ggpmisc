@@ -78,7 +78,7 @@ Package 'xdvir' depends on 'tinytex' and 'grid'. The default $\TeX$ engine is 'l
 ## Math typesetting by LuaTeX can fall back into mode=base
 ## (which we can't currently handle)
 ## so use XeTeX engine for this vignette
-options("xdvir.engine"="xetex")
+options(xdvir.engine = "xetex")
 ```
 
 ```{r, message=FALSE}

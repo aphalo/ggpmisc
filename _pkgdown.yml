@@ -98,6 +98,8 @@ navbar:
         href: articles/peaks-and-valleys.html
       - text: 'Using LaTeX for annotations'
         href: articles/latex-labels.html
+      - text: 'Comparison of output types'
+        href: articles/output-types.html
     tutorials:
       text: Resources
       menu:

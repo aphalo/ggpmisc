@@ -919,6 +919,8 @@ r_label <- function(value,
 
 #' @rdname plain_label
 #'
+#' @param pc.out logical If \code{TRUE} format value in label as percent.
+#'
 #' @examples
 #' rr_label(value = 0.95, digits = 2, output.type = "expression")
 #' rr_label(value = 0.0001, digits = 2, output.type = "expression")
@@ -929,6 +931,7 @@ r_label <- function(value,
 rr_label <- function(value,
                      small.r = getOption("ggpmisc.small.r", default = FALSE),
                      digits = 3,
+                     pc.out = FALSE,
                      fixed = TRUE,
                      output.type = "expression",
                      decimal.mark = getOption("OutDec", default = ".")) {
@@ -950,12 +953,14 @@ rr_label <- function(value,
     return(NA_character_)
   }
 
-  if (digits < 2) {
-    warning("'digits < 2' Likely information loss!")
+  if (pc.out && fixed) {
+    if (digits < 0) warning("'digits < 0' for %: Likely information loss!")
+  } else {
+    if (digits < 2) warning("'digits < 2': Likely information loss!")
   }
   format <- ifelse(fixed, "f", "g")
 
-  rr.value <- value
+  rr.value <- ifelse(pc.out, value * 100, value)
 
   rr.value.char <- value2char(value = rr.value,
                               digits = digits,
@@ -969,12 +974,17 @@ rr_label <- function(value,
   if (output.type == "expression") {
     rr.symbol <- ifelse(small.r, "italic(r)^2", "italic(R)^2")
     if (rr.value < 10^(-digits) & rr.value != 0) {
-      paste(rr.symbol,
-            sprintf_dm(protected.format,
-                       digits, 10^(-digits), decimal.mark = decimal.mark),
-            sep = "~`<`~")
+      z <- paste(rr.symbol,
+                 sprintf_dm(protected.format,
+                            digits, 10^(-digits), decimal.mark = decimal.mark),
+                 sep = "~`<`~")
     } else {
-      paste(rr.symbol, rr.value.char, sep = "~`=`~")
+      z <- paste(rr.symbol, rr.value.char, sep = "~`=`~")
+    }
+    if (pc.out) {
+      paste(z, "*\"%\"")
+    } else {
+      z
     }
   } else if (grepl("^latex", output.type) || output.type == "text") {
     rr.symbol <- ifelse(small.r, "r^2", "R^2")
@@ -986,6 +996,9 @@ rr_label <- function(value,
     } else {
       z <- paste(rr.symbol, rr.value.char, sep = " = ")
     }
+    if (pc.out) {
+      z <- paste(z, "\\%")
+    }
     if (output.type == "latex.eqn") {
       paste("$", z, "$")
     } else if (output.type == "latex.deqn") {
@@ -993,25 +1006,51 @@ rr_label <- function(value,
     } else {
       z
     }
+  } else if (output.type == "text") {
+    rr.symbol <- ifelse(small.r, "r^2", "R^2")
+    if (rr.value < 10^(-digits) & rr.value != 0) {
+      z <- paste(rr.symbol,
+                 sprintf_dm(format,
+                            digits, 10^(-digits), decimal.mark = decimal.mark),
+                 sep = " < ")
+    } else {
+      z <- paste(rr.symbol, rr.value.char, sep = " = ")
+    }
+    if (pc.out) {
+      paste(z, "%")
+    } else {
+      z
+    }
   } else if (output.type == "markdown") {
     rr.symbol <- ifelse(small.r, "*r*<sup>2</sup>", "*R*<sup>2</sup>")
     if (rr.value < 10^(-digits) & rr.value != 0) {
-      paste(rr.symbol,
-            sprintf_dm(format,
-                       digits, 10^(-digits), decimal.mark = decimal.mark),
-            sep = " < ")
+      z <- paste(rr.symbol,
+                 sprintf_dm(format,
+                            digits, 10^(-digits), decimal.mark = decimal.mark),
+                 sep = " < ")
     } else {
-      paste(rr.symbol, rr.value.char, sep = " = ")
+      z <- paste(rr.symbol, rr.value.char, sep = " = ")
     }
+    if (pc.out) {
+      paste(z, "%")
+    } else {
+      z
+    }
+
   } else if (output.type == "marquee") {
     rr.symbol <- ifelse(small.r, "*r*{.sup 2}", "*R*{.sup 2}")
     if (rr.value < 10^(-digits) & rr.value != 0) {
-      paste(rr.symbol,
-            sprintf_dm(format,
-                       digits, 10^(-digits), decimal.mark = decimal.mark),
-            sep = " < ")
+      z <- paste(rr.symbol,
+                 sprintf_dm(format,
+                            digits, 10^(-digits), decimal.mark = decimal.mark),
+                 sep = " < ")
     } else {
-      paste(rr.symbol, rr.value.char, sep = " = ")
+      z <- paste(rr.symbol, rr.value.char, sep = " = ")
+    }
+    if (pc.out) {
+      paste(z, "%")
+    } else {
+      z
     }
   }
 }
@@ -1027,6 +1066,7 @@ rr_label <- function(value,
 adj_rr_label <- function(value,
                          small.r = getOption("ggpmisc.small.r", default = FALSE),
                          digits = 3,
+                         pc.out = FALSE,
                          fixed = TRUE,
                          output.type = "expression",
                          decimal.mark = getOption("OutDec", default = ".")) {
@@ -1047,12 +1087,15 @@ adj_rr_label <- function(value,
     return(NA_character_)
   }
 
-  if (digits < 2) {
-    warning("'digits < 2' Likely information loss!")
+  if (pc.out && fixed) {
+    if (digits < 0) warning("'digits < 0' for %: Likely information loss!")
+  } else {
+    if (digits < 2) warning("'digits < 2': Likely information loss!")
   }
+
   format <- ifelse(fixed, "f", "g")
 
-  adj.rr.value <- value
+  adj.rr.value <- ifelse(pc.out, value * 100, value)
 
   adj.rr.value.char <- value2char(value = adj.rr.value,
                                   digits = digits,
@@ -1064,19 +1107,29 @@ adj_rr_label <- function(value,
   protected.format <- paste("\"", format, "\"", sep = "")
 
   if (output.type == "expression") {
-    paste(ifelse(small.r, "italic(r)[adj]^2", "italic(R)[adj]^2"),
-          ifelse(adj.rr.value < 10^(-digits) & adj.rr.value != 0,
-                 sprintf_dm(protected.format, digits, 10^(-digits), decimal.mark = decimal.mark),
-                 adj.rr.value.char),
-          sep = ifelse(adj.rr.value < 10^(-digits) & adj.rr.value != 0,
-                       "~`<`~",
-                       "~`=`~"))
+    z <- paste(ifelse(small.r, "italic(r)[adj]^2", "italic(R)[adj]^2"),
+               ifelse(adj.rr.value < 10^(-digits) & adj.rr.value != 0,
+                      sprintf_dm(protected.format, digits, 10^(-digits),
+                                 decimal.mark = decimal.mark),
+                      adj.rr.value.char),
+               sep = ifelse(adj.rr.value < 10^(-digits) & adj.rr.value != 0,
+                            "~`<`~",
+                            "~`=`~"))
+    if (pc.out) {
+      paste(z, "*\"%\"")
+    } else {
+      z
+    }
   } else if (grepl("^latex", output.type)) {
     z <- paste(ifelse(small.r, "r_\\mathrm{adj}^2", "R_\\mathrm{adj}^2"),
                ifelse(adj.rr.value < 10^(-digits),
-                      sprintf_dm(format, digits, 10^(-digits), decimal.mark = decimal.mark),
+                      sprintf_dm(format, digits, 10^(-digits),
+                                 decimal.mark = decimal.mark),
                       adj.rr.value.char),
                sep = ifelse(adj.rr.value < 10^(-digits), " < ", " = "))
+    if (pc.out) {
+      z <- paste(z, "\\%")
+    }
     if (output.type == "latex.eqn") {
       paste("$", z, "$")
     } else if (output.type == "latex.deqn") {
@@ -1085,23 +1138,45 @@ adj_rr_label <- function(value,
       z
     }
   } else if (output.type == "text") {
-    paste(ifelse(small.r, "r_adj^2", "R_adj^2"),
-          ifelse(adj.rr.value < 10^(-digits),
-                 sprintf_dm(format, digits, 10^(-digits), decimal.mark = decimal.mark),
-                 adj.rr.value.char),
-          sep = ifelse(adj.rr.value < 10^(-digits), " < ", " = "))
+    z <- paste(ifelse(small.r, "r_adj^2", "R_adj^2"),
+               ifelse(adj.rr.value < 10^(-digits),
+                      sprintf_dm(format, digits, 10^(-digits),
+                                 decimal.mark = decimal.mark),
+                      adj.rr.value.char),
+               sep = ifelse(adj.rr.value < 10^(-digits), " < ", " = "))
+    if (pc.out) {
+      paste(z, "%")
+    } else {
+      z
+    }
   } else if (output.type == "markdown") {
-    paste(ifelse(small.r, "*r*<sup>2</sup><sub>adj</sub>", "*R*<sup>2</sup><sub>adj</sub>"),
-          ifelse(adj.rr.value < 10^(-digits),
-                 sprintf_dm(protected.format, digits, 10^(-digits), decimal.mark = decimal.mark),
-                 adj.rr.value.char),
-          sep = ifelse(adj.rr.value < 10^(-digits), " < ", " = "))
+    z <- paste(ifelse(small.r,
+                      "*r*<sup>2</sup><sub>adj</sub>",
+                      "*R*<sup>2</sup><sub>adj</sub>"),
+               ifelse(adj.rr.value < 10^(-digits),
+                      sprintf_dm(protected.format, digits, 10^(-digits),
+                                 decimal.mark = decimal.mark),
+                      adj.rr.value.char),
+               sep = ifelse(adj.rr.value < 10^(-digits), " < ", " = "))
+    if (pc.out) {
+      paste(z, "%")
+    } else {
+      z
+    }
   } else if (output.type == "marquee") {
-    paste(ifelse(small.r, "*r*{.sup 2}{.sub adj}", "*R*{.sup 2}{.sub adj}"),
-          ifelse(adj.rr.value < 10^(-digits),
-                 sprintf_dm(protected.format, digits, 10^(-digits), decimal.mark = decimal.mark),
-                 adj.rr.value.char),
-          sep = ifelse(adj.rr.value < 10^(-digits), " < ", " = "))
+    z <- paste(ifelse(small.r,
+                      "*r*{.sup 2}{.sub adj}",
+                      "*R*{.sup 2}{.sub adj}"),
+               ifelse(adj.rr.value < 10^(-digits),
+                      sprintf_dm(protected.format, digits, 10^(-digits),
+                                 decimal.mark = decimal.mark),
+                      adj.rr.value.char),
+               sep = ifelse(adj.rr.value < 10^(-digits), " < ", " = "))
+    if (pc.out) {
+      paste(z, "%")
+    } else {
+      z
+    }
   }
 }
 

@@ -139,6 +139,7 @@ rr_label(
   value,
   small.r = getOption("ggpmisc.small.r", default = FALSE),
   digits = 3,
+  pc.out = FALSE,
   fixed = TRUE,
   output.type = "expression",
   decimal.mark = getOption("OutDec", default = ".")
@@ -148,6 +149,7 @@ adj_rr_label(
   value,
   small.r = getOption("ggpmisc.small.r", default = FALSE),
   digits = 3,
+  pc.out = FALSE,
   fixed = TRUE,
   output.type = "expression",
   decimal.mark = getOption("OutDec", default = ".")
@@ -205,6 +207,8 @@ to \emph{P} symbol.}
 
 \item{method}{character The method used to estimate correlation, which
 selects the symbol used for the value.}
+
+\item{pc.out}{logical If \code{TRUE} format value in label as percent.}
 
 \item{conf.level}{numeric critical \emph{P}-value expressed as fraction in
 [0..1].}
