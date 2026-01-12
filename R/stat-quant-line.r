@@ -214,6 +214,12 @@ stat_quant_line <- function(mapping = NULL,
   stopifnot("Args 'formula' and/or 'data' in 'method.args'" =
               !any(c("formula", "data") %in% names(method.args)))
 
+  if (is.null(se) || is.na(se) || !se) {
+    # change defaults
+    interval <- "none"
+    type <- "none"
+  }
+
   # we make a character string name for the method
   if (is.character(method)) {
     method <- trimws(method, which = "both")
@@ -347,11 +353,19 @@ quant_line_compute_group_fun <- function(data,
 
     if (is.matrix(pred)) {
       temp.grid[["y"]] <- pred[ , 1L]
-      temp.grid[["ymin"]] <- pred[ , 2L]
-      temp.grid[["ymax"]] <- pred[ , 3L]
+      if (ncol(pred) >= 3L) {
+        temp.grid[["ymin"]] <- pred[ , 2L]
+        temp.grid[["ymax"]] <- pred[ , 3L]
+      }
     } else {
       temp.grid[["y"]] <- pred
-      temp.grid[["ymin"]] <- z[["ymax"]] <- NA_real_
+    }
+    # if ymin and ymax exist and are not NA they affect scale limits
+    if (!exists("ymin", temp.grid)) {
+      temp.grid[["ymin"]] <- NA_real_
+    }
+    if (!exists("ymax", temp.grid)) {
+      temp.grid[["ymax"]] <- NA_real_
     }
 
     temp.grid[["quantile"]] <- fm[["tau"]]

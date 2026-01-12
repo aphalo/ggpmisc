@@ -35,7 +35,12 @@ quant_helper_fun <- function(data,
                              orientation = "x") {
 
   if (length(unique(data[[orientation]])) >= n.min) {
-
+    if (is.null(weight)) {
+      weight <- 1
+    }
+    if (!exists("weight", data)) {
+      data[["weight"]] <- rep_len(weight, length.out = nrow(data))
+    }
     # If method was specified as a character string, replace with
     # the corresponding function. Some model fit functions themselves have a
     # method parameter accepting character strings as argument. We support

@@ -343,7 +343,7 @@ citation("ggpmisc")
 #> To cite package 'ggpmisc' in publications use:
 #> 
 #>   Aphalo P (2025). _ggpmisc: Miscellaneous Extensions to 'ggplot2'_. R
-#>   package version 0.6.3.9000,
+#>   package version 0.6.3.9002,
 #>   <https://docs.r4photobiology.info/ggpmisc/>.
 #> 
 #> A BibTeX entry for LaTeX users is
@@ -352,7 +352,7 @@ citation("ggpmisc")
 #>     title = {ggpmisc: Miscellaneous Extensions to 'ggplot2'},
 #>     author = {Pedro J. Aphalo},
 #>     year = {2025},
-#>     note = {R package version 0.6.3.9000},
+#>     note = {R package version 0.6.3.9002},
 #>     url = {https://docs.r4photobiology.info/ggpmisc/},
 #>   }
 ```
@@ -385,6 +385,6 @@ Computational and Graphical Statistics 19 (1): 3–28.
 
 ## License
 
-© 2016-2025 Pedro J. Aphalo (<pedro.aphalo@helsinki.fi>). Released under
+© 2016-2026 Pedro J. Aphalo (<pedro.aphalo@helsinki.fi>). Released under
 the GPL, version 2 or greater. This software carries no warranty of any
 kind.
