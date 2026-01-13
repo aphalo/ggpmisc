@@ -267,7 +267,7 @@
 #'   geom_point() +
 #'   stat_quant_line(formula = formula, linewidth = 0.5) +
 #'   stat_quant_eq(formula = formula, angle = 90, hstep = 0.04, vstep = 0,
-#'                 label.y = 0.02, hjust = 0) +
+#'                 label.y = 0.02, hjust = 0, size = 3) +
 #'   expand_limits(x = -15) # make space for equations
 #'
 #' # user set quantiles

@@ -110,6 +110,10 @@
 #'
 #' ggplot(mpg, aes(displ, hwy)) +
 #'   geom_point() +
+#'   stat_quant_line(quantiles = 0.5)
+#'
+#' ggplot(mpg, aes(displ, hwy)) +
+#'   geom_point() +
 #'   stat_quant_line(se = TRUE)
 #'
 #' # If you need the fitting to be done along the y-axis set the orientation
@@ -138,11 +142,13 @@
 #'   stat_quant_line(formula = x ~ poly(y, 3))
 #'
 #' # Instead of rq() we can use rqss() to fit an additive model:
+#' library(quantreg)
+#'
 #' ggplot(mpg, aes(displ, hwy)) +
 #'   geom_point() +
 #'   stat_quant_line(method = "rqss",
 #'                   formula = y ~ qss(x, constraint = "D"),
-#'                   quantiles = 0.5)
+#'                   quantiles = 0.5, se = FALSE)
 #'
 #' ggplot(mpg, aes(displ, hwy)) +
 #'   geom_point() +
@@ -215,7 +221,7 @@ stat_quant_line <- function(mapping = NULL,
               !any(c("formula", "data") %in% names(method.args)))
 
   if (is.null(se) || is.na(se) || !se) {
-    # change defaults
+    # change defaults because computing confidence band is time consuming
     interval <- "none"
     type <- "none"
   }
@@ -415,45 +421,3 @@ StatQuantLine <-
                                               weight = 1),
                    required_aes = c("x", "y")
   )
-
-# modified from 'ggplot2'
-# !!!
-# !!! fitting and prediction should be split so that metadata from fm can be recovered
-# !!!
-quant_pred <- function(quantile, data, method, formula, weight, grid,
-                       method.args = method.args, orientation = "x",
-                       level = 0.95, type = "none", interval = "none",
-                       make.groups = TRUE) {
-  args <- c(list(quote(formula), data = quote(data), tau = quote(quantile),
-    weights = quote(weight)), method.args)
-  # quantreg contains code with partial matching of names!
-  # so we silence selectively only these warnings
-  withCallingHandlers({
-    fm <- do.call(method, args)
-  }, warning = function(w) {
-    if (startsWith(conditionMessage(w), "partial match of") ||
-        startsWith(conditionMessage(w), "partial argument match of")) {
-      invokeRestart("muffleWarning")
-    }
-  })
-
-  if (!length(fm) || (is.atomic(fm) && is.na(fm))) {
-    return(data.frame())
-  }
-
-  if (orientation == "x") {
-    grid[["y"]] <- stats::predict(fm, newdata = grid, level = level,
-                                  type = type, interval = interval)
-  } else {
-    grid[["x"]] <- stats::predict(fm, newdata = grid, level = level,
-                                  type = type, interval = interval)
-  }
-  grid[["quantile"]] <- quantile
-  if (make.groups) {
-    grid[["group"]] <- paste(data[["group"]][1], quantile, sep = "-")
-  } else {
-    grid[["group"]] <- data[["group"]][1]
-  }
-
-  grid
-}

@@ -185,6 +185,10 @@ ggplot(mpg, aes(displ, hwy)) +
 
 ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
+  stat_quant_line(quantiles = 0.5)
+
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
   stat_quant_line(se = TRUE)
 
 # If you need the fitting to be done along the y-axis set the orientation
@@ -213,11 +217,13 @@ ggplot(mpg, aes(displ, hwy)) +
   stat_quant_line(formula = x ~ poly(y, 3))
 
 # Instead of rq() we can use rqss() to fit an additive model:
+library(quantreg)
+
 ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
   stat_quant_line(method = "rqss",
                   formula = y ~ qss(x, constraint = "D"),
-                  quantiles = 0.5)
+                  quantiles = 0.5, se = FALSE)
 
 ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
