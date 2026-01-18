@@ -1419,13 +1419,15 @@ check_output_type <-
              c("expression", "text", "markdown", "marquee", "numeric",
                "latex", "latex.eqn", "latex.deqn")) {
     if (is.null(output.type)) {
-      if (geom %in% c("richtext", "textbox")) { # , "marquee" needs different markup
+      if (geom %in% c("richtext", "textbox")) { # package 'ggtext'
         output.type <- "markdown"
       } else if (geom == "latex") { # package 'xdvir'
         output.type <- "latex.eqn"
-      } else if (geom == "marquee") { # package 'marquee'
+      } else if (geom %in% c("marquee", "marquee_repel")) {
+        # packages 'marquee' or 'ggrepel'
         output.type <- "marquee"
       } else {
+        # packages 'ggplot2', 'ggpp', and others
         output.type <- "expression"
       }
     } else {
@@ -1442,4 +1444,3 @@ check_output_type <-
       output.type
     }
   }
-

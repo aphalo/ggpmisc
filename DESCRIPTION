@@ -28,8 +28,8 @@ License: GPL (>= 2)
 LazyLoad: TRUE
 ByteCompile: TRUE
 Depends:
-    R (>= 4.0.0),
-    ggpp (>= 0.5.8)
+    R (>= 4.1.0),
+    ggpp (>= 0.5.9)
 Imports:
     grid,
     stats,

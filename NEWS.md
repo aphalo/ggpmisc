@@ -9,7 +9,8 @@ editor_options:
 The main changes in this version improve and expand the generation of labels,
 adding support for `geom_latex()` from package 'xdvir' and for `geom_marquee()`
 from package 'marquee', and enhance the maths rendering in labels generated
-with Markdown markup.
+with Markdown markup. Use of plotmath expressions remains the default for
+geoms from 'ggpp' and from 'ggplot2'.
 
 -   Automatic selection of `output.type = "latex.eqn"` when `"latex"` is passed
 as argument to parameter `geom` of statistics that generate labels, including
