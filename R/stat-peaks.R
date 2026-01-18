@@ -38,6 +38,9 @@
 #' @param orientation character The orientation of the layer can be set to
 #'   either \code{"x"}, the default, or \code{"y"}.
 #'
+#' @aesthetics StatPeaks
+#' @aesthetics StatValleys
+#'
 #' @return A data frame with one row for each peak (or valley) found in the data
 #'   extracted from the input \code{data} or all rows in data. Added columns
 #'   contain the labels.
@@ -50,20 +53,11 @@
 #'   \item{y.label}{y-value at the peak (or valley) formatted as character}
 #' }
 #'
-#' @section Default aesthetics: These stats use \code{geom_point} by default as
-#'   it is the geom most likely to work well in almost any situation without.
+#' @note These stats use \code{geom_point} by default as
+#'   it is the geom most likely to work well in almost any situation.
 #'   The default aesthetics set by these stats allow their direct use with
 #'   \code{geom_text}, \code{geom_label}, \code{geom_line}, \code{geom_rug},
-#'   \code{geom_hline} and \code{geom_vline}. The formatting of the labels
-#'   returned can be controlled by the user.
-#'
-#'   Default aesthetics mapped by the statistic and available to geoms, in
-#'   addtion to the automatically set required aesthetics.
-#' \describe{
-#'   \item{label}{stat(x.label)}
-#'   \item{xintercept}{stat(x)}
-#'   \item{yintercept}{stat(y)}
-#' }
+#'   \code{geom_hline} and \code{geom_vline}.
 #'
 #' @section Required aesthetics: Required by the statistic and need to be set
 #'   with \code{aes()}. Date time scales are recognized and labels

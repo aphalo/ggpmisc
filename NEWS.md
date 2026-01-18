@@ -31,7 +31,12 @@ plotmath expressions.
 -   Track changes in 'gginnards' (>= 0.2.0) in examples and docs.
 -   A new on-line-only article gives examples of the use of 'ggpmisc' together
 with R package 'xdvir' and another one compares plot annotations created with
-the different output types and matching geometries. 
+the different output types and matching geometries.
+-   Update documentation for all statistics to include an automatically 
+generated _Aesthetics_ section.
+
+**Note:** When 'ggpmisc' >= 0.7.0 is used together with 'ggpp' >= 0.6.0 and 
+'ggplot2' >= 4.0.0 the geom element of 'ggplot2' themes is obeyed.
 
 # ggpmisc 0.6.3
 

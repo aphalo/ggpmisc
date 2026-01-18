@@ -36,7 +36,7 @@ Whitaker and Hayes (2018). Spikes are values in spectra that are unusually
 high or low compared to neighbours. They are usually individual values or very
 short runs of similar "unusual" values. Spikes caused by cosmic radiation are
 a frequent problem in Raman spectra. Another source of spikes are "hot
-pixels" in CCD and diode arrays. Other kinds of accidental "outlayers" are
+pixels" in CCD and diode arrays. Other kinds of accidental "outliers" are
 be also detected.
 }
 \details{

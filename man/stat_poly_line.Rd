@@ -160,9 +160,16 @@ statistics in the grammar of graphics.
   wise.
 }
 \note{
-Currently confidence bands for the regression band are not plotted in
-  some cases, and in the case of MA and SMA model, it only displays the
-  uncertainty of the slope.
+\code{stat_poly_line} understands \code{x} and \code{y},
+  to be referenced in the \code{formula} and \code{weight} passed as argument
+  to parameter \code{weights}. All three must be mapped to \code{numeric}
+  variables. In addition, the aesthetics understood by the geom
+  (\code{"geom_smooth"} is the default) are understood and grouping
+  respected.
+
+  Currently confidence bands for the regression line are not plotted in
+  some cases, and in the case of MA and SMA models, the band only displays
+  the uncertainty of the slope rather than for both slope plus intercept.
 }
 \section{Model fit methods supported}{
  Several model fit functions are
@@ -193,15 +200,6 @@ Currently confidence bands for the regression band are not plotted in
   approach to achieve effects like colouring or hiding of the model fit line
   based on P-values, r-squared, adjusted r-squared or the number of
   observations.
-}
-
-\section{Aesthetics}{
- \code{stat_poly_line} understands \code{x} and \code{y},
-  to be referenced in the \code{formula} and \code{weight} passed as argument
-  to parameter \code{weights}. All three must be mapped to \code{numeric}
-  variables. In addition, the aesthetics understood by the geom
-  (\code{"geom_smooth"} is the default) are understood and grouping
-  respected.
 }
 
 \examples{
@@ -257,3 +255,14 @@ Other ggplot statistics for linear and polynomial regression:
 \code{\link{stat_poly_eq}()}
 }
 \concept{ggplot statistics for linear and polynomial regression}
+\section{Aesthetics}{
+
+\code{stat_poly_line()} understands the following aesthetics. Required aesthetics are displayed in bold and defaults are displayed for optional aesthetics:
+\tabular{rll}{
+ • \tab \strong{\code{\link[ggplot2:aes_position]{x}}} \tab   \cr
+ • \tab \strong{\code{\link[ggplot2:aes_position]{y}}} \tab   \cr
+ • \tab \code{\link[ggplot2:aes_group_order]{group}} \tab → inferred \cr
+}
+
+Learn more about setting these aesthetics in \code{vignette("ggplot2-specs")}.
+}

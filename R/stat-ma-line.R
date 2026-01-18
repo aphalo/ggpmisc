@@ -36,6 +36,9 @@
 #'   \code{\link[base:Random]{set.seed}()} immediately ahead of model fitting.
 #'
 #' @inheritParams stat_poly_line
+#'
+#' @aesthetics StatMaLine
+#'
 #' @param range.y,range.x character Pass "relative" or "interval" if method
 #'   "RMA" is to be computed.
 #' @param method function or character If character, "MA", "SMA" , "RMA" or
@@ -66,7 +69,7 @@
 #'   approach to achieve effects like colouring or hiding of the model fit line
 #'   based on P-values, r-squared or the number of observations.
 #'
-#' @section Aesthetics: \code{stat_ma_line} understands \code{x} and \code{y},
+#' @note \code{stat_ma_line} understands \code{x} and \code{y},
 #'   to be referenced in the \code{formula}. Both must be mapped to
 #'   \code{numeric} variables. In addition, the aesthetics understood by the
 #'   geom (\code{"geom_smooth"} is the default) are understood and grouping

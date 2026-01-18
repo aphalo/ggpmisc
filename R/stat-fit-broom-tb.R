@@ -58,6 +58,8 @@
 #' @param parse If TRUE, the labels will be parsed into expressions and
 #'   displayed as described in \code{?plotmath}.
 #'
+#' @aesthetics StatFitTb
+#'
 #' @details \code{stat_fit_tb()} Applies a model fitting function per panel,
 #'   using the grouping factors from aesthetic mappings in the fitted model.
 #'   This is suitable, for example for analysis of variance used to test for

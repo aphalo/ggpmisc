@@ -45,6 +45,8 @@
 #' @param orientation character Either "x" or "y" controlling the default for
 #'   \code{formula}.
 #'
+#' @aesthetics StatFitResiduals
+#'
 #' @details This stat can be used to automatically plot residuals as points in a
 #'   plot. At the moment it supports only linear models fitted with function
 #'   \code{lm()} or \code{rlm()}. It applies to the fitted model object methods

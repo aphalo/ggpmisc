@@ -227,9 +227,27 @@ This statistic can be used to automatically annotate a plot with
   interest and using larger values of \code{n.min} than the default is
   usually wise. This can be useful as when this threshold is not reached
   an empty data frame is returned resulting in an empty plot layer.
+
+  R option \code{OutDec} is obeyed based on its value at the time the plot
+  is rendered, i.e., displayed or printed. Set \code{options(OutDec = ",")}
+  for languages like Spanish or French.
 }
 \note{
-For backward compatibility a logical is accepted as argument for
+\code{stat_poly_eq()} understands \code{x} and \code{y},
+  to be referenced in the \code{formula} and \code{weight} passed as argument
+  to parameter \code{weights}. All three must be mapped to \code{numeric}
+  variables.
+
+  If the model formula includes a transformation of \code{x}, a
+  matching argument should be passed to parameter \code{eq.x.rhs}
+  as its default value \code{"x"} will not reflect the applied
+  transformation. In plots, transformation should never be applied to the
+  left hand side of the model formula, but instead in the mapping of the
+  variable within \code{aes}, as otherwise plotted observations and fitted
+  curve will not match. In this case it may be necessary to also pass
+  a matching argument to parameter \code{eq.with.lhs}.
+
+  For backward compatibility a logical is accepted as argument for
   \code{eq.with.lhs}. If \code{TRUE}, the default is used, either
   \code{"x"} or \code{"y"}, depending on the argument passed to \code{formula}.
   However, \code{"x"} or \code{"y"} can be substituted by providing a
@@ -237,10 +255,6 @@ For backward compatibility a logical is accepted as argument for
   Parameter \code{orientation} is redundant as it only affects the default
   for \code{formula} but is included for consistency with
   \code{ggplot2::stat_smooth()}.
-
-  R option \code{OutDec} is obeyed based on its value at the time the plot
-  is rendered, i.e., displayed or printed. Set \code{options(OutDec = ",")}
-  for languages like Spanish or French.
 }
 \section{User-defined methods}{
  User-defined functions can be passed as
@@ -262,23 +276,6 @@ For backward compatibility a logical is accepted as argument for
   selection, model \code{formula} selection, dynamically adjusted
   \code{method.args} and conditional skipping of labelling on a by group
   basis.
-}
-
-\section{Aesthetics}{
- \code{stat_poly_eq()} understands \code{x} and \code{y},
-  to be referenced in the \code{formula} and \code{weight} passed as argument
-  to parameter \code{weights}. All three must be mapped to \code{numeric}
-  variables. In addition, the aesthetics understood by the geom
-  (\code{"text"} is the default) are understood and grouping respected.
-
-  If the model formula includes a transformation of \code{x}, a
-  matching argument should be passed to parameter \code{eq.x.rhs}
-  as its default value \code{"x"} will not reflect the applied
-  transformation. In plots, transformation should never be applied to the
-  left hand side of the model formula, but instead in the mapping of the
-  variable within \code{aes}, as otherwise plotted observations and fitted
-  curve will not match. In this case it may be necessary to also pass
-  a matching argument to parameter \code{eq.with.lhs}.
 }
 
 \section{Computed variables}{
@@ -571,10 +568,10 @@ This statistics fits a model with function \code{\link[stats]{lm}()}
   \href{https://docs.r4photobiology.info/ggpmisc/}{online documentation}
   for additional use examples and guidance.
 
-  For quantile regression \code{\link{stat_quant_eq}()} should be used
+  For quantile regression \code{\link{stat_quant_eq}()} can be used
   instead of \code{stat_poly_eq()} while for model II or major axis
   regression with package 'lmodel2' \code{\link{stat_ma_eq}()} should be
-  used. For methods not supportted by these three statistics, such as
+  used. For methods not supported by these three statistics, such as
   non-linear models, statistics \code{\link{stat_fit_glance}()} and
   \code{\link{stat_fit_tidy}()} can be used but require the user to create
   character strings from numeric values and map them to aesthetic
@@ -584,3 +581,21 @@ Other ggplot statistics for linear and polynomial regression:
 \code{\link{stat_poly_line}()}
 }
 \concept{ggplot statistics for linear and polynomial regression}
+\section{Aesthetics}{
+
+\code{stat_poly_eq()} understands the following aesthetics. Required aesthetics are displayed in bold and defaults are displayed for optional aesthetics:
+\tabular{rll}{
+ • \tab \strong{\code{\link[ggplot2:aes_position]{x}}} \tab   \cr
+ • \tab \strong{\code{\link[ggplot2:aes_position]{y}}} \tab   \cr
+ • \tab \code{\link[ggplot2:aes_group_order]{group}} \tab → inferred \cr
+ • \tab \code{grp.label} \tab   \cr
+ • \tab \code{hjust} \tab → \code{"inward"} \cr
+ • \tab \code{label} \tab → \code{after_stat(rr.label)} \cr
+ • \tab \code{npcx} \tab → \code{after_stat(npcx)} \cr
+ • \tab \code{npcy} \tab → \code{after_stat(npcy)} \cr
+ • \tab \code{vjust} \tab → \code{"inward"} \cr
+ • \tab \code{weight} \tab → \code{1} \cr
+}
+
+Learn more about setting these aesthetics in \code{vignette("ggplot2-specs")}.
+}

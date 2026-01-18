@@ -228,3 +228,14 @@ Other ggplot statistics for model fits:
 \code{\link{stat_fit_tidy}()}
 }
 \concept{ggplot statistics for model fits}
+\section{Aesthetics}{
+
+\code{stat_fit_residuals()} understands the following aesthetics. Required aesthetics are displayed in bold and defaults are displayed for optional aesthetics:
+\tabular{rll}{
+ • \tab \strong{\code{\link[ggplot2:aes_position]{x}}} \tab   \cr
+ • \tab \strong{\code{\link[ggplot2:aes_position]{y}}} \tab   \cr
+ • \tab \code{\link[ggplot2:aes_group_order]{group}} \tab → inferred \cr
+}
+
+Learn more about setting these aesthetics in \code{vignette("ggplot2-specs")}.
+}

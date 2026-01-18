@@ -42,18 +42,7 @@
 #'   Default is \code{TRUE} if \code{output.type = "expression"} and
 #'   \code{FALSE} otherwise.
 #'
-#' @note For backward compatibility a logical is accepted as argument for
-#'   \code{eq.with.lhs}. If \code{TRUE}, the default is used, either
-#'   \code{"x"} or \code{"y"}, depending on the argument passed to \code{formula}.
-#'   However, \code{"x"} or \code{"y"} can be substituted by providing a
-#'   suitable replacement character string through \code{eq.x.rhs}.
-#'   Parameter \code{orientation} is redundant as it only affects the default
-#'   for \code{formula} but is included for consistency with
-#'   \code{ggplot2::stat_smooth()}.
-#'
-#'   R option \code{OutDec} is obeyed based on its value at the time the plot
-#'   is rendered, i.e., displayed or printed. Set \code{options(OutDec = ",")}
-#'   for languages like Spanish or French.
+#' @aesthetics StatPolyEq
 #'
 #' @details This statistic can be used to automatically annotate a plot with
 #'   \eqn{R^2}, adjusted \eqn{R^2}, the fitted model equation, \eqn{P}, and
@@ -130,6 +119,10 @@
 #'   usually wise. This can be useful as when this threshold is not reached
 #'   an empty data frame is returned resulting in an empty plot layer.
 #'
+#'   R option \code{OutDec} is obeyed based on its value at the time the plot
+#'   is rendered, i.e., displayed or printed. Set \code{options(OutDec = ",")}
+#'   for languages like Spanish or French.
+#'
 #' @section User-defined methods: User-defined functions can be passed as
 #'   argument to \code{method}. The requirements are 1) that the signature is
 #'   similar to that of function \code{lm()} (with parameters \code{formula},
@@ -152,11 +145,10 @@
 #'
 #' @inheritSection check_output_type Output types
 #'
-#' @section Aesthetics: \code{stat_poly_eq()} understands \code{x} and \code{y},
+#' @note \code{stat_poly_eq()} understands \code{x} and \code{y},
 #'   to be referenced in the \code{formula} and \code{weight} passed as argument
 #'   to parameter \code{weights}. All three must be mapped to \code{numeric}
-#'   variables. In addition, the aesthetics understood by the geom
-#'   (\code{"text"} is the default) are understood and grouping respected.
+#'   variables.
 #'
 #'   If the model formula includes a transformation of \code{x}, a
 #'   matching argument should be passed to parameter \code{eq.x.rhs}
@@ -166,6 +158,15 @@
 #'   variable within \code{aes}, as otherwise plotted observations and fitted
 #'   curve will not match. In this case it may be necessary to also pass
 #'   a matching argument to parameter \code{eq.with.lhs}.
+#'
+#'   For backward compatibility a logical is accepted as argument for
+#'   \code{eq.with.lhs}. If \code{TRUE}, the default is used, either
+#'   \code{"x"} or \code{"y"}, depending on the argument passed to \code{formula}.
+#'   However, \code{"x"} or \code{"y"} can be substituted by providing a
+#'   suitable replacement character string through \code{eq.x.rhs}.
+#'   Parameter \code{orientation} is redundant as it only affects the default
+#'   for \code{formula} but is included for consistency with
+#'   \code{ggplot2::stat_smooth()}.
 #'
 #' @return A data frame, with a single row per group and columns as described
 #'   under \strong{Computed variables}. In cases when the number of observations
@@ -234,10 +235,10 @@
 #'   \href{https://docs.r4photobiology.info/ggpmisc/}{online documentation}
 #'   for additional use examples and guidance.
 #'
-#'   For quantile regression \code{\link{stat_quant_eq}()} should be used
+#'   For quantile regression \code{\link{stat_quant_eq}()} can be used
 #'   instead of \code{stat_poly_eq()} while for model II or major axis
 #'   regression with package 'lmodel2' \code{\link{stat_ma_eq}()} should be
-#'   used. For methods not supportted by these three statistics, such as
+#'   used. For methods not supported by these three statistics, such as
 #'   non-linear models, statistics \code{\link{stat_fit_glance}()} and
 #'   \code{\link{stat_fit_tidy}()} can be used but require the user to create
 #'   character strings from numeric values and map them to aesthetic

@@ -148,6 +148,11 @@ aesthetic and label it with the adjusted _P_-values for multitle comparision
 using "Tukey" contrasts.
 
 ```{r readme-03a}
+#| fig.cap: >
+#|   **Figure 1.** Boxplots with outcome from paiwise contrasts using
+#|   Tukey's HSD (honestly significant difference) as criterion with
+#|    $\alpha = 0.05$.
+#|       
 ggplot(mpg, aes(factor(cyl), cty)) +
   geom_boxplot(width = 0.33) +
   stat_multcomp(label.type = "letters") +
@@ -157,6 +162,14 @@ ggplot(mpg, aes(factor(cyl), cty)) +
 Using "Dunnet" contrasts and "bars" to annotate individual contrasts with the adjusted _P_-value, here using Holm's method.
 
 ```{r readme-03b}
+#| fig.cap: >
+#|   **Figure 2.** Boxplots with outcome from paiwise 
+#|   Dunnet contrasts using Holms' _P_-adjustment. The
+#|   adjusted _P_-values are shown for each pairwise contrast.
+#|   An ANOVA is first fitted and subsequently its output is
+#|   used for pairwise contrasts within the _stat_. Labels are
+#|   formatted automatically. 
+#|       
 ggplot(mpg, aes(factor(cyl), cty)) +
   geom_boxplot(width = 0.33) +
   stat_multcomp(contrasts = "Dunnet",
@@ -171,6 +184,13 @@ plus the fitted curve, deviations and confidence band. We use `stat_poly_eq()`
 together with `use_label()` to assemble and map the desired annotations.
 
 ```{r readme-04}
+#| fig.cap: >
+#|   **Figure 3.** Scatter plot of obsevations with a second degree 
+#|   polynomial **fitted by OLS**. Fitted model line with 95% confidence band is
+#|   shown. Deviations for each observation are highlighted as red segments.
+#|   Fitted model equation, $R^2$ and _P_-value are shown as annotations.
+#|   Model fitted within _stats_ with labels generated automatically.
+#|       
 formula <- y ~ x + I(x^2)
 ggplot(cars, aes(speed, dist)) +
   geom_point() +
@@ -184,10 +204,17 @@ ANOVA table for the model fit. We use `stat_fit_tb()` which can be used to add
 ANOVA or summary tables.
 
 ```{r readme-05}
+#| fig.cap: >
+#|   **Figure 4.** The same base plot as in Figure 3, but annotated
+#|   with an inset ANOVA table for the fitted model. 
+#|   Model fitted within _stats_ with table generated automatically.
+#|   Some column and row headings replaced by user-provided
+#|   character strings, some of them parsed as plotmath expressions.
+#|       
 formula <- y ~ x + I(x^2)
 ggplot(cars, aes(speed, dist)) +
   geom_point() +
-  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_line(method = "lm", formula = formula) +
   stat_fit_tb(method = "lm",
               method.args = list(formula = formula),
               tb.type = "fit.anova",
@@ -198,40 +225,72 @@ ggplot(cars, aes(speed, dist)) +
                           "italic(P)" = "p.value"),
               tb.params = c(x = 1, "x^2" = 2),
               label.y = "top", label.x = "left",
-              size = 2.5,
+              size = 3.5,
               parse = TRUE)
 ```
 
 The same figure as in the third example but this time using quantile regression, median in this example.
 
 ```{r readme-04b, warning=FALSE}
+#| fig.cap: >
+#|   **Figure 5.** Same scatter plot of obsevations as in Figures 3 and 4, 
+#|   but with a the second degree 
+#|   polynomial **fitted by quantile regression**. Fitted model line with 95% 
+#|   confidence band shown.
+#|   Fitted model equation shown, $\rho$ and the number of observations
+#|   shown as annotations.
+#|   Model fitted within _stats_ with labels generated automatically.
+#|       
 formula <- y ~ x + I(x^2)
 ggplot(cars, aes(speed, dist)) +
   geom_point() +
   stat_quant_line(formula = formula, quantiles = 0.5) +
-  stat_quant_eq(formula = formula, quantiles = 0.5)
+  stat_quant_eq(use_label("eq", "rho", "n"),
+                formula = formula, quantiles = 0.5)
 ```
 
 Band highlighting the region between both quartile regressions and a line for the median regression.
 
 ```{r readme-04c, warning=FALSE}
+#| fig.cap: >
+#|   **Figure 6.** The same scatter plot of obsevations as in Figures 3 to
+#|   5 but with three second degree polynomials **fitted by quantile 
+#|   regression**, for the median and the quartiles. 
+#|   The line shows the model fit for the median line, and the band delimits
+#|   the quartiles.
+#|   The three fitted model equations are shown as annotations.
+#|   Model fitted within _stats_ with labels generated automatically.
+#|       
 formula <- y ~ x + I(x^2)
 ggplot(cars, aes(speed, dist)) +
   geom_point() +
-  stat_quant_band(formula = formula)
+  stat_quant_band(formula = formula) +
+  stat_quant_eq(formula = formula, quantiles = c(0.25, 0.5, 0.75))
 ```
 
 A quadrant plot with counts and labels, using `geom_text_repel()` from package
 'ggrepel'.
 
 ```{r}
+#| fig.cap: >
+#|   **Figure 7.** A quadrant plot as used to compare gene expression
+#|   under two conditions or in two genotypes. A fraction, 2% in this case,
+#|   of all genes are labelled, with those in the least dense
+#|   regions of the scatter plot selected automatically. The manually set
+#|   bandwidth, `h = 3` in this case, has a large effect on which 
+#|   observations are highlighted and labelled.
+#|       
 ggplot(quadrant_example.df, aes(logFC.x, logFC.y)) +
   geom_point(alpha = 0.3) +
   geom_quadrant_lines() +
   stat_quadrant_counts() +
-  stat_dens2d_filter(color = "red", keep.fraction = 0.02) +
-  stat_dens2d_labels(aes(label = gene), keep.fraction = 0.02,
-                     geom = "text_repel", size = 2, colour = "red") +
+  stat_dens2d_filter(color = "red", 
+                     keep.fraction = 0.02, h = 3) +
+  stat_dens2d_labels(aes(label = gene), 
+                     keep.fraction = 0.02, h = 3,
+                     geom = "text_repel", 
+                     size = 2, 
+                     colour = "red") +
   scale_x_logFC(name = "Transcript abundance after A%unit") +
   scale_y_logFC(name = "Transcript abundance after B%unit",
                 expand = expansion(mult = 0.2))
@@ -243,6 +302,14 @@ and `y` aesthetics automatically. We also highlight and label the peaks
 using `stat_peaks()`.
 
 ```{r readme-03}
+#| fig.cap: >
+#|   **Figure 8.** Plot of the `lynx` time series. The time series was converted
+#|   on-the-fly into a data frame and _x_ and _y_ mappings set automatically.
+#|   Automation relies on `ggplot()` being a generic function exported by 
+#|   package 'ggplot2' and the definition of method specializations in 'ggpp'.
+#|   Peaks are highlited and annotated with the year extracted and formatted
+#|   by the _stat_. 
+#|       
 ggplot(lynx, as.numeric = FALSE) + geom_line() +
   stat_peaks(colour = "red") +
   stat_peaks(geom = "text", colour = "red", angle = 66,

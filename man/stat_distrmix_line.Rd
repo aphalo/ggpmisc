@@ -145,13 +145,6 @@ This statistic is similar to \code{\link[ggplot2]{stat_density}} but
   by group depending on the outcome of model fitting.
 }
 
-\section{Aesthetics}{
- \code{stat_distrmix_eq} expects observations mapped to
-  \code{x} from a \code{numeric} variable. A new grouping is added by mapping
-  \code{component} to the \code{group} aesthetic. Additional aesthetics as
-  understood by the geom (\code{"geom_line"} by default) can be set.
-}
-
 \examples{
 ggplot(faithful, aes(x = waiting)) +
   stat_distrmix_line()
@@ -214,3 +207,13 @@ Other ggplot statistics for mixture model fits.:
 \code{\link{stat_distrmix_eq}()}
 }
 \concept{ggplot statistics for mixture model fits.}
+\section{Aesthetics}{
+
+\code{stat_distrmix_line()} understands the following aesthetics. Required aesthetics are displayed in bold and defaults are displayed for optional aesthetics:
+\tabular{rll}{
+ • \tab \strong{\code{\link[ggplot2:aes_position]{x}} \emph{or} \code{\link[ggplot2:aes_position]{y}}} \tab   \cr
+ • \tab \code{\link[ggplot2:aes_group_order]{group}} \tab → \code{after_stat(component)} \cr
+}
+
+Learn more about setting these aesthetics in \code{vignette("ggplot2-specs")}.
+}

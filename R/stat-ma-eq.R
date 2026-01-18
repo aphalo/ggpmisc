@@ -35,6 +35,8 @@
 #'   Default is \code{TRUE} if \code{output.type = "expression"} and
 #'   \code{FALSE} otherwise.
 #'
+#' @aesthetics StatMaEq
+#'
 #' @note For backward compatibility a logical is accepted as argument for
 #'   \code{eq.with.lhs}. If \code{TRUE}, the default is used, either
 #'   \code{"x"} or \code{"y"}, depending on the argument passed to \code{formula}.
@@ -96,7 +98,7 @@
 #'
 #' @inheritSection check_output_type Output types
 #'
-#' @section Aesthetics: \code{stat_ma_eq} understands \code{x} and \code{y}, to
+#' @note \code{stat_ma_eq} understands \code{x} and \code{y}, to
 #'   be referenced in the \code{formula} while the \code{weight} aesthetic is
 #'   ignored. Both \code{x} and \code{y} must be mapped to \code{numeric}
 #'   variables. In addition, the aesthetics understood by the geom

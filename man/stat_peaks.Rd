@@ -180,6 +180,12 @@ As \code{find_valleys}, \code{stat_peaks} and \code{stat_valleys}
   \code{local.reference}.
 }
 \note{
+These stats use \code{geom_point} by default as
+  it is the geom most likely to work well in almost any situation.
+  The default aesthetics set by these stats allow their direct use with
+  \code{geom_text}, \code{geom_label}, \code{geom_line}, \code{geom_rug},
+  \code{geom_hline} and \code{geom_vline}.
+
 \code{stat_peaks} and \code{stat_valleys} work nicely together with
   geoms \code{geom_text_repel} and \code{geom_label_repel} from package
   \code{\link[ggrepel]{ggrepel}} to solve the problem of overlapping labels
@@ -198,23 +204,6 @@ As \code{find_valleys}, \code{stat_peaks} and \code{stat_valleys}
   \item{y}{y-value at the peak (or valley) as numeric}
   \item{x.label}{x-value at the peak (or valley) formatted as character}
   \item{y.label}{y-value at the peak (or valley) formatted as character}
-}
-}
-
-\section{Default aesthetics}{
- These stats use \code{geom_point} by default as
-  it is the geom most likely to work well in almost any situation without.
-  The default aesthetics set by these stats allow their direct use with
-  \code{geom_text}, \code{geom_label}, \code{geom_line}, \code{geom_rug},
-  \code{geom_hline} and \code{geom_vline}. The formatting of the labels
-  returned can be controlled by the user.
-
-  Default aesthetics mapped by the statistic and available to geoms, in
-  addtion to the automatically set required aesthetics.
-\describe{
-  \item{label}{stat(x.label)}
-  \item{xintercept}{stat(x)}
-  \item{yintercept}{stat(y)}
 }
 }
 
@@ -349,4 +338,28 @@ ggplot(lynx, as.numeric = FALSE) +
 
 \code{\link{find_peaks}}, for the functions used to located the
   peaks and valleys.
+}
+\section{Aesthetics}{
+
+\code{stat_peaks()} understands the following aesthetics. Required aesthetics are displayed in bold and defaults are displayed for optional aesthetics:
+\tabular{rll}{
+ • \tab \strong{\code{\link[ggplot2:aes_position]{x}}} \tab   \cr
+ • \tab \strong{\code{\link[ggplot2:aes_position]{y}}} \tab   \cr
+ • \tab \code{\link[ggplot2:aes_group_order]{group}} \tab → inferred \cr
+ • \tab \code{label} \tab → \code{after_stat(x.label)} \cr
+ • \tab \code{xintercept} \tab → \code{after_stat(x)} \cr
+ • \tab \code{yintercept} \tab → \code{after_stat(y)} \cr
+}
+
+\code{stat_valleys()} understands the following aesthetics. Required aesthetics are displayed in bold and defaults are displayed for optional aesthetics:
+\tabular{rll}{
+ • \tab \strong{\code{\link[ggplot2:aes_position]{x}}} \tab   \cr
+ • \tab \strong{\code{\link[ggplot2:aes_position]{y}}} \tab   \cr
+ • \tab \code{\link[ggplot2:aes_group_order]{group}} \tab → inferred \cr
+ • \tab \code{label} \tab → \code{after_stat(x.label)} \cr
+ • \tab \code{xintercept} \tab → \code{after_stat(x)} \cr
+ • \tab \code{yintercept} \tab → \code{after_stat(y)} \cr
+}
+
+Learn more about setting these aesthetics in \code{vignette("ggplot2-specs")}.
 }

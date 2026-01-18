@@ -8,7 +8,7 @@
 \docType{data}
 \name{cor_test_compute_fun}
 \alias{cor_test_compute_fun}
-\alias{StatCorr}
+\alias{StatCorrelation}
 \alias{StatDistrmixEq}
 \alias{StatDistrmixLine}
 \alias{fit_tb_compute_panel_fun}

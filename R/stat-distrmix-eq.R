@@ -27,6 +27,8 @@
 #'   Default is \code{TRUE} if \code{output.type = "expression"} and
 #'   \code{FALSE} otherwise.
 #'
+#' @aesthetics StatDistrmixEq
+#'
 #' @return The value returned by the statistic is a data frame, with \code{n}
 #'   rows of predicted density for each component of the mixture plus their
 #'   sum and the corresponding vector of \code{x} values. Optionally it will

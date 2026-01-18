@@ -41,6 +41,8 @@
 #' @param hstep,vstep numeric in npc units, the horizontal and vertical step
 #'   used between labels for different groups.
 #'
+#' @aesthetics StatFitGlance
+#'
 #' @details \code{stat_fit_glance} together with \code{\link{stat_fit_tidy}} and
 #'   \code{\link{stat_fit_augment}}, based on package 'broom' can be used with a
 #'   broad range of model fitting functions as supported at any given time by
@@ -453,6 +455,8 @@ StatFitGlance <-
 #' @param level numeric Level of confidence interval to use (0.95 by default)
 #' @param y.out character (or numeric) index to column to return as \code{y}.
 #'
+#' @aesthetics StatFitAugment
+#'
 #' @details \code{stat_fit_augment} together with \code{\link{stat_fit_glance}}
 #'   and \code{\link{stat_fit_tidy}}, based on package 'broom' can be used
 #'   with a broad range of model fitting functions as supported at any given
@@ -781,6 +785,8 @@ StatFitAugment <-
 #'   used between labels for different groups.
 #' @param sanitize.names logical If true sanitize column names in the returned
 #'   \code{data} with R's \code{make.names()} function.
+#'
+#' @aesthetics StatFitTidy
 #'
 #' @details \code{stat_fit_tidy} together with \code{\link{stat_fit_glance}}
 #'   and \code{\link{stat_fit_augment}}, based on package 'broom' can be used

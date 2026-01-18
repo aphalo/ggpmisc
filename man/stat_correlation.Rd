@@ -153,15 +153,10 @@ This statistic can be used to annotate a plot with the correlation
 }
 \note{
 Currently \code{coef.keep.zeros} is ignored, with trailing zeros always
-  retained in the labels but not protected from being dropped by R when
-  character strings are parsed into expressions.
+  retained in the \code{character} labels returned but not protected from
+  being dropped by R when these \code{character} strings are parsed into
+  plotmath expressions (i.e., when \code{output.type = "expression"}).
 }
-\section{Aesthetics}{
- \code{stat_correaltion()} requires \code{x} and
-  \code{y}. In addition, the aesthetics understood by the geom
-  (\code{"text"} is the default) are understood and grouping respected.
-}
-
 \section{Computed variables}{
  If output.type is \code{"numeric"} the returned
   tibble contains the columns listed below with variations depending on the
@@ -350,3 +345,20 @@ if (gginnards.installed)
 \code{\link[stats]{cor.test}} for details on the computations.
 }
 \concept{ggplot statistics for correlation.}
+\section{Aesthetics}{
+
+\code{stat_correlation()} understands the following aesthetics. Required aesthetics are displayed in bold and defaults are displayed for optional aesthetics:
+\tabular{rll}{
+ • \tab \strong{\code{\link[ggplot2:aes_position]{x}}} \tab   \cr
+ • \tab \strong{\code{\link[ggplot2:aes_position]{y}}} \tab   \cr
+ • \tab \code{\link[ggplot2:aes_group_order]{group}} \tab → inferred \cr
+ • \tab \code{grp.label} \tab   \cr
+ • \tab \code{hjust} \tab → \code{"inward"} \cr
+ • \tab \code{label} \tab → \code{after_stat(r.label)} \cr
+ • \tab \code{npcx} \tab → \code{after_stat(npcx)} \cr
+ • \tab \code{npcy} \tab → \code{after_stat(npcy)} \cr
+ • \tab \code{vjust} \tab → \code{"inward"} \cr
+}
+
+Learn more about setting these aesthetics in \code{vignette("ggplot2-specs")}.
+}

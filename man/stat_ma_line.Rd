@@ -143,6 +143,13 @@ This statistic fits major axis (\code{"MA"}) and other model II
   \code{fit.seed} if different to \code{NA} is used as argument in a call to
   \code{\link[base:Random]{set.seed}()} immediately ahead of model fitting.
 }
+\note{
+\code{stat_ma_line} understands \code{x} and \code{y},
+  to be referenced in the \code{formula}. Both must be mapped to
+  \code{numeric} variables. In addition, the aesthetics understood by the
+  geom (\code{"geom_smooth"} is the default) are understood and grouping
+  respected.
+}
 \section{Computed variables}{
  `stat_ma_line()` provides the following
   variables, some of which depend on the orientation: \describe{ \item{y *or*
@@ -155,14 +162,6 @@ This statistic fits major axis (\code{"MA"}) and other model II
   This is wasteful and disabled by default, but provides a simple and robust
   approach to achieve effects like colouring or hiding of the model fit line
   based on P-values, r-squared or the number of observations.
-}
-
-\section{Aesthetics}{
- \code{stat_ma_line} understands \code{x} and \code{y},
-  to be referenced in the \code{formula}. Both must be mapped to
-  \code{numeric} variables. In addition, the aesthetics understood by the
-  geom (\code{"geom_smooth"} is the default) are understood and grouping
-  respected.
 }
 
 \examples{
@@ -247,3 +246,14 @@ Other ggplot statistics for major axis regression:
 \code{\link{stat_ma_eq}()}
 }
 \concept{ggplot statistics for major axis regression}
+\section{Aesthetics}{
+
+\code{stat_ma_line()} understands the following aesthetics. Required aesthetics are displayed in bold and defaults are displayed for optional aesthetics:
+\tabular{rll}{
+ • \tab \strong{\code{\link[ggplot2:aes_position]{x}}} \tab   \cr
+ • \tab \strong{\code{\link[ggplot2:aes_position]{y}}} \tab   \cr
+ • \tab \code{\link[ggplot2:aes_group_order]{group}} \tab → inferred \cr
+}
+
+Learn more about setting these aesthetics in \code{vignette("ggplot2-specs")}.
+}

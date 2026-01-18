@@ -87,6 +87,8 @@
 #'   Default is \code{TRUE} if \code{output.type = "expression"} and
 #'   \code{FALSE} otherwise.
 #'
+#' @aesthetics StatMultcomp
+#'
 #' @note R option \code{OutDec} is obeyed based on its value at the time the plot
 #'   is rendered, i.e., displayed or printed. Set \code{options(OutDec = ",")}
 #'   for languages like Spanish or French.
@@ -126,7 +128,7 @@
 #'
 #' @inheritSection check_output_type Output types
 #'
-#' @section Aesthetics: \code{stat_multcomp()} understands \code{x} and
+#' @note \code{stat_multcomp()} understands \code{x} and
 #'   \code{y}, to be referenced in the \code{formula} and \code{weight} passed
 #'   as argument to parameter \code{weights}. A factor must be mapped to
 #'   \code{x} and \code{numeric} variables to \code{y}, and, if used, to
@@ -203,7 +205,7 @@
 #' @seealso This statistic uses the implementation of Tests of General Linear
 #'   Hypotheses in function \code{\link[multcomp]{glht}}. See
 #'   \code{\link[multcomp]{summary.glht}} and \code{\link[stats]{p.adjust}}
-#'   for the supported and tests and the references therein for the theory
+#'   for the supported tests and the references therein for the theory
 #'   behind them.
 #'
 #' @family ggplot statistics for multiple comparisons

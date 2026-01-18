@@ -65,6 +65,8 @@
 #'   Default is \code{TRUE} if \code{output.type = "expression"} and
 #'   \code{FALSE} otherwise.
 #'
+#' @aesthetics StatCorrelation
+#'
 #' @details This statistic can be used to annotate a plot with the correlation
 #'   coefficient and the outcome of its test of significance. It supports
 #'   Pearson, Kendall and Spearman methods to compute correlation. This
@@ -90,10 +92,6 @@
 #'   discrete.
 #'
 #' @inheritSection check_output_type Output types
-#'
-#' @section Aesthetics: \code{stat_correaltion()} requires \code{x} and
-#'   \code{y}. In addition, the aesthetics understood by the geom
-#'   (\code{"text"} is the default) are understood and grouping respected.
 #'
 #' @section Computed variables: If output.type is \code{"numeric"} the returned
 #'   tibble contains the columns listed below with variations depending on the
@@ -128,8 +126,9 @@
 #' of \code{\link[gginnards]{geom_debug}} as shown in the last examples below.
 #'
 #' @note Currently \code{coef.keep.zeros} is ignored, with trailing zeros always
-#'   retained in the labels but not protected from being dropped by R when
-#'   character strings are parsed into expressions.
+#'   retained in the \code{character} labels returned but not protected from
+#'   being dropped by R when these \code{character} strings are parsed into
+#'   plotmath expressions (i.e., when \code{output.type = "expression"}).
 #'
 #' @seealso \code{\link[stats]{cor.test}} for details on the computations.
 #'
@@ -307,7 +306,7 @@ stat_correlation <-
     ggplot2::layer(
       data = data,
       mapping = mapping,
-      stat = StatCorr,
+      stat = StatCorrelation,
       geom = geom,
       position = position,
       show.legend = show.legend,
@@ -624,8 +623,8 @@ cor_test_compute_fun <- function(data,
 #' @format NULL
 #' @usage NULL
 #' @export
-StatCorr <-
-  ggplot2::ggproto("StaCorr",
+StatCorrelation <-
+  ggplot2::ggproto("StatCorrelation",
                    ggplot2::Stat,
                    extra_params = c("na.rm", "parse"),
                    compute_group = cor_test_compute_fun,

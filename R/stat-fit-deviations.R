@@ -40,6 +40,9 @@
 #' @param orientation character Either "x" or "y" controlling the default for
 #'   \code{formula}.
 #'
+#' @aesthetics StatFitDeviations
+#' @aesthetics StatFitFitted
+#'
 #' @details This stat can be used to automatically highlight residuals as
 #'   segments in a plot of a fitted model equation. This stat only returns the
 #'   fitted values and observations, the prediction and its confidence need to

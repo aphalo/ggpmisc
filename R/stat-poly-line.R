@@ -104,6 +104,8 @@
 #'   \code{formula}. The letter indicates the aesthetic considered the
 #'   explanatory variable in the model fit.
 #'
+#' @aesthetics StatPolyLine
+#'
 #' @return The value returned by the statistic is a data frame, with \code{n}
 #'   rows of predicted values and their confidence limits. Optionally it will
 #'   also include additional values related to the model fit. When a
@@ -138,16 +140,16 @@
 #'   based on P-values, r-squared, adjusted r-squared or the number of
 #'   observations.
 #'
-#' @section Aesthetics: \code{stat_poly_line} understands \code{x} and \code{y},
+#' @note \code{stat_poly_line} understands \code{x} and \code{y},
 #'   to be referenced in the \code{formula} and \code{weight} passed as argument
 #'   to parameter \code{weights}. All three must be mapped to \code{numeric}
 #'   variables. In addition, the aesthetics understood by the geom
 #'   (\code{"geom_smooth"} is the default) are understood and grouping
 #'   respected.
 #'
-#' @note Currently confidence bands for the regression band are not plotted in
-#'   some cases, and in the case of MA and SMA model, it only displays the
-#'   uncertainty of the slope.
+#'   Currently confidence bands for the regression line are not plotted in
+#'   some cases, and in the case of MA and SMA models, the band only displays
+#'   the uncertainty of the slope rather than for both slope plus intercept.
 #'
 #' @family ggplot statistics for linear and polynomial regression
 #'

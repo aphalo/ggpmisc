@@ -202,18 +202,8 @@ For backward compatibility a logical is accepted as argument for
   R option \code{OutDec} is obeyed based on its value at the time the plot
   is rendered, i.e., displayed or printed. Set \code{options(OutDec = ",")}
   for languages like Spanish or French.
-}
-\section{User-defined methods}{
- User-defined functions can be passed as
-  argument to \code{method}. The requirements are 1) that the signature is
-  similar to that of function \code{lmodel2()} and 2) that the value returned
-  by the function is an object as returned by \code{lmodel2()} or an atomic
-  \code{NA} value. Thus, user-defined methods can implement conditional
-  skipping of labelling.
-}
 
-\section{Aesthetics}{
- \code{stat_ma_eq} understands \code{x} and \code{y}, to
+\code{stat_ma_eq} understands \code{x} and \code{y}, to
   be referenced in the \code{formula} while the \code{weight} aesthetic is
   ignored. Both \code{x} and \code{y} must be mapped to \code{numeric}
   variables. In addition, the aesthetics understood by the geom
@@ -223,6 +213,14 @@ For backward compatibility a logical is accepted as argument for
   is not supported by \code{stat_ma_eq()}. In this case, transformations
   should not be applied in the model formula, but instead in the mapping
   of the variables within \code{aes} or in the scales.}
+}
+\section{User-defined methods}{
+ User-defined functions can be passed as
+  argument to \code{method}. The requirements are 1) that the signature is
+  similar to that of function \code{lmodel2()} and 2) that the value returned
+  by the function is an object as returned by \code{lmodel2()} or an atomic
+  \code{NA} value. Thus, user-defined methods can implement conditional
+  skipping of labelling.
 }
 
 \section{Computed variables}{
@@ -417,3 +415,20 @@ Other ggplot statistics for major axis regression:
 \code{\link{stat_ma_line}()}
 }
 \concept{ggplot statistics for major axis regression}
+\section{Aesthetics}{
+
+\code{stat_ma_eq()} understands the following aesthetics. Required aesthetics are displayed in bold and defaults are displayed for optional aesthetics:
+\tabular{rll}{
+ • \tab \strong{\code{\link[ggplot2:aes_position]{x}}} \tab   \cr
+ • \tab \strong{\code{\link[ggplot2:aes_position]{y}}} \tab   \cr
+ • \tab \code{\link[ggplot2:aes_group_order]{group}} \tab → inferred \cr
+ • \tab \code{grp.label} \tab   \cr
+ • \tab \code{hjust} \tab → \code{"inward"} \cr
+ • \tab \code{label} \tab → \code{after_stat(rr.label)} \cr
+ • \tab \code{npcx} \tab → \code{after_stat(npcx)} \cr
+ • \tab \code{npcy} \tab → \code{after_stat(npcy)} \cr
+ • \tab \code{vjust} \tab → \code{"inward"} \cr
+}
+
+Learn more about setting these aesthetics in \code{vignette("ggplot2-specs")}.
+}
