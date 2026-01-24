@@ -136,10 +136,10 @@ We start by checking that 'xdvir' is working as expected. One thing to keep in m
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   annotate(geom = "latex",
-           label = "\\textbf{abc} $\\sqrt{10}^2$", x = 1, y = 9) +
+           label = "\\textbf{abc} $\\sqrt[2]{10}$", x = 1, y = 9) +
   labs(title = "Use of \\LaTeX\\ can be \\textcolor{red}{colourful}!", 
        subtitle = 
-         paste("Math like $\\sqrt{12}^3$ as well as \\emph{italic} and", 
+         paste("Math like $\\sqrt[3]{12}$ as well as \\emph{italic} and", 
                "\\strong{bold} become available."),
        y = "$y = x + N(1, 1)$", x = "$x$")
 ```
