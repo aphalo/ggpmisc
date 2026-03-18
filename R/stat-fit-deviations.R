@@ -250,92 +250,14 @@ deviations_compute_group_fun <- function(data,
                                          fit.seed = NA,
                                          orientation = "x") {
 
-  stopifnot(!any(c("formula", "data") %in% names(method.args)))
-
-  if (is.null(data$weight)) {
-    data$weight <- 1
-  }
-
-  if (length(unique(data[[orientation]])) < n.min) {
-      return(data.frame())
-  }
-
-  # If method was specified as a character string, replace with
-  # the corresponding function. Some model fit functions themselves have a
-  # method parameter accepting character strings as argument. We support
-  # these by splitting strings passed as argument at a colon.
-  if (is.character(method)) {
-    method <- switch(method,
-                     lm = "lm:qr",
-                     rlm = "rlm:M",
-                     lqs = "lqs:lts",
-                     rq = "rq:br",
-                     gls = "gls:REML",
-                     method)
-    method.name <- method
-    method <- strsplit(x = method, split = ":", fixed = TRUE)[[1]]
-    if (length(method) > 1L) {
-      fun.method <- method[2]
-      method <- method[1]
-    } else {
-      fun.method <- character()
-    }
-
-    method <- switch(method,
-                     lm = stats::lm,
-                     rlm = MASS::rlm,
-                     lqs = MASS::lqs,
-                     rq = quantreg::rq,
-                     gls = nlme::gls,
-                     match.fun(method))
-  } else if (is.function(method)) {
-    fun.method <- character()
-  }
-
-  if (exists("weight", data) && !all(data[["weight"]] == 1)) {
-    stopifnot("A mapping to 'weight' and a named argument 'weights' cannot co-exist" =
-                !"weights" %in% method.args)
-    fun.args <- list(formula = quote(formula),
-                     data = quote(data),
-                     weights = data[["weight"]])
-  } else {
-    fun.args <- list(formula = quote(formula),
-                     data = quote(data))
-  }
-  fun.args <- c(fun.args, method.args)
-  if (length(fun.method)) {
-    fun.args[["method"]] <- fun.method
-  }
-
-  # gls() parameter for formula is called model
-  if (grepl("gls", method.name)) {
-    names(fun.args)[1] <- "model"
-  }
-
-  if (!is.na(fit.seed)) {
-    set.seed(fit.seed)
-  }
-  # quantreg contains code with partial matching of names!
-  # so we silence selectively only these warnings
-  withCallingHandlers({
-    fm <- do.call(method, args = fun.args)
-  }, warning = function(w) {
-    if (startsWith(conditionMessage(w), "partial match of") ||
-        startsWith(conditionMessage(w), "partial argument match of")) {
-      invokeRestart("muffleWarning")
-    }
-  })
-
-  if (!length(fm) || (is.atomic(fm) && is.na(fm))) {
-    return(data.frame())
-  } else if (!(inherits(fm, "lm") || inherits(fm, "lmrob") ||
-               inherits(fm, "gls") || inherits(fm, "lqs") ||
-               inherits(fm, "lts") || inherits(fm, "sma"))) {
-    message("Method \"", method.name,
-            "\" did not return a ",
-            "\"lm\", \"lmrob\", \"lqs\", \"lts\", \"gls\" or \"sma\" ",
-            "object, possible failure ahead.")
-  }
+  fm <- fit_models_internal(data = data,
+                            method = method,
+                            method.name = method.name,
+                            method.args = method.args,
+                            n.min = n.min,
+                            formula = formula,
+                            fit.seed = fit.seed,
+                            orientation = orientation)
 
   # As users may use model fit functions that we have not tested
   # we try hard to extract the components from the model fit object
@@ -481,95 +403,15 @@ fitted_compute_group_fun <- function(data,
                                      fit.seed = NA,
                                      orientation = "x",
                                      return.fitted = FALSE) {
-  stopifnot(!any(c("formula", "data") %in% names(method.args)))
 
-  if (is.null(data$weight)) {
-    data$weight <- 1
-  }
-
-  if (length(unique(data[[orientation]])) < n.min) {
-    return(data.frame())
-  }
-
-  # If method was specified as a character string, replace with
-  # the corresponding function. Some model fit functions themselves have a
-  # method parameter accepting character strings as argument. We support
-  # these by splitting strings passed as argument at a colon.
-  if (is.character(method)) {
-    method <- switch(method,
-                     lm = "lm:qr",
-                     rlm = "rlm:M",
-                     lqs = "lqs:lts",
-                     rq = "rq:br",
-                     gls = "gls:REML",
-                     method)
-    method.name <- method
-    method <- strsplit(x = method, split = ":", fixed = TRUE)[[1]]
-    if (length(method) > 1L) {
-      fun.method <- method[2]
-      method <- method[1]
-    } else {
-      fun.method <- character()
-    }
-    if (method == "rq") {
-      rlang::check_installed("quantreg", reason = "for `stat_fit_deviations()` with method `rq()`")
-    }
-
-    method <- switch(method,
-                     lm = stats::lm,
-                     rlm = MASS::rlm,
-                     lqs = MASS::lqs,
-                     rq = quantreg::rq,
-                     gls = nlme::gls,
-                     match.fun(method))
-  } else if (is.function(method)) {
-    fun.method <- character()
-  }
-
-  if (exists("weight", data) && !all(data[["weight"]] == 1)) {
-    stopifnot("A mapping to 'weight' and a named argument 'weights' cannot co-exist" =
-                !"weights" %in% method.args)
-    fun.args <- list(formula = quote(formula),
-                     data = quote(data),
-                     weights = data[["weight"]])
-  } else {
-    fun.args <- list(formula = quote(formula),
-                     data = quote(data))
-  }
-  fun.args <- c(fun.args, method.args)
-  if (length(fun.method)) {
-    fun.args[["method"]] <- fun.method
-  }
-
-  # gls() parameter for formula is called model
-  if (grepl("gls", method.name)) {
-    names(fun.args)[1] <- "model"
-  }
-
-  if (!is.na(fit.seed)) {
-    set.seed(fit.seed)
-  }
-  # quantreg contains code with partial matching of names!
-  # so we silence selectively only these warnings
-  withCallingHandlers({
-    fm <- do.call(method, args = fun.args)
-  }, warning = function(w) {
-    if (startsWith(conditionMessage(w), "partial match of") ||
-        startsWith(conditionMessage(w), "partial argument match of")) {
-      invokeRestart("muffleWarning")
-    }
-  })
-
-  if (!length(fm) || (is.atomic(fm) && is.na(fm))) {
-    return(data.frame())
-  } else if (!(inherits(fm, "lm") || inherits(fm, "lmrob") ||
-               inherits(fm, "gls") || inherits(fm, "lqs") ||
-               inherits(fm, "lts") || inherits(fm, "sma"))) {
-    message("Method \"", method.name,
-            "\" did not return a ",
-            "\"lm\", \"lmrob\", \"lqs\", \"lts\", \"gls\" or \"sma\" ",
-            "object, possible failure ahead.")
-  }
+  fm <- fit_models_internal(data = data,
+                            method = method,
+                            method.name = method.name,
+                            method.args = method.args,
+                            n.min = n.min,
+                            formula = formula,
+                            fit.seed = fit.seed,
+                            orientation = orientation)
 
   # As users may use model fit functions that we have not tested
   # we try hard to extract the components from the model fit object

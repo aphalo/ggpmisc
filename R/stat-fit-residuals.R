@@ -250,6 +250,122 @@ residuals_compute_group_fun <- function(data,
                                         resid.type = NULL,
                                         weighted = FALSE,
                                         orientation = "x") {
+
+  fm <- fit_models_internal(data = data,
+                            method = method,
+                            method.name = method.name,
+                            method.args = method.args,
+                            n.min = n.min,
+                            formula = formula,
+                            fit.seed = fit.seed,
+                            orientation = orientation)
+
+  if (!is.null(resid.type)) {
+    if (weighted) {
+      if (resid.type != "deviance") {
+        warning("Ignoring supplied 'resid.type' as 'weighted = TRUE'")
+      }
+      resid.args <- list(obj = fm, drop0 = TRUE)
+    } else {
+      resid.args <- list(object = fm, type = resid.type)
+    }
+  } else {
+    if (weighted) {
+      resid.args <- list(obj = fm, drop0 = TRUE)
+    } else {
+      resid.args <- list(object = fm)
+    }
+  }
+  if (weighted) {
+    fit.residuals <- do.call(stats::weighted.residuals, args = resid.args)
+  } else {
+    fit.residuals <- do.call(stats::residuals, args = resid.args)
+  }
+
+  if (inherits(fm, "lmrob")) {
+    rob.weight.vals <- stats::weights(fm, type = "robustness")
+    weight.vals <- stats::weights(fm, type = "prior")
+    if (!length(weight.vals)) {
+      weight.vals <- rep_len(1, nrow(data))
+    }
+  } else if (inherits(fm, "lts")) {
+    rob.weight.vals <- fm[["lts.wt"]]
+    weight.vals <- rep_len(1, nrow(data))
+  } else if (inherits(fm, "rlm")) {
+    rob.weight.vals <- fm[["w"]]
+    weight.vals <- stats::weights(fm)
+  } else if (inherits(fm, "lqs")) {
+    ## what does fm$bestone contain?
+    warning("Returned \"robustness weights\" are likely incorrect")
+    rob.weight.vals <- rep_len(0, nrow(data))
+    rob.weight.vals[fm[["bestone"]]] <- 1
+    weight.vals <- rep_len(1, nrow(data))
+  } else {
+    rob.weight.vals <- rep(NA_real_, nrow(data))
+    try(weight.vals <- stats::weights(fm))
+    if (inherits(weight.vals, "try-error") ||
+        length(weight.vals) != length(fit.residuals)) {
+      if (exists("weights", fm) &&  # defensive
+          length(fm[["weights"]]) == length(fit.residuals)) {
+        weight.vals <- fm[["weights"]]
+      } else {
+        weight.vals <- rep_len(NA_real_, nrow(data))
+      }
+    }
+   }
+
+  if (orientation == "y") {
+    data.frame(y = data$y,
+               x = fit.residuals,
+               x.resid = fit.residuals,
+               y.resid = NA_real_,
+               weights = weight.vals,
+               robustness.weights = rob.weight.vals)
+  } else {
+    data.frame(x = data$x,
+               y = fit.residuals,
+               y.resid = fit.residuals,
+               x.resid = NA_real_,
+               weights = weight.vals,
+               robustness.weights = rob.weight.vals)
+  }
+}
+
+#' @rdname ggpmisc-ggproto
+#' @format NULL
+#' @usage NULL
+#' @export
+StatFitResiduals <-
+  ggplot2::ggproto("StatFitResiduals", ggplot2::Stat,
+                   compute_group = residuals_compute_group_fun,
+                   dropped_aes = "weight",
+                   required_aes = c("x", "y")
+  )
+
+
+# Internal function with shared code --------------------------------------
+
+#' Fit a model to extract residuals or fitted values
+#'
+#' Fit models using different methods translating some arguments
+#' to make possible use of consistent arguments across calls to
+#' stats.
+#'
+#' @inheritParams stat_fit_residuals
+#'
+#' @note Called by \code{\link{stat_fit_residuals}()},
+#'   \code{\link{stat_fit_deviations}()} and \code{\link{stat_fit_fitted}()}.
+#'
+#' @keywords internal
+#'
+fit_models_internal <- function(data,
+                                method,
+                                method.name,
+                                method.args,
+                                n.min,
+                                formula,
+                                fit.seed,
+                                orientation) {
   stopifnot(!any(c("formula", "data") %in% names(method.args)))
   if (is.null(data$weight)) {
     data$weight <- 1
@@ -336,85 +452,5 @@ residuals_compute_group_fun <- function(data,
             "\"lm\", \"lmrob\", \"lqs\", \"lts\", \"gls\" or \"sma\" ",
             "object, possible failure ahead.")
   }
-
-  if (!is.null(resid.type)) {
-    if (weighted) {
-      if (resid.type != "deviance") {
-        warning("Ignoring supplied 'resid.type' as 'weighted = TRUE'")
-      }
-      resid.args <- list(obj = fm, drop0 = TRUE)
-    } else {
-      resid.args <- list(object = fm, type = resid.type)
-    }
-  } else {
-    if (weighted) {
-      resid.args <- list(obj = fm, drop0 = TRUE)
-    } else {
-      resid.args <- list(object = fm)
-    }
-  }
-  if (weighted) {
-    fit.residuals <- do.call(stats::weighted.residuals, args = resid.args)
-  } else {
-    fit.residuals <- do.call(stats::residuals, args = resid.args)
-  }
-
-  if (inherits(fm, "lmrob")) {
-    rob.weight.vals <- stats::weights(fm, type = "robustness")
-    weight.vals <- stats::weights(fm, type = "prior")
-    if (!length(weight.vals)) {
-      weight.vals <- rep_len(1, nrow(data))
-    }
-  } else if (inherits(fm, "lts")) {
-    rob.weight.vals <- fm[["lts.wt"]]
-    weight.vals <- rep_len(1, nrow(data))
-  } else if (inherits(fm, "rlm")) {
-    rob.weight.vals <- fm[["w"]]
-    weight.vals <- stats::weights(fm)
-  } else if (inherits(fm, "lqs")) {
-    ## what does fm$bestone contain?
-    warning("Returned \"robustness weights\" are likely incorrect")
-    rob.weight.vals <- rep_len(0, nrow(data))
-    rob.weight.vals[fm[["bestone"]]] <- 1
-    weight.vals <- rep_len(1, nrow(data))
-  } else {
-    rob.weight.vals <- rep(NA_real_, nrow(data))
-    try(weight.vals <- stats::weights(fm))
-    if (inherits(weight.vals, "try-error") ||
-        length(weight.vals) != length(fit.residuals)) {
-      if (exists("weights", fm) &&  # defensive
-          length(fm[["weights"]]) == length(fit.residuals)) {
-        weight.vals <- fm[["weights"]]
-      } else {
-        weight.vals <- rep_len(NA_real_, nrow(data))
-      }
-    }
-   }
-
-  if (orientation == "y") {
-    data.frame(y = data$y,
-               x = fit.residuals,
-               x.resid = fit.residuals,
-               y.resid = NA_real_,
-               weights = weight.vals,
-               robustness.weights = rob.weight.vals)
-  } else {
-    data.frame(x = data$x,
-               y = fit.residuals,
-               y.resid = fit.residuals,
-               x.resid = NA_real_,
-               weights = weight.vals,
-               robustness.weights = rob.weight.vals)
-  }
+  fm
 }
-
-#' @rdname ggpmisc-ggproto
-#' @format NULL
-#' @usage NULL
-#' @export
-StatFitResiduals <-
-  ggplot2::ggproto("StatFitResiduals", ggplot2::Stat,
-                   compute_group = residuals_compute_group_fun,
-                   dropped_aes = "weight",
-                   required_aes = c("x", "y")
-  )
