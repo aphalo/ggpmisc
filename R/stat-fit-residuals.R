@@ -372,6 +372,7 @@ fit_models_internal <- function(data,
                                 formula,
                                 fit.seed,
                                 orientation,
+                                level = 0.95,
                                 accept.rq = TRUE) {
   stopifnot(!any(c("formula", "data") %in% names(method.args)))
 
@@ -392,9 +393,9 @@ fit_models_internal <- function(data,
                      lm = "lm:qr",
                      rlm = "rlm:M",
                      rq = "rq:br",
-                     lqs = "lqs:lqs",
+                     lqs = "lqs:lts",
                      gls = "gls:REML",
-                     method)
+                     method) # method to be found in the search path
     method.name <- method
     method <- strsplit(x = method, split = ":", fixed = TRUE)[[1]]
     if (length(method) > 1L) {
@@ -429,6 +430,10 @@ fit_models_internal <- function(data,
 
   if (length(fun.method)) {
     fun.args[["method"]] <- fun.method
+  }
+
+  if (grepl("^ma$|^sma$", method.name) && !"alpha" %in% names(fun.args)) {
+    fun.args <- c(fun.args, list(alpha = 1 - level))
   }
 
   # gls() parameter for formula is called model

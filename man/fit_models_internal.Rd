@@ -12,10 +12,48 @@ fit_models_internal(
   n.min,
   formula,
   fit.seed,
-  orientation
+  orientation,
+  level = 0.95,
+  accept.rq = TRUE
 )
 }
+\arguments{
+\item{data}{A layer specific dataset - only needed if you want to override
+the plot defaults.}
+
+\item{method}{function or character If character, "lm", "rlm", "rq" and the
+name of a function to be matched, possibly followed by the fit function's
+\code{method} argument separated by a colon (e.g. \code{"rq:br"}).
+Functions implementing methods must accept arguments to parameters
+\code{formula}, \code{data}, \code{weights} and \code{method}. A
+\code{residuals()} method must exist for the returned model fit object
+class.}
+
+\item{method.args}{named list with additional arguments.}
+
+\item{n.min}{integer Minimum number of distinct values in the explanatory
+variable (on the rhs of formula) for fitting to the attempted.}
+
+\item{formula}{a "formula" object. Using aesthetic names instead of
+original variable names.}
+
+\item{fit.seed}{RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
+Defaults to \code{NA}, which means that \code{set.seed()} will not be
+called.}
+
+\item{orientation}{character Either "x" or "y" controlling the default for
+\code{formula}.}
+
+\item{accept.rq}{logical Accept quantile regression fits with 'quantreg' or
+warn when encountered.}
+}
 \description{
-Fit a model to extract residuals or fitted values
+Fit models using different methods translating some arguments
+to make possible use of consistent arguments across calls to
+stats.
+}
+\note{
+Called by \code{\link{stat_fit_residuals}()},
+  \code{\link{stat_fit_deviations}()} and \code{\link{stat_fit_fitted}()}.
 }
 \keyword{internal}

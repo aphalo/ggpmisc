@@ -166,10 +166,25 @@ test_that("poly_methods", {
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
                                 stat_poly_line(formula = y ~ poly(x, 2),
-                                               method = "lqs")
+                                               method = "lqs:lqs")
   )
 
-  vdiffr::expect_doppelganger("stat_poly_line_lqs_fun",
+  vdiffr::expect_doppelganger("stat_poly_line_lqslqs_fun",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_line(formula = y ~ poly(x, 2),
+                                               method = MASS::lqs,
+                                               method.args = list(method = "lqs"))
+  )
+
+  vdiffr::expect_doppelganger("stat_poly_line_lqslts_chr",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_line(formula = y ~ poly(x, 2),
+                                               method = "lqs:lts")
+  )
+
+  vdiffr::expect_doppelganger("stat_poly_line_lqslts_fun",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
                                 stat_poly_line(formula = y ~ poly(x, 2),

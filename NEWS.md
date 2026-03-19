@@ -30,6 +30,9 @@ the span definitions used be 'marquee' instead of the embedded HTML used when
 formatting that results in typeset equations that better match those encoded as
 plotmath expressions.
 -   Track changes in 'gginnards' (>= 0.2.0) in examples and docs.
+-   Breaking: Change default in model fitting _stats_ supporting method `"lqs"`.
+`"lqs"` is now equivalent to `"lqs:lts"` rather than `"lqs:lqs"`, so as to 
+respect the default in `MASS::lqs()`.
 -   A new on-line-only article gives examples of the use of 'ggpmisc' together
 with R package 'xdvir' and another one compares plot annotations created with
 the different output types and matching geometries.
