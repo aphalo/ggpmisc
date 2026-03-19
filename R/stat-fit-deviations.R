@@ -258,6 +258,10 @@ deviations_compute_group_fun <- function(data,
                             formula = formula,
                             fit.seed = fit.seed,
                             orientation = orientation)
+  if (!length(fm)) {
+    # An empty data.frame results in no plot layer when passed to geoms
+    return(data.frame())
+  }
 
   # As users may use model fit functions that we have not tested
   # we try hard to extract the components from the model fit object
@@ -412,6 +416,10 @@ fitted_compute_group_fun <- function(data,
                             formula = formula,
                             fit.seed = fit.seed,
                             orientation = orientation)
+  if (!length(fm)) {
+    # An empty data.frame results in no plot layer when passed to geoms
+    return(data.frame())
+  }
 
   # As users may use model fit functions that we have not tested
   # we try hard to extract the components from the model fit object

@@ -259,6 +259,10 @@ residuals_compute_group_fun <- function(data,
                             formula = formula,
                             fit.seed = fit.seed,
                             orientation = orientation)
+  if (!length(fm)) {
+    # An empty data.frame results in no plot layer when passed to geoms
+    return(data.frame())
+  }
 
   if (!is.null(resid.type)) {
     if (weighted) {
@@ -352,6 +356,8 @@ StatFitResiduals <-
 #' stats.
 #'
 #' @inheritParams stat_fit_residuals
+#' @param accept.rq logical Accept quantile regression fits with 'quantreg' or
+#'   warn when encountered.
 #'
 #' @note Called by \code{\link{stat_fit_residuals}()},
 #'   \code{\link{stat_fit_deviations}()} and \code{\link{stat_fit_fitted}()}.
@@ -365,8 +371,10 @@ fit_models_internal <- function(data,
                                 n.min,
                                 formula,
                                 fit.seed,
-                                orientation) {
+                                orientation,
+                                accept.rq = TRUE) {
   stopifnot(!any(c("formula", "data") %in% names(method.args)))
+
   if (is.null(data$weight)) {
     data$weight <- 1
   }
@@ -446,10 +454,12 @@ fit_models_internal <- function(data,
     return(data.frame())
   } else if (!(inherits(fm, "lm") || inherits(fm, "lmrob") ||
                inherits(fm, "gls") || inherits(fm, "lqs") ||
-               inherits(fm, "lts") || inherits(fm, "sma"))) {
+               inherits(fm, "lts") || inherits(fm, "sma") ||
+               accept.rq && (inherits(fm, "rq") || inherits(fm, "rqs")))) {
     message("Method \"", method.name,
             "\" did not return a ",
-            "\"lm\", \"lmrob\", \"lqs\", \"lts\", \"gls\" or \"sma\" ",
+            "\"lm\", \"lmrob\", \"lqs\", \"lts\", \"gls\", \"sma\", ",
+            ifelse(accept.rq, "\"rq\", \"rqs\"", ""),
             "object, possible failure ahead.")
   }
   fm
