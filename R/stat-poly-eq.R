@@ -505,7 +505,9 @@ stat_poly_eq <- function(mapping = NULL,
   }
 
   temp <- guess_orientation(orientation = orientation,
-                            formula = formula)
+                            default.formula = y ~ x,
+                            formula = formula,
+                            formula.on.x = FALSE)
   orientation <- temp[["orientation"]]
   formula <-  temp[["formula"]]
 
@@ -661,86 +663,22 @@ poly_eq_compute_group_fun <- function(data,
     label.y <- label.y[1]
   }
 
-  fm <- fit_models_internal(data = data,
-                            method = method,
-                            method.name = method.name,
-                            method.args = method.args,
-                            n.min = n.min,
-                            formula = formula,
-                            fit.seed = fit.seed,
-                            orientation = orientation,
-                            accept.rq = FALSE)
-  if (!length(fm)) {
+  temp.ls <- fit_models_internal(data = data,
+                                 method = method,
+                                 method.name = method.name,
+                                 method.args = method.args,
+                                 n.min = n.min,
+                                 formula = formula,
+                                 fit.seed = fit.seed,
+                                 orientation = orientation,
+                                 accept.rq = FALSE)
+  if (!length(temp.ls) || !length(temp.ls[["fm"]])) {
     # An empty data.frame results in no plot layer when passed to geoms
     return(data.frame())
   }
-
-  # # If method was specified as a character string, replace with
-  # # the corresponding function. Some model fit functions themselves have a
-  # # method parameter accepting character strings as argument. We support
-  # # these by splitting strings passed as argument at a colon.
-  # if (is.character(method)) {
-  #   method <- switch(method,
-  #                    lm = "lm:qr",
-  #                    rlm = "rlm:M",
-  #                    lqs = "lqs:lqs",
-  #                    gls = "gls:REML",
-  #                    method)
-  #   method.name <- method
-  #   method <- strsplit(x = method, split = ":", fixed = TRUE)[[1]]
-  #   if (length(method) > 1L) {
-  #     fun.method <- method[2]
-  #     method <- method[1]
-  #   } else {
-  #     fun.method <- character()
-  #   }
-  #   method <- switch(method,
-  #                    lm = stats::lm,
-  #                    rlm = MASS::rlm,
-  #                    lqs = MASS::lqs,
-  #                    gls = nlme::gls,
-  #                    match.fun(method))
-  # } else if (is.function(method)) {
-  #   fun.method <- character()
-  # }
-  #
-  # if (exists("weight", data) && !all(data[["weight"]] == 1)) {
-  #   stopifnot("A mapping to 'weight' and a named argument 'weights' cannot co-exist" =
-  #               !"weights" %in% method.args)
-  #   fun.args <- list(formula = quote(formula),
-  #                    data = quote(data),
-  #                    weights = data[["weight"]])
-  # } else {
-  #   fun.args <- list(formula = quote(formula),
-  #                    data = quote(data))
-  # }
-  # fun.args <- c(fun.args, method.args)
-  # if (length(fun.method)) {
-  #   fun.args[["method"]] <- fun.method
-  # }
-  #
-  # # gls() parameter for formula is called model
-  # if (grepl("gls", method.name)) {
-  #   names(fun.args)[1] <- "model"
-  # }
-  #
-  # if (!is.na(fit.seed)) {
-  #   set.seed(fit.seed)
-  # }
-  # fm <- do.call(method, args = fun.args)
-  # mk.eq.label <- mk.eq.label && class(fm)[1] != "segmented" # not segmented into a spline?
-  #
-  # # allow skipping of output if returned value from model fit function is missing
-  # if (!length(fm) || (is.atomic(fm) && is.na(fm))) {
-  #   return(data.frame())
-  # } else if (!(inherits(fm, "lm") || inherits(fm, "lmrob") ||
-  #              inherits(fm, "gls") || inherits(fm, "lqs") ||
-  #              inherits(fm, "lts") || inherits(fm, "sma"))) {
-  #   warning("Method \"", method.name,
-  #           "\" did not return a ",
-  #           "\"lm\", \"lmrob\", \"lqs\", \"lts\", \"gls\" or \"sma\" ",
-  #           "object, possible failure ahead.")
-  # }
+  fm <- temp.ls[["fm"]]
+  method.name <- temp.ls[["method.name"]] # argument or default which varies
+  method.args <- temp.ls[["method.args"]] # argument or default which varies
 
   fm.class <- class(fm)
   if (fm.class[1] == "sma") {
@@ -752,7 +690,7 @@ poly_eq_compute_group_fun <- function(data,
 
   # allow model formula selection by the model fit method
   # extract formula from fitted model if possible, but fall back on argument if needed
-  formula.ls <- fail_safe_formula(fm, fun.args, verbose = TRUE)
+  formula.ls <- fail_safe_formula(fm, method.args, verbose = TRUE)
 
   if ("fstatistic" %in% names(fm.summary)) {
     f.value <- fm.summary[["fstatistic"]]["value"]

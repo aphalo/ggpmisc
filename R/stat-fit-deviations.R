@@ -93,28 +93,22 @@
 #'
 #' # plot residuals from linear model
 #' ggplot(my.data, aes(x, y)) +
-#'   geom_smooth(method = "lm", formula = y ~ x) +
+#'   stat_poly_line(method = "lm", formula = y ~ x) +
 #'   stat_fit_deviations(method = "lm", formula = y ~ x, colour = "red") +
 #'   geom_point()
 #'
 #' # plot residuals from linear model with y as explanatory variable
 #' ggplot(my.data, aes(x, y)) +
-#'   geom_smooth(method = "lm", formula = y ~ x, orientation = "y") +
+#'   stat_poly_line(method = "lm", formula = x ~ y) +
 #'   stat_fit_deviations(method = "lm", formula = x ~ y, colour = "red") +
-#'   geom_point()
-#'
-#' # as above using orientation
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_smooth(method = "lm", orientation = "y") +
-#'   stat_fit_deviations(orientation = "y", colour = "red") +
 #'   geom_point()
 #'
 #' # both regressions and their deviations
 #' ggplot(my.data, aes(x, y)) +
-#'   geom_smooth(method = "lm") +
-#'   stat_fit_deviations(colour = "blue") +
-#'   geom_smooth(method = "lm", orientation = "y", colour = "red") +
-#'   stat_fit_deviations(orientation = "y", colour = "red") +
+#'   stat_poly_line(method = "lm", formula = y ~ x) +
+#'   stat_fit_deviations(method = "lm", formula = y ~ x, colour = "red") +
+#'   stat_poly_line(method = "lm", formula = x ~ y) +
+#'   stat_fit_deviations(method = "lm", formula = x ~ y, colour = "orange") +
 #'   geom_point()
 #'
 #' # give a name to a formula
@@ -122,18 +116,18 @@
 #'
 #' # plot linear regression
 #' ggplot(my.data, aes(x, y)) +
-#'   geom_smooth(method = "lm", formula = my.formula) +
+#'   stat_poly_line(method = "lm", formula = my.formula) +
 #'   stat_fit_deviations(formula = my.formula, colour = "red") +
 #'   geom_point()
 #'
 #' ggplot(my.data, aes(x, y)) +
-#'   geom_smooth(method = "lm", formula = my.formula) +
-#'   stat_fit_deviations(formula = my.formula, method = stats::lm, colour = "red") +
+#'   stat_poly_line(formula = my.formula, method = "lm") +
+#'   stat_fit_deviations(formula = my.formula, method = "lm", colour = "red") +
 #'   geom_point()
 #'
 #' # plot robust regression
 #' ggplot(my.data, aes(x, y)) +
-#'   stat_smooth(method = "rlm", formula = my.formula) +
+#'   stat_poly_line(formula = my.formula, method = "rlm") +
 #'   stat_fit_deviations(formula = my.formula, method = "rlm", colour = "red") +
 #'   geom_point()
 #'
@@ -141,7 +135,7 @@
 #' my.data.outlier <- my.data
 #' my.data.outlier[6, "y"] <- my.data.outlier[6, "y"] * 10
 #' ggplot(my.data.outlier, aes(x, y)) +
-#'   stat_smooth(method = MASS::rlm, formula = my.formula) +
+#'   stat_poly_line(method = MASS::rlm, formula = my.formula) +
 #'   stat_fit_deviations(formula = my.formula, method = "rlm",
 #'                       mapping = aes(colour = after_stat(weights)),
 #'                       show.legend = TRUE) +
@@ -171,14 +165,16 @@
 #' # plot, using geom_debug_group() to explore the after_stat data
 #' if (gginnards.installed)
 #'   ggplot(my.data, aes(x, y)) +
-#'     geom_smooth(method = "lm", formula = my.formula) +
-#'     stat_fit_deviations(formula = my.formula, geom = "debug_group") +
+#'     stat_poly_line(method = "lm", formula = my.formula) +
+#'     stat_fit_deviations(formula = my.formula,
+#'                         geom = "debug_group") +
 #'     geom_point()
 #'
 #' if (gginnards.installed)
 #'   ggplot(my.data.outlier, aes(x, y)) +
-#'     stat_smooth(method = MASS::rlm, formula = my.formula) +
-#'     stat_fit_deviations(formula = my.formula, method = "rlm", geom = "debug_group") +
+#'     stat_poly_line(method = "rlm", formula = my.formula) +
+#'     stat_fit_deviations(formula = my.formula, method = "rlm",
+#'                         geom = "debug_group") +
 #'     geom_point()
 #'
 #' @export
@@ -250,18 +246,20 @@ deviations_compute_group_fun <- function(data,
                                          fit.seed = NA,
                                          orientation = "x") {
 
-  fm <- fit_models_internal(data = data,
-                            method = method,
-                            method.name = method.name,
-                            method.args = method.args,
-                            n.min = n.min,
-                            formula = formula,
-                            fit.seed = fit.seed,
-                            orientation = orientation)
-  if (!length(fm)) {
+  temp.ls <- fit_models_internal(data = data,
+                                 method = method,
+                                 method.name = method.name,
+                                 method.args = method.args,
+                                 n.min = n.min,
+                                 formula = formula,
+                                 fit.seed = fit.seed,
+                                 orientation = orientation)
+  if (!length(temp.ls) || !length(temp.ls[["fm"]])) {
     # An empty data.frame results in no plot layer when passed to geoms
     return(data.frame())
   }
+  fm <- temp.ls[["fm"]]
+  method.name <- temp.ls[["method.name"]]
 
   # As users may use model fit functions that we have not tested
   # we try hard to extract the components from the model fit object
@@ -292,6 +290,20 @@ deviations_compute_group_fun <- function(data,
   } else if (inherits(fm, "lqs")) {
     rob.weight.vals <- rep_len(NA_real_, nrow(data))
     weight.vals <- rep_len(1, nrow(data))
+  } else if (inherits(fm, "gls")|| inherits(fm, "lme")) {
+    # "weights" have to be computed
+    ordering <- order(order(nlme::getGroups(fm)))
+    rob.weight.vals <-
+      1 / nlme::getCovariate(fm$modelStruct$varStruct)[ordering]
+    # rep_len(NA_real_, nrow(data))
+    # weights' argument is a "variance model"
+    weight.vals <- rep_len(1, nrow(data))
+  } else if (inherits(fm, "lm")) {
+    weight.vals <- stats::weights(fm)
+    if (!length(weight.vals)) {
+      weight.vals <- rep_len(1, nrow(data))
+    }
+    rob.weight.vals <- weight.vals # actually used are those input
   } else {
     rob.weight.vals <- rep(NA_real_, nrow(data))
     try(weight.vals <- stats::weights(fm))
@@ -408,18 +420,20 @@ fitted_compute_group_fun <- function(data,
                                      orientation = "x",
                                      return.fitted = FALSE) {
 
-  fm <- fit_models_internal(data = data,
-                            method = method,
-                            method.name = method.name,
-                            method.args = method.args,
-                            n.min = n.min,
-                            formula = formula,
-                            fit.seed = fit.seed,
-                            orientation = orientation)
-  if (!length(fm)) {
+  temp.ls <- fit_models_internal(data = data,
+                                 method = method,
+                                 method.name = method.name,
+                                 method.args = method.args,
+                                 n.min = n.min,
+                                 formula = formula,
+                                 fit.seed = fit.seed,
+                                 orientation = orientation)
+  if (!length(temp.ls) || !length(temp.ls[["fm"]])) {
     # An empty data.frame results in no plot layer when passed to geoms
     return(data.frame())
   }
+  fm <- temp.ls[["fm"]]
+  method.name <- temp.ls[["method.name"]]
 
   # As users may use model fit functions that we have not tested
   # we try hard to extract the components from the model fit object

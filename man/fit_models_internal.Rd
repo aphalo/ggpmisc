@@ -47,6 +47,13 @@ called.}
 \item{accept.rq}{logical Accept quantile regression fits with 'quantreg' or
 warn when encountered.}
 }
+\value{
+A list with three named members: \code{fm} the fitted model object
+  and \code{method.args}, the arguments passed to the model fit function as a
+  nested named list, \code{fit.seed} the seed used and \code{method.name},
+  the name of the model fit function passed as arguemnt, which can differ
+  from the class of \code{fm}.
+}
 \description{
 Fit models using different methods translating some arguments
 to make possible use of consistent arguments across calls to

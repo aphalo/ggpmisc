@@ -18,26 +18,27 @@ fitted model equations.
 -   With new `output.type == "latex.eqn"` and `output.type == "latex.deqn"` 
 labels are fenced with `$` or `$$` to be readily formatted as $\LaTeX$ 
 in math mode. As earlier `output.type == "latex"` outputs the same labels without
-the fences in case they are to be combined into a larger math mode equation.
+the fences in case they are to be combined into a complex math mode equation.
 -   Bugs in the $\LaTeX$ encodings of a couple of labels have been fixed.
 -   Automatic selection of `output.type = "marquee"` when `"marquee"` is passed
 as argument to parameter `geom` of statistics that generate labels, including
 fitted model equations.
 -   With new `output.type == "marquee"` sub- and superscripts are encoded using
-the span definitions used be 'marquee' instead of the embedded HTML used when
+the span definitions used be 'marquee' instead of the embedded HTML used with
 `output.type == "mardown"`.
--   With both `output.type == "markdown"` and `output.type == "marquee"` use
+-   With both `output.type == "markdown"` and `output.type == "marquee"`, use
 formatting that results in typeset equations that better match those encoded as
 plotmath expressions.
 -   Track changes in 'gginnards' (>= 0.2.0) in examples and docs.
--   Breaking: Change default in model fitting _stats_ supporting method `"lqs"`.
-`"lqs"` is now equivalent to `"lqs:lts"` rather than `"lqs:lqs"`, so as to 
-respect the default in `MASS::lqs()`.
+-   Breaking: Change default in model fitting _stats_ supporting method `"lqs"`
+from `"lqs:lqs"` into `"lqs:lts"` to match the default of `MASS::lqs()`.
 -   A new on-line-only article gives examples of the use of 'ggpmisc' together
 with R package 'xdvir' and another one compares plot annotations created with
 the different output types and matching geometries.
 -   Update documentation for all statistics to include an automatically 
 generated _Aesthetics_ section.
+-   Model fitting, argument-decoding and label formatting and assembly code
+refactored to avoid duplication and ensure consistency.
 
 **Note:** When 'ggpmisc' >= 0.7.0 is used together with 'ggpp' >= 0.6.0 and 
 'ggplot2' >= 4.0.0 the geom element of 'ggplot2' themes is obeyed.

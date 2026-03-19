@@ -251,18 +251,20 @@ residuals_compute_group_fun <- function(data,
                                         weighted = FALSE,
                                         orientation = "x") {
 
-  fm <- fit_models_internal(data = data,
-                            method = method,
-                            method.name = method.name,
-                            method.args = method.args,
-                            n.min = n.min,
-                            formula = formula,
-                            fit.seed = fit.seed,
-                            orientation = orientation)
-  if (!length(fm)) {
+  temp.ls <- fit_models_internal(data = data,
+                                 method = method,
+                                 method.name = method.name,
+                                 method.args = method.args,
+                                 n.min = n.min,
+                                 formula = formula,
+                                 fit.seed = fit.seed,
+                                 orientation = orientation)
+  if (!length(temp.ls) || !length(temp.ls[["fm"]])) {
     # An empty data.frame results in no plot layer when passed to geoms
     return(data.frame())
   }
+  fm <- temp.ls[["fm"]]
+  method.name <- temp.ls[["method.name"]]
 
   if (!is.null(resid.type)) {
     if (weighted) {
@@ -359,6 +361,14 @@ StatFitResiduals <-
 #' @param accept.rq logical Accept quantile regression fits with 'quantreg' or
 #'   warn when encountered.
 #'
+#' @return A list with three named members: \code{fm} the fitted model object
+#'   and \code{method.args}, the arguments passed to the model fit function as a
+#'   nested named list, \code{fit.seed} the seed used and \code{method.name},
+#'   the name of the model fit function passed as arguemnt, which can differ
+#'   from the class of \code{fm}.
+#'
+#' @section
+#'
 #' @note Called by \code{\link{stat_fit_residuals}()},
 #'   \code{\link{stat_fit_deviations}()} and \code{\link{stat_fit_fitted}()}.
 #'
@@ -381,7 +391,7 @@ fit_models_internal <- function(data,
   }
 
   if (length(unique(data[[orientation]])) < n.min) {
-    return(data.frame())
+    return(list())
   }
 
   # If method was specified as a character string, replace with
@@ -456,7 +466,7 @@ fit_models_internal <- function(data,
   })
 
   if (!length(fm) || (is.atomic(fm) && is.na(fm))) {
-    return(data.frame())
+    return(list())
   } else if (!(inherits(fm, "lm") || inherits(fm, "lmrob") ||
                inherits(fm, "gls") || inherits(fm, "lqs") ||
                inherits(fm, "lts") || inherits(fm, "sma") ||
@@ -467,5 +477,8 @@ fit_models_internal <- function(data,
             ifelse(accept.rq, "\"rq\", \"rqs\"", ""),
             "object, possible failure ahead.")
   }
-  fm
+  list(fm = fm,
+       method.name = method.name,
+       method.args = fun.args,
+       fit.seed = fit.seed)
 }

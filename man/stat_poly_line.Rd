@@ -207,6 +207,11 @@ ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
   stat_poly_line()
 
+# same as default
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  stat_poly_line(formula = y ~ x)
+
 ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
   stat_poly_line(formula = x ~ y)

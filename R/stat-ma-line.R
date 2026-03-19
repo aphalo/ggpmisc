@@ -15,17 +15,17 @@
 #'
 #'   As the fitted line is the same whether \code{x} or \code{y} is on the rhs
 #'   of the model equation, \code{orientation} even if accepted does not have an
-#'   effect on the fitted line. In contrast, \code{\link[ggplot2]{geom_smooth}} treats
-#'   each axis differently and can thus have two orientations. The orientation
-#'   is easy to deduce from the argument passed to \code{formula}. Thus,
-#'   \code{stat_ma_line()} will by default guess which orientation the layer
-#'   should have. If no argument is passed to \code{formula}, the orientation
-#'   can be specified directly passing an argument to the \code{orientation}
-#'   parameter, which can be either \code{"x"} or \code{"y"}. The value gives
-#'   the axis that is on the rhs of the model equation, \code{"x"} being the
-#'   default orientation. Package 'ggpmisc' does not define new geometries
-#'   matching the new statistics as they are not needed and conceptually
-#'   transformations of \code{data} are expressed as statistics.
+#'   effect on the fitted line. In contrast, \code{\link[ggplot2]{geom_smooth}}
+#'   treats each axis differently and can thus have two orientations. The
+#'   orientation is easy to deduce from the argument passed to \code{formula}.
+#'   Thus, \code{stat_ma_line()} will by default guess which orientation the
+#'   layer should have. If no argument is passed to \code{formula}, the
+#'   orientation can be specified directly passing an argument to the
+#'   \code{orientation} parameter, which can be either \code{"x"} or \code{"y"}.
+#'   The value gives the axis that is on the rhs of the model equation,
+#'   \code{"x"} being the default orientation. Package 'ggpmisc' does not define
+#'   new geometries matching the new statistics as they are not needed and
+#'   conceptually transformations of \code{data} are expressed as statistics.
 #'
 #'   The minimum number of observations with distinct values can be set through
 #'   parameter \code{n.min}. The default \code{n.min = 2L} is the smallest
@@ -71,9 +71,7 @@
 #'
 #' @note \code{stat_ma_line} understands \code{x} and \code{y},
 #'   to be referenced in the \code{formula}. Both must be mapped to
-#'   \code{numeric} variables. In addition, the aesthetics understood by the
-#'   geom (\code{"geom_smooth"} is the default) are understood and grouping
-#'   respected.
+#'   \code{numeric} variables.
 #'
 #' @family ggplot statistics for major axis regression
 #'
