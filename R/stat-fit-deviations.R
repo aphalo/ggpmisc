@@ -137,7 +137,7 @@
 #' ggplot(my.data.outlier, aes(x, y)) +
 #'   stat_poly_line(method = MASS::rlm, formula = my.formula) +
 #'   stat_fit_deviations(formula = my.formula, method = "rlm",
-#'                       mapping = aes(colour = after_stat(weights)),
+#'                       mapping = aes(colour = after_stat(robustness.weights)),
 #'                       show.legend = TRUE) +
 #'   scale_color_gradient(low = "red", high = "blue", limits = c(0, 1),
 #'                        guide = "colourbar") +
@@ -183,6 +183,7 @@ stat_fit_deviations <- function(mapping = NULL,
                                 data = NULL,
                                 geom = "segment",
                                 position = "identity",
+                                orientation = NA,
                                 ...,
                                 method = "lm",
                                 method.args = list(),
@@ -190,7 +191,6 @@ stat_fit_deviations <- function(mapping = NULL,
                                 formula = NULL,
                                 fit.seed = NA,
                                 na.rm = FALSE,
-                                orientation = NA,
                                 show.legend = FALSE,
                                 inherit.aes = TRUE) {
 
@@ -298,7 +298,7 @@ deviations_compute_group_fun <- function(data,
     # rep_len(NA_real_, nrow(data))
     # weights' argument is a "variance model"
     weight.vals <- rep_len(1, nrow(data))
-  } else if (inherits(fm, "lm")) {
+  } else if (inherits(fm, "lm")) { # order matters as e.g. "rlm" inherits "lm"
     weight.vals <- stats::weights(fm)
     if (!length(weight.vals)) {
       weight.vals <- rep_len(1, nrow(data))
@@ -355,17 +355,20 @@ StatFitDeviations <-
 #'
 #' @export
 #'
-stat_fit_fitted <- function(mapping = NULL, data = NULL, geom = "point",
+stat_fit_fitted <- function(mapping = NULL,
+                            data = NULL,
+                            geom = "point",
+                            position = "identity",
+                            orientation = NA,
+                            ...,
                             method = "lm",
                             method.args = list(),
                             n.min = 2L,
                             formula = NULL,
                             fit.seed = NA,
-                            position = "identity",
                             na.rm = FALSE,
-                            orientation = NA,
                             show.legend = FALSE,
-                            inherit.aes = TRUE, ...) {
+                            inherit.aes = TRUE) {
 
   if (is.character(method)) {
     method <- trimws(method, which = "both")

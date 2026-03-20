@@ -9,6 +9,7 @@ stat_ma_line(
   data = NULL,
   geom = "smooth",
   position = "identity",
+  orientation = NA,
   ...,
   method = "lmodel2:MA",
   method.args = list(),
@@ -24,7 +25,6 @@ stat_ma_line(
   fullrange = FALSE,
   level = 0.95,
   na.rm = FALSE,
-  orientation = NA,
   show.legend = NA,
   inherit.aes = TRUE
 )
@@ -41,6 +41,10 @@ plot defaults.}
 
 \item{position}{The position adjustment to use for overlapping points on this
 layer.}
+
+\item{orientation}{character Either "x" or "y" controlling the default for
+\code{formula}. The letter indicates the aesthetic considered the
+explanatory variable in the model fit.}
 
 \item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This
 can include aesthetics whose values you want to set, not map. See
@@ -87,10 +91,6 @@ range of the data group used in each fit?}
 
 \item{na.rm}{a logical indicating whether NA values should be stripped before
 the computation proceeds.}
-
-\item{orientation}{character Either "x" or "y" controlling the default for
-\code{formula}. The letter indicates the aesthetic considered the
-explanatory variable in the model fit.}
 
 \item{show.legend}{logical. Should this layer be included in the legends?
 \code{NA}, the default, includes if any aesthetics are mapped. \code{FALSE}

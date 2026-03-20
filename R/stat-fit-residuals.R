@@ -184,6 +184,7 @@ stat_fit_residuals <- function(mapping = NULL,
                                data = NULL,
                                geom = "point",
                                position = "identity",
+                               orientation = NA,
                                ...,
                                method = "lm",
                                method.args = list(),
@@ -193,7 +194,6 @@ stat_fit_residuals <- function(mapping = NULL,
                                resid.type = NULL,
                                weighted = FALSE,
                                na.rm = FALSE,
-                               orientation = NA,
                                show.legend = FALSE,
                                inherit.aes = TRUE) {
 
@@ -265,6 +265,7 @@ residuals_compute_group_fun <- function(data,
   }
   fm <- temp.ls[["fm"]]
   method.name <- temp.ls[["method.name"]]
+  method.args <- temp.ls[["method.args"]]
 
   if (!is.null(resid.type)) {
     if (weighted) {
@@ -367,8 +368,6 @@ StatFitResiduals <-
 #'   the name of the model fit function passed as arguemnt, which can differ
 #'   from the class of \code{fm}.
 #'
-#' @section
-#'
 #' @note Called by \code{\link{stat_fit_residuals}()},
 #'   \code{\link{stat_fit_deviations}()} and \code{\link{stat_fit_fitted}()}.
 #'
@@ -399,13 +398,14 @@ fit_models_internal <- function(data,
   # method parameter accepting character strings as argument. We support
   # these by splitting strings passed as argument at a colon.
   if (is.character(method)) {
+    # we set default methods for fit functions
     method <- switch(method,
                      lm = "lm:qr",
                      rlm = "rlm:M",
                      rq = "rq:br",
                      lqs = "lqs:lts",
                      gls = "gls:REML",
-                     method) # method to be found in the search path
+                     method)
     method.name <- method
     method <- strsplit(x = method, split = ":", fixed = TRUE)[[1]]
     if (length(method) > 1L) {
@@ -414,7 +414,7 @@ fit_models_internal <- function(data,
     } else {
       fun.method <- character()
     }
-
+    # get functions based on their name
     method <- switch(method,
                      lm = stats::lm,
                      rlm = MASS::rlm,

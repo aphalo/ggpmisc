@@ -9,6 +9,7 @@ stat_fit_residuals(
   data = NULL,
   geom = "point",
   position = "identity",
+  orientation = NA,
   ...,
   method = "lm",
   method.args = list(),
@@ -18,7 +19,6 @@ stat_fit_residuals(
   resid.type = NULL,
   weighted = FALSE,
   na.rm = FALSE,
-  orientation = NA,
   show.legend = FALSE,
   inherit.aes = TRUE
 )
@@ -35,6 +35,9 @@ the plot defaults.}
 
 \item{position}{The position adjustment to use for overlapping points on this
 layer}
+
+\item{orientation}{character Either "x" or "y" controlling the default for
+\code{formula}.}
 
 \item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This
 can include aesthetics whose values you want to set, not map. See
@@ -68,9 +71,6 @@ when it is forced to \code{"deviance"}).}
 
 \item{na.rm}{a logical indicating whether NA values should be stripped
 before the computation proceeds.}
-
-\item{orientation}{character Either "x" or "y" controlling the default for
-\code{formula}.}
 
 \item{show.legend}{logical. Should this layer be included in the legends?
 \code{NA}, the default, includes if any aesthetics are mapped. \code{FALSE}

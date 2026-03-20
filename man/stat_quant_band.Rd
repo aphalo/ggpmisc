@@ -9,6 +9,7 @@ stat_quant_band(
   data = NULL,
   geom = "smooth",
   position = "identity",
+  orientation = NA,
   ...,
   quantiles = c(0.25, 0.5, 0.75),
   formula = NULL,
@@ -19,7 +20,6 @@ stat_quant_band(
   method.args = list(),
   n.min = 3L,
   na.rm = FALSE,
-  orientation = NA,
   show.legend = NA,
   inherit.aes = TRUE
 )
@@ -36,6 +36,10 @@ plot defaults.}
 
 \item{position}{The position adjustment to use for overlapping points on this
 layer.}
+
+\item{orientation}{character Either "x" or "y" controlling the default for
+\code{formula}. The letter indicates the aesthetic considered the
+explanatory variable in the model fit.}
 
 \item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This
 can include aesthetics whose values you want to set, not map. See
@@ -75,10 +79,6 @@ variable (on the rhs of formula) for fitting to the attempted.}
 
 \item{na.rm}{a logical indicating whether NA values should be stripped before
 the computation proceeds.}
-
-\item{orientation}{character Either "x" or "y" controlling the default for
-\code{formula}. The letter indicates the aesthetic considered the
-explanatory variable in the model fit.}
 
 \item{show.legend}{logical. Should this layer be included in the legends?
 \code{NA}, the default, includes if any aesthetics are mapped. \code{FALSE}
