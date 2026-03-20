@@ -343,6 +343,7 @@ deviations_compute_group_fun <- function(data,
 #' @export
 StatFitDeviations <-
   ggplot2::ggproto("StatFitDeviations", ggplot2::Stat,
+                   extra_params = c("na.rm", "orientation"),
                    compute_group = deviations_compute_group_fun,
                    dropped_aes = "weight",
                    default_aes =
@@ -469,6 +470,7 @@ fitted_compute_group_fun <- function(data,
 #'
 StatFitFitted <-
   ggplot2::ggproto("StatFitFitted", ggplot2::Stat,
+                   extra_params = c("na.rm", "orientation"),
                    compute_group = fitted_compute_group_fun,
                    required_aes = c("x", "y")
   )

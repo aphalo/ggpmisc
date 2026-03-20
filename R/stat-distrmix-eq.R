@@ -440,7 +440,7 @@ distrmix_eq_compute_group_fun <-
 StatDistrmixEq <-
   ggplot2::ggproto("StatDistrmixEq", ggplot2::Stat,
 
-                   extra_params = c("na.rm", "orientation"),
+                   extra_params = c("na.rm", "parse", "orientation"),
 
                    setup_params = function(data, params) {
                      params[["flipped_aes"]] <-

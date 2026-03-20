@@ -963,7 +963,7 @@ poly_eq_compute_group_fun <- function(data,
 #' @export
 StatPolyEq <-
   ggplot2::ggproto("StatPolyEq", ggplot2::Stat,
-                   extra_params = c("na.rm", "parse"),
+                   extra_params = c("na.rm", "parse", "orientation"),
                    compute_group = poly_eq_compute_group_fun,
                    default_aes =
                      ggplot2::aes(npcx = after_stat(npcx),
