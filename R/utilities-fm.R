@@ -387,3 +387,36 @@ extract_fitted <- function(fm, n.row) {
   }
   fitted.vals
 }
+
+
+# extract_residuals -------------------------------------------------------
+
+extract_residuals <- function(fm, resid.type, weighted) {
+  if (inherits(fm, "sma")) {
+    fit.residuals <- stats::fitted(fm, type = "residuals")
+  } else {
+    if (!is.null(resid.type)) {
+      if (weighted) {
+        if (resid.type != "deviance") {
+          warning("Ignoring supplied 'resid.type' as 'weighted = TRUE'")
+        }
+        resid.args <- list(obj = fm, drop0 = TRUE)
+      } else {
+        resid.args <- list(object = fm, type = resid.type)
+      }
+    } else {
+      if (weighted) {
+        resid.args <- list(obj = fm, drop0 = TRUE)
+      } else {
+        resid.args <- list(object = fm)
+      }
+    }
+    if (weighted) {
+      fit.residuals <- do.call(stats::weighted.residuals, args = resid.args)
+    } else {
+      fit.residuals <- do.call(stats::residuals, args = resid.args)
+    }
+  }
+
+  fit.residuals
+}

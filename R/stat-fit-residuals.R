@@ -272,32 +272,9 @@ residuals_compute_group_fun <- function(data,
   method.name <- temp.ls[["method.name"]]
   method.args <- temp.ls[["method.args"]]
 
-  if (inherits(fm, "sma")) {
-    fit.residuals <- stats::fitted(fm, type = "residuals")
-  } else {
-    if (!is.null(resid.type)) {
-      if (weighted) {
-        if (resid.type != "deviance") {
-          warning("Ignoring supplied 'resid.type' as 'weighted = TRUE'")
-        }
-        resid.args <- list(obj = fm, drop0 = TRUE)
-      } else {
-        resid.args <- list(object = fm, type = resid.type)
-      }
-    } else {
-      if (weighted) {
-        resid.args <- list(obj = fm, drop0 = TRUE)
-      } else {
-        resid.args <- list(object = fm)
-      }
-    }
-    if (weighted) {
-      fit.residuals <- do.call(stats::weighted.residuals, args = resid.args)
-    } else {
-      fit.residuals <- do.call(stats::residuals, args = resid.args)
-    }
-  }
-
+  fit.residuals <- extract_residuals(fm,
+                                     resid.type = resid.type,
+                                     weighted = weighted)
   weights.ls <- extract_weights(fm, n.row = nrow(data))
 
   if (orientation == "y") {
