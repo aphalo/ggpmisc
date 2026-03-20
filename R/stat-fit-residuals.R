@@ -272,74 +272,48 @@ residuals_compute_group_fun <- function(data,
   method.name <- temp.ls[["method.name"]]
   method.args <- temp.ls[["method.args"]]
 
-  if (!is.null(resid.type)) {
-    if (weighted) {
-      if (resid.type != "deviance") {
-        warning("Ignoring supplied 'resid.type' as 'weighted = TRUE'")
+  if (inherits(fm, "sma")) {
+    fit.residuals <- stats::fitted(fm, type = "residuals")
+  } else {
+    if (!is.null(resid.type)) {
+      if (weighted) {
+        if (resid.type != "deviance") {
+          warning("Ignoring supplied 'resid.type' as 'weighted = TRUE'")
+        }
+        resid.args <- list(obj = fm, drop0 = TRUE)
+      } else {
+        resid.args <- list(object = fm, type = resid.type)
       }
-      resid.args <- list(obj = fm, drop0 = TRUE)
     } else {
-      resid.args <- list(object = fm, type = resid.type)
+      if (weighted) {
+        resid.args <- list(obj = fm, drop0 = TRUE)
+      } else {
+        resid.args <- list(object = fm)
+      }
     }
-  } else {
     if (weighted) {
-      resid.args <- list(obj = fm, drop0 = TRUE)
+      fit.residuals <- do.call(stats::weighted.residuals, args = resid.args)
     } else {
-      resid.args <- list(object = fm)
+      fit.residuals <- do.call(stats::residuals, args = resid.args)
     }
-  }
-  if (weighted) {
-    fit.residuals <- do.call(stats::weighted.residuals, args = resid.args)
-  } else {
-    fit.residuals <- do.call(stats::residuals, args = resid.args)
   }
 
-  if (inherits(fm, "lmrob")) {
-    rob.weight.vals <- stats::weights(fm, type = "robustness")
-    weight.vals <- stats::weights(fm, type = "prior")
-    if (!length(weight.vals)) {
-      weight.vals <- rep_len(1, nrow(data))
-    }
-  } else if (inherits(fm, "lts")) {
-    rob.weight.vals <- fm[["lts.wt"]]
-    weight.vals <- rep_len(1, nrow(data))
-  } else if (inherits(fm, "rlm")) {
-    rob.weight.vals <- fm[["w"]]
-    weight.vals <- stats::weights(fm)
-  } else if (inherits(fm, "lqs")) {
-    ## what does fm$bestone contain?
-    warning("Returned \"robustness weights\" are likely incorrect")
-    rob.weight.vals <- rep_len(0, nrow(data))
-    rob.weight.vals[fm[["bestone"]]] <- 1
-    weight.vals <- rep_len(1, nrow(data))
-  } else {
-    rob.weight.vals <- rep(NA_real_, nrow(data))
-    try(weight.vals <- stats::weights(fm))
-    if (inherits(weight.vals, "try-error") ||
-        length(weight.vals) != length(fit.residuals)) {
-      if (exists("weights", fm) &&  # defensive
-          length(fm[["weights"]]) == length(fit.residuals)) {
-        weight.vals <- fm[["weights"]]
-      } else {
-        weight.vals <- rep_len(NA_real_, nrow(data))
-      }
-    }
-   }
+  weights.ls <- extract_weights(fm, n.row = nrow(data))
 
   if (orientation == "y") {
     data.frame(y = data$y,
                x = fit.residuals,
                x.resid = fit.residuals,
                y.resid = NA_real_,
-               weights = weight.vals,
-               robustness.weights = rob.weight.vals)
+               weights = weights.ls[["weight.vals"]],
+               robustness.weights = weights.ls[["rob.weight.vals"]])
   } else {
     data.frame(x = data$x,
                y = fit.residuals,
                y.resid = fit.residuals,
                x.resid = NA_real_,
-               weights = weight.vals,
-               robustness.weights = rob.weight.vals)
+               weights = weights.ls[["weight.vals"]],
+               robustness.weights = weights.ls[["rob.weight.vals"]])
   }
 }
 

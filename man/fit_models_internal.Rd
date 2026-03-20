@@ -2,7 +2,7 @@
 % Please edit documentation in R/utilities-fm.R
 \name{fit_models_internal}
 \alias{fit_models_internal}
-\title{Fit a model to extract residuals or fitted values}
+\title{Apply model fit methods to data}
 \usage{
 fit_models_internal(
   data,

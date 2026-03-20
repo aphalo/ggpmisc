@@ -160,7 +160,7 @@ fail_safe_formula <- function(fm,
 
 # Internal function with shared code --------------------------------------
 
-#' Fit a model to extract residuals or fitted values
+#' Apply model fit methods to data
 #'
 #' Fit models using different methods translating some arguments
 #' to make possible use of consistent arguments across calls to
@@ -213,6 +213,8 @@ fit_models_internal <- function(data,
                      rq = "rq:br",
                      lqs = "lqs:lts",
                      gls = "gls:REML",
+                     sma = "sma:SMA",
+                     ma = "sma:MA",
                      method)
     method.name <- method
     method <- strsplit(x = method, split = ":", fixed = TRUE)[[1]]
@@ -229,6 +231,7 @@ fit_models_internal <- function(data,
                      rq = quantreg::rq,
                      lqs = MASS::lqs,
                      gls = nlme::gls,
+                     sma = smatr::sma,
                      match.fun(method))
   } else if (is.function(method)) {
     fun.method <- character()
@@ -290,3 +293,71 @@ fit_models_internal <- function(data,
        method.args = fun.args,
        fit.seed = fit.seed)
 }
+
+
+# extract_weights ---------------------------------------------------------
+
+#' Extract prior and fitted weights
+#'
+#' Extract the prior and fitted weights from a fitted model object.
+#'
+#' @param fm a fitted model object of a supported class.
+#' @param n.row interger The expected length of the weights vectors to extract.
+#'
+#' @return A list with two named members: \code{rob.weight.vals} the weights
+#'   actually used to weight residuals, either user supplied or computed, and
+#'   \code{weight.vals} the prior weights passed as argument. When not available
+#'   the vectors are filled with \code{NA_real_} values.
+#'
+#' @note Called by \code{\link{stat_fit_residuals}()} and
+#'   \code{\link{stat_fit_deviations}()}.
+#'
+#' @keywords internal
+#'
+extract_weights <- function(fm, n.row) {
+  if (inherits(fm, "lmrob")) {
+    rob.weight.vals <- stats::weights(fm, type = "robustness")
+    weight.vals <- stats::weights(fm, type = "prior")
+    if (!length(weight.vals)) {
+      weight.vals <- rep_len(1, n.row)
+    }
+  } else if (inherits(fm, "lts")) {
+    rob.weight.vals <- fm[["lts.wt"]]
+    weight.vals <- rep_len(1, n.row)
+  } else if (inherits(fm, "rlm")) {
+    rob.weight.vals <- fm[["w"]]
+    weight.vals <- stats::weights(fm)
+  } else if (inherits(fm, "lqs")) {
+    rob.weight.vals <- rep_len(NA_real_, n.row)
+    weight.vals <- rep_len(1, n.row)
+  } else if (inherits(fm, "gls")|| inherits(fm, "lme")) {
+    # "weights" have to be computed
+    # ordering <- order(order(nlme::getGroups(fm)))
+    # rob.weight.vals <-
+    #   1 / nlme::getCovariate(fm$modelStruct$varStruct)[ordering]
+    rob.weight.vals <- rep_len(NA_real_, n.row)
+    # weights' argument is a "variance model"
+    weight.vals <- rep_len(1, n.row)
+  } else if (inherits(fm, "lm")) { # order matters as e.g. "rlm" inherits "lm"
+    weight.vals <- stats::weights(fm)
+    if (!length(weight.vals)) {
+      weight.vals <- rep_len(1, n.row)
+    }
+    rob.weight.vals <- weight.vals # actually used are those input
+  } else {
+    rob.weight.vals <- rep(NA_real_, n.row)
+    try(weight.vals <- stats::weights(fm))
+    if (inherits(weight.vals, "try-error") ||
+        length(weight.vals) != n.row) {
+      if (exists("weights", fm) &&  # defensive
+          length(fm[["weights"]]) == n.row) {
+        weight.vals <- fm[["weights"]]
+      } else {
+        weight.vals <- rep_len(NA_real_, n.row)
+      }
+    }
+  }
+  list(rob.weight.vals = rob.weight.vals,
+       weight.vals = weight.vals)
+}
+

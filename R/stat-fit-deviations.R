@@ -269,76 +269,42 @@ deviations_compute_group_fun <- function(data,
 
   # As users may use model fit functions that we have not tested
   # we try hard to extract the components from the model fit object
-  try(fitted.vals <- stats::fitted(fm))
-  if (inherits(fitted.vals, "try-error") ||
-      length(fitted.vals) != nrow(data)) {
-    if (exists("fitted.values", fm) &&  # defensive
-        length(fm[["fitted.values"]]) == nrow(data)) {
-      fitted.vals <- fm[["fitted.values"]]
-    } else {
-      warning("Fitted values could not be retrieved!")
-      fitted.vals <- rep(NA_real_, nrow(data))
-    }
-  }
-
-  if (inherits(fm, "lmrob")) {
-    rob.weight.vals <- stats::weights(fm, type = "robustness")
-    weight.vals <- stats::weights(fm, type = "prior")
-    if (!length(weight.vals)) {
-      weight.vals <- rep_len(1, nrow(data))
-    }
-  } else if (inherits(fm, "lts")) {
-    rob.weight.vals <- fm[["lts.wt"]]
-    weight.vals <- rep_len(1, nrow(data))
-  } else if (inherits(fm, "rlm")) {
-    rob.weight.vals <- fm[["w"]]
-    weight.vals <- stats::weights(fm)
-  } else if (inherits(fm, "lqs")) {
-    rob.weight.vals <- rep_len(NA_real_, nrow(data))
-    weight.vals <- rep_len(1, nrow(data))
-  } else if (inherits(fm, "gls")|| inherits(fm, "lme")) {
-    # "weights" have to be computed
-    # ordering <- order(order(nlme::getGroups(fm)))
-    # rob.weight.vals <-
-    #   1 / nlme::getCovariate(fm$modelStruct$varStruct)[ordering]
-    rob.weight.vals <- rep_len(NA_real_, nrow(data))
-    # weights' argument is a "variance model"
-    weight.vals <- rep_len(1, nrow(data))
-  } else if (inherits(fm, "lm")) { # order matters as e.g. "rlm" inherits "lm"
-    weight.vals <- stats::weights(fm)
-    if (!length(weight.vals)) {
-      weight.vals <- rep_len(1, nrow(data))
-    }
-    rob.weight.vals <- weight.vals # actually used are those input
+  if (inherits(fm, "sma")) {
+#    fitted.vals <- stats::fitted(fm, type = "fitted", centred = FALSE)
+    fitted.vals <- rep(NA_real_, nrow(data))
+    message("Fitted values could not be retrieved for \"sma\" object!")
   } else {
-    rob.weight.vals <- rep(NA_real_, nrow(data))
-    try(weight.vals <- stats::weights(fm))
-    if (inherits(weight.vals, "try-error") ||
-        length(weight.vals) != nrow(data)) {
-      if (exists("weights", fm) &&  # defensive
-          length(fm[["weights"]]) == nrow(data)) {
-        weight.vals <- fm[["weights"]]
+    try(fitted.vals <- stats::fitted(fm))
+    if (inherits(fitted.vals, "try-error") ||
+        length(fitted.vals) != nrow(data)) {
+      if (exists("fitted.values", fm) &&  # defensive
+          length(fm[["fitted.values"]]) == nrow(data)) {
+        fitted.vals <- fm[["fitted.values"]]
       } else {
-        weight.vals <- rep_len(NA_real_, nrow(data))
+        message("Fitted values could not be retrieved for \"",
+                class(fm)[1], "\" object!")
+        fitted.vals <- rep(NA_real_, nrow(data))
       }
     }
   }
+
+  weights.ls <- extract_weights(fm, n.row = nrow(data))
 
   if (orientation == "y") {
     data.frame(x = data$x,
                y = data$y,
                x.fitted = fitted.vals,
                y.fitted = data$y,
-               weights = weight.vals,
-               robustness.weights = rob.weight.vals,
+               weights = weights.ls[["weight.vals"]],
+               robustness.weights = weights.ls[["rob.weight.vals"]],
                hjust = 0)
   } else {
     data.frame(x = data$x,
                y = data$y,
                x.fitted = data$x,
                y.fitted = fitted.vals,
-               weights = weight.vals,
-               robustness.weights = rob.weight.vals,
+               weights = weights.ls[["weight.vals"]],
+               robustness.weights = weights.ls[["rob.weight.vals"]],
                hjust = 0)
   }
 }
@@ -448,18 +414,24 @@ fitted_compute_group_fun <- function(data,
 
   # As users may use model fit functions that we have not tested
   # we try hard to extract the components from the model fit object
-  try(fitted.vals <- stats::fitted(fm))
-  if (inherits(fitted.vals, "try-error") ||
-      length(fitted.vals) != nrow(data)) {
-    if (exists("fitted.values", fm) &&  # defensive
-        length(fm[["fitted.values"]]) == nrow(data)) {
-      fitted.vals <- fm[["fitted.values"]]
-    } else {
-      warning("Fitted values could not be retrieved!")
-      fitted.vals <- rep(NA_real_, nrow(data))
+  if (inherits(fm, "sma")) {
+#    fitted.vals <- stats::fitted(fm, type = "fitted", centred = FALSE)
+    message("Fitted values could not be retrieved for \"sma\" object!")
+    fitted.vals <- rep(NA_real_, nrow(data))
+  } else {
+    try(fitted.vals <- stats::fitted(fm))
+    if (inherits(fitted.vals, "try-error") ||
+        length(fitted.vals) != nrow(data)) {
+      if (exists("fitted.values", fm) &&  # defensive
+          length(fm[["fitted.values"]]) == nrow(data)) {
+        fitted.vals <- fm[["fitted.values"]]
+      } else {
+        message("Fitted values could not be retrieved for \"",
+                class(fm)[1], "\" object!")
+        fitted.vals <- rep(NA_real_, nrow(data))
+      }
     }
   }
-
   if (orientation == "y") {
     data.frame(x = fitted.vals,
                y = data$y)

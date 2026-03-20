@@ -43,6 +43,7 @@ Imports:
     quantreg (>= 6.0),
     lmodel2 (>= 1.7-4),
     nlme (>= 3.1-160),
+    smatr (>= 3.4-8),
     splus2R (>= 1.3-5),
     multcomp (>= 1.4-25),
     multcompView (>= 0.1-10),

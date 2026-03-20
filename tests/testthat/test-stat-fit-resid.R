@@ -157,7 +157,7 @@ test_that("stat_fit_deviations works with different methods", {
                                 stat_poly_line(method = "gls") +
                                 stat_fit_deviations(method = "gls")
   )
-  vdiffr::expect_doppelganger("fit_deviations_sma",
+  vdiffr::expect_doppelganger("fit_deviations_rq",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
                                 stat_quant_line(method = "rq",
@@ -165,6 +165,18 @@ test_that("stat_fit_deviations works with different methods", {
                                                 se = FALSE) +
                                 stat_fit_deviations(method = "rq")
   )
+  # vdiffr::expect_doppelganger("fit_deviations_sma",
+  #                             ggplot(my.data, aes(x, y)) +
+  #                               geom_point() +
+  #                               stat_poly_line(method = "sma") +
+  #                               stat_fit_deviations(method = "sma")
+  # )
+  # vdiffr::expect_doppelganger("fit_deviations_ma",
+  #                             ggplot(my.data, aes(x, y)) +
+  #                               geom_point() +
+  #                               stat_poly_line(method = "ma") +
+  #                               stat_fit_deviations(method = "ma")
+  # )
 })
 
 
@@ -222,7 +234,12 @@ test_that("stat_fit_residuals works with different methods", {
   vdiffr::expect_doppelganger("fit_residuals_sma",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
-                                stat_fit_residuals(method = "rq")
+                                stat_fit_residuals(method = "sma")
+  )
+  vdiffr::expect_doppelganger("fit_residuals_ma",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_fit_residuals(method = "ma")
   )
 })
 
@@ -282,11 +299,17 @@ test_that("stat_fit_fitted works with different methods", {
                                 stat_poly_line(method = "gls") +
                                 stat_fit_fitted(method = "gls")
   )
-  vdiffr::expect_doppelganger("fit_fitted_sma",
+  vdiffr::expect_doppelganger("fit_fitted_rq",
                               ggplot(my.data, aes(x, y)) +
                                 stat_quant_line(method = "rq",
                                                 quantiles = 0.5,
                                                 se = FALSE) +
                                 stat_fit_fitted(method = "rq")
   )
+  # expect_warning(
+  #   ggplot(my.data, aes(x, y)) + stat_fit_fitted(method = "sma")
+  # )
+  # expect_warning(
+  #   ggplot(my.data, aes(x, y)) + stat_fit_fitted(method = "ma")
+  # )
 })

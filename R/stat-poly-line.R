@@ -376,7 +376,7 @@ poly_line_compute_group_fun <-
         prediction <- data.frame(y = as.vector(prediction))
       }
       prediction <- cbind(newdata, prediction)
-    } else {
+    } else { # does not have predict method
       if (class(fm)[1] == "sma") {
         if (se) {
           message("SMA/MA, band is currently for slope only!")
