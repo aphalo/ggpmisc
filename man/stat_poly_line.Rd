@@ -9,8 +9,8 @@ stat_poly_line(
   data = NULL,
   geom = "smooth",
   position = "identity",
-  orientation = NA,
   ...,
+  orientation = NA,
   method = "lm",
   formula = NULL,
   se = NULL,
@@ -39,13 +39,13 @@ plot defaults.}
 \item{position}{The position adjustment to use for overlapping points on this
 layer.}
 
-\item{orientation}{character Either "x" or "y" controlling the default for
-\code{formula}. The letter indicates the aesthetic considered the
-explanatory variable in the model fit.}
-
 \item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This
 can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
+
+\item{orientation}{character Either "x" or "y" controlling the default for
+\code{formula}. The letter indicates the aesthetic considered the
+explanatory variable in the model fit.}
 
 \item{method}{function or character If character, "lm", "rlm", "lqs". "gls"
 "ma", "sma", or the name of a model fit function are accepted, possibly

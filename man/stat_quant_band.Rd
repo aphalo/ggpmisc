@@ -9,8 +9,8 @@ stat_quant_band(
   data = NULL,
   geom = "smooth",
   position = "identity",
-  orientation = NA,
   ...,
+  orientation = NA,
   quantiles = c(0.25, 0.5, 0.75),
   formula = NULL,
   fit.seed = NA,
@@ -37,13 +37,13 @@ plot defaults.}
 \item{position}{The position adjustment to use for overlapping points on this
 layer.}
 
-\item{orientation}{character Either "x" or "y" controlling the default for
-\code{formula}. The letter indicates the aesthetic considered the
-explanatory variable in the model fit.}
-
 \item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This
 can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
+
+\item{orientation}{character Either "x" or "y" controlling the default for
+\code{formula}. The letter indicates the aesthetic considered the
+explanatory variable in the model fit.}
 
 \item{quantiles}{A numeric vector of length 3, with unique values in
 \eqn{0\ldots 1}. The three quantile regressions are mapped to \code{y},

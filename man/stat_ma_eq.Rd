@@ -9,8 +9,8 @@ stat_ma_eq(
   data = NULL,
   geom = "text_npc",
   position = "identity",
-  orientation = NA,
   ...,
+  orientation = NA,
   formula = NULL,
   method = "lmodel2:MA",
   method.args = list(),
@@ -53,13 +53,13 @@ plot defaults.}
 \item{position}{The position adjustment to use for overlapping points on this
 layer.}
 
-\item{orientation}{character Either "x" or "y" controlling the default for
-\code{formula}. The letter indicates the aesthetic considered the
-explanatory variable in the model fit.}
-
 \item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This
 can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
+
+\item{orientation}{character Either "x" or "y" controlling the default for
+\code{formula}. The letter indicates the aesthetic considered the
+explanatory variable in the model fit.}
 
 \item{formula}{a formula object. Using aesthetic names \code{x} and \code{y}
 instead of original variable names.}

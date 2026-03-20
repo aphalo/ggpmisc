@@ -10,6 +10,7 @@ stat_distrmix_eq(
   geom = "text_npc",
   position = "identity",
   ...,
+  orientation = "x",
   method = "normalmixEM",
   method.args = list(),
   n.min = 10L * k,
@@ -29,7 +30,6 @@ stat_distrmix_eq(
   vstep = NULL,
   output.type = NULL,
   na.rm = FALSE,
-  orientation = "x",
   parse = NULL,
   show.legend = NA,
   inherit.aes = TRUE
@@ -51,6 +51,9 @@ layer.}
 \item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This
 can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
+
+\item{orientation}{character Either "x" or "y", the mapping of the values
+to which the mixture model is to be fitetd. NOT YET IMPLEMENTED!}
 
 \item{method}{function or character If character, "normalmixEM"
 or the name of a model fit function are accepted, possibly followed by the
@@ -102,9 +105,6 @@ used between labels for different mixture model components.}
 
 \item{na.rm}{a logical indicating whether NA values should be stripped before
 the computation proceeds.}
-
-\item{orientation}{character Either "x" or "y", the mapping of the values
-to which the mixture model is to be fitetd. NOT YET IMPLEMENTED!}
 
 \item{parse}{logical Passed to the geom. If \code{TRUE}, the labels will be
 parsed into expressions and displayed as described in \code{?plotmath}.

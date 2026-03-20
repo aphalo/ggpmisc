@@ -10,6 +10,7 @@ stat_distrmix_line(
   geom = "line",
   position = "identity",
   ...,
+  orientation = "x",
   method = "normalmixEM",
   se = NULL,
   fit.seed = NA,
@@ -24,7 +25,6 @@ stat_distrmix_line(
   components = "all",
   n.min = 10L * k,
   na.rm = FALSE,
-  orientation = "x",
   show.legend = NA,
   inherit.aes = TRUE
 )
@@ -45,6 +45,9 @@ layer.}
 \item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This
 can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
+
+\item{orientation}{character Either "x" or "y", the mapping of the values
+to which the mixture model is to be fitetd. NOT YET IMPLEMENTED!}
 
 \item{method}{function or character If character, "normalmixEM"
 or the name of a model fit function are accepted, possibly followed by the
@@ -82,9 +85,6 @@ variable for fitting to the attempted.}
 
 \item{na.rm}{a logical indicating whether NA values should be stripped before
 the computation proceeds.}
-
-\item{orientation}{character Either "x" or "y", the mapping of the values
-to which the mixture model is to be fitetd. NOT YET IMPLEMENTED!}
 
 \item{show.legend}{logical. Should this layer be included in the legends?
 \code{NA}, the default, includes if any aesthetics are mapped. \code{FALSE}

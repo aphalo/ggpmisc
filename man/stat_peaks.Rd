@@ -11,6 +11,7 @@ stat_peaks(
   geom = "point",
   position = "identity",
   ...,
+  orientation = "x",
   span = 5,
   global.threshold = 0,
   local.threshold = 0,
@@ -20,7 +21,6 @@ stat_peaks(
   x.label.fmt = NULL,
   y.label.fmt = NULL,
   extract.peaks = NULL,
-  orientation = "x",
   na.rm = FALSE,
   show.legend = FALSE,
   inherit.aes = TRUE
@@ -32,6 +32,7 @@ stat_valleys(
   geom = "point",
   position = "identity",
   ...,
+  orientation = "x",
   span = 5,
   global.threshold = 0.01,
   local.threshold = NULL,
@@ -41,7 +42,6 @@ stat_valleys(
   x.label.fmt = NULL,
   y.label.fmt = NULL,
   extract.valleys = NULL,
-  orientation = "x",
   na.rm = FALSE,
   show.legend = FALSE,
   inherit.aes = TRUE
@@ -63,6 +63,9 @@ layer}
 \item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This
 can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
+
+\item{orientation}{character The orientation of the layer can be set to
+either \code{"x"}, the default, or \code{"y"}.}
 
 \item{span}{odd positive integer A peak is defined as an element in a
 sequence which is greater than all other elements within a moving window of
@@ -108,9 +111,6 @@ peaks or valleys are returned. If \code{FALSE} the whole of \code{data} is
 returned but with labels set to \code{NA} in rows not containing peaks or
 valleys. If \code{NULL}, the default, \code{TRUE}, is used unless the geom
 name passed as argument is \code{"text_repel"} or \code{"label_repel"}.}
-
-\item{orientation}{character The orientation of the layer can be set to
-either \code{"x"}, the default, or \code{"y"}.}
 
 \item{na.rm}{a logical value indicating whether NA values should be stripped
 before the computation proceeds.}

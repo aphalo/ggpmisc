@@ -39,6 +39,7 @@ the different output types and matching geometries.
 generated _Aesthetics_ section.
 -   Model fitting, argument-decoding and label formatting and assembly code
 refactored to avoid duplication and ensure consistency.
+-   Bug in the handling of `orientation` fixed.
 
 **Note:** When 'ggpmisc' >= 0.7.0 is used together with 'ggpp' >= 0.6.0 and 
 'ggplot2' >= 4.0.0 the geom element of 'ggplot2' themes is obeyed.

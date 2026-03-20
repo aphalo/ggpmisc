@@ -10,8 +10,8 @@ stat_fit_deviations(
   data = NULL,
   geom = "segment",
   position = "identity",
-  orientation = NA,
   ...,
+  orientation = NA,
   method = "lm",
   method.args = list(),
   n.min = 2L,
@@ -52,12 +52,12 @@ the plot defaults.}
 \item{position}{The position adjustment to use for overlapping points on this
 layer}
 
-\item{orientation}{character Either "x" or "y" controlling the default for
-\code{formula}.}
-
 \item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This
 can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
+
+\item{orientation}{character Either "x" or "y" controlling the default for
+\code{formula}.}
 
 \item{method}{function or character If character, "lm", "rlm", "lqs", "rq"
 and the name of a function to be matched, possibly followed by the fit

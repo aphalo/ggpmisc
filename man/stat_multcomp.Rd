@@ -10,6 +10,7 @@ stat_multcomp(
   geom = NULL,
   position = "identity",
   ...,
+  orientation = "x",
   formula = NULL,
   method = "lm",
   method.args = list(),
@@ -27,7 +28,6 @@ stat_multcomp(
   vstep = NULL,
   output.type = NULL,
   na.rm = FALSE,
-  orientation = "x",
   parse = NULL,
   show.legend = FALSE,
   inherit.aes = TRUE
@@ -49,6 +49,10 @@ layer.}
 \item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This
 can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
+
+\item{orientation}{character Either "x" or "y" controlling the default for
+\code{formula}. \strong{Support for \code{orientation} is not yet
+implemented but is planned.}}
 
 \item{formula}{a formula object. Using aesthetic names \code{x} and \code{y}
 instead of original variable names.}
@@ -123,10 +127,6 @@ used between labels for different contrasts when \code{label.type = "bars"}.}
 
 \item{na.rm}{a logical indicating whether NA values should be stripped before
 the computation proceeds.}
-
-\item{orientation}{character Either "x" or "y" controlling the default for
-\code{formula}. \strong{Support for \code{orientation} is not yet
-implemented but is planned.}}
 
 \item{parse}{logical Passed to the geom. If \code{TRUE}, the labels will be
 parsed into expressions and displayed as described in \code{?plotmath}.
