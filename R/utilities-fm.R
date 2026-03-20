@@ -157,3 +157,136 @@ fail_safe_formula <- function(fm,
     invokeRestart("handleError")
   })
 }
+
+# Internal function with shared code --------------------------------------
+
+#' Fit a model to extract residuals or fitted values
+#'
+#' Fit models using different methods translating some arguments
+#' to make possible use of consistent arguments across calls to
+#' stats.
+#'
+#' @inheritParams stat_fit_residuals
+#' @param accept.rq logical Accept quantile regression fits with 'quantreg' or
+#'   warn when encountered.
+#'
+#' @return A list with three named members: \code{fm} the fitted model object
+#'   and \code{method.args}, the arguments passed to the model fit function as a
+#'   nested named list, \code{fit.seed} the seed used and \code{method.name},
+#'   the name of the model fit function passed as arguemnt, which can differ
+#'   from the class of \code{fm}.
+#'
+#' @note Called by \code{\link{stat_fit_residuals}()},
+#'   \code{\link{stat_fit_deviations}()} and \code{\link{stat_fit_fitted}()}.
+#'
+#' @keywords internal
+#'
+fit_models_internal <- function(data,
+                                method,
+                                method.name,
+                                method.args,
+                                n.min,
+                                formula,
+                                fit.seed,
+                                orientation,
+                                level = 0.95,
+                                accept.rq = TRUE) {
+  stopifnot(!any(c("formula", "data") %in% names(method.args)))
+
+  if (is.null(data$weight)) {
+    data$weight <- 1
+  }
+
+  if (length(unique(data[[orientation]])) < n.min) {
+    return(list())
+  }
+
+  # If method was specified as a character string, replace with
+  # the corresponding function. Some model fit functions themselves have a
+  # method parameter accepting character strings as argument. We support
+  # these by splitting strings passed as argument at a colon.
+  if (is.character(method)) {
+    # we set default methods for fit functions
+    method <- switch(method,
+                     lm = "lm:qr",
+                     rlm = "rlm:M",
+                     rq = "rq:br",
+                     lqs = "lqs:lts",
+                     gls = "gls:REML",
+                     method)
+    method.name <- method
+    method <- strsplit(x = method, split = ":", fixed = TRUE)[[1]]
+    if (length(method) > 1L) {
+      fun.method <- method[2]
+      method <- method[1]
+    } else {
+      fun.method <- character()
+    }
+    # get functions based on their name
+    method <- switch(method,
+                     lm = stats::lm,
+                     rlm = MASS::rlm,
+                     rq = quantreg::rq,
+                     lqs = MASS::lqs,
+                     gls = nlme::gls,
+                     match.fun(method))
+  } else if (is.function(method)) {
+    fun.method <- character()
+  }
+
+  if (exists("weight", data) && !all(data[["weight"]] == 1)) {
+    stopifnot("A mapping to 'weight' and a named argument 'weights' cannot co-exist" =
+                !"weights" %in% method.args)
+    fun.args <- list(formula = quote(formula),
+                     data = quote(data),
+                     weights = data[["weight"]])
+  } else {
+    fun.args <- list(formula = quote(formula),
+                     data = quote(data))
+  }
+  fun.args <- c(fun.args, method.args)
+
+  if (length(fun.method)) {
+    fun.args[["method"]] <- fun.method
+  }
+
+  if (grepl("^ma$|^sma$", method.name) && !"alpha" %in% names(fun.args)) {
+    fun.args <- c(fun.args, list(alpha = 1 - level))
+  }
+
+  # gls() parameter for formula is called model
+  if (grepl("gls", method.name)) {
+    names(fun.args)[1] <- "model"
+  }
+
+  if (!is.na(fit.seed)) {
+    set.seed(fit.seed)
+  }
+  # quantreg contains code with partial matching of names!
+  # so we silence selectively only these warnings
+  withCallingHandlers({
+    fm <- do.call(method, args = fun.args)
+  }, warning = function(w) {
+    if (startsWith(conditionMessage(w), "partial match of") ||
+        startsWith(conditionMessage(w), "partial argument match of")) {
+      invokeRestart("muffleWarning")
+    }
+  })
+
+  if (!length(fm) || (is.atomic(fm) && is.na(fm))) {
+    return(list())
+  } else if (!(inherits(fm, "lm") || inherits(fm, "lmrob") ||
+               inherits(fm, "gls") || inherits(fm, "lqs") ||
+               inherits(fm, "lts") || inherits(fm, "sma") ||
+               accept.rq && (inherits(fm, "rq") || inherits(fm, "rqs")))) {
+    message("Method \"", method.name,
+            "\" did not return a ",
+            "\"lm\", \"lmrob\", \"lqs\", \"lts\", \"gls\", \"sma\", ",
+            ifelse(accept.rq, "\"rq\", \"rqs\"", ""),
+            "object, possible failure ahead.")
+  }
+  list(fm = fm,
+       method.name = method.name,
+       method.args = fun.args,
+       fit.seed = fit.seed)
+}
