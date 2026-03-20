@@ -298,10 +298,10 @@ deviations_compute_group_fun <- function(data,
     weight.vals <- rep_len(1, nrow(data))
   } else if (inherits(fm, "gls")|| inherits(fm, "lme")) {
     # "weights" have to be computed
-    ordering <- order(order(nlme::getGroups(fm)))
-    rob.weight.vals <-
-      1 / nlme::getCovariate(fm$modelStruct$varStruct)[ordering]
-    # rep_len(NA_real_, nrow(data))
+    # ordering <- order(order(nlme::getGroups(fm)))
+    # rob.weight.vals <-
+    #   1 / nlme::getCovariate(fm$modelStruct$varStruct)[ordering]
+    rob.weight.vals <- rep_len(NA_real_, nrow(data))
     # weights' argument is a "variance model"
     weight.vals <- rep_len(1, nrow(data))
   } else if (inherits(fm, "lm")) { # order matters as e.g. "rlm" inherits "lm"

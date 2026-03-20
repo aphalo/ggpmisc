@@ -101,6 +101,9 @@ test_that("stat_fit_residuals works with imports not attached", {
 
 library(ggpmisc)
 
+
+# stat_fit_deviations -----------------------------------------------------
+
 test_that("stat_fit_deviations works with imports attached", {
   vdiffr::expect_doppelganger("fit_deviations",
                               ggplot(my.data, aes(x, y)) +
@@ -128,6 +131,44 @@ test_that("stat_fit_deviations works with imports attached", {
                                 stat_fit_deviations(formula = x ~ y)
   )
 })
+
+test_that("stat_fit_deviations works with different methods", {
+  vdiffr::expect_doppelganger("fit_deviations_lm",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_line(method = "lm") +
+                                stat_fit_deviations(method = "lm")
+  )
+  vdiffr::expect_doppelganger("fit_deviations_rlm",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_line(method = "rlm") +
+                                stat_fit_deviations(method = "rlm")
+  )
+  vdiffr::expect_doppelganger("fit_deviations_lqs",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_line(method = "lqs") +
+                                stat_fit_deviations(method = "lqs")
+  )
+  vdiffr::expect_doppelganger("fit_deviations_gls",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_line(method = "gls") +
+                                stat_fit_deviations(method = "gls")
+  )
+  vdiffr::expect_doppelganger("fit_deviations_sma",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_quant_line(method = "rq",
+                                                quantiles = 0.5,
+                                                se = FALSE) +
+                                stat_fit_deviations(method = "rq")
+  )
+})
+
+
+# stat_fit_residuals ------------------------------------------------------
 
 test_that("stat_fit_residuals works with imports attached", {
   vdiffr::expect_doppelganger("fit_residuals",
@@ -157,7 +198,38 @@ test_that("stat_fit_residuals works with imports attached", {
   )
 })
 
-test_that("stat_fit_residuals works with imports attached", {
+test_that("stat_fit_residuals works with different methods", {
+  vdiffr::expect_doppelganger("fit_residuals_lm",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_fit_residuals(method = "lm")
+  )
+  vdiffr::expect_doppelganger("fit_residuals_rlm",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_fit_residuals(method = "rlm")
+  )
+  vdiffr::expect_doppelganger("fit_residuals_lqs",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_fit_residuals(method = "lqs")
+  )
+  vdiffr::expect_doppelganger("fit_residuals_gls",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_fit_residuals(method = "gls")
+  )
+  vdiffr::expect_doppelganger("fit_residuals_sma",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_fit_residuals(method = "rq")
+  )
+})
+
+
+# stat_fit_fitted ---------------------------------------------------------
+
+test_that("stat_fit_fitted works with imports attached", {
   vdiffr::expect_doppelganger("fit_fitted",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
@@ -189,3 +261,32 @@ test_that("stat_fit_residuals works with imports attached", {
   )
 })
 
+test_that("stat_fit_fitted works with different methods", {
+  vdiffr::expect_doppelganger("fit_fitted_lm",
+                              ggplot(my.data, aes(x, y)) +
+                                stat_poly_line(method = "lm") +
+                                stat_fit_fitted(method = "lm")
+  )
+  vdiffr::expect_doppelganger("fit_fitted_rlm",
+                              ggplot(my.data, aes(x, y)) +
+                                stat_poly_line(method = "rlm") +
+                                stat_fit_fitted(method = "rlm")
+  )
+  vdiffr::expect_doppelganger("fit_fitted_lqs",
+                              ggplot(my.data, aes(x, y)) +
+                                stat_poly_line(method = "lqs") +
+                                stat_fit_fitted(method = "lqs")
+  )
+  vdiffr::expect_doppelganger("fit_fitted_gls",
+                              ggplot(my.data, aes(x, y)) +
+                                stat_poly_line(method = "gls") +
+                                stat_fit_fitted(method = "gls")
+  )
+  vdiffr::expect_doppelganger("fit_fitted_sma",
+                              ggplot(my.data, aes(x, y)) +
+                                stat_quant_line(method = "rq",
+                                                quantiles = 0.5,
+                                                se = FALSE) +
+                                stat_fit_fitted(method = "rq")
+  )
+})
