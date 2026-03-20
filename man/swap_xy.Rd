@@ -9,7 +9,8 @@ swap_xy(f, backwards = FALSE)
 \arguments{
 \item{f}{formula An R model formula}
 
-\item{backwards}{logical}
+\item{backwards}{logical If \code{NULL} the swap is done irrespective of
+the variable in the lhs.}
 }
 \value{
 A copy of \code{f} with \code{x} and \code{y} swapped by each other
@@ -20,9 +21,14 @@ By default a formula of x on y is converted into a formula of y
 on x, while the reverse swap is done only if \code{backward = TRUE}.
 }
 \details{
+If \code{backwards = TRUE}, a formula with \code{x} in the lhs is
+always, returned. If \code{backwards = FALSE}, a formula with \code{y} in the
+lhs is always, returned. If \code{backwards = NULL} \code{x} and \code{y}
+are always swapped.
+
 This function is meant to be used only as a helper within 'ggplot2'
-statistics. Normally together with geometries supporting orientation when
-we want to automate the change in orientation based on a user-supplied
-formula. Only \code{x} and \code{y} are changed, and in other respects
-the formula is rebuilt copying the environment from \code{f}.
+statistics. Normally together with geometries supporting orientation when we
+want to automate the change in orientation based on a user-supplied formula.
+Only \code{x} and \code{y} are exchanged, and in other respects the formula
+is rebuilt copying the environment from \code{f}.
 }

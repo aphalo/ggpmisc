@@ -16,6 +16,9 @@ guess_orientation(
 
 \item{formula}{model formula based on x and y.}
 
+\item{default.formula}{model formula to be used when argument passed to
+\code{formula} is \code{NULL} or \code{NA}.}
+
 \item{formula.on.x}{logical Flip x and y in formula, used when the x
 and y in data are not flipped in the compute function.}
 }

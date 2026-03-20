@@ -15,16 +15,16 @@ test_that("stat_fit_deviations works with imports not attached", {
                                 geom_point() +
                                 ggpmisc::stat_fit_deviations()
   )
-  # vdiffr::expect_doppelganger("fit_deviations_x_noload",
-  #                             ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
-  #                               geom_point() +
-  #                               ggpmisc::stat_fit_deviations(orientation = "x")
-  # )
-  # vdiffr::expect_doppelganger("fit_deviations_y_noload",
-  #                             ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
-  #                               geom_point() +
-  #                               ggpmisc::stat_fit_deviations(orientation = "y")
-  # )
+  vdiffr::expect_doppelganger("fit_deviations_orx_noload",
+                              ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
+                                geom_point() +
+                                ggpmisc::stat_fit_deviations(orientation = "x")
+  )
+  vdiffr::expect_doppelganger("fit_deviations_ory_noload",
+                              ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
+                                geom_point() +
+                                ggpmisc::stat_fit_deviations(orientation = "y")
+  )
   vdiffr::expect_doppelganger("fit_deviations_x_noload",
                               ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
                                 geom_point() +
@@ -43,16 +43,16 @@ test_that("stat_fit_residuals works with imports not attached", {
                                 geom_point() +
                                 ggpmisc::stat_fit_residuals()
   )
-  # vdiffr::expect_doppelganger("fit_residuals_x_noload",
-  #                             ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
-  #                               geom_point() +
-  #                               ggpmisc::stat_fit_residuals(orientation = "x")
-  # )
-  # vdiffr::expect_doppelganger("fit_residuals_y_noload",
-  #                             ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
-  #                               geom_point() +
-  #                               ggpmisc::stat_fit_residuals(orientation = "y")
-  # )
+  vdiffr::expect_doppelganger("fit_residuals_orx_noload",
+                              ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
+                                geom_point() +
+                                ggpmisc::stat_fit_residuals(orientation = "x")
+  )
+  vdiffr::expect_doppelganger("fit_residuals_ory_noload",
+                              ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
+                                geom_point() +
+                                ggpmisc::stat_fit_residuals(orientation = "y")
+  )
   vdiffr::expect_doppelganger("fit_residuals_x_noload",
                               ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
                                 geom_point() +
@@ -71,16 +71,18 @@ test_that("stat_fit_residuals works with imports not attached", {
                                 geom_point() +
                                 ggpmisc::stat_fit_fitted(geom = "line")
   )
-  # vdiffr::expect_doppelganger("fit_fitted_x_noload",
-  #                             ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
-  #                               geom_point() +
-  #                               ggpmisc::stat_fit_fitted(orientation = "x")
-  # )
-  # vdiffr::expect_doppelganger("fit_fitted_y_noload",
-  #                             ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
-  #                               geom_point() +
-  #                               ggpmisc::stat_fit_fitted(orientation = "y")
-  # )
+  vdiffr::expect_doppelganger("fit_fitted_orx_noload",
+                              ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
+                                geom_point() +
+                                ggpmisc::stat_fit_fitted(orientation = "x",
+                                                         geom = "line")
+  )
+  vdiffr::expect_doppelganger("fit_fitted_ory_noload",
+                              ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
+                                geom_point() +
+                                ggpmisc::stat_fit_fitted(orientation = "y",
+                                                         geom = "line")
+  )
   vdiffr::expect_doppelganger("fit_fitted_x_noload",
                               ggplot2::ggplot(my.data, ggplot2::aes(x, y)) +
                                 geom_point() +
@@ -105,16 +107,16 @@ test_that("stat_fit_deviations works with imports attached", {
                                 geom_point() +
                                 stat_fit_deviations()
   )
-  # vdiffr::expect_doppelganger("fit_deviations_x",
-  #                             ggplot(my.data, aes(x, y)) +
-  #                               geom_point() +
-  #                               stat_fit_deviations(orientation = "x")
-  # )
-  # vdiffr::expect_doppelganger("fit_deviations_y",
-  #                             ggplot(my.data, aes(x, y)) +
-  #                               geom_point() +
-  #                               stat_fit_deviations(orientation = "y")
-  # )
+  vdiffr::expect_doppelganger("fit_deviations_orx",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_fit_deviations(orientation = "x")
+  )
+  vdiffr::expect_doppelganger("fit_deviations_ory",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_fit_deviations(orientation = "y")
+  )
   vdiffr::expect_doppelganger("fit_deviations_formula_x",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
@@ -133,16 +135,16 @@ test_that("stat_fit_residuals works with imports attached", {
                                 geom_point() +
                                 stat_fit_residuals()
   )
-  # vdiffr::expect_doppelganger("fit_residuals_x",
-  #                             ggplot(my.data, aes(x, y)) +
-  #                               geom_point() +
-  #                               stat_fit_residuals(orientation = "x")
-  # )
-  # vdiffr::expect_doppelganger("fit_residuals_y",
-  #                             ggplot(my.data, aes(x, y)) +
-  #                               geom_point() +
-  #                               stat_fit_residuals(orientation = "y")
-  # )
+  vdiffr::expect_doppelganger("fit_residuals_orx",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_fit_residuals(orientation = "x")
+  )
+  vdiffr::expect_doppelganger("fit_residuals_ory",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_fit_residuals(orientation = "y")
+  )
   vdiffr::expect_doppelganger("fit_residuals_formula_x",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
@@ -161,16 +163,18 @@ test_that("stat_fit_residuals works with imports attached", {
                                 geom_point() +
                                 stat_fit_fitted(geom = "line")
   )
-  # vdiffr::expect_doppelganger("fit_fitted_x",
-  #                             ggplot(my.data, aes(x, y)) +
-  #                               geom_point() +
-  #                               stat_fit_fitted(orientation = "x")
-  # )
-  # vdiffr::expect_doppelganger("fit_fitted_y",
-  #                             ggplot(my.data, aes(x, y)) +
-  #                               geom_point() +
-  #                               stat_fit_fitted(orientation = "y")
-  # )
+  vdiffr::expect_doppelganger("fit_fitted_orx",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_fit_fitted(orientation = "x",
+                                                geom = "line")
+  )
+  vdiffr::expect_doppelganger("fit_fitted_ory",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_fit_fitted(orientation = "y",
+                                                geom = "line")
+  )
   vdiffr::expect_doppelganger("fit_fitted_x",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +

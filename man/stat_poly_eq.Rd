@@ -9,6 +9,7 @@ stat_poly_eq(
   data = NULL,
   geom = "text_npc",
   position = "identity",
+  orientation = NA,
   ...,
   formula = NULL,
   method = "lm",
@@ -33,7 +34,6 @@ stat_poly_eq(
   vstep = NULL,
   output.type = NULL,
   na.rm = FALSE,
-  orientation = NA,
   parse = NULL,
   show.legend = FALSE,
   inherit.aes = TRUE
@@ -51,6 +51,10 @@ plot defaults.}
 
 \item{position}{The position adjustment to use for overlapping points on this
 layer.}
+
+\item{orientation}{character Either "x" or "y" controlling the default for
+\code{formula}. The letter indicates the aesthetic considered the
+explanatory variable in the model fit.}
 
 \item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This
 can include aesthetics whose values you want to set, not map. See
@@ -119,10 +123,6 @@ used between labels for different groups.}
 
 \item{na.rm}{a logical indicating whether NA values should be stripped before
 the computation proceeds.}
-
-\item{orientation}{character Either "x" or "y" controlling the default for
-\code{formula}. The letter indicates the aesthetic considered the
-explanatory variable in the model fit.}
 
 \item{parse}{logical Passed to the geom. If \code{TRUE}, the labels will be
 parsed into expressions and displayed as described in \code{?plotmath}.
