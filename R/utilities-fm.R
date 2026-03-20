@@ -361,3 +361,29 @@ extract_weights <- function(fm, n.row) {
        weight.vals = weight.vals)
 }
 
+
+# extract_fitted ----------------------------------------------------------
+
+extract_fitted <- function(fm, n.row) {
+  # As users may use model fit functions that we have not tested
+  # we try hard to extract the components from the model fit object
+  if (inherits(fm, "sma")) {
+    #    fitted.vals <- stats::fitted(fm, type = "fitted", centred = FALSE)
+    message("Fitted values could not be retrieved for \"sma\" object!")
+    fitted.vals <- rep(NA_real_, n.row)
+  } else {
+    try(fitted.vals <- stats::fitted(fm))
+    if (inherits(fitted.vals, "try-error") ||
+        length(fitted.vals) != n.row) {
+      if (exists("fitted.values", fm) &&  # defensive
+          length(fm[["fitted.values"]]) == n.row) {
+        fitted.vals <- fm[["fitted.values"]]
+      } else {
+        message("Fitted values could not be retrieved for \"",
+                class(fm)[1], "\" object!")
+        fitted.vals <- rep(NA_real_, n.row)
+      }
+    }
+  }
+  fitted.vals
+}

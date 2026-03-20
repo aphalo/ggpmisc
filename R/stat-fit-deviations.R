@@ -267,27 +267,8 @@ deviations_compute_group_fun <- function(data,
   method.name <- temp.ls[["method.name"]]
   method.args <- temp.ls[["method.args"]]
 
-  # As users may use model fit functions that we have not tested
-  # we try hard to extract the components from the model fit object
-  if (inherits(fm, "sma")) {
-#    fitted.vals <- stats::fitted(fm, type = "fitted", centred = FALSE)
-    fitted.vals <- rep(NA_real_, nrow(data))
-    message("Fitted values could not be retrieved for \"sma\" object!")
-  } else {
-    try(fitted.vals <- stats::fitted(fm))
-    if (inherits(fitted.vals, "try-error") ||
-        length(fitted.vals) != nrow(data)) {
-      if (exists("fitted.values", fm) &&  # defensive
-          length(fm[["fitted.values"]]) == nrow(data)) {
-        fitted.vals <- fm[["fitted.values"]]
-      } else {
-        message("Fitted values could not be retrieved for \"",
-                class(fm)[1], "\" object!")
-        fitted.vals <- rep(NA_real_, nrow(data))
-      }
-    }
-  }
 
+  fitted.vals <- extract_fitted(fm, n.row = nrow(data))
   weights.ls <- extract_weights(fm, n.row = nrow(data))
 
   if (orientation == "y") {
@@ -412,26 +393,8 @@ fitted_compute_group_fun <- function(data,
   method.name <- temp.ls[["method.name"]]
   method.args <- temp.ls[["method.args"]]
 
-  # As users may use model fit functions that we have not tested
-  # we try hard to extract the components from the model fit object
-  if (inherits(fm, "sma")) {
-#    fitted.vals <- stats::fitted(fm, type = "fitted", centred = FALSE)
-    message("Fitted values could not be retrieved for \"sma\" object!")
-    fitted.vals <- rep(NA_real_, nrow(data))
-  } else {
-    try(fitted.vals <- stats::fitted(fm))
-    if (inherits(fitted.vals, "try-error") ||
-        length(fitted.vals) != nrow(data)) {
-      if (exists("fitted.values", fm) &&  # defensive
-          length(fm[["fitted.values"]]) == nrow(data)) {
-        fitted.vals <- fm[["fitted.values"]]
-      } else {
-        message("Fitted values could not be retrieved for \"",
-                class(fm)[1], "\" object!")
-        fitted.vals <- rep(NA_real_, nrow(data))
-      }
-    }
-  }
+  fitted.vals <- extract_fitted(fm, n.row = nrow(data))
+
   if (orientation == "y") {
     data.frame(x = fitted.vals,
                y = data$y)
