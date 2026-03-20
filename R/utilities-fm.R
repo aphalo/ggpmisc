@@ -4,20 +4,28 @@
 #' on x, while the reverse swap is done only if \code{backward = TRUE}.
 #'
 #' @param f formula An R model formula
-#' @param backwards logical
+#' @param backwards logical If \code{NULL} the swap is done irrespective of
+#'   the variable in the lhs.
 #'
-#' @details
+#' @details If \code{backwards = TRUE}, a formula with \code{x} in the lhs is
+#' always, returned. If \code{backwards = FALSE}, a formula with \code{y} in the
+#' lhs is always, returned. If \code{backwards = NULL} \code{x} and \code{y}
+#' are always swapped.
+#'
 #' This function is meant to be used only as a helper within 'ggplot2'
-#' statistics. Normally together with geometries supporting orientation when
-#' we want to automate the change in orientation based on a user-supplied
-#' formula. Only \code{x} and \code{y} are changed, and in other respects
-#' the formula is rebuilt copying the environment from \code{f}.
+#' statistics. Normally together with geometries supporting orientation when we
+#' want to automate the change in orientation based on a user-supplied formula.
+#' Only \code{x} and \code{y} are exchanged, and in other respects the formula
+#' is rebuilt copying the environment from \code{f}.
 #'
 #' @return A copy of \code{f} with \code{x} and \code{y} swapped by each other
 #'   in the lhs and rhs.
 #'
 swap_xy <- function(f, backwards = FALSE) {
   f.chr <- as.character(f)
+  if (is.null(backwards)) {
+    backwards <- grepl("y", f.chr[2])
+  }
   if (backwards) {
     # lhs
     f.chr[2] <- gsub("\\by\\b", "x", f.chr[2])
@@ -39,6 +47,8 @@ swap_xy <- function(f, backwards = FALSE) {
 #'
 #' @param orientation character \code{"x"} or \code{"y"}.
 #' @param formula model formula based on x and y.
+#' @param default.formula model formula to be used when argument passed to
+#'   \code{formula} is \code{NULL} or \code{NA}.
 #' @param formula.on.x logical Flip x and y in formula, used when the x
 #'   and y in data are not flipped in the compute function.
 #'
@@ -74,9 +84,7 @@ guess_orientation <- function(orientation = NULL,
           orientation <- "y"
         }
       }
-      if (!grepl("y", as.character(formula)[2])){
-        formula <- swap_xy(formula)
-      }
+      formula <- swap_xy(formula, backwards = FALSE)
     }
   } else {
     # if we do not flip x and y in data, the formula should match orientation
@@ -84,9 +92,9 @@ guess_orientation <- function(orientation = NULL,
     # we guess formula from orientation
     if (is.null(formula)) {
       if (is.null(orientation) || is.na(orientation) || orientation == "x") {
-        formula <- default.formula
+        formula <- swap_xy(default.formula, backwards = FALSE)
       } else if (orientation == "y") {
-        formula <- swap_xy(default.formula)
+        formula <- swap_xy(default.formula, backwards = TRUE)
       }
     }
     # we guess orientation from formula

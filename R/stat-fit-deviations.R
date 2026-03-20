@@ -211,11 +211,16 @@ stat_fit_deviations <- function(mapping = NULL,
                             default.formula = y ~ x,
                             formula.on.x = FALSE)
   orientation <- temp[["orientation"]]
-  formula <-  temp[["formula"]]
+  formula <- temp[["formula"]]
 
   ggplot2::layer(
-    stat = StatFitDeviations, data = data, mapping = mapping, geom = geom,
-    position = position, show.legend = show.legend, inherit.aes = inherit.aes,
+    stat = StatFitDeviations,
+    data = data,
+    mapping = mapping,
+    geom = geom,
+    position = position,
+    show.legend = show.legend,
+    inherit.aes = inherit.aes,
     params =
       rlang::list2(method = method,
                    method.name = method.name,
@@ -260,6 +265,7 @@ deviations_compute_group_fun <- function(data,
   }
   fm <- temp.ls[["fm"]]
   method.name <- temp.ls[["method.name"]]
+  method.args <- temp.ls[["method.args"]]
 
   # As users may use model fit functions that we have not tested
   # we try hard to extract the components from the model fit object
@@ -438,6 +444,7 @@ fitted_compute_group_fun <- function(data,
   }
   fm <- temp.ls[["fm"]]
   method.name <- temp.ls[["method.name"]]
+  method.args <- temp.ls[["method.args"]]
 
   # As users may use model fit functions that we have not tested
   # we try hard to extract the components from the model fit object

@@ -217,8 +217,13 @@ stat_fit_residuals <- function(mapping = NULL,
   formula <- temp[["formula"]]
 
   ggplot2::layer(
-    stat = StatFitResiduals, data = data, mapping = mapping, geom = geom,
-    position = position, show.legend = show.legend, inherit.aes = inherit.aes,
+    stat = StatFitResiduals,
+    data = data,
+    mapping = mapping,
+    geom = geom,
+    position = position,
+    show.legend = show.legend,
+    inherit.aes = inherit.aes,
     params =
       rlang::list2(method = method,
                    method.name = method.name,
