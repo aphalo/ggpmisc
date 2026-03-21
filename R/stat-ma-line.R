@@ -58,16 +58,21 @@
 #'   it will also include additional values related to the model fit.
 #'
 #' @section Computed variables: `stat_ma_line()` provides the following
-#'   variables, some of which depend on the orientation: \describe{ \item{y *or*
-#'   x}{predicted value} \item{ymin *or* xmin}{lower pointwise confidence
-#'   interval around the mean} \item{ymax *or* xmax}{upper pointwise confidence
-#'   interval around the mean} \item{se}{standard error} }
+#'   variables, some of which depend on the orientation:
+#'
+#'   \describe{ \item{y \strong{or} x}{predicted value}
+#'   \item{ymin \strong{or} xmin}{lower pointwise confidence interval around the mean}
+#'   \item{ymax \strong{or} xmax}{upper pointwise confidence interval around the mean}
+#'   \item{se}{standard error}
+#'   }
 #'
 #'   If \code{fm.values = TRUE} is passed then columns based on the summary of
 #'   the model fit are added, with the same value in each row within a group.
 #'   This is wasteful and disabled by default, but provides a simple and robust
 #'   approach to achieve effects like colouring or hiding of the model fit line
 #'   based on P-values, r-squared or the number of observations.
+#'
+#' @inheritSection stat_poly_line Model fit methods supported
 #'
 #' @note \code{stat_ma_line} understands \code{x} and \code{y},
 #'   to be referenced in the \code{formula}. Both must be mapped to

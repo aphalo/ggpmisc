@@ -150,16 +150,95 @@ This statistic fits major axis (\code{"MA"}) and other model II
 }
 \section{Computed variables}{
  `stat_ma_line()` provides the following
-  variables, some of which depend on the orientation: \describe{ \item{y *or*
-  x}{predicted value} \item{ymin *or* xmin}{lower pointwise confidence
-  interval around the mean} \item{ymax *or* xmax}{upper pointwise confidence
-  interval around the mean} \item{se}{standard error} }
+  variables, some of which depend on the orientation:
+
+  \describe{ \item{y \strong{or} x}{predicted value}
+  \item{ymin \strong{or} xmin}{lower pointwise confidence interval around the mean}
+  \item{ymax \strong{or} xmax}{upper pointwise confidence interval around the mean}
+  \item{se}{standard error}
+  }
 
   If \code{fm.values = TRUE} is passed then columns based on the summary of
   the model fit are added, with the same value in each row within a group.
   This is wasteful and disabled by default, but provides a simple and robust
   approach to achieve effects like colouring or hiding of the model fit line
   based on P-values, r-squared or the number of observations.
+}
+
+\section{Model fit methods supported}{
+ Several model fit functions are
+  supported explicitly (see tables), and some of their differences smoothed
+  out. Compatibility is checked late, based on the class of the returned
+  fitted model object. This makes it possible to use wrapper functions that
+  do model selection or other adjustments to the fit procedure on a per panel
+  or per group basis. Moreover, if the value returned as model fit object is
+  \code{NULL} no layer is added to the plot on a per group within panel
+  basis.
+
+  In the case of fitted model objects of classes not explicitly supported an
+  attempt is made to find the usual accessors and/or fitted object members,
+  and if found, either complete or partial support is frequently achieved.
+  In this case a message is issued encouraging users to check the valisdity
+  of the values extracted.
+
+  The argument to parameter \code{method} can be either the name of a
+  function object, possibly using double colon notation, or a character
+  string matching the function name. This approach makes it possible to
+  support model fit functions that are not dependencies of 'ggpmisc'. Either
+  by attaching the package where the function is defined and passing it by
+  name or as string, or using double colon notation when passing the name of
+  the function. User-defined functions can be passed as argument to parameter
+  \code{method} as long as they have parameters \code{formula}, \code{data}
+  \code{subset} and possibly \code{weights}. Additional arguments can be
+  passed to any method as a named list as an argument to parameter
+  \code{method.args}. As in \code{\link[ggplot2:geom_smooth]{stat_smooth}()}
+  prior \code{weights} are passed to the model fit functions' \code{weights}
+  (plural!) parameter by mapping a numeric variable to plot aesthetic
+  \code{weight} (singular!).
+
+  The table below lists natively supported model fit functions, with the
+  caveat that only some 'broom' methods' specializations have been actually
+  tested with statistics from 'ggpmisc'. In addition, the statistics based
+  on 'broom' methods require the user to tailor their behaviour by passing
+  additional arguments in the call.
+
+  \tabular{ll}{
+  \strong{Statistic} \tab \strong{Supported model fit methods} \cr
+  \code{\link{stat_poly_line}()} \tab "lm", "rlm", "lqs", "sma", "ma", "gls", \emph{others with methods} \code{\link[stats]{predict}()} or \code{\link[stats]{fitted}()} \cr
+  \code{\link{stat_poly_eq}()}   \tab "lm", "rlm", "lqs", "sma", "ma", "gls",  \emph{others with needed accesors} \cr
+  \code{\link{stat_quant_line}()} \tab "rq", "rqss" \cr
+  \code{\link{stat_quant_band}()} \tab "rq", "rqss" \cr
+  \code{\link{stat_quant_eq}()} \tab "rq", "rqss" \cr
+  \code{\link{stat_ma_line}()} \tab "SMA", "MA", "RMA", "OLS" \cr
+  \code{\link{stat_ma_eq}()} \tab "SMA", "MA", "RMA", "OLS" \cr
+  \code{\link{stat_fit_residuals}()} \tab "lm", "rlm", "lqs", "sma", "ma", "gls", "rq", "rqss" \emph{others with method} \code{\link[stats]{residuals}()} \cr
+  \code{\link{stat_fit_fitted}()} \tab "lm", "rlm", "lqs", "gls", "rq", "rqss" \emph{others with method} \code{\link[stats]{fitted}()} \cr
+  \code{\link{stat_fit_deviations}()} \tab "lm", "rlm", "lqs", "gls", "rq", "rqss" \emph{others with methods} \code{\link[stats]{fitted}()} and \code{\link[stats]{weights}()} \cr
+  \code{\link{stat_fit_augment}()} \tab \emph{any with 'broom' method} \code{\link[broom]{augment}()} \cr
+  \code{\link{stat_fit_glance}()} \tab \emph{any with 'broom' method} \code{\link[broom]{glance}()} \cr
+  \code{\link{stat_fit_tidy}()} \tab \emph{any with 'broom' method} \code{\link[broom]{tidy}()} \cr
+  \code{\link{stat_fit_tb}()} \tab \emph{any with 'broom' method} \code{\link[broom]{tidy}()} \cr
+  }
+
+  The table below lists the names for fit methods coded in the statistics
+  as given in the table above. The single colon notation is based on parsing
+  the name and is available whenever passing the name of the fit method as a
+  character string. In a string such as "head:tail" the "head" gives the name
+  of the model fit function and the "tail" gives the argument to pass it's
+  \code{method} parameter. In some cases the default \code{formula = y ~ x}
+  needs to be overridden with an explicit argument.
+
+  \tabular{llll}{
+  \strong{Predefined method names} \tab \strong{Model fit methods} \tab \strong{R package} \tab \strong{Object class} \cr
+  "lm", "lm:qr" \tab \code{\link[stats]{lm}()} \tab 'stats' \tab "lm" \cr
+  "rlm", "rlm:M", "rlm:MM" \tab \code{\link[MASS]{rlm}()} \tab 'MASS' \tab "rlm" ("lm") \cr
+  "lqs", "lqs:lts", "lqs:lms" \tab \code{\link[MASS]{lqs}()} \tab 'MASS' \tab "lqs" \cr
+  "ma", "sma", "sma:SMA", "sma:MA", "sma:OLS" \tab \code{\link[smatr]{sma}()} \tab 'smatr' \tab "ma" or "sma" \cr
+  "gls", "gls:REML", "gls:ML" \tab \code{\link[nlme]{gls}()} \tab 'nlme' \tab "gls" \cr
+  "rq", "rq:sfn", "rq:sfnc", "rq:lasso" \tab \code{\link[quantreg]{rq}()} \tab 'quantreg' \tab "rq" \cr
+  "rqss", "rqss:sfn", "rqss:sfnc", "rqss:lasso" \tab \code{\link[quantreg]{rqss}()} \tab 'quantreg' \tab "rqss" \cr
+  "SMA", "MA", "RMA", "OLS" \tab \code{\link[lmodel2]{lmodel2}()} \tab 'lmodel2' \tab \cr
+  }
 }
 
 \examples{

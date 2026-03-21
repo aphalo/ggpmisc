@@ -123,25 +123,17 @@
 #'   is rendered, i.e., displayed or printed. Set \code{options(OutDec = ",")}
 #'   for languages like Spanish or French.
 #'
-#' @section User-defined methods: User-defined functions can be passed as
-#'   argument to \code{method}. The requirements are 1) that the signature is
-#'   similar to that of function \code{lm()} (with parameters \code{formula},
-#'   \code{data}, \code{weights} and any other arguments passed by name through
-#'   \code{method.args}) and 2) that the value returned by the function is an
-#'   object of a class such as \code{"lm"} for which \code{coefs()} and similar
-#'   query methods are available or for empty plot layer output, an atomic
-#'   \code{NA} value.
+#'   When possible, i.e., nearly allways, the \code{formula} used to build the
+#'   equation label is extracted from the returned fitted model object. Most
+#'   fitted model objects follow the example of \code{lm()} and include the
+#'   model that has been formula fitted. Thus, this model formula can safely
+#'   differ from the argument passed to parameter \code{formula} in the call to
+#'   \code{stat_poly_eq()}. Consequently, user-defined methods can implement any
+#'   or all of \code{method} selection, model \code{formula} selection,
+#'   dynamically adjusted \code{method.args} and conditional skipping of
+#'   labelling on a by group basis.
 #'
-#'   When possible, i.e., nearly allways, the \code{formula} used to build
-#'   the equation label is extracted from the returned fitted model object.
-#'   Most fitted model objects returned follow the example of \code{lm()} and
-#'   include the model formula fitted. Thus, this model formula can safely
-#'   differ from the argument passed to parameter \code{formula} in the call
-#'   to \code{stat_poly_eq()}.
-#'   Thus, user-defined methods can implement any or all of \code{method}
-#'   selection, model \code{formula} selection, dynamically adjusted
-#'   \code{method.args} and conditional skipping of labelling on a by group
-#'   basis.
+#' @inheritSection stat_poly_line Model fit methods supported
 #'
 #' @inheritSection check_output_type Output types
 #'
@@ -173,11 +165,10 @@
 #'   is less than \code{n.min} a data frame with no rows or columns is returned,
 #'   and rendered as an empty/invisible plot layer.
 #'
-#' @section Computed variables:
-#' If the model fit function used does not returns \code{NA} or no value,
-#' the label is set to \code{character(0L)}. The position of the columns in
-#' the data frame can change between package versions, extract values always
-#' by name.
+#' @section Computed variables: If the model fit function used does not returns
+#'   \code{NA} or no value, the label is set to \code{character(0L)}. The
+#'   position of the columns in the data frame can change between package
+#'   versions, extract values always by name.
 #'
 #' For all \code{output.type} arguments the following values are returned.
 #' \describe{
@@ -231,20 +222,9 @@
 #'   them by name through parameter \code{method.args}. User-defined
 #'   model-fitting functions are also supported.
 #'
-#'   Please, see the articles
-#'   \href{https://docs.r4photobiology.info/ggpmisc/}{online documentation}
+#'   Please, see the articles in
+#'   \href{https://docs.r4photobiology.info/ggpmisc/}{online-only documentation}
 #'   for additional use examples and guidance.
-#'
-#'   For quantile regression \code{\link{stat_quant_eq}()} can be used
-#'   instead of \code{stat_poly_eq()} while for model II or major axis
-#'   regression with package 'lmodel2' \code{\link{stat_ma_eq}()} should be
-#'   used. For methods not supported by these three statistics, such as
-#'   non-linear models, statistics \code{\link{stat_fit_glance}()} and
-#'   \code{\link{stat_fit_tidy}()} can be used but require the user to create
-#'   character strings from numeric values and map them to aesthetic
-#'   \code{label}.
-#'
-#' @family ggplot statistics for linear and polynomial regression
 #'
 #' @examples
 #' # generate artificial data

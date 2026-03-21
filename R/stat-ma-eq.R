@@ -145,17 +145,12 @@
 #' To explore the computed values returned for a given input we suggest the use
 #' of \code{\link[gginnards]{geom_debug}} as shown in the last examples below.
 #'
+#' @inheritSection stat_poly_line Model fit methods supported
+#'
 #' @seealso The major axis regression model is fitted with function
 #'   \code{\link[lmodel2]{lmodel2}}, please consult its documentation. Statistic
 #'   \code{stat_ma_eq()} can return different ready formatted labels depending
-#'   on the argument passed to \code{output.type}. If ordinary least squares
-#'   polynomial regression is desired, then \code{\link{stat_poly_eq}}. If
-#'   quantile-fitted polynomial regression is desired,
-#'   \code{\link{stat_quant_eq}} should be used. For other types of models such
-#'   as non-linear models, statistics \code{\link{stat_fit_glance}} and
-#'   \code{\link{stat_fit_tidy}} should be used and the code for construction of
-#'   character strings from numeric values and their mapping to aesthetic
-#'   \code{label} explicitly supplied in the call.
+#'   on the argument passed to \code{output.type}.
 #'
 #' @family ggplot statistics for major axis regression
 #'
@@ -327,10 +322,10 @@ stat_ma_eq <- function(mapping = NULL,
     method.name <- "missing"
   }
 
-  if (grepl("^lm$|^lm[:]|^rlm$|^rlm[:]|^gls$|^gls[:]", method.name)) {
-    stop("Methods 'lm', 'rlm' and 'gls' not supported, please use 'stat_poly_eq()'.")
+  if (grepl("^lm$|^lm[:]|^rlm$|^rlm[:]|^gls$|^gls[:]|^lqs$|^lqs[:]", method.name)) {
+    stop("Methods \"l\", \"rlm\", \"lq\" and \"gls\" not supported, please use 'stat_poly_eq()'.")
   } else if (grepl("^rq$|^rq[:]", method.name)) {
-      stop("Method 'rq' not supported, please use 'stat_quant_eq()'.")
+      stop("Method \"rq\" not supported, please use 'stat_quant_eq()'.")
   }
 
   temp <- guess_orientation(orientation = orientation,

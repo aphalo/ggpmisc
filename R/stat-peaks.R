@@ -53,23 +53,6 @@
 #'   \item{y.label}{y-value at the peak (or valley) formatted as character}
 #' }
 #'
-#' @note These stats use \code{geom_point} by default as
-#'   it is the geom most likely to work well in almost any situation.
-#'   The default aesthetics set by these stats allow their direct use with
-#'   \code{geom_text}, \code{geom_label}, \code{geom_line}, \code{geom_rug},
-#'   \code{geom_hline} and \code{geom_vline}.
-#'
-#' @section Required aesthetics: Required by the statistic and need to be set
-#'   with \code{aes()}. Date time scales are recognized and labels
-#'   formatted accordingly.
-#'
-#' \describe{
-#'   \item{x}{numeric or date time, independent variable}
-#'   \item{y}{numeric, response variable where peaks or valleys are searched}
-#' }
-#'
-#' @seealso \code{\link{find_peaks}}, which is used internally.
-#'
 #' @inherit find_peaks details
 #'
 #' @note \code{stat_peaks} and \code{stat_valleys} work nicely together with
@@ -82,6 +65,12 @@
 #'   with a suitable \code{label.fmt} labels suitable for parsing by the geoms
 #'   (e.g. into expressions containing Greek letters or super or subscripts) can
 #'   be also easily obtained.
+#'
+#'   These stats use \code{geom_point} by default as
+#'   it is the geom most likely to work well in almost any situation.
+#'   The default aesthetics set by these stats allow their direct use with
+#'   \code{geom_text}, \code{geom_label}, \code{geom_line}, \code{geom_rug},
+#'   \code{geom_hline} and \code{geom_vline}.
 #'
 #' @seealso \code{\link{find_peaks}}, for the functions used to located the
 #'   peaks and valleys.

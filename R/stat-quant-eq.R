@@ -41,6 +41,8 @@
 #'   Default is \code{TRUE} if \code{output.type = "expression"} and
 #'   \code{FALSE} otherwise.
 #'
+#' @aesthetics StatQuantEq
+#'
 #' @note For backward compatibility a logical is accepted as argument for
 #'   \code{eq.with.lhs}. If \code{TRUE}, the default is used, either
 #'   \code{"x"} or \code{"y"}, depending on the argument passed to \code{formula}.
@@ -122,20 +124,7 @@
 #'
 #' @inheritSection check_output_type Output types
 #'
-#' @section Aesthetics: \code{stat_quant_eq()} understands \code{x} and \code{y},
-#'   to be referenced in the \code{formula} and \code{weight} passed as argument
-#'   to parameter \code{weights} of \code{rq()}. All three must be mapped to
-#'   \code{numeric} variables. In addition, the aesthetics understood by the
-#'   geom used (\code{"text"} by default) are understood and grouping respected.
-#'
-#'   \emph{If the model formula includes a transformation of \code{x}, a
-#'   matching argument should be passed to parameter \code{eq.x.rhs}
-#'   as its default value \code{"x"} will not reflect the applied
-#'   transformation. In plots, transformation should never be applied to the
-#'   left hand side of the model formula, but instead in the mapping of the
-#'   variable within \code{aes}, as otherwise plotted observations and fitted
-#'   curve will not match. In this case it may be necessary to also pass
-#'   a matching argument to parameter \code{eq.with.lhs}.}
+#' @inheritSection stat_poly_line Model fit methods supported
 #'
 #' @return A data frame, with one row per quantile and columns as described
 #'   under \strong{Computed variables}. In cases when the number of observations
@@ -190,8 +179,6 @@
 #' @note Support for the \code{angle} aesthetic is not automatic and requires
 #'   that the user passes as argument suitable numeric values to override the
 #'   defaults for label positions.
-#'
-#' @family ggplot statistics for quantile regression
 #'
 #' @import quantreg
 #'

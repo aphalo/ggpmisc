@@ -119,15 +119,20 @@ In the case of \code{method = "rq"} quantiles are fixed at \code{tau =
 }
 \section{Computed variables}{
  Data frame with same \code{nrow} as \code{data}
-  as subset for each group containing five numeric variables. \describe{
-  \item{x}{x coordinates of observations} \item{x.fitted}{x coordinates of
-  fitted values} \item{y}{y coordinates of observations} \item{y.fitted}{y
-  coordinates of fitted values}, \item{weights}{the weights
-  passed as input to \code{lm()}, \code{rlm()}, or \code{lmrob()},
+  as subset for each group containing five numeric variables.
+
+  \describe{
+  \item{x}{x coordinates of observations}
+  \item{x.fitted}{x coordinates of fitted values}
+  \item{y}{y coordinates of observations}
+  \item{y.fitted}{y coordinates of fitted values}
+  \item{weights}{the weights passed as input to \code{lm()}, \code{rlm()}, or \code{lmrob()},
   using aesthetic weight. More generally the value returned by
-  \code{weights()} }, \item{robustness.weights}{the "weights"
+  \code{weights()}}
+  \item{robustness.weights}{the "weights"
   of the applied minimization criterion relative to those of OLS in
-  \code{rlm()}, or \code{lmrob()}} }
+  \code{rlm()}, or \code{lmrob()}}
+  }
 
   To explore the values returned by this statistic we suggest the use of
   \code{\link[gginnards]{geom_debug}}. An example is shown below, where one

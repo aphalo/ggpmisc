@@ -57,6 +57,8 @@
 #' @param type character Passed to \code{quantreg::predict.rq()}.
 #' @param interval character Passed to \code{quantreg::predict.rq()}.
 #'
+#' @aesthetics StatQuantLine
+#'
 #' @return The value returned by the statistic is a data frame, that will have
 #'   \code{n} rows of predicted values and and their confidence limits
 #'   \emph{for each quantile}, with quantiles creating groups, or expanding
@@ -67,29 +69,22 @@
 #'   for each quantile. Is \code{se = TRUE}, a confidence band is computed and
 #'   values for it returned in \code{ymax} and \code{ymin}.
 #'
-#' @return The value returned by the statistic is a data frame, that with
-#'   \code{n} times the number of quantiles rows of predicted values and their
-#'   confidence limits. Optionally it also includes additional values related
-#'   to the model fit.
+#' @inheritSection stat_poly_line Model fit methods supported
 #'
 #' @section Computed variables: `stat_quant_line()` provides the following
-#'   variables, some of which depend on the orientation: \describe{ \item{y *or*
-#'   x}{predicted value} \item{ymin *or* xmin}{lower confidence
-#'   interval around the mean} \item{ymax *or* xmax}{upper confidence
-#'   interval around the mean}}
+#'   variables, some of which depend on the orientation:
+#'
+#'   \describe{
+#'   \item{y \strong{or} x}{predicted value}
+#'   \item{ymin \strong{or} xmin}{lower confidence limit around the fitted line}
+#'   \item{ymax \strong{or} xmax}{upper confidence limit around the fitted line}
+#'   }
 #'
 #'   If \code{fm.values = TRUE} is passed then one column with the number of
 #'   observations \code{n} used for each fit is also included, with the same
 #'   value in each row within a group. This is wasteful and disabled by default,
 #'   but provides a simple and robust approach to achieve effects like colouring
 #'   or hiding of the model fit line based on the number of observations.
-#'
-#' @section Aesthetics: \code{stat_quant_line} understands \code{x} and \code{y},
-#'   to be referenced in the \code{formula} and \code{weight} passed as argument
-#'   to parameter \code{weights}. All three must be mapped to \code{numeric}
-#'   variables. In addition, the aesthetics understood by the geom
-#'   (\code{"geom_smooth"} is the default) are understood and grouping
-#'   respected.
 #'
 #' @references
 #' Cardoso, G. C. (2019) Double quantile regression accurately assesses
@@ -98,8 +93,6 @@
 #'
 #' @seealso \code{\link[quantreg]{rq}}, \code{\link[quantreg]{rqss}} and
 #'   \code{\link[quantreg]{qss}}.
-#'
-#' @family ggplot statistics for quantile regression
 #'
 #' @export
 #'

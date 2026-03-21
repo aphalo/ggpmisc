@@ -32,13 +32,15 @@ plotmath expressions.
 -   Track changes in 'gginnards' (>= 0.2.0) in examples and docs.
 -   Breaking: Change default in model fitting _stats_ supporting method `"lqs"`
 from `"lqs:lqs"` into `"lqs:lts"` to match the default of `MASS::lqs()`.
+-   Support `smatr::ma()` and `smatr::sma()` in `stat_fit_residuals()`.
 -   A new on-line-only article gives examples of the use of 'ggpmisc' together
 with R package 'xdvir' and another one compares plot annotations created with
 the different output types and matching geometries.
 -   Update documentation for all statistics to include an automatically 
 generated _Aesthetics_ section.
--   Model fitting, argument-decoding and label formatting and assembly code
-refactored to avoid duplication and ensure consistency.
+-   Model fitting, extraction of fitted and other values, argument-decoding and
+label formatting and label assembly code refactored to avoid duplication and 
+ensure consistency.
 -   Bug in the handling of `orientation` fixed.
 
 **Note:** When 'ggpmisc' >= 0.7.0 is used together with 'ggpp' >= 0.6.0 and 

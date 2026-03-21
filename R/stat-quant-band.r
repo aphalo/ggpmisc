@@ -16,7 +16,7 @@
 #' passed to \code{formula}, it defaults to \code{y ~ x} but \code{x ~y} is also
 #' accepted, and equivalent to \code{y ~ x} plus \code{orientation = "y"}.
 #' Package 'ggpmisc' does not define a new geometry matching this statistic as
-#' it is enough for the statistic to return suitable `x` and `y` values.
+#' it is enough for the statistic to return suitable `data` for plotting.
 #'
 #' @inheritParams stat_quant_line
 #' @param quantiles A numeric vector of length 3, with unique values in
@@ -24,9 +24,13 @@
 #'   \code{ymax} and \code{ymin} aesthetics, and by default plotted as a line
 #'   and band.
 #'
+#' @aesthetics StatQuantBand
+#'
 #' @return The value returned by the statistic is a data frame, that will have
 #'   \code{n} rows of predicted values for three quantiles as \code{y},
 #'   \code{ymin} and \code{ymax}, plus \code{x}.
+#'
+#' @inheritSection stat_poly_line Model fit methods supported
 #'
 #' @section Aesthetics: \code{stat_quant_eq} expects \code{x} and \code{y},
 #'   aesthetics to be used in the \code{formula} rather than the names of the
@@ -36,8 +40,6 @@
 #'   variables. In addition, the aesthetics recognized by the geometry
 #'   (\code{"geom_smooth"} is the default) are obeyed and grouping
 #'   respected.
-#'
-#' @family ggplot statistics for quantile regression
 #'
 #' @export
 #'
