@@ -1,8 +1,8 @@
 Package: ggpmisc
 Type: Package
 Title: Miscellaneous Extensions to 'ggplot2'
-Version: 0.6.3.9003
-Date: 2026-01-22
+Version: 0.7.0
+Date: 2026-03-22
 Authors@R:
     c(
     person("Pedro J.", "Aphalo", email = "pedro.aphalo@helsinki.fi", role = c("aut", "cre"), comment = c(ORCID = "0000-0003-3385-972X")),
@@ -13,8 +13,8 @@ Maintainer: Pedro J. Aphalo <pedro.aphalo@helsinki.fi>
 Description: Extensions to 'ggplot2' respecting the grammar of graphics
     paradigm. Statistics to locate and tag peaks and valleys and to label plots
     with the equation of a fitted polynomial model by ordinary least squares,
-    major axis, quantile and robust and resistant regression approches. Line and 
-    model equation for Normal mixture models. Labels for P-value, 
+    major axis, quantile and robust and resistant regression approaches. Line 
+    and model equation for Normal mixture models. Labels for P-value, 
     R^2 or adjusted R^2 or information criteria for fitted models; parametric
     and non-parametric correlation; ANOVA table or summary table for fitted 
     models as plot insets; annotations for multiple pairwise
