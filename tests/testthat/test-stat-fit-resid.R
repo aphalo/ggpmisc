@@ -145,11 +145,11 @@ test_that("stat_fit_deviations works with different methods", {
                                 stat_poly_line(method = "rlm") +
                                 stat_fit_deviations(method = "rlm")
   )
-  vdiffr::expect_doppelganger("fit_deviations_lqs",
+  vdiffr::expect_doppelganger("fit_deviations_lts",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
-                                stat_poly_line(method = "lqs") +
-                                stat_fit_deviations(method = "lqs")
+                                stat_poly_line(method = "lts") +
+                                stat_fit_deviations(method = "lts")
   )
   vdiffr::expect_doppelganger("fit_deviations_gls",
                               ggplot(my.data, aes(x, y)) +
@@ -221,10 +221,10 @@ test_that("stat_fit_residuals works with different methods", {
                                 geom_point() +
                                 stat_fit_residuals(method = "rlm")
   )
-  vdiffr::expect_doppelganger("fit_residuals_lqs",
+  vdiffr::expect_doppelganger("fit_residuals_lts",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
-                                stat_fit_residuals(method = "lqs")
+                                stat_fit_residuals(method = "lts")
   )
   vdiffr::expect_doppelganger("fit_residuals_gls",
                               ggplot(my.data, aes(x, y)) +
@@ -289,10 +289,10 @@ test_that("stat_fit_fitted works with different methods", {
                                 stat_poly_line(method = "rlm") +
                                 stat_fit_fitted(method = "rlm")
   )
-  vdiffr::expect_doppelganger("fit_fitted_lqs",
+  vdiffr::expect_doppelganger("fit_fitted_lts",
                               ggplot(my.data, aes(x, y)) +
-                                stat_poly_line(method = "lqs") +
-                                stat_fit_fitted(method = "lqs")
+                                stat_poly_line(method = "lts") +
+                                stat_fit_fitted(method = "lts")
   )
   vdiffr::expect_doppelganger("fit_fitted_gls",
                               ggplot(my.data, aes(x, y)) +

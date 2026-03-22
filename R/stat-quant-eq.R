@@ -535,8 +535,8 @@ quant_eq_compute_group_fun <- function(data,
                                        output.type = "expression",
                                        na.rm = FALSE,
                                        orientation = "x") {
-  force(data)
-  force(method)
+
+  rlang::check_installed("quantreg", reason = "to use stat_quant_eq()")
 
   # parse obeys this option, but as for some labels or output types we do not
   # use parse() to avoid dropping of trailing zeros, we need to manage this in

@@ -637,11 +637,11 @@ test_that("poly_methods", {
                               variant = snap_version
   )
 
-  vdiffr::expect_doppelganger("stat_poly_eq_lqs_chr",
+  vdiffr::expect_doppelganger("stat_poly_eq_lts_chr",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
                                 stat_poly_eq(formula = y ~ x, parse = TRUE,
-                                             method = "lqs",
+                                             method = "lts",
                                              mapping =
                                                aes(label = paste(after_stat(eq.label),
                                                                  after_stat(rr.label),

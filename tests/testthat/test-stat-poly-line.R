@@ -162,19 +162,25 @@ test_that("poly_methods", {
                                                method = MASS::rlm)
   )
 
-  vdiffr::expect_doppelganger("stat_poly_line_lqs_chr",
+  vdiffr::expect_doppelganger("stat_poly_line_lts_chr",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
                                 stat_poly_line(formula = y ~ poly(x, 2),
-                                               method = "lqs:lqs")
+                                               method = "lts")
   )
 
-  vdiffr::expect_doppelganger("stat_poly_line_lqslqs_fun",
+  vdiffr::expect_doppelganger("stat_poly_line_ltsReg_chr",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
                                 stat_poly_line(formula = y ~ poly(x, 2),
-                                               method = MASS::lqs,
-                                               method.args = list(method = "lqs"))
+                                               method = "ltsReg")
+  )
+
+  vdiffr::expect_doppelganger("stat_poly_line_ltsReg_fun",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_line(formula = y ~ poly(x, 2),
+                                               method = robustbase::ltsReg)
   )
 
   vdiffr::expect_doppelganger("stat_poly_line_lqslts_chr",
@@ -229,13 +235,6 @@ test_that("poly_methods", {
                                 geom_point() +
                                 stat_poly_line(formula = y ~ poly(x, 2),
                                                method = robustbase::lmrob)
-  )
-
-  vdiffr::expect_doppelganger("stat_poly_line_ltsReg_fun",
-                              ggplot(my.data, aes(x, y)) +
-                                geom_point() +
-                                stat_poly_line(formula = y ~ poly(x, 2),
-                                               method = robustbase::ltsReg)
   )
 
 })

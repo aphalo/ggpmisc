@@ -204,22 +204,22 @@ and \code{stat_poly_line()}.
   on 'broom' methods require the user to tailor their behaviour by passing
   additional arguments in the call.
 
-  \tabular{ll}{
-  \strong{Statistic} \tab \strong{Supported model fit methods} \cr
-  \code{\link{stat_poly_line}()} \tab "lm", "rlm", "lqs", "sma", "ma", "gls", \emph{others with methods} \code{\link[stats]{predict}()} or \code{\link[stats]{fitted}()} \cr
-  \code{\link{stat_poly_eq}()}   \tab "lm", "rlm", "lqs", "sma", "ma", "gls",  \emph{others with needed accesors} \cr
-  \code{\link{stat_quant_line}()} \tab "rq", "rqss" \cr
-  \code{\link{stat_quant_band}()} \tab "rq", "rqss" \cr
-  \code{\link{stat_quant_eq}()} \tab "rq", "rqss" \cr
-  \code{\link{stat_ma_line}()} \tab "SMA", "MA", "RMA", "OLS" \cr
-  \code{\link{stat_ma_eq}()} \tab "SMA", "MA", "RMA", "OLS" \cr
-  \code{\link{stat_fit_residuals}()} \tab "lm", "rlm", "lqs", "sma", "ma", "gls", "rq", "rqss" \emph{others with method} \code{\link[stats]{residuals}()} \cr
-  \code{\link{stat_fit_fitted}()} \tab "lm", "rlm", "lqs", "gls", "rq", "rqss" \emph{others with method} \code{\link[stats]{fitted}()} \cr
-  \code{\link{stat_fit_deviations}()} \tab "lm", "rlm", "lqs", "gls", "rq", "rqss" \emph{others with methods} \code{\link[stats]{fitted}()} and \code{\link[stats]{weights}()} \cr
-  \code{\link{stat_fit_augment}()} \tab \emph{any with 'broom' method} \code{\link[broom]{augment}()} \cr
-  \code{\link{stat_fit_glance}()} \tab \emph{any with 'broom' method} \code{\link[broom]{glance}()} \cr
-  \code{\link{stat_fit_tidy}()} \tab \emph{any with 'broom' method} \code{\link[broom]{tidy}()} \cr
-  \code{\link{stat_fit_tb}()} \tab \emph{any with 'broom' method} \code{\link[broom]{tidy}()} \cr
+  \tabular{lcl}{
+  \strong{Statistic} \tab \eqn{f} \tab \strong{Supported model fit methods} \cr
+  \code{\link{stat_poly_line}()} \tab G \tab "lm", "rlm", "lts", "sma", "ma", "gls", \emph{others with methods} \code{\link[stats]{predict}()} or \code{\link[stats]{fitted}()} \cr
+  \code{\link{stat_poly_eq}()}   \tab G \tab "lm", "rlm", "lts", "sma", "ma", "gls",  \emph{others with needed accesors} \cr
+  \code{\link{stat_quant_line}()} \tab G \tab "rq", "rqss" \cr
+  \code{\link{stat_quant_band}()} \tab G \tab "rq", "rqss" \cr
+  \code{\link{stat_quant_eq}()} \tab G \tab "rq", "rqss" \cr
+  \code{\link{stat_ma_line}()} \tab G \tab "SMA", "MA", "RMA", "OLS" \cr
+  \code{\link{stat_ma_eq}()} \tab G \tab "SMA", "MA", "RMA", "OLS" \cr
+  \code{\link{stat_fit_residuals}()} \tab G \tab "lm", "rlm", "lts", "sma", "ma", "gls", "rq", "rqss" \emph{others with method} \code{\link[stats]{residuals}()} \cr
+  \code{\link{stat_fit_fitted}()} \tab G \tab "lm", "rlm", "lts", "gls", "rq", "rqss" \emph{others with method} \code{\link[stats]{fitted}()} \cr
+  \code{\link{stat_fit_deviations}()} \tab G \tab "lm", "rlm", "lts", "gls", "rq", "rqss" \emph{others with methods} \code{\link[stats]{fitted}()} and \code{\link[stats]{weights}()} \cr
+  \code{\link{stat_fit_augment}()} \tab G \tab \emph{any with 'broom' method} \code{\link[broom]{augment}()} \cr
+  \code{\link{stat_fit_glance}()} \tab G \tab \emph{any with 'broom' method} \code{\link[broom]{glance}()} \cr
+  \code{\link{stat_fit_tidy}()} \tab G \tab \emph{any with 'broom' method} \code{\link[broom]{tidy}()} \cr
+  \code{\link{stat_fit_tb}()} \tab P \tab \emph{any with 'broom' method} \code{\link[broom]{tidy}()} \cr
   }
 
   The table below lists the names for fit methods coded in the statistics
@@ -234,7 +234,7 @@ and \code{stat_poly_line()}.
   \strong{Predefined method names} \tab \strong{Model fit methods} \tab \strong{R package} \tab \strong{Object class} \cr
   "lm", "lm:qr" \tab \code{\link[stats]{lm}()} \tab 'stats' \tab "lm" \cr
   "rlm", "rlm:M", "rlm:MM" \tab \code{\link[MASS]{rlm}()} \tab 'MASS' \tab "rlm" ("lm") \cr
-  "lqs", "lqs:lts", "lqs:lms" \tab \code{\link[MASS]{lqs}()} \tab 'MASS' \tab "lqs" \cr
+  "lts", "ltsReg" \tab \code{\link[robustbase]{ltsReg}()} \tab 'robustbase' \tab "lts" \cr
   "ma", "sma", "sma:SMA", "sma:MA", "sma:OLS" \tab \code{\link[smatr]{sma}()} \tab 'smatr' \tab "ma" or "sma" \cr
   "gls", "gls:REML", "gls:ML" \tab \code{\link[nlme]{gls}()} \tab 'nlme' \tab "gls" \cr
   "rq", "rq:sfn", "rq:sfnc", "rq:lasso" \tab \code{\link[quantreg]{rq}()} \tab 'quantreg' \tab "rq" \cr

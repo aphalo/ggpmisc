@@ -30,9 +30,14 @@ the span definitions used be 'marquee' instead of the embedded HTML used with
 formatting that results in typeset equations that better match those encoded as
 plotmath expressions.
 -   Track changes in 'gginnards' (>= 0.2.0) in examples and docs.
--   Breaking: Change default in model fitting _stats_ supporting method `"lqs"`
-from `"lqs:lqs"` into `"lqs:lts"` to match the default of `MASS::lqs()`.
+-   In all model fitting _stats_ add support for method `"lts"` passed as a
+character string for a trimmed regression fitted with `robustbase::ltsReg()`.
+-   Breaking: In all model fitting _stats_ remove support for method `"lqs"`
+passed as a character string, as `lts` is preferred.
 -   Support `smatr::ma()` and `smatr::sma()` in `stat_fit_residuals()`.
+-   Non-standard packages hosting model fit functions recognized by their names
+passed as character strings are now installed only when the methods are used for
+the first time.
 -   A new on-line-only article gives examples of the use of 'ggpmisc' together
 with R package 'xdvir' and another one compares plot annotations created with
 the different output types and matching geometries.

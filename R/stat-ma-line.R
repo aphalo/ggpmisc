@@ -279,6 +279,9 @@ ma_line_compute_group_fun <-
            na.rm = FALSE,
            flipped_aes = NA,
            orientation = "x") {
+
+    rlang::check_installed("lmodel2", reason = "to use stat_ma_line()")
+
     data <- ggplot2::flip_data(data, flipped_aes)
     if (length(unique(data$x)) < n.min) {
       # Not enough data to perform fit

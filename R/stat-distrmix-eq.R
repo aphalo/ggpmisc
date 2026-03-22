@@ -311,7 +311,7 @@ distrmix_eq_compute_group_fun <-
            na.rm = FALSE,
            orientation = "x") {
 
-    force(data)
+    rlang::check_installed("mixtools", reason = "to use stat_distrmix_eq()")
 
     if (length(unique(data[[orientation]])) < n.min) {
       message("Skipping! Fewer than 'n.min = ", n.min,

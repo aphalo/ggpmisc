@@ -24,7 +24,7 @@ stat_fit_augment(
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
-\code{\link[ggplot2]{aes}}. Only needs
+\code{\link[ggplot2]{aes}()}. Only needs
 to be set at the layer level if you are overriding the plot defaults.}
 
 \item{data}{A layer specific dataset - only needed if you want to override
@@ -47,16 +47,16 @@ and to to \code{broom::augment}.}
 \item{n.min}{integer Minimum number of distinct values in the explanatory
 variable (on the rhs of formula) for fitting to the attempted.}
 
-\item{fit.seed}{RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
-Defaults to \code{NA}, which means that \code{set.seed()} will not be
-called.}
+\item{fit.seed}{RNG seed argument passed to
+\code{\link[base:Random]{set.seed}()}. Defaults to \code{NA}, which means
+that \code{set.seed()} will not be called.}
 
 \item{level}{numeric Level of confidence interval to use (0.95 by default)}
 
 \item{y.out}{character (or numeric) index to column to return as \code{y}.}
 
-\item{na.rm}{logical indicating whether NA values should be stripped before
-the computation proceeds.}
+\item{na.rm}{logical indicating whether \code{NA} values should be stripped
+before the computation proceeds.}
 
 \item{show.legend}{logical. Should this layer be included in the legends?
 \code{NA}, the default, includes if any aesthetics are mapped. \code{FALSE}
@@ -68,25 +68,25 @@ define both data and aesthetics and shouldn't inherit behaviour from the
 default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
 }
 \description{
-\code{stat_fit_augment} fits a model and returns a "tidy"
-  version of the model's data with prediction added, using '\code{augmnent()}
+\code{stat_fit_augment()} fits a model and returns a "tidy"
+  version of the model's data with prediction added, using \code{augmnent()}
   methods from packages 'broom', 'broom.mixed', or other sources. The
-  prediction can be added to the plot as a curve.
+  prediction can be added to the plot as a line.
 }
 \details{
-\code{stat_fit_augment} together with \code{\link{stat_fit_glance}}
-  and \code{\link{stat_fit_tidy}}, based on package 'broom' can be used
-  with a broad range of model fitting functions as supported at any given
-  time by 'broom'. In contrast to \code{\link{stat_poly_eq}} which can
-  generate text or expression labels automatically, for these functions the
-  mapping of aesthetic \code{label} needs to be explicitly supplied in the
-  call, and labels built on the fly.
+\code{stat_fit_augment()} together with
+  \code{\link{stat_fit_glance}()} and \code{\link{stat_fit_tidy}()}, based on
+  package 'broom' can be used with a broad range of model fitting functions
+  as supported at any given time by 'broom'. In contrast to
+  \code{\link{stat_poly_eq}()} which can generate text or expression labels
+  automatically, for these functions the mapping of aesthetic \code{label}
+  needs to be explicitly supplied in the call, and labels built on the fly.
 
   A ggplot statistic receives as data a data frame that is not the one passed
   as argument by the user, but instead a data frame with the variables mapped
   to aesthetics. In other words, it respects the grammar of graphics and
   consequently within arguments passed through \code{method.args} names of
-  aesthetics like $x$ and $y$ should be used instead of the original variable
+  aesthetics like _x_ and _y_ should be used instead of the original variable
   names, while data is automatically passed the data frame. This helps ensure
   that the model is fitted to the same data as plotted in other layers.
 }
@@ -98,25 +98,27 @@ The statistic \code{stat_fit_augment} can be used only with
   not needed.
 
 Although arguments passed to parameter \code{augment.args} will be
-  passed to [generics::augment()] whether they are silently ignored or obeyed
-  depends on each specialization of [augment()], so do carefully read the
-  documentation for the version of [augment()] corresponding to the `method`
-  used to fit the model. Be aware that `se_fit = FALSE` is the default in
-  these methods even when supported.
+  passed to \code{\link[generics]{augment}()} whether they are silently
+  ignored or obeyed depends on each specialization of \code{augment()}, so do
+  carefully read the documentation for the version of \code{augment()}
+  corresponding to the \code{method} used to fit the model. Be aware that
+  \code{se_fit = FALSE} is the default in these methods even when supported.
 }
 \section{Warning!}{
- Not all `glance()` methods are defined in package 'broom'.
-  `glance()` specializations for mixed models fits of classes `lme`, `nlme`,
-  `lme4`, and many others are defined in package 'broom.mixed'.
+ Not all \code{augment()} method specializations are
+  defined in package 'broom'. \code{augment()} specializations for mixed
+  models fits of classes \code{"lme"}, \code{"nlme"}, \code{"lme4"} and many
+  others are defined in package 'broom.mixed'.
 }
 
 \section{Handling of grouping}{
- \code{stat_fit_augment} applies the function
-  given by \code{method} separately to each group of observations; in ggplot2
-  factors mapped to aesthetics generate a separate group for each level.
-  Because of this, \code{stat_fit_augment} is not useful for annotating plots
-  with results from \code{t.test()} or ANOVA or ANCOVA. In such cases use
-  instead \code{stat_fit_tb()} which applies the model fitting per panel.
+ \code{stat_fit_augment()} applies the function
+  given by \code{method} separately to each group of observations; in
+  'ggplot2' factors mapped to aesthetics generate a separate group for each
+  level. Because of this, \code{stat_fit_augment()} is not useful for
+  annotating plots with results from \code{t.test()} or ANOVA or ANCOVA
+  (e.g., when a factor is mapped to the _x_ or _y_ aesthetics. In such cases
+  use instead \code{stat_fit_tb()} which applies the model fitting per panel.
 }
 
 \section{Computed variables}{
@@ -140,7 +142,6 @@ gginnards.installed <- requireNamespace("gginnards", quietly = TRUE)
 
 if (broom.installed) {
   library(broom)
-  library(quantreg)
 }
 
 # Inspecting the returned data using geom_debug_group()
@@ -214,17 +215,10 @@ if (broom.installed)
                                         weights = quote(weight)),
                      y.out = ".resid")
 
-# Quantile regression
-if (broom.installed)
-  ggplot(mtcars, aes(x = disp, y = mpg)) +
-    geom_point() +
-    stat_fit_augment(method = "rq")
-
-
 }
 \seealso{
-\code{\link[broom]{broom}} and \code{broom.mixed} for details on how
-  the tidying of the result of model fits is done.
+Package \code{\link[broom]{broom}} for details on how the tidying of
+  the result of model fits is done.
 
 Other ggplot statistics for model fits: 
 \code{\link{stat_fit_deviations}()},

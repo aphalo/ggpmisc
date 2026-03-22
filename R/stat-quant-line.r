@@ -308,6 +308,8 @@ quant_line_compute_group_fun <- function(data,
                                          orientation = "x",
                                          make.groups = TRUE) {
 
+  rlang::check_installed("quantreg", reason = "to use stat_quant_line()")
+
   data <- ggplot2::flip_data(data, flipped_aes)
   if (length(unique(data$x)) < n.min) {
     # Not enough data to perform fit

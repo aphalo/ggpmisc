@@ -27,8 +27,8 @@ stat_fit_tidy(
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
-\code{\link[ggplot2]{aes}}. Only needs
-to be set at the layer level if you are overriding the plot defaults.}
+\code{\link[ggplot2]{aes}()}. Only needs to be set at the layer level if you
+are overriding the plot defaults.}
 
 \item{data}{A layer specific dataset - only needed if you want to override
 the plot defaults.}
@@ -100,12 +100,9 @@ The output of \code{tidy()} is returned after reshaping it into a
   \code{\link[gginnards]{geom_debug}}. An example is shown below.
 }
 \description{
-\code{stat_fit_tidy} fits a model and returns a "tidy" version
-  of the model's summary, using '\code{tidy()} methods from packages 'broom',
-  'broom.mixed', or other sources. To add the summary in tabular form use
-  \code{\link{stat_fit_tb}} instead of this statistic. When using
-  \code{stat_fit_tidy()} you will most likely want to change the default
-  mapping for label.
+\code{stat_fit_tidy()} fits a model and returns a "tidy" version
+  of the model's summary, using \code{tidy()} method specializations from
+  packages 'broom', 'broom.mixed', or other sources.
 }
 \details{
 \code{stat_fit_tidy} together with \code{\link{stat_fit_glance}}
@@ -120,28 +117,24 @@ The output of \code{tidy()} is returned after reshaping it into a
   as argument by the user, but instead a data frame with the variables mapped
   to aesthetics. In other words, it respects the grammar of graphics and
   consequently within arguments passed through \code{method.args} names of
-  aesthetics like $x$ and $y$ should be used instead of the original variable
+  aesthetics like _x_ and _y_ should be used instead of the original variable
   names, while data is automatically passed the data frame. This helps ensure
   that the model is fitted to the same data as plotted in other layers.
 }
 \note{
-The statistic \code{stat_fit_tidy} can be used only with
-  \code{methods} that accept formulas under any formal parameter name and a
-  \code{data} argument. Use \code{ggplot2::stat_smooth()} instead of
-  \code{stat_fit_augment} in production code if the additional features are
-  not needed.
-
-Although arguments passed to parameter \code{tidy.args} will be
-  passed to [generics::tidy()] whether they are silently ignored or obeyed
-  depends on each specialization of [tidy()], so do carefully read the
-  documentation for the version of [tidy()] corresponding to the `method`
-  used to fit the model. You will also need to manually install the package,
-  such as 'broom', where the tidier you intend to use are defined.
+Although arguments passed to parameter \code{tidy.args} will be passed
+  to \code{\link[generics]{tidy}()} whether they are silently ignored or
+  obeyed depends on each specialization of \code{tidy()}, so do carefully
+  read the documentation for the version of \code{tidy()} corresponding to
+  the \code{method} used to fit the model. You will also need to manually
+  install the package, such as 'broom', where the tidier you intend to use
+  are defined.
 }
 \section{Warning!}{
- Not all `glance()` methods are defined in package 'broom'.
-  `glance()` specializations for mixed models fits of classes `lme`, `nlme`,
-  `lme4`, and many others are defined in package 'broom.mixed'.
+ Not all \code{tidy()} methods are defined in package
+  'broom'. \code{glance()} specializations for mixed models fits of classes
+  \code{"lme"}, \code{"nlme"}, \code{"lme4"} and many others are defined in
+  package 'broom.mixed'.
 }
 
 \section{Handling of grouping}{
@@ -162,7 +155,6 @@ gginnards.installed <- requireNamespace("gginnards", quietly = TRUE)
 
 if (broom.installed) {
   library(broom)
-  library(quantreg)
 }
 
 # Inspecting the returned data using geom_debug_group()
@@ -226,23 +218,10 @@ if (broom.installed)
                                                 after_stat(x_estimate),
                                                 after_stat(x_p.value))))
 
-# Quantile regression
-if (broom.installed)
-  ggplot(mtcars, aes(x = disp, y = mpg)) +
-    stat_smooth(method = "lm", formula = y ~ x) +
-    geom_point() +
-    stat_fit_tidy(method = "rq",
-                  label.y = "bottom",
-                  method.args = list(formula = y ~ x),
-                  tidy.args = list(se.type = "nid"),
-                  mapping = aes(label = sprintf("Slope = \%.3g\np-value = \%.3g",
-                                                after_stat(x_estimate),
-                                                after_stat(x_p.value))))
-
 }
 \seealso{
-\code{\link[broom]{broom}} and \code{broom.mixed} for details on how
-  the tidying of the result of model fits is done.
+Package \code{\link[broom]{broom}} for details on how the tidying of
+  the result of model fits is done.
 
 Other ggplot statistics for model fits: 
 \code{\link{stat_fit_augment}()},

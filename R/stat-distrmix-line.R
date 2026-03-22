@@ -252,6 +252,8 @@ distrmix_compute_group_fun <-
            flipped_aes = NA,
            orientation = "x") {
 
+    rlang::check_installed("mixtools", reason = "to use stat_distrmix_line()")
+
     data <- ggplot2::flip_data(data, flipped_aes)
 
     if (length(unique(data$x)) < n.min) {

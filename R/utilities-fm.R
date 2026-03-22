@@ -191,6 +191,7 @@ fit_models_internal <- function(data,
                                 orientation,
                                 level = 0.95,
                                 accept.rq = TRUE) {
+
   stopifnot(!any(c("formula", "data") %in% names(method.args)))
 
   if (is.null(data$weight)) {
@@ -210,11 +211,13 @@ fit_models_internal <- function(data,
     method <- switch(method,
                      lm = "lm:qr",
                      rlm = "rlm:M",
-                     rq = "rq:br",
-                     lqs = "lqs:lts",
+                     lmrob = "lmrob:MM",
+                     rq = ifelse(nrow(data) < 5000L, "rq:br", "rq:fn"),
+                     lts = "ltsReg",
                      gls = "gls:REML",
                      sma = "sma:SMA",
                      ma = "sma:MA",
+                     segreg = "segreg",
                      method)
     method.name <- method
     method <- strsplit(x = method, split = ":", fixed = TRUE)[[1]]
@@ -227,11 +230,42 @@ fit_models_internal <- function(data,
     # get functions based on their name
     method <- switch(method,
                      lm = stats::lm,
-                     rlm = MASS::rlm,
-                     rq = quantreg::rq,
-                     lqs = MASS::lqs,
-                     gls = nlme::gls,
-                     sma = smatr::sma,
+                     rlm =
+                       {rlang::check_installed("MASS",
+                                               reason = "to use method \"rlm\"");
+                         MASS::rlm},
+                     rq =
+                       {rlang::check_installed("quantreg",
+                                               reason = "to use method \"rq\"");
+                         quantreg::rq},
+                     lqs =
+                       {rlang::check_installed("MASS",
+                                               reason = "to use method \"lqs\"");
+                         MASS::lqs},
+                     ltsReg =
+                       {rlang::check_installed("robustbase",
+                                               reason = "to use method \"ltsReg\"");
+                         robustbase::ltsReg},
+                     lmrob =
+                       {rlang::check_installed("robustbase",
+                                               reason = "to use method \"lmrob\"");
+                         robustbase::lmrob},
+                     gls =
+                       {rlang::check_installed("nlme",
+                                               reason = "to use method \"gls\"");
+                         nlme::gls},
+                     sma =
+                       {rlang::check_installed("smatr",
+                                               reason = "to use method \"sma\"");
+                         smatr::sma},
+                     sma =
+                       {rlang::check_installed("smatr",
+                                               reason = "to use method \"sma\"");
+                         smatr::sma},
+                     segreg =
+                       {rlang::check_installed("segmented",
+                                               reason = "to use method \"segreg\"");
+                         segmented::segreg},
                      match.fun(method))
   } else if (is.function(method)) {
     fun.method <- character()
@@ -279,8 +313,8 @@ fit_models_internal <- function(data,
   if (!length(fm) || (is.atomic(fm) && is.na(fm))) {
     return(list())
   } else if (!(inherits(fm, "lm") || inherits(fm, "lmrob") ||
-               inherits(fm, "gls") || inherits(fm, "lqs") ||
-               inherits(fm, "lts") || inherits(fm, "sma") ||
+               inherits(fm, "gls") || inherits(fm, "lts") ||
+               inherits(fm, "lqs") || inherits(fm, "sma") ||
                accept.rq && (inherits(fm, "rq") || inherits(fm, "rqs")))) {
     message("Method \"", method.name,
             "\" did not return a ",
@@ -412,9 +446,11 @@ extract_residuals <- function(fm, resid.type, weighted) {
       }
     }
     if (weighted) {
-      fit.residuals <- do.call(stats::weighted.residuals, args = resid.args)
+      fit.residuals <-
+        do.call(stats::weighted.residuals, args = resid.args)
     } else {
-      fit.residuals <- do.call(stats::residuals, args = resid.args)
+      fit.residuals <-
+        do.call(stats::residuals, args = resid.args)
     }
   }
 

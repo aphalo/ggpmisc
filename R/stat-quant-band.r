@@ -227,6 +227,8 @@ quant_band_compute_group_fun <- function(data,
                                          na.rm = FALSE,
                                          flipped_aes = NA) {
 
+  rlang::check_installed("quantreg", reason = "to use stat_quant_band()")
+
   data <- ggplot2::flip_data(data, flipped_aes)
   if (length(unique(data$x)) < n.min) {
     # Not enough data to perform fit

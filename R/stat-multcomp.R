@@ -456,6 +456,9 @@ multcomp_compute_panel_fun <-
            orientation = "x") {
     force(data)
 
+    rlang::check_installed(c("multcomp", "multcompView"),
+                           reason = "to use stat_multcomp()")
+
     # parse obeys this option, but as for some labels or output types we do not
     # use parse() to avoid dropping of trailing zeros, we need to manage this in
     # our code in this case.
@@ -563,7 +566,10 @@ multcomp_compute_panel_fun <-
       method <- switch(method,
                        lm = stats::lm,
                        aov = stats::aov,
-                       rlm = MASS::rlm,
+                       rlm =
+                         {rlang::check_installed("MASS",
+                                                 reason = "to use method \"rlm\"");
+                           MASS::rlm},
                        match.fun(method))
     } else if (is.function(method)) {
       fun.method <- character()

@@ -31,23 +31,13 @@ It is also important to remember that in most cases data analysis including expl
 print(citation(package = "ggpmisc", auto = TRUE), bibtex = FALSE)
 ```
 
-## Preliminaries
+## Introduction
 
-Other packages are loaded in the section they are used.
+The first chapter gives examples of the use of the *stats* from 'ggpmisc' for plotting predictions and annotating ggplots using robust and resistant regression .  
+The second chapter gives examples of the use of the *stats* from 'ggpmisc' for plotting predictions and annotating ggplots with fitted linear, cubic and polynomial splines.
+The third chapter gives examples of the use of the *stats* from 'ggpmisc' for plotting predictions and annotating ggplots with functions wrapping model fit methods together with model selection and other code that can automate the choice of the model formula, model fit method, etc., on a per data group basis.
 
-```{r, message=FALSE}
-library(ggpmisc)
-```
-
-Attaching package 'ggpmisc' also attaches package 'ggpp' as it provides several of the geometries used by default in the statistics described below. Package 'ggpp' can be loaded and attached on its own, and has [separate documentation](https://docs.r4photobiology.info/ggpp/).
-
-As we will use text and labels on the plotting area we change the default theme to an uncluttered one.
-
-```{r}
-old_theme <- theme_set(theme_bw())
-```
-
-## Fitted models in `stat_poly_line()` and `stat_poly_eq()`
+### Fitted models in `stat_poly_line()` and `stat_poly_eq()`
 
 Both functions are designed for flexibility while still attempting to keep their implementation and use rather straightforward.
 
@@ -65,21 +55,29 @@ To showcase this, I explore the use of contributed and user defined model fit fu
 
 Two frequently used model fit functions that return model fit objects that require special handling to extract values are supported in 'ggpmisc' by specific statistics: `stat_ma_line()` and `stat_ma_eq()` for mayor axis regression with package 'lmodel2', and `stat_quant_line()`, `stat_quant_band()` and `stat_quant_equation()` for quantile regression with package 'quantreg'. Their use is documented in the User Guide and their help pages.
 
-## Existing functions
+### Preliminaries
+
+Other packages are loaded in the section they are used.
+
+```{r, message=FALSE}
+library(ggpmisc)
+```
+
+Attaching package 'ggpmisc' also attaches package 'ggpp' as it provides several of the geometries used by default in the statistics described below. Package 'ggpp' can be loaded and attached on its own, and has [separate documentation](https://docs.r4photobiology.info/ggpp/).
+
+As we will use text and labels on the plotting area we change the default theme to an uncluttered one.
+
+```{r}
+old_theme <- theme_set(theme_bw())
+```
+
+## Robust and resistant methods
 
 We consider cases in which fitting linear models with _ordinary least squares_ (OLS) as criterion is unsuitable. 
 
 In the case of outliers, many methods are available, and each fit function usually also supports several variations within a class of methods. In _robust regression_ the weight of extreme observations in the computation of the penalty function is decreased compared to OLS. The effect of such decrease can be described as weights ranging continuously between 0 and 1, either actually used in the fit algorithm or computed _a posteriori_ by comparison to OLS. In _resistant regression_, some observations are ignored altogether, which is equivalent to discrete weights taking one of two values, 0 or 1. Even if these approaches work automatically, similarly as when discarding observations manually, it is important to investigate the origin of outliers.
 
-_Generalised least squares_ (GLS) is an extension to OLS that makes it possible to describe how the variance of the response _y_ varies. GLS supports description of heterogeneous variance by means of variance covariates, and correlation structures.
-
-_Error in variance_ (EIV) methods remove the assumption that the values of the covariate _x_ are measured/known without error. It is important here to stress that linear models (LM) do not require us to assume that there is no variation in _x_, only that we have observed/measured/know these values without error. To apply most of these methods, we need independently obtained information about the size of the measuring errors affecting covariates.
-
-Not exemplified here, _major axis regression_ (MA), is useful when both _x_ and _y_ values are affected to comparable extents by measurement errors. This is typically the case when there is no causal direction between _x_ and _y_ such as in allometric relationships between body parts of the same individual. See `stat_ma_line()` and `stat_ma_eq()`.
-
-_Quantile regression_ can be thought as similar to both a regression an a box plot. It makes it possible to fit curves that divide the observations in 2D space into quantiles, approximately preserving this split along a fitted curve of _y_ on _x_. See `stat_quant_line()`, `stat_quant_band()` and `stat_quant_eq()`.
-
-As all these methods use different penalty functions when fitting a model to observations, they yield different estimates of parameter values for the same model formula. For several of these methods the approximate solution is obtained using numeral iteration. In these cases, it is important to check whether the solution is stable with different starting points for random number generation.
+**When using robust and resistant methods it is crucial to report the results of analyses clearly showing the weights used for different observations.** One of the goals of 'ggpmisc' is to make this step easy. The `data` objects returned by the stats ftpm 'ggpmisc' contain, whenever they are available, both _prior_ `weights` and `robustness.weights`. The former being those passed by mapping a variable to the `weight` aesthetic and used as argument for the `weights` parameter of model fit function, and the latter being those actually used in the final fit, possibly computed.
 
 ### Robust regression ('MASS')
 
@@ -87,52 +85,20 @@ As all these methods use different penalty functions when fitting a model to obs
 print(citation(package = "MASS", auto = TRUE), bibtex = FALSE)
 ```
 
+```{r}
+library(MASS)
+```
+
 Package 'MASS' provides function `rlm()` for "Robust Fitting of Linear Models". The returned value is an `"rlm"` object. Class `"rlm"` is derived from `"lm"` so the stats work mostly as expected. However, we need to be aware that no $R^2$ or $P$ estimates are available and the corresponding labels are empty strings.
 
-```{r, fig.width = 7, fig.height = 5}
-library(MASS)
-
-ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
-  geom_point() +
-  stat_poly_line(method = MASS::rlm) +
-  stat_poly_eq(method = MASS::rlm, mapping = use_label("eq", "n"),
-               label.x = "right")
-```
-
-Fitted values and deviations highlighted.
+The first example plot is in the style I recommend for use in reporting as it makes the weights visible, later plots from this same subset of the data are mostly useful in teaching and data exploration.
 
 ```{r, fig.width = 7, fig.height = 5}
 ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
-  stat_fit_fitted(method = MASS::rlm, colour = "red") +
-  stat_fit_deviations(method = MASS::rlm, colour = "red") +
-  geom_point()
-```
-
-Residuals plotted.
-
-```{r, fig.width = 7, fig.height = 5}
-ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
-  stat_fit_residuals(method = MASS::rlm)
-```
-
-
-```{r}
-ggplot(mpg, aes(displ, hwy)) +
-  geom_point() +
-  stat_poly_line(method = MASS::rlm) +
-  stat_poly_eq(method = MASS::rlm, mapping = use_label("eq", "n"),
-               label.x = "right") +
-  facet_wrap(~class, ncol = 2)
-```
-
-When weights are available, either supplied by the user, or computed as part of the fit, they are returned in `data`. Having weights available allows encoding them using colour. We here use a robust regression fit with `MASS::rlm()`.
-
-```{r, fig.width = 7, fig.height = 5}
-ggplot(mpg, aes(displ, hwy)) +
+  stat_poly_line(method = "rlm") +
   stat_poly_eq(use_label("eq", "n", "method"), 
                label.x = "right",
-               method = MASS::rlm) +
-  stat_poly_line(method = MASS::rlm, colour = "black") +
+               method = "rlm") +
   stat_fit_deviations(method = "rlm",
                       mapping = aes(colour = after_stat(robustness.weights)),
                       show.legend = TRUE,
@@ -141,14 +107,59 @@ ggplot(mpg, aes(displ, hwy)) +
   theme(legend.position = "top")
 ```
 
+Fitted values and deviations highlighted.
+
+```{r, fig.width = 7, fig.height = 5}
+ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
+  stat_poly_line(method = "rlm") +
+  stat_fit_fitted(method = "rlm", shape = "cross") +
+  stat_fit_deviations(method = "rlm", linewidth = 0.3) +
+  stat_fit_deviations(method = "rlm",
+                      mapping = aes(colour = after_stat(robustness.weights)),
+                      show.legend = TRUE,
+                      geom = "point")+
+  scale_color_gradient(low = "red", high = "blue", limits = c(0, 1)) +
+  theme(legend.position = "top")
+```
+
+Residuals plotted.
+
+```{r, fig.width = 7, fig.height = 5}
+ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
+  geom_hline(yintercept = 0, linetype = "dotted") +
+  stat_fit_residuals(method = "rlm",
+                     resid.type = "response",
+                     mapping = aes(colour = after_stat(robustness.weights)),
+                     show.legend = TRUE,
+                     geom = "point") +
+  labs(y = "Response residuals") +
+  scale_color_gradient(low = "red", high = "blue", limits = c(0, 1)) +
+  theme(legend.position = "top")
+```
+
+```{r, fig.width = 7, fig.height = 5}
+ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
+  geom_hline(yintercept = 0, linetype = "dotted") +
+  stat_fit_residuals(method = "rlm",
+                     resid.type = "pearson",
+                     mapping = aes(colour = after_stat(robustness.weights)),
+                     show.legend = TRUE,
+                     geom = "point") +
+  labs(y = "Pearson residuals") +
+  scale_color_gradient(low = "red", high = "blue", limits = c(0, 1)) +
+  theme(legend.position = "top")
+```
+
+We are not constrained to a first degree polynomial. This plot follows the recommended style for reporting.
+
 ```{r, fig.width = 7, fig.height = 5}
 my.formula <- y ~ poly(x, 2, raw = TRUE)
-ggplot(mpg, aes(displ, hwy)) +
+ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
   stat_poly_eq(use_label("eq", "n", "method"), 
                formula = my.formula,
                label.x = "right",
-               method = MASS::rlm) +
-  stat_poly_line(method = MASS::rlm, 
+               method = "rlm") +
+  stat_poly_line(method = "rlm", 
                  formula = my.formula,
                  colour = "black") +
   stat_fit_deviations(mapping = aes(colour = after_stat(robustness.weights)),
@@ -160,169 +171,79 @@ ggplot(mpg, aes(displ, hwy)) +
   theme(legend.position = "top")
 ```
 
+We can the same approach with the whole data set using facets.
+
+```{r}
+#| fig.asp: 1.25
+ggplot(mpg, aes(displ, hwy)) +
+  stat_poly_line(method = "rlm") +
+  stat_poly_eq(method = "rlm", mapping = use_label("eq", "n"),
+               label.x = "right") +
+    stat_fit_deviations(method = "rlm",
+                      mapping = aes(colour = after_stat(robustness.weights)),
+                      show.legend = TRUE,
+                      geom = "point") +
+  facet_wrap(~class, ncol = 2) +
+  scale_color_gradient(low = "red", high = "blue", limits = c(0, 1)) +
+  theme(legend.position = "top")
+```
+
 ### Robust regression ('robustbase')
 
 ```{r}
 print(citation(package = "robustbase", auto = TRUE), bibtex = FALSE)
 ```
 
-Package 'robustbase' provides function `lmrob()` for "MM-type Estimators for Linear Regression". The returned value is an `"lmrob"` object. Class `"lmrob"` is derived from `"lm"` so the stats work mostly as expected. However, we need to be aware that no $R^2$ or $P$ estimates are available and the corresponding labels are empty strings.
-
-```{r, fig.width = 7, fig.height = 5}
+```{r}
 library(robustbase)
+```
 
+Package 'robustbase' provides function `lmrob()` for "MM-type Estimators for Linear Regression". The returned value is a `"lmrob"` object. Class `"lmrob"` is derived from `"lm"` so the stats work mostly as expected. However, we need to be aware that no $P$ estimate is available and the corresponding labels are empty strings.
+
+A few examples are given, as the only change to the code from the previous section is in the argument passed to parameter `method`. The first plot is what I consider suitable for use in reports. Using defaults, `lmrob` seems to be more aggresive against "outliers" than `rlm`, at least for these data.
+
+```{r, fig.width = 7, fig.height = 5}
 ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
-  geom_point() +
-  stat_poly_line(method = robustbase::lmrob) +
-  stat_poly_eq(method = robustbase::lmrob, mapping = use_label("eq", "R2"),
-               label.x = "right")
+  stat_poly_line(method = "lmrob") +
+  stat_poly_eq(use_label("eq", "n", "method"), 
+               label.x = "right",
+               method = "lmrob") +
+  stat_fit_deviations(method = "lmrob",
+                      mapping = aes(colour = after_stat(robustness.weights)),
+                      show.legend = TRUE,
+                      geom = "point") +
+  scale_color_gradient(low = "red", high = "blue", limits = c(0, 1)) +
+  theme(legend.position = "top")
 ```
 
 Fitted values and deviations highlighted.
 
 ```{r, fig.width = 7, fig.height = 5}
 ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
-  stat_fit_fitted(method = robustbase::lmrob, colour = "red") +
-  stat_fit_deviations(method = robustbase::lmrob, colour = "red") +
-  geom_point()
+  stat_poly_line(method = "lmrob") +
+  stat_fit_fitted(method = "lmrob", shape = "cross") +
+  stat_fit_deviations(method = "lmrob", linewidth = 0.3) +
+  stat_fit_deviations(method = "lmrob",
+                      mapping = aes(colour = after_stat(robustness.weights)),
+                      show.legend = TRUE,
+                      geom = "point")+
+  scale_color_gradient(low = "red", high = "blue", limits = c(0, 1)) +
+  theme(legend.position = "top")
 ```
 
 Residuals plotted.
 
-```{r, fig.width = 7, fig.height = 5}
-ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
-  stat_fit_residuals(method = robustbase::lmrob)
-```
-
-
-```{r}
-ggplot(mpg, aes(displ, hwy)) +
-  geom_point() +
-  stat_poly_line(method = robustbase::lmrob) +
-  stat_poly_eq(method = robustbase::lmrob, mapping = use_label("eq", "R2"),
-               label.x = "right") +
-  theme(legend.position = "bottom") +
-  facet_wrap(~class, ncol = 2)
-```
-
-When weights are available, either supplied by the user, or computed as part of the fit, they are returned in `data`. Having weights available allows encoding them using colour. We here use a robust regression fit with `MASS::rlm()`.
-
-```{r, fig.width = 7, fig.height = 5}
-ggplot(mpg, aes(displ, hwy)) +
-  stat_poly_eq(use_label("eq", "R2", "method"), 
-               label.x = "right",
-               method = robustbase::lmrob) +
-  stat_poly_line(method = robustbase::lmrob, colour = "black") +
-  stat_fit_deviations(method = robustbase::lmrob,
-                      mapping = aes(colour = after_stat(robustness.weights)),
-                      show.legend = TRUE,
-                      geom = "point") +
-  scale_color_gradient(name = "Robustness weights",
-                       low = "red", high = "blue", limits = c(0, 1)) +
-  theme(legend.position = "top")
-```
-
-```{r, fig.width = 7, fig.height = 5}
-my.formula <- y ~ poly(x, 2, raw = TRUE)
-ggplot(mpg, aes(displ, hwy)) +
-  stat_poly_eq(use_label("eq", "R2", "method"), 
-               formula = my.formula,
-               label.x = "right",
-               method = robustbase::lmrob) +
-  stat_poly_line(method = robustbase::lmrob, 
-                 formula = my.formula,
-                 colour = "black") +
-  stat_fit_deviations(method = robustbase::lmrob,
-                      mapping = aes(colour = after_stat(robustness.weights)),
-                      formula = my.formula,
-                      show.legend = TRUE,
-                      geom = "point") +
-  scale_color_gradient(name = "Robustness weights",
-                       low = "red", high = "blue", limits = c(0, 1)) +
-  theme(legend.position = "top")
-```
-
-### Resistant regression ('MASS')
-
-```{r}
-print(citation(package = "MASS", auto = TRUE), bibtex = FALSE)
-```
-
-Package 'MASS' provides function `lqs()` for "Resistant Regression". The returned value is an `"lqs"` object. Class `"rlm"` is not derived from `"lm"` but the structure is similar. However, we need to be aware that no $R^2$ or $P$ estimates are available and the corresponding labels are empty strings.
-
-
-```{r, fig.width = 7, fig.height = 5}
-library(MASS)
-
-ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
-  geom_point() +
-  stat_poly_line(method = MASS::lqs) +
-  stat_poly_eq(method = MASS::lqs, mapping = use_label("eq", "n"),
-               label.x = "right")
-```
-
-Fitted values and deviations highlighted.
 
 ```{r, fig.width = 7, fig.height = 5}
 ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
-  stat_fit_fitted(method = MASS::lqs, colour = "red") +
-  stat_fit_deviations(method = MASS::lqs, colour = "red") +
-  geom_point()
-```
-
-Residuals plotted.
-
-```{r, fig.width = 7, fig.height = 5}
-ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
-  stat_fit_residuals(method = MASS::lqs)
-```
-
-```{r}
-ggplot(mpg, aes(displ, hwy)) +
-  geom_point() +
-  stat_poly_line(method = MASS::lqs, se = FALSE) +
-  stat_poly_eq(method = MASS::lqs, mapping = use_label("eq", "n"),
-               label.x = "right") +
-  theme(legend.position = "bottom") +
-  facet_wrap(~class, ncol = 2)
-```
-
-Weights are currently not available for `MASS::lqs()` and `NA` vectors are returned instead. To highlight the LTS weights, `rosbustbase::ltsReg()` can be used as shown in the next section. 
-
-```{r, fig.width = 7, fig.height = 5}
-ggplot(mpg, aes(displ, hwy)) +
-  stat_poly_eq(use_label("eq", "n", "method"), 
-               label.x = "right",
-               method = MASS::lqs) +
-  stat_poly_line(method = "lqs:lms", colour = "black") +
-  stat_fit_deviations(method = MASS::lqs,
-                      mapping = 
-                        aes(colour = factor(after_stat(robustness.weights))),
-                      show.legend = TRUE,
-                      geom = "point") +
-  scale_color_manual(name = "LTS weights",
-                     values = c("0" = "red", "1" = "black")) +
-  theme(legend.position = "top")
-```
-
-```{r, fig.width = 7, fig.height = 5}
-my.formula <- y ~ poly(x, 2, raw = TRUE)
-ggplot(mpg, aes(displ, hwy)) +
-  stat_poly_eq(use_label("eq", "n", "method"), 
-               formula = my.formula,
-               label.x = "right",
-               method = MASS::lqs) +
-  stat_poly_line(method = "lqs:lms", 
-                 formula = my.formula,
-                 colour = "black") +
-  stat_fit_deviations(mapping = 
-                        aes(colour = factor(after_stat(robustness.weights))),
-                      method = MASS::lqs,
-                      formula = my.formula,
-                      show.legend = TRUE,
-                      geom = "point") +
-  scale_color_manual(name = "LTS weights",
-                     values = c("0" = "red", "1" = "black")) +
+  geom_hline(yintercept = 0, linetype = "dotted") +
+  stat_fit_residuals(method = "lmrob",
+                     resid.type = "response",
+                     mapping = aes(colour = after_stat(robustness.weights)),
+                     show.legend = TRUE,
+                     geom = "point") +
+  labs(y = "Response residuals") +
+  scale_color_gradient(low = "red", high = "blue", limits = c(0, 1)) +
   theme(legend.position = "top")
 ```
 
@@ -332,91 +253,65 @@ ggplot(mpg, aes(displ, hwy)) +
 print(citation(package = "robustbase", auto = TRUE), bibtex = FALSE)
 ```
 
+```{r}
+library(robustbase)
+```
+
 Package 'robustbase' provides function `ltsReg()` for "least trimmed squares" regression. The returned value is an `"lts"` object. The usual accessors functions are available for Class `"lts"`.
 
+Package 'MASS' provides function `lqs()` for "Resistant Regression". The recommended `method` for this function is `"lts"`. Thus, using function `ltsReg()` from package 'robustbase' is preferable as not all the usual accessors are available when using `lqs()`. If needed, `lqs()` is also, partly supported by 'ggpmisc', but no example is shown.
+
+A few examples are given, as the only change to the code from the previous sections is in the argument passed to parameter `method`. The first plot is what I consider suitable for use in reports.
 
 ```{r, fig.width = 7, fig.height = 5}
-library(robustbase)
-
 ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
-  geom_point() +
-  stat_poly_line(method = robustbase::ltsReg) +
-  stat_poly_eq(method = robustbase::ltsReg, mapping = use_label("eq", "n"),
-               label.x = "right")
+  stat_poly_line(method = "lts") +
+  stat_poly_eq(use_label("eq", "n", "method"), 
+               label.x = "right",
+               method = "lts") +
+  stat_fit_deviations(method = "lts",
+                      mapping = aes(colour = after_stat(robustness.weights)),
+                      show.legend = TRUE,
+                      geom = "point") +
+  scale_color_gradient(low = "red", high = "blue", limits = c(0, 1)) +
+  theme(legend.position = "top")
 ```
 
 Fitted values and deviations highlighted.
 
+
 ```{r, fig.width = 7, fig.height = 5}
 ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
-  stat_fit_fitted(method = robustbase::lmrob, colour = "red") +
-  stat_fit_deviations(method = robustbase::lmrob, colour = "red") +
-  geom_point()
+  stat_poly_line(method = "lts") +
+  stat_fit_fitted(method = "lts", shape = "cross") +
+  stat_fit_deviations(method = "lts", linewidth = 0.3) +
+  stat_fit_deviations(method = "lts",
+                      mapping = aes(colour = after_stat(robustness.weights)),
+                      show.legend = TRUE,
+                      geom = "point")+
+  scale_color_gradient(low = "red", high = "blue", limits = c(0, 1)) +
+  theme(legend.position = "top")
 ```
 
 Residuals plotted.
 
 ```{r, fig.width = 7, fig.height = 5}
 ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
-  stat_fit_residuals(method = robustbase::ltsReg)
-```
-
-
-```{r}
-library(robustbase)
-
-ggplot(mpg, aes(displ, hwy)) +
-  geom_point() +
-  stat_poly_line(method = robustbase::ltsReg, se = FALSE) +
-  stat_poly_eq(method = robustbase::ltsReg, mapping = use_label("eq", "n"),
-               label.x = "right") +
-  theme(legend.position = "bottom") +
-  facet_wrap(~class, ncol = 2)
-```
-
-_If no `predict()` method is found for a model fit object, `stat_poly_line()` searches for method `fitted()`,
-which is nearly always available. This is how the `"lts"` objects returned by
-`robustbase::ltsReg()` are by default supported._ 
-
-For a linear regression, unless extrapolation is attempted this makes little, if any, difference to the
-line but no confidence band is displayed. With higher degree polynomials and sparse data this approach can result in
-a curve that is not smooth. It is possible for users to define the missing
-specialization for the `predict()` method. Predicting the fitted line using `coefficients()` and the known `formula` is straightforward, while estimating a prediction confidence band can be more difficult.
-
-```{r, fig.width = 7, fig.height = 5}
-ggplot(mpg, aes(displ, hwy)) +
-  stat_poly_eq(use_label("eq", "R2", "method"), 
-               label.x = "right",
-               method = robustbase::ltsReg) +
-  stat_poly_line(method = robustbase::ltsReg, colour = "black") +
-  stat_fit_deviations(mapping = aes(colour = factor(after_stat(robustness.weights))),
-                      geom = "point",
-                      method = robustbase::ltsReg,
-                      show.legend = TRUE) +
-  scale_color_manual(name = "LTS weights",
-                     values = c("0" = "red", "1" = "blue")) +
+  geom_hline(yintercept = 0, linetype = "dotted") +
+  stat_fit_residuals(method = "lts",
+                     mapping = aes(colour = after_stat(robustness.weights)),
+                     show.legend = TRUE,
+                     geom = "point") +
+  labs(y = "Response residuals") +
+  scale_color_gradient(low = "red", high = "blue", limits = c(0, 1)) +
   theme(legend.position = "top")
 ```
 
-```{r, fig.width = 7, fig.height = 5}
-my.formula <- y ~ poly(x, 2, raw = TRUE)
-ggplot(mpg, aes(displ, hwy)) +
-  stat_poly_eq(use_label("eq", "R2", "method"), 
-               label.x = "right",
-               formula = my.formula,
-               method = robustbase::ltsReg) +
-  stat_poly_line(method = robustbase::ltsReg, 
-                 formula = my.formula,
-                 colour = "black") +
-  stat_fit_deviations(mapping = aes(colour = factor(after_stat(robustness.weights))),
-                      formula = my.formula,
-                      geom = "point",
-                      method = robustbase::ltsReg,
-                      show.legend = TRUE) +
-  scale_color_manual(name = "LTS weights",
-                     values = c("0" = "red", "1" = "blue")) +
-  theme(legend.position = "top")
-```
+In the examples above the argument passed was `method = "lts"`, which is a convenience short notation equivalent to `method = robustbase::ltsReg`.
+
+## Use of variance covariates
+
+_Generalised least squares_ (GLS) is an extension to OLS that makes it possible to describe how the variance of the response _y_ varies. GLS supports description of heterogeneous variance by means of variance covariates and correlation structures.
 
 ### General Least Squares ('nlme')
 
@@ -424,20 +319,22 @@ ggplot(mpg, aes(displ, hwy)) +
 print(citation(package = "nlme", auto = TRUE), bibtex = FALSE)
 ```
 
-In 'ggpmisc' (>= 0.6.2) function `gls()` from package 'nlme' is supported natively by functions `stat_poly_line()` and `stat_poly_eq()`. In this example, using a variance covariate, the computations do not converge with the data in one of the plot panels.
+```{r}
+library(nlme)
+```
 
+In 'ggpmisc' (>= 0.6.2) function `gls()` from package 'nlme' is supported natively by functions `stat_poly_line()` and `stat_poly_eq()`. In this example, using a variance covariate. _Currently, support is limited in 'ggpmisc' to the prediction line,
+and labels.
 
 ```{r, fig.width = 7, fig.height = 5}
-library(nlme)
-
 ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
    geom_point() +
-   stat_poly_line(method = gls, 
-                  method.args = list(weights = varPower()), 
+   stat_poly_line(method = "gls", 
+                  method.args = list(weights = nlme::varPower()), 
                   se = FALSE) +
-   stat_poly_eq(method = gls, 
-                method.args = list(weights = varPower()),
-                mapping = use_label("eq"),
+   stat_poly_eq(method = "gls", 
+                method.args = list(weights = nlme::varPower()),
+                mapping = use_label("eq", "n", "method"),
    label.x = "right")
 ```
 
@@ -445,12 +342,15 @@ Fitted values and deviations highlighted.
 
 ```{r, fig.width = 7, fig.height = 5}
 ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
-  stat_fit_fitted(method = gls, 
-                  method.args = list(weights = varPower()),
-                  colour = "red") +
-  stat_fit_deviations(method = gls, 
-                  method.args = list(weights = varPower()),
-                  colour = "red") +
+   stat_poly_line(method = "gls", 
+                  method.args = list(weights = nlme::varPower()), 
+                  se = FALSE) +
+  stat_fit_fitted(method = "gls", 
+                  method.args = list(weights = nlme::varPower()),
+                  shape = "cross") +
+  stat_fit_deviations(method = "gls", 
+                  method.args = list(weights = nlme::varPower()),
+                  linewidth = 0.3) +
   geom_point()
 ```
 
@@ -458,24 +358,36 @@ Residuals plotted.
 
 ```{r, fig.width = 7, fig.height = 5}
 ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
-  stat_fit_residuals(method = gls, 
-                     method.args = list(weights = varPower()))
+  geom_hline(yintercept = 0, linetype = "dotted") +
+  stat_fit_residuals(method = "gls", 
+                     method.args = list(weights = nlme::varPower()),
+                     resid.type = "response") +
+  labs(y = "Response residuals")
 ```
 
-
-```{r}
-ggplot(mpg, aes(displ, hwy)) +
-   geom_point() +
-   stat_poly_line(method = gls, 
-                  method.args = list(weights = varPower()), 
-                  se = FALSE) +
-   stat_poly_eq(method = gls, 
-                method.args = list(weights = varPower()),
-                mapping = use_label("eq"),
-   label.x = "right") +
-   theme(legend.position = "bottom") +
-   facet_wrap(~class, ncol = 2)
+```{r, fig.width = 7, fig.height = 5}
+ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
+  geom_hline(yintercept = 0, linetype = "dotted") +
+  stat_fit_residuals(method = "gls", 
+                     method.args = list(weights = nlme::varPower()),
+                     resid.type = "pearson") +
+  labs(y = "Pearson residuals")
 ```
+
+```{r, fig.width = 7, fig.height = 5}
+ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
+  geom_hline(yintercept = 0, linetype = "dotted") +
+  stat_fit_residuals(method = "gls", 
+                     method.args = list(weights = nlme::varPower()),
+                     resid.type = "normalized") +
+  labs(y = "Normalized residuals")
+```
+
+## Splines
+
+Splines are used when a flexible curve is required to efficiently describe a relationship between variables. Splines are composed of segments connected at knots. The simplest possible are linear splines where each segment is a straight line. In higher degree splines the segments are polynomials and conditions are imposed to ensure continuity at knots even for their derivative, to ensure smooth transition at each not. Except for linear splines the fitted parameters for each segment and not locations are too complex to be informative.
+
+Even when model fit equations are not useful or are not generated automatically, other labels constructed by `stat_poly_eq()` remain useful. This stat not only returns ready made labels but also numeric values for parameter estimates.
 
 ### Linear Splines ('lspline')
 
@@ -483,14 +395,15 @@ ggplot(mpg, aes(displ, hwy)) +
 print(citation(package = "lspline", auto = TRUE), bibtex = FALSE)
 ```
 
-Package 'lspline' provides functions that can be used to fit linear splines with function `lm()`. These functions are called from the model formula, and do not fit the change points where the knots are located. These functions, `lspline()`, `qlspline()` amd `elspline()` can be used
-directly in the model formula passed to `stat_poly_line()`. They can be used also with `stat_poly_eq()` but the equation label returned is incorrect, with the terms for the different segments displayed as the terms for the powers of a polynomial. Thus, it is necessary to construct in the call to `aes()` the equations for the different segments. The other labels are correctly generated.
+```{r}
+library(lspline)
+```
+
+Package 'lspline' provides functions that can be used to fit linear splines with function `lm()`. These functions are called from the model formula, and do not fit the change points where the knots are located. These functions, `lspline()`, `qlspline()` amd `elspline()` can be used directly in the model formula passed to `stat_poly_line()`. They can be used also with `stat_poly_eq()` but the equation label returned is incorrect, with the terms for the different segments displayed as the terms for the powers of a polynomial. Thus, it is necessary to construct in the call to `aes()` the equations for the different segments. The other labels are correctly generated.
 
 ```{r, fig.width = 7, fig.height = 5}
-library(lspline) # attachment needed for methods to be available
-
 cp <- 4.1 # a guess
-my.formula <- y ~ lspline(x, knots = cp)
+my.formula <- y ~ lspline::lspline(x, knots = cp)
 
 ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
@@ -518,36 +431,49 @@ Plotting fitted values and observations.
 
 ```{r, fig.width = 7, fig.height = 5}
 ggplot(mpg, aes(displ, hwy)) +
+  stat_poly_line(method = "lm", 
+                 formula = my.formula) +
   geom_point() +
   stat_fit_fitted(method = "lm", formula = my.formula, 
-                  colour = "red", alpha = 0.5)
+                  shape = "cross", alpha = 0.5)
 ```
 
 Adding deviations.
 
 ```{r, fig.width = 7, fig.height = 5}
 ggplot(mpg, aes(displ, hwy)) +
+  stat_poly_line(method = "lm", 
+                 formula = my.formula) +
   geom_point() +
-  stat_fit_deviations(method = "lm", formula = my.formula) +
+  stat_fit_deviations(method = "lm", 
+                      formula = my.formula, 
+                      linewidth = 0.25) +
   stat_fit_fitted(method = "lm", formula = my.formula, 
-                  colour = "red", alpha = 0.5)
+                  shape = "cross", alpha = 0.5)
 ```
 
 Plotting residuals.
 
 ```{r, fig.width = 7, fig.height = 5}
 ggplot(mpg, aes(displ, hwy)) +
-  stat_fit_residuals(method = "lm", formula = my.formula)
+  geom_hline(yintercept = 0, linetype = "dotted") +
+  stat_fit_residuals(method = "lm", 
+                     formula = my.formula) +
+  labs(y = "Response residuals")
 ```
 
-It is posisble to use `rlm()` instead of `lm()`.
+It is possible to use `rlm()` or `lmrob()` instead of `lm()`, i.e., a robust approach instead of OLS. Here we use `method = "lmrob"`, combining the approach from the example of robust regression with the linear spline fitting above.
 
 ```{r, fig.width = 7, fig.height = 5}
 cp <- 4.1
 my.formula <- y ~ lspline(x, knots = cp)
 
 ggplot(mpg, aes(displ, hwy)) +
-  geom_point() +
+  stat_fit_deviations(formula = my.formula,
+                      method = "lmrob",
+                      mapping = aes(colour = after_stat(robustness.weights)),
+                      show.legend = TRUE,
+                      geom = "point") +
   stat_poly_eq(aes(label =
                      paste("\"L : \"*y~`=`~", round(after_stat(b_0), 2),
                            round(after_stat(b_1), 2), "~x",
@@ -555,17 +481,35 @@ ggplot(mpg, aes(displ, hwy)) +
                            round(after_stat(b_0) + cp * after_stat(b_1), 2), 
                            round(after_stat(b_2), 2), "~x",
                            sep = "")), 
-               parse = TRUE, output.type = "numeric",
+               parse = TRUE, 
+               output.type = "numeric",
                label.x = "right",
                formula = my.formula,
-               method = "rlm") +
-  stat_poly_eq(use_label("AIC"), 
+               method = "lmrob") +
+  stat_poly_eq(use_label("R2", "n", "method"), 
                label.x = "right",
                label.y = 0.87,
                formula = my.formula,
-               method = "rlm") +
-  stat_poly_line(method = "rlm", 
-                 formula = my.formula)
+               method = "lmrob") +
+  stat_poly_line(method = "lmrob", 
+                 formula = my.formula) +
+  scale_color_gradient(low = "red", high = "blue", limits = c(0, 1)) +
+  theme(legend.position = "top")
+```
+
+Plotting residuals.
+
+```{r, fig.width = 7, fig.height = 5}
+ggplot(mpg, aes(displ, hwy)) +
+  geom_hline(yintercept = 0, linetype = "dotted") +
+  stat_fit_residuals(method = "lmrob", 
+                     formula = my.formula,
+                     mapping = aes(colour = after_stat(robustness.weights)),
+                     show.legend = TRUE) +
+  scale_color_gradient(name = "Weights", 
+                       low = "red", high = "blue", 
+                       limits = c(0, 1),
+                       guide = "colourbar")
 ```
 
 ### Linear Splines ('segmented')
@@ -583,6 +527,10 @@ labels as shown in the examples below.
 print(citation(package = "segmented", auto = TRUE), bibtex = FALSE)
 ```
 
+```{r}
+library(segmented)
+```
+
 Function `segreg()` makes it possible to fit LM and GLM models that are
 segmented. Differently to 'lspline', the location of the change points or spline
 knots is estimated during model fitting in addition to estimating segment slopes
@@ -595,9 +543,11 @@ The model `formula = y ~ seg(x, npsi = 1)` requests a fit with a single change
 point, which being the default is equivalent to `formula = y ~ seg(x)`.
 
 ```{r, fig.width = 7, fig.height = 5}
-library(segmented)
+my.formula <- y ~ seg(x, npsi = 1)
 
 ggplot(mpg, aes(displ, hwy)) +
+  stat_poly_line(method = "segreg", 
+                 formula = my.formula)+
   geom_point() +
   stat_poly_eq(aes(label = 
                      paste("x[cp]~`=`~", 
@@ -617,15 +567,13 @@ ggplot(mpg, aes(displ, hwy)) +
                            sep = "")), 
                parse = TRUE, output.type = "numeric",
                label.x = "right",
-               formula = y ~ seg(x, npsi = 1),
-               method = segreg) +
+               formula = my.formula,
+               method = "segreg") +
   stat_poly_eq(use_label("R2", "P", "AIC"), 
                label.x = "right",
                label.y = 0.87,
-               formula = y ~ seg(x, npsi = 1),
-               method = segreg) +
-  stat_poly_line(method = segreg, 
-                 formula = y ~ seg(x, npsi = 1))
+               formula = my.formula,
+               method = "segreg")
 ```
 
 In the next example the slope of the second segment is fixed at zero to keep it
@@ -635,7 +583,11 @@ parameters are returned, the code to assemble the equation needs to be
 rewritten.
 
 ```{r, fig.width = 7, fig.height = 5}
+my.formula <- y ~ seg(x, npsi = 1, est = c(1, 0))
+
 ggplot(mpg, aes(displ, hwy)) +
+  stat_poly_line(method = "segreg", 
+                 formula = my.formula) +
   geom_point() +
   stat_poly_eq(aes(label = 
                      paste("x[cp]~`=`~",
@@ -653,50 +605,203 @@ ggplot(mpg, aes(displ, hwy)) +
                            sep = "")), 
                parse = TRUE, output.type = "numeric",
                label.x = "right",
-               formula = y ~ seg(x, npsi = 1, est = c(1, 0)),
-               method = segreg) +
+               formula = my.formula,
+               method = "segreg") +
   stat_poly_eq(use_label("R2", "P", "AIC"), 
                label.x = "right",
                label.y = 0.87,
-               formula = y ~ seg(x, npsi = 1, est = c(1, 0)),
-               method = segreg) +
-  stat_poly_line(method = segreg, 
-                 formula = y ~ seg(x, npsi = 1, est = c(1, 0)))
+               formula = my.formula,
+               method = "segreg")
 ```
 
 Highlighting fitted values.
 
 ```{r, fig.width = 7, fig.height = 5}
 ggplot(mpg, aes(displ, hwy)) +
+  stat_poly_line(method = "segreg", 
+                 formula = my.formula) +
   geom_point() +
-  stat_fit_fitted(method = segreg, 
-                 formula = y ~ seg(x, npsi = 1, est = c(1, 0)),
-                 colour = "red")
-```
-
-Highlighting fitted deviations.
-
-```{r, fig.width = 7, fig.height = 5}
-ggplot(mpg, aes(displ, hwy)) +
-  stat_fit_deviations(method = segreg, 
-                      formula = y ~ seg(x, npsi = 1, est = c(1, 0)),
-                      colour = "red") +
-    stat_fit_fitted(method = segreg, 
-                 formula = y ~ seg(x, npsi = 1, est = c(1, 0)),
-                 colour = "red") +
-  geom_point()
+  stat_fit_fitted(method = "segreg", 
+                 formula = my.formula,
+                 shape = "cross")
 ```
 
 Plot of residuals.
 
 ```{r, fig.width = 7, fig.height = 5}
 ggplot(mpg, aes(displ, hwy)) +
-  stat_fit_residuals(method = segreg, 
-                      formula = y ~ seg(x, npsi = 1, est = c(1, 0)))
+  geom_hline(yintercept = 0, linetype = "dotted") +
+  stat_fit_residuals(method = "segreg", 
+                      formula = my.formula)
 ```
 
-**Note:** The lines for cubic and other smoothing splines can be added to plots
+### Natural cubic splines ('splines')
+
+**Note:** The lines for cubic and other smoothing splines can be also added to plots
 with `stat_smooth()` from package 'ggplot2'.
+
+```{r}
+print(citation(package = "splines", auto = TRUE), bibtex = FALSE)
+```
+
+```{r}
+library(splines)
+```
+
+Standard package 'splines', part of the R distribution, provides functions that can be used to fit splines with function `lm()`. These functions are called from the model formula. Functions, `bs()` amd `ns()` can be used
+directly in the model formula passed to `stat_poly_line()`. They can be used with `stat_poly_eq()` but the equation label returned is incorrect. The other labels are correctly generated.
+
+```{r, fig.width = 7, fig.height = 5}
+cp <- 4.1 # a guess
+my.formula <- y ~ splines::ns(x, knots = cp)
+
+ggplot(mpg, aes(displ, hwy)) +
+  stat_poly_line(method = "lm", 
+                 formula = my.formula) +
+  geom_point() +
+  stat_poly_eq(use_label("R2", "P", "AIC"), 
+               label.x = "right",
+               formula = my.formula,
+               method = "lm")
+```
+
+Plotting fitted values and observations.
+
+```{r, fig.width = 7, fig.height = 5}
+ggplot(mpg, aes(displ, hwy)) +
+  stat_poly_line(method = "lm", 
+                      formula = my.formula) +
+  geom_point() +
+  stat_fit_fitted(method = "lm", formula = my.formula, 
+                  shape = "cross", alpha = 0.5)
+```
+
+Plotting residuals.
+
+```{r, fig.width = 7, fig.height = 5}
+ggplot(mpg, aes(displ, hwy)) +
+  geom_hline(yintercept = 0, linetype = "dotted") +
+  stat_fit_residuals(method = "lm", 
+                     formula = my.formula) +
+  labs(y = "Residuals")
+```
+
+It is possible to use `rlm()` or `lmrob()` instead of `lm()`.
+
+```{r, fig.width = 7, fig.height = 5}
+cp <- 4.1
+my.formula <- y ~ splines::ns(x, knots = cp)
+
+ggplot(mpg, aes(displ, hwy)) +
+  stat_fit_deviations(formula = my.formula,
+                      method = "lmrob",
+                      mapping = aes(colour = after_stat(robustness.weights)),
+                      show.legend = TRUE,
+                      geom = "point") +
+  stat_poly_eq(use_label("R2", "n", "method"), 
+               label.x = "right",
+               formula = my.formula,
+               method = "lmrob") +
+  stat_poly_line(method = "lmrob", 
+                 formula = my.formula) +
+  scale_color_gradient(low = "red", high = "blue", limits = c(0, 1)) +
+  theme(legend.position = "top")
+```
+
+Plotting residuals.
+
+```{r, fig.width = 7, fig.height = 5}
+ggplot(mpg, aes(displ, hwy)) +
+  geom_hline(yintercept = 0, linetype = "dotted") +
+  stat_fit_residuals(method = "rlm", 
+                     formula = my.formula,
+                     mapping = aes(colour = after_stat(robustness.weights)),
+                     show.legend = TRUE) +
+  scale_color_gradient(name = "Weights", 
+                       low = "red", high = "blue", 
+                       limits = c(0, 1),
+                       guide = "colourbar") +
+  labs(y = "Residuals")
+```
+
+### Polynomial splines ('splines')
+
+**Note:** The lines for cubic and other smoothing splines can be also added to plots
+with `stat_smooth()` from package 'ggplot2'.
+
+```{r}
+print(citation(package = "splines", auto = TRUE), bibtex = FALSE)
+```
+
+```{r}
+library(splines)
+```
+
+Standard package 'splines', part of the R distribution, provides functions that can be used to fit splines with function `lm()`. These functions are called from the model formula. Functions, `bs()` amd `ns()` can be used
+directly in the model formula passed to `stat_poly_line()`. They can be used with `stat_poly_eq()` but the equation label returned is incorrect. The other labels are correctly generated.
+
+```{r, fig.width = 7, fig.height = 5}
+cp <- 4.1 # a guess
+my.formula <- y ~ splines::bs(x, knots = cp)
+
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  stat_poly_eq(use_label("R2", "P", "AIC"), 
+               label.x = "right",
+               formula = my.formula,
+               method = "lm") +
+  stat_poly_line(method = "lm", 
+                 formula = my.formula)
+```
+
+
+Plotting residuals.
+
+```{r, fig.width = 7, fig.height = 5}
+ggplot(mpg, aes(displ, hwy)) +
+  geom_hline(yintercept = 0, linetype = "dotted") +
+  stat_fit_residuals(method = "lm", formula = my.formula) +
+  labs(y = "Residuals")
+```
+
+It is posisble to use `rlm()` or `lmrob()` instead of `lm()`.
+
+```{r, fig.width = 7, fig.height = 5}
+cp <- 4.1
+my.formula <- y ~ splines::bs(x, knots = cp)
+
+ggplot(mpg, aes(displ, hwy)) +
+  stat_fit_deviations(formula = my.formula,
+                      method = "lmrob",
+                      mapping = aes(colour = after_stat(robustness.weights)),
+                      show.legend = TRUE,
+                      geom = "point") +
+  stat_poly_eq(use_label("R2", "n", "method"), 
+               label.x = "right",
+               formula = my.formula,
+               method = "lmrob") +
+  stat_poly_line(method = "lmrob", 
+                 formula = my.formula) +
+  scale_color_gradient(low = "red", high = "blue", limits = c(0, 1)) +
+  theme(legend.position = "top")
+```
+
+
+Plotting residuals.
+
+```{r, fig.width = 7, fig.height = 5}
+ggplot(mpg, aes(displ, hwy)) +
+  geom_hline(yintercept = 0, linetype = "dotted") +
+  stat_fit_residuals(method = "lmrob", 
+                     formula = my.formula,
+                     mapping = aes(colour = after_stat(robustness.weights)),
+                     show.legend = TRUE) +
+  scale_color_gradient(name = "Weights", 
+                       low = "red", high = "blue", 
+                       limits = c(0, 1),
+                       guide = "colourbar") +
+  labs(y = "Residuals")
+```
 
 ## User defined functions
 
@@ -725,6 +830,8 @@ fit_or_not <- function(formula, data, ..., orientation = "x") {
 Instead of using `lm()` as method, we pass our wrapper function `fit_or_not()` as method. As the function returns either an `"lm"` object from the wrapped call to `lm()` or `NA`, the call to the statistics can make use of all other features as needed.
 
 ```{r}
+#| fig.asp: 1.25
+
 ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
   stat_poly_line(method = "fit_or_not") +
@@ -737,14 +844,8 @@ ggplot(mpg, aes(displ, hwy)) +
 ```
 
 ```{r}
-ggplot(mpg, aes(displ, hwy)) +
-  geom_point(size = 0.25) +
-  stat_fit_fitted(method = "fit_or_not", colour = "red", size = 0.25) +
-  stat_fit_deviations(method = fit_or_not, linewidth = 0.25) +
-  facet_wrap(~class, ncol = 2)
-```
+#| fig.asp: 1.25
 
-```{r}
 ggplot(mpg, aes(displ, hwy)) +
   stat_fit_residuals(method = "fit_or_not") +
   facet_wrap(~class, ncol = 2)
@@ -773,17 +874,20 @@ poly_or_mean <- function(formula, data, ...) {
 Function `poly_or_mean()`, just defined, or its name is paased as the argument for `method`.
 
 ```{r}
+#| fig.asp: 1.25
+
 ggplot(mpg, aes(displ, hwy)) +
    geom_point() +
    stat_poly_line(method = "poly_or_mean") +
    stat_poly_eq(method = poly_or_mean,
                mapping = use_label("eq", "R2"),
                label.x = "right") +
-   theme(legend.position = "bottom") +
    facet_wrap(~class, ncol = 2)
 ```
 
 ```{r}
+#| fig.asp: 1
+
 ggplot(mpg, aes(displ, hwy, color = class)) +
    geom_point() +
    stat_poly_line(method = "poly_or_mean") +
@@ -814,25 +918,31 @@ best_poly_lm <- function(formula, data, ...) {
 We then use our function `best_poly_lm()` as the method.
 
 ```{r}
+#| fig.asp: 1.25
+
 ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
-  stat_poly_line(formula = y ~ poly(x, 3, raw = TRUE), method = "best_poly_lm") +
-  stat_poly_eq(formula = y ~ poly(x, 3, raw = TRUE), method = "best_poly_lm",
-               mapping = use_label("eq", "AIC"),
-               size = 2.8,
+  stat_poly_line(formula = y ~ poly(x, 3, raw = TRUE), 
+                 method = "best_poly_lm") +
+  stat_poly_eq(formula = y ~ poly(x, 3, raw = TRUE), 
+               method = "best_poly_lm",
+               mapping = use_label("eq"),
                label.x = "right") +
   expand_limits(y = c(0, 65)) +
   facet_wrap(~class, ncol = 2)
 ```
 
 ```{r}
+#| fig.asp: 1
+
 ggplot(mpg, aes(displ, hwy, color = class)) +
   geom_point() +
   stat_poly_line(formula = y ~ poly(x, 3, raw = TRUE), method = "best_poly_lm") +
   stat_poly_eq(formula = y ~ poly(x, 3, raw = TRUE), method = "best_poly_lm",
                mapping = use_label("eq", "AIC"),
-               label.x = "right") +
-  expand_limits(y = c(0, 60)) +
+               label.x = "right",
+               vstep = 0.035) +
+  expand_limits(y = 45) +
   theme(legend.position = "top")
 ```
 
@@ -853,6 +963,11 @@ Package 'segmented' implements methods for fitting models with change points. Th
 ```{r}
 print(citation(package = "segmented", auto = TRUE), bibtex = FALSE)
 ```
+
+```{r}
+library(segmented)
+```
+
 The code here, is equivalent to that shown above based on model-fit function
 `segreg()` also from package 'segmented'. The difference is that when using
 `segmented()` the fitting is done in two steps. In this case there is no need 
@@ -878,8 +993,6 @@ functions, models with multiple explanatory variables are rarely used with
 'ggplot2' stats.
 
 ```{r, fig.width = 7, fig.height = 5}
-library(segmented)
-
 lm2segmented.lm <- 
   function(formula,
            data, 
@@ -887,7 +1000,7 @@ lm2segmented.lm <-
            psi = median(data$x), # starting value(s) for knot(s)
            npsi = 1, # number of knots if psi is not given
            fixed.psi = NULL, # breakpoint not to be modified by fitting
-           control = segmented::seg.control(), 
+           control = seg.control(), 
            ...) {
     obj <- lm(formula = formula, data = data, ...)
     segmented(obj = obj, 
@@ -898,7 +1011,7 @@ lm2segmented.lm <-
               control = control, 
               model = TRUE, 
               keep.class = FALSE)
-}
+  }
 ```
 
 ```{r, fig.width = 7, fig.height = 5}
@@ -910,14 +1023,9 @@ ggplot(mpg, aes(displ, hwy)) +
 
 ```{r, fig.width = 7, fig.height = 5}
 ggplot(mpg, aes(displ, hwy)) +
-  stat_fit_deviations(method = lm2segmented.lm, colour = "red") +
-  geom_point() +
-  stat_fit_fitted(method = lm2segmented.lm, colour = "red")
-```
-
-```{r, fig.width = 7, fig.height = 5}
-ggplot(mpg, aes(displ, hwy)) +
-  stat_fit_residuals(method = lm2segmented.lm)
+  geom_hline(yintercept = 0, linetype = "dotted") +
+  stat_fit_residuals(method = lm2segmented.lm) +
+  labs(y = "Residuals")
 ```
 
 ```{r, fig.width = 7, fig.height = 5}
@@ -925,7 +1033,7 @@ ggplot(mpg, aes(displ, hwy)) +
 ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
   stat_poly_line(method = lm2segmented.lm,
-  method.args = list(psi = c(3, 5)))
+                 method.args = list(psi = c(3, 5)))
 ```
 
 A more complex example with labels, assembled within the call to `aes()`. In addition to the intercept and slope for the leftmost segment, it returns the slope for each segment to the right of the first one, but not their intercepts. As `segment()` fits and returns the position of the knots, which are also returned by
@@ -974,6 +1082,10 @@ In this section I show a situation I faced when trying to use package 'refitME'.
 print(citation(package = "refitME", auto = TRUE), bibtex = FALSE)
 ```
 
+```{r}
+library(refitME)
+```
+
 As 'refitME' functions return a model fit object of the same class as that received as input, a model fitted with `lm()` could be, in principle, refit in a user-defined wrapper function as those above, calling first `lm()` and re-fitting the obtained model with a `refitME::refitME()` as shown in the code chunk below. However, at the moment the functions in package 'refitME' fail when called from within another function.
 
 ```{r, eval=FALSE}
@@ -1008,8 +1120,6 @@ I have reported the problem through a [GitHub issue](https://github.com/JakubSta
 
 ```{r}
 rm(list = ls(pattern = "*"))
-
-library(refitME)
 
 lm_EIV <- function(formula, data, ..., sigma.sq.u) {
   assign("my.data", value = data, envir = globalenv())

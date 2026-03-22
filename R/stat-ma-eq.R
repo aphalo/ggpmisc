@@ -421,7 +421,9 @@ ma_eq_compute_group_fun <- function(data,
                                     output.type = "expression",
                                     na.rm = FALSE,
                                     orientation = "x") {
-  force(data)
+
+
+  rlang::check_installed("lmodel2", reason = "to use stat_ma_eq()")
 
   if (length(unique(data$x)) < n.min ||
       length(unique(data$y)) < n.min) {
