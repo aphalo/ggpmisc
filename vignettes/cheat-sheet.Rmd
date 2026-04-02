@@ -14,15 +14,25 @@ vignette: >
 
 ## Basics
 
-**ggpmisc** is based on the **grammar of graphics** implemented in **ggplot2**, the idea that you can build every graph from the same components: a **data** set, a **coordinate system**, and **geoms**---visual marks that represent data points. If you are not already familiar with this grammar and **ggplot2** you should visit the [**ggplot2** Cheat Sheet](https://rstudio.github.io/cheatsheets/html/data-visualization.html) first, and afterwards come back to this Cheat Sheet.
+**ggpmisc** follows the **grammar of graphics** implemented in **ggplot2**, based on the idea that many different data visualizations can be built by combining the same components: a **data** set, a **coordinate system**, and **geoms**---visual marks that represent data or summaries derived from data. These elements are complemented by **stats** that computate data summaries to be passed to **geoms** and **scales** that describe the mapping of data into graphical elements. 
 
-Differently to **ggplot2**, no geometries with the new stats as default are provided. The plot layers described here are always added with a _stat_, and when necessary, their default `geom` argument can be overridden. The default _geoms_ for the statistics described below are from packages **ggplot2** and **ggpp**.
+There are multiple variations of each element of the grammar, providing a vocabulary. Thus, the grammar allows you to ‘speak/write’ a graph from composable elements, instead of being limited to a predefined set of charts. 'ggpmisc' adds new **stats** and **scales**, expanding the vocabulary while remaining consistent with the grammar. 
+
+If you are not already familiar with the grammar of graphics and **ggplot2** you should visit the [**ggplot2** Cheat Sheet](https://rstudio.github.io/cheatsheets/html/data-visualization.html) first, and afterwards come back to this Cheat Sheet.
+
+Differently to **ggplot2**, no geometries with the new stats as their default are provided. The plot layers described here are always added with a _stat_, and when necessary, their default `geom` argument can be overridden. The default _geoms_ used by the statistics described below are from packages **ggplot2** and **ggpp**.
 
 ```{r, eval=FALSE}
 library(ggpmisc)
 ```
 
-Most of the layer functions in **ggpmisc** aim at making it easier to add to plots information derived from model fitting, tests of significance and some summaries. All layer functions work as expected with groups and facets. 
+Most of the layer functions in **ggpmisc** aim at making it easier to add to plots information derived from model fitting, tests of significance and statistical summaries. All the **stats** from 'ggpmisc' do computations by group except for `stat_fit_tb()` that does computations by panel. 
+
+The statistics returning predicted values for regressions return `x` and `y` where one of the variables is a sequence of numbers for the explanatory variables and the other contains the predictions based on them; `ymin` and `ymax`, or `xmin` and `xmax`, give the lower and upper confidence limits.
+
+The statistics returning fitted or residual values return these values as variables `y.fitted`  or `x.fitted`, `y.resid` or `x.resid`, `weights` and `robustness.weights`. Variables `x` and `y` contain the observed values. When present `weights` are the _prior_ weights, and `robustness.weights` are weights computed or actually used by the model fit function. 
+
+The statistics that return text labels for annotating plots, return in `x` and `y` the values passed as arguments to parameters `label.x` and ` label.y`. The character strings are returned as variables with names ending in `.label`. These variables can be used in mappings created with `aes()` or with `use_label()`. The difference is that `use_label()` accepts short names for the labels, recognizes them as computed by the stat and pastes them into a single character string (e.g., `use_label("eq", "R2", "n", sep = ", ")` is equivalent to `aes(paste(after_stat("eq.label"), after_stat("rr.label"), after_stat("n.label), sep = ", ")`, saving some typing. In most cases numeric values for the parameter estimates are also returned.
 
 ## Correlation
 
@@ -30,23 +40,23 @@ Most of the layer functions in **ggpmisc** aim at making it easier to add to plo
 
 ## Fitted models
 
-The statistics for fitted models come in matched pairs, one that adds a plot layer with one or more curves and confidence band(s), and one that annotates the plot with the fitted model equation and/or other parameter estimates. These depend on the type of fitted model and include $R^2$, $F$, $P$, $AIC$, $BIC$, and $n$. The curve plotting stats are similar to `ggplot2::stat_smooth()` but the ones for textual annotations have no equivalent in 'ggplot2'.
+The statistics for fitted models come in matched pairs, one that adds a plot layer with one or more curves and confidence band(s), and one that annotates the plot with the fitted model equation and/or other parameter estimates. These depend on the type of fitted model and include $R^2$, $F$, $P$, $AIC$, $BIC$, and $n$. The curve plotting stats fulfil a similar role to `ggplot2::stat_smooth()` while the ones for textual annotations have no equivalent in 'ggplot2'.
 
-* `stat_poly_line()` and `stat_poly_line()` are the pair supporting a broader set of model fit functions: e.g., linear models (OLS, resistant and robust), linear splines, general linear model (gls), major axis (MA) and standardised major axis (SMA) regression, etc.
+* `stat_poly_line()` and `stat_poly_line()` are the pair supporting a broader set of model fit functions: e.g., linear models (OLS, resistant and robust), general linear model (gls), linear splines, cubic splines, aditive models (gam), major axis (MA) and standardised major axis (SMA) regression, etc. The fitted model equation is automatically generated for polynomials, but can be assembled manually for other model formulas.
 
-* `stat_quant_line()`, `stat_quant_band()` and `stat_quant_eq()` support quantile regression  (using 'quantreg').
+* `stat_quant_line()`, `stat_quant_band()` and `stat_quant_eq()` support quantile regression based on both polynomials and smoothing splines (using 'quantreg').
 
 * `stat_ma_line()` and `stat_ma_eq()` support major axis (MA), standardised major axis (SMA) and ranged major axis (RMA) regression (using 'lmodel2').
 
-* `stat_fit_augment()` works with model fit functions supported by `broom::augment()` methods including non-linear models.
+* `stat_fit_augment()` works with model fit functions supported by `broom::augment()` methods including non-linear models. Providing an alternative to `stat_poly_line()` for a broader range of model fit functions. 
 
-* `stat_fit_tidy()` works with model fit functions supported by `broom::tidy()` methods including non-linear models.
+* `stat_fit_tidy()` works with model fit functions supported by `broom::tidy()` methods including non-linear models. Provides numeric values from which labels can be created for a broader range of model fit functions than those suppoerted by `stat_poly_eq()`
 
-* `stat_fit_fitted()` and `stat_fit_deviations()` can be used to highlight the fitted values and their distance to the observations in a scatterplot in combination with the statistics above.
+* `stat_fit_fitted()` and `stat_fit_deviations()` can be used to highlight the fitted values and their distance to the observations in a scatterplot supporting a wide range of model fit functions.
 
-* `stat_fit_residuals()` can be used to create consistent plots of residuals for many different model fit functions.
+* `stat_fit_residuals()` can be used to create consistent plots of residuals for many different model fit functions supporting a wide range of model fit functions.
 
-* `stat_distrmix_line()` and `stat_distrmix_eq()` support univariate Normal distribution mixture models.
+* `stat_distrmix_line()` and `stat_distrmix_eq()` support fitting of univariate Normal-distribution mixture models or a of a single Normal distribution.
 
 ## ANOVA or summary tables
 
