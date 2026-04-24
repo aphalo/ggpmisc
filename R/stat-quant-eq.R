@@ -461,7 +461,11 @@ stat_quant_eq <- function(mapping = NULL,
   }
 
   # is the model formula that of complete and increasing polynomial?
-  mk.eq.label <- output.type != "numeric" && check_poly_formula(formula, orientation)
+  mk.eq.label <- output.type != "numeric" &&
+    check_poly_formula(formula,
+                       orientation,
+                       check.transf.lhs = !is.character(eq.with.lhs),
+                       check.transf.rhs = !is.character(eq.x.rhs))
 
   ggplot2::layer(
     data = data,

@@ -215,6 +215,7 @@ test_that("quant_formulas", {
                                 ggplot(my.data, aes(x, y)) +
                                   geom_point() +
                                   stat_quant_eq(formula = y ~ I(x), parse = TRUE,
+                                                eq.x.rhs = "~italic(x)",
                                                 mapping =
                                                   aes(label = paste(after_stat(eq.label),
                                                                     after_stat(rho.label),
@@ -361,6 +362,7 @@ test_that("quant_formulas", {
                                 ggplot(my.data, aes(x, y)) +
                                   geom_point() +
                                   stat_quant_eq(formula = x ~ I(y), parse = TRUE,
+                                                eq.x.rhs = "~italic(y)",
                                                 mapping =
                                                   aes(label = paste(after_stat(eq.label),
                                                                     after_stat(rho.label),

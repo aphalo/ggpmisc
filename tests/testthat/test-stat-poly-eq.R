@@ -356,6 +356,7 @@ test_that("poly_formulas", {
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
                                 stat_poly_eq(formula = y ~ I(x), parse = TRUE,
+                                             eq.x.rhs = "~italic(x)",
                                              mapping =
                                                aes(label = paste(after_stat(eq.label),
                                                                  after_stat(adj.rr.label),

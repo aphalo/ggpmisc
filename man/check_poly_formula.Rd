@@ -7,7 +7,18 @@
 check_poly_formula(
   formula,
   x.name = "x",
-  warning.text = "'formula' not an increasing polynomial: 'eq.label' is NA!"
+  warn.incr.poly.text = "'formula' not an increasing polynomial: 'eq.label' set to NA!",
+  warn.transf.rhs.txt =
+    "rhs includes transformations requiring an argument for 'eq.x.rhs': 'eq.label' set to NA!.",
+  warn.transf.lhs.txt =
+    "lhs includes transformations requiring an argument for 'eq.with.lhs': 'eq.label' set to NA!.",
+  warn.as.is.txt =
+    "Power (^) terms in model formula of a polynomial need to be protected by 'I()': 'eq.label' set to NA!.",
+  warn.poly.raw.txt =
+    "'poly()' in model formula has to be passed 'raw = TRUE': 'eq.label' set to NA!",
+  stop.pow.poly.text = "Both 'poly()' and power (^) terms in model formula.",
+  check.transf.rhs = TRUE,
+  check.transf.lhs = TRUE
 )
 }
 \arguments{
@@ -15,12 +26,15 @@ check_poly_formula(
 
 \item{x.name}{character The name of the explanatory variable in the formula.}
 
-\item{warning.text}{character string.}
+\item{warn.incr.poly.text, warn.transf.lhs.txt, warn.transf.rhs.txt, warn.as.is.txt, warn.poly.raw.txt, stop.pow.poly.text}{character Text for warnings and errors.}
+
+\item{check.transf.rhs, check.transf.lhs}{logical flag enabling test for
+transformation of variables.}
 }
 \value{
-A logical, TRUE if the formula describes an increasing polynomial,
-  and FALSE otherwise. As a side-effect a warning is triggered when
-  validation fails.
+A logical, TRUE if the formula describes an increasing polynomial
+  suitable for conversion into a text label, and FALSE otherwise. When
+  validation fails, warnings are issued describing the problem encountered.
 }
 \description{
 Analyse a model formula to determine if it describes a polynomial with
@@ -28,27 +42,47 @@ terms in order of increasing powers, and fulfils the expectations of the
 algorithm used to generate the equation-label.
 }
 \details{
-This validation check could fail to validate some valid formulas as
-  it is difficult to test, or even list all possible variations of valid
-  formulas. Consequently, this function triggers a warning in case of
-  failure, not an error. Furthermore, the statistics only fail to build the
-  correct equation label, but in most cases other output is still usable with
-  models that are not strictly polynomials.
+The assumption is that this function will be called from within a
+  ggplot2 compatible layer function, and that model formulas will always have
+  a single explanatory variable, variables will be \code{x} and \code{y}. Its
+  behaviour is undefined or erroneous in other cases.
+
+  This validation check could return a false positive or a false negative
+  results with some formulas as it is difficult to test, or even list all
+  possible variations of supported vs. unsupported formulas. This makes
+  testing difficult. In addition, many valid model formulas that can be
+  succesfully fitted, are not correctly converted into character labels.
+  Thus, this function triggers a warning in case of failure, not an error,
+  and returns a logic value. If this value is \code{FALSE}, the statistics in
+  'ggpmisc' skip the generation of an equation label, setting it to
+  \code{NA}. However, if the formula is accepted by the model fit function,
+  other labels and the numeric estimates of the fitted coefficients remain
+  usable. The stats can be used also with models that are not polynomials or
+  containing transformations.
 
   Model formulas with and without an intercept term are accepted as valid, as
-  \code{+0}, \code{-1} and \code{+1} are accepted. If a single power term is
-  included, it is taken as a transformation and any power is accepted. If two
-  or more terms are powers, they are expected in increasing order with no
-  missing intermediate terms. If \code{poly()} is used in the model formula,
-  a single term is expected.
+  \code{+0}, \code{-1} and \code{+1} are accepted. If a single \code{as.is}
+  power term is included or if arithmetic (\code{sqrt()}, \code{exp()},
+  \code{log()}), or trigonometric functions (\code{cos()}, \code{sin()},
+  \code{tan()}, etc.) are encountered a warning is issued about the need to
+  pass a matching argument to parameter \code{eq.x.rhs} of the statistic.
 
-  This function checks that all power terms defined using \code{^} are
-  protected with "as is" \code{I()}, as otherwise they are not powers but
-  instead part of the formula specification. It also checks that an argument
-  is passed to parameter \code{raw} of function \code{poly()} if present.
+  If two or more terms are \code{as.is} (\code{I( )} protected) powers
+  (\code{^}), they are expected to be in increasing order with no missing
+  intermediate power terms. If \code{poly()} is used in the model formula, a
+  single term is expected. When calling function \code{poly()},
+  \code{raw = TRUE} must be passed to obtain suitable estimates for the
+  fitted coefficients, and this is also checked.
+
+  When the formula \emph{rhs} contains more than one power term, all power
+  terms defined using \code{^} must be protected as \code{"as.is"}
+  \code{I()}, as otherwise they are not powers but instead part of the
+  formula specification.
 
   If the warning text is \code{NULL} or \code{character(0)} no warning is
-  issued. The caller always receives a length-1 logical as return value.
+  issued, but the test is done. In contrast, \code{check.transf.rhs,check =
+  FALSE} and \code{transf.lhs = FALSE} skip these two tests. The caller
+  always receives a length-1 logical as returned value.
 }
 \examples{
 # polynomials

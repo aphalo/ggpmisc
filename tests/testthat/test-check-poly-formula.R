@@ -5,14 +5,30 @@ test_that("check poly passed with constants", {
   expect_true(check_poly_formula(y ~ 0))
  })
 
-test_that("check poly passed with transformed x", {
-  expect_true(check_poly_formula(y ~ log(x)))
-  expect_true(check_poly_formula(y ~ sqrt(x)))
-  expect_true(check_poly_formula(y ~ I(x)))
-  expect_true(check_poly_formula(y ~ I(x * 2)))
-  expect_true(check_poly_formula(y ~ I(x + 2L)))
-  expect_true(check_poly_formula(y ~ I(x^2)))
-  expect_true(check_poly_formula(y ~ I(x^3)))
+test_that("check test failed with transformed x", {
+  expect_true(check_poly_formula(formula = y ~ log(x), check.transf.rhs = FALSE))
+  expect_no_warning(
+    result <- check_poly_formula(y ~ log(x), warn.transf.rhs.txt = character(0))
+  )
+  expect_false(result)
+  expect_warning(result <- check_poly_formula(y ~ log(x)))
+  expect_false(result)
+  expect_warning(result <- check_poly_formula(y ~ sqrt(x)))
+  expect_false(result)
+  expect_warning(result <- check_poly_formula(y ~ I(x)))
+  expect_false(result)
+  expect_warning(result <- check_poly_formula(y ~ I(x * 2)))
+  expect_false(result)
+  expect_warning(result <- check_poly_formula(y ~ I(x / 2)))
+  expect_false(result)
+  expect_warning(result <- check_poly_formula(y ~ I(x - 2)))
+  expect_false(result)
+  expect_warning(result <- check_poly_formula(y ~ I(x + 2)))
+  expect_false(result)
+  expect_warning(result <- check_poly_formula(y ~ I(x^2)))
+  expect_false(result)
+  expect_warning(result <- check_poly_formula(y ~ I(x^3)))
+  expect_false(result)
 })
 
 test_that("check poly passed with x", {
@@ -22,6 +38,49 @@ test_that("check poly passed with x", {
   expect_true(check_poly_formula(y ~ -1 + x))
   expect_true(check_poly_formula(y ~ x + 0))
   expect_true(check_poly_formula(y ~ x - 1))
+})
+
+test_that("check test failed with transformed y", {
+  expect_true(check_poly_formula(formula = log(y) ~ x, check.transf.lhs = FALSE))
+  expect_no_warning(
+    result <- check_poly_formula(log(y) ~ x, warn.transf.lhs.txt = character(0))
+  )
+  expect_false(result)
+  expect_warning(result <- check_poly_formula(log(y) ~ x))
+  expect_false(result)
+  expect_warning(result <- check_poly_formula(sqrt(y) ~ x))
+  expect_false(result)
+  expect_warning(result <- check_poly_formula(y - 2 ~ x))
+  expect_false(result)
+  expect_warning(result <- check_poly_formula(y + 2 ~ x))
+  expect_false(result)
+  expect_warning(result <- check_poly_formula(y * 2 ~ x))
+  expect_false(result)
+  expect_warning(result <- check_poly_formula(y / 2 ~ x))
+  expect_false(result)
+  expect_warning(result <- check_poly_formula(I(y * 2) ~ x))
+  expect_false(result)
+  expect_warning(result <- check_poly_formula(I(y / 2) ~ y))
+  expect_false(result)
+  expect_warning(result <- check_poly_formula(I(y - 2) ~ x))
+  expect_false(result)
+  expect_warning(result <- check_poly_formula(I(y + 2) ~ x))
+  expect_false(result)
+  expect_warning(result <- check_poly_formula(I(y^2) ~ x))
+  expect_false(result)
+})
+
+test_that("check poly fails with missing powers", {
+  expect_warning(result <- check_poly_formula(y ~ x + I(x^3)))
+  expect_false(result)
+  expect_true(check_poly_formula(y ~ 1 + x + I(x^2)))
+  expect_true(check_poly_formula(y ~ 0 + x + I(x^2)))
+  expect_true(check_poly_formula(y ~ -1 + x + I(x^2)))
+  expect_true(check_poly_formula(y ~ x + I(x^2) + 0))
+  expect_true(check_poly_formula(y ~ x + I(x^2) - 1))
+  expect_true(check_poly_formula(y ~ x + I(x^2) + I(x^3)))
+  expect_true(check_poly_formula(y ~ x + I(x^2) + I(x^3) + I(x^4)))
+  expect_true(check_poly_formula(y ~ I(x) + I(x^2) + I(x^3) + I(x^4)))
 })
 
 test_that("check poly passed with increasing powers", {
@@ -37,15 +96,13 @@ test_that("check poly passed with increasing powers", {
 })
 
 test_that("check poly fails with decreasing powers", {
-  expect_false(suppressWarnings(check_poly_formula(y ~ I(x^2) + x)))
-  expect_false(suppressWarnings(check_poly_formula(y ~ I(x^3) + I(x^2) + x)))
-  expect_false(check_poly_formula(y ~ I(x^3) + I(x^2) + x, warning.text = NULL))
-})
-
-test_that("check poly warns with decreasing powers", {
-  expect_warning(check_poly_formula(y ~ I(x^2) + x))
-  expect_warning(check_poly_formula(y ~ I(x^3) + I(x^2) + x))
-  expect_no_warning(check_poly_formula(y ~ I(x^3) + I(x^2) + x, warning.text = NULL))
+  expect_warning(result <- check_poly_formula(y ~ I(x^2) + x))
+  expect_false(result)
+  expect_warning(result <- check_poly_formula(y ~ I(x^3) + I(x^2) + x))
+  expect_false(result)
+  expect_no_warning(result <- check_poly_formula(y ~ I(x^3) + I(x^2) + x,
+                                                 warn.incr.poly.text = character(0)))
+  expect_false(result)
 })
 
 test_that("check poly errors with mixed power and poly", {
@@ -53,24 +110,20 @@ test_that("check poly errors with mixed power and poly", {
   expect_error(check_poly_formula(y ~ poly(x, 3, raw = TRUE) + I(x^2)))
 })
 
-test_that("check poly fails with missing as is", {
-  expect_false(suppressWarnings(check_poly_formula(y ~ x + x^2)))
-  expect_false(suppressWarnings(check_poly_formula(y ~ 1 + x + x^2)))
-  expect_false(suppressWarnings(check_poly_formula(y ~ 0 + x + x^2)))
-  expect_false(suppressWarnings(check_poly_formula(y ~ -1 + x + x^2)))
-  expect_false(suppressWarnings(check_poly_formula(y ~ x + x^2 + I(x^3))))
-  expect_false(suppressWarnings(check_poly_formula(y ~ x + I(x^2) + I(x^3) + x^4)))
-})
-
 test_that("check poly warns with misisng as is", {
-  expect_warning(check_poly_formula(y ~ x + x^2))
-  expect_warning(check_poly_formula(y ~ 1 + x + x^2))
-  expect_warning(check_poly_formula(y ~ 0 + x + x^2))
-  expect_warning(check_poly_formula(y ~ -1 + x + x^2))
-  expect_warning(check_poly_formula(y ~ x + x^2 + I(x^3)))
-  expect_warning(check_poly_formula(y ~ x + I(x^2) + I(x^3) + x^4))
+  expect_warning(result <- check_poly_formula(y ~ x + x^2))
+  expect_false(result)
+  expect_warning(result <- check_poly_formula(y ~ 1 + x + x^2))
+  expect_false(result)
+  expect_warning(result <- check_poly_formula(y ~ 0 + x + x^2))
+  expect_false(result)
+  expect_warning(result <- check_poly_formula(y ~ -1 + x + x^2))
+  expect_false(result)
+  expect_warning(result <- check_poly_formula(y ~ x + x^2 + I(x^3)))
+  expect_false(result)
+  expect_no_warning(result <- check_poly_formula(y ~ x + I(x^2) + I(x^3) + x^4))
+  expect_true(result)
 })
-
 
 test_that("check poly passed with varied white space", {
   expect_true(check_poly_formula(y~x+I(x^2)))
@@ -88,9 +141,13 @@ test_that("check poly passed with poly()", {
 })
 
 test_that("check poly gives warning without raw named parameter", {
-  expect_warning(check_poly_formula(y ~ poly(x, 2)))
-  expect_warning(check_poly_formula(y ~ 1 + poly(x, 2)))
-  expect_warning(check_poly_formula(y ~ 0 + poly(x, 2)))
-  expect_warning(check_poly_formula(y ~ -1 + poly(x, 2)))
+  expect_warning(result <- check_poly_formula(y ~ poly(x, 2)))
+  expect_false(result)
+  expect_warning(result <- check_poly_formula(y ~ 1 + poly(x, 2)))
+  expect_false(result)
+  expect_warning(result <- check_poly_formula(y ~ 0 + poly(x, 2)))
+  expect_false(result)
+  expect_warning(result <- check_poly_formula(y ~ -1 + poly(x, 2)))
+  expect_false(result)
 })
 

@@ -4,6 +4,13 @@ editor_options:
     wrap: 72
 ---
 
+# ggpmisc 0.7.1
+
+- Update `check_poly_formula()` to issue warnings when the model formula includes 
+on-the-fly transformations in the rhs or lhs, indicating the need to pass a
+matching argument to `eq.x.rhs` or `eq.lhs`. Fix parsing failures leading to
+wrong test outcomes in some edge cases.
+
 # ggpmisc 0.7.0
 
 The main changes in this version improve and expand the generation of labels,

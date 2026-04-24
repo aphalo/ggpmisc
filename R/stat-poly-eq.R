@@ -499,9 +499,13 @@ stat_poly_eq <- function(mapping = NULL,
   }
 
   # is the model formula that of an increasing polynomial?
+  # is yes it will be parsed and combined with estimates into a character string
   mk.eq.label <- output.type != "numeric" &&
-                   check_poly_formula(formula, orientation) && # is 'formula' a polynomial?
-                   !any(grepl("lspline", as.character(formula))) # not a linear spline
+                   check_poly_formula(formula,
+                                      orientation,
+                                      check.transf.lhs = !is.character(eq.with.lhs),
+                                      check.transf.rhs = !is.character(eq.x.rhs))
+                   !any(grepl("lspline|bs", as.character(formula))) # not a spline
 
   if (is.null(rsquared.conf.level) || !is.finite(rsquared.conf.level)) {
     rsquared.conf.level <- 0
