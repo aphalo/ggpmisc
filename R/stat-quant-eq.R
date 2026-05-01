@@ -110,6 +110,8 @@
 #'   in the call to \code{stat_poly_eq()}. Thus, user-defined methods can
 #'   implement both model selection or conditional skipping of labelling.
 #'
+#' @inheritSection stat_poly_eq Position of labels
+#'
 #' @references Written as an answer to question 65695409 by Mark Neal at
 #'   Stackoverflow.
 #'

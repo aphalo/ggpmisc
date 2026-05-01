@@ -91,12 +91,22 @@
 check_poly_formula <-
   function(formula,
            x.name = "x",
-           warn.incr.poly.text = "'formula' not an increasing polynomial: 'eq.label' set to NA!",
-           warn.transf.rhs.txt = "rhs includes transformations requiring an argument for 'eq.x.rhs': 'eq.label' set to NA!.",
-           warn.transf.lhs.txt = "lhs includes transformations requiring an argument for 'eq.with.lhs': 'eq.label' set to NA!.",
-           warn.as.is.txt = "Power (^) terms in model formula of a polynomial need to be protected by 'I()': 'eq.label' set to NA!.",
-           warn.poly.raw.txt = "'poly()' in model formula has to be passed 'raw = TRUE': 'eq.label' set to NA!",
-           stop.pow.poly.text = "Both 'poly()' and power (^) terms in model formula.",
+           warn.incr.poly.text =
+             "'formula' not an increasing polynomial: 'eq.label' set to NA!",
+           warn.transf.rhs.txt =
+             paste0("rhs includes transformations requiring an argument for ",
+                    "'eq.x.rhs': 'eq.label' set to NA!."),
+           warn.transf.lhs.txt =
+             paste0("lhs includes transformations requiring an argument for ",
+                    "'eq.with.lhs': 'eq.label' set to NA!."),
+           warn.as.is.txt =
+             paste0("Power (^) terms in model formula of a polynomial need to ",
+                    "be protected by 'I()': 'eq.label' set to NA!."),
+           warn.poly.raw.txt =
+             paste0("'poly()' in model formula has to be passed 'raw = TRUE': ",
+                    "'eq.label' set to NA!"),
+           stop.pow.poly.text =
+             "Both 'poly()' and power (^) terms in model formula.",
            check.transf.rhs = TRUE,
            check.transf.lhs = TRUE) {
 
@@ -141,7 +151,8 @@ check_poly_formula <-
     transf.ok <- FALSE
   }
   if (check.transf.lhs &&
-      any(grepl("log|exp|sqrt|cos|sin|tan|[-^/*+]|[^I[:space:]]\\(.*[xy].*\\)", lhs))) {
+      any(grepl("log|exp|sqrt|cos|sin|tan|[-^/*+]|[^I[:space:]]\\(.*[xy].*\\)",
+                lhs))) {
     if (length(warn.transf.lhs.txt)) {
       warning(warn.transf.lhs.txt)
     }
@@ -178,7 +189,8 @@ check_poly_formula <-
         powers[power1.terms] <- 1
       }
       increasing <- min(powers) == 1 &&
-        (length(powers) == 1 || (length(powers) >= 2 && all(diff(powers) == 1L)))
+        (length(powers) == 1 ||
+           (length(powers) >= 2 && all(diff(powers) == 1L)))
     } else {
       increasing <- FALSE
     }

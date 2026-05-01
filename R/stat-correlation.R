@@ -91,6 +91,8 @@
 #'   \code{x} and \code{y} should both be continuous scales rather than
 #'   discrete.
 #'
+#' @inheritSection stat_poly_eq Position of labels
+#'
 #' @inheritSection check_output_type Output types
 #'
 #' @section Computed variables: If output.type is \code{"numeric"} the returned

@@ -10,6 +10,8 @@ editor_options:
 on-the-fly transformations in the rhs or lhs, indicating the need to pass a
 matching argument to `eq.x.rhs` or `eq.lhs`. Fix parsing failures leading to
 wrong test outcomes in some edge cases.
+- Better document how positioning of labels works when aesthetics mappings
+create groups.
 
 # ggpmisc 0.7.0
 

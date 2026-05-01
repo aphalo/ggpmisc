@@ -96,6 +96,8 @@
 #'   \code{NA} value. Thus, user-defined methods can implement conditional
 #'   skipping of labelling.
 #'
+#' @inheritSection stat_poly_eq Position of labels
+#'
 #' @inheritSection check_output_type Output types
 #'
 #' @note \code{stat_ma_eq} understands \code{x} and \code{y}, to
