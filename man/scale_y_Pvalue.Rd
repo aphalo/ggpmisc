@@ -81,13 +81,19 @@ the axes. The default is to expand the scale by 15\% on each end for
 log-fold-data, so as to leave space for counts annotations.}
 }
 \description{
-Scales for y aesthetic mapped to P-values as used in volcano plots with
+Scales for \code{x} and \code{y} aesthetics mapped to \emph{P}-values and
+false discovery rates (FDR), suitable for volcano plots as used for
 transcriptomics and metabolomics data.
 }
 \details{
-These scales only alter default arguments of
+These scales only reaplace default arguments of
   \code{scale_x_continuous()} and \code{scale_y_continuous()}. Please, see
   documentation for \code{\link[ggplot2]{scale_continuous}} for details.
+
+  These scales set transformations for suitable for plotting
+  log-\emph{P}-value, log-fold-change and FDR (false discovery rate) and
+  matching tick labels (\code{breaks}and \code{labels} and scale \code{names}
+  (axis titles).
 }
 \examples{
 
@@ -107,11 +113,11 @@ ggplot(my.df, aes(x, y)) +
 
 }
 \seealso{
-Other Functions for quadrant and volcano plots: 
-\code{\link{FC_format}()},
-\code{\link{outcome2factor}()},
-\code{\link{scale_colour_outcome}()},
-\code{\link{scale_shape_outcome}()},
-\code{\link{xy_outcomes2factor}()}
+Other Functions for quadrant and volcano plots:
+\code{\link[=FC_format]{FC_format()}},
+\code{\link[=outcome2factor]{outcome2factor()}},
+\code{\link[=scale_colour_outcome]{scale_colour_outcome()}},
+\code{\link[=scale_shape_outcome]{scale_shape_outcome()}},
+\code{\link[=xy_outcomes2factor]{xy_outcomes2factor()}}
 }
 \concept{Functions for quadrant and volcano plots}

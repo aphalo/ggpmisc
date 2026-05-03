@@ -237,12 +237,12 @@ if (gginnards.installed)
 
 }
 \seealso{
-Other ggplot statistics for model fits: 
-\code{\link{stat_fit_augment}()},
-\code{\link{stat_fit_glance}()},
-\code{\link{stat_fit_residuals}()},
-\code{\link{stat_fit_tb}()},
-\code{\link{stat_fit_tidy}()}
+Other ggplot statistics for model fits:
+\code{\link[=stat_fit_augment]{stat_fit_augment()}},
+\code{\link[=stat_fit_glance]{stat_fit_glance()}},
+\code{\link[=stat_fit_residuals]{stat_fit_residuals()}},
+\code{\link[=stat_fit_tb]{stat_fit_tb()}},
+\code{\link[=stat_fit_tidy]{stat_fit_tidy()}}
 }
 \concept{ggplot statistics for model fits}
 \section{Aesthetics}{

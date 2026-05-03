@@ -503,8 +503,8 @@ The major axis regression model is fitted with function
   \code{stat_ma_eq()} can return different ready formatted labels depending
   on the argument passed to \code{output.type}.
 
-Other ggplot statistics for major axis regression: 
-\code{\link{stat_ma_line}()}
+Other ggplot statistics for major axis regression:
+\code{\link[=stat_ma_line]{stat_ma_line()}}
 }
 \concept{ggplot statistics for major axis regression}
 \section{Aesthetics}{

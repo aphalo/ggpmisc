@@ -10,13 +10,14 @@ reverselog_trans(base = exp(1))
 \item{base}{numeric Base of logarithm}
 }
 \description{
-Reverse log transformation
+Reverse log transformation with support for different logarithm
+bases as used for transforming \emph{P}-values.
 }
-\keyword{P-value}
-\keyword{define}
-\keyword{for}
+\details{
+The transformation is given by
+\deqn{-log[base](x)}
+
+For example, this transformation is used with \code{base = 10} to convert
+\eqn{P = 10^{-6}} into 6.
+}
 \keyword{internal}
-\keyword{labels}
-\keyword{needed}
-\keyword{tick}
-\keyword{transformation}

@@ -376,12 +376,12 @@ Package \code{\link[broom]{broom}} for details on how the tidying of
   For details on predefined table themes see
   \code{\link[ggpp]{ttheme_gtdefault}}.
 
-Other ggplot statistics for model fits: 
-\code{\link{stat_fit_augment}()},
-\code{\link{stat_fit_deviations}()},
-\code{\link{stat_fit_glance}()},
-\code{\link{stat_fit_residuals}()},
-\code{\link{stat_fit_tidy}()}
+Other ggplot statistics for model fits:
+\code{\link[=stat_fit_augment]{stat_fit_augment()}},
+\code{\link[=stat_fit_deviations]{stat_fit_deviations()}},
+\code{\link[=stat_fit_glance]{stat_fit_glance()}},
+\code{\link[=stat_fit_residuals]{stat_fit_residuals()}},
+\code{\link[=stat_fit_tidy]{stat_fit_tidy()}}
 }
 \concept{ggplot statistics for model fits}
 \section{Aesthetics}{

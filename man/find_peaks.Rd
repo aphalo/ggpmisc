@@ -159,7 +159,7 @@ lynx_num.df[find_peaks(lynx_num.df$lynx,
 \seealso{
 \code{\link[splus2R]{peaks}}.
 
-Other peaks and valleys functions: 
-\code{\link{find_spikes}()}
+Other peaks and valleys functions:
+\code{\link[=find_spikes]{find_spikes()}}
 }
 \concept{peaks and valleys functions}

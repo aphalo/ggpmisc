@@ -48,18 +48,18 @@ threshold2factor(c(-0.1, -2, 0, +5), threshold = c(-1, 1))
 
 }
 \seealso{
-Other Functions for quadrant and volcano plots: 
-\code{\link{FC_format}()},
-\code{\link{scale_colour_outcome}()},
-\code{\link{scale_shape_outcome}()},
-\code{\link{scale_y_Pvalue}()},
-\code{\link{xy_outcomes2factor}()}
+Other Functions for quadrant and volcano plots:
+\code{\link[=FC_format]{FC_format()}},
+\code{\link[=scale_colour_outcome]{scale_colour_outcome()}},
+\code{\link[=scale_shape_outcome]{scale_shape_outcome()}},
+\code{\link[=scale_y_Pvalue]{scale_y_Pvalue()}},
+\code{\link[=xy_outcomes2factor]{xy_outcomes2factor()}}
 
-Other scales for omics data: 
-\code{\link{scale_colour_logFC}()},
-\code{\link{scale_shape_outcome}()},
-\code{\link{scale_x_logFC}()},
-\code{\link{xy_outcomes2factor}()}
+Other scales for omics data:
+\code{\link[=scale_colour_logFC]{scale_colour_logFC()}},
+\code{\link[=scale_shape_outcome]{scale_shape_outcome()}},
+\code{\link[=scale_x_logFC]{scale_x_logFC()}},
+\code{\link[=xy_outcomes2factor]{xy_outcomes2factor()}}
 }
 \concept{Functions for quadrant and volcano plots}
 \concept{scales for omics data}

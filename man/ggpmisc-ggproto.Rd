@@ -5,7 +5,6 @@
 %   R/stat-ma-line.R, R/stat-multcomp.R, R/stat-peaks.R, R/stat-poly-eq.R,
 %   R/stat-poly-line.R, R/stat-quant-band.r, R/stat-quant-eq.R,
 %   R/stat-quant-line.r
-\docType{data}
 \name{cor_test_compute_fun}
 \alias{cor_test_compute_fun}
 \alias{StatCorrelation}
@@ -60,5 +59,4 @@ implement one or more of the following:
 \seealso{
 \code{\link[ggplot2]{ggplot2-ggproto}}
 }
-\keyword{datasets}
 \keyword{internal}

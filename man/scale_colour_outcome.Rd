@@ -115,11 +115,11 @@ ggplot(my.df, aes(x, y, fill = outcome3)) +
 
 }
 \seealso{
-Other Functions for quadrant and volcano plots: 
-\code{\link{FC_format}()},
-\code{\link{outcome2factor}()},
-\code{\link{scale_shape_outcome}()},
-\code{\link{scale_y_Pvalue}()},
-\code{\link{xy_outcomes2factor}()}
+Other Functions for quadrant and volcano plots:
+\code{\link[=FC_format]{FC_format()}},
+\code{\link[=outcome2factor]{outcome2factor()}},
+\code{\link[=scale_shape_outcome]{scale_shape_outcome()}},
+\code{\link[=scale_y_Pvalue]{scale_y_Pvalue()}},
+\code{\link[=xy_outcomes2factor]{xy_outcomes2factor()}}
 }
 \concept{Functions for quadrant and volcano plots}

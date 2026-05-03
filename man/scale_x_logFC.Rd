@@ -148,10 +148,10 @@ ggplot(my.df, aes(x, y)) +
 
 }
 \seealso{
-Other scales for omics data: 
-\code{\link{outcome2factor}()},
-\code{\link{scale_colour_logFC}()},
-\code{\link{scale_shape_outcome}()},
-\code{\link{xy_outcomes2factor}()}
+Other scales for omics data:
+\code{\link[=outcome2factor]{outcome2factor()}},
+\code{\link[=scale_colour_logFC]{scale_colour_logFC()}},
+\code{\link[=scale_shape_outcome]{scale_shape_outcome()}},
+\code{\link[=xy_outcomes2factor]{xy_outcomes2factor()}}
 }
 \concept{scales for omics data}

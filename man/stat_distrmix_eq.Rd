@@ -310,8 +310,8 @@ if (gginnards.installed)
 
 }
 \seealso{
-Other ggplot statistics for mixture model fits.: 
-\code{\link{stat_distrmix_line}()}
+Other ggplot statistics for mixture model fits.:
+\code{\link[=stat_distrmix_line]{stat_distrmix_line()}}
 }
 \concept{ggplot statistics for mixture model fits.}
 \section{Aesthetics}{

@@ -72,5 +72,5 @@ URL: https://docs.r4photobiology.info/ggpmisc/,
      https://github.com/aphalo/ggpmisc
 BugReports: https://github.com/aphalo/ggpmisc/issues
 Encoding: UTF-8
-RoxygenNote: 7.3.3
 VignetteBuilder: knitr
+Config/roxygen2/version: 8.0.0

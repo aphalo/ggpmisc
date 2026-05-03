@@ -1,6 +1,7 @@
 #' Convenience scale for P-values
 #'
-#' Scales for y aesthetic mapped to P-values as used in volcano plots with
+#' Scales for \code{x} and \code{y} aesthetics mapped to \emph{P}-values and
+#' false discovery rates (FDR), suitable for volcano plots as used for
 #' transcriptomics and metabolomics data.
 #'
 #' @param name The name of the scale without units, used for the axis-label.
@@ -24,9 +25,14 @@
 #'   log-fold-data, so as to leave space for counts annotations.
 #' @param ... other named arguments passed to \code{scale_y_continuous}.
 #'
-#' @details These scales only alter default arguments of
+#' @details These scales only reaplace default arguments of
 #'   \code{scale_x_continuous()} and \code{scale_y_continuous()}. Please, see
 #'   documentation for \code{\link[ggplot2]{scale_continuous}} for details.
+#'
+#'   These scales set transformations for suitable for plotting
+#'   log-\emph{P}-value, log-fold-change and FDR (false discovery rate) and
+#'   matching tick labels (\code{breaks}and \code{labels} and scale \code{names}
+#'   (axis titles).
 #'
 #' @export
 #'
@@ -166,11 +172,18 @@ scale_x_FDR <- function(...,
 
 #' Reverse log transformation
 #'
+#' Reverse log transformation with support for different logarithm
+#' bases as used for transforming \emph{P}-values.
+#'
+#' @details The transformation is given by
+#' \deqn{-log[base](x)}
+#'
+#' For example, this transformation is used with \code{base = 10} to convert
+#' \eqn{P = 10^{-6}} into 6.
+#'
 #' @param base numeric Base of logarithm
 #'
 #' @keywords internal
-#'
-#' define transformation needed for P-value tick labels
 #'
 reverselog_trans <- function(base = exp(1)) {
   transform <- function(x) -log(x, base)

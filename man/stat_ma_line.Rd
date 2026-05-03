@@ -319,8 +319,8 @@ if (gginnards.installed)
 
 }
 \seealso{
-Other ggplot statistics for major axis regression: 
-\code{\link{stat_ma_eq}()}
+Other ggplot statistics for major axis regression:
+\code{\link[=stat_ma_eq]{stat_ma_eq()}}
 }
 \concept{ggplot statistics for major axis regression}
 \section{Aesthetics}{

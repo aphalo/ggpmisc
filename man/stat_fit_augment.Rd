@@ -220,12 +220,12 @@ if (broom.installed)
 Package \code{\link[broom]{broom}} for details on how the tidying of
   the result of model fits is done.
 
-Other ggplot statistics for model fits: 
-\code{\link{stat_fit_deviations}()},
-\code{\link{stat_fit_glance}()},
-\code{\link{stat_fit_residuals}()},
-\code{\link{stat_fit_tb}()},
-\code{\link{stat_fit_tidy}()}
+Other ggplot statistics for model fits:
+\code{\link[=stat_fit_deviations]{stat_fit_deviations()}},
+\code{\link[=stat_fit_glance]{stat_fit_glance()}},
+\code{\link[=stat_fit_residuals]{stat_fit_residuals()}},
+\code{\link[=stat_fit_tb]{stat_fit_tb()}},
+\code{\link[=stat_fit_tidy]{stat_fit_tidy()}}
 }
 \concept{ggplot statistics for model fits}
 \section{Aesthetics}{
