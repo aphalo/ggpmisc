@@ -17,11 +17,6 @@ site](https://img.shields.io/badge/documentation-ggpmisc-informational.svg)](htt
 [![DOI](https://img.shields.io/badge/doi-10.32614/CRAN.package.ggpmisc-blue.svg)](https://doi.org/10.32614/CRAN.package.ggpmisc)
 <!-- badges: end -->
 
-**Current failure of `R-CMD-check.yaml` at GitHub is due to small visual
-differences in plots between versions of R, which are not fully
-addressed by the currently implemented versioning of graphical “snaps”
-used as reference for tests.**
-
 ## Purpose
 
 Package ‘**ggpmisc**’ (Miscellaneous Extensions to ‘ggplot2’) is a set
@@ -412,6 +407,12 @@ Please report bugs and request new features at
 <https://github.com/aphalo/ggpmisc/issues>. Pull requests are welcome at
 <https://github.com/aphalo/ggpmisc>.
 
+Testing by `R-CMD-check.yaml` at GitHub is partly ‘ggplot2’-version
+dependent and run only under the latest R release because of very small
+differences in plots and corresponding graphical “snaps” used as
+reference. Visual difference tests are never run by CRAN because they
+are “fragile” and prone to unexpectedly and spuriously fail.
+
 ## Citation
 
 If you use this package to produce scientific or commercial
@@ -422,7 +423,7 @@ citation("ggpmisc")
 #> To cite package 'ggpmisc' in publications use:
 #> 
 #>   Aphalo P (2026). _ggpmisc: Miscellaneous Extensions to 'ggplot2'_. R
-#>   package version 0.6.3.9003,
+#>   package version 0.7.0.9000,
 #>   <https://docs.r4photobiology.info/ggpmisc/>.
 #> 
 #> A BibTeX entry for LaTeX users is
@@ -431,7 +432,7 @@ citation("ggpmisc")
 #>     title = {ggpmisc: Miscellaneous Extensions to 'ggplot2'},
 #>     author = {Pedro J. Aphalo},
 #>     year = {2026},
-#>     note = {R package version 0.6.3.9003},
+#>     note = {R package version 0.7.0.9000},
 #>     url = {https://docs.r4photobiology.info/ggpmisc/},
 #>   }
 ```

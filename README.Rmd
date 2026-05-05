@@ -25,11 +25,6 @@ knitr::opts_chunk$set(
 [![DOI](https://img.shields.io/badge/doi-10.32614/CRAN.package.ggpmisc-blue.svg)](https://doi.org/10.32614/CRAN.package.ggpmisc)
 <!-- badges: end -->
 
-**Current failure of `R-CMD-check.yaml` at GitHub is due to small visual
-differences in plots between versions of R, which are not fully addressed by 
-the currently implemented versioning of graphical "snaps" used as reference
-for tests.**
-
 ## Purpose
 
 Package '**ggpmisc**' (Miscellaneous Extensions to 'ggplot2') is a set of
@@ -360,6 +355,8 @@ this grammar including several of those made available by packages 'ggpp' and
 ## Contributing
 
 Please report bugs and request new features at [https://github.com/aphalo/ggpmisc/issues](https://github.com/aphalo/ggpmisc/issues). Pull requests are welcome at [https://github.com/aphalo/ggpmisc](https://github.com/aphalo/ggpmisc).
+
+Testing by `R-CMD-check.yaml` at GitHub is partly 'ggplot2'-version dependent and run only under the latest R release because of very small differences in plots and corresponding graphical "snaps" used as reference. Visual difference tests are never run by CRAN because they are "fragile" and prone to unexpectedly and spuriously fail.
 
 ## Citation
 
