@@ -364,13 +364,20 @@ extract_weights <- function(fm, n.row) {
   } else if (inherits(fm, "lqs")) {
     rob.weight.vals <- rep_len(NA_real_, n.row)
     weight.vals <- rep_len(1, n.row)
-  } else if (inherits(fm, "gls")|| inherits(fm, "lme")) {
-    # "weights" have to be computed
-    # ordering <- order(order(nlme::getGroups(fm)))
-    # rob.weight.vals <-
-    #   1 / nlme::getCovariate(fm$modelStruct$varStruct)[ordering]
-    rob.weight.vals <- rep_len(NA_real_, n.row)
-    # weights' argument is a "variance model"
+  } else if (inherits(fm, "gls") ||
+             inherits(fm, "lme") || inherits(fm, "nlme")) {
+    if (!is.null(fm$modelStruct$varStruct)) {
+      # "weights" have to be extracted
+      rob.weight.vals <- nlme::varWeights(fm$modelStruct$varStruct)
+      if (!is.null(nlme::getGroups(fm))) {
+        # order of weights needs to be restored
+        ordering <- order(order(nlme::getGroups(fm)))
+        rob.weight.vals <- rob.weight.vals[ordering]
+      }
+    } else {
+      rob.weight.vals <- rep(1, n.row)
+    }
+    # weights' argument is a "variance model", not prior weight values
     weight.vals <- rep_len(1, n.row)
   } else if (inherits(fm, "lm")) { # order matters as e.g. "rlm" inherits "lm"
     weight.vals <- stats::weights(fm)

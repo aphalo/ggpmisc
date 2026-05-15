@@ -972,7 +972,7 @@ ggplot(my.data, aes(x, y, colour = group)) +
   stat_fit_residuals(formula = formula)
 ```
 
-We can of course also map the weights returned in the model fit object to ggplot2 aesthetics, here we use `size`.
+The computed "robustness" weights from the model fit object are returned by `stat_fit_residuals()` under the name of `robustness.weights`. These can be mapped to aesthetics, in this example to `size`. (These are _posterior_ weights computed by the model fit method `rlm()`. The `prior` weights set by mapping a numeric variable to the `weight` aesthetic are returned under the name of `weights`. In a fit with `lm()` prior and posterior weights are the same, and by default equal to 1. In a fit with `rlm()` prior and posterior weights differ.)
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -980,7 +980,7 @@ ggplot(my.data, aes(x, y, colour = group)) +
   geom_hline(yintercept = 0, linetype = "dashed") +
   stat_fit_residuals(formula = formula,
                      method = "rlm",
-                     mapping = aes(size = sqrt(after_stat(weights))),
+                     mapping = aes(size = sqrt(after_stat(robustness.weights))),
                      alpha = 2/3)
 ```
 
@@ -1025,7 +1025,7 @@ my.data.outlier[6, "y"] <- my.data.outlier[6, "y"] * 5
 ggplot(my.data.outlier, aes(x, y)) +
   stat_smooth(method = MASS::rlm, formula = formula) +
   stat_fit_deviations(formula = formula, method = "rlm",
-                      mapping = aes(colour = after_stat(weights)),
+                      mapping = aes(colour = after_stat(robustness.weights)),
                       show.legend = TRUE) +
   scale_color_gradient(low = "red", high = "blue", limits = c(0, 1)) +
   geom_point()
@@ -1358,7 +1358,7 @@ ggplot(my.data, aes(x, y, colour = group)) +
                    y.out = ".std.resid")
 ```
 
-We can use any model fitting method for which `broom::augment()` is implemented.
+We can use any model fitting method for which `broom::augment()` is implemented. _When a method, in this case of `nls()`, has no support for confidence limits and 'broom' sets them to `NA` values, no confidence band in plotted and a warning is issued by `geom_smooth()` from 'ggplot2', which is the default. The warning is harmless, and if needed, it can be silenced by passing `geom = "line"` to override the default._
 
 ```{r, eval=(eval_flag && eval_broom)}
 args <- list(formula = y ~ k * e ^ x,
@@ -1390,7 +1390,8 @@ ggplot(Orange, aes(age, circumference, colour = Tree)) +
   geom_point() +
   stat_fit_augment(method = "nlme",
                    method.args = args,
-                   augment.args = list(data = quote(data)))
+                   augment.args = list(data = quote(data)),
+                   geom = "line")
 ```
 
 ### How to find out what variables are computed
