@@ -10,6 +10,8 @@ editor_options:
 on-the-fly transformations in the rhs or lhs, indicating the need to pass a
 matching argument to `eq.x.rhs` or `eq.lhs`. Fix parsing failures leading to
 wrong test outcomes in some edge cases.
+- Support extraction of posterior weights for models fitted with methods
+`"gls"`, (`"lme"` and `"nlme"`). These weights are NOT scaled to values in 0..1!
 - Better document how positioning of labels works when aesthetics mappings
 create groups.
 
