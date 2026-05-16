@@ -4,6 +4,11 @@ set.seed(4321)
 # generate artificial data
 my.data <- data.frame(x = (1:25) / 10 + rnorm(n = 25),
                       y = (1:25) / 5 + rnorm(n = 25))
+my.data$y.otlr <- my.data$y
+outliers <- sample(1:25, 3)
+my.data$y.otlr[outliers] <- outliers / 5 + rnorm(length(outliers), sd = 3)
+my.data$wght <- 1
+my.data$wght[outliers] <- 0
 
 if (isNamespaceLoaded(name = "package:ggpmisc")) detach(package:ggpmisc, unload = TRUE)
 if (isNamespaceLoaded(name = "package:ggpp")) detach(package:ggpp, unload = TRUE)
@@ -139,11 +144,35 @@ test_that("stat_fit_deviations works with different methods", {
                                 stat_poly_line(method = "lm") +
                                 stat_fit_deviations(method = "lm")
   )
+  vdiffr::expect_doppelganger("fit_deviations_lm_prior_weights",
+                              ggplot(my.data, aes(x, y.otlr, weight = wght)) +
+                                geom_point() +
+                                stat_poly_line(method = "lm") +
+                                stat_fit_deviations(aes(colour = after_stat(weights)),
+                                                    method = "lm",
+                                                    show.legend = TRUE)
+  )
+  vdiffr::expect_doppelganger("fit_deviations_lm_weights",
+                              ggplot(my.data, aes(x, y.otlr, weight = wght)) +
+                                geom_point() +
+                                stat_poly_line(method = "lm") +
+                                stat_fit_deviations(aes(colour = after_stat(robustness.weights)),
+                                                    method = "lm",
+                                                    show.legend = TRUE)
+  )
   vdiffr::expect_doppelganger("fit_deviations_rlm",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
                                 stat_poly_line(method = "rlm") +
                                 stat_fit_deviations(method = "rlm")
+  )
+  vdiffr::expect_doppelganger("fit_deviations_rlm_weights",
+                              ggplot(my.data, aes(x, y.otlr)) +
+                                geom_point() +
+                                stat_poly_line(method = "rlm") +
+                                stat_fit_deviations(aes(colour = after_stat(robustness.weights)),
+                                                        method = "rlm",
+                                                    show.legend = TRUE)
   )
   vdiffr::expect_doppelganger("fit_deviations_lts",
                               ggplot(my.data, aes(x, y)) +
@@ -151,11 +180,47 @@ test_that("stat_fit_deviations works with different methods", {
                                 stat_poly_line(method = "lts") +
                                 stat_fit_deviations(method = "lts")
   )
+  vdiffr::expect_doppelganger("fit_deviations_lts_weights",
+                              ggplot(my.data, aes(x, y.otlr)) +
+                                geom_point() +
+                                stat_poly_line(method = "lts") +
+                                stat_fit_deviations(aes(colour = after_stat(robustness.weights)),
+                                                    method = "lts",
+                                                    show.legend = TRUE)
+  )
   vdiffr::expect_doppelganger("fit_deviations_gls",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
                                 stat_poly_line(method = "gls") +
                                 stat_fit_deviations(method = "gls")
+  )
+  vdiffr::expect_doppelganger("fit_deviations_gls_weights",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_line(method = "gls") +
+                                stat_fit_deviations(aes(colour = after_stat(robustness.weights)),
+                                                    method = "gls",
+                                                    show.legend = TRUE)
+  )
+  vdiffr::expect_doppelganger("fit_deviations_gls_weights_vPower",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_line(method = "gls",
+                                               method.args = list(weights = nlme::varPower())) +
+                                stat_fit_deviations(aes(colour = after_stat(robustness.weights)),
+                                                    method = "gls",
+                                                    method.args = list(weights = nlme::varPower()),
+                                                    show.legend = TRUE)
+  )
+  vdiffr::expect_doppelganger("fit_deviations_gls_prior_weights_vPower",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_line(method = "gls",
+                                               method.args = list(weights = nlme::varPower())) +
+                                stat_fit_deviations(aes(colour = after_stat(weights)),
+                                                    method = "gls",
+                                                    method.args = list(weights = nlme::varPower()),
+                                                    show.legend = TRUE)
   )
   vdiffr::expect_doppelganger("fit_deviations_rq",
                               ggplot(my.data, aes(x, y)) +
@@ -164,6 +229,16 @@ test_that("stat_fit_deviations works with different methods", {
                                                 quantiles = 0.5,
                                                 se = FALSE) +
                                 stat_fit_deviations(method = "rq")
+  )
+  vdiffr::expect_doppelganger("fit_deviations_rq_weights",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_quant_line(method = "rq",
+                                                quantiles = 0.5,
+                                                se = FALSE) +
+                                stat_fit_deviations(aes(colour = after_stat(robustness.weights)),
+                                                    method = "rq",
+                                                    show.legend = TRUE)
   )
   # vdiffr::expect_doppelganger("fit_deviations_sma",
   #                             ggplot(my.data, aes(x, y)) +
@@ -185,27 +260,22 @@ test_that("stat_fit_deviations works with different methods", {
 test_that("stat_fit_residuals works with imports attached", {
   vdiffr::expect_doppelganger("fit_residuals",
                               ggplot(my.data, aes(x, y)) +
-                                geom_point() +
                                 stat_fit_residuals()
   )
   vdiffr::expect_doppelganger("fit_residuals_orx",
                               ggplot(my.data, aes(x, y)) +
-                                geom_point() +
                                 stat_fit_residuals(orientation = "x")
   )
   vdiffr::expect_doppelganger("fit_residuals_ory",
                               ggplot(my.data, aes(x, y)) +
-                                geom_point() +
                                 stat_fit_residuals(orientation = "y")
   )
   vdiffr::expect_doppelganger("fit_residuals_formula_x",
                               ggplot(my.data, aes(x, y)) +
-                                geom_point() +
                                 stat_fit_residuals(formula = y ~ x)
   )
   vdiffr::expect_doppelganger("fit_residuals_formula_y",
                               ggplot(my.data, aes(x, y)) +
-                                geom_point() +
                                 stat_fit_residuals(formula = x ~ y)
   )
 })
@@ -213,32 +283,57 @@ test_that("stat_fit_residuals works with imports attached", {
 test_that("stat_fit_residuals works with different methods", {
   vdiffr::expect_doppelganger("fit_residuals_lm",
                               ggplot(my.data, aes(x, y)) +
-                                geom_point() +
                                 stat_fit_residuals(method = "lm")
+  )
+  vdiffr::expect_doppelganger("fit_residuals_lm_weights",
+                              ggplot(my.data, aes(x, y.otlr)) +
+                                stat_fit_residuals(aes(colour = after_stat(robustness.weights)),
+                                                   method = "lm",
+                                                   show.legend = TRUE)
   )
   vdiffr::expect_doppelganger("fit_residuals_rlm",
                               ggplot(my.data, aes(x, y)) +
-                                geom_point() +
                                 stat_fit_residuals(method = "rlm")
+  )
+  vdiffr::expect_doppelganger("fit_residuals_rlm_weights",
+                              ggplot(my.data, aes(x, y.otlr)) +
+                                 stat_fit_residuals(aes(colour = after_stat(robustness.weights)),
+                                                   method = "rlm",
+                                                   show.legend = TRUE)
   )
   vdiffr::expect_doppelganger("fit_residuals_lts",
                               ggplot(my.data, aes(x, y)) +
-                                geom_point() +
                                 stat_fit_residuals(method = "lts")
+  )
+  vdiffr::expect_doppelganger("fit_residuals_lts_weigths",
+                              ggplot(my.data, aes(x, y.otlr)) +
+                                stat_fit_residuals(aes(colour = after_stat(robustness.weights)),
+                                                   method = "lts",
+                                                   show.legend = TRUE)
   )
   vdiffr::expect_doppelganger("fit_residuals_gls",
                               ggplot(my.data, aes(x, y)) +
-                                geom_point() +
                                 stat_fit_residuals(method = "gls")
+  )
+  vdiffr::expect_doppelganger("fit_residuals_gls_weights",
+                              ggplot(my.data, aes(x, y)) +
+                                stat_fit_residuals(aes(colour = after_stat(robustness.weights)),
+                                                   method = "gls",
+                                                   show.legend = TRUE)
+  )
+  vdiffr::expect_doppelganger("fit_residuals_gls_weights_vPower",
+                              ggplot(my.data, aes(x, y)) +
+                                stat_fit_residuals(aes(colour = after_stat(robustness.weights)),
+                                                   method = "gls",
+                                                   method.args = list(weights = nlme::varPower()),
+                                                   show.legend = TRUE)
   )
   vdiffr::expect_doppelganger("fit_residuals_sma",
                               ggplot(my.data, aes(x, y)) +
-                                geom_point() +
                                 stat_fit_residuals(method = "sma")
   )
   vdiffr::expect_doppelganger("fit_residuals_ma",
                               ggplot(my.data, aes(x, y)) +
-                                geom_point() +
                                 stat_fit_residuals(method = "ma")
   )
 })
