@@ -238,7 +238,7 @@ Statistics `stat_poly_line()`, `stat_ma_line()`, `stat_quant_line()`, `stat_quan
 
 ### Fitted lines, confidence bands and residuals
 
-Statistics `stat_poly_line()`, `stat_ma_line()`, `stat_quant_line()` and `stat_quant_band()` return numeric data suitable for plotting lines or lines plus bands. They are similar to `ggplot2::stat_smooth()` in their use. They return a basic set of variables, `x`, `y`, `ymin,` `ymax` and `weights` which can be expanded by passing `fm.values = TRUE`. The expanded returned `data` contains in addition `n`, `r.squared`, `adj.r.squared` and `p.value` when available. These numeric variables make it possible to conditionally hide or highlight using aesthetics, fitted lines that fulfil conditions tested on these variables. The number of rows per `group` and `panel` in the plot, i.e., number of points used to plot the smooth line, is that given by parameter `n` with default `n = 80`. The user interface and default arguments are consistent with those of statistics `stat_poly_eq()`, `stat_ma_eq()` and `stat_quant_eq()` described above.
+Statistics `stat_poly_line()`, `stat_ma_line()`, `stat_quant_line()` and `stat_quant_band()` return numeric data suitable for plotting lines or lines plus bands. They are similar to `ggplot2::stat_smooth()` in their use. They return a basic set of variables, `x`, `y`, `ymin,` `ymax`, `weights` and `robustness.weights` which can be expanded by passing `fm.values = TRUE`. The expanded returned `data` contains in addition `n`, `r.squared`, `adj.r.squared` and `p.value` when available. These numeric variables make it possible to conditionally hide or highlight using aesthetics, fitted lines that fulfil conditions tested on these variables. The number of rows per `group` and `panel` in the plot, i.e., number of points used to plot the smooth line, is that given by parameter `n` with default `n = 80`. The user interface and default arguments are consistent with those of statistics `stat_poly_eq()`, `stat_ma_eq()` and `stat_quant_eq()` described above.
 
 Statistics `stat_fit_residuals()` and `stat_fit_deviations()` can be used to plot the residuals of model fits on their own and to highlight them in a plot of the fitted model curve, respectively.
 
@@ -287,16 +287,38 @@ Several simple use examples are given in the help for each of the layer and othe
 
 The statistic `stat_correlation()` computes one of Pearson, Kendall or Spearman correlation coefficients and tests if they differ from zero. This is done by calling `stats::cor.test()`, with all of its formal parameters supported. Depending on the argument passed to parameter `output.type` the values returned very. The default behaviour is to generate labels as character strings using R's *expression* syntax, suitable to be *parsed*. This ggplot statistic can also output labels using other mark-up languages, including $\LaTeX$ and Markdown, or just numeric values. Nevertheless, all examples below use expression syntax, which is the most commonly used.
 
-We first generate a set of artificial data suitable for the plotting examples in this and subsequent sections.
+We first generate a set of artificial data suitable for the plotting examples in this and subsequent sections. In these data, `x` has no error variation, and `y` has errors normally distributed with `mean = 0` and `sd = 1`, `y.grp` is `y` with a difference in mean between levels of `group`. `y.otlr` is `y` with 5 _outlier_ values with larger error variation, with `sd = 3`. `wght.otlr` is set to `0` for the outliers and to `1` otherwise and will be used as prior weights. `y.poly` are data from a third degree polynomial. `y.poly.grp` is `y.poly` with different slope and mean per group.
 
 ```{r}
 set.seed(4321)
 x <- (1:100) / 10
-y <- x + rnorm(length(x))
+# linear
+y.sd1 <- x + rnorm(length(x), mean = 0, sd = 1)
+y.sd3 <- x + rnorm(length(x), sd = 3)
+outliers <- sample(seq_along(x), size = 5)
+# 3rd degree polynomial
+y.poly <- (x + x^2 + x^3) + rnorm(length(x), mean = 0, sd = mean(x^3) / 4)
+y.poly <- y.poly / max(y.poly)
+
 my.data <- data.frame(x = x,
-                      y = y,
-                      y.desc = - y,
-                      group = c("A", "B"))
+                      y = y.sd1,
+                      y.sd3 = y.sd3,
+                      y.desc = - y.sd1,
+                      y.grp = y.sd1 + c(0, 1),
+                      y.otlr = ifelse(seq_along(x) %in% outliers,
+                                      y.sd3,
+                                      y.sd1),
+                      wght.otlr = 
+                        ifelse(seq_along(x) %in% outliers, 1/3, 1),
+                      y.poly = y.poly,
+                      y.poly.grp = y.poly * c(1, 2) + c(0, 0.5),
+                      wght.sqrt = sqrt(x),
+                      group = c("A", "B"),
+                      group.abcd = c("a", "b", "c", "d"), 
+                      block = c("a", "a", "b", "b"))
+
+my.data[sort(outliers), ]
+head(my.data)
 ```
 
 For the first example we use defaults to add an annotation with Pearson's correlation coefficient.
@@ -310,7 +332,7 @@ ggplot(my.data, aes(x, y)) +
 Grouping is supported.
 
 ```{r}
-ggplot(my.data, aes(x, y, color = group)) +
+ggplot(my.data, aes(x, y.grp, color = group)) +
   geom_point() +
   stat_correlation()
 ```
@@ -318,7 +340,7 @@ ggplot(my.data, aes(x, y, color = group)) +
 We can also compute Spearman's rank correlation. (The symbol used for it is the letter rho to distinguish it from Pearson's correlation for which *R* or *r* are used as symbols.)
 
 ```{r}
-ggplot(my.data, aes(x, y, color = group)) +
+ggplot(my.data, aes(x, y.grp, color = group)) +
   geom_point() +
   stat_correlation(method = "spearman")
 ```
@@ -326,7 +348,7 @@ ggplot(my.data, aes(x, y, color = group)) +
 Statistic `stat_correlation()` generates multiple labels as listed in the tables above. We can combine them freely within a call to `aes()` to customize the annotations, or we can use the convenience function `use_label()` to create the mapping.
 
 ```{r}
-ggplot(my.data, aes(x, y, color = group)) +
+ggplot(my.data, aes(x, y.grp, color = group)) +
   geom_point() +
   stat_correlation(mapping = use_label("R", "t", "P", "n"))
 ```
@@ -334,7 +356,7 @@ ggplot(my.data, aes(x, y, color = group)) +
 Facets are also supported.
 
 ```{r}
-ggplot(my.data, aes(x, y)) +
+ggplot(my.data, aes(x, y.grp)) +
   geom_point() +
   stat_correlation() +
   facet_wrap(~group)
@@ -343,7 +365,7 @@ ggplot(my.data, aes(x, y)) +
 Using the numeric values returned it is possible to set other aesthetics on-the-fly.
 
 ```{r}
-ggplot(my.data, aes(x, y)) +
+ggplot(my.data, aes(x, y.grp)) +
   geom_point() +
   stat_correlation(mapping = aes(color = ifelse(after_stat(cor) > 0.955,
                                                 "red", "black"))) +
@@ -359,30 +381,13 @@ A frequently used annotation in plots showing fitted lines is the display of the
 
 The statistic `stat_poly_line()` adds a layer nearly identical to that from `ggplot2::stat_smooth()` but has the same user interface and default arguments as `stat_poly_eq()`.
 
-We first generate a set of artificial data suitable for the plotting examples.
-
-```{r}
-set.seed(4321)
-# generate artificial data
-x <- 1:100
-y <- (x + x^2 + x^3) + rnorm(length(x), mean = 0, sd = mean(x^3) / 4)
-y <- y / max(y)
-my.data <- data.frame(x, 
-                      y, 
-                      y2 = y * c(1, 2) + c(0, 0.2),
-                      wt = sqrt(x),
-                      group = c("A", "B"),
-                      group.abcd = c("a", "b", "c", "d"), 
-                      block = c("a", "a", "b", "b"))
-```
-
 First, one example using defaults except for the model `formula`. The best practice, ensuring that the formula used in both *statistics* is the same is to assign the formula to a variable, as shown here. This is because the same model is fit twice to the same `data`, once in `stat_poly_line()` and once in `stat_poly_eq()`.
 
 We can write the model formula for a polynomial explicitly or using function `poly()`. When using function `poly()` it is in most cases necessary to set `raw = TRUE` as the default is to use orthogonal polynomials which although fitting the same line will have different estimates for the coefficients than those in the usual *raw* polynomials.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y)) +
+ggplot(my.data, aes(x, y.poly)) +
   geom_point() +
   stat_poly_line(formula = formula) +
   stat_poly_eq(formula = formula)
@@ -392,7 +397,7 @@ A ready formatted equation is also returned as a string that needs to be parsed 
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y)) +
+ggplot(my.data, aes(x, y.poly)) +
   geom_point() +
   stat_poly_line(formula = formula) +
   stat_poly_eq(mapping = use_label("eq"), formula = formula)
@@ -402,7 +407,7 @@ The mapping can also be done with `ggplot2::aes()` using the name of the variabl
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y)) +
+ggplot(my.data, aes(x, y.poly)) +
   geom_point() +
   stat_poly_line(formula = formula) +
   stat_poly_eq(mapping = aes(label = after_stat(eq.label)), 
@@ -413,7 +418,7 @@ ggplot(my.data, aes(x, y)) +
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y)) +
+ggplot(my.data, aes(x, y.poly)) +
   geom_point() +
   stat_poly_line(formula = formula) +
   stat_poly_eq(mapping = use_label("adj.R2"), formula = formula) +
@@ -425,7 +430,7 @@ Within `ggplot2::aes()` it is also possible to *compute* new labels based on tho
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y)) +
+ggplot(my.data, aes(x, y.poly)) +
   geom_point() +
   stat_poly_line(formula = formula) +
   stat_poly_eq(mapping = use_label("eq", "adj.R2"),
@@ -437,7 +442,7 @@ Above we combined two character-string labels, but it is possible to add additio
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y)) +
+ggplot(my.data, aes(x, y.poly)) +
   geom_point() +
   stat_poly_line(formula = formula) +
   stat_poly_eq(aes(label =  paste(after_stat(eq.label), "*\" with \"*", 
@@ -452,7 +457,7 @@ It is also possible to format the text using `plain()`, `italic()`, `bold()` or 
 
 ```{r, eval=eval_flag}
 formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y)) +
+ggplot(my.data, aes(x, y.poly)) +
   geom_point() +
   stat_poly_line(formula = formula) +
   stat_poly_eq(mapping = use_label("eq", "adj.R2", sep = "~~italic(\"with\")~~"),
@@ -463,7 +468,7 @@ As these are expressions, to include two lines of text, we need either to add `s
 
 ```{r, eval=eval_flag}
 formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y)) +
+ggplot(my.data, aes(x, y.poly)) +
   geom_point() +
   stat_poly_line(formula = formula) +
   stat_poly_eq(aes(label = paste("atop(", after_stat(AIC.label), ",", 
@@ -475,7 +480,7 @@ Next, one example of how to remove the left hand side (*lhs*).
 
 ```{r, eval=eval_flag}
 formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y)) +
+ggplot(my.data, aes(x, y.poly)) +
   geom_point() +
   stat_poly_line(formula = formula) +
   stat_poly_eq(mapping = use_label("eq"),
@@ -487,7 +492,7 @@ Replacing the *lhs*.
 
 ```{r, eval=eval_flag}
 formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y)) +
+ggplot(my.data, aes(x, y.poly)) +
   geom_point() +
   stat_poly_line(formula = formula) +
   stat_poly_eq(mapping = use_label("eq"),
@@ -499,7 +504,7 @@ Replacing both the *lhs* and the variable symbol used on the *rhs*.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y)) +
+ggplot(my.data, aes(x, y.poly)) +
   geom_point() +
   stat_poly_line(formula = formula) +
   stat_poly_eq(mapping = use_label("eq", "R2"),
@@ -513,7 +518,7 @@ As any valid R expression can be used, Greek letters are also supported, as well
 
 ```{r, eval=eval_flag}
 formula <- y ~ poly(x, 2, raw = TRUE)
-ggplot(my.data, aes(x, log10(y + 1e6))) +
+ggplot(my.data, aes(x, log10(y.poly + 1e6))) +
   geom_point() +
   stat_poly_line(formula = formula) +
   stat_poly_eq(mapping = use_label("eq"),
@@ -527,7 +532,7 @@ Examples of polynomials of different orders, and fits through the origin. A degr
 
 ```{r}
 formula <- y ~ poly(x, 5, raw = TRUE)
-ggplot(my.data, aes(x, y)) +
+ggplot(my.data, aes(x, y.poly)) +
   geom_point() +
   stat_poly_line(formula = formula) +
   stat_poly_eq(mapping = use_label("eq"), formula = formula, size = 2.7)
@@ -537,7 +542,7 @@ Intercept forced to zero for a third degree polynomial defined explicitly, as th
 
 ```{r, eval=eval_flag}
 formula <- y ~ x + I(x^2) + I(x^3) - 1
-ggplot(my.data, aes(x, y)) +
+ggplot(my.data, aes(x, y.poly)) +
   geom_point() +
   stat_poly_line(formula = formula) +
   stat_poly_eq(aes(label = after_stat(eq.label)), formula = formula)
@@ -547,7 +552,7 @@ Even when labels are returned, numeric values are also returned for `r.squared`,
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y)) +
+ggplot(my.data, aes(x, y.poly)) +
   geom_point() +
   stat_poly_line(formula = formula) +
   stat_poly_eq(aes(label =  ifelse(after_stat(adj.r.squared > 0.3),
@@ -564,7 +569,7 @@ _Facets work as expected both with fixed or free scales._ Although below we have
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y2)) +
+ggplot(my.data, aes(x, y.poly.grp)) +
   geom_point() +
   stat_poly_line(formula = formula) +
   stat_poly_eq(aes(label = after_stat(eq.label)), size = 2.5,
@@ -574,7 +579,7 @@ ggplot(my.data, aes(x, y2)) +
 
 ```{r, eval=eval_flag}
 formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y2)) +
+ggplot(my.data, aes(x, y.poly.grp)) +
   geom_point() +
   stat_poly_line(formula = formula) +
   stat_poly_eq(aes(label = after_stat(eq.label)), size = 2.5,
@@ -586,7 +591,7 @@ _Grouping works as expected._ In this example we create groups using the colour 
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y2, colour = group)) +
+ggplot(my.data, aes(x, y.poly.grp, colour = group)) +
   geom_point() +
   stat_poly_line(formula = formula) +
   stat_poly_eq(aes(label = after_stat(eq.label)), formula = formula, vstep = 0.06)
@@ -596,7 +601,7 @@ To add a label to the equation for each group, we map it to a pseudo-aesthetic n
 
 ```{r, eval=eval_flag}
 formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y2, colour = group, grp.label = group)) +
+ggplot(my.data, aes(x, y.poly.grp, colour = group, grp.label = group)) +
   geom_point() +
   stat_poly_line(formula = formula) +
   stat_poly_eq(aes(label = after_stat(paste("bold(", grp.label, "*\":\")~~", 
@@ -608,7 +613,7 @@ Being able to label equations allows us to dispense with the use of colour, whic
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y2, linetype = group, grp.label = group)) +
+ggplot(my.data, aes(x, y.poly.grp, linetype = group, grp.label = group)) +
   geom_point() +
   stat_poly_line(formula = formula, color = "black") +
   stat_poly_eq(aes(label = after_stat(paste("bold(", grp.label, "*':')~~~", 
@@ -620,7 +625,7 @@ User supplied label positions relative to the ranges of the *x* and *y* scales a
 
 ```{r, eval=eval_flag}
 formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y2, colour = group)) +
+ggplot(my.data, aes(x, y.poly.grp, colour = group)) +
   geom_point() +
   stat_poly_line(formula = formula) +
   stat_poly_eq(aes(label = after_stat(eq.label)),
@@ -632,7 +637,7 @@ The default locations are based on normalized coordinates, and consequently thes
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y2, fill = block, colour = block)) +
+ggplot(my.data, aes(x, y.poly.grp, fill = block, colour = block)) +
   geom_point(shape = 21, size = 3) +
   stat_poly_line(formula = formula) +
   stat_poly_eq(aes(label = after_stat(rr.label)), size = 2.7,
@@ -647,7 +652,7 @@ In some cases gaps may be desirable to highlight the missing groups, but when no
 
 ```{r, eval=eval_flag}
 formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y2, colour = group.abcd)) +
+ggplot(my.data, aes(x, y.poly.grp, colour = group.abcd)) +
   geom_point(shape = 21, size = 3) +
   stat_poly_line(formula = formula) +
   stat_poly_eq(aes(label = after_stat(rr.label)), size = 3, formula = formula) +
@@ -658,7 +663,7 @@ When setting positions manually with arguments (in `npc` units, 0..1) passed as 
 
 ```{r, eval=eval_flag}
 formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y2, colour = group.abcd)) +
+ggplot(my.data, aes(x, y.poly.grp, colour = group.abcd)) +
   geom_point(shape = 21, size = 3) +
   stat_poly_line(formula = formula) +
   stat_poly_eq(use_label("R2"), size = 3, label.y = c(0.95, 0.95, 0.9, 0.9),
@@ -670,7 +675,7 @@ In the plot below the simultaneous mapping to both colour and fill aesthetics cr
 
 ```{r, eval=eval_flag}
 formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y2, colour = group, fill = block)) +
+ggplot(my.data, aes(x, y.poly.grp, colour = group, fill = block)) +
   geom_point(shape = 21, size = 3) +
   stat_poly_line(formula = formula) +
   stat_poly_eq(aes(label = after_stat(rr.label)), size = 3, alpha = 0.1,
@@ -683,11 +688,11 @@ It is possible to use `ggplot2::geom_text()` and `ggplot2::geom_label()` instead
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y2, colour = group)) +
+ggplot(my.data, aes(x, y.poly.grp, colour = group)) +
   geom_point() +
   stat_poly_line(formula = formula) +
   stat_poly_eq(geom = "text", aes(label = after_stat(eq.label)),
-               label.x = c(100, 15), label.y = c(-0.15, 2.1), hjust = "inward",
+               label.x = c(10, 9), label.y = c(-0.15, 2.5), hjust = "inward",
                formula = formula)
 ```
 
@@ -698,7 +703,7 @@ Occasionally, possibly as a demonstration in teaching, we may want to compare a 
 As is the case for model fitting functions themselves, which variable is dependent (response) and which is independent (explanatory) is simply indicated by the model equation passed as argument to `formula`, or consistently with `ggplot2::stat_smooth()` through parameter `orientation` as show below.
 
 ```{r}
-ggplot(my.data, aes(x, y)) +
+ggplot(my.data, aes(x, y.sd3)) +
   geom_point() +
   stat_poly_line(color = "blue") +
   stat_poly_eq(mapping = use_label("R2", "eq"), color = "blue") +
@@ -714,18 +719,18 @@ Package 'lmodel2' implements Model II fits for major axis (MA), standard major a
 In the figure above we see that the ordinary least squares (OLS) linear regression of *y* on *x* and *x* on *y* differ. Major axis regression provides an estimate of the slope that is independent of the direction of the relationship relation. $R^2$ remains the same in all cases, and with major axis regression while the coefficient estimates in the equation change, they correspond to exactly the same line.
 
 ```{r}
-ggplot(my.data, aes(x, y)) +
+ggplot(my.data, aes(x, y.sd3)) +
   geom_point() +
   stat_ma_line() +
   stat_ma_eq(mapping = use_label("eq"))
 ```
 
 ```{r}
-ggplot(my.data, aes(x, y)) +
+ggplot(my.data, aes(x, y.sd3)) +
   geom_point() +
   stat_ma_line(color = "blue") +
   stat_ma_eq(mapping = use_label("R2", "eq"), color = "blue") +
-  stat_ma_line(color = "red", orientation = "y") +
+  stat_ma_line(color = "red", orientation = "y", linetype = "dashed") +
   stat_ma_eq(mapping = use_label("R2", "eq"), color = "red", orientation = "y",
              label.y = 0.9)
 ```
@@ -745,7 +750,7 @@ Similarly to `ggplot2::stat_quantiles()`, `stat_quant_eq()` and `stat_quant_line
 Here we use the default value for quantiles, `c(0.25, 0.50, 0.75)`, equivalent to those used for the box of box plots, and we obtain a plot with a line for median regression and a band highlighting the space between the quartiles.
 
 ```{r, warning=FALSE}
-ggplot(my.data, aes(x, y)) +
+ggplot(my.data, aes(x, y.poly)) +
   geom_point() +
   stat_quant_band(formula = y ~ poly(x, 2))
 ```
@@ -753,7 +758,7 @@ ggplot(my.data, aes(x, y)) +
 Overriding the values for `quantiles` we find a boundary containing 90% of the observations.
 
 ```{r, warning=FALSE}
-ggplot(my.data, aes(x, y)) +
+ggplot(my.data, aes(x, y.poly)) +
   geom_point() +
   stat_quant_line(formula = y ~ poly(x, 2), quantiles = c(0.05, 0.95))
 ```
@@ -761,7 +766,7 @@ ggplot(my.data, aes(x, y)) +
 A line for the quantile regression plus a confidence band for it is the default for a single quantile. (This is similar to the behaviour of `ggplot2::stat_smooth()`.)
 
 ```{r, warning=FALSE}
-ggplot(my.data, aes(x, y)) +
+ggplot(my.data, aes(x, y.poly)) +
   geom_point() +
   stat_quant_line(formula = y ~ poly(x, 2), quantiles = 0.5)
 ```
@@ -769,7 +774,7 @@ ggplot(my.data, aes(x, y)) +
 With `stat_quant_eq()` we add the fitted equations to the first example in this section (we also override the use of colour).
 
 ```{r, warning=FALSE}
-ggplot(my.data, aes(x, y)) +
+ggplot(my.data, aes(x, y.poly)) +
   geom_point() +
   stat_quant_band(formula = formula, color = "black", fill = "grey60") +
   stat_quant_eq(aes(label = paste(after_stat(qtl.label), "*\": \"*",
@@ -781,7 +786,7 @@ ggplot(my.data, aes(x, y)) +
 Grouping and faceting are supported by `stat_quant_eq()`, `stat_quant_line()` and `stat_quant_band()`. Below are some examples of grouping.
 
 ```{r, warning=FALSE}
-ggplot(my.data, aes(x, y, color = group)) +
+ggplot(my.data, aes(x, y.poly.grp, color = group)) +
   geom_point() +
   stat_quant_line(formula = formula) +
   stat_quant_eq(aes(label = paste(after_stat(qtl.label), "*\": \"*",
@@ -793,7 +798,7 @@ ggplot(my.data, aes(x, y, color = group)) +
 Grouping can be combined with a group label by mapping in `aes()` a character variable to `grp.label`.
 
 ```{r, warning=FALSE}
-ggplot(my.data, aes(x, y, group = group, linetype = group, 
+ggplot(my.data, aes(x, y.poly.grp, group = group, linetype = group, 
                     shape = group, grp.label = group)) +
   geom_point() +
   stat_quant_line(formula = formula, quantiles = c(0.05, 0.95), color = "black") +
@@ -808,14 +813,25 @@ ggplot(my.data, aes(x, y, group = group, linetype = group,
 In some cases *double quantile regression* is an informative method to assess reciprocal constraints. For this a fit of *x* on *y* and one of *y* on *x* in the same plot are computed for a large quantile. As is the case for model fitting functions themselves this is simply indicated by the model passed as argument to `formula`, or consistently with `ggplot2::stat_smooth()` through parameter `orientation`.
 
 ```{r, warning=FALSE}
-ggplot(my.data, aes(x, y)) +
+ggplot(my.data, aes(x, y.sd3)) +
   geom_point() +
-  stat_quant_line(formula = y ~ x, color = "blue", quantiles = 0.05) +
-  stat_quant_eq(mapping = use_label("eq"), formula = y ~ x, color = "blue",
+  stat_quant_line(formula = y ~ x, 
+                  color = "blue",
+                  quantiles = 0.05, 
+                  se = FALSE) +
+  stat_quant_eq(mapping = use_label("eq"), 
+                formula = y ~ x,
+                color = "blue",
                 quantiles = 0.05) +
-  stat_quant_line(formula = x ~ y, color = "red", quantiles = 0.95) +
-  stat_quant_eq(mapping = use_label("eq"), formula = x ~ y, color = "red", 
-                quantiles = 0.95, label.y = 0.9)
+  stat_quant_line(formula = x ~ y, 
+                  color = "red", 
+                  quantiles = 0.95,
+                  se = FALSE) +
+  stat_quant_eq(mapping = use_label("eq"), 
+                formula = x ~ y, 
+                color = "red", 
+                quantiles = 0.95, 
+                label.y = 0.9)
 ```
 
 Please, see the section on `stat_poly_eq()` for additional examples, as here we have highlighted mainly the differences between these two statistics.
@@ -966,31 +982,44 @@ Sometimes we need to quickly plot residuals matching fits plotted with `stat_pol
 `stat_fit_residuals()` can be used to plot the residuals from models of *y* on *x* or *x* on *y* fitted with function `lm`, `MASS:rlm`, `quantreg::rq` (only median regression) or a user-supplied model fitting function and arguments. In the data frame returned by the statistic the response variable, *y* or *x*, is replaced by the residuals from the fit and thus also by default mapped to the aesthetic of the same name. The default geom is `"point"`.
 
 ```{r}
-formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y, colour = group)) +
+ggplot(my.data, aes(x, y.otlr, colour = group)) +
   geom_hline(yintercept = 0, linetype = "dashed") +
-  stat_fit_residuals(formula = formula)
+  stat_fit_residuals()
 ```
 
-The computed "robustness" weights from the model fit object are returned by `stat_fit_residuals()` under the name of `robustness.weights`. These can be mapped to aesthetics, in this example to `size`. (These are _posterior_ weights computed by the model fit method `rlm()`. The `prior` weights set by mapping a numeric variable to the `weight` aesthetic are returned under the name of `weights`. In a fit with `lm()` prior and posterior weights are the same, and by default equal to 1. In a fit with `rlm()` prior and posterior weights differ.)
+Depending on the model fit `method`, two types of _weights_ are available: prior weights given by a numeric variable mapped to `weight` aesthetic and posterior weights, actually used, and possibly computed during model fitting. Depending on the model fit `method`, prior and posterior weights can be the same or not. Function `stat_fit_residuals()` returns the _prior_ weights supplied as input in the variable named `weights` and the posterior actually used weights, possibly computed "robustness" weights, in the variable named `robustness.weights`. Both weights can be mapped to aesthetics, in the example below `robustness.weights` are mapped to `size`. In a model fit with `lm()`, prior and posterior weights are the same, and by default equal to 1. In a fit with `rlm()` prior and posterior weights differ.
 
 ```{r}
-formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y, colour = group)) +
+ggplot(my.data, aes(x, y.otlr, colour = group)) +
   geom_hline(yintercept = 0, linetype = "dashed") +
-  stat_fit_residuals(formula = formula,
-                     method = "rlm",
-                     mapping = aes(size = sqrt(after_stat(robustness.weights))),
-                     alpha = 2/3)
+  stat_fit_residuals(method = "rlm",
+                     mapping = aes(size = after_stat(robustness.weights)),
+                     alpha = 1/2) +
+  scale_size_area(name = "Robustness\nweights", max_size = 3)
 ```
 
-Weighted residuals are available, but in this case they do not differ as we have not mapped any variable to the `weight` aesthetic in the input to the statistic.
+Weighted residuals are available, and in this case they differ from the raw residuals as we have mapped any variable `wght.otlr` to the `weight` aesthetic. Compare the two figures below.
 
-```{r, eval = FALSE}
-formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y, colour = group)) +
+```{r}
+ggplot(my.data, aes(x, y.otlr, 
+                    weight = wght.otlr, 
+                    colour = group)) +
   geom_hline(yintercept = 0, linetype = "dashed") +
-  stat_fit_residuals(formula = formula, weighted = TRUE)
+  stat_fit_residuals(formula = formula, 
+                     mapping = aes(size = after_stat(robustness.weights)),
+                     weighted = FALSE) +
+  scale_size_area(name = "Robustness\nweights", max_size = 3)
+```
+
+```{r}
+ggplot(my.data, aes(x, y.otlr, 
+                    weight = wght.otlr, 
+                    colour = group)) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  stat_fit_residuals(formula = formula, 
+                     mapping = aes(size = after_stat(robustness.weights)),
+                     weighted = TRUE) +
+  scale_size_area(name = "Robustness\nweights", max_size = 3)
 ```
 
 ### stat_fit_deviations
@@ -999,7 +1028,7 @@ When teaching we may wish to highlight residuals in plots used in slides and not
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y)) +
+ggplot(my.data, aes(x, y.poly)) +
   stat_smooth(method = "lm", formula = formula) +
   stat_fit_deviations(formula = formula, colour = "red") +
   geom_point()
@@ -1009,7 +1038,7 @@ The geometry used by default is `ggplot2::geom_segment()` and additional aesthet
 
 ```{r, eval=eval_flag}
 formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y)) +
+ggplot(my.data, aes(x, y.poly)) +
   stat_smooth(method = "lm", formula = formula) +
   geom_point() +
   stat_fit_deviations(formula = formula, colour = "red",
@@ -1022,7 +1051,7 @@ When weights are available, either supplied by the user, or computed as part of 
 ```{r}
 my.data.outlier <- my.data
 my.data.outlier[6, "y"] <- my.data.outlier[6, "y"] * 5
-ggplot(my.data.outlier, aes(x, y)) +
+ggplot(my.data.outlier, aes(x, y.poly)) +
   stat_smooth(method = MASS::rlm, formula = formula) +
   stat_fit_deviations(formula = formula, method = "rlm",
                       mapping = aes(colour = after_stat(robustness.weights)),
@@ -1041,7 +1070,7 @@ As we have above given some simple examples, we here exemplify this statistic in
 # formula <- y ~ poly(x, 3, raw = TRUE)
 # broom::augment does not handle poly() correctly!
 formula <- y ~ x + I(x^2) + I(x^3)
-ggplot(my.data, aes(x, y, colour = group)) +
+ggplot(my.data, aes(x, y.poly.grp, colour = group)) +
   geom_point() +
   stat_smooth(method = "lm", formula = formula) +
   stat_fit_glance(method = "lm", 
@@ -1080,7 +1109,7 @@ The default output of `stat_fit_tb()` is the default output from `tidy(fm)` wher
 
 ```{r, eval=eval_broom}
 formula <- y ~ x + I(x^2) + I(x^3)
-ggplot(my.data, aes(x, y)) +
+ggplot(my.data, aes(x, y.poly)) +
   geom_point() +
   stat_smooth(method = "lm", formula = formula) +
   stat_fit_tb(method = "lm",
@@ -1098,7 +1127,7 @@ When `tb.type = "fit.anova"` the output returned is that from `tidy(anova(fm))` 
 
 ```{r, eval=eval_broom}
 formula <- y ~ x + I(x^2) + I(x^3)
-ggplot(my.data, aes(x, y)) +
+ggplot(my.data, aes(x, y.poly)) +
   geom_point() +
   stat_smooth(method = "lm", formula = formula) +
   stat_fit_tb(method = "lm",
@@ -1117,7 +1146,7 @@ When `tb.type = "fit.coefs"` the output returned is that of `tidy(fm)` after sel
 
 ```{r, eval=eval_broom}
 formula <- y ~ x + I(x^2) + I(x^3)
-ggplot(my.data, aes(x, y)) +
+ggplot(my.data, aes(x, y.poly)) +
   geom_point() +
   stat_smooth(method = "lm", formula = formula) +
   stat_fit_tb(method = "lm",
@@ -1148,28 +1177,30 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
 The data in the example below are split by ggplot into six groups based on the levels of the `feed` factor. However, as `stat_fit_tb()` ignores groupings, we can still fit a linear model to all the data in the panel.
 
 ```{r, eval=eval_broom}
-ggplot(chickwts, aes(factor(feed), weight)) +
+ggplot(chickwts, aes(reorder(factor(feed), weight), weight)) +
   stat_summary(fun.data = "mean_se") +
   stat_fit_tb(tb.type = "fit.anova",
               label.x = "center",
               label.y = "bottom") +
+  labs(x = "Feed") +
   expand_limits(y = 0)
 ```
 
 We can flip the system of coordinates, if desired.
 
 ```{r, eval=eval_broom}
-ggplot(chickwts, aes(factor(feed), weight)) +
+ggplot(chickwts, aes(reorder(factor(feed), weight), weight)) +
   stat_summary(fun.data = "mean_se") +
   stat_fit_tb(tb.type = "fit.anova", label.x = "left", size = 3) +
   scale_x_discrete(expand = expansion(mult = c(0.2, 0.5))) +
+  labs(y = "Feed") +
   coord_flip()
 ```
 
 It is also possible to rotate the table using `angle`. Here we also show how to replace the column headers with strings to be parsed into R expressions.
 
 ```{r, eval=(eval_flag && eval_broom)}
-ggplot(chickwts, aes(factor(feed), weight)) +
+ggplot(chickwts, aes(reorder(factor(feed), weight), weight)) +
   stat_summary(fun.data = "mean_se") +
   stat_fit_tb(tb.type = "fit.anova",
               angle = 90, size = 3,
@@ -1181,7 +1212,8 @@ ggplot(chickwts, aes(factor(feed), weight)) +
                           "italic(F)" = "statistic", 
                           "italic(P)" = "p.value"),
               parse = TRUE) +
-  scale_x_discrete(expand = expansion(mult = c(0.1, 0.35))) +
+  scale_x_discrete(name = "Feed",
+                   expand = expansion(mult = c(0.1, 0.35))) +
   expand_limits(y = 0)
 ```
 
@@ -1324,7 +1356,7 @@ When statistics specific to the type of model fitted are available, their use is
 # formula <- y ~ poly(x, 3, raw = TRUE)
 # broom::augment does not handle poly correctly!
 formula <- y ~ x + I(x^2) + I(x^3)
-ggplot(my.data, aes(x, y)) +
+ggplot(my.data, aes(x, y.poly)) +
   geom_point() +
   stat_fit_augment(method = "lm",
                    method.args = list(formula = formula))
@@ -1332,7 +1364,7 @@ ggplot(my.data, aes(x, y)) +
 
 ```{r, eval=eval_broom}
 formula <- y ~ x + I(x^2) + I(x^3)
-ggplot(my.data, aes(x, y, colour = group)) +
+ggplot(my.data, aes(x, y.poly.grp, colour = group)) +
   geom_point() +
   stat_fit_augment(method = "lm", 
                    method.args = list(formula = formula))
@@ -1342,20 +1374,22 @@ We can override the variable returned as `y` to be any of the variables in the d
 
 ```{r, eval=(eval_flag && eval_broom)}
 formula <- y ~ x + I(x^2) + I(x^3)
-ggplot(my.data, aes(x, y)) +
+ggplot(my.data, aes(x, y.poly)) +
   stat_fit_augment(method = "lm",
                    method.args = list(formula = formula),
                    geom = "point",
-                   y.out = ".resid")
+                   y.out = ".resid") +
+  labs(y = "Residuals")
 ```
 
 ```{r, eval=eval_broom}
 formula <- y ~ x + I(x^2) + I(x^3)
-ggplot(my.data, aes(x, y, colour = group)) +
+ggplot(my.data, aes(x, y.poly.grp, colour = group)) +
   stat_fit_augment(method = "lm",
                    method.args = list(formula = formula),
                    geom = "point",
-                   y.out = ".std.resid")
+                   y.out = ".std.resid") +
+  labs(y = "Residuals")
 ```
 
 We can use any model fitting method for which `broom::augment()` is implemented. _When a method, in this case of `nls()`, has no support for confidence limits and 'broom' sets them to `NA` values, no confidence band in plotted and a warning is issued by `geom_smooth()` from 'ggplot2', which is the default. The warning is harmless, and if needed, it can be silenced by passing `geom = "line"` to override the default._
@@ -1376,7 +1410,8 @@ ggplot(mtcars, aes(wt, mpg)) +
   stat_fit_augment(method = "nls",
                    method.args = args,
                    geom = "point",
-                   y.out = ".resid")
+                   y.out = ".resid") +
+  labs(y = "Residuals")
 ```
 
 **Note:** The tidiers for mixed models have moved to package 'broom.mixed'!
@@ -1404,7 +1439,7 @@ When using `stat_fit_glance()`, `stat_fit_tidy()`, `stat_fit_augment()` and `sta
 # formula <- y ~ poly(x, 3, raw = TRUE)
 # broom::augment does not handle poly() correctly!
 formula <- y ~ x + I(x^2) + I(x^3)
-ggplot(my.data, aes(x, y, colour = group)) +
+ggplot(my.data, aes(x, y.poly.grp, colour = group)) +
   geom_point() +
   stat_smooth(method = "lm", formula = formula) +
   stat_fit_glance(geom = "debug_group",
@@ -1421,7 +1456,7 @@ In the case of `stat_fit_tb()` the computed variables returned include a list co
 
 ```{r, eval=(eval_broom && eval_gginnards)}
 formula <- y ~ x + I(x^2) + I(x^3)
-ggplot(my.data, aes(x, y)) +
+ggplot(my.data, aes(x, y.poly)) +
   geom_point() +
   stat_smooth(method = "lm", formula = formula) +
   stat_fit_tb(geom = "debug_panel",

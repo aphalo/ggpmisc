@@ -12,6 +12,8 @@ matching argument to `eq.x.rhs` or `eq.lhs`. Fix parsing failures leading to
 wrong test outcomes in some edge cases.
 - Support extraction of posterior weights for models fitted with methods
 `"gls"`, (`"lme"` and `"nlme"`). These weights are NOT scaled to values in 0..1!
+- Change default from `show.legend = FALSE` to `show.legend = TRUE` in 
+`stat_fit_residuals()` and `stat_fit_deviations()`.
 - Better document how positioning of labels works when aesthetics mappings
 create groups.
 
