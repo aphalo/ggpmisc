@@ -16,6 +16,8 @@ wrong test outcomes in some edge cases.
 `stat_fit_residuals()` and `stat_fit_deviations()`.
 - Better document how positioning of labels works when aesthetics mappings
 create groups.
+- Update the _User Guide_ with new/better examples and explanations including
+new features.
 
 # ggpmisc 0.7.0
 

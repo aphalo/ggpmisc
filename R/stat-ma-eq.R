@@ -325,7 +325,7 @@ stat_ma_eq <- function(mapping = NULL,
   }
 
   if (grepl("^lm$|^lm[:]|^rlm$|^rlm[:]|^gls$|^gls[:]|^lqs$|^lqs[:]", method.name)) {
-    stop("Methods \"l\", \"rlm\", \"lq\" and \"gls\" not supported, please use 'stat_poly_eq()'.")
+    stop("Methods \"lm\", \"rlm\", \"lq\" and \"gls\" not supported, please use 'stat_poly_eq()'.")
   } else if (grepl("^rq$|^rq[:]", method.name)) {
       stop("Method \"rq\" not supported, please use 'stat_quant_eq()'.")
   }

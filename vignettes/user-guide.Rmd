@@ -33,11 +33,11 @@ It is also important to remember that in most cases data analysis proper should 
 
 Attaching package 'ggpmisc' also attaches package 'ggpp' as this package was created as a spin-off from 'ggpmisc'. 'ggpp' provides several of the geometries used by default in the statistics described below. Package 'ggpp' can be loaded and attached on its own, and has [its own on-line documentation](https://docs.r4photobiology.info/ggpp/).
 
-The [on-line documentation of 'ggpmisc'](https://docs.r4photobiology.info/ggpp/) includes articles/vignettes not installed with the package containing use examples covering annotations based on additional model fitting functions, including user-defined ones.
+The [on-line documentation of 'ggpmisc'](https://docs.r4photobiology.info/ggpp/) includes articles/vignettes not installed with the package. These articles contain use examples covering annotations based on additional model fitting functions, including user-defined ones. These articles also describe the use of `ggpmisc` together with some other R packages including 'ggrepel', 'gganimate', 'ggtext', 'marquee' and 'xdvir'. With the last three packages, automatically generated _Markdown_ and $\LaTeX$ formatted equations and other labels can be added to plots.
 
 ## Preliminaries
 
-We load all the packages used in the examples.
+We load all the packages used in the examples. The suggested ones, only if available.
 
 ```{r, message=FALSE}
 library(ggpmisc)
@@ -295,6 +295,8 @@ x <- (1:100) / 10
 # linear
 y.sd1 <- x + rnorm(length(x), mean = 0, sd = 1)
 y.sd3 <- x + rnorm(length(x), sd = 3)
+y.sdinc <- x + rnorm(length(x), mean = 0, 
+                     sd = seq(from = 1, to = 3, length.out = length(x)))
 outliers <- sample(seq_along(x), size = 5)
 # 3rd degree polynomial
 y.poly <- (x + x^2 + x^3) + rnorm(length(x), mean = 0, sd = mean(x^3) / 4)
@@ -303,6 +305,7 @@ y.poly <- y.poly / max(y.poly)
 my.data <- data.frame(x = x,
                       y = y.sd1,
                       y.sd3 = y.sd3,
+                      y.sdinc = y.sdinc,
                       y.desc = - y.sd1,
                       y.grp = y.sd1 + c(0, 1),
                       y.otlr = ifelse(seq_along(x) %in% outliers,
@@ -311,7 +314,7 @@ my.data <- data.frame(x = x,
                       wght.otlr = 
                         ifelse(seq_along(x) %in% outliers, 1/3, 1),
                       y.poly = y.poly,
-                      y.poly.grp = y.poly * c(1, 2) + c(0, 0.5),
+                      y.poly.grp = y.poly * c(1, 1.5) + c(0, 0.2),
                       wght.sqrt = sqrt(x),
                       group = c("A", "B"),
                       group.abcd = c("a", "b", "c", "d"), 
@@ -998,7 +1001,20 @@ ggplot(my.data, aes(x, y.otlr, colour = group)) +
   scale_size_area(name = "Robustness\nweights", max_size = 3)
 ```
 
-Weighted residuals are available, and in this case they differ from the raw residuals as we have mapped any variable `wght.otlr` to the `weight` aesthetic. Compare the two figures below.
+Of course it is also possible to plot the weights themselves.
+
+```{r}
+ggplot(my.data, aes(x, y.otlr, colour = group)) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  stat_fit_residuals(method = "rlm",
+                     mapping = 
+                       aes(y = stage(start = y.otlr,
+                                     after_stat = robustness.weights)),
+                     alpha = 1/2) +
+  scale_y_continuous(name = "Robustness weights")
+```
+
+Weighted residuals are available, and in this case they differ from the raw residuals as we have mapped variable `wght.otlr` to the `weight` aesthetic. Compare the two figures below.
 
 ```{r}
 ggplot(my.data, aes(x, y.otlr, 
@@ -1027,37 +1043,62 @@ ggplot(my.data, aes(x, y.otlr,
 When teaching we may wish to highlight residuals in plots used in slides and notes. Statistic `stat_fit_deviations()` makes it easy to achieve this for the residuals from models of *y* on *x* or *x* on *y* fitted with function `lm`, `MASS:rlm`, `quantreg::rq` (only median regression) or a user-supplied model fitting function and arguments. The observed values are mapped to aesthetics *x* and *y*, and the fitted values are mapped to aesthetics *xend* and *yend*. As the default geom is `"segment"`, each deviation is displayed as a segment.
 
 ```{r}
-formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y.poly)) +
-  stat_smooth(method = "lm", formula = formula) +
-  stat_fit_deviations(formula = formula, colour = "red") +
+ggplot(my.data, aes(x, y)) +
+  stat_poly_line() +
+  stat_fit_deviations(colour = "red") +
   geom_point()
 ```
 
 The geometry used by default is `ggplot2::geom_segment()` and additional aesthetics can be mapped or set to constant values. Here we add arrowheads.
 
 ```{r, eval=eval_flag}
-formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y.poly)) +
-  stat_smooth(method = "lm", formula = formula) +
+ggplot(my.data, aes(x, y)) +
+  stat_poly_line() +
   geom_point() +
-  stat_fit_deviations(formula = formula, colour = "red",
-                      arrow = arrow(length = unit(0.015, "npc"), 
+  stat_fit_deviations(arrow = arrow(length = unit(0.015, "npc"), 
                                    ends = "both"))
 ```
 
 When weights are available, either supplied by the user, or computed as part of the fit, they are returned in `data`. Having weights available allows encoding them using colour. We here use a robust regression fit with `MASS::rlm()`.
 
 ```{r}
-my.data.outlier <- my.data
-my.data.outlier[6, "y"] <- my.data.outlier[6, "y"] * 5
-ggplot(my.data.outlier, aes(x, y.poly)) +
-  stat_smooth(method = MASS::rlm, formula = formula) +
+ggplot(my.data, aes(x, y.otlr)) +
+  stat_poly_line(method = "rlm") +
   stat_fit_deviations(formula = formula, method = "rlm",
                       mapping = aes(colour = after_stat(robustness.weights)),
                       show.legend = TRUE) +
-  scale_color_gradient(low = "red", high = "blue", limits = c(0, 1)) +
+  scale_color_gradient(name = "Robustness\nweight",
+                       low = "red", high = "blue", limits = c(0, 1)) +
   geom_point()
+```
+
+With method `gls()` using `varPower()` fitted weights for heterogeneous error variance describe the change in variance as a function of the fitted values.
+
+```{r, eval=eval_nlme}
+ggplot(my.data, aes(x, y.sdinc)) +
+  stat_poly_line(method = "gls", 
+                 method.args = list(weights = varPower(form = ~ x))) +
+  stat_fit_deviations(method = "gls", 
+                      method.args = list(weights = varPower(form = ~ x)),
+                      mapping = 
+                        aes(colour = after_stat(robustness.weights)),
+                      show.legend = TRUE) +
+  scale_color_gradient(name = "Power of variance\nweight",
+                       low = "red", high = "blue") +
+  geom_point()
+```
+
+Of course it is also possible to plot the weights themselves, most easily using `stat_fit_residuals()`.
+
+```{r, eval=eval_nlme}
+ggplot(my.data, aes(x, y.sdinc)) +
+  stat_fit_residuals(method = "gls", 
+                     method.args = list(weights = varPower(form = ~ x)),
+                     geom = "line",
+                     mapping = 
+                       aes(y = stage(start = y.otlr,
+                                     after_stat = robustness.weights))) +
+  scale_y_continuous(name = "Power of variance, fitted weight")
 ```
 
 ### stat_fit_glance
@@ -1072,7 +1113,7 @@ As we have above given some simple examples, we here exemplify this statistic in
 formula <- y ~ x + I(x^2) + I(x^3)
 ggplot(my.data, aes(x, y.poly.grp, colour = group)) +
   geom_point() +
-  stat_smooth(method = "lm", formula = formula) +
+  stat_poly_line(formula = formula) +
   stat_fit_glance(method = "lm", 
                   method.args = list(formula = formula),
                   label.x = "right",
@@ -1111,9 +1152,8 @@ The default output of `stat_fit_tb()` is the default output from `tidy(fm)` wher
 formula <- y ~ x + I(x^2) + I(x^3)
 ggplot(my.data, aes(x, y.poly)) +
   geom_point() +
-  stat_smooth(method = "lm", formula = formula) +
-  stat_fit_tb(method = "lm",
-              method.args = list(formula = formula),
+  stat_poly_line(formula = formula) +
+  stat_fit_tb(method.args = list(formula = formula),
               tb.vars = c(Parameter = "term", 
                           Estimate = "estimate", 
                           "s.e." = "std.error", 
@@ -1129,9 +1169,8 @@ When `tb.type = "fit.anova"` the output returned is that from `tidy(anova(fm))` 
 formula <- y ~ x + I(x^2) + I(x^3)
 ggplot(my.data, aes(x, y.poly)) +
   geom_point() +
-  stat_smooth(method = "lm", formula = formula) +
-  stat_fit_tb(method = "lm",
-              method.args = list(formula = formula),
+  stat_poly_line(formula = formula) +
+  stat_fit_tb(method.args = list(formula = formula),
               tb.type = "fit.anova",
               tb.vars = c(Effect = "term", 
                           df = "df",
@@ -1148,7 +1187,7 @@ When `tb.type = "fit.coefs"` the output returned is that of `tidy(fm)` after sel
 formula <- y ~ x + I(x^2) + I(x^3)
 ggplot(my.data, aes(x, y.poly)) +
   geom_point() +
-  stat_smooth(method = "lm", formula = formula) +
+  stat_poly_line(method = "lm", formula = formula) +
   stat_fit_tb(method = "lm",
               method.args = list(formula = formula),
               tb.type = "fit.coefs", parse = TRUE,
@@ -1441,9 +1480,8 @@ When using `stat_fit_glance()`, `stat_fit_tidy()`, `stat_fit_augment()` and `sta
 formula <- y ~ x + I(x^2) + I(x^3)
 ggplot(my.data, aes(x, y.poly.grp, colour = group)) +
   geom_point() +
-  stat_smooth(method = "lm", formula = formula) +
+  stat_poly_line(formula = formula) +
   stat_fit_glance(geom = "debug_group",
-                  method = "lm", 
                   method.args = list(formula = formula),
                   label.x = "right",
                   label.y = "bottom",
@@ -1458,10 +1496,9 @@ In the case of `stat_fit_tb()` the computed variables returned include a list co
 formula <- y ~ x + I(x^2) + I(x^3)
 ggplot(my.data, aes(x, y.poly)) +
   geom_point() +
-  stat_smooth(method = "lm", formula = formula) +
+  stat_poly_line(formula = formula) +
   stat_fit_tb(geom = "debug_panel",
               summary.fun = str,
-              method = "lm",
               method.args = list(formula = formula),
               tb.vars = c(Parameter = "term", 
                           Estimate = "estimate", 
