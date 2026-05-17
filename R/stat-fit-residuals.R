@@ -194,7 +194,7 @@ stat_fit_residuals <- function(mapping = NULL,
                                resid.type = NULL,
                                weighted = FALSE,
                                na.rm = FALSE,
-                               show.legend = FALSE,
+                               show.legend = TRUE,
                                inherit.aes = TRUE) {
 
   if (is.character(method)) {

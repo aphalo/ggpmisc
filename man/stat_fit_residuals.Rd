@@ -19,7 +19,7 @@ stat_fit_residuals(
   resid.type = NULL,
   weighted = FALSE,
   na.rm = FALSE,
-  show.legend = FALSE,
+  show.legend = TRUE,
   inherit.aes = TRUE
 )
 }

@@ -196,7 +196,7 @@ stat_fit_deviations <- function(mapping = NULL,
                                 formula = NULL,
                                 fit.seed = NA,
                                 na.rm = FALSE,
-                                show.legend = FALSE,
+                                show.legend = TRUE,
                                 inherit.aes = TRUE) {
 
   if (is.character(method)) {

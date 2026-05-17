@@ -18,7 +18,7 @@ stat_fit_deviations(
   formula = NULL,
   fit.seed = NA,
   na.rm = FALSE,
-  show.legend = FALSE,
+  show.legend = TRUE,
   inherit.aes = TRUE
 )
 
