@@ -2,7 +2,7 @@
 % Please edit documentation in R/stat-poly-line.R
 \name{stat_poly_line}
 \alias{stat_poly_line}
-\title{Predicted line from linear model fit}
+\title{Predicted line from a model fit}
 \usage{
 stat_poly_line(
   mapping = NULL,
@@ -28,7 +28,7 @@ stat_poly_line(
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
-\code{\link[ggplot2]{aes}}. Only needs to be set at the layer level if you
+\code{\link[ggplot2]{aes}()}. Only needs to be set at the layer level if you
 are overriding the plot defaults.}
 
 \item{data}{A layer specific dataset, only needed if you want to override the
@@ -47,13 +47,13 @@ can include aesthetics whose values you want to set, not map. See
 \code{formula}. The letter indicates the aesthetic considered the
 explanatory variable in the model fit.}
 
-\item{method}{function or character If character, "lm", "rlm", "lts". "gls"
-"ma", "sma", or the name of a model fit function are accepted, possibly
-followed by the fit function's \code{method} argument separated by a colon
-(e.g. \code{"rlm:M"}). If a function is different to \code{lm()},
-\code{rlm()}, \code{ltsReg()}, \code{gls()}, \code{ma}, \code{sma}, it must
-have formal parameters named \code{formula}, \code{data}, \code{weights},
-and \code{method}. See Details.}
+\item{method}{function or character If character, "lm", "rlm", "lmrob",
+"lts", "gls", "ma", "sma", "segreg", "rq" or the name of a model fit
+function are accepted, possibly followed by the fit function's
+\code{method} argument separated by a colon (e.g. \code{"rlm:M"}). If a
+function is different to \code{lm()}, \code{rlm()}, \code{ltsReg()},
+\code{gls()}, \code{ma}, \code{sma}, it must have formal parameters named
+\code{formula}, \code{data}, and \code{weights}. See Details.}
 
 \item{formula}{a formula object. Using aesthetic names \code{x} and \code{y}
 instead of original variable names.}
@@ -100,41 +100,50 @@ The value returned by the statistic is a data frame, with \code{n}
   \code{predict()} method is not available for the fitted model class, the
   value returned by calling \code{fitted()}, if available, is returned
   instead, with a message. In case of failure \code{data.frame()}, an empty
-  data frame, is returned resulting without issuing an error, in plot layer
-  addition being skipped, for the failing data group.
+  data frame, is returned resulting in the plot layer addition being skipped
+  silently, on a per group basis.
 }
 \description{
-\code{stat_poly_line()} fits a polynomial, by default with
+\code{stat_poly_line()} fits a polynomial or other models, by default with
 \code{stats::lm()}, but alternatively using robust regression or generalized
 least squares. Predicted values and a confidence band, if possible, are
 computed and, by default, plotted.
 }
 \details{
-This statistic is similar to \code{\link[ggplot2]{stat_smooth}()} but
-  has different defaults and supports additional model fit functions. It also
-  interprets the argument passed to \code{formula} differently than
-  \code{stat_smooth()}, accepting \code{y} as explanatory variable and
-  setting \code{orientation} automatically. The default for \code{method} is
-  \code{"lm"} and spline-based smoothers like \code{loess} are not supported.
+This statistic is similar to \code{\link[ggplot2]{stat_smooth}()}
+  but has different defaults and supports a different set of model fit
+  functions. It is similar to \code{\link{stat_poly_eq}()} but adds a fitted
+  curve to a plot instead of textual labels for \eqn{R^2}, adjusted
+  \eqn{R^2}, the fitted model equation, \eqn{P}, and other parameters from a
+  fitted model. Parameters and default arguments are consistent between
+  \code{stat_poly_line()} and \code{stat_poly_eq()}.
 
-  Other defaults are consistent with those in \code{stat_poly_eq()},
-  \code{stat_quant_line()}, \code{stat_quant_band()}, \code{stat_quant_eq()},
-  \code{stat_ma_line()}, \code{stat_ma_eq()}.  As some model fitting
-  functions can depend on the RNG (pseudo-Random Number Generator),
-  \code{fit.seed} if not \code{NA} is used as argument in a call to
-  \code{\link[base:Random]{set.seed}()} immediately ahead of model fitting.
+  As some model fitting approaches depend on the RNG
+  (pseudo-Random Number Generator), \code{fit.seed} if not \code{NA} is used
+  as argument in a call to \code{\link[base:Random]{set.seed}()} immediately
+  ahead of model fitting.
 
-  \code{geom_poly_line()} treats the \code{x} and \code{y} aesthetics
-  differently and can thus has two orientations. The orientation can be
-  deduced from the argument passed to \code{formula}. Thus,
-  \code{stat_poly_line()} will by default guess which orientation the layer
-  should have. If no argument is passed to \code{formula}, the formula
-  defaults to \code{y ~ x}. For consistency with
-  \code{\link[ggplot2]{stat_smooth}} orientation can be also specified
-  directly passing an argument to the \code{orientation} parameter, which can
-  be either \code{"x"} or \code{"y"}. The value of \code{orientation} gives
-  the aesthetic that is taken as the explanatory variable in the model
-  formula.
+  The minimum number of observations with distinct values in the explanatory
+  variable can be set through parameter \code{n.min}. The default \code{n.min
+  = 2L} is the smallest suitable for method \code{"lm"} but too small for
+  method \code{"rlm"} for which \code{n.min = 3L} is needed. Anyway, model
+  fits with very few observations are of little interest and using larger
+  values of \code{n.min} than the default is wise.
+
+  With method \code{"lm"}, singularity results in terms being dropped with a
+  message if more numerous than can be fitted with a singular (exact) fit. In
+  this case and if the model results in a perfect fit due to low number of
+  observation, estimates for various parameters are \code{NaN} or \code{NA}.
+  With methods other than \code{"lm"}, the model fit functions simply fail in
+  case of singularity, e.g., singular fits are not implemented in
+  \code{"rlm"}.
+}
+\note{
+Currently confidence bands for the regression line are not plotted in
+  some cases, and in the case of MA and SMA models, the band only displays
+  the uncertainty of the slope rather than for both slope plus intercept.
+}
+\section{Model formula and model fitting}{
 
   A ggplot statistic receives as \code{data} a data frame that is not the one
   passed as argument by the user, but instead a data frame with the variables
@@ -145,27 +154,14 @@ This statistic is similar to \code{\link[ggplot2]{stat_smooth}()} but
   numeric or date time and model formulas defined using \code{x} and \code{y}
   as variable names.
 
-  With method \code{"lm"}, singularity results in terms being dropped with a
-  message if more numerous than can be fitted with a singular (exact) fit. In
-  this case and if the model results in a perfect fit due to low number of
-  observation, estimates for various parameters are \code{NaN} or \code{NA}.
-
-  With methods other than \code{"lm"}, the model fit functions simply fail in
-  case of singularity, e.g., singular fits are not implemented in
-  \code{"rlm"}.
-
-  In both cases the minimum number of observations with distinct values in
-  the explanatory variable can be set through parameter \code{n.min}. The
-  default \code{n.min = 2L} is the smallest suitable for method \code{"lm"}
-  but too small for method \code{"rlm"} for which \code{n.min = 3L} is
-  needed. Anyway, model fits with very few observations are of little
-  interest and using larger values of \code{n.min} than the default is wise.
+  The interpretation of the argument passed to \code{formula} is enhanced
+  compared to \code{stat_smooth()}. Formulas with \code{x} as explanatory
+  variable work as in \code{stat_smooth()} but formulas with \code{y} as
+  explanatory variable are also accepted. \code{orientation} is set
+  automatically based on which explanatory variable appears in the formula.
+  Spline-based smoothers are only partially supported.
 }
-\note{
-Currently confidence bands for the regression line are not plotted in
-  some cases, and in the case of MA and SMA models, the band only displays
-  the uncertainty of the slope rather than for both slope plus intercept.
-}
+
 \section{Model fit methods supported}{
  Several model fit functions are
   supported explicitly (see tables), and some of their differences smoothed
@@ -173,36 +169,43 @@ Currently confidence bands for the regression line are not plotted in
   fitted model object. This makes it possible to use wrapper functions that
   do model selection or other adjustments to the fit procedure on a per panel
   or per group basis. Moreover, if the value returned as model fit object is
-  \code{NULL} no layer is added to the plot on a per group within panel
+  \code{NULL}, no layer is added to the plot on a per group within panel
   basis.
 
   In the case of fitted model objects of classes not explicitly supported an
   attempt is made to find the usual accessors and/or fitted object members,
   and if found, either complete or partial support is frequently achieved.
-  In this case a message is issued encouraging users to check the valisdity
+  In this case a message is issued encouraging users to check the validity
   of the values extracted.
 
   The argument to parameter \code{method} can be either the name of a
-  function object, possibly using double colon notation, or a character
-  string matching the function name. This approach makes it possible to
-  support model fit functions that are not dependencies of 'ggpmisc'. Either
-  by attaching the package where the function is defined and passing it by
-  name or as string, or using double colon notation when passing the name of
-  the function. User-defined functions can be passed as argument to parameter
+  function object, possibly using double colon notation in case its package
+  is not attached, or a character string matching the function name for
+  functions in the search path. This approach makes it possible to support
+  model fit functions that are not dependencies of 'ggpmisc'. Either by
+  attaching the package where the function is defined and passing it by name
+  or as string, or using double colon notation when passing the name of the
+  function.
+
+  User-defined functions can be passed as argument to parameter
   \code{method} as long as they have parameters \code{formula}, \code{data}
   \code{subset} and possibly \code{weights}. Additional arguments can be
-  passed to any method as a named list as an argument to parameter
+  passed to any method as a named list as argument to parameter
   \code{method.args}. As in \code{\link[ggplot2:geom_smooth]{stat_smooth}()}
   prior \code{weights} are passed to the model fit functions' \code{weights}
   (plural!) parameter by mapping a numeric variable to plot aesthetic
   \code{weight} (singular!).
 
-  The table below lists natively supported model fit functions, with the
+  Tables 1 lists natively supported model fit functions, with the
   caveat that only some 'broom' methods' specializations have been actually
   tested with statistics from 'ggpmisc'. In addition, the statistics based
   on 'broom' methods require the user to tailor their behaviour by passing
-  additional arguments in the call.
+  additional arguments in the call and occasionally some detective work to
+  find out the names of variables in the returned data frame.
 
+  \strong{Table 1.} Model fit methods supported by the different statistics
+  available in package 'ggpmisc'. Column \eqn{f} indicates whether
+  computations are done by group (G) or by plot panel (P).
   \tabular{lcl}{
   \strong{Statistic} \tab \eqn{f} \tab \strong{Supported model fit methods} \cr
   \code{\link{stat_poly_line}()} \tab G \tab "lm", "rlm", "lts", "sma", "ma", "gls", \emph{others with methods} \code{\link[stats]{predict}()} or \code{\link[stats]{fitted}()} \cr
@@ -221,14 +224,24 @@ Currently confidence bands for the regression line are not plotted in
   \code{\link{stat_fit_tb}()} \tab P \tab \emph{any with 'broom' method} \code{\link[broom]{tidy}()} \cr
   }
 
-  The table below lists the names for fit methods coded in the statistics
-  as given in the table above. The single colon notation is based on parsing
+  The single colon notation is based on parsing
   the name and is available whenever passing the name of the fit method as a
   character string. In a string such as "head:tail" the "head" gives the name
   of the model fit function and the "tail" gives the argument to pass it's
-  \code{method} parameter. In some cases the default \code{formula = y ~ x}
-  needs to be overridden with an explicit argument.
+  \code{method} parameter. This is only a convenience, as \code{method.args}
+  can be also used. In some methods, i.e., splines, the default
+  \code{formula = y ~ x} needs to be overridden with an explicit argument.
 
+  Table 2 lists the correspondence of pre-defined \emph{method names}
+  to model fit method functions. As mentioned above, these are only
+  a subset of the model fit methods that are expected to work. When using
+  these names there is no need for users to attach additional packages but
+  the packages must be available (installed).
+
+  \strong{Table 2.} Available predefined method names, the model fit functions
+  they call, the packages where the functions reside, the class of the
+  returned fitted model object and the arguments that can be
+  passed to their \code{method} parameter using single colon notation.
   \tabular{llll}{
   \strong{Predefined method names} \tab \strong{Model fit methods} \tab \strong{R package} \tab \strong{Object class} \cr
   "lm", "lm:qr" \tab \code{\link[stats]{lm}()} \tab 'stats' \tab "lm" \cr
@@ -238,7 +251,7 @@ Currently confidence bands for the regression line are not plotted in
   "gls", "gls:REML", "gls:ML" \tab \code{\link[nlme]{gls}()} \tab 'nlme' \tab "gls" \cr
   "rq", "rq:sfn", "rq:sfnc", "rq:lasso" \tab \code{\link[quantreg]{rq}()} \tab 'quantreg' \tab "rq" \cr
   "rqss", "rqss:sfn", "rqss:sfnc", "rqss:lasso" \tab \code{\link[quantreg]{rqss}()} \tab 'quantreg' \tab "rqss" \cr
-  "SMA", "MA", "RMA", "OLS" \tab \code{\link[lmodel2]{lmodel2}()} \tab 'lmodel2' \tab \cr
+  "SMA", "MA", "RMA", "OLS" \tab \code{\link[lmodel2]{lmodel2}()} \tab 'lmodel2' \tab ("list") \cr
   }
 }
 
@@ -255,8 +268,8 @@ Currently confidence bands for the regression line are not plotted in
   the model fit are added, with the same value in each row within a group.
   This is wasteful and disabled by default, but provides a simple and robust
   approach to achieve effects like colouring or hiding of the model fit line
-  based on P-values, r-squared, adjusted r-squared or the number of
-  observations.
+  based on \eqn{P}, \eqn{R^2}, \eqn{R[adj]^2} or the number of
+  observations in a fit.
 }
 
 \examples{
@@ -281,7 +294,7 @@ ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
   stat_poly_line(formula = x ~ poly(y, 3))
 
-# Smooths are automatically fit to each group (defined by categorical
+# Models are automatically fit to each group (defined by categorical
 # aesthetics or the group aesthetic) and for each facet.
 
 ggplot(mpg, aes(displ, hwy, colour = class)) +
@@ -312,6 +325,31 @@ if (gginnards.installed)
     stat_poly_line(geom = "debug_group", method = lm, fm.values = TRUE)
 
 }
+\seealso{
+Consult the documentation of the model fit functions used
+  for the details and additional arguments that can be passed to
+  them by name through parameter \code{method.args}.
+
+  Please, see the articles in
+  \href{https://docs.r4photobiology.info/ggpmisc/}{online-only documentation}
+  for additional use examples and guidance.
+
+Other 'ggpmisc' statistics for model fits:
+\code{\link[=stat_distrmix_eq]{stat_distrmix_eq()}},
+\code{\link[=stat_distrmix_line]{stat_distrmix_line()}},
+\code{\link[=stat_fit_deviations]{stat_fit_deviations()}},
+\code{\link[=stat_fit_glance]{stat_fit_glance()}},
+\code{\link[=stat_fit_residuals]{stat_fit_residuals()}},
+\code{\link[=stat_fit_tb]{stat_fit_tb()}},
+\code{\link[=stat_fit_tidy]{stat_fit_tidy()}},
+\code{\link[=stat_ma_eq]{stat_ma_eq()}},
+\code{\link[=stat_ma_line]{stat_ma_line()}},
+\code{\link[=stat_poly_eq]{stat_poly_eq()}},
+\code{\link[=stat_quant_band]{stat_quant_band()}},
+\code{\link[=stat_quant_eq]{stat_quant_eq()}},
+\code{\link[=stat_quant_line]{stat_quant_line()}}
+}
+\concept{'ggpmisc' statistics for model fits}
 \section{Aesthetics}{
 
 \code{stat_poly_line()} understands the following aesthetics. Required aesthetics are displayed in bold and defaults are displayed for optional aesthetics:

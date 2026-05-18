@@ -1,31 +1,29 @@
 #' Predicted line from major axis linear fit
 #'
 #' Predicted values and a confidence band are computed and, by default, plotted.
-#' \code{stat_ma_line()} behaves similarly to \code{\link[ggplot2]{stat_smooth}}
+#' \code{stat_ma_line()} behaves similarly to \code{\link{stat_poly_line}()}
 #' except for fitting the model with \code{lmodel2::lmodel2()} with \code{"MA"}
 #' as default for \code{method}.
 #'
-#' @details This statistic fits major axis (\code{"MA"}) and other model II
-#'   regressions with function \code{\link[lmodel2]{lmodel2}}. Model II
-#'   regression is called for when both \code{x} and \code{y} are subject to
-#'   random variation and the intention is not to predict \code{y} from \code{x}
-#'   by means of the model but rather to study the relationship between two
-#'   independent variables. A frequent case in biology are allometric
-#'   relationships among body parts.
+#' @details Statistics \code{stat_ma_line()} and \code{stat_ma_eq} fit major
+#'   axis (\code{"MA"}) and other model II regressions with function
+#'   \code{\link[lmodel2]{lmodel2}}. They support linear major axis (MA),
+#'   standard major axis (SMA) and ranged major axis (RMA) regression.
+#'
+#'   \code{stat_ma_line()} adds the predicted line and confidence band based on
+#'   the uncertainty of the slope estimate. considering). \code{stat_ma_line()}
+#'   can add annotations with the fitted model equation and other parameter
+#'   estimates.
+#'
+#'   Model II regression is called for when both \code{x} and \code{y} are
+#'   subject to random variation and the intention is not to predict \code{y}
+#'   from \code{x} by means of the model but rather to study the relationship
+#'   between two independent variables. A frequent case in biology are
+#'   allometric relationships among body parts.
 #'
 #'   As the fitted line is the same whether \code{x} or \code{y} is on the rhs
 #'   of the model equation, \code{orientation} even if accepted does not have an
-#'   effect on the fitted line. In contrast, \code{\link[ggplot2]{geom_smooth}}
-#'   treats each axis differently and can thus have two orientations. The
-#'   orientation is easy to deduce from the argument passed to \code{formula}.
-#'   Thus, \code{stat_ma_line()} will by default guess which orientation the
-#'   layer should have. If no argument is passed to \code{formula}, the
-#'   orientation can be specified directly passing an argument to the
-#'   \code{orientation} parameter, which can be either \code{"x"} or \code{"y"}.
-#'   The value gives the axis that is on the rhs of the model equation,
-#'   \code{"x"} being the default orientation. Package 'ggpmisc' does not define
-#'   new geometries matching the new statistics as they are not needed and
-#'   conceptually transformations of \code{data} are expressed as statistics.
+#'   effect on the fitted line.
 #'
 #'   The minimum number of observations with distinct values can be set through
 #'   parameter \code{n.min}. The default \code{n.min = 2L} is the smallest
@@ -35,9 +33,19 @@
 #'   \code{fit.seed} if different to \code{NA} is used as argument in a call to
 #'   \code{\link[base:Random]{set.seed}()} immediately ahead of model fitting.
 #'
-#' @inheritParams stat_poly_line
+#'   In \code{\link[lmodel2]{lmodel2}()} MA, SMA and OLS fits always computed
+#'   while RMA requires a numeric argument to at least one of \code{range.y}
+#'   or \code{range.x}. The statistics extract estimates for one of the methods
+#'   based on the argument for \code{method}.
+#'
+#'   Package 'lmodel2' implements a model fit function and fitted model object
+#'   that differ from the usual approach of R. Thus, their use was implemented
+#'   as a separate pair of statistics. Use of package 'smatr' is implemented in
+#'   \code{\link{stat_poly_line}()} and \code{\link{stat_poly_eq}()}.
 #'
 #' @aesthetics StatMaLine
+#'
+#' @inheritParams stat_poly_line
 #'
 #' @param range.y,range.x character Pass "relative" or "interval" if method
 #'   "RMA" is to be computed.
@@ -72,13 +80,11 @@
 #'   approach to achieve effects like colouring or hiding of the model fit line
 #'   based on P-values, r-squared or the number of observations.
 #'
+#' @inheritSection stat_poly_line Model formula and model fitting
+#'
 #' @inheritSection stat_poly_line Model fit methods supported
 #'
-#' @note \code{stat_ma_line} understands \code{x} and \code{y},
-#'   to be referenced in the \code{formula}. Both must be mapped to
-#'   \code{numeric} variables.
-#'
-#' @family ggplot statistics for major axis regression
+#' @family 'ggpmisc' statistics for model fits
 #'
 #' @export
 #'

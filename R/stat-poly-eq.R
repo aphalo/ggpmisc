@@ -1,4 +1,4 @@
-#' Equation, p-value, \eqn{R^2}, AIC and BIC of fitted polynomial
+#' Equation, p-value, \eqn{R^2}, AIC and BIC of fitted model
 #'
 #' \code{stat_poly_eq} fits a polynomial, by default with \code{stats::lm()},
 #' but alternatively using robust, resistant or generalized least squares. Major
@@ -9,6 +9,14 @@
 #'
 #' @inheritParams stat_poly_line
 #'
+#' @param method function or character If character, "lm", "rlm", "lmrob",
+#'   "lts", "gls", "ma", "sma", "segreg" or the name of a model fit
+#'   function are accepted, possibly followed by the fit function's
+#'   \code{method} argument separated by a colon (e.g. \code{"rlm:M"}). If a
+#'   function is different to \code{lm()}, \code{rlm()}, \code{ltsReg()},
+#'   \code{gls()}, \code{ma}, \code{sma}, it must have formal parameters named
+#'   \code{formula}, \code{data}, \code{weights}, and \code{method}. See
+#'   Details.
 #' @param eq.with.lhs If \code{character} the string is pasted to the front of
 #'   the equation label before parsing or a \code{logical} (see note).
 #' @param eq.x.rhs \code{character} this string will be used as replacement for
@@ -38,102 +46,73 @@
 #' @param output.type character One of "expression", "LaTeX", "text",
 #'   "markdown" or "numeric".
 #' @param parse logical Passed to the geom. If \code{TRUE}, the labels will be
-#'   parsed into expressions and displayed as described in \code{?plotmath}.
-#'   Default is \code{TRUE} if \code{output.type = "expression"} and
-#'   \code{FALSE} otherwise.
+#'   parsed into expressions and displayed as described in
+#'   \code{\link[grDevices]{plotmath}}. Default is \code{TRUE} if
+#'   \code{output.type = "expression"} and \code{FALSE} otherwise.
 #'
 #' @aesthetics StatPolyEq
 #'
-#' @details This statistic can be used to automatically annotate a plot with
-#'   \eqn{R^2}, adjusted \eqn{R^2}, the fitted model equation, \eqn{P}, and
-#'   other parameters from a fitted model. It supports linear regression and
-#'   polynomial fits with \code{\link[stats]{lm}()}, segmented linear regression
-#'   with package 'segmented' and major axis and standardized major axis
-#'   regression with package 'smatr', robust and resistant regression with
-#'   packages 'MASS' and 'robustbase'. The list is not exhaustive, and depends
-#'   on the availability of methods for the model fit objects. Lack of methods
-#'   or explicit support results in individual parameters and matching labels
-#'   being set to NA. As some model fitting results can depend on the RNG,
-#'   \code{fit.seed} if different to \code{NA} is used as argument in a call to
-#'   \code{\link[base:Random]{set.seed}()} immediately ahead of model fitting.
+#' @details This statistic is similar to \code{\link{stat_poly_line}()} but
+#'   instead of adding a fitted line to a plot, based on the model fit, a plot
+#'   with \eqn{R^2}, adjusted \eqn{R^2}, the fitted model equation, \eqn{P}, and
+#'   other parameters from a fitted model. Lack of methods or explicit support
+#'   results in individual parameters and matching labels being set to NA.
 #'
 #'   While strings for \eqn{R^2}, adjusted \eqn{R^2}, \eqn{F}, and \eqn{P}
-#'   annotations are returned for all valid linear models, A character string
-#'   for the fitted model is returned only for polynomials (see below). When
-#'   not generated automatically, the equation can still be assembled by the
-#'   user within the call to \code{\link[ggplot2]{aes}()}. In addition, a label
-#'   for the confidence interval of \eqn{R^2}, based on values computed with
-#'   function \code{\link[confintr]{ci_rsquared}} from package 'confintr' is
-#'   returned when possible.
+#'   annotations are returned for all valid linear models many other types of
+#'   fitted models, a character string for the fitted model equation is returned
+#'   only for polynomials (see below). However, when not generated
+#'   automatically, the equation can still be assembled by the user within the
+#'   call to \code{\link[ggplot2]{aes}()}. A label for the confidence interval
+#'   of \eqn{R^2}, based on values computed with function
+#'   \code{\link[confintr]{ci_rsquared}()} from package 'confintr' is returned
+#'   when possible.
 #'
-#'   Model formulas can use \code{poly()} or be defined algebraically including
-#'   the intercept indicated by \code{+1}, \code{-1}, \code{+0} or implicit. If
-#'   defined using \code{poly()} the argument \code{raw = TRUE} must be passed.
-#'   The \code{model formula} is checked, and if not recognized as a polynomial
-#'   with no missing terms and terms ordered by increasing powers, no equation
-#'   label is generated. Thus, as the value returned for \code{eq.label} can be
-#'   \code{NA}, the default aesthetic mapping to \emph{label} is \eqn{R^2}.
-#'
-#'   The character strings mapped to the label aesthetic are encoded
-#'   differently depending on argument passed to \code{output.type}, or
-#'   if none passed based on the geom used. The argument of
-#'   \code{parse} is set automatically based on \code{output.type}. However,
-#'   if labels manually assembled from \code{numeric} output need parsing,
-#'   the default needs to be overridden.
-#'
-#'   This statistic only generates annotation labels, the predicted values/line
-#'   need to be added to the plot as a separate layer using
-#'   \code{\link{stat_poly_line}} (or \code{\link[ggplot2]{stat_smooth}}).
-#'   Passing the same arguments in \code{stat_poly_line()} and in
-#'   \code{stat_poly_eq()} to parameters \code{method} and \code{formula}, and
-#'   if used also to \code{method.args} ensures that the plotted curve and
-#'   equation are consistent. Thus, it is best to save these arguments as named
-#'   objects and pass them as arguments to the two statistics.
-#'
-#'   A ggplot statistic receives as \code{data} a data frame that is not the one
-#'   passed as argument by the user, but instead a data frame with the variables
-#'   mapped to aesthetics. \code{stat_poly_eq()} mimics how
-#'   \code{\link[ggplot2]{stat_smooth}()} works. Thus, the model formula should
-#'   be defined based on the names of aesthetics \code{x} and \code{y}, not the
-#'   names of the variables in the data. Before fitting the model, data are
-#'   split based on groupings created by any other
-#'   mappings present in a plot panel: \emph{fitting is done separately for each
-#'   group in each plot panel}.
+#'   The minimum number of observations with distinct values in the explanatory
+#'   variable can be set through parameter \code{n.min}. The default \code{n.min
+#'   = 2L} is the smallest suitable for method \code{"lm"} but too small for
+#'   method \code{"rlm"} for which \code{n.min = 3L} is needed. Anyway, model
+#'   fits with very few observations are of little interest and using larger
+#'   values of \code{n.min} than the default is wise.
 #'
 #'   With method \code{"lm"}, singularity results in terms being dropped with a
 #'   message if more numerous than can be fitted with a singular (exact) fit. In
-#'   this case or if the model results in a perfect fit due to a low number of
-#'   observations, estimates for various parameters are \code{NaN} or \code{NA}.
-#'   When this is the case the corresponding labels are set to
-#'   \code{character(0L)} and thus not visible in the plot. With methods other
-#'   than \code{"lm"}, the model fit functions simply fail in case of
-#'   singularity, e.g., singular fits are not implemented in
-#'   \code{\link[MASS]{rlm}()}.
-#'
-#'   A requirement for a minimum number of observations with distinct values in
-#'   the explanatory variable can be set through parameter \code{n.min}. The
-#'   default \code{n.min = 2L} is the smallest suitable for method \code{"lm"}
-#'   but too small for method \code{"rlm"} for which \code{n.min = 3L} is
-#'   needed. Anyway, model fits with very few observations are of little
-#'   interest and using larger values of \code{n.min} than the default is
-#'   usually wise. This can be useful as when this threshold is not reached
-#'   an empty data frame is returned resulting in an empty plot layer.
-#'
-#'   R option \code{OutDec} is obeyed based on its value at the time the plot
-#'   is rendered, i.e., displayed or printed. Set \code{options(OutDec = ",")}
-#'   for languages like Spanish or French.
+#'   this case and if the model results in a perfect fit due to low number of
+#'   observation, estimates for various parameters are \code{NaN} or \code{NA}.
+#'   With methods other than \code{"lm"}, the model fit functions simply fail in
+#'   case of singularity, e.g., singular fits are not implemented in
+#'   \code{"rlm"}.
 #'
 #'   When possible, i.e., nearly allways, the \code{formula} used to build the
 #'   equation label is extracted from the returned fitted model object. Most
 #'   fitted model objects follow the example of \code{lm()} and include the
-#'   model that has been formula fitted. Thus, this model formula can safely
-#'   differ from the argument passed to parameter \code{formula} in the call to
-#'   \code{stat_poly_eq()}. Consequently, user-defined methods can implement any
-#'   or all of \code{method} selection, model \code{formula} selection,
-#'   dynamically adjusted \code{method.args} and conditional skipping of
-#'   labelling on a by group basis.
+#'   formula for the model that has been fitted. Thus, this model formula can
+#'   safely differ from the argument passed to parameter \code{formula} in the
+#'   call to \code{stat_poly_eq()}. Consequently, user-defined methods can
+#'   implement any or all of \code{method} selection, model \code{formula}
+#'   selection, dynamically adjusted \code{method.args} and conditional skipping
+#'   of labelling on a by group basis.
 #'
-#' @inheritSection stat_poly_line Model fit methods supported
+#' @inheritSection check_output_type Output types
+#'
+#' @section Model equation label:
+#'   If the model formula includes a transformation of \code{x}, a matching
+#'   argument should be passed to parameter \code{eq.x.rhs} as its default value
+#'   \code{"x"} will not reflect the applied transformation. In most cases, a
+#'   transformation should not be applied within the left hand side of the model
+#'   formula, but instead in the mapping of the variable within \code{aes}, as
+#'   otherwise plotted observations and fitted curve will not match. In this
+#'   case it may be necessary to also pass a matching argument to parameter
+#'   \code{eq.with.lhs}.
+#'
+#'   For backward compatibility a logical is accepted as argument for
+#'   \code{eq.with.lhs}. If \code{TRUE}, the default is used, either
+#'   \code{"x"} or \code{"y"}, depending on the argument passed to \code{formula}.
+#'   However, \code{"x"} or \code{"y"} can be substituted by providing a
+#'   suitable replacement character string through \code{eq.x.rhs}.
+#'   Parameter \code{orientation} is redundant as it only affects the default
+#'   for \code{formula} but is included for consistency with
+#'   \code{ggplot2::stat_smooth()}.
 #'
 #' @section Position of labels:
 #'   When data are grouped by mapping a factor to an aesthetic, e.g.,
@@ -156,30 +135,9 @@
 #'   positioning using a vector of length > 1 for \code{label.x} and/or
 #'   \code{label.y} is the currently available workaround.
 #'
-#' @inheritSection check_output_type Output types
+#' @inheritSection stat_poly_line Model formula and model fitting
 #'
-#' @note \code{stat_poly_eq()} understands \code{x} and \code{y},
-#'   to be referenced in the \code{formula} and \code{weight} passed as argument
-#'   to parameter \code{weights}. All three must be mapped to \code{numeric}
-#'   variables.
-#'
-#'   If the model formula includes a transformation of \code{x}, a matching
-#'   argument should be passed to parameter \code{eq.x.rhs} as its default value
-#'   \code{"x"} will not reflect the applied transformation. In most cases, a
-#'   transformation should not be applied within the left hand side of the model
-#'   formula, but instead in the mapping of the variable within \code{aes}, as
-#'   otherwise plotted observations and fitted curve will not match. In this
-#'   case it may be necessary to also pass a matching argument to parameter
-#'   \code{eq.with.lhs}.
-#'
-#'   For backward compatibility a logical is accepted as argument for
-#'   \code{eq.with.lhs}. If \code{TRUE}, the default is used, either
-#'   \code{"x"} or \code{"y"}, depending on the argument passed to \code{formula}.
-#'   However, \code{"x"} or \code{"y"} can be substituted by providing a
-#'   suitable replacement character string through \code{eq.x.rhs}.
-#'   Parameter \code{orientation} is redundant as it only affects the default
-#'   for \code{formula} but is included for consistency with
-#'   \code{ggplot2::stat_smooth()}.
+#' @inheritSection stat_poly_line Model fit methods supported
 #'
 #' @return A data frame, with a single row per group and columns as described
 #'   under \strong{Computed variables}. In cases when the number of observations
@@ -229,23 +187,15 @@
 #'   \item{b_i}{One or more columns with the coefficient estimates}}
 #'
 #' To explore the computed values returned for a given input we suggest the use
-#' of \code{\link[gginnards]{geom_debug}} as shown in the last examples below.
+#' of \code{\link[gginnards]{geom_debug}()} as shown in the last examples below.
 #'
 #' @references Originally written as an answer to question 7549694 at
 #'   Stackoverflow but enhanced based on suggestions from users and my own
 #'   needs.
 #'
-#' @seealso This statistics fits a model with function \code{\link[stats]{lm}()}
-#'   as default, several other functions returning objects of class \code{"lm"}
-#'   or objects of classes for which the common R fitted-model-object
-#'   extraction/query methods are available. Consult the documentation of these
-#'   functions for the details and additional arguments that can be passed to
-#'   them by name through parameter \code{method.args}. User-defined
-#'   model-fitting functions are also supported.
+#' @inherit stat_poly_line seealso
 #'
-#'   Please, see the articles in
-#'   \href{https://docs.r4photobiology.info/ggpmisc/}{online-only documentation}
-#'   for additional use examples and guidance.
+#' @family 'ggpmisc' statistics for model fits
 #'
 #' @examples
 #' # generate artificial data

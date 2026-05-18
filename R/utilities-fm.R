@@ -166,7 +166,27 @@ fail_safe_formula <- function(fm,
 #' to make possible use of consistent arguments across calls to
 #' stats.
 #'
-#' @inheritParams stat_fit_residuals
+#' @param data data.frame containing the variables in the model.
+#' @param formula a formula object. Using aesthetic names \code{x} and \code{y}
+#'   instead of original variable names.
+#' @param method function or character If character, "lm", "rlm", "lmrob",
+#'   "lts", "gls", "ma", "sma", "segreg", "rq" or the name of a model fit
+#'   function are accepted, possibly followed by the fit function's
+#'   \code{method} argument separated by a colon (e.g. \code{"rlm:M"}). If a
+#'   function is different to \code{lm()}, \code{rlm()}, \code{ltsReg()},
+#'   \code{gls()}, \code{ma}, \code{sma}, it must have formal parameters named
+#'   \code{formula}, \code{data}, and \code{weights}. See Details.
+#' @param method.args named list with additional arguments. Not \code{data}
+#'   or \code{weights} which are always passed through aesthetic mappings.
+#' @param n.min integer Minimum number of distinct values in the explanatory
+#'   variable (on the rhs of formula) for fitting to the attempted.
+#' @param fit.seed RNG seed argument passed to
+#'   \code{\link[base:Random]{set.seed}()}. Defaults to \code{NA}, indicating
+#'   that \code{set.seed()} should not be called.
+#' @param orientation character Either "x" or "y" controlling the default for
+#'   \code{formula}. The letter indicates the aesthetic considered the
+#'   explanatory variable in the model fit.
+#' @param level numeric Value in 0..1 used for SMA and MA fits.
 #' @param accept.rq logical Accept quantile regression fits with 'quantreg' or
 #'   warn when encountered.
 #'

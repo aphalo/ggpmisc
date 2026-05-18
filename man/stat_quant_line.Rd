@@ -30,7 +30,7 @@ stat_quant_line(
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
-\code{\link[ggplot2]{aes}}. Only needs to be set at the layer level if you
+\code{\link[ggplot2]{aes}()}. Only needs to be set at the layer level if you
 are overriding the plot defaults.}
 
 \item{data}{A layer specific dataset, only needed if you want to override the
@@ -116,26 +116,19 @@ band can be interpreted similarly as that produced by \code{stat_smooth()}
 and \code{stat_poly_line()}.
 }
 \details{
-\code{stat_quant_line()} behaves similarly to
-  \code{ggplot2::stat_smooth()} and \code{stat_poly_line()} but supports
-  fitting regressions for multiple quantiles in the same plot layer. This
-  statistic interprets the argument passed to \code{formula} accepting
-  \code{y} as well as \code{x} as explanatory variable, matching
-  \code{stat_quant_eq()}. While \code{stat_quant_eq()} supports only method
-  \code{"rq"}, \code{stat_quant_line()} and \code{stat_quant_band()} support
-  both \code{"rq"} and \code{"rqss"}, In the case of \code{"rqss"} the model
+\code{stat_quant_band()} fits quantile regression and obtains
+  predictions identically to \code{stat_quant_line()}.
+  \code{stat_quant_band()} fits 2 or 3 quantiles in the same plot layer
+  always display the area between the predicted regression lines for the
+  extreme quantiles as a band. In contrast \code{stat_quant_line()} fits one
+  or more regressions, adding a line for each. \code{stat_quant_line()}
+  displays confidence bands for the regression lines when \code{se = TRUE}.
+
+  While \code{stat_quant_eq()} supports only method \code{"rq"},
+  \code{stat_quant_line()} and \code{stat_quant_band()} support both
+  \code{"rq"} and \code{"rqss"}, In the case of \code{"rqss"} the model
   formula makes normally use of \code{qss()} to formulate the spline and its
   constraints.
-
-  \code{\link[ggplot2]{geom_smooth}}, which is used by default, treats each
-  axis differently and thus is dependent on orientation. If no argument is
-  passed to \code{formula}, it defaults to \code{y ~ x}. Formulas with
-  \code{y} as explanatory variable are treated as if \code{x} was the
-  explanatory variable and \code{orientation = "y"}.
-
-  Package 'ggpmisc' does not define a new geometry matching this statistic as
-  it is enough for the statistic to return suitable \code{x}, \code{y},
-  \code{ymin}, \code{ymax} and \code{group} values.
 
   The minimum number of observations with distinct values in the explanatory
   variable can be set through parameter \code{n.min}. The default \code{n.min
@@ -143,12 +136,12 @@ and \code{stat_poly_line()}.
   observations are of little interest and using larger values of \code{n.min}
   than the default is wise.
 
-  There are multiple uses for double regression on x and y. For example, when
-  two variables are subject to mutual constrains, it is useful to consider
-  both of them as explanatory and interpret the relationship based on them.
-  So, from version 0.4.1 'ggpmisc' makes it possible to easily implement the
-  approach described by Cardoso (2019) under the name of "Double quantile
-  regression".
+  There are multiple uses for double regression on \code{x} and \code{y}. For
+  example, when two variables are subject to mutual constrains, it is useful
+  to consider both of them as explanatory and interpret the relationship
+  based on them. 'ggpmisc' (>= 0.4.1) supports \code{orientation} making it
+  easy implement the approach described by Cardoso (2019) under the name of
+  "Double quantile regression".
 }
 \section{Computed variables}{
  `stat_quant_line()` provides the following
@@ -167,6 +160,25 @@ and \code{stat_poly_line()}.
   or hiding of the model fit line based on the number of observations.
 }
 
+\section{Model formula and model fitting}{
+
+  A ggplot statistic receives as \code{data} a data frame that is not the one
+  passed as argument by the user, but instead a data frame with the variables
+  mapped to aesthetics. In \code{stat_poly_eq()} the compute function is
+  applied by group, each call "seeing" the subset of \code{data} for an
+  individual group. As supported models are for regression lines,
+  variables mapped to \code{x} and \code{y} should both be continuous, i.e.,
+  numeric or date time and model formulas defined using \code{x} and \code{y}
+  as variable names.
+
+  The interpretation of the argument passed to \code{formula} is enhanced
+  compared to \code{stat_smooth()}. Formulas with \code{x} as explanatory
+  variable work as in \code{stat_smooth()} but formulas with \code{y} as
+  explanatory variable are also accepted. \code{orientation} is set
+  automatically based on which explanatory variable appears in the formula.
+  Spline-based smoothers are only partially supported.
+}
+
 \section{Model fit methods supported}{
  Several model fit functions are
   supported explicitly (see tables), and some of their differences smoothed
@@ -174,36 +186,43 @@ and \code{stat_poly_line()}.
   fitted model object. This makes it possible to use wrapper functions that
   do model selection or other adjustments to the fit procedure on a per panel
   or per group basis. Moreover, if the value returned as model fit object is
-  \code{NULL} no layer is added to the plot on a per group within panel
+  \code{NULL}, no layer is added to the plot on a per group within panel
   basis.
 
   In the case of fitted model objects of classes not explicitly supported an
   attempt is made to find the usual accessors and/or fitted object members,
   and if found, either complete or partial support is frequently achieved.
-  In this case a message is issued encouraging users to check the valisdity
+  In this case a message is issued encouraging users to check the validity
   of the values extracted.
 
   The argument to parameter \code{method} can be either the name of a
-  function object, possibly using double colon notation, or a character
-  string matching the function name. This approach makes it possible to
-  support model fit functions that are not dependencies of 'ggpmisc'. Either
-  by attaching the package where the function is defined and passing it by
-  name or as string, or using double colon notation when passing the name of
-  the function. User-defined functions can be passed as argument to parameter
+  function object, possibly using double colon notation in case its package
+  is not attached, or a character string matching the function name for
+  functions in the search path. This approach makes it possible to support
+  model fit functions that are not dependencies of 'ggpmisc'. Either by
+  attaching the package where the function is defined and passing it by name
+  or as string, or using double colon notation when passing the name of the
+  function.
+
+  User-defined functions can be passed as argument to parameter
   \code{method} as long as they have parameters \code{formula}, \code{data}
   \code{subset} and possibly \code{weights}. Additional arguments can be
-  passed to any method as a named list as an argument to parameter
+  passed to any method as a named list as argument to parameter
   \code{method.args}. As in \code{\link[ggplot2:geom_smooth]{stat_smooth}()}
   prior \code{weights} are passed to the model fit functions' \code{weights}
   (plural!) parameter by mapping a numeric variable to plot aesthetic
   \code{weight} (singular!).
 
-  The table below lists natively supported model fit functions, with the
+  Tables 1 lists natively supported model fit functions, with the
   caveat that only some 'broom' methods' specializations have been actually
   tested with statistics from 'ggpmisc'. In addition, the statistics based
   on 'broom' methods require the user to tailor their behaviour by passing
-  additional arguments in the call.
+  additional arguments in the call and occasionally some detective work to
+  find out the names of variables in the returned data frame.
 
+  \strong{Table 1.} Model fit methods supported by the different statistics
+  available in package 'ggpmisc'. Column \eqn{f} indicates whether
+  computations are done by group (G) or by plot panel (P).
   \tabular{lcl}{
   \strong{Statistic} \tab \eqn{f} \tab \strong{Supported model fit methods} \cr
   \code{\link{stat_poly_line}()} \tab G \tab "lm", "rlm", "lts", "sma", "ma", "gls", \emph{others with methods} \code{\link[stats]{predict}()} or \code{\link[stats]{fitted}()} \cr
@@ -222,14 +241,24 @@ and \code{stat_poly_line()}.
   \code{\link{stat_fit_tb}()} \tab P \tab \emph{any with 'broom' method} \code{\link[broom]{tidy}()} \cr
   }
 
-  The table below lists the names for fit methods coded in the statistics
-  as given in the table above. The single colon notation is based on parsing
+  The single colon notation is based on parsing
   the name and is available whenever passing the name of the fit method as a
   character string. In a string such as "head:tail" the "head" gives the name
   of the model fit function and the "tail" gives the argument to pass it's
-  \code{method} parameter. In some cases the default \code{formula = y ~ x}
-  needs to be overridden with an explicit argument.
+  \code{method} parameter. This is only a convenience, as \code{method.args}
+  can be also used. In some methods, i.e., splines, the default
+  \code{formula = y ~ x} needs to be overridden with an explicit argument.
 
+  Table 2 lists the correspondence of pre-defined \emph{method names}
+  to model fit method functions. As mentioned above, these are only
+  a subset of the model fit methods that are expected to work. When using
+  these names there is no need for users to attach additional packages but
+  the packages must be available (installed).
+
+  \strong{Table 2.} Available predefined method names, the model fit functions
+  they call, the packages where the functions reside, the class of the
+  returned fitted model object and the arguments that can be
+  passed to their \code{method} parameter using single colon notation.
   \tabular{llll}{
   \strong{Predefined method names} \tab \strong{Model fit methods} \tab \strong{R package} \tab \strong{Object class} \cr
   "lm", "lm:qr" \tab \code{\link[stats]{lm}()} \tab 'stats' \tab "lm" \cr
@@ -239,7 +268,7 @@ and \code{stat_poly_line()}.
   "gls", "gls:REML", "gls:ML" \tab \code{\link[nlme]{gls}()} \tab 'nlme' \tab "gls" \cr
   "rq", "rq:sfn", "rq:sfnc", "rq:lasso" \tab \code{\link[quantreg]{rq}()} \tab 'quantreg' \tab "rq" \cr
   "rqss", "rqss:sfn", "rqss:sfnc", "rqss:lasso" \tab \code{\link[quantreg]{rqss}()} \tab 'quantreg' \tab "rqss" \cr
-  "SMA", "MA", "RMA", "OLS" \tab \code{\link[lmodel2]{lmodel2}()} \tab 'lmodel2' \tab \cr
+  "SMA", "MA", "RMA", "OLS" \tab \code{\link[lmodel2]{lmodel2}()} \tab 'lmodel2' \tab ("list") \cr
   }
 }
 
@@ -334,15 +363,26 @@ if (gginnards.installed)
     stat_quant_line(geom = "debug_group", fm.values = TRUE)
 
 }
-\references{
-Cardoso, G. C. (2019) Double quantile regression accurately assesses
-  distance to boundary trade-off. Methods in ecology and evolution,
-  10(8), 1322-1331.
-}
 \seealso{
 \code{\link[quantreg]{rq}}, \code{\link[quantreg]{rqss}} and
   \code{\link[quantreg]{qss}}.
+
+Other 'ggpmisc' statistics for model fits:
+\code{\link[=stat_distrmix_eq]{stat_distrmix_eq()}},
+\code{\link[=stat_distrmix_line]{stat_distrmix_line()}},
+\code{\link[=stat_fit_deviations]{stat_fit_deviations()}},
+\code{\link[=stat_fit_glance]{stat_fit_glance()}},
+\code{\link[=stat_fit_residuals]{stat_fit_residuals()}},
+\code{\link[=stat_fit_tb]{stat_fit_tb()}},
+\code{\link[=stat_fit_tidy]{stat_fit_tidy()}},
+\code{\link[=stat_ma_eq]{stat_ma_eq()}},
+\code{\link[=stat_ma_line]{stat_ma_line()}},
+\code{\link[=stat_poly_eq]{stat_poly_eq()}},
+\code{\link[=stat_poly_line]{stat_poly_line()}},
+\code{\link[=stat_quant_band]{stat_quant_band()}},
+\code{\link[=stat_quant_eq]{stat_quant_eq()}}
 }
+\concept{'ggpmisc' statistics for model fits}
 \section{Aesthetics}{
 
 \code{stat_quant_line()} understands the following aesthetics. Required aesthetics are displayed in bold and defaults are displayed for optional aesthetics:

@@ -203,10 +203,22 @@ if (gginnards.installed)
 
 }
 \seealso{
-Other ggplot statistics for mixture model fits.:
-\code{\link[=stat_distrmix_eq]{stat_distrmix_eq()}}
+Other 'ggpmisc' statistics for model fits:
+\code{\link[=stat_distrmix_eq]{stat_distrmix_eq()}},
+\code{\link[=stat_fit_deviations]{stat_fit_deviations()}},
+\code{\link[=stat_fit_glance]{stat_fit_glance()}},
+\code{\link[=stat_fit_residuals]{stat_fit_residuals()}},
+\code{\link[=stat_fit_tb]{stat_fit_tb()}},
+\code{\link[=stat_fit_tidy]{stat_fit_tidy()}},
+\code{\link[=stat_ma_eq]{stat_ma_eq()}},
+\code{\link[=stat_ma_line]{stat_ma_line()}},
+\code{\link[=stat_poly_eq]{stat_poly_eq()}},
+\code{\link[=stat_poly_line]{stat_poly_line()}},
+\code{\link[=stat_quant_band]{stat_quant_band()}},
+\code{\link[=stat_quant_eq]{stat_quant_eq()}},
+\code{\link[=stat_quant_line]{stat_quant_line()}}
 }
-\concept{ggplot statistics for mixture model fits.}
+\concept{'ggpmisc' statistics for model fits}
 \section{Aesthetics}{
 
 \code{stat_distrmix_line()} understands the following aesthetics. Required aesthetics are displayed in bold and defaults are displayed for optional aesthetics:

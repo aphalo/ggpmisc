@@ -25,52 +25,54 @@ stat_fit_residuals(
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
-\code{\link[ggplot2]{aes}}. Only needs
-to be set at the layer level if you are overriding the plot defaults.}
+\code{\link[ggplot2]{aes}()}. Only needs to be set at the layer level if you
+are overriding the plot defaults.}
 
-\item{data}{A layer specific dataset - only needed if you want to override
-the plot defaults.}
+\item{data}{A layer specific dataset, only needed if you want to override the
+plot defaults.}
 
 \item{geom}{The geometric object to use display the data}
 
 \item{position}{The position adjustment to use for overlapping points on this
-layer}
+layer.}
 
 \item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This
 can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 
 \item{orientation}{character Either "x" or "y" controlling the default for
-\code{formula}.}
+\code{formula}. The letter indicates the aesthetic considered the
+explanatory variable in the model fit.}
 
-\item{method}{function or character If character, "lm", "rlm", "rq" and the
-name of a function to be matched, possibly followed by the fit function's
-\code{method} argument separated by a colon (e.g. \code{"rq:br"}).
-Functions implementing methods must accept arguments to parameters
-\code{formula}, \code{data}, \code{weights} and \code{method}. A
-\code{residuals()} method must exist for the returned model fit object
-class.}
+\item{method}{function or character If character, "lm", "rlm", "lmrob",
+"lts", "gls", "ma", "sma", "segreg", "rq" or the name of a model fit
+function are accepted, possibly followed by the fit function's
+\code{method} argument separated by a colon (e.g. \code{"rlm:M"}). If a
+function is different to \code{lm()}, \code{rlm()}, \code{ltsReg()},
+\code{gls()}, \code{ma}, \code{sma}, it must have formal parameters named
+\code{formula}, \code{data}, and \code{weights}. See Details.}
 
-\item{method.args}{named list with additional arguments.}
+\item{method.args}{named list with additional arguments. Not \code{data}
+or \code{weights} which are always passed through aesthetic mappings.}
 
 \item{n.min}{integer Minimum number of distinct values in the explanatory
 variable (on the rhs of formula) for fitting to the attempted.}
 
-\item{formula}{a "formula" object. Using aesthetic names instead of
-original variable names.}
+\item{formula}{a formula object. Using aesthetic names \code{x} and \code{y}
+instead of original variable names.}
 
-\item{fit.seed}{RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
-Defaults to \code{NA}, which means that \code{set.seed()} will not be
-called.}
+\item{fit.seed}{RNG seed argument passed to
+\code{\link[base:Random]{set.seed}()}. Defaults to \code{NA}, indicating
+that \code{set.seed()} should not be called.}
 
-\item{resid.type}{character passed to \code{residuals()} as argument for
-\code{type} (defaults to \code{"working"} except if \code{weighted = TRUE}
-when it is forced to \code{"deviance"}).}
+\item{resid.type}{character passed to \code{\link[stats]{residuals}()} as
+argument for \code{type} (defaults to \code{"working"} except if
+\code{weighted = TRUE} when it is forced to \code{"deviance"}).}
 
 \item{weighted}{logical If true weighted residuals will be returned.}
 
-\item{na.rm}{a logical indicating whether NA values should be stripped
-before the computation proceeds.}
+\item{na.rm}{a logical indicating whether NA values should be stripped before
+the computation proceeds.}
 
 \item{show.legend}{logical. Should this layer be included in the legends?
 \code{NA}, the default, includes if any aesthetics are mapped. \code{FALSE}
@@ -78,57 +80,174 @@ never includes, and \code{TRUE} always includes.}
 
 \item{inherit.aes}{If \code{FALSE}, overrides the default aesthetics, rather
 than combining with them. This is most useful for helper functions that
-define both data and aesthetics and should not inherit behaviour from the
+define both data and aesthetics and shouldn't inherit behaviour from the
 default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
 }
 \description{
-\code{stat_fit_residuals} fits a linear model and returns
-   residuals ready to be plotted as points.
+\code{stat_fit_residuals} fits a model and returns residuals ready to be
+plotted vs. \emph{x}.
 }
 \details{
-This stat can be used to automatically plot residuals as points in a
-  plot. At the moment it supports only linear models fitted with function
-  \code{lm()} or \code{rlm()}. It applies to the fitted model object methods
-  \code{\link[stats]{residuals}} or \code{\link[stats]{weighted.residuals}}
-  depending on the argument passed to parameter \code{weighted}.
+This stat can be used to automatically plot residuals as points. It
+  applies to the fitted model object methods \code{\link[stats]{residuals}()}
+  or \code{\link[stats]{weighted.residuals}()} depending on the argument
+  passed to parameter \code{weighted}.
+}
+\section{Prior and posterior weights}{
 
-  A ggplot statistic receives as data a data frame that is not the one passed
-  as argument by the user, but instead a data frame with the variables mapped
-  to aesthetics. In other words, it respects the grammar of graphics and
-  consequently within the model \code{formula} names of
-  aesthetics like $x$ and $y$ should be used instead of the original variable
-  names, while data is automatically passed the data frame. This helps ensure
-  that the model is fitted to the same data as plotted in other layers.
+  Two types of weights are possible: prior ones supplied in the call, and
+  posterior weights (called "robustness weights" in robust regression
+  methods) implicitly or explicitly used by fit methods to address
+  heterogeneity of error variance, including the presence of outlier
+  observations . Not all the supported methods accepts prior weights and
+  \code{gls()} returns posterior weights that are not in 0..1 like in the
+  case of most other fits. When not accessible weights are set to 1 when
+  known to be equal to 1, which is the most frequent case, or to \code{NA}
+  otherwise.
+
+  How weights are applied to residuals depends on the method used to fit the
+  model. For ordinary least squares (OLS), weights are applied to the squares
+  of the residuals, so the weighted residuals are obtained by multiplying the
+  "deviance" residuals by the square root of the weights. When residuals are
+  penalized differently to fit a model, the weighted residuals need to be
+  computed accordingly.
 }
-\note{
-How weights are applied to residuals depends on the method used to fit
-  the model. For ordinary least squares (OLS), weights are applied to the
-  squares of the residuals, so the weighted residuals are obtained by
-  multiplying the "deviance" residuals by the square root of the weights.
-  When residuals are penalized differently to fit a model, the weighted
-  residuals need to be computed accordingly. Two types of weights are
-  possible: prior ones supplied in the call, and "robustness weights"
-  implicitly or explicitly used by robust regression methods. Not all the
-  supported methods return prior weights and \code{gls()} does not return
-  weights of any type. When not available weights are set to NA unless when
-  known to be equal to 1.
-}
+
 \section{Computed variables}{
- Data frame with same value of \code{nrow} as
+
+  Data frame with same value of \code{nrow} as
   \code{data} as subset for each group containing six numeric variables.
-  \describe{ \item{x}{x coordinates of observations or x residuals from
-  fitted values}, \item{y}{y coordinates of observations or y residuals from
-  fitted values}, \item{x.resid}{residuals from fitted values},
-  \item{y.resid}{residuals from fitted values}, \item{weights}{the weights
+
+  \describe{
+  \item{x}{x coordinates of observations or x residuals from
+  fitted values}
+  \item{y}{y coordinates of observations or y residuals from
+  fitted values}, \item{x.resid}{residuals from fitted values}
+  \item{y.resid}{residuals from fitted values},
+  \item{weights}{the weights
   passed as input to \code{lm()}, \code{rlm()}, or \code{lmrob()},
   using aesthetic weight. More generally the value returned by
-  \code{weights()} }, \item{robustness.weights}{the "weights"
+  \code{weights()} }
+  \item{robustness.weights}{the "weights"
   of the applied minimization criterion relative to those of OLS in
-  \code{rlm()}, or \code{lmrob()}} }.
+  \code{rlm()}, or \code{lmrob()}}
+  }
 
   For \code{orientation = "x"}, the default, \code{stat(y.resid)} is copied
   to variable \code{y}, while for \code{orientation = "y"}
   \code{stat(x.resid)} is copied to variable \code{x}.
+}
+
+\section{Model formula and model fitting}{
+
+  A ggplot statistic receives as \code{data} a data frame that is not the one
+  passed as argument by the user, but instead a data frame with the variables
+  mapped to aesthetics. In \code{stat_poly_eq()} the compute function is
+  applied by group, each call "seeing" the subset of \code{data} for an
+  individual group. As supported models are for regression lines,
+  variables mapped to \code{x} and \code{y} should both be continuous, i.e.,
+  numeric or date time and model formulas defined using \code{x} and \code{y}
+  as variable names.
+
+  The interpretation of the argument passed to \code{formula} is enhanced
+  compared to \code{stat_smooth()}. Formulas with \code{x} as explanatory
+  variable work as in \code{stat_smooth()} but formulas with \code{y} as
+  explanatory variable are also accepted. \code{orientation} is set
+  automatically based on which explanatory variable appears in the formula.
+  Spline-based smoothers are only partially supported.
+}
+
+\section{Model fit methods supported}{
+ Several model fit functions are
+  supported explicitly (see tables), and some of their differences smoothed
+  out. Compatibility is checked late, based on the class of the returned
+  fitted model object. This makes it possible to use wrapper functions that
+  do model selection or other adjustments to the fit procedure on a per panel
+  or per group basis. Moreover, if the value returned as model fit object is
+  \code{NULL}, no layer is added to the plot on a per group within panel
+  basis.
+
+  In the case of fitted model objects of classes not explicitly supported an
+  attempt is made to find the usual accessors and/or fitted object members,
+  and if found, either complete or partial support is frequently achieved.
+  In this case a message is issued encouraging users to check the validity
+  of the values extracted.
+
+  The argument to parameter \code{method} can be either the name of a
+  function object, possibly using double colon notation in case its package
+  is not attached, or a character string matching the function name for
+  functions in the search path. This approach makes it possible to support
+  model fit functions that are not dependencies of 'ggpmisc'. Either by
+  attaching the package where the function is defined and passing it by name
+  or as string, or using double colon notation when passing the name of the
+  function.
+
+  User-defined functions can be passed as argument to parameter
+  \code{method} as long as they have parameters \code{formula}, \code{data}
+  \code{subset} and possibly \code{weights}. Additional arguments can be
+  passed to any method as a named list as argument to parameter
+  \code{method.args}. As in \code{\link[ggplot2:geom_smooth]{stat_smooth}()}
+  prior \code{weights} are passed to the model fit functions' \code{weights}
+  (plural!) parameter by mapping a numeric variable to plot aesthetic
+  \code{weight} (singular!).
+
+  Tables 1 lists natively supported model fit functions, with the
+  caveat that only some 'broom' methods' specializations have been actually
+  tested with statistics from 'ggpmisc'. In addition, the statistics based
+  on 'broom' methods require the user to tailor their behaviour by passing
+  additional arguments in the call and occasionally some detective work to
+  find out the names of variables in the returned data frame.
+
+  \strong{Table 1.} Model fit methods supported by the different statistics
+  available in package 'ggpmisc'. Column \eqn{f} indicates whether
+  computations are done by group (G) or by plot panel (P).
+  \tabular{lcl}{
+  \strong{Statistic} \tab \eqn{f} \tab \strong{Supported model fit methods} \cr
+  \code{\link{stat_poly_line}()} \tab G \tab "lm", "rlm", "lts", "sma", "ma", "gls", \emph{others with methods} \code{\link[stats]{predict}()} or \code{\link[stats]{fitted}()} \cr
+  \code{\link{stat_poly_eq}()}   \tab G \tab "lm", "rlm", "lts", "sma", "ma", "gls",  \emph{others with needed accesors} \cr
+  \code{\link{stat_quant_line}()} \tab G \tab "rq", "rqss" \cr
+  \code{\link{stat_quant_band}()} \tab G \tab "rq", "rqss" \cr
+  \code{\link{stat_quant_eq}()} \tab G \tab "rq", "rqss" \cr
+  \code{\link{stat_ma_line}()} \tab G \tab "SMA", "MA", "RMA", "OLS" \cr
+  \code{\link{stat_ma_eq}()} \tab G \tab "SMA", "MA", "RMA", "OLS" \cr
+  \code{\link{stat_fit_residuals}()} \tab G \tab "lm", "rlm", "lts", "sma", "ma", "gls", "rq", "rqss" \emph{others with method} \code{\link[stats]{residuals}()} \cr
+  \code{\link{stat_fit_fitted}()} \tab G \tab "lm", "rlm", "lts", "gls", "rq", "rqss" \emph{others with method} \code{\link[stats]{fitted}()} \cr
+  \code{\link{stat_fit_deviations}()} \tab G \tab "lm", "rlm", "lts", "gls", "rq", "rqss" \emph{others with methods} \code{\link[stats]{fitted}()} and \code{\link[stats]{weights}()} \cr
+  \code{\link{stat_fit_augment}()} \tab G \tab \emph{any with 'broom' method} \code{\link[broom]{augment}()} \cr
+  \code{\link{stat_fit_glance}()} \tab G \tab \emph{any with 'broom' method} \code{\link[broom]{glance}()} \cr
+  \code{\link{stat_fit_tidy}()} \tab G \tab \emph{any with 'broom' method} \code{\link[broom]{tidy}()} \cr
+  \code{\link{stat_fit_tb}()} \tab P \tab \emph{any with 'broom' method} \code{\link[broom]{tidy}()} \cr
+  }
+
+  The single colon notation is based on parsing
+  the name and is available whenever passing the name of the fit method as a
+  character string. In a string such as "head:tail" the "head" gives the name
+  of the model fit function and the "tail" gives the argument to pass it's
+  \code{method} parameter. This is only a convenience, as \code{method.args}
+  can be also used. In some methods, i.e., splines, the default
+  \code{formula = y ~ x} needs to be overridden with an explicit argument.
+
+  Table 2 lists the correspondence of pre-defined \emph{method names}
+  to model fit method functions. As mentioned above, these are only
+  a subset of the model fit methods that are expected to work. When using
+  these names there is no need for users to attach additional packages but
+  the packages must be available (installed).
+
+  \strong{Table 2.} Available predefined method names, the model fit functions
+  they call, the packages where the functions reside, the class of the
+  returned fitted model object and the arguments that can be
+  passed to their \code{method} parameter using single colon notation.
+  \tabular{llll}{
+  \strong{Predefined method names} \tab \strong{Model fit methods} \tab \strong{R package} \tab \strong{Object class} \cr
+  "lm", "lm:qr" \tab \code{\link[stats]{lm}()} \tab 'stats' \tab "lm" \cr
+  "rlm", "rlm:M", "rlm:MM" \tab \code{\link[MASS]{rlm}()} \tab 'MASS' \tab "rlm" ("lm") \cr
+  "lts", "ltsReg" \tab \code{\link[robustbase]{ltsReg}()} \tab 'robustbase' \tab "lts" \cr
+  "ma", "sma", "sma:SMA", "sma:MA", "sma:OLS" \tab \code{\link[smatr]{sma}()} \tab 'smatr' \tab "ma" or "sma" \cr
+  "gls", "gls:REML", "gls:ML" \tab \code{\link[nlme]{gls}()} \tab 'nlme' \tab "gls" \cr
+  "rq", "rq:sfn", "rq:sfnc", "rq:lasso" \tab \code{\link[quantreg]{rq}()} \tab 'quantreg' \tab "rq" \cr
+  "rqss", "rqss:sfn", "rqss:sfnc", "rqss:lasso" \tab \code{\link[quantreg]{rqss}()} \tab 'quantreg' \tab "rqss" \cr
+  "SMA", "MA", "RMA", "OLS" \tab \code{\link[lmodel2]{lmodel2}()} \tab 'lmodel2' \tab ("list") \cr
+  }
 }
 
 \examples{
@@ -220,14 +339,22 @@ if (gginnards.installed)
 
 }
 \seealso{
-Other ggplot statistics for model fits:
-\code{\link[=stat_fit_augment]{stat_fit_augment()}},
+Other 'ggpmisc' statistics for model fits:
+\code{\link[=stat_distrmix_eq]{stat_distrmix_eq()}},
+\code{\link[=stat_distrmix_line]{stat_distrmix_line()}},
 \code{\link[=stat_fit_deviations]{stat_fit_deviations()}},
 \code{\link[=stat_fit_glance]{stat_fit_glance()}},
 \code{\link[=stat_fit_tb]{stat_fit_tb()}},
-\code{\link[=stat_fit_tidy]{stat_fit_tidy()}}
+\code{\link[=stat_fit_tidy]{stat_fit_tidy()}},
+\code{\link[=stat_ma_eq]{stat_ma_eq()}},
+\code{\link[=stat_ma_line]{stat_ma_line()}},
+\code{\link[=stat_poly_eq]{stat_poly_eq()}},
+\code{\link[=stat_poly_line]{stat_poly_line()}},
+\code{\link[=stat_quant_band]{stat_quant_band()}},
+\code{\link[=stat_quant_eq]{stat_quant_eq()}},
+\code{\link[=stat_quant_line]{stat_quant_line()}}
 }
-\concept{ggplot statistics for model fits}
+\concept{'ggpmisc' statistics for model fits}
 \section{Aesthetics}{
 
 \code{stat_fit_residuals()} understands the following aesthetics. Required aesthetics are displayed in bold and defaults are displayed for optional aesthetics:

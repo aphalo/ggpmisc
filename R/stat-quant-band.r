@@ -1,22 +1,35 @@
 #' Predicted band from quantile regression fits
 #'
-#' Predicted values are computed and, by default, plotted as a band plus an
-#' optional line within. \code{stat_quant_band()} supports the use of both
-#' \code{x} and \code{y} as explanatory variable in the model formula.
+#' Predicted values are computed and plotted as a band plus an optional line
+#' within. Using the default quantiles, the band plotted is similar to a boxplot
+#' in its interpretation.
 #'
-#' This statistic is similar to \code{\link{stat_quant_line}} but plots the
-#' quantiles differently with the band representing a region between two
-#' quantiles, while in \code{stat_quant_line()} the bands plotted when
-#' \code{se = TRUE} represent confidence intervals for the fitted quantile
-#' lines.
+#' @details \code{stat_quant_band()} fits quantile regression and obtains
+#'   predictions identically to \code{stat_quant_line()}.
+#'   \code{stat_quant_band()} fits 2 or 3 quantiles in the same plot layer
+#'   always display the area between the predicted regression lines for the
+#'   extreme quantiles as a band. In contrast \code{stat_quant_line()} fits one
+#'   or more regressions, adding a line for each. \code{stat_quant_line()}
+#'   displays confidence bands for the regression lines when \code{se = TRUE}.
 #'
-#' @details
-#' \code{\link[ggplot2]{geom_smooth}}, which is used by default, treats each
-#' axis differently and thus is dependent on orientation. If no argument is
-#' passed to \code{formula}, it defaults to \code{y ~ x} but \code{x ~y} is also
-#' accepted, and equivalent to \code{y ~ x} plus \code{orientation = "y"}.
-#' Package 'ggpmisc' does not define a new geometry matching this statistic as
-#' it is enough for the statistic to return suitable `data` for plotting.
+#'   While \code{stat_quant_eq()} supports only method \code{"rq"},
+#'   \code{stat_quant_line()} and \code{stat_quant_band()} support both
+#'   \code{"rq"} and \code{"rqss"}, In the case of \code{"rqss"} the model
+#'   formula makes normally use of \code{qss()} to formulate the spline and its
+#'   constraints.
+#'
+#'   The minimum number of observations with distinct values in the explanatory
+#'   variable can be set through parameter \code{n.min}. The default \code{n.min
+#'   = 3L} is the smallest usable value. However, model fits with very few
+#'   observations are of little interest and using larger values of \code{n.min}
+#'   than the default is wise.
+#'
+#'   There are multiple uses for double regression on \code{x} and \code{y}. For
+#'   example, when two variables are subject to mutual constrains, it is useful
+#'   to consider both of them as explanatory and interpret the relationship
+#'   based on them. 'ggpmisc' (>= 0.4.1) supports \code{orientation} making it
+#'   easy implement the approach described by Cardoso (2019) under the name of
+#'   "Double quantile regression".
 #'
 #' @inheritParams stat_quant_line
 #' @param quantiles A numeric vector of length 3, with unique values in
@@ -30,16 +43,19 @@
 #'   \code{n} rows of predicted values for three quantiles as \code{y},
 #'   \code{ymin} and \code{ymax}, plus \code{x}.
 #'
+#' @inheritSection stat_poly_line Model formula and model fitting
+#'
 #' @inheritSection stat_poly_line Model fit methods supported
 #'
-#' @section Aesthetics: \code{stat_quant_eq} expects \code{x} and \code{y},
-#'   aesthetics to be used in the \code{formula} rather than the names of the
-#'   variables mapped to them. If present, the variable mapped to the
-#'   \code{weight} aesthetics is passed as argument to parameter \code{weights}
-#'   of the fitting function. All three must be mapped to \code{numeric}
-#'   variables. In addition, the aesthetics recognized by the geometry
-#'   (\code{"geom_smooth"} is the default) are obeyed and grouping
-#'   respected.
+#' @references
+#' Cardoso, G. C. (2019) Double quantile regression accurately assesses
+#'   distance to boundary trade-off. Methods in ecology and evolution,
+#'   10(8), 1322-1331.
+#'
+#' @seealso \code{\link[quantreg]{rq}}, \code{\link[quantreg]{rqss}} and
+#'   \code{\link[quantreg]{qss}}.
+#'
+#' @family 'ggpmisc' statistics for model fits
 #'
 #' @export
 #'

@@ -34,8 +34,8 @@ stat_fit_tb(
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
-\code{\link[ggplot2]{aes}()}. Only needs to be
-set at the layer level if you are overriding the plot defaults.}
+\code{\link[ggplot2]{aes}()}. Only needs to be set at the layer level if you
+are overriding the plot defaults.}
 
 \item{data}{A layer specific dataset, only needed if you want to override the
 plot defaults.}
@@ -43,13 +43,20 @@ plot defaults.}
 \item{geom}{The geometric object to use display the data}
 
 \item{position}{The position adjustment to use for overlapping points on this
-layer}
+layer.}
 
 \item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This
 can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 
-\item{method}{character.}
+\item{method}{function or character If character, "lm", "rlm", "lmrob",
+"lts", "gls", "ma", "sma", "segreg" or the name of a model fit
+function are accepted, possibly followed by the fit function's
+\code{method} argument separated by a colon (e.g. \code{"rlm:M"}). If a
+function is different to \code{lm()}, \code{rlm()}, \code{ltsReg()},
+\code{gls()}, \code{ma}, \code{sma}, it must have formal parameters named
+\code{formula}, \code{data}, \code{weights}, and \code{method}. See
+Details.}
 
 \item{method.args, tidy.args}{lists of arguments to pass to \code{method} and
 to \code{tidy()}.}
@@ -58,8 +65,8 @@ to \code{tidy()}.}
 variable (on the rhs of formula) for fitting to the attempted.}
 
 \item{fit.seed}{RNG seed argument passed to
-\code{\link[base:Random]{set.seed}()}. Defaults to \code{NA}, which means
-that \code{set.seed()} will not be called.}
+\code{\link[base:Random]{set.seed}()}. Defaults to \code{NA}, indicating
+that \code{set.seed()} should not be called.}
 
 \item{tb.type}{character One of \code{"fit.summary"}, \code{"fit.anova"} or
 \code{"fit.coefs"}.}
@@ -76,10 +83,10 @@ p-values to, with those rounded to zero displayed as the next larger
 possible value preceded by "<". If \code{p.digits} is outside the range
 1..22 no rounding takes place.}
 
-\item{label.x, label.y}{\code{numeric} Coordinates in data units or with range
-0..1, expressed in "normalized parent coordinates" or as character strings
-depending on the geometry used. If too short they will be recycled. They
-set the \code{x} and \code{y} coordinates at the \code{after_stat} stage.}
+\item{label.x, label.y}{\code{numeric} with range 0..1 "normalized parent
+coordinates" (npc units) or character if using \code{geom_text_npc()} or
+\code{geom_label_npc()}. If using \code{geom_text()} or \code{geom_label()}
+numeric in native data units. If too short they will be recycled.}
 
 \item{table.theme}{NULL, list or function A 'gridExtra' \code{ttheme}
 definition, or a constructor for a \code{ttheme} or NULL for default.}
@@ -90,8 +97,10 @@ printing of row names and column names.}
 \item{table.hjust}{numeric Horizontal justification for the core and column
 headings of the table.}
 
-\item{parse}{If TRUE, the labels will be parsed into expressions and
-displayed as described in \code{\link[grDevices]{plotmath}}.}
+\item{parse}{logical Passed to the geom. If \code{TRUE}, the labels will be
+parsed into expressions and displayed as described in
+\code{\link[grDevices]{plotmath}}. Default is \code{TRUE} if
+\code{output.type = "expression"} and \code{FALSE} otherwise.}
 
 \item{na.rm}{a logical indicating whether NA values should be stripped before
 the computation proceeds.}
@@ -132,15 +141,6 @@ A tibble with columns named \code{fm.tb} (a tibble returned by
   The argument to \code{method} can be any fit method for which a suitable
   \code{tidy()} method is available, including non-linear regression. Fit
   methods retain their default arguments unless overridden.
-
-  A ggplot statistic receives as data a data frame that is not the one passed
-  as argument by the user, but instead a data frame with the variables mapped
-  to aesthetics. In other words, it respects the grammar of graphics and
-  consequently within arguments passed through \code{method.args} names of
-  aesthetics like \eqn{x} and \eqn{y} should be used instead of the original
-  variable names. The plot's default \code{data} is used by default, which
-  helps ensure that the model is fitted to the same data as plotted in other
-  layers.
 }
 \section{Computed variables}{
  The output of \code{tidy()} is returned as a
@@ -149,6 +149,118 @@ A tibble with columns named \code{fm.tb} (a tibble returned by
   from a single model fit to all data in a panel. If grouping is present, it
   is ignored in the sense of returning a single table, but the grouping
   aesthetic can be a term in the fitted model.
+}
+
+\section{Model formula and model fitting}{
+
+  A ggplot statistic receives as \code{data} a data frame that is not the one
+  passed as argument by the user, but instead a data frame with the variables
+  mapped to aesthetics. In \code{stat_poly_eq()} the compute function is
+  applied by group, each call "seeing" the subset of \code{data} for an
+  individual group. As supported models are for regression lines,
+  variables mapped to \code{x} and \code{y} should both be continuous, i.e.,
+  numeric or date time and model formulas defined using \code{x} and \code{y}
+  as variable names.
+
+  The interpretation of the argument passed to \code{formula} is enhanced
+  compared to \code{stat_smooth()}. Formulas with \code{x} as explanatory
+  variable work as in \code{stat_smooth()} but formulas with \code{y} as
+  explanatory variable are also accepted. \code{orientation} is set
+  automatically based on which explanatory variable appears in the formula.
+  Spline-based smoothers are only partially supported.
+}
+
+\section{Model fit methods supported}{
+ Several model fit functions are
+  supported explicitly (see tables), and some of their differences smoothed
+  out. Compatibility is checked late, based on the class of the returned
+  fitted model object. This makes it possible to use wrapper functions that
+  do model selection or other adjustments to the fit procedure on a per panel
+  or per group basis. Moreover, if the value returned as model fit object is
+  \code{NULL}, no layer is added to the plot on a per group within panel
+  basis.
+
+  In the case of fitted model objects of classes not explicitly supported an
+  attempt is made to find the usual accessors and/or fitted object members,
+  and if found, either complete or partial support is frequently achieved.
+  In this case a message is issued encouraging users to check the validity
+  of the values extracted.
+
+  The argument to parameter \code{method} can be either the name of a
+  function object, possibly using double colon notation in case its package
+  is not attached, or a character string matching the function name for
+  functions in the search path. This approach makes it possible to support
+  model fit functions that are not dependencies of 'ggpmisc'. Either by
+  attaching the package where the function is defined and passing it by name
+  or as string, or using double colon notation when passing the name of the
+  function.
+
+  User-defined functions can be passed as argument to parameter
+  \code{method} as long as they have parameters \code{formula}, \code{data}
+  \code{subset} and possibly \code{weights}. Additional arguments can be
+  passed to any method as a named list as argument to parameter
+  \code{method.args}. As in \code{\link[ggplot2:geom_smooth]{stat_smooth}()}
+  prior \code{weights} are passed to the model fit functions' \code{weights}
+  (plural!) parameter by mapping a numeric variable to plot aesthetic
+  \code{weight} (singular!).
+
+  Tables 1 lists natively supported model fit functions, with the
+  caveat that only some 'broom' methods' specializations have been actually
+  tested with statistics from 'ggpmisc'. In addition, the statistics based
+  on 'broom' methods require the user to tailor their behaviour by passing
+  additional arguments in the call and occasionally some detective work to
+  find out the names of variables in the returned data frame.
+
+  \strong{Table 1.} Model fit methods supported by the different statistics
+  available in package 'ggpmisc'. Column \eqn{f} indicates whether
+  computations are done by group (G) or by plot panel (P).
+  \tabular{lcl}{
+  \strong{Statistic} \tab \eqn{f} \tab \strong{Supported model fit methods} \cr
+  \code{\link{stat_poly_line}()} \tab G \tab "lm", "rlm", "lts", "sma", "ma", "gls", \emph{others with methods} \code{\link[stats]{predict}()} or \code{\link[stats]{fitted}()} \cr
+  \code{\link{stat_poly_eq}()}   \tab G \tab "lm", "rlm", "lts", "sma", "ma", "gls",  \emph{others with needed accesors} \cr
+  \code{\link{stat_quant_line}()} \tab G \tab "rq", "rqss" \cr
+  \code{\link{stat_quant_band}()} \tab G \tab "rq", "rqss" \cr
+  \code{\link{stat_quant_eq}()} \tab G \tab "rq", "rqss" \cr
+  \code{\link{stat_ma_line}()} \tab G \tab "SMA", "MA", "RMA", "OLS" \cr
+  \code{\link{stat_ma_eq}()} \tab G \tab "SMA", "MA", "RMA", "OLS" \cr
+  \code{\link{stat_fit_residuals}()} \tab G \tab "lm", "rlm", "lts", "sma", "ma", "gls", "rq", "rqss" \emph{others with method} \code{\link[stats]{residuals}()} \cr
+  \code{\link{stat_fit_fitted}()} \tab G \tab "lm", "rlm", "lts", "gls", "rq", "rqss" \emph{others with method} \code{\link[stats]{fitted}()} \cr
+  \code{\link{stat_fit_deviations}()} \tab G \tab "lm", "rlm", "lts", "gls", "rq", "rqss" \emph{others with methods} \code{\link[stats]{fitted}()} and \code{\link[stats]{weights}()} \cr
+  \code{\link{stat_fit_augment}()} \tab G \tab \emph{any with 'broom' method} \code{\link[broom]{augment}()} \cr
+  \code{\link{stat_fit_glance}()} \tab G \tab \emph{any with 'broom' method} \code{\link[broom]{glance}()} \cr
+  \code{\link{stat_fit_tidy}()} \tab G \tab \emph{any with 'broom' method} \code{\link[broom]{tidy}()} \cr
+  \code{\link{stat_fit_tb}()} \tab P \tab \emph{any with 'broom' method} \code{\link[broom]{tidy}()} \cr
+  }
+
+  The single colon notation is based on parsing
+  the name and is available whenever passing the name of the fit method as a
+  character string. In a string such as "head:tail" the "head" gives the name
+  of the model fit function and the "tail" gives the argument to pass it's
+  \code{method} parameter. This is only a convenience, as \code{method.args}
+  can be also used. In some methods, i.e., splines, the default
+  \code{formula = y ~ x} needs to be overridden with an explicit argument.
+
+  Table 2 lists the correspondence of pre-defined \emph{method names}
+  to model fit method functions. As mentioned above, these are only
+  a subset of the model fit methods that are expected to work. When using
+  these names there is no need for users to attach additional packages but
+  the packages must be available (installed).
+
+  \strong{Table 2.} Available predefined method names, the model fit functions
+  they call, the packages where the functions reside, the class of the
+  returned fitted model object and the arguments that can be
+  passed to their \code{method} parameter using single colon notation.
+  \tabular{llll}{
+  \strong{Predefined method names} \tab \strong{Model fit methods} \tab \strong{R package} \tab \strong{Object class} \cr
+  "lm", "lm:qr" \tab \code{\link[stats]{lm}()} \tab 'stats' \tab "lm" \cr
+  "rlm", "rlm:M", "rlm:MM" \tab \code{\link[MASS]{rlm}()} \tab 'MASS' \tab "rlm" ("lm") \cr
+  "lts", "ltsReg" \tab \code{\link[robustbase]{ltsReg}()} \tab 'robustbase' \tab "lts" \cr
+  "ma", "sma", "sma:SMA", "sma:MA", "sma:OLS" \tab \code{\link[smatr]{sma}()} \tab 'smatr' \tab "ma" or "sma" \cr
+  "gls", "gls:REML", "gls:ML" \tab \code{\link[nlme]{gls}()} \tab 'nlme' \tab "gls" \cr
+  "rq", "rq:sfn", "rq:sfnc", "rq:lasso" \tab \code{\link[quantreg]{rq}()} \tab 'quantreg' \tab "rq" \cr
+  "rqss", "rqss:sfn", "rqss:sfnc", "rqss:lasso" \tab \code{\link[quantreg]{rqss}()} \tab 'quantreg' \tab "rqss" \cr
+  "SMA", "MA", "RMA", "OLS" \tab \code{\link[lmodel2]{lmodel2}()} \tab 'lmodel2' \tab ("list") \cr
+  }
 }
 
 \examples{
@@ -376,14 +488,22 @@ Package \code{\link[broom]{broom}} for details on how the tidying of
   For details on predefined table themes see
   \code{\link[ggpp]{ttheme_gtdefault}}.
 
-Other ggplot statistics for model fits:
-\code{\link[=stat_fit_augment]{stat_fit_augment()}},
+Other 'ggpmisc' statistics for model fits:
+\code{\link[=stat_distrmix_eq]{stat_distrmix_eq()}},
+\code{\link[=stat_distrmix_line]{stat_distrmix_line()}},
 \code{\link[=stat_fit_deviations]{stat_fit_deviations()}},
 \code{\link[=stat_fit_glance]{stat_fit_glance()}},
 \code{\link[=stat_fit_residuals]{stat_fit_residuals()}},
-\code{\link[=stat_fit_tidy]{stat_fit_tidy()}}
+\code{\link[=stat_fit_tidy]{stat_fit_tidy()}},
+\code{\link[=stat_ma_eq]{stat_ma_eq()}},
+\code{\link[=stat_ma_line]{stat_ma_line()}},
+\code{\link[=stat_poly_eq]{stat_poly_eq()}},
+\code{\link[=stat_poly_line]{stat_poly_line()}},
+\code{\link[=stat_quant_band]{stat_quant_band()}},
+\code{\link[=stat_quant_eq]{stat_quant_eq()}},
+\code{\link[=stat_quant_line]{stat_quant_line()}}
 }
-\concept{ggplot statistics for model fits}
+\concept{'ggpmisc' statistics for model fits}
 \section{Aesthetics}{
 
 \code{stat_fit_tb()} understands the following aesthetics. Required aesthetics are displayed in bold and defaults are displayed for optional aesthetics:

@@ -42,7 +42,7 @@ stat_ma_eq(
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
-\code{\link[ggplot2]{aes}}. Only needs to be set at the layer level if you
+\code{\link[ggplot2]{aes}()}. Only needs to be set at the layer level if you
 are overriding the plot defaults.}
 
 \item{data}{A layer specific dataset, only needed if you want to override the
@@ -98,7 +98,7 @@ it.}
 coefficient of determination and p-value.}
 
 \item{coef.digits}{integer Number of significant digits to use for
-the fitted coefficients.}
+the fitted coefficients in the equation label.}
 
 \item{coef.keep.zeros}{logical Keep or drop trailing zeros when formatting
 the fitted coefficients and F-value.}
@@ -125,9 +125,9 @@ used between labels for different groups.}
 the computation proceeds.}
 
 \item{parse}{logical Passed to the geom. If \code{TRUE}, the labels will be
-parsed into expressions and displayed as described in \code{?plotmath}.
-Default is \code{TRUE} if \code{output.type = "expression"} and
-\code{FALSE} otherwise.}
+parsed into expressions and displayed as described in
+\code{\link[grDevices]{plotmath}}. Default is \code{TRUE} if
+\code{output.type = "expression"} and \code{FALSE} otherwise.}
 
 \item{show.legend}{logical. Should this layer be included in the legends?
 \code{NA}, the default, includes if any aesthetics are mapped. \code{FALSE}
@@ -150,79 +150,44 @@ generates several labels including the equation, p-value,
 coefficient of determination (R^2), and number of observations.
 }
 \details{
-This stat can be used to automatically annotate a plot with
-  \eqn{R^2}, \eqn{P}-value, \eqn{n} and/or the fitted model equation. It
-  supports linear major axis (MA), standard major axis (SMA) and ranged major
-  axis (RMA) regression by means of function \code{\link[lmodel2]{lmodel2}}.
-  Formulas describing a straight line and including an intercept are the
-  only ones currently supported. Please see the documentation, including the
-  vignette of package 'lmodel2' for details. The parameters in
-  \code{stat_ma_eq()} follow the same naming as in function \code{lmodel2()}.
+Statistics \code{stat_ma_line()} and \code{stat_ma_eq} fit major
+  axis (\code{"MA"}) and other model II regressions with function
+  \code{\link[lmodel2]{lmodel2}}. They support linear major axis (MA),
+  standard major axis (SMA) and ranged major axis (RMA) regression.
 
-  It is important to keep in mind that although the fitted line does not
-  depend on whether the \eqn{x} or \eqn{y} appears on the rhs of the model
-  formula, the numeric estimates for the parameters do depend on this.
+  \code{stat_ma_line()} adds the predicted line and confidence band based on
+  the uncertainty of the slope estimate. considering). \code{stat_ma_line()}
+  can add annotations with the fitted model equation and other parameter
+  estimates.
 
-  A ggplot statistic receives as \code{data} a data frame that is not the one
-  passed as argument by the user, but instead a data frame with the variables
-  mapped to aesthetics. \code{stat_ma_eq()} mimics how \code{stat_smooth()}
-  works, except that Model II regressions can be fitted. Similarly to
-  \code{stat_smooth()} the model is fitted separately to data from each
-  group, so the variables mapped to \code{x} and \code{y} should both be
-  continuous rather than discrete as well as the corresponding scales.
+  Model II regression is called for when both \code{x} and \code{y} are
+  subject to random variation and the intention is not to predict \code{y}
+  from \code{x} by means of the model but rather to study the relationship
+  between two independent variables. A frequent case in biology are
+  allometric relationships among body parts.
+
+  As the fitted line is the same whether \code{x} or \code{y} is on the rhs
+  of the model equation, \code{orientation} even if accepted does not have an
+  effect on the fitted line.
 
   The minimum number of observations with distinct values can be set through
   parameter \code{n.min}. The default \code{n.min = 2L} is the smallest
   possible value. However, model fits with very few observations are of
   little interest and using a larger number for \code{n.min} than the default
-  is usually wise. As model fitting functions can depend on
-  the RNG, \code{fit.seed} if different to \code{NA} is used as argument in a
-  call to \code{\link[base:Random]{set.seed}()} immediately ahead of model
-  fitting.
+  is wise. As model fitting functions could depend on the RNG,
+  \code{fit.seed} if different to \code{NA} is used as argument in a call to
+  \code{\link[base:Random]{set.seed}()} immediately ahead of model fitting.
+
+  In \code{\link[lmodel2]{lmodel2}()} MA, SMA and OLS fits always computed
+  while RMA requires a numeric argument to at least one of \code{range.y}
+  or \code{range.x}. The statistics extract estimates for one of the methods
+  based on the argument for \code{method}.
+
+  Package 'lmodel2' implements a model fit function and fitted model object
+  that differ from the usual approach of R. Thus, their use was implemented
+  as a separate pair of statistics. Use of package 'smatr' is implemented in
+  \code{\link{stat_poly_line}()} and \code{\link{stat_poly_eq}()}.
 }
-\note{
-For backward compatibility a logical is accepted as argument for
-  \code{eq.with.lhs}. If \code{TRUE}, the default is used, either
-  \code{"x"} or \code{"y"}, depending on the argument passed to \code{formula}.
-  However, \code{"x"} or \code{"y"} can be substituted by providing a
-  suitable replacement character string through \code{eq.x.rhs}.
-  Parameter \code{orientation} is redundant as it only affects the default
-  for \code{formula} but is included for consistency with
-  \code{ggplot2::stat_smooth()}.
-
-  Methods in \code{\link[lmodel2]{lmodel2}} are all computed always except
-  for RMA that requires a numeric argument to at least one of \code{range.y}
-  or \code{range.x}. The results for specific methods are extracted a
-  posteriori from the model fit object. When a function is passed as argument
-  to \code{method}, the method can be passed in a list to \code{method.args}
-  as member \code{method}. More easily, the name of the function can be
-  passed as a character string together with the \code{lmodel2}-supported
-  method.
-
-  R option \code{OutDec} is obeyed based on its value at the time the plot
-  is rendered, i.e., displayed or printed. Set \code{options(OutDec = ",")}
-  for languages like Spanish or French.
-
-\code{stat_ma_eq} understands \code{x} and \code{y}, to
-  be referenced in the \code{formula} while the \code{weight} aesthetic is
-  ignored. Both \code{x} and \code{y} must be mapped to \code{numeric}
-  variables. In addition, the aesthetics understood by the geom
-  (\code{"text"} is the default) are understood and grouping respected.
-
-  \emph{Transformation of \code{x} or \code{y} within the model formula
-  is not supported by \code{stat_ma_eq()}. In this case, transformations
-  should not be applied in the model formula, but instead in the mapping
-  of the variables within \code{aes} or in the scales.}
-}
-\section{User-defined methods}{
- User-defined functions can be passed as
-  argument to \code{method}. The requirements are 1) that the signature is
-  similar to that of function \code{lmodel2()} and 2) that the value returned
-  by the function is an object as returned by \code{lmodel2()} or an atomic
-  \code{NA} value. Thus, user-defined methods can implement conditional
-  skipping of labelling.
-}
-
 \section{Computed variables}{
 
 If \code{output.type} is different from \code{"numeric"} the returned tibble
@@ -253,30 +218,7 @@ the variable is set to \code{NA_real_}.
   \item{b_i}{One or two columns with the coefficient estimates}}
 
 To explore the computed values returned for a given input we suggest the use
-of \code{\link[gginnards]{geom_debug}} as shown in the last examples below.
-}
-
-\section{Position of labels}{
-
-  When data are grouped by mapping a factor to an aesthetic, e.g.,
-  \code{colour}, \code{shape} and/or \code{linetype} the model is fitted
-  separately to each group, and for each group a whole set of labels is
-  generated. If the argument passed to \code{label.y} is a vector of length
-  1, this value determines the position of the equation and/or other labels
-  for the first group, and the positions of the labels for the remaining
-  groups are generated by adding \code{vspace} based on the group number.
-  If the argument passed to \code{label.y} is a vector of length > 1, it is
-  used unchanged, possibly extended by recycling, ignoring \code{vstep}.
-
-  If the labels are rotated by 90 degrees then the automatic stepping is
-  best based on \code{hstep} with \code{vstep = 0}. Similarly as described
-  above, if \code{label.x} is a vector of length > 1, it is
-  used as unchanged, possibly extended by recycling, ignoring \code{hstep}.
-
-  When using facets and with a grouping that does not repeat in each panel,
-  the automatic positioning in most cases will not be the desired one. Manual
-  positioning using a vector of length > 1 for \code{label.x} and/or
-  \code{label.y} is the currently available workaround.
+of \code{\link[gginnards]{geom_debug}()} as shown in the last examples below.
 }
 
 \section{Output types}{
@@ -304,6 +246,69 @@ is \code{"expression"} unless the user passes an argument. Invalid values as
 argument trigger an Error.
 }
 
+\section{Model equation label}{
+
+  If the model formula includes a transformation of \code{x}, a matching
+  argument should be passed to parameter \code{eq.x.rhs} as its default value
+  \code{"x"} will not reflect the applied transformation. In most cases, a
+  transformation should not be applied within the left hand side of the model
+  formula, but instead in the mapping of the variable within \code{aes}, as
+  otherwise plotted observations and fitted curve will not match. In this
+  case it may be necessary to also pass a matching argument to parameter
+  \code{eq.with.lhs}.
+
+  For backward compatibility a logical is accepted as argument for
+  \code{eq.with.lhs}. If \code{TRUE}, the default is used, either
+  \code{"x"} or \code{"y"}, depending on the argument passed to \code{formula}.
+  However, \code{"x"} or \code{"y"} can be substituted by providing a
+  suitable replacement character string through \code{eq.x.rhs}.
+  Parameter \code{orientation} is redundant as it only affects the default
+  for \code{formula} but is included for consistency with
+  \code{ggplot2::stat_smooth()}.
+}
+
+\section{Position of labels}{
+
+  When data are grouped by mapping a factor to an aesthetic, e.g.,
+  \code{colour}, \code{shape} and/or \code{linetype} the model is fitted
+  separately to each group, and for each group a whole set of labels is
+  generated. If the argument passed to \code{label.y} is a vector of length
+  1, this value determines the position of the equation and/or other labels
+  for the first group, and the positions of the labels for the remaining
+  groups are generated by adding \code{vspace} based on the group number.
+  If the argument passed to \code{label.y} is a vector of length > 1, it is
+  used unchanged, possibly extended by recycling, ignoring \code{vstep}.
+
+  If the labels are rotated by 90 degrees then the automatic stepping is
+  best based on \code{hstep} with \code{vstep = 0}. Similarly as described
+  above, if \code{label.x} is a vector of length > 1, it is
+  used as unchanged, possibly extended by recycling, ignoring \code{hstep}.
+
+  When using facets and with a grouping that does not repeat in each panel,
+  the automatic positioning in most cases will not be the desired one. Manual
+  positioning using a vector of length > 1 for \code{label.x} and/or
+  \code{label.y} is the currently available workaround.
+}
+
+\section{Model formula and model fitting}{
+
+  A ggplot statistic receives as \code{data} a data frame that is not the one
+  passed as argument by the user, but instead a data frame with the variables
+  mapped to aesthetics. In \code{stat_poly_eq()} the compute function is
+  applied by group, each call "seeing" the subset of \code{data} for an
+  individual group. As supported models are for regression lines,
+  variables mapped to \code{x} and \code{y} should both be continuous, i.e.,
+  numeric or date time and model formulas defined using \code{x} and \code{y}
+  as variable names.
+
+  The interpretation of the argument passed to \code{formula} is enhanced
+  compared to \code{stat_smooth()}. Formulas with \code{x} as explanatory
+  variable work as in \code{stat_smooth()} but formulas with \code{y} as
+  explanatory variable are also accepted. \code{orientation} is set
+  automatically based on which explanatory variable appears in the formula.
+  Spline-based smoothers are only partially supported.
+}
+
 \section{Model fit methods supported}{
  Several model fit functions are
   supported explicitly (see tables), and some of their differences smoothed
@@ -311,36 +316,43 @@ argument trigger an Error.
   fitted model object. This makes it possible to use wrapper functions that
   do model selection or other adjustments to the fit procedure on a per panel
   or per group basis. Moreover, if the value returned as model fit object is
-  \code{NULL} no layer is added to the plot on a per group within panel
+  \code{NULL}, no layer is added to the plot on a per group within panel
   basis.
 
   In the case of fitted model objects of classes not explicitly supported an
   attempt is made to find the usual accessors and/or fitted object members,
   and if found, either complete or partial support is frequently achieved.
-  In this case a message is issued encouraging users to check the valisdity
+  In this case a message is issued encouraging users to check the validity
   of the values extracted.
 
   The argument to parameter \code{method} can be either the name of a
-  function object, possibly using double colon notation, or a character
-  string matching the function name. This approach makes it possible to
-  support model fit functions that are not dependencies of 'ggpmisc'. Either
-  by attaching the package where the function is defined and passing it by
-  name or as string, or using double colon notation when passing the name of
-  the function. User-defined functions can be passed as argument to parameter
+  function object, possibly using double colon notation in case its package
+  is not attached, or a character string matching the function name for
+  functions in the search path. This approach makes it possible to support
+  model fit functions that are not dependencies of 'ggpmisc'. Either by
+  attaching the package where the function is defined and passing it by name
+  or as string, or using double colon notation when passing the name of the
+  function.
+
+  User-defined functions can be passed as argument to parameter
   \code{method} as long as they have parameters \code{formula}, \code{data}
   \code{subset} and possibly \code{weights}. Additional arguments can be
-  passed to any method as a named list as an argument to parameter
+  passed to any method as a named list as argument to parameter
   \code{method.args}. As in \code{\link[ggplot2:geom_smooth]{stat_smooth}()}
   prior \code{weights} are passed to the model fit functions' \code{weights}
   (plural!) parameter by mapping a numeric variable to plot aesthetic
   \code{weight} (singular!).
 
-  The table below lists natively supported model fit functions, with the
+  Tables 1 lists natively supported model fit functions, with the
   caveat that only some 'broom' methods' specializations have been actually
   tested with statistics from 'ggpmisc'. In addition, the statistics based
   on 'broom' methods require the user to tailor their behaviour by passing
-  additional arguments in the call.
+  additional arguments in the call and occasionally some detective work to
+  find out the names of variables in the returned data frame.
 
+  \strong{Table 1.} Model fit methods supported by the different statistics
+  available in package 'ggpmisc'. Column \eqn{f} indicates whether
+  computations are done by group (G) or by plot panel (P).
   \tabular{lcl}{
   \strong{Statistic} \tab \eqn{f} \tab \strong{Supported model fit methods} \cr
   \code{\link{stat_poly_line}()} \tab G \tab "lm", "rlm", "lts", "sma", "ma", "gls", \emph{others with methods} \code{\link[stats]{predict}()} or \code{\link[stats]{fitted}()} \cr
@@ -359,14 +371,24 @@ argument trigger an Error.
   \code{\link{stat_fit_tb}()} \tab P \tab \emph{any with 'broom' method} \code{\link[broom]{tidy}()} \cr
   }
 
-  The table below lists the names for fit methods coded in the statistics
-  as given in the table above. The single colon notation is based on parsing
+  The single colon notation is based on parsing
   the name and is available whenever passing the name of the fit method as a
   character string. In a string such as "head:tail" the "head" gives the name
   of the model fit function and the "tail" gives the argument to pass it's
-  \code{method} parameter. In some cases the default \code{formula = y ~ x}
-  needs to be overridden with an explicit argument.
+  \code{method} parameter. This is only a convenience, as \code{method.args}
+  can be also used. In some methods, i.e., splines, the default
+  \code{formula = y ~ x} needs to be overridden with an explicit argument.
 
+  Table 2 lists the correspondence of pre-defined \emph{method names}
+  to model fit method functions. As mentioned above, these are only
+  a subset of the model fit methods that are expected to work. When using
+  these names there is no need for users to attach additional packages but
+  the packages must be available (installed).
+
+  \strong{Table 2.} Available predefined method names, the model fit functions
+  they call, the packages where the functions reside, the class of the
+  returned fitted model object and the arguments that can be
+  passed to their \code{method} parameter using single colon notation.
   \tabular{llll}{
   \strong{Predefined method names} \tab \strong{Model fit methods} \tab \strong{R package} \tab \strong{Object class} \cr
   "lm", "lm:qr" \tab \code{\link[stats]{lm}()} \tab 'stats' \tab "lm" \cr
@@ -376,7 +398,98 @@ argument trigger an Error.
   "gls", "gls:REML", "gls:ML" \tab \code{\link[nlme]{gls}()} \tab 'nlme' \tab "gls" \cr
   "rq", "rq:sfn", "rq:sfnc", "rq:lasso" \tab \code{\link[quantreg]{rq}()} \tab 'quantreg' \tab "rq" \cr
   "rqss", "rqss:sfn", "rqss:sfnc", "rqss:lasso" \tab \code{\link[quantreg]{rqss}()} \tab 'quantreg' \tab "rqss" \cr
-  "SMA", "MA", "RMA", "OLS" \tab \code{\link[lmodel2]{lmodel2}()} \tab 'lmodel2' \tab \cr
+  "SMA", "MA", "RMA", "OLS" \tab \code{\link[lmodel2]{lmodel2}()} \tab 'lmodel2' \tab ("list") \cr
+  }
+
+ Several model fit functions are
+  supported explicitly (see tables), and some of their differences smoothed
+  out. Compatibility is checked late, based on the class of the returned
+  fitted model object. This makes it possible to use wrapper functions that
+  do model selection or other adjustments to the fit procedure on a per panel
+  or per group basis. Moreover, if the value returned as model fit object is
+  \code{NULL}, no layer is added to the plot on a per group within panel
+  basis.
+
+  In the case of fitted model objects of classes not explicitly supported an
+  attempt is made to find the usual accessors and/or fitted object members,
+  and if found, either complete or partial support is frequently achieved.
+  In this case a message is issued encouraging users to check the validity
+  of the values extracted.
+
+  The argument to parameter \code{method} can be either the name of a
+  function object, possibly using double colon notation in case its package
+  is not attached, or a character string matching the function name for
+  functions in the search path. This approach makes it possible to support
+  model fit functions that are not dependencies of 'ggpmisc'. Either by
+  attaching the package where the function is defined and passing it by name
+  or as string, or using double colon notation when passing the name of the
+  function.
+
+  User-defined functions can be passed as argument to parameter
+  \code{method} as long as they have parameters \code{formula}, \code{data}
+  \code{subset} and possibly \code{weights}. Additional arguments can be
+  passed to any method as a named list as argument to parameter
+  \code{method.args}. As in \code{\link[ggplot2:geom_smooth]{stat_smooth}()}
+  prior \code{weights} are passed to the model fit functions' \code{weights}
+  (plural!) parameter by mapping a numeric variable to plot aesthetic
+  \code{weight} (singular!).
+
+  Tables 1 lists natively supported model fit functions, with the
+  caveat that only some 'broom' methods' specializations have been actually
+  tested with statistics from 'ggpmisc'. In addition, the statistics based
+  on 'broom' methods require the user to tailor their behaviour by passing
+  additional arguments in the call and occasionally some detective work to
+  find out the names of variables in the returned data frame.
+
+  \strong{Table 1.} Model fit methods supported by the different statistics
+  available in package 'ggpmisc'. Column \eqn{f} indicates whether
+  computations are done by group (G) or by plot panel (P).
+  \tabular{lcl}{
+  \strong{Statistic} \tab \eqn{f} \tab \strong{Supported model fit methods} \cr
+  \code{\link{stat_poly_line}()} \tab G \tab "lm", "rlm", "lts", "sma", "ma", "gls", \emph{others with methods} \code{\link[stats]{predict}()} or \code{\link[stats]{fitted}()} \cr
+  \code{\link{stat_poly_eq}()}   \tab G \tab "lm", "rlm", "lts", "sma", "ma", "gls",  \emph{others with needed accesors} \cr
+  \code{\link{stat_quant_line}()} \tab G \tab "rq", "rqss" \cr
+  \code{\link{stat_quant_band}()} \tab G \tab "rq", "rqss" \cr
+  \code{\link{stat_quant_eq}()} \tab G \tab "rq", "rqss" \cr
+  \code{\link{stat_ma_line}()} \tab G \tab "SMA", "MA", "RMA", "OLS" \cr
+  \code{\link{stat_ma_eq}()} \tab G \tab "SMA", "MA", "RMA", "OLS" \cr
+  \code{\link{stat_fit_residuals}()} \tab G \tab "lm", "rlm", "lts", "sma", "ma", "gls", "rq", "rqss" \emph{others with method} \code{\link[stats]{residuals}()} \cr
+  \code{\link{stat_fit_fitted}()} \tab G \tab "lm", "rlm", "lts", "gls", "rq", "rqss" \emph{others with method} \code{\link[stats]{fitted}()} \cr
+  \code{\link{stat_fit_deviations}()} \tab G \tab "lm", "rlm", "lts", "gls", "rq", "rqss" \emph{others with methods} \code{\link[stats]{fitted}()} and \code{\link[stats]{weights}()} \cr
+  \code{\link{stat_fit_augment}()} \tab G \tab \emph{any with 'broom' method} \code{\link[broom]{augment}()} \cr
+  \code{\link{stat_fit_glance}()} \tab G \tab \emph{any with 'broom' method} \code{\link[broom]{glance}()} \cr
+  \code{\link{stat_fit_tidy}()} \tab G \tab \emph{any with 'broom' method} \code{\link[broom]{tidy}()} \cr
+  \code{\link{stat_fit_tb}()} \tab P \tab \emph{any with 'broom' method} \code{\link[broom]{tidy}()} \cr
+  }
+
+  The single colon notation is based on parsing
+  the name and is available whenever passing the name of the fit method as a
+  character string. In a string such as "head:tail" the "head" gives the name
+  of the model fit function and the "tail" gives the argument to pass it's
+  \code{method} parameter. This is only a convenience, as \code{method.args}
+  can be also used. In some methods, i.e., splines, the default
+  \code{formula = y ~ x} needs to be overridden with an explicit argument.
+
+  Table 2 lists the correspondence of pre-defined \emph{method names}
+  to model fit method functions. As mentioned above, these are only
+  a subset of the model fit methods that are expected to work. When using
+  these names there is no need for users to attach additional packages but
+  the packages must be available (installed).
+
+  \strong{Table 2.} Available predefined method names, the model fit functions
+  they call, the packages where the functions reside, the class of the
+  returned fitted model object and the arguments that can be
+  passed to their \code{method} parameter using single colon notation.
+  \tabular{llll}{
+  \strong{Predefined method names} \tab \strong{Model fit methods} \tab \strong{R package} \tab \strong{Object class} \cr
+  "lm", "lm:qr" \tab \code{\link[stats]{lm}()} \tab 'stats' \tab "lm" \cr
+  "rlm", "rlm:M", "rlm:MM" \tab \code{\link[MASS]{rlm}()} \tab 'MASS' \tab "rlm" ("lm") \cr
+  "lts", "ltsReg" \tab \code{\link[robustbase]{ltsReg}()} \tab 'robustbase' \tab "lts" \cr
+  "ma", "sma", "sma:SMA", "sma:MA", "sma:OLS" \tab \code{\link[smatr]{sma}()} \tab 'smatr' \tab "ma" or "sma" \cr
+  "gls", "gls:REML", "gls:ML" \tab \code{\link[nlme]{gls}()} \tab 'nlme' \tab "gls" \cr
+  "rq", "rq:sfn", "rq:sfnc", "rq:lasso" \tab \code{\link[quantreg]{rq}()} \tab 'quantreg' \tab "rq" \cr
+  "rqss", "rqss:sfn", "rqss:sfnc", "rqss:lasso" \tab \code{\link[quantreg]{rqss}()} \tab 'quantreg' \tab "rqss" \cr
+  "SMA", "MA", "RMA", "OLS" \tab \code{\link[lmodel2]{lmodel2}()} \tab 'lmodel2' \tab ("list") \cr
   }
 }
 
@@ -499,14 +612,26 @@ if (gginnards.installed)
 }
 \seealso{
 The major axis regression model is fitted with function
-  \code{\link[lmodel2]{lmodel2}}, please consult its documentation. Statistic
+  \code{\link[lmodel2]{lmodel2}()}, please consult its documentation. Statistic
   \code{stat_ma_eq()} can return different ready formatted labels depending
   on the argument passed to \code{output.type}.
 
-Other ggplot statistics for major axis regression:
-\code{\link[=stat_ma_line]{stat_ma_line()}}
+Other 'ggpmisc' statistics for model fits:
+\code{\link[=stat_distrmix_eq]{stat_distrmix_eq()}},
+\code{\link[=stat_distrmix_line]{stat_distrmix_line()}},
+\code{\link[=stat_fit_deviations]{stat_fit_deviations()}},
+\code{\link[=stat_fit_glance]{stat_fit_glance()}},
+\code{\link[=stat_fit_residuals]{stat_fit_residuals()}},
+\code{\link[=stat_fit_tb]{stat_fit_tb()}},
+\code{\link[=stat_fit_tidy]{stat_fit_tidy()}},
+\code{\link[=stat_ma_line]{stat_ma_line()}},
+\code{\link[=stat_poly_eq]{stat_poly_eq()}},
+\code{\link[=stat_poly_line]{stat_poly_line()}},
+\code{\link[=stat_quant_band]{stat_quant_band()}},
+\code{\link[=stat_quant_eq]{stat_quant_eq()}},
+\code{\link[=stat_quant_line]{stat_quant_line()}}
 }
-\concept{ggplot statistics for major axis regression}
+\concept{'ggpmisc' statistics for model fits}
 \section{Aesthetics}{
 
 \code{stat_ma_eq()} understands the following aesthetics. Required aesthetics are displayed in bold and defaults are displayed for optional aesthetics:

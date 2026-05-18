@@ -7,34 +7,9 @@
 #'   packages 'broom', 'broom.mixed', or other 'broom' extensions. The
 #'   annotation is added to the plots in tabular form.
 #'
-#' @param mapping The aesthetic mapping, usually constructed with
-#'   \code{\link[ggplot2]{aes}()}. Only needs to be
-#'   set at the layer level if you are overriding the plot defaults.
-#' @param data A layer specific dataset, only needed if you want to override the
-#'   plot defaults.
-#' @param geom The geometric object to use display the data
-#' @param position The position adjustment to use for overlapping points on this
-#'   layer
-#' @param show.legend logical. Should this layer be included in the legends?
-#'   \code{NA}, the default, includes if any aesthetics are mapped. \code{FALSE}
-#'   never includes, and \code{TRUE} always includes.
-#' @param inherit.aes If \code{FALSE}, overrides the default aesthetics, rather
-#'   than combining with them. This is most useful for helper functions that
-#'   define both data and aesthetics and shouldn't inherit behaviour from the
-#'   default plot specification, e.g. \code{\link[ggplot2]{borders}}.
-#' @param ... other arguments passed on to \code{\link[ggplot2]{layer}}. This
-#'   can include aesthetics whose values you want to set, not map. See
-#'   \code{\link[ggplot2]{layer}} for more details.
-#' @param na.rm	a logical indicating whether NA values should be stripped before
-#'   the computation proceeds.
-#' @param method character.
+#' @inheritParams stat_poly_eq
 #' @param method.args,tidy.args lists of arguments to pass to \code{method} and
 #'   to \code{tidy()}.
-#' @param n.min integer Minimum number of distinct values in the explanatory
-#'   variable (on the rhs of formula) for fitting to the attempted.
-#' @param fit.seed RNG seed argument passed to
-#'   \code{\link[base:Random]{set.seed}()}. Defaults to \code{NA}, which means
-#'   that \code{set.seed()} will not be called.
 #' @param tb.type character One of \code{"fit.summary"}, \code{"fit.anova"} or
 #'   \code{"fit.coefs"}.
 #' @param digits integer indicating the number of significant digits to be used
@@ -46,18 +21,12 @@
 #' @param tb.vars,tb.params character or numeric vectors, optionally named, used
 #'   to select and/or rename the columns or the parameters in the table
 #'   returned.
-#' @param label.x,label.y \code{numeric} Coordinates in data units or with range
-#'   0..1, expressed in "normalized parent coordinates" or as character strings
-#'   depending on the geometry used. If too short they will be recycled. They
-#'   set the \code{x} and \code{y} coordinates at the \code{after_stat} stage.
 #' @param table.theme NULL, list or function A 'gridExtra' \code{ttheme}
 #'   definition, or a constructor for a \code{ttheme} or NULL for default.
 #' @param table.rownames,table.colnames logical flag to enable or disabling
 #'   printing of row names and column names.
 #' @param table.hjust numeric Horizontal justification for the core and column
 #'   headings of the table.
-#' @param parse If TRUE, the labels will be parsed into expressions and
-#'   displayed as described in \code{\link[grDevices]{plotmath}}.
 #'
 #' @aesthetics StatFitTb
 #'
@@ -70,14 +39,9 @@
 #'   \code{tidy()} method is available, including non-linear regression. Fit
 #'   methods retain their default arguments unless overridden.
 #'
-#'   A ggplot statistic receives as data a data frame that is not the one passed
-#'   as argument by the user, but instead a data frame with the variables mapped
-#'   to aesthetics. In other words, it respects the grammar of graphics and
-#'   consequently within arguments passed through \code{method.args} names of
-#'   aesthetics like \eqn{x} and \eqn{y} should be used instead of the original
-#'   variable names. The plot's default \code{data} is used by default, which
-#'   helps ensure that the model is fitted to the same data as plotted in other
-#'   layers.
+#' @inheritSection stat_poly_line Model formula and model fitting
+#'
+#' @inheritSection stat_poly_line Model fit methods supported
 #'
 #' @section Computed variables: The output of \code{tidy()} is returned as a
 #'   single "cell" in a tibble (i.e., a tibble nested within a tibble). The
@@ -103,7 +67,7 @@
 #'   For details on predefined table themes see
 #'   \code{\link[ggpp]{ttheme_gtdefault}}.
 #'
-#' @family ggplot statistics for model fits
+#' @family 'ggpmisc' statistics for model fits
 #'
 #' @export
 #'

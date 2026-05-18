@@ -5,111 +5,27 @@
 #' coefficient of determination (R^2), and number of observations.
 #'
 #' @inheritParams stat_ma_line
+#' @inheritParams stat_poly_eq
 #'
-#' @param eq.with.lhs If \code{character} the string is pasted to the front of
-#'   the equation label before parsing or a \code{logical} (see note).
-#' @param eq.x.rhs \code{character} this string will be used as replacement for
-#'   \code{"x"} in the model equation when generating the label before parsing
-#'   it.
-#' @param small.r,small.p logical Flags to switch use of lower case r and p for
-#'   coefficient of determination and p-value.
-#' @param coef.digits integer Number of significant digits to use for
-#'   the fitted coefficients.
-#' @param coef.keep.zeros logical Keep or drop trailing zeros when formatting
-#'   the fitted coefficients and F-value.
-#' @param decreasing logical It specifies the order of the terms in the
-#'   returned character string; in increasing (default) or decreasing powers.
 #' @param rr.digits,theta.digits,p.digits integer Number of digits after the
 #'   decimal point to use for R^2, theta and P-value in labels. If \code{Inf},
 #'   use exponential notation with three decimal places.
-#' @param label.x,label.y \code{numeric} with range 0..1 "normalized parent
-#'   coordinates" (npc units) or character if using \code{geom_text_npc()} or
-#'   \code{geom_label_npc()}. If using \code{geom_text()} or \code{geom_label()}
-#'   numeric in native data units. If too short they will be recycled.
-#' @param hstep,vstep numeric in npc units, the horizontal and vertical step
-#'   used between labels for different groups.
-#' @param output.type character One of "expression", "LaTeX", "text",
-#'   "markdown" or "numeric".
-#' @param parse logical Passed to the geom. If \code{TRUE}, the labels will be
-#'   parsed into expressions and displayed as described in \code{?plotmath}.
-#'   Default is \code{TRUE} if \code{output.type = "expression"} and
-#'   \code{FALSE} otherwise.
+#' @param coef.digits integer Number of significant digits to use for
+#'   the fitted coefficients in the equation label.
 #'
 #' @aesthetics StatMaEq
 #'
-#' @note For backward compatibility a logical is accepted as argument for
-#'   \code{eq.with.lhs}. If \code{TRUE}, the default is used, either
-#'   \code{"x"} or \code{"y"}, depending on the argument passed to \code{formula}.
-#'   However, \code{"x"} or \code{"y"} can be substituted by providing a
-#'   suitable replacement character string through \code{eq.x.rhs}.
-#'   Parameter \code{orientation} is redundant as it only affects the default
-#'   for \code{formula} but is included for consistency with
-#'   \code{ggplot2::stat_smooth()}.
-#'
-#'   Methods in \code{\link[lmodel2]{lmodel2}} are all computed always except
-#'   for RMA that requires a numeric argument to at least one of \code{range.y}
-#'   or \code{range.x}. The results for specific methods are extracted a
-#'   posteriori from the model fit object. When a function is passed as argument
-#'   to \code{method}, the method can be passed in a list to \code{method.args}
-#'   as member \code{method}. More easily, the name of the function can be
-#'   passed as a character string together with the \code{lmodel2}-supported
-#'   method.
-#'
-#'   R option \code{OutDec} is obeyed based on its value at the time the plot
-#'   is rendered, i.e., displayed or printed. Set \code{options(OutDec = ",")}
-#'   for languages like Spanish or French.
-#'
-#' @details This stat can be used to automatically annotate a plot with
-#'   \eqn{R^2}, \eqn{P}-value, \eqn{n} and/or the fitted model equation. It
-#'   supports linear major axis (MA), standard major axis (SMA) and ranged major
-#'   axis (RMA) regression by means of function \code{\link[lmodel2]{lmodel2}}.
-#'   Formulas describing a straight line and including an intercept are the
-#'   only ones currently supported. Please see the documentation, including the
-#'   vignette of package 'lmodel2' for details. The parameters in
-#'   \code{stat_ma_eq()} follow the same naming as in function \code{lmodel2()}.
-#'
-#'   It is important to keep in mind that although the fitted line does not
-#'   depend on whether the \eqn{x} or \eqn{y} appears on the rhs of the model
-#'   formula, the numeric estimates for the parameters do depend on this.
-#'
-#'   A ggplot statistic receives as \code{data} a data frame that is not the one
-#'   passed as argument by the user, but instead a data frame with the variables
-#'   mapped to aesthetics. \code{stat_ma_eq()} mimics how \code{stat_smooth()}
-#'   works, except that Model II regressions can be fitted. Similarly to
-#'   \code{stat_smooth()} the model is fitted separately to data from each
-#'   group, so the variables mapped to \code{x} and \code{y} should both be
-#'   continuous rather than discrete as well as the corresponding scales.
-#'
-#'   The minimum number of observations with distinct values can be set through
-#'   parameter \code{n.min}. The default \code{n.min = 2L} is the smallest
-#'   possible value. However, model fits with very few observations are of
-#'   little interest and using a larger number for \code{n.min} than the default
-#'   is usually wise. As model fitting functions can depend on
-#'   the RNG, \code{fit.seed} if different to \code{NA} is used as argument in a
-#'   call to \code{\link[base:Random]{set.seed}()} immediately ahead of model
-#'   fitting.
-#'
-#' @section User-defined methods: User-defined functions can be passed as
-#'   argument to \code{method}. The requirements are 1) that the signature is
-#'   similar to that of function \code{lmodel2()} and 2) that the value returned
-#'   by the function is an object as returned by \code{lmodel2()} or an atomic
-#'   \code{NA} value. Thus, user-defined methods can implement conditional
-#'   skipping of labelling.
-#'
-#' @inheritSection stat_poly_eq Position of labels
+#' @inherit stat_ma_line details
 #'
 #' @inheritSection check_output_type Output types
 #'
-#' @note \code{stat_ma_eq} understands \code{x} and \code{y}, to
-#'   be referenced in the \code{formula} while the \code{weight} aesthetic is
-#'   ignored. Both \code{x} and \code{y} must be mapped to \code{numeric}
-#'   variables. In addition, the aesthetics understood by the geom
-#'   (\code{"text"} is the default) are understood and grouping respected.
+#' @inheritSection stat_poly_eq Model equation label
 #'
-#'   \emph{Transformation of \code{x} or \code{y} within the model formula
-#'   is not supported by \code{stat_ma_eq()}. In this case, transformations
-#'   should not be applied in the model formula, but instead in the mapping
-#'   of the variables within \code{aes} or in the scales.}
+#' @inheritSection stat_poly_eq Position of labels
+#'
+#' @inheritSection stat_poly_line Model formula and model fitting
+#'
+#' @inheritSection stat_poly_line Model fit methods supported
 #'
 #' @return A data frame, with a single row and columns as described under
 #'   \strong{Computed variables}. In cases when the number of observations is
@@ -145,16 +61,16 @@
 #'   \item{b_i}{One or two columns with the coefficient estimates}}
 #'
 #' To explore the computed values returned for a given input we suggest the use
-#' of \code{\link[gginnards]{geom_debug}} as shown in the last examples below.
+#' of \code{\link[gginnards]{geom_debug}()} as shown in the last examples below.
 #'
 #' @inheritSection stat_poly_line Model fit methods supported
 #'
 #' @seealso The major axis regression model is fitted with function
-#'   \code{\link[lmodel2]{lmodel2}}, please consult its documentation. Statistic
+#'   \code{\link[lmodel2]{lmodel2}()}, please consult its documentation. Statistic
 #'   \code{stat_ma_eq()} can return different ready formatted labels depending
 #'   on the argument passed to \code{output.type}.
 #'
-#' @family ggplot statistics for major axis regression
+#' @family 'ggpmisc' statistics for model fits
 #'
 #' @examples
 #' # generate artificial data

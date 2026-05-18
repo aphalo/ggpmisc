@@ -38,11 +38,7 @@
 #'
 #' @inheritSection check_output_type Output types
 #'
-#' @section Aesthetics: \code{stat_distrmix_eq} expects observations mapped to
-#'   \code{x} from a \code{numeric} variable. A new grouping is added by mapping
-#'   as default \code{component} to the \code{group} aesthetic and
-#'   \code{eq.label} to the label aesthetic. Additional aesthetics as
-#'   understood by the geom (\code{"text_npc"} by default) can be set.
+#' @inheritSection stat_poly_eq Position of labels
 #'
 #' @section Computed variables: \code{stat_distrmix_eq()} provides the
 #'   following
@@ -81,7 +77,9 @@
 #'   approach to achieve effects like colouring or hiding of the model fit line
 #'   by group depending on the outcome of model fitting.
 #'
-#' @family ggplot statistics for mixture model fits.
+#' @inherit stat_poly_line seealso
+#'
+#' @family 'ggpmisc' statistics for model fits
 #'
 #' @examples
 #' ggplot(faithful, aes(x = waiting)) +

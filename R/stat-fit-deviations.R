@@ -1,68 +1,37 @@
 #' Residuals from model fit as segments
 #'
-#' \code{stat_fit_deviations} fits a linear model and returns fitted values and
-#' residuals ready to be plotted as segments.
+#' \code{stat_fit_deviations} fits a model and returns fitted values and
+#' residuals ready for highlighting them as segments in a \emph{y} vs. \emph{x}
+#' plot.
 #'
-#' @param mapping The aesthetic mapping, usually constructed with
-#'   \code{\link[ggplot2]{aes}}. Only needs to be set at the layer level if you
-#'   are overriding the plot defaults.
-#' @param data A layer specific dataset - only needed if you want to override
-#'   the plot defaults.
-#' @param geom The geometric object to use display the data
-#' @param position The position adjustment to use for overlapping points on this
-#'   layer
-#' @param show.legend logical. Should this layer be included in the legends?
-#'   \code{NA}, the default, includes if any aesthetics are mapped. \code{FALSE}
-#'   never includes, and \code{TRUE} always includes.
-#' @param inherit.aes If \code{FALSE}, overrides the default aesthetics, rather
-#'   than combining with them. This is most useful for helper functions that
-#'   define both data and aesthetics and should not inherit behaviour from the
-#'   default plot specification, e.g. \code{\link[ggplot2]{borders}}.
-#' @param ... other arguments passed on to \code{\link[ggplot2]{layer}}. This
-#'   can include aesthetics whose values you want to set, not map. See
-#'   \code{\link[ggplot2]{layer}} for more details.
-#' @param na.rm	a logical indicating whether NA values should be stripped
-#'   before the computation proceeds.
-#' @param method function or character If character, "lm", "rlm", "lqs", "rq"
-#'   and the name of a function to be matched, possibly followed by the fit
-#'   function's \code{method} argument separated by a colon (e.g.
-#'   \code{"rq:br"}). Functions implementing methods must accept arguments to
-#'   parameters \code{formula}, \code{data}, \code{weights} and \code{method}. A
-#'   \code{fitted()} method must exist for the returned model fit object class.
-#' @param method.args named list with additional arguments.
-#' @param n.min integer Minimum number of distinct values in the explanatory
-#'   variable (on the rhs of formula) for fitting to the attempted.
-#' @param formula a "formula" object. Using aesthetic names instead of
-#'   original variable names.
-#' @param fit.seed RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
-#'   Defaults to \code{NA}, which means that \code{set.seed()} will not be
-#'   called.
-#' @param orientation character Either "x" or "y" controlling the default for
-#'   \code{formula}.
+#' @inheritParams stat_poly_line
 #'
 #' @aesthetics StatFitDeviations
 #' @aesthetics StatFitFitted
 #'
-#' @details This stat can be used to automatically highlight residuals as
-#'   segments in a plot of a fitted model equation. This stat only returns the
-#'   fitted values and observations, the prediction and its confidence need to
-#'   be separately added to the plot when desired. Thus, to make sure that the
-#'   same model formula is used in all plot layers, it is best to save the
-#'   formula as an object and supply this object as argument to the different
-#'   statistics.
+#' @details \code{stat_fit_deviations()} can be used to automatically highlight
+#'   residuals as segments in a plot of a fitted model equation. This stat only
+#'   returns the fitted values and observations, the prediction and its
+#'   confidence need to be separately added to the plot when desired. Thus, to
+#'   make sure that the same model formula is used in all plot layers, it is
+#'   best to save the formula as an object and supply this object as argument to
+#'   the different statistics.
 #'
-#'   A ggplot statistic receives as data a data frame that is not the one passed
-#'   as argument by the user, but instead a data frame with the variables mapped
-#'   to aesthetics and NA values removed. In other words, it respects the
-#'   grammar of graphics and consequently within the model \code{formula} names
-#'   of aesthetics like $x$ and $y$ should be used instead of the original
-#'   variable names. This helps ensure that the model is fitted to the same data
-#'   as plotted in other layers.
+#'   \code{stat_fit_fitted()} only returns the original \code{x} and the fitted
+#'   values, by default mapped to \code{y} and can be used to add them to a
+#'   plot. e.g., as points. Fitted values are available for all model fit
+#'   methods.
+#'
+#' @inheritSection stat_fit_residuals Prior and posterior weights
 #'
 #' @note In the case of \code{method = "rq"} quantiles are fixed at \code{tau =
 #'   0.5} unless \code{method.args} has length > 0. Parameter \code{orientation}
 #'   is redundant as it only affects the default for \code{formula} but is
 #'   included for consistency with \code{ggplot2}.
+#'
+#' @inheritSection stat_poly_line Model formula and model fitting
+#'
+#' @inheritSection stat_poly_line Model fit methods supported
 #'
 #' @section Computed variables: Data frame with same \code{nrow} as \code{data}
 #'   as subset for each group containing five numeric variables.
@@ -81,11 +50,13 @@
 #'   }
 #'
 #'   To explore the values returned by this statistic we suggest the use of
-#'   \code{\link[gginnards]{geom_debug}}. An example is shown below, where one
+#'   \code{\link[gginnards]{geom_debug}()}. An example is shown below, where one
 #'   can also see in addition to the computed values the default mapping of the
 #'   fitted values to aesthetics \code{xend} and \code{yend}.
 #'
-#' @family ggplot statistics for model fits
+#' @inherit stat_poly_line seealso
+#'
+#' @family 'ggpmisc' statistics for model fits
 #'
 #' @examples
 #' # generate artificial data

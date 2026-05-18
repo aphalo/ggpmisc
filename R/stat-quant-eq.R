@@ -3,128 +3,23 @@
 #' \code{stat_quant_eq} fits a polynomial model by quantile regression and
 #' generates several labels including the equation, rho, 'AIC' and 'BIC'.
 #'
-#' This statistic interprets the argument passed to \code{formula} differently
-#' than \code{\link[ggplot2]{stat_quantile}} accepting \code{y} as well as
-#' \code{x} as explanatory variable, matching \code{stat_quant_line()}.
-#'
-#' When two variables are subject to mutual constrains, it is useful to consider
-#' both of them as explanatory and interpret the relationship based on them. So,
-#' from version 0.4.1 'ggpmisc' makes it possible to easily implement the
-#' approach described by Cardoso (2019) under the name of "Double quantile
-#' regression".
+#' @inherit stat_quant_band details
 #'
 #' @inheritParams stat_quant_line
+#' @inheritParams stat_poly_eq
 #'
-#' @param eq.with.lhs If \code{character} the string is pasted to the front of
-#'   the equation label before parsing or a \code{logical} (see note).
-#' @param eq.x.rhs \code{character} this string will be used as replacement for
-#'   \code{"x"} in the model equation when generating the label before parsing
-#'   it.
 #' @param coef.digits,rho.digits integer Number of significant digits to use for
 #'   the fitted coefficients and rho in labels.
-#' @param coef.keep.zeros logical Keep or drop trailing zeros when formatting
-#'   the fitted coefficients and F-value.
-#' @param decreasing logical It specifies the order of the terms in the
-#'   returned character string; in increasing (default) or decreasing powers.
-#' @param label.x,label.y \code{numeric} with range 0..1 "normalized parent
-#'   coordinates" (npc units) or character if using \code{geom_text_npc()} or
-#'   \code{geom_label_npc()}. If using \code{geom_text()} or \code{geom_label()}
-#'   numeric in native data units. If too short they will be recycled.
-#' @param hstep,vstep numeric in npc units, the horizontal and vertical step
-#'   used between labels for different groups.
-#' @param output.type character One of \code{"expression"}, \code{"LaTeX"},
-#'   \code{"text"}, \code{"markdown"} or \code{"numeric"}. In most cases,
-#'   instead of using this statistics to obtain numeric values, it is better to
-#'   use \code{stat_fit_tidy()}.
-#' @param parse logical Passed to the geom. If \code{TRUE}, the labels will be
-#'   parsed into expressions and displayed as described in \code{?plotmath}.
-#'   Default is \code{TRUE} if \code{output.type = "expression"} and
-#'   \code{FALSE} otherwise.
 #'
 #' @aesthetics StatQuantEq
 #'
-#' @note For backward compatibility a logical is accepted as argument for
-#'   \code{eq.with.lhs}. If \code{TRUE}, the default is used, either
-#'   \code{"x"} or \code{"y"}, depending on the argument passed to \code{formula}.
-#'   However, \code{"x"} or \code{"y"} can be substituted by providing a
-#'   suitable replacement character string through \code{eq.x.rhs}.
-#'   Parameter \code{orientation} is redundant as it only affects the default
-#'   for \code{formula} but is included for consistency with
-#'   \code{ggplot2::stat_smooth()}.
+#' @inheritSection check_output_type Output types
 #'
-#'   R option \code{OutDec} is obeyed based on its value at the time the plot
-#'   is rendered, i.e., displayed or printed. Set \code{options(OutDec = ",")}
-#'   for languages like Spanish or French.
-#'
-#' @details This stat can be used to automatically annotate a plot with rho or
-#'   the fitted model equation. The model fitting is done using package
-#'  'quantreg', please, consult its documentation for the
-#'   details. It supports only linear models fitted with function \code{rq()},
-#'   passing \code{method = "br"} to it, should work well with up to several
-#'   thousand observations. The rho, AIC, BIC and n annotations can be used with
-#'   any linear model formula. The fitted equation label is correctly generated
-#'   for polynomials or quasi-polynomials through the origin. Model formulas can
-#'   use \code{poly()} or be defined algebraically with terms of powers of
-#'   increasing magnitude with no missing intermediate terms, except possibly
-#'   for the intercept indicated by \code{"- 1"} or \code{"-1"} or \code{"+ 0"}
-#'   in the formula. The validity of the \code{formula} is not checked in the
-#'   current implementation. The default aesthetics sets rho as label for the
-#'   annotation.  This stat generates labels as R expressions by default but
-#'   LaTeX (use TikZ device), markdown (use package 'ggtext') and plain text are
-#'   also supported, as well as numeric values for user-generated text labels.
-#'   The value of \code{parse} is set automatically based on \code{output-type},
-#'   but if you assemble labels that need parsing from \code{numeric} output,
-#'   the default needs to be overridden. This stat only generates annotation
-#'   labels, the predicted values/line need to be added to the plot as a
-#'   separate layer using \code{\link{stat_quant_line}},
-#'   \code{\link{stat_quant_band}} or \code{\link[ggplot2]{stat_quantile}}, so
-#'   to make sure that the same model formula is used in all steps it is best to
-#'   save the formula as an object and supply this object as argument to the
-#'   different statistics.
-#'
-#'   A ggplot statistic receives as data a data frame that is not the one passed
-#'   as argument by the user, but instead a data frame with the variables mapped
-#'   to aesthetics. \code{stat_quant_eq()} mimics how \code{stat_smooth()}
-#'   works, except that only polynomials can be fitted. In other words, it
-#'   respects the grammar of graphics. This helps ensure that the model is
-#'   fitted to the same data as plotted in other layers.
-#'
-#'   Function \code{\link[quantreg]{rq}} does not support singular fits, in
-#'   contrast to \code{lm}.
-#'
-#'   The minimum number of observations with distinct values in the explanatory
-#'   variable can be set through parameter \code{n.min}. The default \code{n.min
-#'   = 3L} is the smallest usable value. However, model fits with very few
-#'   observations are of little interest and using larger values of \code{n.min}
-#'   than the default is usually wise.
-#'
-#' @section User-defined methods: User-defined functions can be passed as
-#'   argument to \code{method}. The requirements are 1) that the signature is
-#'   similar to that of functions from package 'quantreg' and 2) that the value
-#'   returned by the function is an object belonging to class \code{"rq"}, class
-#'   \code{"rqs"}, or an atomic \code{NA} value.
-#'
-#'   The \code{formula} and \code{tau} used to build the equation and quantile
-#'   labels aer extracted from the returned \code{"rq"} or \code{"rqs"} object
-#'   and can safely differ from the argument passed to parameter \code{formula}
-#'   in the call to \code{stat_poly_eq()}. Thus, user-defined methods can
-#'   implement both model selection or conditional skipping of labelling.
+#' @inheritSection stat_poly_eq Model equation label
 #'
 #' @inheritSection stat_poly_eq Position of labels
 #'
-#' @references Written as an answer to question 65695409 by Mark Neal at
-#'   Stackoverflow.
-#'
-#' @section Warning!: For the formatted equations to be valid, the fitted model
-#'   must be a polynomial, with or without intercept. If defined using
-#'   \code{poly()} the argument \code{raw = TRUE} must be passed. If defined
-#'   manually as powers of \code{x}, \strong{the terms must be in order of
-#'   increasing powers, with no missing intermediate power term.} Please, see
-#'   examples below. A check on the model is used to validate that it is a
-#'   polynomial, in most cases a warning is issued. Failing to comply with this
-#'   requirement results in the return of \code{NA} as the formatted equation.
-#'
-#' @inheritSection check_output_type Output types
+#' @inheritSection stat_poly_line Model formula and model fitting
 #'
 #' @inheritSection stat_poly_line Model fit methods supported
 #'
@@ -168,19 +63,10 @@
 #' To explore the computed values returned for a given input we suggest the use
 #' of \code{\link[gginnards]{geom_debug}} as shown in the example below.
 #'
-#' @seealso The quantile fit is done with function \code{\link[quantreg]{rq}},
-#'   please consult its documentation. This \code{stat_quant_eq} statistic can
-#'   return ready formatted labels depending on the argument passed to
-#'   \code{output.type}. This is possible because only polynomial models are
-#'   supported. For other types of models, statistics
-#'   \code{\link{stat_fit_glance}},  \code{\link{stat_fit_tidy}} and
-#'   \code{\link{stat_fit_glance}} should be used instead and the code for
-#'   construction of character strings from numeric values and their mapping to
-#'   aesthetic \code{label} needs to be explicitly supplied in the call.
+#' @seealso \code{\link[quantreg]{rq}}, \code{\link[quantreg]{rqss}} and
+#'   \code{\link[quantreg]{qss}}.
 #'
-#' @note Support for the \code{angle} aesthetic is not automatic and requires
-#'   that the user passes as argument suitable numeric values to override the
-#'   defaults for label positions.
+#' @family 'ggpmisc' statistics for model fits
 #'
 #' @import quantreg
 #'

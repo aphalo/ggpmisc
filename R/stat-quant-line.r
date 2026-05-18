@@ -5,39 +5,7 @@
 #' band can be interpreted similarly as that produced by \code{stat_smooth()}
 #' and \code{stat_poly_line()}.
 #'
-#' @details \code{stat_quant_line()} behaves similarly to
-#'   \code{ggplot2::stat_smooth()} and \code{stat_poly_line()} but supports
-#'   fitting regressions for multiple quantiles in the same plot layer. This
-#'   statistic interprets the argument passed to \code{formula} accepting
-#'   \code{y} as well as \code{x} as explanatory variable, matching
-#'   \code{stat_quant_eq()}. While \code{stat_quant_eq()} supports only method
-#'   \code{"rq"}, \code{stat_quant_line()} and \code{stat_quant_band()} support
-#'   both \code{"rq"} and \code{"rqss"}, In the case of \code{"rqss"} the model
-#'   formula makes normally use of \code{qss()} to formulate the spline and its
-#'   constraints.
-#'
-#'   \code{\link[ggplot2]{geom_smooth}}, which is used by default, treats each
-#'   axis differently and thus is dependent on orientation. If no argument is
-#'   passed to \code{formula}, it defaults to \code{y ~ x}. Formulas with
-#'   \code{y} as explanatory variable are treated as if \code{x} was the
-#'   explanatory variable and \code{orientation = "y"}.
-#'
-#'   Package 'ggpmisc' does not define a new geometry matching this statistic as
-#'   it is enough for the statistic to return suitable \code{x}, \code{y},
-#'   \code{ymin}, \code{ymax} and \code{group} values.
-#'
-#'   The minimum number of observations with distinct values in the explanatory
-#'   variable can be set through parameter \code{n.min}. The default \code{n.min
-#'   = 3L} is the smallest usable value. However, model fits with very few
-#'   observations are of little interest and using larger values of \code{n.min}
-#'   than the default is wise.
-#'
-#'   There are multiple uses for double regression on x and y. For example, when
-#'   two variables are subject to mutual constrains, it is useful to consider
-#'   both of them as explanatory and interpret the relationship based on them.
-#'   So, from version 0.4.1 'ggpmisc' makes it possible to easily implement the
-#'   approach described by Cardoso (2019) under the name of "Double quantile
-#'   regression".
+#' @inherit stat_quant_band details
 #'
 #' @inheritParams stat_poly_line
 #'
@@ -69,6 +37,8 @@
 #'   for each quantile. Is \code{se = TRUE}, a confidence band is computed and
 #'   values for it returned in \code{ymax} and \code{ymin}.
 #'
+#' @inheritSection stat_poly_line Model formula and model fitting
+#'
 #' @inheritSection stat_poly_line Model fit methods supported
 #'
 #' @section Computed variables: `stat_quant_line()` provides the following
@@ -86,13 +56,10 @@
 #'   but provides a simple and robust approach to achieve effects like colouring
 #'   or hiding of the model fit line based on the number of observations.
 #'
-#' @references
-#' Cardoso, G. C. (2019) Double quantile regression accurately assesses
-#'   distance to boundary trade-off. Methods in ecology and evolution,
-#'   10(8), 1322-1331.
-#'
 #' @seealso \code{\link[quantreg]{rq}}, \code{\link[quantreg]{rqss}} and
 #'   \code{\link[quantreg]{qss}}.
+#'
+#' @family 'ggpmisc' statistics for model fits
 #'
 #' @export
 #'
