@@ -5,7 +5,7 @@
 \alias{stat_quant_band}
 \alias{stat_quant_eq}
 \alias{stat_quant_line}
-\title{Quantile regression prediction and annotations}
+\title{Quantile regression predictions and annotations}
 \usage{
 stat_quant_band(
   mapping = NULL,
@@ -190,10 +190,10 @@ A data frame, with one row per quantile and columns as described
   rendered as an empty/invisible plot layer.
 }
 \description{
-\code{stat_quant_line}, \code{stat_quant_band} and \code{stat_quant_eq}
-consistently fit models by quantile regression. While add
-prediction lines and bands, \code{stat_quant_eq} adds textual
-labels including the fitted model equation, rho, 'AIC' and 'BIC'.
+Statistics \code{stat_quant_line}, \code{stat_quant_band} and
+\code{stat_quant_eq} fit models by quantile regression. While
+\code{stat_quant_line} and \code{stat_quant_band} add prediction lines and
+bands, \code{stat_quant_eq} adds textual labels to a plot.
 }
 \details{
 While \code{stat_poly_line()} and \code{stat_poly_eq()} fit
@@ -751,7 +751,6 @@ Other 'ggpmisc' statistics for model fits:
 \code{\link[=stat_distrmix_eq]{stat_distrmix_eq()}},
 \code{\link[=stat_fit_deviations]{stat_fit_deviations()}},
 \code{\link[=stat_fit_glance]{stat_fit_glance()}},
-\code{\link[=stat_fit_residuals]{stat_fit_residuals()}},
 \code{\link[=stat_fit_tb]{stat_fit_tb()}},
 \code{\link[=stat_fit_tidy]{stat_fit_tidy()}},
 \code{\link[=stat_ma_eq]{stat_ma_eq()}},

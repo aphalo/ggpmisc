@@ -3,7 +3,7 @@
 \name{stat_distrmix_eq}
 \alias{stat_distrmix_eq}
 \alias{stat_distrmix_line}
-\title{Distribution mixture model fit}
+\title{Mixture model prediction and annotations}
 \usage{
 stat_distrmix_eq(
   mapping = NULL,
@@ -172,10 +172,9 @@ The value returned by \code{stat_distrmix_line()} is a data frame, with \code{n}
   model fit.
 }
 \description{
-\code{stat_distrmix_line()} and \code{stat_distrmix_eq()} fit a Normal
-mixture model.
-Predicted values are computed and plotted or textual labels are added,
-repectively.
+Statistics \code{stat_distrmix_line()} and \code{stat_distrmix_eq()} fit a
+Normal mixture model. While \code{stat_distrmix_line()} adds prediction
+lines, \code{stat_distrmix_eq()} adds textual labels to a plot.
 }
 \details{
 \code{stat_distrmix_line()} is similar to
@@ -396,7 +395,6 @@ if (gginnards.installed)
 Other 'ggpmisc' statistics for model fits:
 \code{\link[=stat_fit_deviations]{stat_fit_deviations()}},
 \code{\link[=stat_fit_glance]{stat_fit_glance()}},
-\code{\link[=stat_fit_residuals]{stat_fit_residuals()}},
 \code{\link[=stat_fit_tb]{stat_fit_tb()}},
 \code{\link[=stat_fit_tidy]{stat_fit_tidy()}},
 \code{\link[=stat_ma_eq]{stat_ma_eq()}},

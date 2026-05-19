@@ -2,7 +2,7 @@
 % Please edit documentation in R/stat-correlation.R
 \name{stat_correlation}
 \alias{stat_correlation}
-\title{Annotate plot with correlation test}
+\title{Correlation test annotations}
 \usage{
 stat_correlation(
   mapping = NULL,
@@ -120,11 +120,10 @@ define both data and aesthetics and shouldn't inherit behaviour from the
 default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
 }
 \description{
-\code{stat_correlation()} applies \code{stats::cor.test()}
-  respecting grouping with \code{method = "pearson"} default but
-  alternatively using \code{"kendall"} or \code{"spearman"} methods. It
-  generates labels for correlation coefficients and p-value, coefficient of
-  determination (R^2) for method "pearson" and number of observations.
+Statistic \code{stat_correlation()} applies \code{stats::cor.test()}
+respecting grouping with \code{method = "pearson"} default but alternatively
+using \code{"kendall"} or \code{"spearman"} methods. It adds textual labels
+to a plot.
 }
 \details{
 This statistic can be used to annotate a plot with the correlation

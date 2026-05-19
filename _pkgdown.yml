@@ -22,7 +22,6 @@ reference:
     - stat_fit_augment
     - stat_fit_glance
     - stat_fit_tidy
-    - stat_fit_deviations
     - stat_fit_residuals
     - stat_peaks
     - use_label

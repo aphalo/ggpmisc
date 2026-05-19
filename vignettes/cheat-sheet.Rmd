@@ -42,7 +42,7 @@ The statistics that return text labels for annotating plots, return in `x` and `
 
 The statistics for fitted models come in matched pairs, one that adds a plot layer with one or more curves and confidence band(s), and one that annotates the plot with the fitted model equation and/or other parameter estimates. These depend on the type of fitted model and include $R^2$, $F$, $P$, $AIC$, $BIC$, and $n$. The curve plotting stats fulfil a similar role to `ggplot2::stat_smooth()` while the ones for textual annotations have no equivalent in 'ggplot2'.
 
-* `stat_poly_line()` and `stat_poly_line()` are the pair supporting a broader set of model fit functions: e.g., linear models (OLS, resistant and robust), general linear model (gls), linear splines, cubic splines, aditive models (gam), major axis (MA) and standardised major axis (SMA) regression, etc. The fitted model equation is automatically generated for polynomials, but can be assembled manually for other model formulas.
+* `stat_poly_line()` and `stat_poly_eq()` are the pair supporting a broader set of model fit functions: e.g., linear models (OLS, resistant and robust), general linear model (gls), linear splines, cubic splines, aditive models (gam), major axis (MA) and standardised major axis (SMA) regression, etc. The fitted model equation is automatically generated for polynomials, but can be assembled manually for other model formulas.
 
 * `stat_quant_line()`, `stat_quant_band()` and `stat_quant_eq()` support quantile regression based on both polynomials and smoothing splines (using 'quantreg').
 

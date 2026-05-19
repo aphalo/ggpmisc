@@ -192,15 +192,13 @@ The value returned by the statistic is a data frame, with \code{n}
   is returned, and silently rendered as an empty/invisible plot layer.
 }
 \description{
-\code{stat_poly_eq} fits a polynomial, by default with \code{stats::lm()},
-but alternatively using robust, resistant or generalized least squares. Major
-axis regression and segmented linear regression are also supported. Using the
-fitted model it generates several labels including the fitted model equation,
-p-value, F-value, coefficient of determination (R^2) and its confidence
-interval, 'AIC', 'BIC', number of observations and method name, if available.
+Statistics \code{stat_poly_line} and \code{\link{stat_poly_eq}()} fit a
+model, by default with \code{stats::lm()}, but alternatively using other
+model fit functions. While \code{stat_poly_line} adds a prediction line and
+band, \code{\link{stat_poly_eq}()} adds textual labels to a plot.
 }
 \details{
-Statistic \code{stat_poly_line()} and \code{\link{stat_poly_eq}()}
+Statistics \code{stat_poly_line()} and \code{\link{stat_poly_eq}()}
   fit a model consistently, but return different values.
   \code{stat_poly_line()} plots a prediction line and band, similarly to
   \code{\link[ggplot2]{stat_smooth}()}
@@ -715,7 +713,6 @@ Other 'ggpmisc' statistics for model fits:
 \code{\link[=stat_distrmix_eq]{stat_distrmix_eq()}},
 \code{\link[=stat_fit_deviations]{stat_fit_deviations()}},
 \code{\link[=stat_fit_glance]{stat_fit_glance()}},
-\code{\link[=stat_fit_residuals]{stat_fit_residuals()}},
 \code{\link[=stat_fit_tb]{stat_fit_tb()}},
 \code{\link[=stat_fit_tidy]{stat_fit_tidy()}},
 \code{\link[=stat_ma_eq]{stat_ma_eq()}},

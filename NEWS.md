@@ -16,6 +16,7 @@ wrong test outcomes in some edge cases.
 `stat_fit_residuals()` and `stat_fit_deviations()`.
 - Streamline source of documentation using 'roxygen2' inheritance and expand
 and clarify explanations. List supported methods in tables in help pages.
+Merge help for closely related statistics.
 - Update the _User Guide_ with new/better examples and explanations including
 use of new features.
 

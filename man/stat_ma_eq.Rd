@@ -3,7 +3,7 @@
 \name{stat_ma_eq}
 \alias{stat_ma_eq}
 \alias{stat_ma_line}
-\title{Model 2 prediction and annotations}
+\title{Model II prediction and annotations}
 \usage{
 stat_ma_eq(
   mapping = NULL,
@@ -184,10 +184,9 @@ A data frame, with a single row and columns as described under
   rendered as an empty/invisible plot layer.
 }
 \description{
-\code{stat_ma_line()} and \code{stat_ma_eq()} fit model II regressions. From
-the fitted model \code{stat_ma_line()} adds the prediction line and band with
-\code{stat_ma_eq()} can add several textual labels including the equation,
-\eqn{P}, \eqn{R^2}, and number of observations.
+Statistics \code{stat_ma_line()} and \code{stat_ma_eq()} fit model II
+regressions. While \code{stat_ma_line()} adds a prediction line and band,
+\code{stat_ma_eq()} adds textual labels to a plot.
 }
 \details{
 Statistics \code{stat_ma_line()} and \code{stat_ma_eq} fit major
@@ -679,7 +678,6 @@ Other 'ggpmisc' statistics for model fits:
 \code{\link[=stat_distrmix_eq]{stat_distrmix_eq()}},
 \code{\link[=stat_fit_deviations]{stat_fit_deviations()}},
 \code{\link[=stat_fit_glance]{stat_fit_glance()}},
-\code{\link[=stat_fit_residuals]{stat_fit_residuals()}},
 \code{\link[=stat_fit_tb]{stat_fit_tb()}},
 \code{\link[=stat_fit_tidy]{stat_fit_tidy()}},
 \code{\link[=stat_poly_eq]{stat_poly_eq()}},

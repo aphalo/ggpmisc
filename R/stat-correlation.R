@@ -1,4 +1,4 @@
-#' @title Annotate plot with correlation test
+#' Correlation test annotations
 #'
 #' Statistic \code{stat_correlation()} applies \code{stats::cor.test()}
 #' respecting grouping with \code{method = "pearson"} default but alternatively
