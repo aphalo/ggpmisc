@@ -142,13 +142,14 @@ default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
 }
 
 \section{Model fit methods supported}{
- Several model fit functions are
+
+  Several model fit functions are
   supported explicitly (see tables), and some of their differences smoothed
   out. Compatibility is checked late, based on the class of the returned
   fitted model object. This makes it possible to use wrapper functions that
   do model selection or other adjustments to the fit procedure on a per panel
   or per group basis. Moreover, if the value returned as model fit object is
-  \code{NULL}, no layer is added to the plot on a per group within panel
+  \code{NULL}, plotting is skipped on a per group within panel
   basis.
 
   In the case of fitted model objects of classes not explicitly supported an

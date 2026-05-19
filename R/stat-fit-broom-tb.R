@@ -39,9 +39,9 @@
 #'   \code{tidy()} method is available, including non-linear regression. Fit
 #'   methods retain their default arguments unless overridden.
 #'
-#' @inheritSection stat_poly_line Model formula and model fitting
+#' @inheritSection stat_poly_eq Model formula and model fitting
 #'
-#' @inheritSection stat_poly_line Model fit methods supported
+#' @inheritSection stat_poly_eq Model fit methods supported
 #'
 #' @section Computed variables: The output of \code{tidy()} is returned as a
 #'   single "cell" in a tibble (i.e., a tibble nested within a tibble). The

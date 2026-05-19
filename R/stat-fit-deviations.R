@@ -4,7 +4,7 @@
 #' residuals ready for highlighting them as segments in a \emph{y} vs. \emph{x}
 #' plot.
 #'
-#' @inheritParams stat_poly_line
+#' @inheritParams stat_poly_eq
 #'
 #' @aesthetics StatFitDeviations
 #' @aesthetics StatFitFitted
@@ -29,9 +29,9 @@
 #'   is redundant as it only affects the default for \code{formula} but is
 #'   included for consistency with \code{ggplot2}.
 #'
-#' @inheritSection stat_poly_line Model formula and model fitting
+#' @inheritSection stat_poly_eq Model formula and model fitting
 #'
-#' @inheritSection stat_poly_line Model fit methods supported
+#' @inheritSection stat_poly_eq Model fit methods supported
 #'
 #' @section Computed variables: Data frame with same \code{nrow} as \code{data}
 #'   as subset for each group containing five numeric variables.

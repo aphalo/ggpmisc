@@ -14,10 +14,10 @@ wrong test outcomes in some edge cases.
 `"gls"`, (`"lme"` and `"nlme"`). These weights are NOT scaled to values in 0..1!
 - Change default from `show.legend = FALSE` to `show.legend = TRUE` in 
 `stat_fit_residuals()` and `stat_fit_deviations()`.
-- Better document how positioning of labels works when aesthetics mappings
-create groups.
+- Streamline source of documentation using 'roxygen2' inheritance and expand
+and clarify explanations. List supported methods in tables in help pages.
 - Update the _User Guide_ with new/better examples and explanations including
-new features.
+use of new features.
 
 # ggpmisc 0.7.0
 

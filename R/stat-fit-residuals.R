@@ -3,7 +3,7 @@
 #' \code{stat_fit_residuals} fits a model and returns residuals ready to be
 #' plotted vs. \emph{x}.
 #'
-#' @inheritParams stat_poly_line
+#' @inheritParams stat_poly_eq
 #'
 #' @param resid.type character passed to \code{\link[stats]{residuals}()} as
 #'   argument for \code{type} (defaults to \code{"working"} except if
@@ -35,9 +35,9 @@
 #'   penalized differently to fit a model, the weighted residuals need to be
 #'   computed accordingly.
 #'
-#' @inheritSection stat_poly_line Model formula and model fitting
+#' @inheritSection stat_poly_eq Model formula and model fitting
 #'
-#' @inheritSection stat_poly_line Model fit methods supported
+#' @inheritSection stat_poly_eq Model fit methods supported
 #'
 #' @section Computed variables:
 #'   Data frame with same value of \code{nrow} as

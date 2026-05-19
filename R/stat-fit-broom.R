@@ -40,9 +40,9 @@
 #'   \code{t.test()}, ANOVA or ANCOVA. In such cases use the
 #'   \code{stat_fit_tb()} statistic which applies the model fitting per panel.
 #'
-#' @inheritSection stat_poly_line Model formula and model fitting
+#' @inheritSection stat_poly_eq Model formula and model fitting
 #'
-#' @inheritSection stat_poly_line Model fit methods supported
+#' @inheritSection stat_poly_eq Model fit methods supported
 #'
 #' @return The output of the \code{glance()} methods is returned almost as is in
 #'   the \code{data} object, as a data frame. The names of the columns in the
@@ -368,7 +368,7 @@ StatFitGlance <-
 #'   methods from packages 'broom', 'broom.mixed', or other sources. The
 #'   prediction can be added to the plot as a line.
 #'
-#' @inheritParams stat_poly_line
+#' @inheritParams stat_poly_eq
 #'
 #' @param method.args,augment.args list of arguments to pass to \code{method}
 #'   and to to \code{broom::augment}.
@@ -404,9 +404,9 @@ StatFitGlance <-
 #'   (e.g., when a factor is mapped to the _x_ or _y_ aesthetics. In such cases
 #'   use instead \code{stat_fit_tb()} which applies the model fitting per panel.
 #'
-#' @inheritSection stat_poly_line Model formula and model fitting
+#' @inheritSection stat_poly_eq Model formula and model fitting
 #'
-#' @inheritSection stat_poly_line Model fit methods supported
+#' @inheritSection stat_poly_eq Model fit methods supported
 #'
 #' @section Computed variables: The output of \code{augment()} is
 #'   returned as is, except for \code{y} which is set based on \code{y.out} and
@@ -685,9 +685,9 @@ StatFitAugment <-
 #'   with results from \code{t.test()} or ANOVA or ANCOVA. In such cases use
 #'   instead \code{stat_fit_tb()} which applies the model fitting per panel.
 #'
-#' @inheritSection stat_poly_line Model formula and model fitting
+#' @inheritSection stat_poly_eq Model formula and model fitting
 #'
-#' @inheritSection stat_poly_line Model fit methods supported
+#' @inheritSection stat_poly_eq Model fit methods supported
 #'
 #' @return The output of \code{tidy()} is returned after reshaping it into a
 #'   single row. Grouping is respected, and the model fitted separately to each

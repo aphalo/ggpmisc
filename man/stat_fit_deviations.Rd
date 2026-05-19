@@ -181,13 +181,14 @@ In the case of \code{method = "rq"} quantiles are fixed at \code{tau =
 }
 
 \section{Model fit methods supported}{
- Several model fit functions are
+
+  Several model fit functions are
   supported explicitly (see tables), and some of their differences smoothed
   out. Compatibility is checked late, based on the class of the returned
   fitted model object. This makes it possible to use wrapper functions that
   do model selection or other adjustments to the fit procedure on a per panel
   or per group basis. Moreover, if the value returned as model fit object is
-  \code{NULL}, no layer is added to the plot on a per group within panel
+  \code{NULL}, plotting is skipped on a per group within panel
   basis.
 
   In the case of fitted model objects of classes not explicitly supported an
@@ -372,18 +373,13 @@ if (gginnards.installed)
 \seealso{
 Other 'ggpmisc' statistics for model fits:
 \code{\link[=stat_distrmix_eq]{stat_distrmix_eq()}},
-\code{\link[=stat_distrmix_line]{stat_distrmix_line()}},
 \code{\link[=stat_fit_glance]{stat_fit_glance()}},
 \code{\link[=stat_fit_residuals]{stat_fit_residuals()}},
 \code{\link[=stat_fit_tb]{stat_fit_tb()}},
 \code{\link[=stat_fit_tidy]{stat_fit_tidy()}},
 \code{\link[=stat_ma_eq]{stat_ma_eq()}},
-\code{\link[=stat_ma_line]{stat_ma_line()}},
 \code{\link[=stat_poly_eq]{stat_poly_eq()}},
-\code{\link[=stat_poly_line]{stat_poly_line()}},
-\code{\link[=stat_quant_band]{stat_quant_band()}},
-\code{\link[=stat_quant_eq]{stat_quant_eq()}},
-\code{\link[=stat_quant_line]{stat_quant_line()}}
+\code{\link[=stat_quant_band]{stat_quant_band()}}
 }
 \concept{'ggpmisc' statistics for model fits}
 \section{Aesthetics}{

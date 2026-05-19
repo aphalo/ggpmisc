@@ -9,8 +9,25 @@ reference:
   - title: Package overview
     contents:
     - '`ggpmisc-package`'
+  - title: Statistics
+    desc: Fitted models, tests and summaries enrich data visualizations allowing deeper understanding. These statistics help display these estimates graphically or as textual annotations.
+    contents:
+    - stat_correlation
+    - stat_distrmix_eq
+    - stat_poly_eq
+    - stat_quant_eq
+    - stat_ma_eq
+    - stat_multcomp
+    - stat_fit_tb
+    - stat_fit_augment
+    - stat_fit_glance
+    - stat_fit_tidy
+    - stat_fit_deviations
+    - stat_fit_residuals
+    - stat_peaks
+    - use_label
   - title: Scales
-    desc: Scales control de mapping of data to aesthetics.
+    desc: Scales control de mapping of data to aesthetics. These scales are tailored for specific types of plots.
     contents:
     - scale_x_logFC
     - scale_colour_logFC
@@ -22,28 +39,6 @@ reference:
     - outcome2factor
     - xy_outcomes2factor
     - symmetric_limits
-  - title: Statistics
-    desc: It is often useful to summarize data before plotting, and that is what these transformations do.
-    contents:
-    - stat_peaks
-    - stat_poly_line
-    - stat_poly_eq
-    - stat_ma_line
-    - stat_ma_eq
-    - stat_quant_line
-    - stat_quant_band
-    - stat_quant_eq
-    - stat_distrmix_line
-    - stat_distrmix_eq
-    - stat_correlation
-    - stat_fit_tb
-    - stat_fit_tidy
-    - stat_fit_glance
-    - stat_fit_augment
-    - stat_fit_deviations
-    - stat_fit_residuals
-    - stat_multcomp
-    - use_label
   - title: Utilities
     desc: Low level functions used to build some of the functions above, but possibly useful also in other contexts.
     contents:
