@@ -25,19 +25,19 @@ eval_flag <- TRUE # evaluate all code chunks
 
 # Purpose
 
-Package 'ggpmisc' makes it easier to add to plots created using 'ggplot2' annotations based on fitted models and other statistics. It does this by wrapping existing model fit and other functions. The same annotations can be produced by calling the model fit functions, extracting the desired estimates and adding them to plots. There are two advantages in wrapping these functions in an extension to package 'ggplot2': 1) we ensure the coupling of graphical elements and the annotations by building all elements of the plot using the same data and a consistent grammar and 2) we make it easier to annotate plots to the casual user of R, within the grammar of graphics.
+Package 'ggpmisc' makes it easier to add to plots created using 'ggplot2' annotations based on fitted models and other statistics. It does this by wrapping existing model fit and other functions. The same annotations can be produced by calling the model fit functions, extracting the desired estimates and adding them to plots. There are two advantages in wrapping these functions in an extension to package 'ggplot2': 1) we ensure the coupling of graphical elements and the annotations by building all elements of the plot using the same data and a consistent grammar and 2) we make it easier to annotate plots to the casual users of R familiar with the grammar of graphics.
 
-_To avoid confusion it is good to make clear what may seem obvious to some: if no plot is needed, then there is no reason to use this package. The values shown as annotations are not computed by 'ggpmisc' but instead by the usual model-fit and statistical functions from R and other packages. The same is true for model predictions, residuals, etc. that some of the functions in 'ggpmisc' display as lines, segments, or other graphical elements._
+_To avoid confusion it is good to make clear what may seem obvious to some: if no plot is needed, then there is no reason to use this package. The values shown as annotations are not computed within 'ggpmisc' but instead by the usual model-fit and statistical functions from R and R packages. The same is true for model predictions, residuals, etc., that some of the functions in 'ggpmisc' display as lines, segments, or other graphical elements._
 
 It is also important to remember that in most cases data analysis proper should take place before annotated plots for publication are produced. Even though data analysis can benefit from combined numerical and graphical representation of the results, the use I envision for 'ggpmisc' is mainly for the production of plots for publication or communication.
 
-Attaching package 'ggpmisc' also attaches package 'ggpp' as this package was created as a spin-off from 'ggpmisc'. 'ggpp' provides several of the geometries used by default in the statistics described below. Package 'ggpp' can be loaded and attached on its own, and has [its own on-line documentation](https://docs.r4photobiology.info/ggpp/).
+Attaching package 'ggpmisc' also attaches package 'ggpp' as this package was created as a spin-off from 'ggpmisc'. 'ggpp' provides several of the geometries used by default in the statistics described below. Package 'ggpp' can be loaded and attached on its own, and has [separate on-line documentation](https://docs.r4photobiology.info/ggpp/).
 
 The [on-line documentation of 'ggpmisc'](https://docs.r4photobiology.info/ggpp/) includes articles/vignettes not installed with the package. These articles contain use examples covering annotations based on additional model fitting functions, including user-defined ones. These articles also describe the use of `ggpmisc` together with some other R packages including 'ggrepel', 'gganimate', 'ggtext', 'marquee' and 'xdvir'. With the last three packages, automatically generated _Markdown_ and $\LaTeX$ formatted equations and other labels can be added to plots.
 
 ## Preliminaries
 
-We load all the packages used in the examples. The suggested ones, only if available.
+We load the packages used in the examples. Those imported always, and those suggested, when available.
 
 ```{r, message=FALSE}
 library(ggpmisc)
@@ -55,7 +55,7 @@ eval_gginnards <-  requireNamespace("gginnards", quietly = TRUE)
 if (eval_gginnards) library(gginnards)
 ```
 
-As we will use text and labels on the plotting area we change the default theme to an uncluttered one.
+As we will add text and labels onto the plotting area we change the default theme to an uncluttered one with a white canvas.
 
 ```{r}
 old_theme <- theme_set(theme_bw())
@@ -63,9 +63,17 @@ old_theme <- theme_set(theme_bw())
 
 # Introduction to computed annotations
 
-Common plot annotations based on model fits are model equations, tests of significance and various indicators of goodness of fit. What annotations are most useful depend on whether both *x* and *y* are mapped to continuous variables, or *y* to a continuous variable, and *x* to a factor (or vice versa). In some cases it may be desirable to add an ANOVA table or a summary table as plot insets. Other annotations computed from data are various summaries and features such as location of local or global maxima and minima. Several additional statistics for simple plot annotations computed from `data` but not dependent of fitting of statistical models are documented in the vignettes and help pages of package 'ggpp' even if these statistics are imported and re-exported by 'ggpmisc'.
+The design of data visualizations depends on the target audience, expected "reading" time, being communicated and the type of statistical analysis relevant to a given data set (e.g., whether or *y* to a continuous variable, and *x* to a factor, or vice versa). 
 
-Supporting computed and model-fit based annotations in ggplots can be implemented as new statistics that do computations on the plot data and pass the results to existing or new geometries. These new statistics are only a convenience in the sense that similar plots can be achieved by fitting models and operating on the fitted model objects before adding the estimates to the plot by passing them as data directly to geoms in a plot. This approach requires additional coding by users to assemble character strings to be parsed into R expressions. Fitting the models before constructing the plot object can weaken reproducibility as the values in the annotations are not computed at the time the plot is rendered and not guaranteed to use the data being plotted (_When using 'ggpmisc' statistics the user remains responsible for the consistency of methods and model formulas used in different plot layers!_). 
+When continuous variables are mapped to both of *x* and *y* aesthetics, fitted model predictions are often displayed as curves and bands in plots. To facilitate interpretation or further use, fitted-model equations, tests of significance and various indicators of goodness of fit are diplayed as plot annotations. Occasionally an ANOVA table or a summary table as a plot inset can help interpretation. Other annotations computed from data are parametric and non-parametric correlations and their significance and other summaries. Data labels indicate the location of local or global maxima and minima and other features of the data.
+
+When one of variables mapped to *x* or *y* aesthetics is a factor and the other a continuous variable, an ANOVA table as a plot inset can be useful. However, most  (too?) frequently the outcomes of pairwise contrasts are indicated using letters or connecting labels. Several additional statistics for simple plot annotations computed from `data` but not dependent of fitting of statistical models are documented in the vignettes and help pages of package 'ggpp' even if these statistics are imported and re-exported by 'ggpmisc'.
+
+'ggpmisc' not only implements a good assortment of annotations, it implements
+them using an open-ended approach that makes it possible to work with many
+different model-fitting methods. 'ggpmisc' expands the range of plots and data visualisation features available within the grammar of graphics. While some R packages like 'ggpubr' easy construction of everyday plots, 'ggpmisc' aims to make it possible the construction of data visualizations that communicate effectively the outcomes from a broader range of statistical methods.
+
+Computed and model-fit based annotations are implemented in 'ggpmisc' as new statistics that do computations on the plot data and pass the results to existing or new geometries. These new statistics are only a convenience in the sense that similar plots can be achieved by fitting models and operating on the fitted model objects to extract estimates and outcomes of tests passing them as data directly to geoms in a plot. This approach requires additional coding by users to assemble character strings to be parsed into R expressions (or encoded using markdown or $\Latex$ or $\TeX$). Fitting the models before constructing the plot object can weaken reproducibility as the values in the annotations are not computed at the time the plot is rendered and not guaranteed to use the data being plotted (_When using 'ggpmisc' statistics the user remains responsible for the consistency of methods and model formulas used in different plot layers!_). 
 
 The statistics defined in 'ggpmisc' even if usable with geometries from package 'ggplot2', in most cases have as default geometries defined in package 'ggpp'. These new geometries are better suited for plot annotations than those from 'ggplot2', which are designed for data labels.
 
