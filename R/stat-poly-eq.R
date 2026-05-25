@@ -904,7 +904,7 @@ poly_eq_compute_group_fun <- function(data,
 
   formula.rhs.chr <- as.character(formula)[3]
   forced.origin <- grepl("-[[:space:]]*1|+[[:space:]]*0", formula.rhs.chr)
-  if (forced.origin) {
+  if (forced.origin && !"elevation" %in% coefs.names) { # handle 'smatr'
     coefs <- c(0, coefs)
   }
   selector <- !is.na(coefs)

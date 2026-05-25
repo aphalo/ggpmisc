@@ -174,7 +174,6 @@ poly_line_compute_group_fun <-
     } else { # does not have predict method
       if (class(fm)[1] == "sma") {
         if (se) {
-          message("SMA/MA, band is currently for slope only!")
           # fm$coef[[1]] is a data.frame
           #
           #           coef(SMA) lower limit upper limit
@@ -193,6 +192,7 @@ poly_line_compute_group_fun <-
             center.y <- 0
             center.x <- 0
           } else {
+            message("SMA/MA, band is currently for slope only!")
             # data centroid
             center.y <- mean(data[["y"]])
             center.x <- mean(data[["x"]])
