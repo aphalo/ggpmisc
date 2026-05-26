@@ -638,6 +638,24 @@ test_that("poly_methods", {
                               variant = snap_version
   )
 
+  vdiffr::expect_doppelganger("stat_poly_eq_rlm_fun_formula_xminus1",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_eq(formula = y ~ x - 1, parse = TRUE,
+                                             method = MASS::rlm,
+                                             mapping =
+                                               aes(label = paste(after_stat(eq.label),
+                                                                 after_stat(rr.label),
+                                                                 after_stat(adj.rr.label),
+                                                                 after_stat(f.value.label),
+                                                                 after_stat(p.value.label),
+                                                                 after_stat(n.label),
+                                                                 after_stat(AIC.label),
+                                                                 after_stat(BIC.label),
+                                                                 sep = "~~"))),
+                              variant = snap_version
+  )
+
   vdiffr::expect_doppelganger("stat_poly_eq_lts_chr",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
@@ -656,10 +674,46 @@ test_that("poly_methods", {
                               variant = snap_version
   )
 
+  vdiffr::expect_doppelganger("stat_poly_eq_lts_chr_formula_xminus1",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_eq(formula = y ~ x - 1, parse = TRUE,
+                                             method = "lts",
+                                             mapping =
+                                               aes(label = paste(after_stat(eq.label),
+                                                                 after_stat(rr.label),
+                                                                 after_stat(adj.rr.label),
+                                                                 after_stat(f.value.label),
+                                                                 after_stat(p.value.label),
+                                                                 after_stat(n.label),
+                                                                 after_stat(AIC.label),
+                                                                 after_stat(BIC.label),
+                                                                 sep = "~~"))),
+                              variant = snap_version
+  )
+
   vdiffr::expect_doppelganger("stat_poly_eq_lqs_fun",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
                                 stat_poly_eq(formula = y ~ x, parse = TRUE,
+                                             method = MASS::lqs,
+                                             mapping =
+                                               aes(label = paste(after_stat(eq.label),
+                                                                 after_stat(rr.label),
+                                                                 after_stat(adj.rr.label),
+                                                                 after_stat(f.value.label),
+                                                                 after_stat(p.value.label),
+                                                                 after_stat(n.label),
+                                                                 after_stat(AIC.label),
+                                                                 after_stat(BIC.label),
+                                                                 sep = "~~"))),
+                              variant = snap_version
+  )
+
+  vdiffr::expect_doppelganger("stat_poly_eq_lqs_fun_formula_xminus1",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_eq(formula = y ~ x - 1, parse = TRUE,
                                              method = MASS::lqs,
                                              mapping =
                                                aes(label = paste(after_stat(eq.label),
@@ -697,6 +751,96 @@ test_that("poly_methods", {
                                 geom_point() +
                                 stat_poly_eq(formula = y ~ x, parse = TRUE,
                                              method = nlme::gls,
+                                             mapping =
+                                               aes(label = paste(after_stat(eq.label),
+                                                                 after_stat(rr.label),
+                                                                 after_stat(adj.rr.label),
+                                                                 after_stat(f.value.label),
+                                                                 after_stat(p.value.label),
+                                                                 after_stat(n.label),
+                                                                 after_stat(AIC.label),
+                                                                 after_stat(BIC.label),
+                                                                 sep = "~~"))),
+                              variant = snap_version
+  )
+
+  vdiffr::expect_doppelganger("stat_poly_eq_gls_fun_formula_xminus1",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_eq(formula = y ~ x - 1, parse = TRUE,
+                                             method = nlme::gls,
+                                             mapping =
+                                               aes(label = paste(after_stat(eq.label),
+                                                                 after_stat(rr.label),
+                                                                 after_stat(adj.rr.label),
+                                                                 after_stat(f.value.label),
+                                                                 after_stat(p.value.label),
+                                                                 after_stat(n.label),
+                                                                 after_stat(AIC.label),
+                                                                 after_stat(BIC.label),
+                                                                 sep = "~~"))),
+                              variant = snap_version
+  )
+
+  vdiffr::expect_doppelganger("stat_poly_eq_ma_chr",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_eq(formula = y ~ x, parse = TRUE,
+                                             method = "ma",
+                                             mapping =
+                                               aes(label = paste(after_stat(eq.label),
+                                                                 after_stat(rr.label),
+                                                                 after_stat(adj.rr.label),
+                                                                 after_stat(f.value.label),
+                                                                 after_stat(p.value.label),
+                                                                 after_stat(n.label),
+                                                                 after_stat(AIC.label),
+                                                                 after_stat(BIC.label),
+                                                                 sep = "~~"))),
+                              variant = snap_version
+  )
+
+  vdiffr::expect_doppelganger("stat_poly_eq_ma_fun",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_eq(formula = y ~ x, parse = TRUE,
+                                             method = smatr::ma,
+                                             mapping =
+                                               aes(label = paste(after_stat(eq.label),
+                                                                 after_stat(rr.label),
+                                                                 after_stat(adj.rr.label),
+                                                                 after_stat(f.value.label),
+                                                                 after_stat(p.value.label),
+                                                                 after_stat(n.label),
+                                                                 after_stat(AIC.label),
+                                                                 after_stat(BIC.label),
+                                                                 sep = "~~"))),
+                              variant = snap_version
+  )
+
+  vdiffr::expect_doppelganger("stat_poly_eq_sma_chr",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_eq(formula = y ~ x, parse = TRUE,
+                                             method = "sma",
+                                             mapping =
+                                               aes(label = paste(after_stat(eq.label),
+                                                                 after_stat(rr.label),
+                                                                 after_stat(adj.rr.label),
+                                                                 after_stat(f.value.label),
+                                                                 after_stat(p.value.label),
+                                                                 after_stat(n.label),
+                                                                 after_stat(AIC.label),
+                                                                 after_stat(BIC.label),
+                                                                 sep = "~~"))),
+                              variant = snap_version
+  )
+
+  vdiffr::expect_doppelganger("stat_poly_eq_sma_fun",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_eq(formula = y ~ x, parse = TRUE,
+                                             method = smatr::sma,
                                              mapping =
                                                aes(label = paste(after_stat(eq.label),
                                                                  after_stat(rr.label),

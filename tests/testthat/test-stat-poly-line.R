@@ -211,6 +211,34 @@ test_that("poly_methods", {
                                                method = nlme::gls)
   )
 
+  vdiffr::expect_doppelganger("stat_poly_line_ma_chr",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_line(formula = y ~ x,
+                                               method = "ma")
+  )
+
+  vdiffr::expect_doppelganger("stat_poly_line_ma_fun",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_line(formula = y ~ x,
+                                               method = smatr::ma)
+  )
+
+  vdiffr::expect_doppelganger("stat_poly_line_sma_chr",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_line(formula = y ~ x,
+                                               method = "sma")
+  )
+
+  vdiffr::expect_doppelganger("stat_poly_line_sma_fun",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_line(formula = y ~ x,
+                                               method = smatr::sma)
+  )
+
   vdiffr::expect_doppelganger("stat_poly_line_empty_fm",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +

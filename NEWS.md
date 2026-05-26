@@ -17,6 +17,8 @@ wrong test outcomes in some edge cases.
 - Streamline source of documentation using 'roxygen2' inheritance and expand
 and clarify explanations. List supported methods in tables in help pages.
 Merge help for closely related statistics.
+- Fix bug in support of `smatr::ma()` and `smatr::sma()` in `stat_poly_eq()` 
+with `- 1` or `+ 0` in `formula`: $x^2$ shown instead of $x$.
 - Update the _User Guide_ with new/better examples and explanations including
 use of new features.
 
