@@ -83,7 +83,7 @@ test_that("poly_eq_noload", {
 
 library(ggpmisc)
 
-# testthat does not "see" the messages and warnings, so these tests play no role
+# testthat does not "see" these messages and warnings, so these tests play no role
 
 # test_that("number_of_rows_lm", {
 #   # message works but is not seen by the test
