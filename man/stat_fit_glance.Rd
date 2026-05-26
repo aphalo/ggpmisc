@@ -42,13 +42,12 @@ can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 
 \item{method}{function or character If character, "lm", "rlm", "lmrob",
-"lts", "gls", "ma", "sma", "segreg" or the name of a model fit
+"lts", "gls", "ma", "sma", "segreg", "rq" or the name of a model fit
 function are accepted, possibly followed by the fit function's
 \code{method} argument separated by a colon (e.g. \code{"rlm:M"}). If a
 function is different to \code{lm()}, \code{rlm()}, \code{ltsReg()},
 \code{gls()}, \code{ma}, \code{sma}, it must have formal parameters named
-\code{formula}, \code{data}, \code{weights}, and \code{method}. See
-Details.}
+\code{formula}, \code{data}, and \code{weights}. See Details.}
 
 \item{method.args, glance.args}{list of arguments to pass to \code{method}
 and to [generics::glance()], respectively.}
@@ -146,13 +145,14 @@ The output of the \code{glance()} methods is returned almost as is in
 }
 
 \section{Model fit methods supported}{
- Several model fit functions are
+
+  Several model fit functions are
   supported explicitly (see tables), and some of their differences smoothed
   out. Compatibility is checked late, based on the class of the returned
   fitted model object. This makes it possible to use wrapper functions that
   do model selection or other adjustments to the fit procedure on a per panel
   or per group basis. Moreover, if the value returned as model fit object is
-  \code{NULL}, no layer is added to the plot on a per group within panel
+  \code{NULL}, plotting is skipped on a per group within panel
   basis.
 
   In the case of fitted model objects of classes not explicitly supported an
@@ -326,18 +326,12 @@ Package \code{\link[broom]{broom}} for details on how the tidying of
 
 Other 'ggpmisc' statistics for model fits:
 \code{\link[=stat_distrmix_eq]{stat_distrmix_eq()}},
-\code{\link[=stat_distrmix_line]{stat_distrmix_line()}},
 \code{\link[=stat_fit_deviations]{stat_fit_deviations()}},
-\code{\link[=stat_fit_residuals]{stat_fit_residuals()}},
 \code{\link[=stat_fit_tb]{stat_fit_tb()}},
 \code{\link[=stat_fit_tidy]{stat_fit_tidy()}},
 \code{\link[=stat_ma_eq]{stat_ma_eq()}},
-\code{\link[=stat_ma_line]{stat_ma_line()}},
 \code{\link[=stat_poly_eq]{stat_poly_eq()}},
-\code{\link[=stat_poly_line]{stat_poly_line()}},
-\code{\link[=stat_quant_band]{stat_quant_band()}},
-\code{\link[=stat_quant_eq]{stat_quant_eq()}},
-\code{\link[=stat_quant_line]{stat_quant_line()}}
+\code{\link[=stat_quant_band]{stat_quant_band()}}
 }
 \concept{'ggpmisc' statistics for model fits}
 \section{Aesthetics}{

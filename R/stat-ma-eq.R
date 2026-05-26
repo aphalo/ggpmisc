@@ -1,11 +1,23 @@
-#' Equation, p-value, R^2 of major axis regression
+#' Model II prediction and annotations
 #'
-#' \code{stat_ma_eq} fits model II regressions. From the fitted model it
-#' generates several labels including the equation, p-value,
-#' coefficient of determination (R^2), and number of observations.
+#' Statistics \code{stat_ma_line()} and \code{stat_ma_eq()} fit model II
+#' regressions. While \code{stat_ma_line()} adds a prediction line and band,
+#' \code{stat_ma_eq()} adds textual labels to a plot.
 #'
-#' @inheritParams stat_ma_line
 #' @inheritParams stat_poly_eq
+#' @param range.y,range.x character Pass "relative" or "interval" if method
+#'   "RMA" is to be computed.
+#' @param method function or character If character, "MA", "SMA" , "RMA" or
+#'   "OLS", alternatively "lmodel2" or the name of a model fit function are
+#'   accepted, possibly followed by the fit function's \code{method} argument
+#'   separated by a colon (e.g. \code{"lmodel2:MA"}). If a function different to
+#'   \code{lmodel2()}, it must accept arguments named \code{formula},
+#'   \code{data}, \code{range.y}, \code{range.x} and \code{nperm} and return a
+#'   model fit object of class \code{lmodel2}.
+#' @param nperm integer Number of permutation used to estimate significance.
+#' @param se logical Return confidence interval around smooth? (`TRUE` by
+#'   default, see `level` to control.)
+#' @param level Level of confidence interval to use (only 0.95 currently).
 #'
 #' @param rr.digits,theta.digits,p.digits integer Number of digits after the
 #'   decimal point to use for R^2, theta and P-value in labels. If \code{Inf},
@@ -13,9 +25,46 @@
 #' @param coef.digits integer Number of significant digits to use for
 #'   the fitted coefficients in the equation label.
 #'
+#' @aesthetics StatMaLine
 #' @aesthetics StatMaEq
 #'
-#' @inherit stat_ma_line details
+#' @details Statistics \code{stat_ma_line()} and \code{stat_ma_eq} fit major
+#'   axis (\code{"MA"}) and other model II regressions with function
+#'   \code{\link[lmodel2]{lmodel2}}. They support linear major axis (MA),
+#'   standard major axis (SMA) and ranged major axis (RMA) regression.
+#'
+#'   \code{stat_ma_line()} adds the predicted line and confidence band based on
+#'   the uncertainty of the slope estimate. considering). \code{stat_ma_line()}
+#'   can add annotations with the fitted model equation and other parameter
+#'   estimates.
+#'
+#'   Model II regression is called for when both \code{x} and \code{y} are
+#'   subject to random variation and the intention is not to predict \code{y}
+#'   from \code{x} by means of the model but rather to study the relationship
+#'   between two independent variables. A frequent case in biology are
+#'   allometric relationships among body parts.
+#'
+#'   As the fitted line is the same whether \code{x} or \code{y} is on the rhs
+#'   of the model equation, \code{orientation} even if accepted does not have an
+#'   effect on the fitted line.
+#'
+#'   The minimum number of observations with distinct values can be set through
+#'   parameter \code{n.min}. The default \code{n.min = 2L} is the smallest
+#'   possible value. However, model fits with very few observations are of
+#'   little interest and using a larger number for \code{n.min} than the default
+#'   is wise. As model fitting functions could depend on the RNG,
+#'   \code{fit.seed} if different to \code{NA} is used as argument in a call to
+#'   \code{\link[base:Random]{set.seed}()} immediately ahead of model fitting.
+#'
+#'   In \code{\link[lmodel2]{lmodel2}()} MA, SMA and OLS fits always computed
+#'   while RMA requires a numeric argument to at least one of \code{range.y}
+#'   or \code{range.x}. The statistics extract estimates for one of the methods
+#'   based on the argument for \code{method}.
+#'
+#'   Package 'lmodel2' implements a model fit function and fitted model object
+#'   that differ from the usual approach of R. Thus, their use was implemented
+#'   as a separate pair of statistics. Use of package 'smatr' is implemented in
+#'   \code{\link{stat_poly_line}()} and \code{\link{stat_poly_eq}()}.
 #'
 #' @inheritSection check_output_type Output types
 #'
@@ -23,16 +72,43 @@
 #'
 #' @inheritSection stat_poly_eq Position of labels
 #'
-#' @inheritSection stat_poly_line Model formula and model fitting
+#' @inheritSection stat_poly_eq Model formula and model fitting
 #'
-#' @inheritSection stat_poly_line Model fit methods supported
+#' @inheritSection stat_poly_eq Model fit methods supported
 #'
 #' @return A data frame, with a single row and columns as described under
 #'   \strong{Computed variables}. In cases when the number of observations is
 #'   less than \code{n.min} a data frame with no rows or columns is returned
 #'   rendered as an empty/invisible plot layer.
 #'
-#' @section Computed variables:
+#' @section Variables returned by `stat_ma_line()`:
+#'
+#'   \describe{ \item{y \strong{or} x}{predicted value}
+#'   \item{ymin \strong{or} xmin}{lower pointwise confidence interval around the mean}
+#'   \item{ymax \strong{or} xmax}{upper pointwise confidence interval around the mean}
+#'   \item{se}{standard error}
+#'   }
+#'
+#'   If \code{fm.values = TRUE} is passed then columns based on the summary of
+#'   the model fit are added, with the same value in each row within a group.
+#'   This is wasteful and disabled by default, but provides a simple and robust
+#'   approach to achieve effects like colouring or hiding of the model fit line
+#'   based on P-values, r-squared or the number of observations.
+#'
+#' @section Variables returned by `stat_ma_eq()`:
+#'
+#' If output.type is \code{"numeric"} the returned tibble contains columns
+#' listed below. If the model fit function used does not return a value,
+#' the variable is set to \code{NA_real_}.
+#' \describe{
+#'   \item{x,npcx}{x position}
+#'   \item{y,npcy}{y position}
+#'   \item{coef.ls}{list containing the "coefficients" matrix from the summary of the fit object}
+#'   \item{r.squared, theta, p.value, n}{numeric values, from the model fit object}
+#'   \item{grp.label}{Set according to mapping in \code{aes}.}
+#'   \item{b_0.constant}{TRUE is polynomial is forced through the origin}
+#'   \item{b_i}{One or two columns with the coefficient estimates}}
+#'
 #' If \code{output.type} is different from \code{"numeric"} the returned tibble
 #' contains columns listed below. If the fitted model does not contain a given
 #' value, the label is set to \code{character(0L)}.
@@ -48,22 +124,10 @@
 #'   \item{method.label}{Set according \code{method} used.}
 #'   \item{r.squared, theta, p.value, n}{numeric values, from the model fit object}}
 #'
-#' If output.type is \code{"numeric"} the returned tibble contains columns
-#' listed below. If the model fit function used does not return a value,
-#' the variable is set to \code{NA_real_}.
-#' \describe{
-#'   \item{x,npcx}{x position}
-#'   \item{y,npcy}{y position}
-#'   \item{coef.ls}{list containing the "coefficients" matrix from the summary of the fit object}
-#'   \item{r.squared, theta, p.value, n}{numeric values, from the model fit object}
-#'   \item{grp.label}{Set according to mapping in \code{aes}.}
-#'   \item{b_0.constant}{TRUE is polynomial is forced through the origin}
-#'   \item{b_i}{One or two columns with the coefficient estimates}}
-#'
 #' To explore the computed values returned for a given input we suggest the use
 #' of \code{\link[gginnards]{geom_debug}()} as shown in the last examples below.
 #'
-#' @inheritSection stat_poly_line Model fit methods supported
+#' @inheritSection stat_poly_eq Model fit methods supported
 #'
 #' @seealso The major axis regression model is fitted with function
 #'   \code{\link[lmodel2]{lmodel2}()}, please consult its documentation. Statistic

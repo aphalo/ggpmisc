@@ -2,7 +2,7 @@
 % Please edit documentation in R/stat-correlation.R
 \name{stat_correlation}
 \alias{stat_correlation}
-\title{Annotate plot with correlation test}
+\title{Correlation test annotations}
 \usage{
 stat_correlation(
   mapping = NULL,
@@ -38,8 +38,8 @@ stat_correlation(
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
-\code{\link[ggplot2]{aes}}. Only needs to be
-set at the layer level if you are overriding the plot defaults.}
+\code{\link[ggplot2]{aes}()}. Only needs to be set at the layer level if you
+are overriding the plot defaults.}
 
 \item{data}{A layer specific dataset, only needed if you want to override the
 plot defaults.}
@@ -47,7 +47,7 @@ plot defaults.}
 \item{geom}{The geometric object to use display the data}
 
 \item{position}{The position adjustment to use for overlapping points on this
-layer}
+layer.}
 
 \item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This
 can include aesthetics whose values you want to set, not map. See
@@ -55,8 +55,8 @@ can include aesthetics whose values you want to set, not map. See
 
 \item{method}{character One of "pearson", "kendall" or "spearman".}
 
-\item{n.min}{integer Minimum number of distinct values in the variables for
-fitting to the attempted.}
+\item{n.min}{integer Minimum number of distinct values in the explanatory
+variable (on the rhs of formula) for fitting to the attempted.}
 
 \item{alternative}{character One of "two.sided", "less" or "greater".}
 
@@ -69,9 +69,9 @@ interval. If set to \code{NA} computation of CI is skipped.}
 \item{continuity}{logical If TRUE , a continuity correction is used for
 Kendall's tau and Spearman's rho when not computed exactly.}
 
-\item{fit.seed}{RNG seed argument passed to \code{\link[base:Random]{set.seed}()}.
-Defaults to \code{NA}, which means that \code{set.seed()} will not be
-called.}
+\item{fit.seed}{RNG seed argument passed to
+\code{\link[base:Random]{set.seed}()}. Defaults to \code{NA}, indicating
+that \code{set.seed()} should not be called.}
 
 \item{small.r, small.p}{logical Flags to switch use of lower case r and p for
 coefficient of correlation (only for \code{method = "pearson"}) and
@@ -93,11 +93,11 @@ coordinates" (npc units) or character if using \code{geom_text_npc()} or
 \code{geom_label_npc()}. If using \code{geom_text()} or \code{geom_label()}
 numeric in native data units. If too short they will be recycled.}
 
-\item{hstep, vstep}{numeric in npc units, the horizontal and vertical
-displacement step-size used between labels for different groups.}
+\item{hstep, vstep}{numeric in npc units, the horizontal and vertical step
+used between labels for different groups.}
 
-\item{output.type}{character One of "expression", "LaTeX", "text", "markdown"
-or "numeric".}
+\item{output.type}{character One of "expression", "LaTeX", "text",
+"markdown" or "numeric".}
 
 \item{boot.R}{interger The number of bootstrap resamples. Set to zero for no
 bootstrap estimates for the CI.}
@@ -106,9 +106,9 @@ bootstrap estimates for the CI.}
 the computation proceeds.}
 
 \item{parse}{logical Passed to the geom. If \code{TRUE}, the labels will be
-parsed into expressions and displayed as described in \code{?plotmath}.
-Default is \code{TRUE} if \code{output.type = "expression"} and
-\code{FALSE} otherwise.}
+parsed into expressions and displayed as described in
+\code{\link[grDevices]{plotmath}}. Default is \code{TRUE} if
+\code{output.type = "expression"} and \code{FALSE} otherwise.}
 
 \item{show.legend}{logical. Should this layer be included in the legends?
 \code{NA}, the default, includes if any aesthetics are mapped. \code{FALSE}
@@ -120,11 +120,10 @@ define both data and aesthetics and shouldn't inherit behaviour from the
 default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
 }
 \description{
-\code{stat_correlation()} applies \code{stats::cor.test()}
-  respecting grouping with \code{method = "pearson"} default but
-  alternatively using \code{"kendall"} or \code{"spearman"} methods. It
-  generates labels for correlation coefficients and p-value, coefficient of
-  determination (R^2) for method "pearson" and number of observations.
+Statistic \code{stat_correlation()} applies \code{stats::cor.test()}
+respecting grouping with \code{method = "pearson"} default but alternatively
+using \code{"kendall"} or \code{"spearman"} methods. It adds textual labels
+to a plot.
 }
 \details{
 This statistic can be used to annotate a plot with the correlation

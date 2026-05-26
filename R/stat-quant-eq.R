@@ -1,16 +1,69 @@
-#' Equation, rho, AIC and BIC from quantile regression
+#' Quantile regression predictions and annotations
 #'
-#' \code{stat_quant_eq} fits a polynomial model by quantile regression and
-#' generates several labels including the equation, rho, 'AIC' and 'BIC'.
+#' Statistics \code{stat_quant_line}, \code{stat_quant_band} and
+#' \code{stat_quant_eq} fit models by quantile regression. While
+#' \code{stat_quant_line} and \code{stat_quant_band} add prediction lines and
+#' bands, \code{stat_quant_eq} adds textual labels to a plot.
 #'
-#' @inherit stat_quant_band details
+#' @details While \code{stat_poly_line()} and \code{stat_poly_eq()} fit
+#'   a single model per plot layer, \code{stat_quant_line}, \code{stat_quant_band}
+#'   and \code{stat_quant_eq} can fit multiple models differing in the
+#'   quantile probability per plot layer.
 #'
-#' @inheritParams stat_quant_line
+#'   \code{stat_quant_band()} fits quantile regression and obtains
+#'   predictions identically to \code{stat_quant_line()}.
+#'   \code{stat_quant_band()} fits 2 or 3 quantiles in the same plot layer
+#'   always display the area between the predicted regression lines for the
+#'   extreme quantiles as a band. In contrast \code{stat_quant_line()} fits one
+#'   or more regressions, adding a line for each. \code{stat_quant_line()}
+#'   displays confidence bands for the regression lines when \code{se = TRUE}.
+#'
+#'   While \code{stat_quant_eq()} supports only method \code{"rq"},
+#'   \code{stat_quant_line()} and \code{stat_quant_band()} support both
+#'   \code{"rq"} and \code{"rqss"}, In the case of \code{"rqss"} the model
+#'   formula makes normally use of \code{qss()} to formulate the spline and its
+#'   constraints.
+#'
+#'   The minimum number of observations with distinct values in the explanatory
+#'   variable can be set through parameter \code{n.min}. The default \code{n.min
+#'   = 3L} is the smallest usable value. However, model fits with very few
+#'   observations are of little interest and using larger values of \code{n.min}
+#'   than the default is wise.
+#'
+#'   There are multiple uses for double regression on \code{x} and \code{y}. For
+#'   example, when two variables are subject to mutual constrains, it is useful
+#'   to consider both of them as explanatory and interpret the relationship
+#'   based on them. 'ggpmisc' (>= 0.4.1) supports \code{orientation} making it
+#'   easy implement the approach described by Cardoso (2019) under the name of
+#'   "Double quantile regression".
+#'
+#'   function different to \code{rq()}, it must accept arguments named
+#'   \code{formula}, \code{data}, \code{weights}, \code{tau} and \code{method}
+#'   and return a model fit object of class \code{rq}, \code{rqs} or
+#'   \code{rqss}.
+#'
 #' @inheritParams stat_poly_eq
+#' @param quantiles numeric vector Values in 0..1 indicating the quantiles.
+#' @param method function or character If character, "rq", "rqss" or the name of
+#'   a model fit function are accepted, possibly followed by the fit function's
+#'   \code{method} argument separated by a colon (e.g. \code{"rq:br"}). If a
+#'   function different to \code{rq()}, it must accept arguments named
+#'   \code{formula}, \code{data}, \code{weights}, \code{tau} and \code{method}
+#'   and return a model fit object of class \code{rq}, \code{rqs} or
+#'   \code{rqss}.
+#' @param method.args named list with additional arguments passed to
+#'   \code{rq()}, \code{rqss()} or to another function passed as argument to
+#'   \code{method}.
+#' @param se logical Passed to \code{quantreg::predict.rq()}.
+#' @param level numeric in range [0..1] Passed to \code{quantreg::predict.rq()}.
+#' @param type character Passed to \code{quantreg::predict.rq()}.
+#' @param interval character Passed to \code{quantreg::predict.rq()}.
 #'
 #' @param coef.digits,rho.digits integer Number of significant digits to use for
 #'   the fitted coefficients and rho in labels.
 #'
+#' @aesthetics StatQuantLine
+#' @aesthetics StatQuantBand
 #' @aesthetics StatQuantEq
 #'
 #' @inheritSection check_output_type Output types
@@ -19,16 +72,31 @@
 #'
 #' @inheritSection stat_poly_eq Position of labels
 #'
-#' @inheritSection stat_poly_line Model formula and model fitting
+#' @inheritSection stat_poly_eq Model formula and model fitting
 #'
-#' @inheritSection stat_poly_line Model fit methods supported
+#' @inheritSection stat_poly_eq Model fit methods supported
 #'
 #' @return A data frame, with one row per quantile and columns as described
 #'   under \strong{Computed variables}. In cases when the number of observations
 #'   is less than \code{n.min} a data frame with no rows or columns is returned
 #'   rendered as an empty/invisible plot layer.
 #'
-#' @section Computed variables:
+#' @section Variables returned by \code{stat_quant_eq()}:
+#'
+#' If output.type is \code{"numeric"} the returned tibble contains columns
+#'  in addition to a modified version of the original \code{group}:
+#' \describe{
+#'   \item{x,npcx}{x position}
+#'   \item{y,npcy}{y position}
+#'   \item{coef.ls}{list containing the "coefficients" matrix from the summary of the fit object}
+#'   \item{rho, AIC, n}{numeric values extracted or computed from fit object}
+#'   \item{rq.method}{character, method used.}
+#'   \item{hjust, vjust}{Set to "inward" to override the default of the "text" geom.}
+#'   \item{quantile}{Indicating the quantile  used for the fit}
+#'   \item{quantile.f}{Factor with a level for each quantile}
+#'   \item{b_0.constant}{TRUE is polynomial is forced through the origin}
+#'   \item{b_i}{One or columns with the coefficient estimates}}
+#'
 #' If output.type different from \code{"numeric"} the returned tibble contains
 #' columns below in addition to a modified version of the original \code{group}:
 #' \describe{
@@ -46,22 +114,41 @@
 #'   \item{quantile.f}{Factor with a level for each quantile}
 #'   }
 #'
-#' If output.type is \code{"numeric"} the returned tibble contains columns
-#'  in addition to a modified version of the original \code{group}:
-#' \describe{
-#'   \item{x,npcx}{x position}
-#'   \item{y,npcy}{y position}
-#'   \item{coef.ls}{list containing the "coefficients" matrix from the summary of the fit object}
-#'   \item{rho, AIC, n}{numeric values extracted or computed from fit object}
-#'   \item{rq.method}{character, method used.}
-#'   \item{hjust, vjust}{Set to "inward" to override the default of the "text" geom.}
-#'   \item{quantile}{Indicating the quantile  used for the fit}
-#'   \item{quantile.f}{Factor with a level for each quantile}
-#'   \item{b_0.constant}{TRUE is polynomial is forced through the origin}
-#'   \item{b_i}{One or columns with the coefficient estimates}}
-#'
 #' To explore the computed values returned for a given input we suggest the use
 #' of \code{\link[gginnards]{geom_debug}} as shown in the example below.
+#'
+#' @section Variables returned by `stat_quant_line()`:
+#'
+#'   \describe{
+#'   \item{y \strong{or} x}{predicted value}
+#'   \item{ymin \strong{or} xmin}{lower confidence limit around the fitted line}
+#'   \item{ymax \strong{or} xmax}{upper confidence limit around the fitted line}
+#'   }
+#'
+#'   If \code{fm.values = TRUE} is passed then one column with the number of
+#'   observations \code{n} used for each fit is also included, with the same
+#'   value in each row within a group. This is wasteful and disabled by default,
+#'   but provides a simple and robust approach to achieve effects like colouring
+#'   or hiding of the model fit line based on the number of observations.
+#'
+#' @section Variables returned by `stat_quant_band()`:
+#'
+#'   \describe{
+#'   \item{y \strong{or} x}{Regression prediction for the middle quantile, if three quantiles are passed as argument}
+#'   \item{ymin \strong{or} xmin}{Regression prediction for the smallest quantile}
+#'   \item{ymax \strong{or} xmax}{Regression prediction for the largest quantile}
+#'   }
+#'
+#'   If \code{fm.values = TRUE} is passed then one column with the number of
+#'   observations \code{n} used for each fit is also included, with the same
+#'   value in each row within a group. This is wasteful and disabled by default,
+#'   but provides a simple and robust approach to achieve effects like colouring
+#'   or hiding of the model fit line based on the number of observations.
+#'
+#' @references
+#' Cardoso, G. C. (2019) Double quantile regression accurately assesses
+#'   distance to boundary trade-off. Methods in ecology and evolution,
+#'   10(8), 1322-1331.
 #'
 #' @seealso \code{\link[quantreg]{rq}}, \code{\link[quantreg]{rqss}} and
 #'   \code{\link[quantreg]{qss}}.
@@ -81,7 +168,35 @@
 #'                       y2 = y * c(1, 2) + max(y) * c(0, 0.1),
 #'                       w = sqrt(x))
 #'
-#' # using defaults
+#' # Predictions as lines
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   stat_quant_line()
+#'
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   stat_quant_line(quantiles = 0.5, se = TRUE)
+#'
+#' # Predictions as band
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   stat_quant_band()
+#'
+#' # y as explanatory variable (orientation = y)
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   stat_quant_band(formula = x ~ y)
+#'
+#' # Using splines
+#' library(quantreg)
+#'
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   stat_quant_line(method = "rqss",
+#'                   formula = y ~ qss(x, constraint = "D"),
+#'                   quantiles = 0.5, se = FALSE)
+#'
+#' # Adding annotations
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
 #'   stat_quant_line() +
@@ -244,10 +359,26 @@
 #'
 #' if (gginnards.installed)
 #'   ggplot(my.data, aes(x, y)) +
+#'     stat_quant_line(geom = "debug_group")
+#'
+#' if (gginnards.installed)
+#'   ggplot(my.data, aes(x, y)) +
+#'     stat_quant_band(geom = "debug_group")
+#'
+#' if (gginnards.installed)
+#'   ggplot(my.data, aes(x, y)) +
 #'     geom_point() +
 #'     stat_quant_eq(formula = formula, geom = "debug_group")
 #'
 #' \dontrun{
+#' if (gginnards.installed)
+#'   ggplot(mpg, aes(displ, hwy)) +
+#'     stat_quant_line(geom = "debug_group", fm.values = TRUE)
+#'
+#' if (gginnards.installed)
+#'   ggplot(my.data, aes(x, y)) +
+#'     stat_quant_band(geom = "debug_group", fm.values = TRUE)
+#'
 #' if (gginnards.installed)
 #'   ggplot(my.data, aes(x, y)) +
 #'     geom_point() +

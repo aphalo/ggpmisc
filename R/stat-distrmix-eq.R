@@ -1,48 +1,92 @@
-#' Predicted equation from distribution mixture model fit
+#' Mixture model prediction and annotations
 #'
-#' \code{stat_distrmix_eq()} fits a Normal mixture model, by default with
-#' \code{\link[mixtools]{normalmixEM}()}. Predicted values are
-#' computed and, by default, plotted.
+#' Statistics \code{stat_distrmix_line()} and \code{stat_distrmix_eq()} fit a
+#' Normal mixture model. While \code{stat_distrmix_line()} adds prediction
+#' lines, \code{stat_distrmix_eq()} adds textual labels to a plot.
 #'
-#' @inheritParams stat_distrmix_line
-#'
-#' @param eq.with.lhs If \code{character} the string is pasted to the front of
-#'   the equation label before parsing or a \code{logical} (see note).
-#' @param se logical, if \code{TRUE} standard errors for parameter estimates
-#'   are obtained by bootstrapping.
-#' @param level Level of confidence interval to use (0.95 by default).
+#' @inheritParams stat_poly_eq
+#' @param k integer Number of mixture components to fit.
+#' @param free.mean,free.sd logical If TRUE, allow the fitted \code{mean} and/or
+#'   fitted \code{sd} to vary among the component Normal distributions.
+#' @param components character One of \code{"all"}, \code{"sum"}, or
+#'   \code{"members"} select which densities are returned.
+#' @param se Currently ignored.
+#' @param fm.values logical Add parameter estimates and their standard errors
+#'   to the returned values (`FALSE` by default.)
 #' @param eq.digits integer Number of digits after the decimal point to
 #'   use for parameters in labels. If \code{Inf}, use exponential
 #'   notation with three decimal places.
-#' @param label.x,label.y \code{numeric} with range 0..1 "normalized parent
-#'   coordinates" (npc units) or character if using \code{geom_text_npc()} or
-#'   \code{geom_label_npc()}. If using \code{geom_text()} or \code{geom_label()}
-#'   numeric in native data units. If too short they will be recycled.
-#' @param hstep,vstep numeric in npc units, the horizontal and vertical step
-#'   used between labels for different mixture model components.
-#' @param output.type character One of "expression", "LaTeX", "text",
-#'   "markdown" or "numeric".
-#' @param parse logical Passed to the geom. If \code{TRUE}, the labels will be
-#'   parsed into expressions and displayed as described in \code{?plotmath}.
-#'   Default is \code{TRUE} if \code{output.type = "expression"} and
-#'   \code{FALSE} otherwise.
 #'
 #' @aesthetics StatDistrmixEq
+#' @aesthetics StatDistrmixLine
 #'
 #' @return The value returned by the statistic is a data frame, with \code{n}
 #'   rows of predicted density for each component of the mixture plus their
 #'   sum and the corresponding vector of \code{x} values. Optionally it will
 #'   also include additional values related to the model fit.
 #'
-#' @inherit stat_distrmix_line details
+#' @details \code{stat_distrmix_line()} is similar to
+#'   \code{\link[ggplot2]{stat_density}} but in addition to fitting a single
+#'   distribution it can fit a mixture of two or more Normal distributions,
+#'   using an approach related to clustering. Defaults are consistent between
+#'   \code{stat_distrmix_line()} and \code{stat_distrmix_eq()}.
+#'   \code{stat_distrmix_eq()} can be used to add matched textual annotations.
+#'
+#'   If \code{k >= 2} a mixture of Normals model is fitted with
+#'   \code{\link[mixtools]{normalmixEM}()}, while if \code{k == 1} a single
+#'   Normal distribution is fitted with function \code{\link[MASS]{fitdistr}()}.
+#'   Only for \code{k == 1} the SE values are exact estimates.
+#'
+#'   Parameter \code{fit.seed} if not \code{NA} is used in a call to
+#'   \code{set.seed()} immediately before calling the model fit function. As the
+#'   fitting procedure makes use of the (pseudo-)random number generator (RNG),
+#'   convergence can depend on it, and in such cases setting \code{fit.seed} to
+#'   the same value in \code{stat_distrmix_line()} and in
+#'   \code{stat_distrmix_eq()} can ensure consistency, and more generally,
+#'   reproducibility.
+#'
+#'   The minimum number of observations with distinct values in the explanatory
+#'   variable can be set through parameter \code{n.min}. The default depends on
+#'   \code{k}, the number of components in the mix. Model fits with too few
+#'   observations are unreliable, thus, using larger values of \code{n.min} than
+#'   the default is wise.
+#'
+#' @return The value returned by \code{stat_distrmix_line()} is a data frame, with \code{n}
+#'   rows of predicted density for each component of the mixture plus their
+#'   sum and the corresponding vector of \code{x} values.
+#'
+#'   The value returned by \code{stat_distrmix_eq()} is a data frame, with one
+#'   row of estimates for each group of data in the plot.
+#'
+#'   Both statistics optionally also return additional values related to the
+#'   model fit.
 #'
 #' @inheritSection check_output_type Output types
 #'
 #' @inheritSection stat_poly_eq Position of labels
 #'
-#' @section Computed variables: \code{stat_distrmix_eq()} provides the
-#'   following
-#'   variables, some of which depend on the orientation:
+#' @section Variables computed by \code{stat_distrmix_line()}:
+#'   Some of the returned variables depend on the orientation.
+#'
+#'   \describe{\item{density}{predicted density values}
+#'   \item{x}{the \code{n} values for the quantiles}
+#'   \item{component}{A factor indexing the components and/or their sum}}
+#'
+#'   If \code{fm.values = TRUE} is passed then columns with diagnosis and
+#'   parameters estimates are added, with the same value in each row within a
+#'   group:
+#'   \describe{\item{converged}{\code{logical} indicating if convergence was achieved}
+#'   \item{n}{\code{numeric} the number of \code{x} values}
+#'   \item{.size}{\code{numeric} the number of \code{density} values}
+#'   \item{fm.class}{\code{character} the most derived class of the fitted model object}
+#'   \item{fm.method}{\code{character} the method, as given by the \code{ft}
+#'   field of the fitted model objects}}
+#'   This provides a simple and robust
+#'   approach to achieve effects like colouring or hiding annotations
+#'   by group depending on the outcome of model fitting.
+#'
+#' @section Variables computed by \code{stat_distrmix_eq()}:
+#'   Some of the variables depend on the orientation:
 #'   \describe{\item{x}{the location of text labels}
 #'   \item{y}{the location of text labels}
 #'   \item{eq.label}{\code{character} string for equations}
@@ -62,22 +106,14 @@
 #'   \item{mu.se}{\code{numeric} the estimate of the mean}
 #'   \item{sigma.se}{\code{numeric} the estimate of the standard deviation}}
 #'
-#'   If \code{fm.values = TRUE} is passed then columns with diagnosis and
-#'   parameters estimates are added, with the same value in each row within a
-#'   group:
-#'   \describe{\item{converged}{\code{logical} indicating if convergence was
-#'   achieved}
-#'   \item{n}{\code{numeric} the number of \code{x} values}
-#'   \item{.size}{\code{numeric} the number of \code{density} values}
-#'   \item{fm.class}{\code{character} the most derived class of the fitted model
-#'    object}
-#'   \item{fm.method}{\code{character} the method, as given by the \code{ft}
-#'   field of the fitted model objects}}
-#'   This is wasteful and disabled by default, but provides a simple and robust
-#'   approach to achieve effects like colouring or hiding of the model fit line
-#'   by group depending on the outcome of model fitting.
+#'   If \code{fm.values = TRUE} the same additional columns are returned as by
+#'   \code{stat_distrmix_eq()}. This is wasteful of storage space as values are
+#'   stored in multiple copies and, thus, disabled by default. However, it
+#'   provides a simple and robust approach to achieve effects like colouring or
+#'   hiding of the model fit line by group depending on the outcome of model
+#'   fitting.
 #'
-#' @inherit stat_poly_line seealso
+#' @inherit stat_poly_eq seealso
 #'
 #' @family 'ggpmisc' statistics for model fits
 #'

@@ -1,21 +1,37 @@
-#' Residuals from a model fit
+#' Residuals and fitted values from model fit
 #'
-#' \code{stat_fit_residuals} fits a model and returns residuals ready to be
-#' plotted vs. \emph{x}.
+#' Statistic \code{stat_fit_residuals} fits a model and plots residuals vs.
+#' \emph{x}. Statistic \code{stat_fit_deviations} fits a model and and
+#' highlighting residuals as segments in a \emph{y} vs. \emph{x} plot. Statistic
+#' \code{stat_fit_fitted} plots the fitetd values vs. \emph{x}.
 #'
-#' @inheritParams stat_poly_line
-#'
+#' @inheritParams stat_poly_eq
 #' @param resid.type character passed to \code{\link[stats]{residuals}()} as
 #'   argument for \code{type} (defaults to \code{"working"} except if
 #'   \code{weighted = TRUE} when it is forced to \code{"deviance"}).
 #' @param weighted logical If true weighted residuals will be returned.
 #'
 #' @aesthetics StatFitResiduals
+#' @aesthetics StatFitDeviations
+#' @aesthetics StatFitFitted
 #'
-#' @details This stat can be used to automatically plot residuals as points. It
-#'   applies to the fitted model object methods \code{\link[stats]{residuals}()}
-#'   or \code{\link[stats]{weighted.residuals}()} depending on the argument
-#'   passed to parameter \code{weighted}.
+#' @details \code{stat_fit_deviations()} can be used to highlight residuals as
+#'   segments in a plot of a fitted model prediction. This statistic returns the
+#'   original \code{x} and \code{y} values and the fitted \code{y} or \code{x}
+#'   values depending on the \emph{orientation}, together with prior and
+#'   posterior weights.
+#'
+#'   \code{stat_fit_fitted()} can be used to highlight as points the fitted
+#'   values.  This statistic returns the original \code{x} or \code{y} values
+#'   and the fitted \code{y} or \code{x} values depending on the
+#'   \emph{orientation}.
+#'
+#'   \code{stat_fit_residuals()} plots residuals as points. It applies to the
+#'   fitted model object methods \code{\link[stats]{residuals}()} or
+#'   \code{\link[stats]{weighted.residuals}()} depending on the argument passed
+#'   to parameter \code{weighted}. This statistic returns the original \code{x}
+#'   and \code{y} values and residuals depending on the \emph{orientation},
+#'   together with prior and posterior weights.
 #'
 #' @section Prior and posterior weights:
 #'   Two types of weights are possible: prior ones supplied in the call, and
@@ -35,34 +51,67 @@
 #'   penalized differently to fit a model, the weighted residuals need to be
 #'   computed accordingly.
 #'
-#' @inheritSection stat_poly_line Model formula and model fitting
+#' @note In the case of \code{method = "rq"} quantiles are fixed at \code{tau =
+#'   0.5} unless \code{method.args} has length > 0. Parameter \code{orientation}
+#'   is redundant as it only affects the default for \code{formula} but is
+#'   included for consistency with \code{ggplot2}.
 #'
-#' @inheritSection stat_poly_line Model fit methods supported
+#' @inheritSection stat_poly_eq Model formula and model fitting
 #'
-#' @section Computed variables:
-#'   Data frame with same value of \code{nrow} as
-#'   \code{data} as subset for each group containing six numeric variables.
+#' @inheritSection stat_poly_eq Model fit methods supported
+#'
+#' @return The returned value is always a data frame with the same number of
+#'   rows as the argument passed to \code{data}, except for the case failure of
+#'   the model fitting, in which case a data frame with no rows is returned. The
+#'   columns returned vary between the three statistics, and for each statistic
+#'   depending on the orientation..
+#'
+#'   To explore the values returned by statistics we suggest the use of
+#'   \code{\link[gginnards]{geom_debug_group}()}. Examples are shown below,
+#'   where one can also see in addition to the computed values the default
+#'   mapping of the fitted values to aesthetics \code{xend} and \code{yend}.
+#'
+#' @section Variables returned by \code{stat_fit_residuals()}:
 #'
 #'   \describe{
-#'   \item{x}{x coordinates of observations or x residuals from
-#'   fitted values}
-#'   \item{y}{y coordinates of observations or y residuals from
-#'   fitted values}, \item{x.resid}{residuals from fitted values}
-#'   \item{y.resid}{residuals from fitted values},
+#'   \item{x}{x coordinates of observations}
+#'   \item{y}{y coordinates of observations}
+#'   \item{x.resid}{x residuals from fitted values}
+#'   \item{y.resid}{y residuals from fitted values}
 #'   \item{weights}{the weights
-#'   passed as input to \code{lm()}, \code{rlm()}, or \code{lmrob()},
+#'   passed as input to \code{lm()}, \code{rlm()}, \code{lmrob()},
+#'   or to other model fit functions
 #'   using aesthetic weight. More generally the value returned by
-#'   \code{weights()} }
+#'   method \code{weights()} applied to the model fit object}
+#'   \item{robustness.weights}{the "weights"
+#'   of the applied minimization criterion relative to those of OLS in
+#'   \code{rlm()} or \code{lmrob()} or the divisor weights from
+#'    \code{gls()}, \code{lme()} or \code{nlme()}}
+#'   }
+#'
+#' @section Variables returned by \code{stat_fit_deviations()}:
+#'
+#'   \describe{
+#'   \item{x}{x coordinates of observations}
+#'   \item{y}{y coordinates of observations}
+#'   \item{x.fitted}{x coordinates of fitted values}
+#'   \item{y.fitted}{y coordinates of fitted values}
+#'   \item{weights}{the weights passed as input to \code{lm()}, \code{rlm()}, or \code{lmrob()},
+#'   using aesthetic weight. More generally the value returned by
+#'   \code{weights()}}
 #'   \item{robustness.weights}{the "weights"
 #'   of the applied minimization criterion relative to those of OLS in
 #'   \code{rlm()}, or \code{lmrob()}}
 #'   }
 #'
-#'   For \code{orientation = "x"}, the default, \code{stat(y.resid)} is copied
-#'   to variable \code{y}, while for \code{orientation = "y"}
-#'   \code{stat(x.resid)} is copied to variable \code{x}.
+#' @section Variables returned by \code{stat_fit_fitted()}:
 #'
-#' @inherit stat_poly_line seealso
+#'   \describe{
+#'   \item{x}{x coordinates of observations or fitted}
+#'   \item{y}{y coordinates of observations or fitted}
+#'   }
+#'
+#' @inherit stat_poly_eq seealso
 #'
 #' @family 'ggpmisc' statistics for model fits
 #'
@@ -73,45 +122,74 @@
 #' y <- (x + x^2 + x^3) + rnorm(length(x), mean = 0, sd = mean(x^3) / 4)
 #' my.data <- data.frame(x, y)
 #'
+#' # give a name to a formula
+#' my.formula <- y ~ poly(x, 3, raw = TRUE)
+#' my.y.formula <- x ~ poly(y, 3, raw = TRUE)
+#'
+#' # plot residuals from linear model
+#' ggplot(my.data, aes(x, y)) +
+#'   stat_poly_line(method = "lm", formula = my.formula) +
+#'   stat_fit_deviations(method = "lm", formula = my.formula, colour = "red") +
+#'   geom_point()
+#'
+#' # plot residuals from linear model with y as explanatory variable
+#' ggplot(my.data, aes(x, y)) +
+#'   stat_poly_line(method = "lm", formula = my.y.formula) +
+#'   stat_fit_deviations(method = "lm", formula = my.y.formula, colour = "red") +
+#'   geom_point()
+#'
+#' # plot robust regression
+#' ggplot(my.data, aes(x, y)) +
+#'   stat_poly_line(formula = my.formula, method = "rlm") +
+#'   stat_fit_deviations(formula = my.formula, method = "rlm", colour = "red") +
+#'   geom_point()
+#'
+#' # plot robust regression with weights indicated by colour
+#' my.data.outlier <- my.data
+#' my.data.outlier[6, "y"] <- my.data.outlier[6, "y"] * 5
+#' ggplot(my.data.outlier, aes(x, y)) +
+#'   stat_poly_line(method = MASS::rlm, formula = my.formula) +
+#'   stat_fit_deviations(formula = my.formula, method = "rlm",
+#'                       mapping = aes(colour = after_stat(robustness.weights)),
+#'                       show.legend = TRUE) +
+#'   scale_color_gradient(low = "red", high = "blue", limits = c(0, 1),
+#'                        guide = "colourbar") +
+#'   geom_point()
+#'
+#' # plot quantile regression (= median regression)
+#' ggplot(my.data, aes(x, y)) +
+#'   stat_quantile(formula = my.formula, quantiles = 0.5) +
+#'   stat_fit_deviations(formula = my.formula, method = "rq", colour = "red") +
+#'   geom_point()
+#'
+#' # plot quantile regression (= "quartile" regression)
+#' ggplot(my.data, aes(x, y)) +
+#'   stat_quantile(formula = my.formula, quantiles = 0.75) +
+#'   stat_fit_deviations(formula = my.formula, colour = "red",
+#'                       method = "rq", method.args = list(tau = 0.75)) +
+#'   geom_point()
+#'
 #' # plot residuals from linear model
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_hline(yintercept = 0, linetype = "dashed") +
-#'   stat_fit_residuals(formula = y ~ x)
-#'
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_hline(yintercept = 0, linetype = "dashed") +
-#'   stat_fit_residuals(formula = y ~ x, weighted = TRUE)
+#'   stat_fit_residuals(formula = my.formula)
 #'
 #' # plot residuals from linear model with y as explanatory variable
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_vline(xintercept = 0, linetype = "dashed") +
-#'   stat_fit_residuals(formula = x ~ y) +
-#'   coord_flip()
-#'
-#' # give a name to a formula
-#' my.formula <- y ~ poly(x, 3, raw = TRUE)
-#'
-#' # plot residuals from linear model
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_hline(yintercept = 0, linetype = "dashed") +
-#'   stat_fit_residuals(formula = my.formula) +
+#'   stat_fit_residuals(formula = my.y.formula) +
 #'   coord_flip()
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_hline(yintercept = 0, linetype = "dashed") +
 #'   stat_fit_residuals(formula = my.formula, resid.type = "response")
 #'
-#' # plot residuals from robust regression
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_hline(yintercept = 0, linetype = "dashed") +
-#'   stat_fit_residuals(formula = my.formula, method = "rlm")
-#'
 #' # plot residuals with weights indicated by colour
 #' my.data.outlier <- my.data
-#' my.data.outlier[6, "y"] <- my.data.outlier[6, "y"] * 10
+#' my.data.outlier[6, "y"] <- my.data.outlier[6, "y"] * 5
 #' ggplot(my.data.outlier, aes(x, y)) +
 #'   stat_fit_residuals(formula = my.formula, method = "rlm",
-#'                       mapping = aes(colour = after_stat(weights)),
+#'                       mapping = aes(colour = after_stat(robustness.weights)),
 #'                       show.legend = TRUE) +
 #'   scale_color_gradient(low = "red", high = "blue", limits = c(0, 1),
 #'                        guide = "colourbar")
@@ -121,27 +199,27 @@
 #'   stat_fit_residuals(formula = my.formula, method = "rlm",
 #'                      mapping = aes(x = x,
 #'                                    y = stage(start = y, after_stat = y * weights),
-#'                                    colour = after_stat(weights)),
+#'                                    colour = after_stat(robustness.weights)),
 #'                      show.legend = TRUE) +
 #'   scale_color_gradient(low = "red", high = "blue", limits = c(0, 1),
 #'                        guide = "colourbar")
-#'
-#' # plot residuals from quantile regression (median)
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_hline(yintercept = 0, linetype = "dashed") +
-#'   stat_fit_residuals(formula = my.formula, method = "rq")
-#'
-#' # plot residuals from quantile regression (upper quartile)
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_hline(yintercept = 0, linetype = "dashed") +
-#'   stat_fit_residuals(formula = my.formula, method = "rq",
-#'   method.args = list(tau = 0.75))
 #'
 #' # inspecting the returned data
 #' gginnards.installed <- requireNamespace("gginnards", quietly = TRUE)
 #'
 #' if (gginnards.installed)
 #'   library(gginnards)
+#'
+#' # plot, using geom_debug_group() to explore the after_stat data
+#' if (gginnards.installed)
+#'   ggplot(my.data, aes(x, y)) +
+#'     stat_fit_deviations(formula = my.formula,
+#'                         geom = "debug_group")
+#'
+#' if (gginnards.installed)
+#'   ggplot(my.data.outlier, aes(x, y)) +
+#'     stat_fit_deviations(formula = my.formula, method = "rlm",
+#'                         geom = "debug_group")
 #'
 #' if (gginnards.installed)
 #'   ggplot(my.data, aes(x, y)) +
@@ -152,6 +230,11 @@
 #'   ggplot(my.data, aes(x, y)) +
 #'     stat_fit_residuals(formula = my.formula, method = "rlm",
 #'                        geom = "debug_group")
+#'
+#' if (gginnards.installed)
+#'   ggplot(my.data, aes(x, y)) +
+#'    stat_fit_fitted(formula = my.formula,
+#'                    geom = "debug_group")
 #'
 #' @export
 #'
