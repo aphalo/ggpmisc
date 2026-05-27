@@ -304,22 +304,25 @@ argument trigger an Error.
 
 \section{Model equation label}{
 
-  If the model formula includes a transformation of \code{x}, a matching
-  argument should be passed to parameter \code{eq.x.rhs} as its default value
-  \code{"x"} will not reflect the applied transformation. In most cases, a
-  transformation should not be applied within the left hand side of the model
-  formula, but instead in the mapping of the variable within \code{aes}, as
-  otherwise plotted observations and fitted curve will not match. In this
-  case it may be necessary to also pass a matching argument to parameter
-  \code{eq.with.lhs}.
+  By default the equation label uses as symbols the names of the aesthetics,
+  \code{x} and \code{y}. However, \code{"x"} and \code{"y"} can be
+  substituted by providing a replacement character string for the
+  right-hand-side and left-hand-side through \code{eq.x.rhs} and
+  \code{eq.with.lhs}, respectively. For backward compatibility a logical is
+  also accepted as argument for \code{eq.with.lhs}, with \code{FALSE}
+  suppressing the left-hand-side.
 
-  For backward compatibility a logical is accepted as argument for
-  \code{eq.with.lhs}. If \code{TRUE}, the default is used, either
-  \code{"x"} or \code{"y"}, depending on the argument passed to \code{formula}.
-  However, \code{"x"} or \code{"y"} can be substituted by providing a
-  suitable replacement character string through \code{eq.x.rhs}.
-  Parameter \code{orientation} is redundant as it only affects the default
-  for \code{formula} but is included for consistency with
+  If the model \code{formula} includes a transformation of the explanatory
+  variable in its right-hand-side (rhs), a matching argument should be passed
+  to parameter \code{eq.x.rhs} as its default value would result in an
+  equation label that does not reflect the applied transformation. In most
+  cases, a transformation should not be applied within the left hand side
+  (lhs) of the model formula, but instead in the mapping of the response
+  variable within \code{aes}. In this case it may be necessary to also pass a
+  matching argument to parameter \code{eq.with.lhs}.
+
+  Parameter \code{orientation} is redundant as the orientation can be set
+  by the \code{formula} but is included for consistency with
   \code{ggplot2::stat_smooth()}.
 }
 
@@ -338,7 +341,7 @@ argument trigger an Error.
   If the labels are rotated by 90 degrees then the automatic stepping is
   best based on \code{hstep} with \code{vstep = 0}. Similarly as described
   above, if \code{label.x} is a vector of length > 1, it is
-  used as unchanged, possibly extended by recycling, ignoring \code{hstep}.
+  used unchanged, possibly extended by recycling, ignoring \code{hstep}.
 
   When using facets and with a grouping that does not repeat in each panel,
   the automatic positioning in most cases will not be the desired one. Manual
@@ -367,20 +370,22 @@ argument trigger an Error.
 
 \section{Model fit methods supported}{
 
-  Several model fit functions are
-  supported explicitly (see tables), and some of their differences smoothed
-  out. Compatibility is checked late, based on the class of the returned
-  fitted model object. This makes it possible to use wrapper functions that
-  do model selection or other adjustments to the fit procedure on a per panel
-  or per group basis. Moreover, if the value returned as model fit object is
-  \code{NULL}, plotting is skipped on a per group within panel
-  basis.
+  Several model fit functions are supported explicitly (see tables), and some
+  of their differences smoothed out. Compatibility is checked late, based on
+  the class of the returned fitted model object. This makes it possible to
+  use wrapper functions that do model selection or other adjustments to the
+  fit procedure on a per panel or per group basis. Moreover, if the value
+  returned as model fit object is \code{NULL} or \code{NA}, plotting is
+  skipped on a per group within panel basis.
 
-  In the case of fitted model objects of classes not explicitly supported an
-  attempt is made to find the usual accessors and/or fitted object members,
-  and if found, either complete or partial support is frequently achieved.
-  In this case a message is issued encouraging users to check the validity
-  of the values extracted.
+  \emph{In the case of fitted model objects of classes not explicitly
+  supported, an attempt is made to find the usual accessors and/or fitted
+  object members, and if found, either complete or partial support is
+  frequently achieved. In this case a message is issued encouraging users to
+  check the validity of the values extracted as the structure of fitted model
+  objects belonging to different classes and the values returned by their
+  accessors can vary, potentially resulting in decoding errors leading to the
+  return of wrong values for estimates.}
 
   The argument to parameter \code{method} can be either the name of a
   function object, possibly using double colon notation in case its package
@@ -391,21 +396,21 @@ argument trigger an Error.
   or as string, or using double colon notation when passing the name of the
   function.
 
-  User-defined functions can be passed as argument to parameter
-  \code{method} as long as they have parameters \code{formula}, \code{data}
-  \code{subset} and possibly \code{weights}. Additional arguments can be
-  passed to any method as a named list as argument to parameter
-  \code{method.args}. As in \code{\link[ggplot2:geom_smooth]{stat_smooth}()}
-  prior \code{weights} are passed to the model fit functions' \code{weights}
-  (plural!) parameter by mapping a numeric variable to plot aesthetic
-  \code{weight} (singular!).
+  User-defined functions can be passed as argument to parameter \code{method}
+  as long as they have parameters \code{formula}, \code{data} \code{subset}
+  and possibly \code{weights}. Additional arguments can be passed to any
+  method as a named list through parameter \code{method.args}. As in
+  \code{\link[ggplot2:geom_smooth]{stat_smooth}()} prior \code{weights} are
+  passed to the model fit functions' \code{weights} (plural!) parameter by
+  mapping a numeric variable to plot aesthetic \code{weight} (singular!).
 
   Tables 1 lists natively supported model fit functions, with the
   caveat that only some 'broom' methods' specializations have been actually
   tested with statistics from 'ggpmisc'. In addition, the statistics based
   on 'broom' methods require the user to tailor their behaviour by passing
   additional arguments in the call and occasionally some detective work to
-  find out the names of variables in the returned data frame.
+  find out the names of variables in the returned data frame as these names
+  are set by methods from 'broom'.
 
   \strong{Table 1.} Model fit methods supported by the different statistics
   available in package 'ggpmisc'. Column \eqn{f} indicates whether
@@ -429,12 +434,12 @@ argument trigger an Error.
   }
 
   The single colon notation is based on parsing
-  the name and is available whenever passing the name of the fit method as a
+  the name and is available when passing the name of the fit method as a
   character string. In a string such as "head:tail" the "head" gives the name
   of the model fit function and the "tail" gives the argument to pass it's
   \code{method} parameter. This is only a convenience, as \code{method.args}
   can be also used. In some methods, i.e., splines, the default
-  \code{formula = y ~ x} needs to be overridden with an explicit argument.
+  \code{formula = y ~ x} needs to be overridden by the user.
 
   Table 2 lists the correspondence of pre-defined \emph{method names}
   to model fit method functions. As mentioned above, these are only
@@ -459,20 +464,22 @@ argument trigger an Error.
   }
 
 
-  Several model fit functions are
-  supported explicitly (see tables), and some of their differences smoothed
-  out. Compatibility is checked late, based on the class of the returned
-  fitted model object. This makes it possible to use wrapper functions that
-  do model selection or other adjustments to the fit procedure on a per panel
-  or per group basis. Moreover, if the value returned as model fit object is
-  \code{NULL}, plotting is skipped on a per group within panel
-  basis.
+  Several model fit functions are supported explicitly (see tables), and some
+  of their differences smoothed out. Compatibility is checked late, based on
+  the class of the returned fitted model object. This makes it possible to
+  use wrapper functions that do model selection or other adjustments to the
+  fit procedure on a per panel or per group basis. Moreover, if the value
+  returned as model fit object is \code{NULL} or \code{NA}, plotting is
+  skipped on a per group within panel basis.
 
-  In the case of fitted model objects of classes not explicitly supported an
-  attempt is made to find the usual accessors and/or fitted object members,
-  and if found, either complete or partial support is frequently achieved.
-  In this case a message is issued encouraging users to check the validity
-  of the values extracted.
+  \emph{In the case of fitted model objects of classes not explicitly
+  supported, an attempt is made to find the usual accessors and/or fitted
+  object members, and if found, either complete or partial support is
+  frequently achieved. In this case a message is issued encouraging users to
+  check the validity of the values extracted as the structure of fitted model
+  objects belonging to different classes and the values returned by their
+  accessors can vary, potentially resulting in decoding errors leading to the
+  return of wrong values for estimates.}
 
   The argument to parameter \code{method} can be either the name of a
   function object, possibly using double colon notation in case its package
@@ -483,21 +490,21 @@ argument trigger an Error.
   or as string, or using double colon notation when passing the name of the
   function.
 
-  User-defined functions can be passed as argument to parameter
-  \code{method} as long as they have parameters \code{formula}, \code{data}
-  \code{subset} and possibly \code{weights}. Additional arguments can be
-  passed to any method as a named list as argument to parameter
-  \code{method.args}. As in \code{\link[ggplot2:geom_smooth]{stat_smooth}()}
-  prior \code{weights} are passed to the model fit functions' \code{weights}
-  (plural!) parameter by mapping a numeric variable to plot aesthetic
-  \code{weight} (singular!).
+  User-defined functions can be passed as argument to parameter \code{method}
+  as long as they have parameters \code{formula}, \code{data} \code{subset}
+  and possibly \code{weights}. Additional arguments can be passed to any
+  method as a named list through parameter \code{method.args}. As in
+  \code{\link[ggplot2:geom_smooth]{stat_smooth}()} prior \code{weights} are
+  passed to the model fit functions' \code{weights} (plural!) parameter by
+  mapping a numeric variable to plot aesthetic \code{weight} (singular!).
 
   Tables 1 lists natively supported model fit functions, with the
   caveat that only some 'broom' methods' specializations have been actually
   tested with statistics from 'ggpmisc'. In addition, the statistics based
   on 'broom' methods require the user to tailor their behaviour by passing
   additional arguments in the call and occasionally some detective work to
-  find out the names of variables in the returned data frame.
+  find out the names of variables in the returned data frame as these names
+  are set by methods from 'broom'.
 
   \strong{Table 1.} Model fit methods supported by the different statistics
   available in package 'ggpmisc'. Column \eqn{f} indicates whether
@@ -521,12 +528,12 @@ argument trigger an Error.
   }
 
   The single colon notation is based on parsing
-  the name and is available whenever passing the name of the fit method as a
+  the name and is available when passing the name of the fit method as a
   character string. In a string such as "head:tail" the "head" gives the name
   of the model fit function and the "tail" gives the argument to pass it's
   \code{method} parameter. This is only a convenience, as \code{method.args}
   can be also used. In some methods, i.e., splines, the default
-  \code{formula = y ~ x} needs to be overridden with an explicit argument.
+  \code{formula = y ~ x} needs to be overridden by the user.
 
   Table 2 lists the correspondence of pre-defined \emph{method names}
   to model fit method functions. As mentioned above, these are only

@@ -13,11 +13,12 @@ Extensions to 'ggplot2' respecting the grammar of graphics paradigm. Statistics 
 \details{
 Package 'ggpmisc' is over 10 years-old but its development has
   tracked the changes in 'ggplot2' making possible the use of several new
-  features soon after they became available in 'ggplot2'. Support for
-  additional model fitting functions is added regularly.
+  features soon after they became available. Support for
+  additional model fitting functions has been added regularly.
 
   The focus of package 'ggpmisc' is on statistical annotations, providing
-  stats that generate labels useful to annotate plots. Model fitting is done
+  stats that generate labels useful to annotate plots and matching stats
+  for consitenly adding prediction lines and bands. Model fitting is done
   by calling functions already available in R and other R packages. No new
   model fit method or algorithms are implemented, instead what 'ggpmisc'
   provides are new simpler ways of adding fitted values and other statistics
@@ -33,8 +34,9 @@ Package 'ggpmisc' is over 10 years-old but its development has
   'LaTeX'-formatted labels can be generated as bare maths-mode-encoded text,
   or enclosed in "fences" that enable either in-line or display-maths modes.
 
-  The label formatting functions used to implement the statistics are
-  exported and can be used as an aid in building customised labels.
+  The label formatting functions used to implement the statistics and scales
+  are exported and can be used as an aid in building customised labels and
+  scales.
 
 Extensions provided:
 \itemize{
@@ -54,9 +56,6 @@ methods.
 global maxima and minima) and spikes (very narrow peaks or valleys).
 \item Access to functions and objects exported by
 \link[ggpp:ggpp-package]{package ggpp}.}
-
-The stats for peaks and valleys are coded so as to work correctly both with
-numeric and POSIXct variables mapped to the \emph{x} aesthetic.
 }
 \note{
 The signatures of \code{stat_peaks()} and \code{stat_valleys()} from

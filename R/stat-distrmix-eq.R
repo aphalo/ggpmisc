@@ -5,12 +5,19 @@
 #' lines, \code{stat_distrmix_eq()} adds textual labels to a plot.
 #'
 #' @inheritParams stat_poly_eq
+#' @param method function or character If character, \code{"normalmixEM"} or the name
+#'  of a model fit function are accepted, possibly followed by the fit
+#'  function's method argument separated by a colon. The function must return a
+#'  model fit object of class \code{"mixEM"}.
 #' @param k integer Number of mixture components to fit.
 #' @param free.mean,free.sd logical If TRUE, allow the fitted \code{mean} and/or
 #'   fitted \code{sd} to vary among the component Normal distributions.
 #' @param components character One of \code{"all"}, \code{"sum"}, or
 #'   \code{"members"} select which densities are returned.
-#' @param se Currently ignored.
+#' @param n.min integer Minimum number of distinct values in the variable for
+#'   fitting to the attempted. The default depends on \code{k}.
+#' @param se logical If \code{TRUE} standard errors for the parameter estimates
+#'   are returned in addition to the parameter estimates.
 #' @param fm.values logical Add parameter estimates and their standard errors
 #'   to the returned values (`FALSE` by default.)
 #' @param eq.digits integer Number of digits after the decimal point to

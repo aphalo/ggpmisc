@@ -175,21 +175,18 @@ range of the data group used in each fit?}
 \item{level}{Level of confidence interval to use (0.95 by default).}
 }
 \value{
-The value returned by the statistic is a data frame, with \code{n}
-  rows of predicted values and their confidence limits. Optionally it will
-  also include additional values related to the model fit. When a
-  \code{predict()} method is not available for the fitted model class, the
-  value returned by calling \code{fitted()}, if available, is returned
-  instead, with a message. In case of failure \code{data.frame()}, an empty
-  data frame, is returned resulting in the plot layer addition being skipped
-  silently, on a per group basis.
+\code{stat_poly_eq()} returns a data frame, with a single row per
+  group and columns as described below. \code{stat_poly_line()} returns a
+  data frame, with \code{n} rows per group and columns as described below. In
+  cases when the number of observations is less than \code{n.min} or when the
+  model fit function returns a single \code{NA} or \code{NULL}, a data frame
+  with no rows or columns (built by \code{data.frame()}) is returned, and
+  silently rendered as an empty/invisible plot layer.
 
-`stat_poly_eq() returns a data frame, with a single row per group and
-  columns as described below. `stat_poly_line() returns a data frame, with
-  \code{n} rows per group and columns as described below. In cases when the
-  number of observations is less than \code{n.min} or when the model fit
-  function returns a single \code{NA}, a data frame with no rows or columns
-  is returned, and silently rendered as an empty/invisible plot layer.
+  When a \code{predict()} method is not available for the fitted model class,
+  the value returned by calling \code{fitted()}, if available, is replaces it
+  and the returned data frame with as many rows as observations, instead of
+  \code{n} rows, is returned with a message.
 }
 \description{
 Statistics \code{stat_poly_line} and \code{\link{stat_poly_eq}()} fit a
@@ -209,29 +206,31 @@ Statistics \code{stat_poly_line()} and \code{\link{stat_poly_eq}()}
   other parameters from a fitted model to a plot.
 
   Lack of methods or explicit support for extraction of individual parameters
-  results in the effected estimates and corresponding labels being set to NA.
-  Similarly, confidence bands for the prediction line are not plotted in
-  some cases, while in the case of MA and SMA models, the band only displays
-  the uncertainty of the slope rather than for both slope plus intercept.
-  While strings for \eqn{R^2}, adjusted \eqn{R^2}, \eqn{F}, and \eqn{P}
-  annotations are returned for all valid linear models and many other types
-  of fitted models, an automatically constructed character string for the
-  fitted model equation is returned only for polynomials (see below).
+  results in the affected estimates and corresponding labels being set to
+  \code{NA}. Similarly, confidence bands for the prediction line are not
+  plotted in some cases, while in the case of MA and SMA models, the band
+  only displays the uncertainty of the slope rather than for both slope plus
+  intercept. While strings for \eqn{R^2}, adjusted \eqn{R^2}, \eqn{F}, and
+  \eqn{P} annotations are returned for all valid linear models and many other
+  types of fitted models, an automatically constructed character string for
+  the fitted model equation is returned only for polynomials (see below).
   However, when not generated automatically, the equation can still be
   assembled by the user within the call to \code{\link[ggplot2]{aes}()}. A
   label for the confidence interval of \eqn{R^2}, based on values computed
   with function \code{\link[confintr]{ci_rsquared}()} from package 'confintr'
   is returned when possible.
 
-  When possible, i.e., nearly allways, the \code{formula} used to build the
+  When possible, i.e., nearly always, the \code{formula} used to build the
   equation label is extracted from the returned fitted model object. Most
   fitted model objects follow the example of \code{lm()} and include the
   formula for the model that has been fitted. Thus, this model formula can
   safely differ from the argument passed to parameter \code{formula} in the
-  call to \code{stat_poly_eq()}. Consequently, user-defined methods can
+  call to \code{stat_poly_eq()}.
+
+  \emph{The stats are designed to support user-defined methods that
   implement any or all of \code{method} selection, model \code{formula}
   selection, dynamically adjusted \code{method.args} and conditional skipping
-  of labelling on a by group basis.
+  of labelling on a by group basis.}
 
   The minimum number of observations with distinct values in the explanatory
   variable can be set through parameter \code{n.min}. The default \code{n.min
@@ -240,11 +239,12 @@ Statistics \code{stat_poly_line()} and \code{\link{stat_poly_eq}()}
   fits with very few observations are of little interest and using larger
   values of \code{n.min} than the default is wise.
 
-  As some model fitting approaches depend on the RNG
-  (pseudo-Random Number Generator), \code{fit.seed} if not \code{NA} is used
-  as argument in a call to \code{\link[base:Random]{set.seed}()} immediately
-  ahead of model fitting.
+  As some model fitting approaches depend on the RNG (pseudo-Random Number
+  Generator), when \code{fit.seed} is not \code{NA} it is used as argument in
+  a call to \code{\link[base:Random]{set.seed}()} immediately ahead of model
+  fitting, i.e., once for each group of observations.
 
+  Singularity, convergence, etc., are handled by the model fit functions.
   With method \code{"lm"}, singularity results in terms being dropped with a
   message if more numerous than can be fitted with a singular (exact) fit. In
   this case and if the model results in a perfect fit due to low number of
@@ -253,50 +253,6 @@ Statistics \code{stat_poly_line()} and \code{\link{stat_poly_eq}()}
   case of singularity, e.g., singular fits are not implemented in
   \code{"rlm"}.
 }
-\section{Model equation label}{
-
-  If the model formula includes a transformation of \code{x}, a matching
-  argument should be passed to parameter \code{eq.x.rhs} as its default value
-  \code{"x"} will not reflect the applied transformation. In most cases, a
-  transformation should not be applied within the left hand side of the model
-  formula, but instead in the mapping of the variable within \code{aes}, as
-  otherwise plotted observations and fitted curve will not match. In this
-  case it may be necessary to also pass a matching argument to parameter
-  \code{eq.with.lhs}.
-
-  For backward compatibility a logical is accepted as argument for
-  \code{eq.with.lhs}. If \code{TRUE}, the default is used, either
-  \code{"x"} or \code{"y"}, depending on the argument passed to \code{formula}.
-  However, \code{"x"} or \code{"y"} can be substituted by providing a
-  suitable replacement character string through \code{eq.x.rhs}.
-  Parameter \code{orientation} is redundant as it only affects the default
-  for \code{formula} but is included for consistency with
-  \code{ggplot2::stat_smooth()}.
-}
-
-\section{Position of labels}{
-
-  When data are grouped by mapping a factor to an aesthetic, e.g.,
-  \code{colour}, \code{shape} and/or \code{linetype} the model is fitted
-  separately to each group, and for each group a whole set of labels is
-  generated. If the argument passed to \code{label.y} is a vector of length
-  1, this value determines the position of the equation and/or other labels
-  for the first group, and the positions of the labels for the remaining
-  groups are generated by adding \code{vspace} based on the group number.
-  If the argument passed to \code{label.y} is a vector of length > 1, it is
-  used unchanged, possibly extended by recycling, ignoring \code{vstep}.
-
-  If the labels are rotated by 90 degrees then the automatic stepping is
-  best based on \code{hstep} with \code{vstep = 0}. Similarly as described
-  above, if \code{label.x} is a vector of length > 1, it is
-  used as unchanged, possibly extended by recycling, ignoring \code{hstep}.
-
-  When using facets and with a grouping that does not repeat in each panel,
-  the automatic positioning in most cases will not be the desired one. Manual
-  positioning using a vector of length > 1 for \code{label.x} and/or
-  \code{label.y} is the currently available workaround.
-}
-
 \section{Model formula and model fitting}{
 
   A ggplot statistic receives as \code{data} a data frame that is not the one
@@ -316,22 +272,71 @@ Statistics \code{stat_poly_line()} and \code{\link{stat_poly_eq}()}
   Spline-based smoothers are only partially supported.
 }
 
+\section{Model equation label}{
+
+  By default the equation label uses as symbols the names of the aesthetics,
+  \code{x} and \code{y}. However, \code{"x"} and \code{"y"} can be
+  substituted by providing a replacement character string for the
+  right-hand-side and left-hand-side through \code{eq.x.rhs} and
+  \code{eq.with.lhs}, respectively. For backward compatibility a logical is
+  also accepted as argument for \code{eq.with.lhs}, with \code{FALSE}
+  suppressing the left-hand-side.
+
+  If the model \code{formula} includes a transformation of the explanatory
+  variable in its right-hand-side (rhs), a matching argument should be passed
+  to parameter \code{eq.x.rhs} as its default value would result in an
+  equation label that does not reflect the applied transformation. In most
+  cases, a transformation should not be applied within the left hand side
+  (lhs) of the model formula, but instead in the mapping of the response
+  variable within \code{aes}. In this case it may be necessary to also pass a
+  matching argument to parameter \code{eq.with.lhs}.
+
+  Parameter \code{orientation} is redundant as the orientation can be set
+  by the \code{formula} but is included for consistency with
+  \code{ggplot2::stat_smooth()}.
+}
+
+\section{Position of labels}{
+
+  When data are grouped by mapping a factor to an aesthetic, e.g.,
+  \code{colour}, \code{shape} and/or \code{linetype} the model is fitted
+  separately to each group, and for each group a whole set of labels is
+  generated. If the argument passed to \code{label.y} is a vector of length
+  1, this value determines the position of the equation and/or other labels
+  for the first group, and the positions of the labels for the remaining
+  groups are generated by adding \code{vspace} based on the group number.
+  If the argument passed to \code{label.y} is a vector of length > 1, it is
+  used unchanged, possibly extended by recycling, ignoring \code{vstep}.
+
+  If the labels are rotated by 90 degrees then the automatic stepping is
+  best based on \code{hstep} with \code{vstep = 0}. Similarly as described
+  above, if \code{label.x} is a vector of length > 1, it is
+  used unchanged, possibly extended by recycling, ignoring \code{hstep}.
+
+  When using facets and with a grouping that does not repeat in each panel,
+  the automatic positioning in most cases will not be the desired one. Manual
+  positioning using a vector of length > 1 for \code{label.x} and/or
+  \code{label.y} is the currently available workaround.
+}
+
 \section{Model fit methods supported}{
 
-  Several model fit functions are
-  supported explicitly (see tables), and some of their differences smoothed
-  out. Compatibility is checked late, based on the class of the returned
-  fitted model object. This makes it possible to use wrapper functions that
-  do model selection or other adjustments to the fit procedure on a per panel
-  or per group basis. Moreover, if the value returned as model fit object is
-  \code{NULL}, plotting is skipped on a per group within panel
-  basis.
+  Several model fit functions are supported explicitly (see tables), and some
+  of their differences smoothed out. Compatibility is checked late, based on
+  the class of the returned fitted model object. This makes it possible to
+  use wrapper functions that do model selection or other adjustments to the
+  fit procedure on a per panel or per group basis. Moreover, if the value
+  returned as model fit object is \code{NULL} or \code{NA}, plotting is
+  skipped on a per group within panel basis.
 
-  In the case of fitted model objects of classes not explicitly supported an
-  attempt is made to find the usual accessors and/or fitted object members,
-  and if found, either complete or partial support is frequently achieved.
-  In this case a message is issued encouraging users to check the validity
-  of the values extracted.
+  \emph{In the case of fitted model objects of classes not explicitly
+  supported, an attempt is made to find the usual accessors and/or fitted
+  object members, and if found, either complete or partial support is
+  frequently achieved. In this case a message is issued encouraging users to
+  check the validity of the values extracted as the structure of fitted model
+  objects belonging to different classes and the values returned by their
+  accessors can vary, potentially resulting in decoding errors leading to the
+  return of wrong values for estimates.}
 
   The argument to parameter \code{method} can be either the name of a
   function object, possibly using double colon notation in case its package
@@ -342,21 +347,21 @@ Statistics \code{stat_poly_line()} and \code{\link{stat_poly_eq}()}
   or as string, or using double colon notation when passing the name of the
   function.
 
-  User-defined functions can be passed as argument to parameter
-  \code{method} as long as they have parameters \code{formula}, \code{data}
-  \code{subset} and possibly \code{weights}. Additional arguments can be
-  passed to any method as a named list as argument to parameter
-  \code{method.args}. As in \code{\link[ggplot2:geom_smooth]{stat_smooth}()}
-  prior \code{weights} are passed to the model fit functions' \code{weights}
-  (plural!) parameter by mapping a numeric variable to plot aesthetic
-  \code{weight} (singular!).
+  User-defined functions can be passed as argument to parameter \code{method}
+  as long as they have parameters \code{formula}, \code{data} \code{subset}
+  and possibly \code{weights}. Additional arguments can be passed to any
+  method as a named list through parameter \code{method.args}. As in
+  \code{\link[ggplot2:geom_smooth]{stat_smooth}()} prior \code{weights} are
+  passed to the model fit functions' \code{weights} (plural!) parameter by
+  mapping a numeric variable to plot aesthetic \code{weight} (singular!).
 
   Tables 1 lists natively supported model fit functions, with the
   caveat that only some 'broom' methods' specializations have been actually
   tested with statistics from 'ggpmisc'. In addition, the statistics based
   on 'broom' methods require the user to tailor their behaviour by passing
   additional arguments in the call and occasionally some detective work to
-  find out the names of variables in the returned data frame.
+  find out the names of variables in the returned data frame as these names
+  are set by methods from 'broom'.
 
   \strong{Table 1.} Model fit methods supported by the different statistics
   available in package 'ggpmisc'. Column \eqn{f} indicates whether
@@ -380,12 +385,12 @@ Statistics \code{stat_poly_line()} and \code{\link{stat_poly_eq}()}
   }
 
   The single colon notation is based on parsing
-  the name and is available whenever passing the name of the fit method as a
+  the name and is available when passing the name of the fit method as a
   character string. In a string such as "head:tail" the "head" gives the name
   of the model fit function and the "tail" gives the argument to pass it's
   \code{method} parameter. This is only a convenience, as \code{method.args}
   can be also used. In some methods, i.e., splines, the default
-  \code{formula = y ~ x} needs to be overridden with an explicit argument.
+  \code{formula = y ~ x} needs to be overridden by the user.
 
   Table 2 lists the correspondence of pre-defined \emph{method names}
   to model fit method functions. As mentioned above, these are only
@@ -423,7 +428,7 @@ Statistics \code{stat_poly_line()} and \code{\link{stat_poly_eq}()}
   the model fit are added, with the same value in each row within a group.
   This is wasteful and disabled by default, but provides a simple and robust
   approach to achieve effects like colouring or hiding of the model fit line
-  based on \eqn{P}, \eqn{R^2}, \eqn{R[adj]^2} or the number of
+  based on \eqn{P}, \eqn{R^2}, \eqn{R_{adj}^2} or the number of
   observations in a fit.
 }
 
@@ -697,8 +702,8 @@ if (gginnards.installed)
 }
 \references{
 Originally written as an answer to question 7549694 at
-  Stackoverflow but enhanced based on suggestions from users and my own
-  needs.
+  Stackoverflow but enhanced based on suggestions from several users and my
+  own needs.
 }
 \seealso{
 Consult the documentation of the model fit functions used

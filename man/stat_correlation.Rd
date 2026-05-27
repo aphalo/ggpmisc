@@ -205,7 +205,7 @@ of \code{\link[gginnards]{geom_debug}} as shown in the last examples below.
   If the labels are rotated by 90 degrees then the automatic stepping is
   best based on \code{hstep} with \code{vstep = 0}. Similarly as described
   above, if \code{label.x} is a vector of length > 1, it is
-  used as unchanged, possibly extended by recycling, ignoring \code{hstep}.
+  used unchanged, possibly extended by recycling, ignoring \code{hstep}.
 
   When using facets and with a grouping that does not repeat in each panel,
   the automatic positioning in most cases will not be the desired one. Manual

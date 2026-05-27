@@ -82,19 +82,16 @@ can include aesthetics whose values you want to set, not map. See
 \code{formula}. The letter indicates the aesthetic considered the
 explanatory variable in the model fit.}
 
-\item{method}{function or character If character, "lm", "rlm", "lmrob",
-"lts", "gls", "ma", "sma", "segreg", "rq" or the name of a model fit
-function are accepted, possibly followed by the fit function's
-\code{method} argument separated by a colon (e.g. \code{"rlm:M"}). If a
-function is different to \code{lm()}, \code{rlm()}, \code{ltsReg()},
-\code{gls()}, \code{ma}, \code{sma}, it must have formal parameters named
-\code{formula}, \code{data}, and \code{weights}. See Details.}
+\item{method}{function or character If character, \code{"normalmixEM"} or the name
+of a model fit function are accepted, possibly followed by the fit
+function's method argument separated by a colon. The function must return a
+model fit object of class \code{"mixEM"}.}
 
 \item{method.args}{named list with additional arguments. Not \code{data}
 or \code{weights} which are always passed through aesthetic mappings.}
 
-\item{n.min}{integer Minimum number of distinct values in the explanatory
-variable (on the rhs of formula) for fitting to the attempted.}
+\item{n.min}{integer Minimum number of distinct values in the variable for
+fitting to the attempted. The default depends on \code{k}.}
 
 \item{level}{Level of confidence interval to use (0.95 by default).}
 
@@ -103,7 +100,8 @@ variable (on the rhs of formula) for fitting to the attempted.}
 \item{free.mean, free.sd}{logical If TRUE, allow the fitted \code{mean} and/or
 fitted \code{sd} to vary among the component Normal distributions.}
 
-\item{se}{Currently ignored.}
+\item{se}{logical If \code{TRUE} standard errors for the parameter estimates
+are returned in addition to the parameter estimates.}
 
 \item{fit.seed}{RNG seed argument passed to
 \code{\link[base:Random]{set.seed}()}. Defaults to \code{NA}, indicating
@@ -295,7 +293,7 @@ argument trigger an Error.
   If the labels are rotated by 90 degrees then the automatic stepping is
   best based on \code{hstep} with \code{vstep = 0}. Similarly as described
   above, if \code{label.x} is a vector of length > 1, it is
-  used as unchanged, possibly extended by recycling, ignoring \code{hstep}.
+  used unchanged, possibly extended by recycling, ignoring \code{hstep}.
 
   When using facets and with a grouping that does not repeat in each panel,
   the automatic positioning in most cases will not be the desired one. Manual
