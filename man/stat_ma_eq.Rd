@@ -178,10 +178,12 @@ range of the data group used in each fit?}
 \item{level}{Level of confidence interval to use (only 0.95 currently).}
 }
 \value{
-A data frame, with a single row and columns as described under
-  \strong{Computed variables}. In cases when the number of observations is
-  less than \code{n.min} a data frame with no rows or columns is returned
-  rendered as an empty/invisible plot layer.
+\code{stat_ma_eq()} returns data frame with a single row and columns
+  as described below. \code{stat_ma_line()} returns a data frame with
+  \code{n} rows. In cases when the number of observations is less than
+  \code{n.min} or when the model fit \code{method} returns \code{NA} or
+  \code{NULL}, a data frame with no rows or columns is returned and rendered
+  as an empty/invisible plot layer.
 }
 \description{
 Statistics \code{stat_ma_line()} and \code{stat_ma_eq()} fit model II
@@ -191,12 +193,14 @@ regressions. While \code{stat_ma_line()} adds a prediction line and band,
 \details{
 Statistics \code{stat_ma_line()} and \code{stat_ma_eq} fit major
   axis (\code{"MA"}) and other model II regressions with function
-  \code{\link[lmodel2]{lmodel2}}. They support linear major axis (MA),
+  \code{\link[lmodel2]{lmodel2}} from package 'lmodel2'. They support linear major axis (MA),
   standard major axis (SMA) and ranged major axis (RMA) regression.
+  MA and SMA regressions are supported also by \code{stat_poly_line()} and
+  \code{stat_poly_eq()} using package 'smatr' instead of 'lmodel2'.
 
   \code{stat_ma_line()} adds the predicted line and confidence band based on
-  the uncertainty of the slope estimate. considering). \code{stat_ma_line()}
-  can add annotations with the fitted model equation and other parameter
+  the uncertainty of the slope estimate.\code{stat_ma_eq()}
+  adds textual annotations with the fitted model equation and other parameter
   estimates.
 
   Model II regression is called for when both \code{x} and \code{y} are
@@ -207,10 +211,11 @@ Statistics \code{stat_ma_line()} and \code{stat_ma_eq} fit major
 
   As the fitted line is the same whether \code{x} or \code{y} is on the rhs
   of the model equation, \code{orientation} even if accepted does not have an
-  effect on the fitted line.
+  effect on the fitted line. It does, however, have an effect on the
+  formulation of the equation displayed in the label.
 
   The minimum number of observations with distinct values can be set through
-  parameter \code{n.min}. The default \code{n.min = 2L} is the smallest
+  parameter \code{n.min}. The default \code{n.min = 3L} is the smallest
   possible value. However, model fits with very few observations are of
   little interest and using a larger number for \code{n.min} than the default
   is wise. As model fitting functions could depend on the RNG,
@@ -224,8 +229,7 @@ Statistics \code{stat_ma_line()} and \code{stat_ma_eq} fit major
 
   Package 'lmodel2' implements a model fit function and fitted model object
   that differ from the usual approach of R. Thus, their use was implemented
-  as a separate pair of statistics. Use of package 'smatr' is implemented in
-  \code{\link{stat_poly_line}()} and \code{\link{stat_poly_eq}()}.
+  as a separate pair of statistics.
 }
 \section{Variables returned by `stat_ma_line()`}{
 

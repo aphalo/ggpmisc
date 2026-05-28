@@ -1,46 +1,57 @@
 #' Quantile regression predictions and annotations
 #'
-#' Statistics \code{stat_quant_line}, \code{stat_quant_band} and
-#' \code{stat_quant_eq} fit models by quantile regression. While
-#' \code{stat_quant_line} and \code{stat_quant_band} add prediction lines and
-#' bands, \code{stat_quant_eq} adds textual labels to a plot.
+#' Statistics \code{stat_quant_line()}, \code{stat_quant_band()} and
+#' \code{stat_quant_eq()} fit models by quantile regression. While
+#' \code{stat_quant_line()} and \code{stat_quant_band()} add prediction lines and
+#' bands, \code{stat_quant_eq()} adds textual labels to a plot.
 #'
 #' @details While \code{stat_poly_line()} and \code{stat_poly_eq()} fit
-#'   a single model per plot layer, \code{stat_quant_line}, \code{stat_quant_band}
-#'   and \code{stat_quant_eq} can fit multiple models differing in the
-#'   quantile probability per plot layer.
+#'   a single model per plot layer, \code{stat_quant_line()}, \code{stat_quant_band()}
+#'   and \code{stat_quant_eq()} can fit multiple models sharing the same
+#'   \code{method} and \code{formula} but differing in their
+#'   probability. These probabilities are passed a vector argument to parameter
+#'   \code{quantiles}.
 #'
-#'   \code{stat_quant_band()} fits quantile regression and obtains
-#'   predictions identically to \code{stat_quant_line()}.
-#'   \code{stat_quant_band()} fits 2 or 3 quantiles in the same plot layer
-#'   always display the area between the predicted regression lines for the
-#'   extreme quantiles as a band. In contrast \code{stat_quant_line()} fits one
-#'   or more regressions, adding a line for each. \code{stat_quant_line()}
-#'   displays confidence bands for the regression lines when \code{se = TRUE}.
+#'   \code{stat_quant_line} fits one or more quantile regressions and obtains
+#'   predictions similarly to \code{\link[ggplot2]{stat_quantile}()} from
+#'   'ggplot2', but in addition it computes confidence regions for the
+#'   prediction lines. By default each quantile is plotted as a line, with a
+#'   confidence band when \code{se = TRUE}.
 #'
-#'   While \code{stat_quant_eq()} supports only method \code{"rq"},
-#'   \code{stat_quant_line()} and \code{stat_quant_band()} support both
-#'   \code{"rq"} and \code{"rqss"}, In the case of \code{"rqss"} the model
-#'   formula makes normally use of \code{qss()} to formulate the spline and its
-#'   constraints.
+#'   \code{stat_quant_band()} fits quantile regressions and obtains predictions
+#'   identically to \code{stat_quant_line()}. \code{stat_quant_band()} fits 2 or
+#'   3 quantiles in the same plot layer and displays the area between the
+#'   predicted regression lines for the extreme quantiles as a band.
+#'
+#'   \code{stat_quant_eq()} fits quantile regressions and generates a set of
+#'   labels for each regression line fitted. By default the labels are formatted
+#'    as R's \code{\link[grDevices]{plotmath}} expressions, \eqn{\LaTeX} and
+#'    markdown are also supported.
+#'
+#'   \code{stat_quant_eq()}, \code{stat_quant_line()} and
+#'   \code{stat_quant_band()} support both \code{"rq"} and \code{"rqss"} as
+#'   \code{method}. In the case of \code{"rqss"} the model formula makes
+#'   normally use of \code{qss()} to formulate the spline and its constraints.
+#'   User defined functions are supported as \code{method} as long as they
+#'   accept arguments named \code{formula}, \code{data}, \code{weights},
+#'   \code{tau} and \code{method} and return a model fit object of class
+#'   \code{rq}, \code{rqs} or \code{rqss}. Such user-defined functions can
+#'   implement model selection and/or method selection, or conditionally skip
+#'   model fitting on a per data group basis.
 #'
 #'   The minimum number of observations with distinct values in the explanatory
 #'   variable can be set through parameter \code{n.min}. The default \code{n.min
-#'   = 3L} is the smallest usable value. However, model fits with very few
-#'   observations are of little interest and using larger values of \code{n.min}
-#'   than the default is wise.
+#'   = 10L} is a bare minimum for quantile regression. Model fits with such a
+#'   small number of observations are of little interest and using larger values
+#'   of \code{n.min} than the default is wise.
 #'
-#'   There are multiple uses for double regression on \code{x} and \code{y}. For
+#'   There are interesting uses for \emph{double quantile regression}, i.e., a
+#'   pair of quantile regressions on \code{x} and \code{y} on the same data. For
 #'   example, when two variables are subject to mutual constrains, it is useful
 #'   to consider both of them as explanatory and interpret the relationship
-#'   based on them. 'ggpmisc' (>= 0.4.1) supports \code{orientation} making it
-#'   easy implement the approach described by Cardoso (2019) under the name of
-#'   "Double quantile regression".
-#'
-#'   function different to \code{rq()}, it must accept arguments named
-#'   \code{formula}, \code{data}, \code{weights}, \code{tau} and \code{method}
-#'   and return a model fit object of class \code{rq}, \code{rqs} or
-#'   \code{rqss}.
+#'   based on them considered as limiting. 'ggpmisc' (>= 0.4.1) supports
+#'   \code{orientation} making it easy implement the approach described by
+#'   Cardoso (2019) under the name of "Double quantile regression".
 #'
 #' @inheritParams stat_poly_eq
 #' @param quantiles numeric vector Values in 0..1 indicating the quantiles.
@@ -76,10 +87,13 @@
 #'
 #' @inheritSection stat_poly_eq Model fit methods supported
 #'
-#' @return A data frame, with one row per quantile and columns as described
-#'   under \strong{Computed variables}. In cases when the number of observations
-#'   is less than \code{n.min} a data frame with no rows or columns is returned
-#'   rendered as an empty/invisible plot layer.
+#' @return \code{stat_quant_eq()} returns a data frame, with one row per
+#'   quantile and columns as described below, while \code{stat_quant_line()}
+#'   and \code{stat_quant_band()} return a data frame, with \code{n} rows per
+#'   quantile and columns as described below. If the number of observations
+#'   is less than \code{n.min} or if the model fit method returns \code{NA} or
+#'   \code{NULL}, a data frame with no rows or columns is returned, resulting
+#'   in an empty/invisible plot layer.
 #'
 #' @section Variables returned by \code{stat_quant_eq()}:
 #'
@@ -117,7 +131,7 @@
 #' To explore the computed values returned for a given input we suggest the use
 #' of \code{\link[gginnards]{geom_debug}} as shown in the example below.
 #'
-#' @section Variables returned by `stat_quant_line()`:
+#' @section Variables returned by \code{stat_quant_line()}:
 #'
 #'   \describe{
 #'   \item{y \strong{or} x}{predicted value}
@@ -131,7 +145,7 @@
 #'   but provides a simple and robust approach to achieve effects like colouring
 #'   or hiding of the model fit line based on the number of observations.
 #'
-#' @section Variables returned by `stat_quant_band()`:
+#' @section Variables returned by \code{stat_quant_band()}:
 #'
 #'   \describe{
 #'   \item{y \strong{or} x}{Regression prediction for the middle quantile, if three quantiles are passed as argument}
@@ -421,7 +435,7 @@ stat_quant_eq <- function(mapping = NULL,
                           quantiles = c(0.25, 0.5, 0.75),
                           method = "rq:br",
                           method.args = list(),
-                          n.min = 3L,
+                          n.min = 10L,
                           fit.seed = NA,
                           eq.with.lhs = TRUE,
                           eq.x.rhs = NULL,
@@ -454,8 +468,8 @@ stat_quant_eq <- function(mapping = NULL,
     method.name <- "missing"
   }
 
-  if (grepl("^lm$|^lm[:]|^rlm$|^rlm[:]|^gls$|^gls[:]", method.name)) {
-    stop("Methods 'lm', 'rlm' and 'gls' not supported, please use 'stat_poly_eq()'.")
+  if (grepl("^lm$|^lm[:]|^rlm$|^rlm[:]|^gls$|^gls[:]|^sma$|^ma$", method.name)) {
+    stop("Methods 'lm', 'rlm', 'gls', 'ma' and 'sma' not supported, please use 'stat_poly_eq()'.")
   } else if (grepl("^lmodel2$|^lmodel2[:]", method.name)) {
     stop("Method 'lmodel2' not supported, please use 'stat_ma_eq()'.")
   }

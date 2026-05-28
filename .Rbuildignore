@@ -16,3 +16,4 @@ data-raw
 ^docs$
 ^\.positai$
 ^\.claude$
+^texput.log$

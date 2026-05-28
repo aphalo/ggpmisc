@@ -7,14 +7,14 @@
 use_label(..., labels = NULL, other.mapping = NULL, sep = "*\\", \\"*")
 }
 \arguments{
-\item{...}{character Strings giving the names of the label components in the
-order they will be included in the combined label.}
+\item{...}{character Strings giving the names of at most six label components
+in the order they will be included in the combined label.}
 
-\item{labels}{character A vector with the name of the label components. If
-provided, values passed through \code{...} are ignored.}
+\item{labels}{character A vector with the name of at most six label
+components. If provided, values passed through \code{...} are ignored.}
 
 \item{other.mapping}{An unevaluated expression constructed with function
-\code{\link[ggplot2]{aes}} to be included in the returned value.}
+\code{\link[ggplot2]{aes}()} to be included in the returned value.}
 
 \item{sep}{character A string used as separator when pasting the label
 components together.}
@@ -22,7 +22,7 @@ components together.}
 \value{
 A mapping to the \code{label} aesthetic and optionally additional
   mappings as an unevaluated R expression, built using function
-  \code{\link[ggplot2]{aes}}, ready to be passed as argument to the
+  \code{\link[ggplot2]{aes}()}, ready to be passed as argument to the
   \code{mapping} parameter of the supported statistics.
 }
 \description{
@@ -30,33 +30,27 @@ Assemble model-fit-derived text or expressions and map them to
 the \code{label} aesthetic.
 }
 \details{
-Statistics \code{\link{stat_poly_eq}}, \code{\link{stat_ma_eq}},
-  \code{\link{stat_quant_eq}} and \code{\link{stat_correlation}} return
+Statistics \code{\link{stat_poly_eq}()}, \code{\link{stat_ma_eq}()},
+  \code{\link{stat_quant_eq}()} and \code{\link{stat_correlation}()} return
   multiple text strings to be used individually or assembled into longer
   character strings depending on the labels actually desired. Assembling and
   mapping them requires verbose R code and familiarity with R expression
   syntax. Function \code{use_label()} automates these two tasks and accepts
   abbreviated familiar names for the parameters in addition to the name of
   the columns in the data object returned by the statistics. The default
-  separator is that for expressions.
+  separator is suitable for \code{\link[grDevices]{plotmath}} expressions.
 
-  The statistics return variables with names ending in \code{.label}. This
-  ending can be omitted, as well as \code{.value} for \code{f.value.label},
-  \code{t.value.label}, \code{z.value.label}, \code{S.value.label} and
-  \code{p.value.label}. \code{R2} can be used in place of \code{rr}.
-  Furthermore, case is ignored.
+  These four statistics return several \code{character} variables with names
+  ending in \code{.label}. This ending can be omitted, as well as
+  \code{.value} for \code{f.value.label}, \code{t.value.label},
+  \code{z.value.label}, \code{S.value.label} and \code{p.value.label}.
+  \code{R2} can be used in place of \code{rr}. Furthermore, case is ignored.
   Thus, \code{use_label("eq", "R2")} is equivalent to
   \code{aes(label = paste(after_stat(eq.label), after_stat(rr.label), sep = ", "))}
 
   Function \code{use_label()} calls \code{aes()} to create a mapping for
   the \code{label} aesthetic, but it can in addition combine this mapping
-  with other mappings created with \code{aes()}.
-}
-\note{
-Function \code{use_label()} can be only used to generate an argument
-  passed to formal parameter \code{mapping} of the statistics
-  \code{\link{stat_poly_eq}}, \code{\link{stat_ma_eq}},
-  \code{\link{stat_quant_eq}} and \code{\link{stat_correlation}}.
+  with other mappings directly created with \code{aes()}.
 }
 \examples{
 # generate artificial data
@@ -154,6 +148,9 @@ ggplot(data = my.data,
 
 }
 \seealso{
-\code{\link{stat_poly_eq}}, \code{\link{stat_ma_eq}},
-  \code{\link{stat_quant_eq}} and \code{\link{stat_correlation}}.
+Function \code{use_label()} can be used to generate an argument
+  passed to formal parameter \code{mapping} of the statistics
+  \code{\link{stat_poly_eq}}, \code{\link{stat_ma_eq}},
+  \code{\link{stat_quant_eq}} and \code{\link{stat_correlation}}. Please,
+  see their documentation for the labels they generate.
 }
