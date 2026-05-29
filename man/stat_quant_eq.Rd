@@ -219,7 +219,7 @@ While \code{stat_poly_line()} and \code{stat_poly_eq()} fit
 
   \code{stat_quant_eq()} fits quantile regressions and generates a set of
   labels for each regression line fitted. By default the labels are formatted
-   as R's \code{\link[grDevices]{plotmath}} expressions, \eqn{\LaTeX} and
+   as R's \code{\link[grDevices]{plotmath}} expressions, LaTeX and
    markdown are also supported.
 
   \code{stat_quant_eq()}, \code{stat_quant_line()} and
