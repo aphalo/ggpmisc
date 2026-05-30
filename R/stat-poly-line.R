@@ -15,6 +15,7 @@ stat_poly_line <- function(mapping = NULL,
                            fm.values = FALSE,
                            n = 80,
                            fullrange = FALSE,
+                           limit.to = NULL,
                            level = 0.95,
                            method.args = list(),
                            n.min = 2L,
@@ -57,6 +58,10 @@ stat_poly_line <- function(mapping = NULL,
   orientation <- temp[["orientation"]]
   formula <-  temp[["formula"]]
 
+  limit.to <- check_limit_to(fullrange = fullrange,
+                             limit.to = limit.to,
+                             orientation = orientation)
+
   ggplot2::layer(
     data = data,
     mapping = mapping,
@@ -73,7 +78,7 @@ stat_poly_line <- function(mapping = NULL,
       fit.seed = fit.seed,
       fm.values = fm.values,
       n = n,
-      fullrange = fullrange,
+      limit.to = limit.to,
       level = level,
       na.rm = na.rm,
       orientation = orientation,
@@ -94,7 +99,7 @@ poly_line_compute_group_fun <-
            fit.seed = NA,
            fm.values = FALSE,
            n = 80,
-           fullrange = FALSE,
+           limit.to = "x",
            xseq = NULL,
            level = 0.95,
            method.args = list(),
@@ -121,11 +126,21 @@ poly_line_compute_group_fun <-
     method.name <- temp.ls[["method.name"]] # argument or default which varies
     method.args <- temp.ls[["method.args"]] # argument or default which varies
 
+    if (is.numeric(limit.to)) {
+      xseq <- limit.to
+      limit.to <- "none"
+    }
+
     if (is.null(xseq)) {
-      if (fullrange) {
-        xrange <- scales[[orientation]]$dimension()
+      if (grepl("x", limit.to)) {
+        xrange <- range(data[[orientation]], na.rm = TRUE)
       } else {
-        xrange <- range(data$x, na.rm = TRUE)
+        xrange <- scales[[orientation]]$dimension()
+      }
+      if (grepl("y", limit.to)) {
+        yrange <- range(data[[c(x = "y", y = "x")[orientation]]], na.rm = TRUE)
+      } else {
+        yrange <- scales[[c(x = "y", y = "x")[orientation]]]$dimension()
       }
       xseq <- seq(from = xrange[1], to = xrange[2], length.out = n)
     }
@@ -223,6 +238,14 @@ poly_line_compute_group_fun <-
         prediction <-
           data.frame(x = data[["x"]], y = fitted(fm))
       }
+    }
+
+    if (grepl("y", limit.to)) {
+      # with method "sma" or "ma", trimming only on x is illogical
+      selector <-
+        which(prediction[[c(x = "y", y = "x")[orientation]]] >= yrange[1] &
+                prediction[[c(x = "y", y = "x")[orientation]]] <= yrange[2])
+      prediction <- prediction[selector, ]
     }
 
     if (fm.values) {

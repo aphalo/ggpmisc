@@ -70,11 +70,13 @@
 #'
 #' @inheritSection check_output_type Output types
 #'
+#' @inheritSection stat_poly_eq Model formula and model fitting
+#'
 #' @inheritSection stat_poly_eq Model equation label
 #'
 #' @inheritSection stat_poly_eq Position of labels
 #'
-#' @inheritSection stat_poly_eq Model formula and model fitting
+#' @inheritSection stat_poly_eq Range of the prediction line
 #'
 #' @inheritSection stat_poly_eq Model fit methods supported
 #'

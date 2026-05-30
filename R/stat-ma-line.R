@@ -20,6 +20,7 @@ stat_ma_line <- function(mapping = NULL,
                          n = 80,
                          nperm = 99,
                          fullrange = FALSE,
+                         limit.to = NULL,
                          level = 0.95,
                          na.rm = FALSE,
                          show.legend = NA,
@@ -54,6 +55,10 @@ stat_ma_line <- function(mapping = NULL,
   orientation <- temp[["orientation"]]
   formula <-  temp[["formula"]]
 
+  limit.to <- check_limit_to(fullrange = fullrange,
+                           limit.to = limit.to,
+                           orientation = orientation)
+
   if (is.character(method)) {
     if (grepl("^rq", method)) {
       stop("Method 'rq' not supported, please use 'stat_quant_eq()'.")
@@ -62,7 +67,7 @@ stat_ma_line <- function(mapping = NULL,
     }
   }
 
-  if (grepl("RMA$", method) && (is.null(range.y) || is.null(range.x))) {
+  if (grepl("RMA$", method.name) && (is.null(range.y) || is.null(range.x))) {
     stop("Method \"RMA\" is computed only if both 'range.x' and 'range.y' are set.")
   }
 
@@ -86,7 +91,7 @@ stat_ma_line <- function(mapping = NULL,
       fm.values = fm.values,
       n = n,
       nperm = nperm,
-      fullrange = fullrange,
+      limit.to = limit.to,
       level = level,
       na.rm = na.rm,
       orientation = orientation,
@@ -115,7 +120,7 @@ ma_line_compute_group_fun <-
            fm.values = FALSE,
            n = 80,
            nperm = 99,
-           fullrange = FALSE,
+           limit.to = "x",
            xseq = NULL,
            level = 0.95,
            na.rm = FALSE,
@@ -130,11 +135,21 @@ ma_line_compute_group_fun <-
       return(data.frame())
     }
 
+    if (is.numeric(limit.to)) {
+      xseq <- limit.to
+      limit.to <- "none"
+    }
+
     if (is.null(xseq)) {
-      if (fullrange) {
-        xrange <- scales[[orientation]]$dimension()
+      if (grepl("x", limit.to)) {
+        xrange <- range(data[[orientation]], na.rm = TRUE)
       } else {
-        xrange <- range(data$x, na.rm = TRUE)
+        xrange <- scales[[orientation]]$dimension()
+      }
+      if (grepl("y", limit.to)) {
+        yrange <- range(data[[c(x = "y", y = "x")[orientation]]], na.rm = TRUE)
+      } else {
+        yrange <- scales[[c(x = "y", y = "x")[orientation]]]$dimension()
       }
       xseq <- seq(from = xrange[1], to = xrange[2], length.out = n)
     }
@@ -237,6 +252,14 @@ ma_line_compute_group_fun <-
       prediction$ymax <- NULL
     }
     prediction <- cbind(newdata, prediction)
+
+    if (grepl("y", limit.to)) {
+      # with method "sma" or "ma", trimming only on x is illogical
+      selector <-
+        which(prediction[[c(x = "y", y = "x")[orientation]]] >= yrange[1] &
+                prediction[[c(x = "y", y = "x")[orientation]]] <= yrange[2])
+      prediction <- prediction[selector, ]
+    }
 
     if (fm.values) {
       idx <- which(fm[["regression.results"]][["Method"]] == fun.method)

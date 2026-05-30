@@ -13,6 +13,8 @@ stat_quant_band <- function(mapping = NULL,
                             fit.seed = NA,
                             fm.values = FALSE,
                             n = 80,
+                            fullrange = FALSE,
+                            limit.to = NULL,
                             method = "rq",
                             method.args = list(),
                             n.min = 3L,
@@ -54,10 +56,35 @@ stat_quant_band <- function(mapping = NULL,
   orientation <- temp[["orientation"]]
   formula <-  temp[["formula"]]
 
+  limit.to <- check_limit_to(fullrange = fullrange,
+                             limit.to = limit.to,
+                             orientation = orientation)
+
   quantiles <- unique(quantiles)
   if (length(quantiles) != 3) {
     stop("'quantiles' should be a vector of 3 unique quantiles, not ",
          length(quantiles), " quantiles. See 'stat_quant_line()'")
+  }
+
+  temp.pars <- rlang::list2(
+    quantiles = quantiles,
+    formula = formula,
+    fit.seed = fit.seed,
+    fm.values = fm.values,
+    n = n,
+    limit.to = limit.to,
+    method = method,
+    method.name = method.name,
+    method.args = method.args,
+    n.min = n.min,
+    na.rm = na.rm,
+    orientation = orientation,
+    ...
+  )
+
+  # avoid warning from other geoms such as "pointrange"
+  if (geom == "smooth") {
+    temp.pars$se <- TRUE
   }
 
   ggplot2::layer(
@@ -68,22 +95,7 @@ stat_quant_band <- function(mapping = NULL,
     position = position,
     show.legend = show.legend,
     inherit.aes = inherit.aes,
-    params =
-      rlang::list2(
-        quantiles = quantiles,
-        formula = formula,
-        fit.seed = fit.seed,
-        fm.values = fm.values,
-        n = n,
-        method = method,
-        method.name = method.name,
-        method.args = method.args,
-        n.min = n.min,
-        na.rm = na.rm,
-        orientation = orientation,
-        se = TRUE, # passed to geom_smooth
-        ...
-      )
+    params = temp.pars
   )
 }
 
@@ -99,6 +111,8 @@ quant_band_compute_group_fun <- function(data,
                                          quantiles = c(0.25, 0.5, 0.75),
                                          formula = NULL,
                                          n = 80,
+                                         limit.to = "x",
+                                         xseq = NULL,
                                          method,
                                          method.name,
                                          method.args = list(),
@@ -107,7 +121,8 @@ quant_band_compute_group_fun <- function(data,
                                          fit.seed = NA,
                                          fm.values = FALSE,
                                          na.rm = FALSE,
-                                         flipped_aes = NA) {
+                                         flipped_aes = NA,
+                                         orientation = "x") {
 
   rlang::check_installed("quantreg", reason = "to use stat_quant_band()")
 
@@ -136,10 +151,25 @@ quant_band_compute_group_fun <- function(data,
                               na.rm = na.rm,
                               orientation = "x")
 
-  seq.indep <- seq(from = min(data[["x"]], na.rm = TRUE),
-                   to   = max(data[["x"]], na.rm = TRUE),
-                   length.out = n)
-  newdata <- data.frame(x = seq.indep)
+  if (is.numeric(limit.to)) {
+    xseq <- limit.to
+    limit.to <- "none"
+  }
+
+  if (is.null(xseq)) {
+    if (grepl("x", limit.to)) {
+      xrange <- range(data[[orientation]], na.rm = TRUE)
+    } else {
+      xrange <- scales[[orientation]]$dimension()
+    }
+    if (grepl("y", limit.to)) {
+      yrange <- range(data[[c(x = "y", y = "x")[orientation]]], na.rm = TRUE)
+    } else {
+      yrange <- scales[[c(x = "y", y = "x")[orientation]]]$dimension()
+    }
+    xseq <- seq(from = xrange[1], to = xrange[2], length.out = n)
+  }
+  newdata <- data.frame(x = xseq)
 
   preds.ls <- list()
   preds.names <- c("ymin", "y", "ymax")
@@ -171,6 +201,14 @@ quant_band_compute_group_fun <- function(data,
   if (!"y" %in% colnames(newdata)) {
     # y in required_aes
     newdata[["y"]] <- NA_real_
+  } else {
+    if (grepl("y", limit.to)) {
+      # with steep slopes trimming on the response range can be needed
+      selector <-
+        which(newdata[[c(x = "y", y = "x")[orientation]]] >= yrange[1] &
+                newdata[[c(x = "y", y = "x")[orientation]]] <= yrange[2])
+      newdata <- newdata[selector, ]
+    }
   }
 
   if (fm.values) {

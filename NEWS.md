@@ -10,6 +10,12 @@ editor_options:
 on-the-fly transformations in the rhs or lhs, indicating the need to pass a
 matching argument to `eq.x.rhs` or `eq.lhs`. Fix parsing failures leading to
 wrong test outcomes in some edge cases.
+- Add parameter `limit.to` to `stat_poly_line()` and `stat_ma_line()` as an 
+enhancement of parameter `fullrange` providing full control on the `newdata`
+used to compute the prediction line.
+- Add parameters `fullrange` and `limit.to` to `stat_quant_line()` and
+`stat_quant_band()` for consistency, adding previously lacking control over the
+prediction range.
 - Support extraction of posterior weights for models fitted with methods
 `"gls"`, (`"lme"` and `"nlme"`). These weights are NOT scaled to values in 0..1!
 - Change default from `show.legend = FALSE` to `show.legend = TRUE` in 
