@@ -10,12 +10,13 @@ check_limit_to(fullrange, limit.to = NULL, orientation = "x")
 \item{fullrange}{logical Should the fit prediction span the full
 range of the plot, or just the range of the explanatory variable?}
 
-\item{limit.to}{character or numeric If character one of \code{""}, \code{"x"}, \code{"y"} or
-\code{"xy"}. Should the fit prediction be constrained to the range of the
-variables mapped to \code{x} and/or \code{y} in each data group? If numeric,
-the \emph{new data} values to use for the explanatory variable when
-computing the predicted line and confidence band. When
-set \code{limit.to} silently overrides \code{fullrange}!}
+\item{limit.to}{character or numeric If character one of \code{""},
+\code{"x"}, \code{"y"} or \code{"xy"}. Should the fit prediction be
+constrained to the range of the variables mapped to \code{x} and/or
+\code{y} in each data group? If numeric, the \emph{new data} values to use
+for the explanatory variable when computing the predicted line and
+confidence band. When set, \code{limit.to} silently overrides
+\code{fullrange}!}
 
 \item{orientation}{character Either "x" or "y" controlling the default for
 \code{formula}. The letter indicates the aesthetic considered the

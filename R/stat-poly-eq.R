@@ -39,12 +39,13 @@
 #'   the fitted model object; \code{FALSE} by default.
 #' @param fullrange logical Should the fit prediction span the full
 #'   range of the plot, or just the range of the explanatory variable?
-#' @param limit.to character or numeric If character one of \code{""}, \code{"x"}, \code{"y"} or
-#'   \code{"xy"}. Should the fit prediction be constrained to the range of the
-#'   variables mapped to \code{x} and/or \code{y} in each data group? If numeric,
-#'   the \emph{new data} values to use for the explanatory variable when
-#'   computing the predicted line and confidence band. When
-#'   set \code{limit.to} silently overrides \code{fullrange}!
+#' @param limit.to character or numeric If character one of \code{""},
+#'   \code{"x"}, \code{"y"} or \code{"xy"}. Should the fit prediction be
+#'   constrained to the range of the variables mapped to \code{x} and/or
+#'   \code{y} in each data group? If numeric, the \emph{new data} values to use
+#'   for the explanatory variable when computing the predicted line and
+#'   confidence band. When set, \code{limit.to} silently overrides
+#'   \code{fullrange}!
 #' @param level Level of confidence interval to use (0.95 by default).
 #' @param n Number of points at which to predict with the fitted model.
 #'
