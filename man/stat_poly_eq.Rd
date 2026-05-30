@@ -54,6 +54,7 @@ stat_poly_line(
   fm.values = FALSE,
   n = 80,
   fullrange = FALSE,
+  limit.to = NULL,
   level = 0.95,
   method.args = list(),
   n.min = 2L,
@@ -169,8 +170,15 @@ the fitted model object; \code{FALSE} by default.}
 
 \item{n}{Number of points at which to predict with the fitted model.}
 
-\item{fullrange}{Should the fit span the full range of the plot, or just the
-range of the data group used in each fit?}
+\item{fullrange}{logical Should the fit prediction span the full
+range of the plot, or just the range of the explanatory variable?}
+
+\item{limit.to}{character or numeric If character one of \code{""}, \code{"x"}, \code{"y"} or
+\code{"xy"}. Should the fit prediction be constrained to the range of the
+variables mapped to \code{x} and/or \code{y} in each data group? If numeric,
+the \emph{new data} values to use for the explanatory variable when
+computing the predicted line and confidence band. When
+set \code{limit.to} silently overrides \code{fullrange}!}
 
 \item{level}{Level of confidence interval to use (0.95 by default).}
 }
@@ -317,6 +325,25 @@ Statistics \code{stat_poly_line()} and \code{\link{stat_poly_eq}()}
   the automatic positioning in most cases will not be the desired one. Manual
   positioning using a vector of length > 1 for \code{label.x} and/or
   \code{label.y} is the currently available workaround.
+}
+
+\section{Range of the prediction line}{
+ The range of the prediction line is
+  controlled by parameters \code{fullrange} and \code{limit.to}.
+  \code{fullrange} is backwards compatible both with earlier versions of
+  'ggpmisc' and with \code{stat_smooth()} from 'ggplot2'; an argument passed
+  to \code{limit.to} overrides \code{fullrange} making it possible to
+  constrain the range to that of \code{x}, \code{y}, or both simultaneously,
+  with \code{"x"}, \code{"y"}, or \code{"xy"}, respectively, as argument.
+  \code{limit.to} also accepts a numeric vector of values to be used as
+  \code{newdata} when computing the prediction. Limiting the range based on
+  both aesthetics is the best approach for major axis regression (MA, SMA,
+  RMA) but can occasionally be useful also with some other methods when
+  slopes are very steep and error variance in the explanatory variable is
+  large. A numeric vector can be used to predict the response at specific
+  values of the explanatory variable. If a single or very few values are
+  predicted, it can be necessary to override the default \code{geom =
+  "smooth"} with \code{geom = "pointrange"}.
 }
 
 \section{Model fit methods supported}{

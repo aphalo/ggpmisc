@@ -85,6 +85,8 @@
 #'
 #' @inheritSection stat_poly_eq Model formula and model fitting
 #'
+#' @inheritSection stat_poly_eq Range of the prediction line
+#'
 #' @inheritSection stat_poly_eq Model fit methods supported
 #'
 #' @return \code{stat_quant_eq()} returns a data frame, with one row per

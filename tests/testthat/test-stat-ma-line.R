@@ -38,6 +38,7 @@ test_that("ma_formulas", {
                                 stat_ma_line(formula = I(y) ~ x)
   )
 
+  # Fails with an ERROR!
   # vdiffr::expect_doppelganger("stat_ma_line_formula_x_Ix",
   #                             ggplot(my.data, aes(x, y)) +
   #                               geom_point() +
@@ -56,6 +57,7 @@ test_that("ma_formulas", {
                                 stat_ma_line(formula = I(x) ~ y)
   )
 
+  # Fails with an ERROR!
   # vdiffr::expect_doppelganger("stat_ma_line_formula_y_Iy",
   #                             ggplot(my.data, aes(x, y)) +
   #                               geom_point() +
@@ -72,6 +74,89 @@ test_that("ma_formulas", {
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
                                 stat_poly_line(formula = y ~ x, se = FALSE)
+  )
+})
+
+test_that("ma_range", {
+  vdiffr::expect_doppelganger("stat_ma_line_formula_x_fullrange_true",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_ma_line(fullrange = TRUE) +
+                                expand_limits(y = c(-10, 30),
+                                              x = c(-3, 15))
+  )
+
+  vdiffr::expect_doppelganger("stat_ma_line_formula_x_fullrange_false",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_ma_line(fullrange = FALSE) +
+                                expand_limits(y = c(-10, 30),
+                                              x = c(-3, 15))
+  )
+
+  vdiffr::expect_doppelganger("stat_ma_line_formula_y_fullrange_true",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_ma_line(formula = y ~ x, fullrange = TRUE) +
+                                expand_limits(y = c(-10, 30),
+                                              x = c(-3, 15))
+  )
+
+  vdiffr::expect_doppelganger("stat_ma_line_formula_y_fullrange_false",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_ma_line(formula = y ~ x, fullrange = FALSE) +
+                                expand_limits(y = c(-10, 30),
+                                              x = c(-3, 15))
+  )
+
+  vdiffr::expect_doppelganger("stat_ma_line_formula_x_limit_to_none",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_ma_line(limit.to = "none") +
+                                expand_limits(y = c(-10, 30),
+                                              x = c(-3, 15))
+  )
+
+  vdiffr::expect_doppelganger("stat_ma_line_formula_y_limit_to_x",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_ma_line(limit.to = "x") +
+                                expand_limits(y = c(-10, 30),
+                                              x = c(-3, 15))
+  )
+
+  vdiffr::expect_doppelganger("stat_ma_line_formula_y_limit_to_y",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_ma_line(limit.to = "y") +
+                                expand_limits(y = c(-10, 30),
+                                              x = c(-3, 15))
+  )
+
+  vdiffr::expect_doppelganger("stat_ma_line_formula_y_limit_to_xy",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_ma_line(limit.to = "xy") +
+                                expand_limits(y = c(-10, 30),
+                                              x = c(-3, 15))
+  )
+
+  vdiffr::expect_doppelganger("stat_ma_line_formula_y_limit_to_m2_13",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_ma_line(limit.to = -2:13) +
+                                expand_limits(y = c(-10, 30),
+                                              x = c(-3, 15))
+  )
+
+  vdiffr::expect_doppelganger("stat_ma_line_formula_y_limit_to_13",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_ma_line(limit.to = 13,
+                                               geom = "pointrange") +
+                                expand_limits(y = c(-10, 30),
+                                              x = c(-3, 15))
   )
 
 })
@@ -111,25 +196,23 @@ test_that("ma_methods", {
                                              range.x = "relative")
   )
 
-  # vdiffr::expect_doppelganger("stat_ma_line_missing_fm",
-  #                             ggplot(my.data, aes(x + 5, y + 10)) +
-  #                               geom_point() +
-  #                               stat_ma_line(method = function(...) {list()},
-  #                                            range.y = "relative",
-  #                                            range.x = "relative")
-  # )
-  #
-  # vdiffr::expect_doppelganger("stat_ma_line_NULL_fm",
-  #                             ggplot(my.data, aes(x + 5, y + 10)) +
-  #                               geom_point() +
-  #                               stat_ma_line(method = function(...) {NULL})
-  # )
-  #
-  # vdiffr::expect_doppelganger("stat_ma_line_NA_fm",
-  #                             ggplot(my.data, aes(x + 5, y + 10)) +
-  #                               geom_point() +
-  #                               stat_ma_line(method = function(...) {NA})
-  # )
+  vdiffr::expect_doppelganger("stat_ma_line_missing_fm",
+                              ggplot(my.data, aes(x + 5, y + 10)) +
+                                geom_point() +
+                                stat_ma_line(method = function(...) {list()})
+  )
+
+  vdiffr::expect_doppelganger("stat_ma_line_NULL_fm",
+                              ggplot(my.data, aes(x + 5, y + 10)) +
+                                geom_point() +
+                                stat_ma_line(method = function(...) {NULL})
+  )
+
+  vdiffr::expect_doppelganger("stat_ma_line_NA_fm",
+                              ggplot(my.data, aes(x + 5, y + 10)) +
+                                geom_point() +
+                                stat_ma_line(method = function(...) {NA})
+  )
 
 })
 

@@ -1,7 +1,5 @@
 context("stat_quant_line")
 
-library(tibble)
-
 set.seed(4321)
 # generate artificial data
 x <- 1:100
@@ -172,6 +170,88 @@ test_that("quant_formulas", {
                                   geom_point() +
                                   stat_quant_line(formula = x ~ poly(y, 1, raw = TRUE))
     )
+
+    vdiffr::expect_doppelganger("stat_quant_line_formula_x_fullrange_true",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_quant_line(fullrange = TRUE) +
+                                  expand_limits(y = c(-2e5, 12e5),
+                                                x = c(-20, 150))
+    )
+
+    vdiffr::expect_doppelganger("stat_quant_line_formula_x_fullrange_false",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_quant_line(fullrange = FALSE) +
+                                  expand_limits(y = c(-20, 140),
+                                                x = c(-20, 120))
+    )
+
+    vdiffr::expect_doppelganger("stat_quant_line_formula_y_fullrange_true",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_quant_line(formula = x ~ y, fullrange = TRUE) +
+                                  expand_limits(y = c(-20, 140),
+                                                x = c(-20, 120))
+    )
+
+    vdiffr::expect_doppelganger("stat_quant_line_formula_y_fullrange_false",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_quant_line(formula = x ~ y, fullrange = FALSE) +
+                                  expand_limits(y = c(-20, 140),
+                                                x = c(-20, 120))
+    )
+
+    vdiffr::expect_doppelganger("stat_quant_line_formula_x_limit_to_none",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_quant_line(limit.to = "none") +
+                                  expand_limits(y = c(-20, 140),
+                                                x = c(-20, 120))
+    )
+
+    vdiffr::expect_doppelganger("stat_quant_line_formula_y_limit_to_x",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_quant_line(limit.to = "x") +
+                                  expand_limits(y = c(-20, 140),
+                                                x = c(-20, 120))
+    )
+
+    vdiffr::expect_doppelganger("stat_quant_line_formula_y_limit_to_y",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_quant_line(limit.to = "y") +
+                                  expand_limits(y = c(-20, 140),
+                                                x = c(-20, 120))
+    )
+
+    vdiffr::expect_doppelganger("stat_quant_line_formula_y_limit_to_xy",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_quant_line(limit.to = "xy") +
+                                  expand_limits(y = c(-20, 140),
+                                                x = c(-20, 120))
+    )
+
+    vdiffr::expect_doppelganger("stat_quant_line_formula_y_limit_to_10_110",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_quant_line(limit.to = 10:110) +
+                                  expand_limits(y = c(-20, 140),
+                                                x = c(-20, 120))
+    )
+
+    vdiffr::expect_doppelganger("stat_quant_line_formula_y_limit_to_110",
+                                ggplot(my.data, aes(x, y)) +
+                                  geom_point() +
+                                  stat_quant_line(limit.to = 110,
+                                                 geom = "point") +
+                                  expand_limits(y = c(-20, 140),
+                                                x = c(-20, 120))
+    )
+
 
   }, warning=function(w) {
     if (grepl("Solution may be nonunique|2 non-positive fis", conditionMessage(w)))

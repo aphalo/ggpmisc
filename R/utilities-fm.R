@@ -112,6 +112,38 @@ guess_orientation <- function(orientation = NULL,
        formula = formula)
 }
 
+#' Check limit.to and fullrange arguments
+#'
+#' Implement backwards compatibility and support override of
+#' \code{fullrange} by \code{limit.to}.
+#'
+#' @inheritParams stat_poly_eq
+#'
+#' @keywords internal
+#'
+check_limit_to  <- function(fullrange, limit.to = NULL, orientation = "x") {
+  # respect fullrange for backwards compatibility and consistence with 'ggplot2'
+  # but limit.to overrides it silently if set
+  if (is.null(limit.to)) {
+    if (is.logical(fullrange)) {
+      if (fullrange) {
+        limit.to <- "none"
+      } else {
+        limit.to <- orientation
+      }
+    }
+  }
+
+  if (is.character(limit.to) &&
+      !limit.to %in% c("none", "x", "y", "xy", "yx")) {
+    stop("'limit.to' bad argument: '", limit.to,
+         "'! should be one of \"none\", \"x\", \"y\", \"xy\"")
+  } else if (is.numeric(limit.to)) {
+    limit.to <- sort(unique(na.omit(limit.to)))
+  }
+  limit.to
+}
+
 #' Safely extract the formula from an object
 #'
 #' @param fm Fitted model object or a call object.

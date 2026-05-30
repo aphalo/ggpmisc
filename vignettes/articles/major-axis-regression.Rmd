@@ -323,18 +323,6 @@ ggplot(my.data, aes(x, y * 100)) +
   expand_limits(y = 150)
 ```
 
-A robust estimation method can be enabled by passing an argument to be forwarded
-to the the model fit function, in this case `sma()` or `ma()`.
-
-```{r}
-ggplot(my.data, aes(x, y)) +
-  geom_point() +
-  stat_poly_line(method = "sma", method.args = list(robust = TRUE)) +
-  stat_poly_eq(method = "sma", method.args = list(robust = TRUE), 
-             mapping = use_label("eq", "R2", "P", "AIC", "BIC")) +
-  expand_limits(y = 150)
-```
-
 As with LM fits with `lm()` level of significance of the confidence band of the
 regression line can be set by passing an argument to parameter `level`. Below,
 two different values for `level` result in bands of different widths.
@@ -344,6 +332,18 @@ ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(method = "sma", level = 0.99) +
   stat_poly_line(method = "sma", level = 0.80) +
+  expand_limits(y = 150)
+```
+
+A robust estimation method can be enabled by passing an argument to be forwarded
+to the the model fit function, in this case `sma()` or `ma()`.
+
+```{r}
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_poly_line(method = "sma", method.args = list(robust = TRUE)) +
+  stat_poly_eq(method = "sma", method.args = list(robust = TRUE), 
+             mapping = use_label("eq", "R2", "P", "AIC", "BIC")) +
   expand_limits(y = 150)
 ```
 

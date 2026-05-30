@@ -14,6 +14,8 @@ stat_quant_line <- function(mapping = NULL,
                             fit.seed = NA,
                             fm.values = FALSE,
                             n = 80,
+                            fullrange = FALSE,
+                            limit.to = NULL,
                             method = "rq",
                             method.args = list(),
                             n.min = 3L,
@@ -64,6 +66,10 @@ stat_quant_line <- function(mapping = NULL,
   orientation <- temp[["orientation"]]
   formula <-  temp[["formula"]]
 
+  limit.to <- check_limit_to(fullrange = fullrange,
+                             limit.to = limit.to,
+                             orientation = orientation)
+
   ggplot2::layer(
     data = data,
     mapping = mapping,
@@ -80,6 +86,7 @@ stat_quant_line <- function(mapping = NULL,
         fit.seed = fit.seed,
         fm.values = fm.values,
         n = n,
+        limit.to = limit.to,
         method = method,
         method.name = method.name,
         method.args = method.args,
@@ -106,6 +113,8 @@ quant_line_compute_group_fun <- function(data,
                                          quantiles = c(0.25, 0.5, 0.75),
                                          formula = NULL,
                                          n = 80,
+                                         limit.to = "x",
+                                         xseq = NULL,
                                          method,
                                          method.name,
                                          method.args = list(),
@@ -149,10 +158,26 @@ quant_line_compute_group_fun <- function(data,
                               na.rm = na.rm,
                               orientation = "x")
 
-  seq.indep <- seq(from = min(data[["x"]], na.rm = TRUE),
-                   to   = max(data[["x"]], na.rm = TRUE),
-                   length.out = n)
-  grid <- data.frame(x = seq.indep)
+  if (is.numeric(limit.to)) {
+    xseq <- limit.to
+    limit.to <- "none"
+  }
+
+  if (is.null(xseq)) {
+    if (grepl("x", limit.to)) {
+      xrange <- range(data[[orientation]], na.rm = TRUE)
+    } else {
+      xrange <- scales[[orientation]]$dimension()
+    }
+    if (grepl("y", limit.to)) {
+      yrange <- range(data[[c(x = "y", y = "x")[orientation]]], na.rm = TRUE)
+    } else {
+      yrange <- scales[[c(x = "y", y = "x")[orientation]]]$dimension()
+    }
+    xseq <- seq(from = xrange[1], to = xrange[2], length.out = n)
+  }
+
+  grid <- data.frame(x = xseq)
 
   preds.ls <- list()
   fms.idxs <- grep("^fm", names(fms.ls))
@@ -206,6 +231,14 @@ quant_line_compute_group_fun <- function(data,
     quant.labels <- sprintf("%#.*f", quant.digits, quant.levels)
     z[["quantile.f"]] <-
       factor(z[["quantile"]], levels = quant.levels, labels = quant.labels)
+  }
+
+  if (grepl("y", limit.to)) {
+    # with method "sma" or "ma", trimming only on x is illogical
+    selector <-
+      which(z[[c(x = "y", y = "x")[orientation]]] >= yrange[1] &
+              z[[c(x = "y", y = "x")[orientation]]] <= yrange[2])
+    z <- z[selector, ]
   }
 
   z[["flipped_aes"]] <- flipped_aes

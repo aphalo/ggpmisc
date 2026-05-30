@@ -150,8 +150,8 @@ default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
 
 \item{n}{Number of points at which to predict with the fitted model.}
 
-\item{fullrange}{Should the fit span the full range of the plot, or just the
-range of the data group used in each fit?}
+\item{fullrange}{logical Should the fit prediction span the full
+range of the plot, or just the range of the explanatory variable?}
 }
 \value{
 The value returned by the statistic is a data frame, with \code{n}
