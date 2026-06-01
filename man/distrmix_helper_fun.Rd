@@ -24,8 +24,8 @@ distrmix_helper_fun(
 \item{data}{A layer specific dataset, only needed if you want to override the
 plot defaults.}
 
-\item{method}{function or character If character, \code{"normalmixEM"} or the name
-of a model fit function are accepted, possibly followed by the fit
+\item{method}{function or character If character, \code{"normalmixEM"} or the
+name of a model fit function are accepted, possibly followed by the fit
 function's method argument separated by a colon. The function must return a
 model fit object of class \code{"mixEM"}.}
 

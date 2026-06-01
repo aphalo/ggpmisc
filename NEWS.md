@@ -6,6 +6,14 @@ editor_options:
 
 # ggpmisc 0.7.1
 
+This version brings a major update to the documentation of the statistics. The
+complementary prediction and annotation statistics now share the same help page.
+These pages now use inheritance to reduce duplication even further and to ensure
+consistency. Less duplication made it easier to update, clarify and expand the
+documentation, including some edits to the articles. Changes to the code
+introduced some small enhancements to existing functions and corrected a few
+bugs, most of them minor.
+
 - Update `check_poly_formula()` to issue warnings when the model formula includes 
 on-the-fly transformations in the rhs or lhs, indicating the need to pass a
 matching argument to `eq.x.rhs` or `eq.lhs`. Fix parsing failures leading to
@@ -20,6 +28,8 @@ prediction range.
 `"gls"`, (`"lme"` and `"nlme"`). These weights are NOT scaled to values in 0..1!
 - Change default from `show.legend = FALSE` to `show.legend = TRUE` in 
 `stat_fit_residuals()` and `stat_fit_deviations()`.
+- Derive default `orientation` automatically from the aesthetic mapping in 
+`stat_distrmix_line()` and `stat_distrmix_eq()`.
 - Streamline source of documentation using 'roxygen2' inheritance and expand
 and clarify explanations. List supported methods in tables in help pages.
 Merge help for closely related statistics.

@@ -3,27 +3,27 @@
 #' @export
 #'
 stat_distrmix_line <- function(mapping = NULL,
-                                data = NULL,
-                                geom = "line",
-                                position = "identity",
-                                ...,
-                                orientation = "x",
-                                method = "normalmixEM",
-                                se = NULL,
-                                fit.seed = NA,
-                                fm.values = FALSE,
-                                n = min(100 + 50 * k, 300),
-                                fullrange = TRUE,
-                                level = 0.95,
-                                method.args = list(),
-                                k = 2,
-                                free.mean = TRUE,
-                                free.sd = TRUE,
-                                components = "all",
-                                n.min = 10L * k,
-                                na.rm = FALSE,
-                                show.legend = NA,
-                                inherit.aes = TRUE) {
+                               data = NULL,
+                               geom = "line",
+                               position = "identity",
+                               ...,
+                               orientation = NA,
+                               method = "normalmixEM",
+                               se = NULL,
+                               fit.seed = NA,
+                               fm.values = FALSE,
+                               n = min(100 + 50 * k, 300),
+                               fullrange = TRUE,
+                               level = 0.95,
+                               method.args = list(),
+                               k = 2,
+                               free.mean = TRUE,
+                               free.sd = TRUE,
+                               components = "all",
+                               n.min = 10L * k,
+                               na.rm = FALSE,
+                               show.legend = NA,
+                               inherit.aes = TRUE) {
 
   stopifnot("Arg 'x' should not be in 'method.args'!" =
               !any("x" %in% names(method.args)))
@@ -99,7 +99,7 @@ distrmix_compute_group_fun <-
            components = "all",
            n.min = 10L * k,
            na.rm = FALSE,
-           flipped_aes = NA,
+           flipped_aes,
            orientation = "x") {
 
     rlang::check_installed("mixtools", reason = "to use stat_distrmix_line()")
@@ -200,9 +200,25 @@ distrmix_compute_group_fun <-
 #' @export
 StatDistrmixLine <-
   ggplot2::ggproto("StatDistrmixLine", ggplot2::Stat,
-                   setup_params = function(data, params) {
-                     params[["flipped_aes"]] <-
-                       ggplot2::has_flipped_aes(data, params, ambiguous = TRUE)
+                   setup_params = function(self, data, params) {
+                     # temporary kludge as I cannot get has_flipped_aes() to work
+                     # unless 'orientation' is set
+                     if (is.null(params$orientation) || is.na(params$orientation)) {
+                       if ("x" %in% colnames(data)) {
+                         params$orientation <- "x"
+                       } else if ("y" %in% colnames(data)) {
+                         params$orientation <- "y"
+                       }
+                     }
+                     if (!params$orientation %in% colnames(data)) {
+                       stop("'orientation' does not match a mapped aesthetic")
+                     }
+
+                     params$flipped_aes <-
+                       has_flipped_aes(data, params,
+                                       main_is_orthogonal = FALSE,
+                                       main_is_continuous = TRUE)
+
                      params
                    },
 
@@ -211,8 +227,10 @@ StatDistrmixLine <-
                    compute_group = distrmix_compute_group_fun,
 
                    default_aes =
-                     ggplot2::aes(y = after_stat(density),
-                                  group = after_stat(component)),
-                   dropped_aes = c("weight"),
+                     ggplot2::aes(x = after_stat(density),
+                                  y = after_stat(density),
+                                  group = after_stat(component),
+                                  weight = NULL),
+                   dropped_aes = "weight",
                    required_aes = "x|y"
   )

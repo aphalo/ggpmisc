@@ -5,10 +5,13 @@
 #' lines, \code{stat_distrmix_eq()} adds textual labels to a plot.
 #'
 #' @inheritParams stat_poly_eq
-#' @param method function or character If character, \code{"normalmixEM"} or the name
-#'  of a model fit function are accepted, possibly followed by the fit
-#'  function's method argument separated by a colon. The function must return a
-#'  model fit object of class \code{"mixEM"}.
+#' @param orientation character Either "x" or "y" controlling the aesthetic to
+#'   which the density model is fit. With the default \code{orientation = NA}
+#'   the orientation used is based on the mapping and nearly always correct.
+#' @param method function or character If character, \code{"normalmixEM"} or the
+#'   name of a model fit function are accepted, possibly followed by the fit
+#'   function's method argument separated by a colon. The function must return a
+#'   model fit object of class \code{"mixEM"}.
 #' @param k integer Number of mixture components to fit.
 #' @param free.mean,free.sd logical If TRUE, allow the fitted \code{mean} and/or
 #'   fitted \code{sd} to vary among the component Normal distributions.
@@ -153,8 +156,9 @@
 #'   stat_distrmix_line(components = "members") +
 #'   stat_distrmix_eq(components = "members", se = TRUE)
 #'
-#' # ggplot(faithful, aes(y = waiting)) +
-#' #  stat_distrmix_eq(orientation = "y")
+#' ggplot(faithful, aes(y = waiting)) +
+#'   stat_distrmix_line(components = "sum") +
+#'   stat_distrmix_eq(label.x = "right")
 #'
 #' ggplot(faithful, aes(x = waiting)) +
 #'  geom_histogram(aes(y = after_stat(density)), bins = 20) +
@@ -218,7 +222,7 @@ stat_distrmix_eq <- function(mapping = NULL,
                              geom = "text_npc",
                              position = "identity",
                              ...,
-                             orientation = "x",
+                             orientation = NA,
                              method = "normalmixEM",
                              method.args = list(),
                              n.min = 10L * k,
@@ -484,7 +488,20 @@ StatDistrmixEq <-
                    extra_params = c("na.rm", "parse", "orientation"),
 
                    setup_params = function(data, params) {
-                     params[["flipped_aes"]] <-
+                     # temporary kludge as I cannot get has_flipped_aes() to work
+                     # unless 'orientation' is set
+                     if (is.null(params$orientation) || is.na(params$orientation)) {
+                       if ("x" %in% colnames(data)) {
+                         params$orientation <- "x"
+                       } else if ("y" %in% colnames(data)) {
+                         params$orientation <- "y"
+                       }
+                     }
+                     if (!params$orientation %in% colnames(data)) {
+                       stop("'orientation' does not match a mapped aesthetic")
+                     }
+
+                     params$flipped_aes <-
                        ggplot2::has_flipped_aes(data, params, ambiguous = TRUE)
                      params
                    },

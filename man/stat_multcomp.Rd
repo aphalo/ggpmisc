@@ -11,7 +11,7 @@ stat_multcomp(
   position = "identity",
   ...,
   orientation = "x",
-  formula = NULL,
+  formula = y ~ factor(x),
   method = "lm",
   method.args = list(),
   contrasts = "Tukey",

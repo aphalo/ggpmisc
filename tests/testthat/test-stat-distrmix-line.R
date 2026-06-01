@@ -46,6 +46,23 @@ test_that("normalmix_line works attached", {
                                 stat_distrmix_line(geom = "point", fit.seed = 123)
   )
 
+  vdiffr::expect_doppelganger("stat_distrmix_line_orientation_implicit",
+                              ggplot(my.data, aes(y = x.2means)) +
+                                stat_distrmix_line(fit.seed = 123)
+  )
+
+  vdiffr::expect_doppelganger("stat_distrmix_line_orientation_y",
+                              ggplot(my.data, aes(y = x.2means)) +
+                                stat_distrmix_line(fit.seed = 123,
+                                                   orientation = "y")
+  )
+
+  vdiffr::expect_doppelganger("stat_distrmix_line_orientation_x",
+                              ggplot(my.data, aes(x = x.2means)) +
+                                stat_distrmix_line(fit.seed = 123,
+                                                   orientation = "x")
+  )
+
   vdiffr::expect_doppelganger("stat_distrmix_line_n",
                               ggplot(my.data, aes(x.2means)) +
                                 stat_distrmix_line(geom = "point", n = 30, fit.seed = 123)
@@ -152,6 +169,26 @@ test_that("normalmix_line messages, warnings and errors", {
   expect_error(
     ggplot(my.data, aes(x.2means)) +
       stat_distrmix_line(method.args = list(x = NA))
+  )
+
+  expect_error(
+    ggplot(my.data, aes(x.2means)) +
+      stat_distrmix_line(orientation = "z")
+  )
+
+  expect_error(
+    ggplot(my.data, aes(y = x.2means)) +
+      stat_distrmix_line(orientation = "z")
+  )
+
+  expect_error(
+    ggplot(my.data, aes(x.2means)) +
+      stat_distrmix_line(orientation = "y")
+  )
+
+  expect_error(
+    ggplot(my.data, aes(y = x.2means)) +
+      stat_distrmix_line(orientation = "x")
   )
 
 })

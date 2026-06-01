@@ -11,7 +11,7 @@ stat_distrmix_eq(
   geom = "text_npc",
   position = "identity",
   ...,
-  orientation = "x",
+  orientation = NA,
   method = "normalmixEM",
   method.args = list(),
   n.min = 10L * k,
@@ -42,7 +42,7 @@ stat_distrmix_line(
   geom = "line",
   position = "identity",
   ...,
-  orientation = "x",
+  orientation = NA,
   method = "normalmixEM",
   se = NULL,
   fit.seed = NA,
@@ -78,12 +78,12 @@ layer.}
 can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
 
-\item{orientation}{character Either "x" or "y" controlling the default for
-\code{formula}. The letter indicates the aesthetic considered the
-explanatory variable in the model fit.}
+\item{orientation}{character Either "x" or "y" controlling the aesthetic to
+which the density model is fit. With the default \code{orientation = NA}
+the orientation used is based on the mapping and nearly always correct.}
 
-\item{method}{function or character If character, \code{"normalmixEM"} or the name
-of a model fit function are accepted, possibly followed by the fit
+\item{method}{function or character If character, \code{"normalmixEM"} or the
+name of a model fit function are accepted, possibly followed by the fit
 function's method argument separated by a colon. The function must return a
 model fit object of class \code{"mixEM"}.}
 
@@ -330,8 +330,9 @@ ggplot(faithful, aes(x = waiting)) +
   stat_distrmix_line(components = "members") +
   stat_distrmix_eq(components = "members", se = TRUE)
 
-# ggplot(faithful, aes(y = waiting)) +
-#  stat_distrmix_eq(orientation = "y")
+ggplot(faithful, aes(y = waiting)) +
+  stat_distrmix_line(components = "sum") +
+  stat_distrmix_eq(label.x = "right")
 
 ggplot(faithful, aes(x = waiting)) +
  geom_histogram(aes(y = after_stat(density)), bins = 20) +
@@ -417,6 +418,7 @@ Other 'ggpmisc' statistics for model fits:
 \tabular{rll}{
  • \tab \strong{\code{\link[ggplot2:aes_position]{x}} \emph{or} \code{\link[ggplot2:aes_position]{y}}} \tab   \cr
  • \tab \code{\link[ggplot2:aes_group_order]{group}} \tab → \code{after_stat(component)} \cr
+ • \tab \code{weight} \tab → \code{NULL} \cr
 }
 
 Learn more about setting these aesthetics in \code{vignette("ggplot2-specs")}.

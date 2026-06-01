@@ -44,6 +44,30 @@ test_that("stat_distrmix_eq works not attached", {
 library(ggpmisc)
 
 test_that("normalmix_eq works attached", {
+  vdiffr::expect_doppelganger("stat_distrmix_eq_default",
+                              ggplot(my.data, aes(x.2means)) +
+                                stat_distrmix_line(fit.seed = 123) +
+                                stat_distrmix_eq(fit.seed = 123)
+  )
+
+  vdiffr::expect_doppelganger("stat_distrmix_eq_orientation_x",
+                              ggplot(my.data, aes(x.2means)) +
+                                stat_distrmix_line(fit.seed = 123, orientation = "x") +
+                                stat_distrmix_eq(fit.seed = 123, orientation = "x")
+  )
+
+  vdiffr::expect_doppelganger("stat_distrmix_eq_orientation_y",
+                              ggplot(my.data, aes(y = x.2means)) +
+                                stat_distrmix_line(fit.seed = 123, orientation = "y") +
+                                stat_distrmix_eq(fit.seed = 123, orientation = "y")
+  )
+
+  vdiffr::expect_doppelganger("stat_distrmix_eq_orientation_implicit",
+                              ggplot(my.data, aes(y = x.2means)) +
+                                stat_distrmix_line(fit.seed = 123) +
+                                stat_distrmix_eq(fit.seed = 123)
+  )
+
   vdiffr::expect_doppelganger("stat_distrmix_eq_geom_text",
                               ggplot(my.data, aes(x.2means)) +
                                 stat_distrmix_line(fit.seed = 123) +
@@ -168,4 +192,23 @@ test_that("normalmix_eq messages, warnings and errors", {
       stat_distrmix_eq(method.args = list(x = NA))
   )
 
+  expect_error(
+    ggplot(my.data, aes(x.2means)) +
+      stat_distrmix_eq(orientation = "z")
+  )
+
+  expect_error(
+    ggplot(my.data, aes(y = x.2means)) +
+      stat_distrmix_eq(orientation = "z")
+  )
+
+  expect_error(
+    ggplot(my.data, aes(x.2means)) +
+      stat_distrmix_eq(orientation = "y")
+  )
+
+  expect_error(
+    ggplot(my.data, aes(y = x.2means)) +
+      stat_distrmix_eq(orientation = "x")
+  )
 })
