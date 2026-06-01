@@ -854,6 +854,24 @@ test_that("poly_methods", {
                               variant = snap_version
   )
 
+  vdiffr::expect_doppelganger("stat_poly_eq_lspline_fun",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_eq(formula = y ~ lspline::lspline(x, knots = c(25, 65)),
+                                             parse = TRUE,
+                                             method = "lm",
+                                             mapping =
+                                               aes(label = paste(after_stat(rr.label),
+                                                                 after_stat(adj.rr.label),
+                                                                 after_stat(f.value.label),
+                                                                 after_stat(p.value.label),
+                                                                 after_stat(n.label),
+                                                                 after_stat(AIC.label),
+                                                                 after_stat(BIC.label),
+                                                                 sep = "~~"))),
+                              variant = snap_version
+  )
+
   vdiffr::expect_doppelganger("stat_poly_eq_missing_fm",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +

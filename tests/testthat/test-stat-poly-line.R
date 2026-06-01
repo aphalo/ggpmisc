@@ -320,6 +320,14 @@ test_that("poly_methods", {
                                                method = smatr::sma)
   )
 
+  library(lspline)
+  vdiffr::expect_doppelganger("stat_poly_line_lspline_fun",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_poly_line(method = "lm",
+                                               formula = y ~ lspline(x, knots = c(25, 65)))
+  )
+
   vdiffr::expect_doppelganger("stat_poly_line_empty_fm",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
