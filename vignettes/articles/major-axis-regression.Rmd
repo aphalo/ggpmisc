@@ -359,6 +359,12 @@ The same caveats as for `stat_ma_eq()` and `stat_ma_line()` apply. In addition:
 
 *  _When applying a log10 transformation in the call to `smatr::sma`, the estimates are not back-transformed and consequently, currently this way of applying transformations is not supported._
 
+## New data for prediction
+
+Like in `stat_mooth()` from 'ggplot2', parameter `fullrange` in `stat_poly_line()`, `stat_quant_line()`, `stat_quant_band()` and `stat_ma_line()` can be used to switch between prediction based on the range of the explanatory variable data or based on the limits of the scale of the corresponding aesthetic. Meanwhile, `n` controls the number of equally spaced points at which the prediction will be computed. In most use cases these two alternatives are enough.
+
+In 'ggpmisc' (>= 0.7.1) the new `limit.to` parameter provides finer control. Please, see examples in the article [Custom Polynomial Models](poly-advanced.html).
+
 ## Transformations and `eq.label`
 
 In 'ggplot2' setting transformations in _x_ and _y_ scales results in statistics

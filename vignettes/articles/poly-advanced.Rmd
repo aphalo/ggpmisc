@@ -1191,6 +1191,53 @@ ggplot(mpg, aes(x = displ, y = hwy)) +
   facet_wrap(~class, ncol = 2)
 ```
 
+## New data for prediction
+
+Like in `stat_mooth()` from 'ggplot2', parameter `fullrange` in `stat_poly_line()`, `stat_quant_line()`, `stat_quant_band()` and `stat_ma_line()` can be used to switch between prediction based on the range of the explanatory variable data or based on the limits of the scale of the corresponding aesthetic. Meanwhile, `n` controls the number of equally spaced points at which the prediction will be computed. In most use cases these two alternatives are enough.
+
+However, in some cases, finer control is useful. In plots with facets, with major axis (MA) regression and possibly other model fits, it can be useful to constrain the range of the prediction to that of the response variable. Furthermore, in MA regression, the fitted line is the same for `y ~ x` and `x ~ y` , thus simultaneously restricting the range based on both `x` and `y` seems logically preferable. Another case that cannot be automated with `stat_mooth()` are predictions covering user-defined ranges or for specific values of the explanatory variable.
+
+In 'ggpmisc' (>= 0.7.1) the new `limit.to` parameter provides the necessary control. The `character` strings `"x"`, `"y"`, `"xy"` and `"none"` make it possible for user to set which data range to use as limit.
+
+For these examples I expanded the `x` scale limits, so that they are clearly broader than the default ones. These are rather contrived examples demonstrating how fine control works.
+
+The first example, with `limit.to = "none"` produces the same plot as using `fullrange = TRUE`.
+
+```{r, fig.width = 7, fig.height = 5}
+ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
+  geom_point() +
+  stat_poly_line(limit.to = "none") +
+  expand_limits(x = c(-2:10))
+```
+
+With `limit.to = "y"` the prediction is computed as in the example above, but predicted values aoutside the range of `y` are not passed to the geom, and, thus, not plotted.
+
+```{r, fig.width = 7, fig.height = 5}
+ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
+  geom_point() +
+  stat_poly_line(limit.to = "y") +
+  expand_limits(x = c(-2:10))
+```
+
+In addition to character strings as described above, `limit.to` also accepts as argument a numeric vector to be used as new data. This makes it possible to obtain a prediction for a range that is neither that of the scale or that of the data. A use case is when an unrestricted range could interfere with a plot annotation.
+
+```{r, fig.width = 7, fig.height = 5}
+ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
+  geom_point() +
+  stat_poly_line(limit.to = seq(from = 2, to = 7, length.out = 80)) +
+  expand_limits(x = c(1:8))
+```
+
+Although rarely useful when continuous variables are mapped to both `x` and `y`, it is also possible to compute predictions for discrete values of the explanatory variable. In this example the predictions extend past the range of the data, and the range of the limits of the scales are automatically extended for them to fit. Instead of the default `geom = "smooth"`, `geom = "pointrange"` displays the individual predictions. 
+
+```{r, fig.width = 7, fig.height = 5}
+ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
+  geom_point() +
+  stat_poly_line(limit.to = 2:7,
+                 geom = "pointrange",
+                 colour = "blue")
+```
+
 ## Transformations and `eq.label`
 
 In 'ggplot2' setting transformations in _x_ and _y_ scales results in statistics receiving transformed data as input. The data "seen" by statistics is the same as if the transformation had been applied within a call to `aes()`. However, the scales
