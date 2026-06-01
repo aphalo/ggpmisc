@@ -74,4 +74,3 @@ find_spikes <-
     stopifnot(length(outcomes) == length(x))
     outcomes
   }
-
