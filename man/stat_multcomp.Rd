@@ -55,7 +55,9 @@ can include aesthetics whose values you want to set, not map. See
 implemented but is planned.}}
 
 \item{formula}{a formula object. Using aesthetic names \code{x} and \code{y}
-instead of original variable names.}
+instead of original variable names. The rhs must include a call to
+\code{factor()} even if the variable mapped to the \code{x} aesthetic is
+a factor!}
 
 \item{method}{function or character If character, "lm" (or its equivalent
 "aov"), "rlm" or the name of a model fit function are accepted, possibly
@@ -123,7 +125,7 @@ truncated if too long.}
 used between labels for different contrasts when \code{label.type = "bars"}.}
 
 \item{output.type}{character One of "expression", "LaTeX", "text",
-"markdown" or "numeric".}
+"markdown" or "numeric". The default depends on the \code{geom} argument.}
 
 \item{na.rm}{a logical indicating whether NA values should be stripped before
 the computation proceeds.}

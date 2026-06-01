@@ -25,7 +25,9 @@
 #' @param na.rm	a logical indicating whether NA values should be stripped before
 #'   the computation proceeds.
 #' @param formula a formula object. Using aesthetic names \code{x} and \code{y}
-#'   instead of original variable names.
+#'   instead of original variable names. The rhs must include a call to
+#'   \code{factor()} even if the variable mapped to the \code{x} aesthetic is
+#'   a factor!
 #' @param method function or character If character, "lm" (or its equivalent
 #'   "aov"), "rlm" or the name of a model fit function are accepted, possibly
 #'   followed by the fit function's \code{method} argument separated by a colon
@@ -78,7 +80,7 @@
 #' @param vstep numeric in npc units, the vertical displacement step-size
 #'   used between labels for different contrasts when \code{label.type = "bars"}.
 #' @param output.type character One of "expression", "LaTeX", "text",
-#'   "markdown" or "numeric".
+#'   "markdown" or "numeric". The default depends on the \code{geom} argument.
 #' @param orientation character Either "x" or "y" controlling the default for
 #'   \code{formula}. \strong{Support for \code{orientation} is not yet
 #'   implemented but is planned.}
@@ -336,7 +338,7 @@ stat_multcomp <- function(mapping = NULL,
                           position = "identity",
                           ...,
                           orientation = "x",
-                          formula = NULL,
+                          formula = y ~ factor(x),
                           method = "lm",
                           method.args = list(),
                           contrasts = "Tukey",
