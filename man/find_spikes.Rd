@@ -7,51 +7,91 @@
 find_spikes(
   x,
   x.is.delta = FALSE,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   na.rm = FALSE
 )
 }
 \arguments{
-\item{x}{numeric vector containing spectral data.}
+\item{x}{numeric vector containing the data.}
 
-\item{x.is.delta}{logical Flag indicating if x contains already differences.}
+\item{x.is.delta}{logical Flag indicating whether \code{x} contains
+differences or original values.}
 
-\item{z.threshold}{numeric Modified Z values larger than \code{z.threshold}
-are considered to be spikes.}
+\item{height.threshold}{numeric The minimum height of spikes expressed
+relative to the median amplitude of the baseline local variation of
+\code{x}.}
 
-\item{max.spike.width}{integer Wider regions with high Z values are not detected as
-spikes.}
+\item{z.threshold}{numeric Modified local \eqn{Z} values larger than
+\code{z.threshold} are detected as boundaries of spikes.}
+
+\item{k}{integer width of median window used for smoothing; must be odd}
+
+\item{spike.direction}{character One of \code{"up"}, \code{"down"},
+\code{"both"} or \code{"skip"}, indicating which spikes are to be returned,
+if any.}
 
 \item{na.rm}{logical indicating whether \code{NA} values should be stripped
 before searching for spikes.}
 }
 \value{
-A logical vector of the same length as \code{x}. Values that are TRUE
-  correspond to local spikes in the data.
+An integer vector of the same length as \code{x}. Values that are
+  \code{0}, \code{+1} or \code{-1} corresponding to no-spike, upwards-spike,
+  and downwards-spike in the data. Conversion to logical with
+  \code{as.logical()} results in a vector with \code{TRUE} for spikes and
+  \code{FALSE} otherwise.
 }
 \description{
-This function finds spikes in a numeric vector using the algorithm of
+Find spikes in a numeric vector using the algorithm of
 Whitaker and Hayes (2018). Spikes are values in spectra that are unusually
 high or low compared to neighbours. They are usually individual values or very
 short runs of similar "unusual" values. Spikes caused by cosmic radiation are
 a frequent problem in Raman spectra. Another source of spikes are "hot
-pixels" in CCD and diode arrays. Other kinds of accidental "outliers" are
+pixels" in CCD and diode arrays. Other kinds of accidental "outliers" can
 be also detected.
 }
 \details{
-Spikes are detected based on a modified Z score calculated from the
-  differenced spectrum. The Z threshold used should be adjusted to the
-  characteristics of the input and desired sensitivity. The lower the
-  threshold the more stringent the test becomes, resulting in most cases in
-  more spikes being detected. A modified version of the algorithm is used if
-  a value different from \code{NULL} is passed as argument to
-  \code{max.spike.width}. In such a case, an additional step filters out
-  broader spikes (or falsely detected steep slopes) from the returned values.
+Spikes are detected based on a modified \eqn{Z} score calculated
+  from the differenced spectrum. The \eqn{Z} threshold used should be
+  adjusted to the characteristics of the input and desired sensitivity. The
+  lower the threshold the more stringent the test becomes, with shorter
+  spikes being detected.
+
+  The algorithm uses running differences to detect abrupt changes in value,
+  compared to an estimate of the baseline variation of the differences,
+  approximating a baseline \eqn{Z} from MAD and a baseline value from the
+  median differences. Currently, a single estimate of MAD is used but running
+  medians, when posisble, as baseline. This comparison detects running
+  differences that are unusually large, in most cases signalling a transition
+  between values near the baseline and far from it, in both directions.
+
+  Transitions into- and out of spikes are distinguished based on the median
+  of the non-differenced values, as a descriptor of the data baseline. As for
+  the median of the differences, a running median is used when possible.
+
+  This function thus detects the start and end of each spike, and
+  distinguishes upward and downward spikes.
+
+  \code{k} is the width in number of observations of the window used for
+  running median smoothing to extract the baseline. A value several times the
+  width of the broader spike but narrow enough to track broader peaks needs
+  to be manually set in most cases.
+
+  With \code{na.rm = TRUE}, \code{NA} values are omitted before searching for
+  spikes and set to \code{0L} in the returned vector.
+
+  If all spikes are guaranteed to be one observation-wide and either going up
+  or down from the baseline, it is possible to detect them based purely on
+  the \code{z.threshold} by passing \code{height.threshold = NA} and either
+  \code{spike.direction = "up"} or \code{spike.direction = "down"}, which
+  ensures very fast computation.
 }
 \references{
 Whitaker, D. A.; Hayes, K. (2018) A simple algorithm for despiking Raman
 spectra. Chemometrics and Intelligent Laboratory Systems, 179, 82-84.
+\orcid{10.1016/j.chemolab.2018.06.009}.
 }
 \seealso{
 Other peaks and valleys functions:

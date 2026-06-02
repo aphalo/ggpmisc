@@ -24,6 +24,7 @@ reference:
     - stat_fit_tidy
     - stat_fit_residuals
     - stat_peaks
+    - stat_spikes
     - use_label
   - title: Scales
     desc: Scales control de mapping of data to aesthetics. These scales are tailored for specific types of plots.

@@ -4,7 +4,7 @@
 %   R/stat-fit-deviations.R, R/stat-fit-residuals.R, R/stat-ma-eq.R,
 %   R/stat-ma-line.R, R/stat-multcomp.R, R/stat-peaks.R, R/stat-poly-eq.R,
 %   R/stat-poly-line.R, R/stat-quant-band.r, R/stat-quant-eq.R,
-%   R/stat-quant-line.r
+%   R/stat-quant-line.r, R/stat-spikes.R
 \name{cor_test_compute_fun}
 \alias{cor_test_compute_fun}
 \alias{StatCorrelation}
@@ -44,13 +44,24 @@
 \alias{StatQuantEq}
 \alias{quant_line_compute_group_fun}
 \alias{StatQuantLine}
+\alias{spikes_compute_group_fun}
+\alias{StatSpikes}
 \title{\code{Stat*} Objects}
 \description{
 All \code{stat_*} functions (like \code{stat_bin}) return a layer that
 contains a \code{Stat*} object (like \code{StatBin}). The \code{Stat*}
 object is responsible for rendering the data in the plot.
+
+All \code{stat_*} functions (like \code{stat_bin}) return a layer that
+contains a \code{Stat*} object (like \code{StatBin}). The \code{Stat*}
+object is responsible for rendering the data in the plot.
 }
 \details{
+Each of the \code{Stat*} objects is a \code{\link[ggplot2]{ggproto}} object,
+derived from the top-level \code{Stat}, and each implements various methods
+and fields. To create a new type of Stat object, you typically will want to
+implement one or more of the following:
+
 Each of the \code{Stat*} objects is a \code{\link[ggplot2]{ggproto}} object,
 derived from the top-level \code{Stat}, and each implements various methods
 and fields. To create a new type of Stat object, you typically will want to
