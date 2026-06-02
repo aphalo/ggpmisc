@@ -18,7 +18,7 @@ stat_peaks(
   local.reference = "median",
   strict = FALSE,
   label.fmt = NULL,
-  x.label.fmt = NULL,
+  x.label.fmt = label.fmt,
   y.label.fmt = NULL,
   extract.peaks = NULL,
   na.rm = FALSE,
@@ -39,7 +39,7 @@ stat_valleys(
   local.reference = "median",
   strict = FALSE,
   label.fmt = NULL,
-  x.label.fmt = NULL,
+  x.label.fmt = label.fmt,
   y.label.fmt = NULL,
   extract.valleys = NULL,
   na.rm = FALSE,
@@ -102,7 +102,7 @@ of all values in the window.}
 greater than all other values in its window to be considered a peak.
 Default: \code{FALSE} (since version 0.13.1).}
 
-\item{label.fmt, x.label.fmt, y.label.fmt}{character  strings giving a format
+\item{label.fmt, x.label.fmt, y.label.fmt}{character strings giving a format
 definition for construction of character strings labels with function
 \code{\link{sprintf}} from \code{x} and/or \code{y} values.}
 
@@ -179,24 +179,6 @@ As \code{find_valleys}, \code{stat_peaks} and \code{stat_valleys}
   `"farthest.log"`, `"median.sqrt"`, and `"farthest.sqrt"` as arguments for
   \code{local.reference}.
 }
-\note{
-\code{stat_peaks} and \code{stat_valleys} work nicely together with
-  geoms \code{geom_text_repel} and \code{geom_label_repel} from package
-  \code{\link[ggrepel]{ggrepel}} to solve the problem of overlapping labels
-  by displacing them. To discard overlapping labels use \code{check_overlap =
-  TRUE} as argument to \code{geom_text}.
-
-  By default the labels are character values ready to be added as is, but
-  with a suitable \code{label.fmt} labels suitable for parsing by the geoms
-  (e.g. into expressions containing Greek letters or super or subscripts) can
-  be also easily obtained.
-
-  These stats use \code{geom_point} by default as
-  it is the geom most likely to work well in almost any situation.
-  The default aesthetics set by these stats allow their direct use with
-  \code{geom_text}, \code{geom_label}, \code{geom_line}, \code{geom_rug},
-  \code{geom_hline} and \code{geom_vline}.
-}
 \section{Computed and copied variables in the returned data frame}{
 
 \describe{
@@ -205,6 +187,29 @@ As \code{find_valleys}, \code{stat_peaks} and \code{stat_valleys}
   \item{x.label}{x-value at the peak (or valley) formatted as character}
   \item{y.label}{y-value at the peak (or valley) formatted as character}
 }
+}
+
+\section{Label positioning and formatting}{
+ \code{stat_peaks()},
+  \code{stat_valleys()} and \code{stat_spikes()} work nicely together with
+  geoms \code{geom_text_repel()}, \code{geom_label_repel()}, and
+  \code{geom_marquee_repel()} from package \code{\link[ggrepel]{ggrepel}} to
+  solve the problem of overlapping labels by displacing them. If using
+  \code{geom_text()}, discard overlapping labels using
+  \code{check_overlap = TRUE}.
+
+  By default the labels are character values ready to be ploted as plain
+  text, but with a suitable \code{label.fmt} argument, labels formatted as
+  \code{\link[grDevices]{plotmath}} expressions, markdown or LaTeX can be
+  created (e.g., containing Greek letters or super or subscripts, maths or
+  colour) can be generated for use with geoms from packages 'marquee',
+  'ggtext' and 'xdvir'.
+
+  The default is \code{geom = "point"} it is likely to work well in almost
+  any situation. The default aesthetics mappings set by these stats allow
+  their direct use with \code{geom_text()}, \code{geom_label()},
+  \code{geom_line()}, \code{geom_rug()}, \code{geom_hline()} and
+  \code{geom_vline()} by just passing an argument to \code{geom}.
 }
 
 \examples{

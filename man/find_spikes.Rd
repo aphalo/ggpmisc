@@ -7,28 +7,39 @@
 find_spikes(
   x,
   x.is.delta = FALSE,
-  z.threshold = 9,
-  max.spike.width = 8,
+  x.threshold = 0.02,
+  z.threshold = 5,
+  max.spike.width = NULL,
+  spike.direction = "both",
   na.rm = FALSE
 )
 }
 \arguments{
-\item{x}{numeric vector containing spectral data.}
+\item{x}{numeric vector containing the data.}
 
-\item{x.is.delta}{logical Flag indicating if x contains already differences.}
+\item{x.is.delta}{logical Flag indicating whether \code{x} contains
+differences or original values.}
+
+\item{x.threshold}{numeric The minimum height of spikes expressed relative
+to the range of the original \code{x} values, not the differences.}
 
 \item{z.threshold}{numeric Modified Z values larger than \code{z.threshold}
 are considered to be spikes.}
 
-\item{max.spike.width}{integer Wider regions with high Z values are not detected as
-spikes.}
+\item{max.spike.width}{integer Maximum number of consecutive large or small
+observations accepted as a spike. Wider peaks and valleys are ignored.
+\code{NULL} disables this test.}
+
+\item{spike.direction}{character One of \code{"up"}, \code{"down"} or
+\code{"both"}, indicating which spikes are to be returned.}
 
 \item{na.rm}{logical indicating whether \code{NA} values should be stripped
 before searching for spikes.}
 }
 \value{
-A logical vector of the same length as \code{x}. Values that are TRUE
-  correspond to local spikes in the data.
+A logical vector of the same length as \code{x}. Values that are
+  \code{TRUE} correspond to the boundaries of upwards, downwards or both
+  downwards and upwards local spikes in the data.
 }
 \description{
 This function finds spikes in a numeric vector using the algorithm of
@@ -36,18 +47,35 @@ Whitaker and Hayes (2018). Spikes are values in spectra that are unusually
 high or low compared to neighbours. They are usually individual values or very
 short runs of similar "unusual" values. Spikes caused by cosmic radiation are
 a frequent problem in Raman spectra. Another source of spikes are "hot
-pixels" in CCD and diode arrays. Other kinds of accidental "outliers" are
+pixels" in CCD and diode arrays. Other kinds of accidental "outliers" can
 be also detected.
 }
 \details{
-Spikes are detected based on a modified Z score calculated from the
-  differenced spectrum. The Z threshold used should be adjusted to the
-  characteristics of the input and desired sensitivity. The lower the
-  threshold the more stringent the test becomes, resulting in most cases in
-  more spikes being detected. A modified version of the algorithm is used if
-  a value different from \code{NULL} is passed as argument to
-  \code{max.spike.width}. In such a case, an additional step filters out
-  broader spikes (or falsely detected steep slopes) from the returned values.
+Spikes are detected based on a modified \eqn{Z} score calculated
+  from the differenced spectrum. The \eqn{Z} threshold used should be
+  adjusted to the characteristics of the input and desired sensitivity. The
+  lower the threshold the more stringent the test becomes, with shorter
+  spikes being detected.
+
+  The algorithm uses running differences to detect abrupt changes in value,
+  compared to an estimate of the baseline variation of the differences,
+  approximating a baseline \eqn{Z} from MAD and a baseline value from the
+  median differences. Currently, a single estimate of MAD is used but running
+  medians, when posisble, as baseline. This comparison detects running
+  differences that are unusually large, in most cases signalling a transition
+  between values near the baseline and far from it, in both directions.
+
+  Transitions into- and out of spikes are distinguished based on the median
+  of the non-differenced values, as a descriptor of the data baseline. As for
+  the median of the differences, a running median is used when possible.
+
+  This function thus detects the start and end of each spike, and
+  distinguishes upward and downward spikes.
+
+  \code{max.spike.width} is currently ignored as a threshold, but it does
+  affect the width of the window used by the running medians and the minimum
+  length of \code{x} at which running medians start being used instead of the
+  overall median.
 }
 \references{
 Whitaker, D. A.; Hayes, K. (2018) A simple algorithm for despiking Raman
