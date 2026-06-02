@@ -29,21 +29,25 @@
 #'   This function thus detects the start and end of each spike, and
 #'   distinguishes upward and downward spikes.
 #'
-#'   \code{max.spike.width} is currently ignored as a threshold, but it does
-#'   affect the width of the window used by the running medians and the minimum
-#'   length of \code{x} at which running medians start being used instead of the
-#'   overall median.
+#'   \code{k} is the width in number of observations of the window used for
+#'   running median smoothing to extract the baseline. A value several times the
+#'   width of the broader spike but narrow enough to track broader peaks needs
+#'   to be manually set in most cases.
+#'
+#'   If all spikes are guaranteed to be one observation-wide and either going up
+#'   or down from the baseline, it is possible to detect them based purely on
+#'   the \code{z.threshold} by passing \code{height.threshold = NA} and either
+#'   \code{spike.direction = "up"} or \code{spike.direction = "down"}, which
+#'   ensures very fast computation.
 #'
 #' @param x numeric vector containing the data.
 #' @param x.is.delta logical Flag indicating whether \code{x} contains
 #'   differences or original values.
-#' @param x.threshold numeric The minimum height of spikes expressed relative
-#'   to the range of the original \code{x} values, not the differences.
-#' @param z.threshold numeric Modified Z values larger than \code{z.threshold}
-#'   are considered to be spikes.
-#' @param max.spike.width integer Maximum number of consecutive large or small
-#'   observations accepted as a spike. Wider peaks and valleys are ignored.
-#'   \code{NULL} disables this test.
+#' @param height.threshold numeric The minimum height of spikes expressed relative
+#'   to the median amplitude of the baseline local variation of \code{x}.
+#' @param z.threshold numeric Modified local \eqn{Z} values larger than
+#'   \code{z.threshold} are detected as boundaries of spikes.
+#' @param k integer width of median window used for smoothing; must be odd
 #' @param spike.direction character One of \code{"up"}, \code{"down"} or
 #'   \code{"both"}, indicating which spikes are to be returned.
 #' @param na.rm logical indicating whether \code{NA} values should be stripped
@@ -64,17 +68,23 @@
 find_spikes <-
   function(x,
            x.is.delta = FALSE,
-           x.threshold = 0.02,
+           height.threshold = 10,
            z.threshold = 5,
-           max.spike.width = NULL,
+           k = 20,
            spike.direction = "both",
            na.rm = FALSE) {
-    if (is.null(x.threshold)) {
-      x.threshold <- 0.1
+    if (is.null(height.threshold)) {
+      height.threshold <- 10
+    } else if (!is.na(height.threshold) && height.threshold < 2) {
+      warning("'height.threshold < 2' set to 2")
+      height.threshold <- 2
     }
-    if (is.null(max.spike.width)) {
-      max.spike.width <- 5
+    if (is.null(k)) {
+      k <- 20
+    } else if (k %% 2 == 0) {
+      k <- k + 1
     }
+    x.len.original <- length(x)
     if (na.rm) {
       na.idx <- which(is.na(x))
       x <- na.omit(x)
@@ -87,59 +97,163 @@ find_spikes <-
       x <- x - x[1]
     }
     # running median is used to detect spikes relative to the local baseline
-    window.span <- max.spike.width * 10
-    window.span <- ifelse(window.span %% 2L, window.span, window.span + 1L)
-    if (window.span > length(x) / 2) {
+    if (k > length(x) / 2) {
       x.median <- stats::median(x)
       d.var.median <- stats::median(d.var)
     } else {
-      x.median <- stats::runmed(x, k = window.span, na.action = "na.omit")
-      d.var.median <- stats::runmed(d.var, k = window.span, na.action = "na.omit")
+      x.median <- stats::runmed(x,
+                                k = k,
+                                na.action = "na.omit",
+                                endrule = "constant")
+      d.var.median <- stats::runmed(d.var,
+                                    k = k,
+                                    na.action = "na.omit",
+                                    endrule = "constant")
     }
     z <- (d.var - d.var.median) / stats::mad(d.var) * 0.6745
     outcomes.up <- c(FALSE, z > z.threshold)
     outcomes.down <- c(FALSE, z < -z.threshold)
 
-    # we can use a multiplier on the median if we normalize it to the range
-    k.threshold <- abs(diff(range(x))) / x.median * x.threshold
-    temp <-
-      outcomes.down & x <= x.median * (1 + k.threshold)
-    outcomes.tail.up <- logical(length(temp))
-    outcomes.tail.up[which(temp) - 1L] <- TRUE
-    spikes.up <- outcomes.up | outcomes.tail.up
-    spikes.up <-
-      spikes.up & x > x.median * (1 + k.threshold)
+    if (is.na(height.threshold)) {
+      spikes.up <- outcomes.up
+      spikes.down <- outcomes.down
+    } else {
+      scaled.threshold <- median(abs(d.var.median)) * height.threshold
+      if (spike.direction %in% c("up", "both")) {
+        outcomes.head.up <-
+          outcomes.up & x > x.median + scaled.threshold
+        temp <-
+          outcomes.down &
+          # near the baseline
+          x <= x.median + scaled.threshold &
+          x >= x.median - scaled.threshold
+        outcomes.tail.up <- logical(length(temp))
+        outcomes.tail.up[which(temp) - 1L] <- TRUE
 
-    temp <-
-      outcomes.up & x >= x.median * (1 - k.threshold)
-    outcomes.tail.down <- logical(length(temp))
-    outcomes.tail.down[which(temp) - 1L] <- TRUE
-    spikes.down <- outcomes.down | outcomes.tail.down
-    spikes.down <-
-      spikes.down & x < x.median * (1 - k.threshold)
+        # fill gaps
+        spk.starts <- which(outcomes.head.up)
+        spk.ends <- which(outcomes.tail.up)
+
+        if (length(spk.starts) > 1 && length(spk.ends) > 1) {
+          # check if data ends or starts in a spike
+          if (spk.ends[1] < spk.starts[1]) {
+            if (spk.ends[1] > 1) {
+              spk.starts <- c(1, spk.starts)
+            } else {
+              spk.ends <- spk.ends[-1L]
+            }
+          }
+          if (spk.starts[length(spk.starts)] > spk.ends[length(spk.ends)]) {
+            if (spk.ends[length(spk.ends)] < length(x)) {
+              spk.ends <- c(spk.ends, length(x))
+            } else {
+              spk.starts <- spk.starts[-length(spk.starts)]
+            }
+          }
+          outcomes.middle.up <- logical(length(x))
+          i <- j <- 0
+          i.max <- length(spk.starts)
+          j.max <- length(spk.ends)
+          while (i < i.max && j < j.max) {
+            i <- i + 1
+            j <- j + 1
+            # skip narrow spikes
+            while (spk.starts[i + 1] < spk.ends[j] && i < i.max) i <- i + 1
+            while (spk.ends[j + 1] < spk.starts[i + 1] && j < j.max) j <- j + 1
+            # fill in the middle of wide spikes
+            if (spk.starts[i] + 1 < spk.ends[j]) {
+              outcomes.middle.up[(spk.starts[i] + 1):(spk.ends[j] - 1)] <- TRUE
+            }
+          }
+          spikes.up <- outcomes.head.up | outcomes.tail.up | outcomes.middle.up
+        } else {
+          spikes.up <- outcomes.up
+        }
+        spikes.up <-
+          spikes.up & x > x.median + scaled.threshold
+      }
+
+      if (spike.direction %in% c("down", "both")) {
+        outcomes.head.down <-
+          outcomes.up & x < x.median - scaled.threshold
+        temp <-
+          outcomes.up &
+          # near the baseline
+          x <= x.median + scaled.threshold &
+          x >= x.median - scaled.threshold
+        outcomes.tail.down <- logical(length(temp))
+        outcomes.tail.down[which(temp) - 1L] <- TRUE
+
+        # fill gaps
+        spk.starts <- which(outcomes.head.down)
+        spk.ends <- which(outcomes.tail.down)
+
+        if (length(spk.starts) > 1 && length(spk.ends) > 1) {
+          # check if data ends or starts in a spike
+          if (spk.ends[1] < spk.starts[1]) {
+            if (spk.ends[1] > 1) {
+              spk.starts <- c(1, spk.starts)
+            } else {
+              spk.ends <- spk.ends[-1L]
+            }
+          }
+          if (spk.starts[length(spk.starts)] > spk.ends[length(spk.ends)]) {
+            if (spk.ends[length(spk.ends)] < length(x)) {
+              spk.ends <- c(spk.ends, length(x))
+            } else {
+              spk.starts <- spk.starts[-length(spk.starts)]
+            }
+          }
+          outcomes.middle.down <- logical(length(x))
+          i <- j <- 0
+          i.max <- length(spk.starts)
+          j.max <- length(spk.ends)
+          while (i < i.max && j < j.max) {
+            i <- i + 1
+            j <- j + 1
+            # skip narrow spikes
+            while (spk.starts[i + 1] < spk.ends[j] && i < i.max) i <- i + 1
+            while (spk.ends[j + 1] < spk.starts[i + 1] && j < j.max) j <- j + 1
+            # fill in the middle of wide spikes
+            if (spk.starts[i] + 1 < spk.ends[j]) {
+              outcomes.middle.down[(spk.starts[i] + 1):(spk.ends[j] - 1)] <- TRUE
+            }
+          }
+          spikes.down <- outcomes.head.down | outcomes.tail.down | outcomes.middle.down
+        } else {
+          spikes.down <- outcomes.down
+        }
+        spikes.down <-
+          spikes.down & x < x.median - scaled.threshold
+
+
+
+        temp <-
+          outcomes.up &
+          # near the baseline
+          x <= x.median + scaled.threshold&
+          x >= x.median - scaled.threshold
+        outcomes.tail.down <- logical(length(temp))
+        outcomes.tail.down[which(temp) - 1L] <- TRUE
+        spikes.down <- outcomes.down | outcomes.tail.down
+        spikes.down <-
+          spikes.down & x < x.median - scaled.threshold
+      }
+    }
 
     outcomes <-
       switch(spike.direction,
              "up" = spikes.up,
              "down" = spikes.down,
              "both" = spikes.up | spikes.down,
+             "skip" = logical(length(x)),
              {
-               warning("'spike.direction' must be \"up\", \"down\" or \"both\", not \"",
+               warning("'spike.direction' must be \"up\", \"down\", \"both\", or \"skip\", not \"",
                        spike.direction, "\"")
-               NA
+               logical(length(x))
              }
       )
 
-    # Here code to fill outcomes with the middle values of spikes is needed!
-    #
-    # currently outcomes points to discontinuities not the whole spike!
-    #
-    # if (!is.null(max.spike.width) && max.spike.width > 0) {
-    #   # ignore broad peaks using run length encoding
-    #   runs <- rle(outcomes)
-    #   runs[["values"]] <- ifelse(runs[["lengths"]] > max.spike.width, FALSE, runs[["values"]])
-    #   outcomes <- inverse.rle(runs)
-    # }
     if (na.rm) {
       # restore length of logical vector
       for (i in na.idx) {
@@ -147,6 +261,6 @@ find_spikes <-
       }
     }
     # check assertion
-    stopifnot(length(outcomes) == length(x))
+    stopifnot(length(outcomes) == x.len.original)
     outcomes
   }

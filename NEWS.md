@@ -14,6 +14,9 @@ documentation, including some edits to the articles. Changes to the code
 introduced some small enhancements to existing functions and corrected a few
 bugs, most of them minor.
 
+- Add `stat_spikes()` with similar functionality as `stat_peaks()` and 
+`stat_valleys()` but targetting very narrow peaks and valleys with unusually
+abrupt transitions from the baseline.
 - Update `check_poly_formula()` to issue warnings when the model formula includes 
 on-the-fly transformations in the rhs or lhs, indicating the need to pass a
 matching argument to `eq.x.rhs` or `eq.lhs`. Fix parsing failures leading to

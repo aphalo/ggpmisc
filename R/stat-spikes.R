@@ -37,20 +37,23 @@
 #' # lynx and Nile are time.series objects recognized by
 #' # ggpp::ggplot.ts() and converted on-the-fly with a default mapping
 #'
+#' n = 500
 #' set.seed(45678)
-#' my.data <- data.frame(x = 1:1000,
-#'                       y = 1:1000 + stats::rnorm(1000, sd = 5))
+#' my.data <- data.frame(x = 1:n,
+#'                       y = rep(sin((0:19)/20 * 2 * pi), n / 20) +
+#'                           stats::rnorm(n, sd = 0.5))
 #' my.data$y2 <- my.data$y1 <- my.data$y
-#' selector <- sample(seq_len(nrow(my.data)), 25)
-#' selector <- unique(c(selector - 1L, selector, selector + 1L))
-#' my.data$y[selector] <- my.data$y[selector] + 100
-#' selector <- sample(seq_len(nrow(my.data)), 25)
-#' my.data$y[selector] <- my.data$y[selector] - 100
+#' selector <- sample(seq_len(n), 5)
+#' my.data$y[selector] <- my.data$y[selector] + 10
 #'
-#' # using defaults for
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_line() +
 #'   stat_spikes(colour = "orange")
+#'
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_line() +
+#'   stat_spikes(geom = "text", vjust = -0.5) +
+#'   stat_spikes(geom = "rug", colour = "red")
 #'
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_line() +
@@ -69,6 +72,16 @@
 #'   geom_line() +
 #'   stat_spikes(z.threshold = 2, colour = "orange")
 #'
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_line() +
+#'   stat_spikes(z.threshold = 20, colour = "orange")
+#'
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_line() +
+#'   stat_spikes(colour = "red",
+#'               spike.direction = "up",
+#'               height.threshold = NA)
+#'
 #' @export
 #'
 stat_spikes <- function(mapping = NULL,
@@ -77,9 +90,9 @@ stat_spikes <- function(mapping = NULL,
                         position = "identity",
                         ...,
                         orientation = "x",
-                        x.threshold = 0.02,
-                        z.threshold = 5,
-                        max.spike.width = NULL,
+                        height.threshold = 20,
+                        z.threshold = 7,
+                        k = 20,
                         spike.direction = "both",
                         label.fmt = NULL,
                         x.label.fmt = label.fmt,
@@ -102,9 +115,9 @@ stat_spikes <- function(mapping = NULL,
     inherit.aes = inherit.aes,
     params =
       rlang::list2(
-        x.threshold = x.threshold,
+        height.threshold = height.threshold,
         z.threshold = z.threshold,
-        max.spike.width = max.spike.width,
+        k = k,
         spike.direction = spike.direction,
         x.label.fmt = x.label.fmt,
         y.label.fmt = y.label.fmt,
@@ -125,9 +138,9 @@ stat_spikes <- function(mapping = NULL,
 #'
 spikes_compute_group_fun <- function(data,
                                      scales,
-                                     x.threshold = 0.1,
-                                     z.threshold = 9,
-                                     max.spike.width = 8,
+                                     height.threshold = 10,
+                                     z.threshold = 5,
+                                     k = 20,
                                      spike.direction = "both",
                                      x.label.fmt = NULL,
                                      y.label.fmt = NULL,
@@ -174,9 +187,9 @@ spikes_compute_group_fun <- function(data,
 
   spikes.selector <- find_spikes(data$y,
                                  x.is.delta = FALSE,
-                                 x.threshold = x.threshold,
+                                 height.threshold = height.threshold,
                                  z.threshold = z.threshold,
-                                 max.spike.width = max.spike.width,
+                                 k = k,
                                  spike.direction = spike.direction,
                                  na.rm = TRUE)
 
@@ -228,7 +241,7 @@ StatSpikes <-
 
                      has_x <- !(is.null(data$x) && is.null(params$x))
                      has_y <- !(is.null(data$y) && is.null(params$y))
-                     if (!has_x && !has_y) {
+                     if (!has_x || !has_y) {
                        rlang::abort("stat_spikes() requires both x and y aesthetics.")
                      }
                      params

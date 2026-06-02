@@ -7,9 +7,9 @@
 find_spikes(
   x,
   x.is.delta = FALSE,
-  x.threshold = 0.02,
+  height.threshold = 10,
   z.threshold = 5,
-  max.spike.width = NULL,
+  k = 20,
   spike.direction = "both",
   na.rm = FALSE
 )
@@ -20,15 +20,13 @@ find_spikes(
 \item{x.is.delta}{logical Flag indicating whether \code{x} contains
 differences or original values.}
 
-\item{x.threshold}{numeric The minimum height of spikes expressed relative
-to the range of the original \code{x} values, not the differences.}
+\item{height.threshold}{numeric The minimum height of spikes expressed relative
+to the median amplitude of the baseline local variation of \code{x}.}
 
-\item{z.threshold}{numeric Modified Z values larger than \code{z.threshold}
-are considered to be spikes.}
+\item{z.threshold}{numeric Modified local \eqn{Z} values larger than
+\code{z.threshold} are detected as boundaries of spikes.}
 
-\item{max.spike.width}{integer Maximum number of consecutive large or small
-observations accepted as a spike. Wider peaks and valleys are ignored.
-\code{NULL} disables this test.}
+\item{k}{integer width of median window used for smoothing; must be odd}
 
 \item{spike.direction}{character One of \code{"up"}, \code{"down"} or
 \code{"both"}, indicating which spikes are to be returned.}
@@ -72,10 +70,16 @@ Spikes are detected based on a modified \eqn{Z} score calculated
   This function thus detects the start and end of each spike, and
   distinguishes upward and downward spikes.
 
-  \code{max.spike.width} is currently ignored as a threshold, but it does
-  affect the width of the window used by the running medians and the minimum
-  length of \code{x} at which running medians start being used instead of the
-  overall median.
+  \code{k} is the width in number of observations of the window used for
+  running median smoothing to extract the baseline. A value several times the
+  width of the broader spike but narrow enough to track broader peaks needs
+  to be manually set in most cases.
+
+  If all spikes are guaranteed to be one observation-wide and either going up
+  or down from the baseline, it is possible to detect them based purely on
+  the \code{z.threshold} by passing \code{height.threshold = NA} and either
+  \code{spike.direction = "up"} or \code{spike.direction = "down"}, which
+  ensures very fast computation.
 }
 \references{
 Whitaker, D. A.; Hayes, K. (2018) A simple algorithm for despiking Raman

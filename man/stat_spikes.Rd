@@ -11,9 +11,9 @@ stat_spikes(
   position = "identity",
   ...,
   orientation = "x",
-  x.threshold = 0.02,
-  z.threshold = 5,
-  max.spike.width = NULL,
+  height.threshold = 20,
+  z.threshold = 7,
+  k = 20,
   spike.direction = "both",
   label.fmt = NULL,
   x.label.fmt = label.fmt,
@@ -44,15 +44,13 @@ can include aesthetics whose values you want to set, not map. See
 \item{orientation}{character The orientation of the layer can be set to
 either \code{"x"}, the default, or \code{"y"}.}
 
-\item{x.threshold}{numeric The minimum height of spikes expressed relative
-to the range of the original \code{x} values, not the differences.}
+\item{height.threshold}{numeric The minimum height of spikes expressed relative
+to the median amplitude of the baseline local variation of \code{x}.}
 
-\item{z.threshold}{numeric Modified Z values larger than \code{z.threshold}
-are considered to be spikes.}
+\item{z.threshold}{numeric Modified local \eqn{Z} values larger than
+\code{z.threshold} are detected as boundaries of spikes.}
 
-\item{max.spike.width}{integer Maximum number of consecutive large or small
-observations accepted as a spike. Wider peaks and valleys are ignored.
-\code{NULL} disables this test.}
+\item{k}{integer width of median window used for smoothing; must be odd}
 
 \item{spike.direction}{character One of \code{"up"}, \code{"down"} or
 \code{"both"}, indicating which spikes are to be returned.}
@@ -111,10 +109,16 @@ Spikes are detected based on a modified \eqn{Z} score calculated
   This function thus detects the start and end of each spike, and
   distinguishes upward and downward spikes.
 
-  \code{max.spike.width} is currently ignored as a threshold, but it does
-  affect the width of the window used by the running medians and the minimum
-  length of \code{x} at which running medians start being used instead of the
-  overall median.
+  \code{k} is the width in number of observations of the window used for
+  running median smoothing to extract the baseline. A value several times the
+  width of the broader spike but narrow enough to track broader peaks needs
+  to be manually set in most cases.
+
+  If all spikes are guaranteed to be one observation-wide and either going up
+  or down from the baseline, it is possible to detect them based purely on
+  the \code{z.threshold} by passing \code{height.threshold = NA} and either
+  \code{spike.direction = "up"} or \code{spike.direction = "down"}, which
+  ensures very fast computation.
 }
 \section{Computed and copied variables in the returned data frame}{
 
@@ -153,15 +157,17 @@ Spikes are detected based on a modified \eqn{Z} score calculated
 # lynx and Nile are time.series objects recognized by
 # ggpp::ggplot.ts() and converted on-the-fly with a default mapping
 
+n = 500
 set.seed(45678)
-my.data <- data.frame(x = 1:1000,
-                      y = 1:1000 + stats::rnorm(1000, sd = 5))
+my.data <- data.frame(x = 1:n,
+                      y = rep(sin((0:19)/20 * 2 * pi), n / 20) +
+                          stats::rnorm(n, sd = 0.3))
 my.data$y2 <- my.data$y1 <- my.data$y
-selector <- sample(seq_len(nrow(my.data)), 25)
+selector <- sample(seq_len(n), 5)
 selector <- unique(c(selector - 1L, selector, selector + 1L))
-my.data$y[selector] <- my.data$y[selector] + 100
-selector <- sample(seq_len(nrow(my.data)), 25)
-my.data$y[selector] <- my.data$y[selector] - 100
+my.data$y[selector] <- my.data$y[selector] + 10
+selector <- sample(seq_len(n), 5)
+my.data$y[selector] <- my.data$y[selector] - 10
 
 # using defaults for
 ggplot(my.data, aes(x, y)) +
@@ -184,6 +190,10 @@ ggplot(my.data, aes(x, y)) +
 ggplot(my.data, aes(x, y)) +
   geom_line() +
   stat_spikes(z.threshold = 2, colour = "orange")
+
+ggplot(my.data, aes(x, y)) +
+  geom_line() +
+  stat_spikes(z.threshold = 20, colour = "orange")
 
 }
 \seealso{
