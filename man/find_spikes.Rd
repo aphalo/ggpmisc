@@ -20,27 +20,31 @@ find_spikes(
 \item{x.is.delta}{logical Flag indicating whether \code{x} contains
 differences or original values.}
 
-\item{height.threshold}{numeric The minimum height of spikes expressed relative
-to the median amplitude of the baseline local variation of \code{x}.}
+\item{height.threshold}{numeric The minimum height of spikes expressed
+relative to the median amplitude of the baseline local variation of
+\code{x}.}
 
 \item{z.threshold}{numeric Modified local \eqn{Z} values larger than
 \code{z.threshold} are detected as boundaries of spikes.}
 
 \item{k}{integer width of median window used for smoothing; must be odd}
 
-\item{spike.direction}{character One of \code{"up"}, \code{"down"} or
-\code{"both"}, indicating which spikes are to be returned.}
+\item{spike.direction}{character One of \code{"up"}, \code{"down"},
+\code{"both"} or \code{"skip"}, indicating which spikes are to be returned,
+if any.}
 
 \item{na.rm}{logical indicating whether \code{NA} values should be stripped
 before searching for spikes.}
 }
 \value{
-A logical vector of the same length as \code{x}. Values that are
-  \code{TRUE} correspond to the boundaries of upwards, downwards or both
-  downwards and upwards local spikes in the data.
+An integer vector of the same length as \code{x}. Values that are
+  \code{0}, \code{+1} or \code{-1} corresponding to no-spike, upwards-spike,
+  and downwards-spike in the data. Conversion to logical with
+  \code{as.logical()} results in a vector with \code{TRUE} for spikes and
+  \code{FALSE} otherwise.
 }
 \description{
-This function finds spikes in a numeric vector using the algorithm of
+Find spikes in a numeric vector using the algorithm of
 Whitaker and Hayes (2018). Spikes are values in spectra that are unusually
 high or low compared to neighbours. They are usually individual values or very
 short runs of similar "unusual" values. Spikes caused by cosmic radiation are
@@ -75,6 +79,9 @@ Spikes are detected based on a modified \eqn{Z} score calculated
   width of the broader spike but narrow enough to track broader peaks needs
   to be manually set in most cases.
 
+  With \code{na.rm = TRUE}, \code{NA} values are omitted before searching for
+  spikes and set to \code{0L} in the returned vector.
+
   If all spikes are guaranteed to be one observation-wide and either going up
   or down from the baseline, it is possible to detect them based purely on
   the \code{z.threshold} by passing \code{height.threshold = NA} and either
@@ -84,6 +91,7 @@ Spikes are detected based on a modified \eqn{Z} score calculated
 \references{
 Whitaker, D. A.; Hayes, K. (2018) A simple algorithm for despiking Raman
 spectra. Chemometrics and Intelligent Laboratory Systems, 179, 82-84.
+\orcid{10.1016/j.chemolab.2018.06.009}.
 }
 \seealso{
 Other peaks and valleys functions:

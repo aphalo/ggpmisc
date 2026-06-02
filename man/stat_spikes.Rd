@@ -44,16 +44,18 @@ can include aesthetics whose values you want to set, not map. See
 \item{orientation}{character The orientation of the layer can be set to
 either \code{"x"}, the default, or \code{"y"}.}
 
-\item{height.threshold}{numeric The minimum height of spikes expressed relative
-to the median amplitude of the baseline local variation of \code{x}.}
+\item{height.threshold}{numeric The minimum height of spikes expressed
+relative to the median amplitude of the baseline local variation of
+\code{x}.}
 
 \item{z.threshold}{numeric Modified local \eqn{Z} values larger than
 \code{z.threshold} are detected as boundaries of spikes.}
 
 \item{k}{integer width of median window used for smoothing; must be odd}
 
-\item{spike.direction}{character One of \code{"up"}, \code{"down"} or
-\code{"both"}, indicating which spikes are to be returned.}
+\item{spike.direction}{character One of \code{"up"}, \code{"down"},
+\code{"both"} or \code{"skip"}, indicating which spikes are to be returned,
+if any.}
 
 \item{label.fmt, x.label.fmt, y.label.fmt}{character strings giving a format
 definition for construction of character strings labels with function
@@ -61,7 +63,7 @@ definition for construction of character strings labels with function
 
 \item{extract.spikes}{If \code{TRUE} only the rows containing
 spikes are returned. If \code{FALSE} the whole of \code{data} is
-returned but with labels set to \code{NA} in rows not containing spikes.
+returned but with labels set to \code{""} in rows not containing spikes.
 If \code{NULL}, the default, \code{TRUE}, is used unless the argument
 passed to \code{geom} is \code{"text_repel"}, \code{"label_repel"}
 or \code{"marquee_repel"}.}
@@ -84,8 +86,11 @@ A data frame with one row for each spike found in the data
   contain the labels.
 }
 \description{
-\code{stat_spikes} finds at which \code{x} positions local \code{y} narrow
-maxima are located.
+\code{stat_spikes()} tags or extracts rows in \code{data} containing local
+\code{y} narrow maxima and/or minima with very steep shoulders. It makes it
+possible to highlight and label spikes based on their \code{x} and/or
+\code{y} coordinates. Orientations flipping as well as dates and times are
+supported.
 }
 \details{
 Spikes are detected based on a modified \eqn{Z} score calculated
@@ -114,6 +119,9 @@ Spikes are detected based on a modified \eqn{Z} score calculated
   width of the broader spike but narrow enough to track broader peaks needs
   to be manually set in most cases.
 
+  With \code{na.rm = TRUE}, \code{NA} values are omitted before searching for
+  spikes and set to \code{0L} in the returned vector.
+
   If all spikes are guaranteed to be one observation-wide and either going up
   or down from the baseline, it is possible to detect them based purely on
   the \code{z.threshold} by passing \code{height.threshold = NA} and either
@@ -123,10 +131,11 @@ Spikes are detected based on a modified \eqn{Z} score calculated
 \section{Computed and copied variables in the returned data frame}{
 
 \describe{
-  \item{x}{x-values at the spikes as numeric}
-  \item{y}{y-values at the spikes  as numeric}
-  \item{x.label}{x-values at the spikes formatted as character}
-  \item{y.label}{y-values at the spikes formatted as character}
+  \item{x}{x-values at the spikes as numeric.}
+  \item{y}{y-values at the spikes  as numeric.}
+  \item{x.label}{x-values at the spikes formatted as character.}
+  \item{y.label}{y-values at the spikes formatted as character.}
+  \item{is.spike}{integer vector of \code{0}, \code{1} or \code{-1}.}
 }
 }
 
@@ -161,18 +170,22 @@ n = 500
 set.seed(45678)
 my.data <- data.frame(x = 1:n,
                       y = rep(sin((0:19)/20 * 2 * pi), n / 20) +
-                          stats::rnorm(n, sd = 0.3))
-my.data$y2 <- my.data$y1 <- my.data$y
+                          stats::rnorm(n, sd = 0.5))
 selector <- sample(seq_len(n), 5)
-selector <- unique(c(selector - 1L, selector, selector + 1L))
 my.data$y[selector] <- my.data$y[selector] + 10
-selector <- sample(seq_len(n), 5)
-my.data$y[selector] <- my.data$y[selector] - 10
 
-# using defaults for
 ggplot(my.data, aes(x, y)) +
   geom_line() +
   stat_spikes(colour = "orange")
+
+ggplot(my.data, aes(x, -y)) +
+  geom_line() +
+  stat_spikes(colour = "orange")
+
+ggplot(my.data, aes(x, y)) +
+  geom_line() +
+  stat_spikes(geom = "text", vjust = -0.5) +
+  stat_spikes(geom = "rug", colour = "red")
 
 ggplot(my.data, aes(x, y)) +
   geom_line() +
@@ -194,6 +207,31 @@ ggplot(my.data, aes(x, y)) +
 ggplot(my.data, aes(x, y)) +
   geom_line() +
   stat_spikes(z.threshold = 20, colour = "orange")
+
+ggplot(my.data, aes(x, y)) +
+  geom_line() +
+  stat_spikes(colour = "red",
+              spike.direction = "up",
+              height.threshold = NA)
+
+# Inspecting the returned data using geom_debug_group()
+# This provides a quick way of finding out the names of the variables that
+# are available for mapping to aesthetics with after_stat().
+
+gginnards.installed <- requireNamespace("gginnards", quietly = TRUE)
+
+if (gginnards.installed)
+  library(gginnards)
+
+if (gginnards.installed)
+ggplot(my.data, aes(x, y)) +
+  geom_line() +
+  stat_spikes(geom = "debug_group")
+
+if (gginnards.installed)
+ggplot(my.data, aes(x, y)) +
+  geom_line() +
+  stat_spikes(geom = "debug_group", extract.spikes = FALSE)
 
 }
 \seealso{

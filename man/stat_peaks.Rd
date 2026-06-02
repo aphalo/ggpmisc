@@ -108,9 +108,10 @@ definition for construction of character strings labels with function
 
 \item{extract.peaks, extract.valleys}{If \code{TRUE} only the rows containing
 peaks or valleys are returned. If \code{FALSE} the whole of \code{data} is
-returned but with labels set to \code{NA} in rows not containing peaks or
-valleys. If \code{NULL}, the default, \code{TRUE}, is used unless the geom
-name passed as argument is \code{"text_repel"} or \code{"label_repel"}.}
+returned but with labels set to \code{""} in rows not containing peaks or
+valleys. If \code{NULL}, the default, \code{TRUE}, is used unless the
+argument passed to \code{geom} is \code{"text_repel"}, \code{"label_repel"}
+or \code{"marquee_repel"}.}
 
 \item{na.rm}{a logical value indicating whether NA values should be stripped
 before the computation proceeds.}
@@ -130,10 +131,13 @@ A data frame with one row for each peak (or valley) found in the data
   contain the labels.
 }
 \description{
-\code{stat_peaks} finds at which x positions the global y maximun or local y
-maxima are located. \code{stat_valleys} finds at which x positions the global
-y minimum or local y minima located. They both support filtering of relevant
-peaks. \strong{Axis flipping is supported.}
+\code{stat_peaks()} tags or extracts rows in \code{data} containing local
+or global maxima of \code{y}.
+\code{stat_valleys} tags or extracts rows in \code{data} containing local
+or global minima of \code{y}. They make it
+easy to highlight and label peaks and valleys based on their \code{x} and/or \code{y}
+coordinates. Orientations flipping as well as dates and times are
+supported.
 }
 \details{
 As \code{find_valleys}, \code{stat_peaks} and \code{stat_valleys}
@@ -182,10 +186,11 @@ As \code{find_valleys}, \code{stat_peaks} and \code{stat_valleys}
 \section{Computed and copied variables in the returned data frame}{
 
 \describe{
-  \item{x}{x-value at the peak (or valley) as numeric}
-  \item{y}{y-value at the peak (or valley) as numeric}
-  \item{x.label}{x-value at the peak (or valley) formatted as character}
-  \item{y.label}{y-value at the peak (or valley) formatted as character}
+  \item{x}{x-value at the peak (or valley) as numeric.}
+  \item{y}{y-value at the peak (or valley) as numeric.}
+  \item{x.label}{x-value at the peak (or valley) formatted as character.}
+  \item{y.label}{y-value at the peak (or valley) formatted as character.}
+  \item{is.peak/is.valley}{logical vector, \code{TRUE} at peaks or valleys.}
 }
 }
 

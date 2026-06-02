@@ -1,93 +1,37 @@
-context("find peaks")
+context("find_spikes")
 
-test_that("span works", {
-  expect_equal(which(find_peaks(rivers,
-                                span = NULL)),
-               68)
-  expect_equal(which(find_peaks(rivers,
-                                span = 200)),
-               68)
-  expect_equal(length(find_peaks(rivers,
-                                 span = 1)),
+test_that("returned value is good", {
+  expect_type(find_spikes(rivers),
+              "integer")
+  expect_equal(length(find_spikes(rivers)),
                length(rivers))
-  expect_equal(which(find_peaks(rivers,
-                                span = 31)),
-               c(23, 68, 101))
-  expect_equal(which(find_peaks(rivers,
-                                span = 11)),
-               c(7, 23, 32, 38, 44, 50, 68, 83, 89, 101, 115, 121, 131))
 })
 
-test_that("global.threshold works", {
-  expect_equal(which(find_peaks(rivers,
-                                span = 11,
-                                global.threshold = 1)),
-               integer(0))
-  expect_equal(which(find_peaks(rivers,
-                                span = 11,
-                                global.threshold = 0)),
-               c(7, 23, 32, 38, 44, 50, 68, 83, 89, 101, 115, 121, 131))
-  expect_equal(which(find_peaks(rivers,
-                                span = 11,
-                                global.threshold = 0.5)),
+test_that("thresholds works", {
+  expect_equal(which(as.logical(find_spikes(rivers))),
                68)
-  expect_equal(which(find_peaks(rivers,
-                                span = 11,
-                                global.threshold = 0.35)),
-               c(7, 23, 68, 101))
-  expect_equal(which(find_peaks(rivers,
-                                span = 11,
-                                global.threshold = -0.25)),
-               c(32, 38, 44, 50, 131))
-  expect_equal(which(find_peaks(rivers,
-                                span = 11,
-                                global.threshold = I(1000))),
-               c(7, 23, 68, 83, 89, 101, 115, 121))
+  expect_equal(sum(as.logical(find_spikes(rivers, z.threshold = 30))),
+               0)
+  expect_equal(sum(as.logical(find_spikes(rivers, z.threshold = 2))),
+               8)
+  expect_equal(sum(as.logical(find_spikes(rivers, height.threshold = 30))),
+               1)
+  expect_equal(sum(as.logical(find_spikes(rivers, height.threshold = 2))),
+               1)
+  expect_equal(which(as.logical(find_spikes(rivers, z.threshold = 4))),
+               c(66, 68))
+  expect_equal(which(as.logical(find_spikes(rivers, z.threshold = 2.5))),
+               c(8, 66, 68, 101))
 })
 
-test_that("local.threshold works", {
-  expect_equal(which(find_peaks(rivers,
-                                span = 11,
-                                local.threshold = 1)),
-               integer(0))
-  expect_equal(which(find_peaks(rivers,
-                                span = 11,
-                                local.threshold = 0)),
-               c(7, 23, 32, 38, 44, 50, 68, 83, 89, 101, 115, 121, 131))
-  expect_equal(which(find_peaks(rivers,
-                                span = 5,
-                                local.threshold = 0.95)),
-               integer(0))
-  expect_equal(which(find_peaks(rivers,
-                                span = 5,
-                                local.threshold = 0.5,
-                                local.reference = "farthest")),
-               68)
-  expect_equal(which(find_peaks(rivers,
-                                span = 11,
-                                local.threshold = 0.5,
-                                local.reference = "farthest")),
-               68)
-  expect_equal(which(find_peaks(rivers,
-                                span = 11,
-                                local.threshold = 0.5,
-                                local.reference = "median")),
-               68)
-  expect_equal(which(find_peaks(rivers,
-                                span = 11,
-                                local.threshold = 0.25,
-                                local.reference = "farthest")),
-               c(7, 23, 68, 83, 101, 115))
-  expect_equal(which(find_peaks(rivers,
-                                span = 11,
-                                local.threshold = 0.25,
-                                local.reference = "median")),
-               c(7, 68, 101))
-  expect_equal(which(find_peaks(rivers,
-                                span = 5,
-                                local.threshold = 0.5)),
-               integer(0))
-  expect_error(find_peaks(rivers,
-                          span = 11,
-                          local.threshold = 2000))
+test_that("direction works", {
+  expect_equal(sum(as.logical(find_spikes(rivers, spike.direction = "up"))),
+               1)
+  expect_equal(sum(as.logical(find_spikes(rivers, spike.direction = "down"))),
+               0)
+  expect_equal(sum(as.logical(find_spikes(rivers, spike.direction = "both"))),
+               1)
+  expect_equal(sum(as.logical(find_spikes(rivers, spike.direction = "skip"))),
+               0)
 })
+

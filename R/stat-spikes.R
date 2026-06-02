@@ -1,13 +1,16 @@
 #' Local narrow maxima (spikes) or minima (spikes)
 #'
-#' \code{stat_spikes} finds at which \code{x} positions local \code{y} narrow
-#' maxima are located.
+#' \code{stat_spikes()} tags or extracts rows in \code{data} containing local
+#' \code{y} narrow maxima and/or minima with very steep shoulders. It makes it
+#' possible to highlight and label spikes based on their \code{x} and/or
+#' \code{y} coordinates. Orientations flipping as well as dates and times are
+#' supported.
 #'
 #' @inheritParams stat_peaks
 #' @inheritParams find_spikes
 #' @param extract.spikes If \code{TRUE} only the rows containing
 #'   spikes are returned. If \code{FALSE} the whole of \code{data} is
-#'   returned but with labels set to \code{NA} in rows not containing spikes.
+#'   returned but with labels set to \code{""} in rows not containing spikes.
 #'   If \code{NULL}, the default, \code{TRUE}, is used unless the argument
 #'   passed to \code{geom} is \code{"text_repel"}, \code{"label_repel"}
 #'   or \code{"marquee_repel"}.
@@ -20,10 +23,11 @@
 #'
 #' @section Computed and copied variables in the returned data frame:
 #' \describe{
-#'   \item{x}{x-values at the spikes as numeric}
-#'   \item{y}{y-values at the spikes  as numeric}
-#'   \item{x.label}{x-values at the spikes formatted as character}
-#'   \item{y.label}{y-values at the spikes formatted as character}
+#'   \item{x}{x-values at the spikes as numeric.}
+#'   \item{y}{y-values at the spikes  as numeric.}
+#'   \item{x.label}{x-values at the spikes formatted as character.}
+#'   \item{y.label}{y-values at the spikes formatted as character.}
+#'   \item{is.spike}{integer vector of \code{0}, \code{1} or \code{-1}.}
 #' }
 #'
 #' @inherit find_spikes details
@@ -42,11 +46,14 @@
 #' my.data <- data.frame(x = 1:n,
 #'                       y = rep(sin((0:19)/20 * 2 * pi), n / 20) +
 #'                           stats::rnorm(n, sd = 0.5))
-#' my.data$y2 <- my.data$y1 <- my.data$y
 #' selector <- sample(seq_len(n), 5)
 #' my.data$y[selector] <- my.data$y[selector] + 10
 #'
 #' ggplot(my.data, aes(x, y)) +
+#'   geom_line() +
+#'   stat_spikes(colour = "orange")
+#'
+#' ggplot(my.data, aes(x, -y)) +
 #'   geom_line() +
 #'   stat_spikes(colour = "orange")
 #'
@@ -81,6 +88,25 @@
 #'   stat_spikes(colour = "red",
 #'               spike.direction = "up",
 #'               height.threshold = NA)
+#'
+#' # Inspecting the returned data using geom_debug_group()
+#' # This provides a quick way of finding out the names of the variables that
+#' # are available for mapping to aesthetics with after_stat().
+#'
+#' gginnards.installed <- requireNamespace("gginnards", quietly = TRUE)
+#'
+#' if (gginnards.installed)
+#'   library(gginnards)
+#'
+#' if (gginnards.installed)
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_line() +
+#'   stat_spikes(geom = "debug_group")
+#'
+#' if (gginnards.installed)
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_line() +
+#'   stat_spikes(geom = "debug_group", extract.spikes = FALSE)
 #'
 #' @export
 #'
@@ -197,7 +223,7 @@ spikes_compute_group_fun <- function(data,
   spikes.df$is.spike <- spikes.selector
 
   if (extract.spikes) {
-    spikes.df <- spikes.df[spikes.df$is.spike, , drop = FALSE]
+    spikes.df <- spikes.df[as.logical(spikes.df$is.spike), , drop = FALSE]
   }
 
   if (nrow(spikes.df)) {
