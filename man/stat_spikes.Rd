@@ -2,7 +2,7 @@
 % Please edit documentation in R/stat-spikes.R
 \name{stat_spikes}
 \alias{stat_spikes}
-\title{Local narrow maxima (spikes) or minima (spikes)}
+\title{Local narrow maxima or minima (spikes)}
 \usage{
 stat_spikes(
   mapping = NULL,
@@ -233,6 +233,11 @@ ggplot(my.data, aes(x, y)) +
   geom_line() +
   stat_spikes(geom = "debug_group", extract.spikes = FALSE)
 
+}
+\references{
+Whitaker, D. A.; Hayes, K. (2018) A simple algorithm for despiking Raman
+spectra. Chemometrics and Intelligent Laboratory Systems, 179, 82-84.
+\doi{10.1016/j.chemolab.2018.06.009}.
 }
 \seealso{
 \code{\link{find_spikes}}, for the function used to located the

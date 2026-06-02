@@ -2,7 +2,7 @@
 % Please edit documentation in R/find-spikes.R
 \name{find_spikes}
 \alias{find_spikes}
-\title{Find spikes}
+\title{Find spikes in vector}
 \usage{
 find_spikes(
   x,
@@ -91,7 +91,7 @@ Spikes are detected based on a modified \eqn{Z} score calculated
 \references{
 Whitaker, D. A.; Hayes, K. (2018) A simple algorithm for despiking Raman
 spectra. Chemometrics and Intelligent Laboratory Systems, 179, 82-84.
-\orcid{10.1016/j.chemolab.2018.06.009}.
+\doi{10.1016/j.chemolab.2018.06.009}.
 }
 \seealso{
 Other peaks and valleys functions:

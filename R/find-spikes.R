@@ -1,4 +1,4 @@
-#' Find spikes
+#' Find spikes in vector
 #'
 #' Find spikes in a numeric vector using the algorithm of
 #' Whitaker and Hayes (2018). Spikes are values in spectra that are unusually
@@ -67,7 +67,7 @@
 #' @references
 #' Whitaker, D. A.; Hayes, K. (2018) A simple algorithm for despiking Raman
 #' spectra. Chemometrics and Intelligent Laboratory Systems, 179, 82-84.
-#' \orcid{10.1016/j.chemolab.2018.06.009}.
+#' \doi{10.1016/j.chemolab.2018.06.009}.
 #'
 #' @export
 #'

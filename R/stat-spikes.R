@@ -1,4 +1,4 @@
-#' Local narrow maxima (spikes) or minima (spikes)
+#' Local narrow maxima or minima (spikes)
 #'
 #' \code{stat_spikes()} tags or extracts rows in \code{data} containing local
 #' \code{y} narrow maxima and/or minima with very steep shoulders. It makes it
@@ -30,7 +30,7 @@
 #'   \item{is.spike}{integer vector of \code{0}, \code{1} or \code{-1}.}
 #' }
 #'
-#' @inherit find_spikes details
+#' @inherit find_spikes details references
 #'
 #' @inheritSection stat_peaks Label positioning and formatting
 #'
