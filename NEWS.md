@@ -14,6 +14,9 @@ documentation, including some edits to the articles. Changes to the code
 introduced some small enhancements to existing functions and corrected a few
 bugs, most of them minor.
 
+- **Code breaking** Rewrite `find_spikes()` with changes in behaviour and
+formal parameters. Old version did not behave as documented; old behaviour can
+be restored by passing arguments.
 - Add `stat_spikes()` with similar functionality as `stat_peaks()` and 
 `stat_valleys()` but targetting very narrow peaks and valleys with unusually
 abrupt transitions from the baseline.

@@ -10,22 +10,36 @@ reference:
     contents:
     - '`ggpmisc-package`'
   - title: Statistics
-    desc: Fitted models, tests and summaries enrich data visualizations allowing deeper understanding. These statistics help display these estimates graphically or as textual annotations.
+    desc: Fitted models, tests and summaries enrich data visualizations allowing deeper understanding.
+  - subtitle: Model fitting y ~ x
+    desc:  Display estimates from regression models graphically and as textual annotations.
     contents:
     - stat_correlation
-    - stat_distrmix_eq
+    - stat_ma_eq
     - stat_poly_eq
     - stat_quant_eq
-    - stat_ma_eq
-    - stat_multcomp
+    - stat_fit_residuals
+    - use_label
+  - subtitle: Model fitting ~ x
+    desc: Display estimates from univariate distributions and their mixes graphically and as textual annotations.
+    contents:
+    - stat_distrmix_eq
+  - subtitle: ANOVA and multiple comparisons
+    desc: Display test results and estimates as inset tables and as textual annotations.
+    contents:
     - stat_fit_tb
+    - stat_multcomp
+  - subtitle: Model fitting with helpers from 'broom'
+    desc: Support additional types of models with no pre-built text strings..
+    contents:
     - stat_fit_augment
     - stat_fit_glance
     - stat_fit_tidy
-    - stat_fit_residuals
+  - subtitle: Local features
+    desc: Highlight and label features.
+    contents:
     - stat_peaks
     - stat_spikes
-    - use_label
   - title: Scales
     desc: Scales control de mapping of data to aesthetics. These scales are tailored for specific types of plots.
     contents:
@@ -83,6 +97,7 @@ navbar:
         href: articles/cheat-sheet.html
       - text: 'User Guide'
         href: articles/user-guide.html
+      - text: ------
       - text: 'Custom Polynomial Models'
         href: articles/poly-advanced.html
       - text: 'Major Axis Regression'
@@ -95,6 +110,17 @@ navbar:
         href: articles/latex-labels.html
       - text: 'Comparison of output types'
         href: articles/output-types.html
+      - text: ------
+      - text: 'Annotating Plot Matrices'
+        href: https://www.r4photobiology.info/galleries/ggally-ggpairs.html
+      - text: 'Fitted-model labels in annimations'
+        href: https://www.r4photobiology.info/galleries/plot-animation.html
+      - text: 'Volcano and quadrant plots'
+        href: https://www.r4photobiology.info/galleries/quadrant-volcano-plots.html
+      - text: 'Multiple comparisons'
+        href: https://www.r4photobiology.info/galleries/multcomp.html
+      - text: 'Fitted-model labels in Markdown'
+        href: https://www.r4photobiology.info/galleries/plot-equations-markdown.html
     tutorials:
       text: Resources
       menu:
@@ -111,6 +137,9 @@ navbar:
         href: https://ggplot2.tidyverse.org/
       - text: "'scales' documentation"
         href: https://scales.r-lib.org/
+      - text: "'broom' documentation"
+        href: https://broom.tidymodels.org/
+      - text: ------
       - text: "'ggplot2' 4.0.0 [new features]"
         href: https://tidyverse.org/blog/2025/09/ggplot2-4-0-0/
       - text: "'ggplot2' 4.0.0 styling [with themes]"
