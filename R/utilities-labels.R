@@ -1372,7 +1372,7 @@ r_ci_label <- function(value,
 #' other values. Convert synonyms and change into lower case mal-formed
 #' input.
 #'
-#' @param output.type character User-set argument or default from stat
+#' @param output.type character User-set argument or default from stat.
 #' @param geom character The name of the geom that will be used to render the
 #'   labels.
 #' @param supported.types character vector of accepted values for user input.
@@ -1394,15 +1394,14 @@ r_ci_label <- function(value,
 #'   \item{\code{"marquee"}}{The labels are encoded as character strings using markdown syntax, with 'marquee' supported spans.}
 #'   \item{\code{"text"}}{The labels are plain ASCII character strings.}
 #'   \item{\code{"numeric"}}{No labels are generated. This value is accepted by the statistics, but not by the label formatting functions.}
-#'   \item{\code{NULL}}{The value used, \code{expression}, \code{latex.eqn} or \code{markup} depends on the argument passed to \code{geom}.}}
+#'   \item{\code{NULL}}{The value used depends on the argument passed to \code{geom}.}}
 #'
 #' If \code{geom = "latex"} (package 'xdvir') the output type used is
 #' \code{"latex.eqn"}. If \code{geom = "richtext"} (package 'ggtext') or
 #' \code{geom = "textbox"} (package 'ggtext') the output type used is
 #' \code{"markdown"}. If \code{geom = "marquee"} (package 'marquee') the output
 #' type used is \code{"marquee"}. For all other values of \code{geom} the default
-#' is \code{"expression"} unless the user passes an argument. Invalid values as
-#' argument trigger an Error.
+#' is \code{"expression"}. Invalid values as argument trigger an error.
 #'
 #' @examples
 #' check_output_type(NULL)
@@ -1432,9 +1431,9 @@ check_output_type <-
       }
     } else {
       output.type <- tolower(output.type)
-      # simplify tests elsewhere
+      # simplify tests elsewhere and remain backwards compatible
       if (output.type %in% c("tex", "tikz")) {
-        output.type <- "latex"
+        output.type <- gsub("tex|tikz", "latex", output.type)
       }
     }
     if (!output.type %in% supported.types) {

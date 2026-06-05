@@ -75,8 +75,8 @@
 #'   numeric in native data units. If too short they will be recycled.
 #' @param hstep,vstep numeric in npc units, the horizontal and vertical step
 #'   used between labels for different groups.
-#' @param output.type character One of "expression", "LaTeX", "text",
-#'   "markdown" or "numeric".
+#' @param output.type character One of "expression", "text", "markdown",
+#'   "marquee", "latex", "latex.eqn", "latex.deqn" or "numeric".
 #' @param parse logical Passed to the geom. If \code{TRUE}, the labels will be
 #'   parsed into expressions and displayed as described in
 #'   \code{\link[grDevices]{plotmath}}. Default is \code{TRUE} if

@@ -96,8 +96,8 @@ numeric in native data units. If too short they will be recycled.}
 \item{hstep, vstep}{numeric in npc units, the horizontal and vertical step
 used between labels for different groups.}
 
-\item{output.type}{character One of "expression", "LaTeX", "text",
-"markdown" or "numeric".}
+\item{output.type}{character One of "expression", "text", "markdown",
+"marquee", "latex", "latex.eqn", "latex.deqn" or "numeric".}
 
 \item{boot.R}{interger The number of bootstrap resamples. Set to zero for no
 bootstrap estimates for the CI.}
@@ -227,15 +227,14 @@ applied.
   \item{\code{"marquee"}}{The labels are encoded as character strings using markdown syntax, with 'marquee' supported spans.}
   \item{\code{"text"}}{The labels are plain ASCII character strings.}
   \item{\code{"numeric"}}{No labels are generated. This value is accepted by the statistics, but not by the label formatting functions.}
-  \item{\code{NULL}}{The value used, \code{expression}, \code{latex.eqn} or \code{markup} depends on the argument passed to \code{geom}.}}
+  \item{\code{NULL}}{The value used depends on the argument passed to \code{geom}.}}
 
 If \code{geom = "latex"} (package 'xdvir') the output type used is
 \code{"latex.eqn"}. If \code{geom = "richtext"} (package 'ggtext') or
 \code{geom = "textbox"} (package 'ggtext') the output type used is
 \code{"markdown"}. If \code{geom = "marquee"} (package 'marquee') the output
 type used is \code{"marquee"}. For all other values of \code{geom} the default
-is \code{"expression"} unless the user passes an argument. Invalid values as
-argument trigger an Error.
+is \code{"expression"}. Invalid values as argument trigger an error.
 }
 
 \examples{
