@@ -384,6 +384,15 @@ ggplot(my.data, aes(x, y.grp)) +
   facet_wrap(~group)
 ```
 
+In 'ggplot2' (>= 4.0.0) `layout` controls on which panels plotting takes place. It is a parameter inherited by statistics and geometries defined in 'ggpmisc' from their parent object `layer`. For details, see the documentation of `ggplot2::layer()`. 
+
+```{r}
+ggplot(my.data, aes(x, y.grp)) +
+  geom_point() +
+  stat_correlation(layout = 1) +
+  facet_wrap(~group)
+```
+
 Above we use the value of the correlation coefficient, but other numeric values such as `p.value` can be used similarly. In addition to colour, any aesthetics recognized by the geometry used such as `alpha` and `face` can be also mapped. The statistics described below for adding equations of the fitted models have user interfaces very similar to that of `stat_correaltion()` so examples can be easily adapted. Please, see the next section for examples of the use of different geometries instead of the default one, and other advanced examples.
 
 ### stat_poly_eq() and stat_poly_line()
