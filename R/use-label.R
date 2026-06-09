@@ -31,8 +31,12 @@
 #'   \code{aes(label = paste(after_stat(eq.label), after_stat(rr.label), sep = ", "))}
 #'
 #'   Function \code{use_label()} calls \code{aes()} to create a mapping for
-#'   the \code{label} aesthetic, but it can in addition combine this mapping
-#'   with other mappings directly created with \code{aes()}.
+#'   the \code{label} aesthetic to a text string assembled by calling
+#'   \code{\link{paste}()}. Function \code{f_use_label()} uses
+#'   \code{\link{sprintf}()} instead of \code{paste()} and expects a format
+#'   string with the correct number of place-holders for the strings.
+#'   Both functions can, when needed, combine this mapping to the \code{label}
+#'   aesthetic with other mappings created with \code{aes()}.
 #'
 #' @return A mapping to the \code{label} aesthetic and optionally additional
 #'   mappings as an unevaluated R expression, built using function
@@ -68,7 +72,7 @@
 #'   stat_poly_eq(mapping = use_label(),
 #'                formula = formula)
 #'
-#' # user specified label components
+#' # user specified label components and default for sep
 #' ggplot(data = my.data,
 #'        mapping = aes(x = x, y = y2, colour = group)) +
 #'   geom_point() +
@@ -82,6 +86,15 @@
 #'   geom_point() +
 #'   stat_poly_line(formula = formula) +
 #'   stat_poly_eq(mapping = use_label("R2", "F", sep = "*\" with \"*"),
+#'                formula = formula)
+#'
+#' # user specified label components and format string
+#' ggplot(data = my.data,
+#'        mapping = aes(x = x, y = y2, colour = group)) +
+#'   geom_point() +
+#'   stat_poly_line(formula = formula) +
+#'   stat_poly_eq(mapping = f_use_label("R2", "F",
+#'                                      format = "\"Estimates: \"*%s*\" with \"*%s*\" works!\""),
 #'                formula = formula)
 #'
 #' # combine the mapping to the label aesthetic with other mappings
@@ -166,9 +179,9 @@ use_label <- function(...,
     labels <- c("eq", "p.value")
   }
 
-  if (length(labels) > 5) {
+  if (length(labels) > 6) {
     warning("Pasting first 6 labels and discarding others.")
-    labels <- labels[1:5]
+    labels <- labels[1:6]
   }
 
   # accept upper case equivalents
@@ -225,6 +238,110 @@ use_label <- function(...,
                                 ggplot2::after_stat(.data[[labels[5]]]),
                                 ggplot2::after_stat(.data[[labels[6]]]),
                                 sep = sep))
+    )
+  if (!is.null(other.mapping)) {
+    utils::modifyList(other.mapping, label.mapping)
+  } else {
+    label.mapping
+  }
+}
+
+#' @rdname use_label
+#'
+#' @param format character A string with as many \code{\%s} place-holders as
+#'   labels being mapped. \strong{The format must have markup matching the
+#'   \code{output.type} used! With the default geometries,
+#'   \code{output.type = "expression"} requiring that the character string can
+#    be parsed in valid \code{\link[grDevices]{plotmath}}} expressions.
+#'
+#' @export
+#'
+f_use_label <- function(...,
+                       labels = NULL,
+                       other.mapping = NULL,
+                       format =  NULL) {
+  if (!length(labels)) {
+    labels <- list(...)
+    if (length(labels)) {
+      for (i in seq_along(labels)) {
+        if (inherits(labels[[i]], "uneval")) {
+          other.mapping <- labels[[i]]
+          labels[[i]] <- NULL
+        }
+      }
+    }
+    if (length(labels)) { # <- NULL above makes this necessary
+      if (length(labels[[1]]) > 1L) {
+        # backwards compatibility: accept vector as if passed by position to labels
+        labels <- labels[[1]]
+      }
+    }
+  }
+  if (!length(labels)) {
+    labels <- c("eq", "p.value")
+  }
+
+  if (length(labels) > 6) {
+    warning("Pasting first 6 labels and discarding others.")
+    labels <- labels[1:6]
+  }
+
+  # accept upper case equivalents
+  labels <- tolower(labels)
+  # accept short names lacking ".label" as ending
+  truncated.labels <- !grepl("\\.label$|\\.f$", labels)
+  labels[truncated.labels] <-
+    paste(labels[truncated.labels], ".label", sep = "")
+  # accept R2 and CI
+  labels <- gsub("r2\\.", "rr.", labels)
+  labels <- gsub("ci\\.label$", "confint.label", labels)
+  # accept F and P
+  labels <- gsub("^f\\.label$", "f.value.label", labels)
+  labels <- gsub("^p\\.label$", "p.value.label", labels)
+  labels <- gsub("^t\\.label$", "t.value.label", labels)
+  labels <- gsub("^z\\.label$", "z.value.label", labels)
+  labels <- gsub("^s\\.label$", "s.value.label", labels)
+  # force AIC, BIC and S in capitals
+  labels <- gsub("^aic.label$", "AIC.label", labels)
+  labels <- gsub("^bic.label$", "BIC.label", labels)
+  labels <- gsub("^s.value.label$", "S.value.label", labels)
+
+  # make mapping to label aesthetic
+  label.mapping <-
+    switch(length(labels),
+           ggplot2::aes(label =
+                          sprintf(fmt = format,
+                          ggplot2::after_stat(.data[[labels[1]]]))),
+           ggplot2::aes(label =
+                          sprintf(fmt = format,
+                                  ggplot2::after_stat(.data[[labels[1]]]),
+                                  ggplot2::after_stat(.data[[labels[2]]]))),
+           ggplot2::aes(label =
+                          sprintf(fmt = format,
+                                  paste(ggplot2::after_stat(.data[[labels[1]]]),
+                                ggplot2::after_stat(.data[[labels[2]]]),
+                                ggplot2::after_stat(.data[[labels[3]]])))),
+           ggplot2::aes(label =
+                          sprintf(fmt = format,
+                                  ggplot2::after_stat(.data[[labels[1]]]),
+                                  ggplot2::after_stat(.data[[labels[2]]]),
+                                  ggplot2::after_stat(.data[[labels[3]]]),
+                                  ggplot2::after_stat(.data[[labels[4]]]))),
+           ggplot2::aes(label =
+                          sprintf(fmt = format,
+                                  ggplot2::after_stat(.data[[labels[1]]]),
+                                  ggplot2::after_stat(.data[[labels[2]]]),
+                                  ggplot2::after_stat(.data[[labels[3]]]),
+                                  ggplot2::after_stat(.data[[labels[4]]]),
+                                  ggplot2::after_stat(.data[[labels[5]]]))),
+           ggplot2::aes(label =
+                          sprintf(fmt = format,
+                                  ggplot2::after_stat(.data[[labels[1]]]),
+                                  ggplot2::after_stat(.data[[labels[2]]]),
+                                  ggplot2::after_stat(.data[[labels[3]]]),
+                                  ggplot2::after_stat(.data[[labels[4]]]),
+                                  ggplot2::after_stat(.data[[labels[5]]]),
+                                  ggplot2::after_stat(.data[[labels[6]]])))
     )
   if (!is.null(other.mapping)) {
     utils::modifyList(other.mapping, label.mapping)

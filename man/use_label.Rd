@@ -2,9 +2,12 @@
 % Please edit documentation in R/use-label.R
 \name{use_label}
 \alias{use_label}
+\alias{f_use_label}
 \title{Assemble label and map it}
 \usage{
 use_label(..., labels = NULL, other.mapping = NULL, sep = "*\\", \\"*")
+
+f_use_label(..., labels = NULL, other.mapping = NULL, format = NULL)
 }
 \arguments{
 \item{...}{character Strings giving the names of at most six label components
@@ -18,6 +21,9 @@ components. If provided, values passed through \code{...} are ignored.}
 
 \item{sep}{character A string used as separator when pasting the label
 components together.}
+
+\item{format}{character A string with as many \code{\%s} place-holders as
+labels being mapped.}
 }
 \value{
 A mapping to the \code{label} aesthetic and optionally additional
@@ -49,8 +55,12 @@ Statistics \code{\link{stat_poly_eq}()}, \code{\link{stat_ma_eq}()},
   \code{aes(label = paste(after_stat(eq.label), after_stat(rr.label), sep = ", "))}
 
   Function \code{use_label()} calls \code{aes()} to create a mapping for
-  the \code{label} aesthetic, but it can in addition combine this mapping
-  with other mappings directly created with \code{aes()}.
+  the \code{label} aesthetic to a text string assembled by calling
+  \code{\link{paste}()}. Function \code{f_use_label()} uses
+  \code{\link{sprintf}()} instead of \code{paste()} and expects a format
+  string with the correct number of place-holders for the strings.
+  Both functions can, when needed, combine this mapping to the \code{label}
+  aesthetic with other mappings created with \code{aes()}.
 }
 \examples{
 # generate artificial data
@@ -73,7 +83,7 @@ ggplot(data = my.data,
   stat_poly_eq(mapping = use_label(),
                formula = formula)
 
-# user specified label components
+# user specified label components and default for sep
 ggplot(data = my.data,
        mapping = aes(x = x, y = y2, colour = group)) +
   geom_point() +
@@ -87,6 +97,15 @@ ggplot(data = my.data,
   geom_point() +
   stat_poly_line(formula = formula) +
   stat_poly_eq(mapping = use_label("R2", "F", sep = "*\" with \"*"),
+               formula = formula)
+
+# user specified label components and format string
+ggplot(data = my.data,
+       mapping = aes(x = x, y = y2, colour = group)) +
+  geom_point() +
+  stat_poly_line(formula = formula) +
+  stat_poly_eq(mapping = f_use_label("R2", "F",
+                                     format = "\"Estimates: \"*\%s*\" with \"*\%s*\" works!\""),
                formula = formula)
 
 # combine the mapping to the label aesthetic with other mappings

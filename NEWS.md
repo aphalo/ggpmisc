@@ -18,8 +18,10 @@ bugs, most of them minor.
 formal parameters. Old version did not behave as documented; old behaviour can
 be restored by passing arguments.
 - Add `stat_spikes()` with similar functionality as `stat_peaks()` and 
-`stat_valleys()` but targetting very narrow peaks and valleys with unusually
+`stat_valleys()` but targeting very narrow peaks and valleys with unusually
 abrupt transitions from the baseline.
+- Add `f_use_label()` like `use_label()` but relying on a `format` to build the
+combined character string mapped to the `label` aesthetic.
 - Update `check_poly_formula()` to issue warnings when the model formula includes 
 on-the-fly transformations in the rhs or lhs, indicating the need to pass a
 matching argument to `eq.x.rhs` or `eq.lhs`. Fix parsing failures leading to
