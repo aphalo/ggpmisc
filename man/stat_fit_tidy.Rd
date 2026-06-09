@@ -300,9 +300,9 @@ if (broom.installed)
     stat_fit_tidy(method = "lm",
                   label.x = "right",
                   method.args = list(formula = y ~ x),
-                  mapping = aes(label = sprintf("Slope = \%.3g\np-value = \%.3g",
-                                                after_stat(x_estimate),
-                                                after_stat(x_p.value))))
+                  mapping = aes(label = after_stat(
+                                          sprintf("Slope = \%.3g\np-value = \%.3g",
+                                                  x_estimate, x_p.value))))
 
 # Regression by group example
 if (broom.installed)
@@ -312,9 +312,9 @@ if (broom.installed)
     stat_fit_tidy(method = "lm",
                   label.x = "right",
                   method.args = list(formula = y ~ x),
-                  mapping = aes(label = sprintf("Slope = \%.3g, p-value = \%.3g",
-                                                after_stat(x_estimate),
-                                                after_stat(x_p.value))))
+                  mapping = aes(label = after_stat(
+                                          sprintf("Slope = \%.3g, p-value = \%.3g",
+                                                  x_estimate, x_p.value))))
 
 # Weighted regression example
 if (broom.installed)
@@ -324,9 +324,9 @@ if (broom.installed)
     stat_fit_tidy(method = "lm",
                   label.x = "right",
                   method.args = list(formula = y ~ x, weights = quote(weight)),
-                  mapping = aes(label = sprintf("Slope = \%.3g\np-value = \%.3g",
-                                                after_stat(x_estimate),
-                                                after_stat(x_p.value))))
+                  mapping = aes(label = after_stat(
+                                          sprintf("Slope = \%.3g\np-value = \%.3g",
+                                                  x_estimate, x_p.value))))
 
 }
 \seealso{

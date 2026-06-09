@@ -4,19 +4,8 @@ editor_options:
     wrap: 72
 ---
 
-# ggpmisc 0.7.1
+# ggpmisc 1.0.0
 
-This version brings a major update to the documentation of the statistics. The
-complementary prediction and annotation statistics now share the same help page.
-These pages now use inheritance to reduce duplication even further and to ensure
-consistency. Less duplication made it easier to update, clarify and expand the
-documentation, including some edits to the articles. Changes to the code
-introduced some small enhancements to existing functions and corrected a few
-bugs, most of them minor.
-
-- **Code breaking** Rewrite `find_spikes()` with changes in behaviour and
-formal parameters. Old version did not behave as documented; old behaviour can
-be restored by passing arguments.
 - Add `stat_spikes()` with similar functionality as `stat_peaks()` and 
 `stat_valleys()` but targeting very narrow peaks and valleys with unusually
 abrupt transitions from the baseline.
@@ -38,11 +27,14 @@ prediction range.
 `stat_fit_residuals()` and `stat_fit_deviations()`.
 - Derive default `orientation` automatically from the aesthetic mapping in 
 `stat_distrmix_line()` and `stat_distrmix_eq()`.
+- Fix bug in support of `smatr::ma()` and `smatr::sma()` in `stat_poly_eq()` 
+with `- 1` or `+ 0` in `formula`: $x^2$ shown instead of $x$.
+- Rewrite `find_spikes()` with changes in behaviour and formal parameters. Old
+version did not work as documented, or usefully and had never used in
+a statistic definition.
 - Streamline source of documentation using 'roxygen2' inheritance and expand
 and clarify explanations. List supported methods in tables in help pages.
 Merge help for closely related statistics.
-- Fix bug in support of `smatr::ma()` and `smatr::sma()` in `stat_poly_eq()` 
-with `- 1` or `+ 0` in `formula`: $x^2$ shown instead of $x$.
 - Update the _User Guide_ with new/better examples and explanations including
 use of new features.
 

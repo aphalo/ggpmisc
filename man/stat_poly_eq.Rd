@@ -633,18 +633,18 @@ ggplot(my.data, aes(x, y)) +
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label =  paste(after_stat(rr.label),
-                                  after_stat(n.label), sep = "*\", \"*")),
+  stat_poly_eq(aes(label =
+                 after_stat(paste(rr.label, n.label, sep = "*\", \"*"))),
                formula = formula)
 
 # manually assemble and map a specific label using sprintf() and aes()
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label =  sprintf("\%s*\" with \"*\%s*\" and \"*\%s",
-                                    after_stat(rr.label),
-                                    after_stat(f.value.label),
-                                    after_stat(p.value.label))),
+  stat_poly_eq(aes(label =
+                 after_stat(
+                   sprintf("\%s*\" with \"*\%s*\" and \"*\%s",
+                           rr.label, f.value.label, p.value.label))),
                formula = formula)
 
 # x on y regression
@@ -658,11 +658,11 @@ ggplot(my.data, aes(x, y)) +
 ggplot(my.data, aes(x, y2, color = group)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label =  ifelse(after_stat(adj.r.squared) > 0.96,
-                                   paste(after_stat(adj.rr.label),
-                                         after_stat(eq.label),
+  stat_poly_eq(aes(label =
+                     after_stat(ifelse(adj.r.squared > 0.96,
+                                   paste(adj.rr.label, eq.label,
                                          sep = "*\", \"*"),
-                                   after_stat(adj.rr.label))),
+                                   adj.rr.label))),
                rr.digits = 3,
                formula = formula)
 

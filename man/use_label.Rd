@@ -22,8 +22,10 @@ components. If provided, values passed through \code{...} are ignored.}
 \item{sep}{character A string used as separator when pasting the label
 components together.}
 
-\item{format}{character A string with as many \code{\%s} place-holders as
-labels being mapped.}
+\item{format}{character A string with as many %s place-holders as
+labels being mapped. \strong{The format string must have mark-up matching the
+\code{output.type} used!} With the default geometries,
+\code{output.type = "expression"} requiring that the character string can}
 }
 \value{
 A mapping to the \code{label} aesthetic and optionally additional
@@ -89,7 +91,7 @@ ggplot(data = my.data,
   geom_point() +
   stat_poly_line(formula = formula) +
   stat_poly_eq(mapping = use_label("eq", "F"),
-              formula = formula)
+               formula = formula)
 
 # user specified label components and separator
 ggplot(data = my.data,
@@ -104,8 +106,9 @@ ggplot(data = my.data,
        mapping = aes(x = x, y = y2, colour = group)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(mapping = f_use_label("R2", "F",
-                                     format = "\"Estimates: \"*\%s*\" with \"*\%s*\" works!\""),
+  stat_poly_eq(mapping =
+                 f_use_label("R2", "F",
+                             format = "\"Estimates: \"*\%s*\" with \"*\%s*\" works!\""),
                formula = formula)
 
 # combine the mapping to the label aesthetic with other mappings

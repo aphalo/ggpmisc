@@ -334,14 +334,14 @@ ggplot(faithful, aes(y = waiting)) +
   stat_distrmix_eq(label.x = "right")
 
 ggplot(faithful, aes(x = waiting)) +
- geom_histogram(aes(y = after_stat(density)), bins = 20) +
- stat_distrmix_line(aes(colour = after_stat(component),
+  geom_histogram(aes(y = after_stat(density)), bins = 20) +
+  stat_distrmix_line(aes(colour = after_stat(component),
                          fill = after_stat(component)),
                      geom = "area", linewidth = 1, alpha = 0.25) +
- stat_distrmix_eq(aes(colour = after_stat(component)))
+  stat_distrmix_eq(aes(colour = after_stat(component)))
 
 ggplot(faithful, aes(x = waiting)) +
- stat_distrmix_line(aes(colour = after_stat(component),
+  stat_distrmix_line(aes(colour = after_stat(component),
                          fill = after_stat(component)),
                      geom = "area", linewidth = 1, alpha = 0.25,
                      components = "members") +
@@ -349,7 +349,7 @@ ggplot(faithful, aes(x = waiting)) +
                      components = "members")
 
 ggplot(faithful, aes(x = waiting)) +
- stat_distrmix_line(geom = "area", linewidth = 1, alpha = 0.25,
+  stat_distrmix_line(geom = "area", linewidth = 1, alpha = 0.25,
                      colour = "black", outline.type = "upper",
                      components = "sum", se = FALSE) +
  stat_distrmix_eq(components = "sum")

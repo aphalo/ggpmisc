@@ -272,8 +272,11 @@ if (broom.installed)
     stat_fit_glance(method = "lm",
                     label.y = "bottom",
                     method.args = list(formula = y ~ x),
-                    mapping = aes(label = sprintf('italic(r)^2~"="~\%.3f~~italic(P)~"="~\%.2g',
-                                  after_stat(r.squared), after_stat(p.value))),
+                    mapping =
+                      aes(label =
+                        after_stat(
+                          sprintf('italic(r)^2~"="~\%.3f~~italic(P)~"="~\%.2g',
+                                  r.squared, p.value))),
                     parse = TRUE)
 
 # Regression by group example
@@ -284,8 +287,10 @@ if (broom.installed)
     stat_fit_glance(method = "lm",
                     label.y = "bottom",
                     method.args = list(formula = y ~ x),
-                    mapping = aes(label = sprintf('r^2~"="~\%.3f~~italic(P)~"="~\%.2g',
-                                  after_stat(r.squared), after_stat(p.value))),
+                    mapping = aes(label =
+                                after_stat(
+                                  sprintf('r^2~"="~\%.3f~~italic(P)~"="~\%.2g',
+                                  r.squared, p.value))),
                     parse = TRUE)
 
 # Weighted regression example
@@ -295,9 +300,12 @@ if (broom.installed)
     geom_point(aes(colour = factor(cyl))) +
     stat_fit_glance(method = "lm",
                     label.y = "bottom",
-                    method.args = list(formula = y ~ x, weights = quote(weight)),
-                    mapping = aes(label = sprintf('r^2~"="~\%.3f~~italic(P)~"="~\%.2g',
-                                  after_stat(r.squared), after_stat(p.value))),
+                    method.args = list(formula = y ~ x,
+                                       weights = quote(weight)),
+                    mapping = aes(label =
+                      after_stat(
+                        sprintf('r^2~"="~\%.3f~~italic(P)~"="~\%.2g',
+                                r.squared, p.value))),
                     parse = TRUE)
 
 # correlation test
@@ -307,8 +315,10 @@ if (broom.installed)
     stat_fit_glance(method = "cor.test",
                     label.y = "bottom",
                     method.args = list(formula = ~ x + y),
-                    mapping = aes(label = sprintf('r[Pearson]~"="~\%.3f~~italic(P)~"="~\%.2g',
-                                  after_stat(estimate), after_stat(p.value))),
+                    mapping = aes(label =
+                      after_stat(
+                        sprintf('r[Pearson]~"="~\%.3f~~italic(P)~"="~\%.2g',
+                                 estimate, p.value))),
                     parse = TRUE)
 
 if (broom.installed)
@@ -316,9 +326,13 @@ if (broom.installed)
     geom_point() +
     stat_fit_glance(method = "cor.test",
                     label.y = "bottom",
-                    method.args = list(formula = ~ x + y, method = "spearman", exact = FALSE),
-                    mapping = aes(label = sprintf('r[Spearman]~"="~\%.3f~~italic(P)~"="~\%.2g',
-                                  after_stat(estimate), after_stat(p.value))),
+                    method.args = list(formula = ~ x + y,
+                                       method = "spearman",
+                                       exact = FALSE),
+                    mapping = aes(label =
+                      after_stat(
+                        sprintf('r[Spearman]~"="~\%.3f~~italic(P)~"="~\%.2g',
+                                estimate, p.value))),
                     parse = TRUE)
 
 }

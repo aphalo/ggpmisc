@@ -160,21 +160,29 @@
 #'                    method = "spearman",
 #'                    r.conf.level = 0.95)
 #'
+#' # f_use_label() provides additional flexibility
+#' ggplot(my.data, aes(x, y)) +
+#'   geom_point() +
+#'   stat_correlation(
+#'     f_use_label("R", "R.CI",
+#'       format = "\"Estimate: \"*%s*\" with confidence \"*%s"),
+#'       method = "spearman", r.conf.level = 0.95)
+#'
 #' # manually assemble and map a specific label using paste() and aes()
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   stat_correlation(aes(label = paste(after_stat(r.label),
-#'                                      after_stat(p.value.label),
-#'                                      after_stat(n.label),
-#'                                      sep = "*\", \"*")))
+#'   stat_correlation(aes(label =
+#'                          after_stat(
+#'                            paste(r.label, p.value.label, n.label,
+#'                                  sep = "*\", \"*"))))
 #'
 #' # manually format and map a specific label using sprintf() and aes()
 #' ggplot(my.data, aes(x, y)) +
 #'   geom_point() +
-#'   stat_correlation(aes(label = sprintf("%s*\" with \"*%s*\" for \"*%s",
-#'                                        after_stat(r.label),
-#'                                        after_stat(p.value.label),
-#'                                        after_stat(t.value.label))))
+#'   stat_correlation(aes(label =
+#'                          after_stat(
+#'                            sprintf("%s*\" with \"*%s*\" for \"*%s",
+#'                                    r.label, p.value.label, t.value.label))))
 #'
 #' # Inspecting the returned data using geom_debug_group()
 #' # This provides a quick way of finding out the names of the variables that

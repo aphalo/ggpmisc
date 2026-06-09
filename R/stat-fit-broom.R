@@ -93,8 +93,11 @@
 #'     stat_fit_glance(method = "lm",
 #'                     label.y = "bottom",
 #'                     method.args = list(formula = y ~ x),
-#'                     mapping = aes(label = sprintf('italic(r)^2~"="~%.3f~~italic(P)~"="~%.2g',
-#'                                   after_stat(r.squared), after_stat(p.value))),
+#'                     mapping =
+#'                       aes(label =
+#'                         after_stat(
+#'                           sprintf('italic(r)^2~"="~%.3f~~italic(P)~"="~%.2g',
+#'                                   r.squared, p.value))),
 #'                     parse = TRUE)
 #'
 #' # Regression by group example
@@ -105,8 +108,10 @@
 #'     stat_fit_glance(method = "lm",
 #'                     label.y = "bottom",
 #'                     method.args = list(formula = y ~ x),
-#'                     mapping = aes(label = sprintf('r^2~"="~%.3f~~italic(P)~"="~%.2g',
-#'                                   after_stat(r.squared), after_stat(p.value))),
+#'                     mapping = aes(label =
+#'                                 after_stat(
+#'                                   sprintf('r^2~"="~%.3f~~italic(P)~"="~%.2g',
+#'                                   r.squared, p.value))),
 #'                     parse = TRUE)
 #'
 #' # Weighted regression example
@@ -116,9 +121,12 @@
 #'     geom_point(aes(colour = factor(cyl))) +
 #'     stat_fit_glance(method = "lm",
 #'                     label.y = "bottom",
-#'                     method.args = list(formula = y ~ x, weights = quote(weight)),
-#'                     mapping = aes(label = sprintf('r^2~"="~%.3f~~italic(P)~"="~%.2g',
-#'                                   after_stat(r.squared), after_stat(p.value))),
+#'                     method.args = list(formula = y ~ x,
+#'                                        weights = quote(weight)),
+#'                     mapping = aes(label =
+#'                       after_stat(
+#'                         sprintf('r^2~"="~%.3f~~italic(P)~"="~%.2g',
+#'                                 r.squared, p.value))),
 #'                     parse = TRUE)
 #'
 #' # correlation test
@@ -128,8 +136,10 @@
 #'     stat_fit_glance(method = "cor.test",
 #'                     label.y = "bottom",
 #'                     method.args = list(formula = ~ x + y),
-#'                     mapping = aes(label = sprintf('r[Pearson]~"="~%.3f~~italic(P)~"="~%.2g',
-#'                                   after_stat(estimate), after_stat(p.value))),
+#'                     mapping = aes(label =
+#'                       after_stat(
+#'                         sprintf('r[Pearson]~"="~%.3f~~italic(P)~"="~%.2g',
+#'                                  estimate, p.value))),
 #'                     parse = TRUE)
 #'
 #' if (broom.installed)
@@ -137,9 +147,13 @@
 #'     geom_point() +
 #'     stat_fit_glance(method = "cor.test",
 #'                     label.y = "bottom",
-#'                     method.args = list(formula = ~ x + y, method = "spearman", exact = FALSE),
-#'                     mapping = aes(label = sprintf('r[Spearman]~"="~%.3f~~italic(P)~"="~%.2g',
-#'                                   after_stat(estimate), after_stat(p.value))),
+#'                     method.args = list(formula = ~ x + y,
+#'                                        method = "spearman",
+#'                                        exact = FALSE),
+#'                     mapping = aes(label =
+#'                       after_stat(
+#'                         sprintf('r[Spearman]~"="~%.3f~~italic(P)~"="~%.2g',
+#'                                 estimate, p.value))),
 #'                     parse = TRUE)
 #'
 stat_fit_glance <- function(mapping = NULL,
@@ -761,9 +775,9 @@ StatFitAugment <-
 #'     stat_fit_tidy(method = "lm",
 #'                   label.x = "right",
 #'                   method.args = list(formula = y ~ x),
-#'                   mapping = aes(label = sprintf("Slope = %.3g\np-value = %.3g",
-#'                                                 after_stat(x_estimate),
-#'                                                 after_stat(x_p.value))))
+#'                   mapping = aes(label = after_stat(
+#'                                           sprintf("Slope = %.3g\np-value = %.3g",
+#'                                                   x_estimate, x_p.value))))
 #'
 #' # Regression by group example
 #' if (broom.installed)
@@ -773,9 +787,9 @@ StatFitAugment <-
 #'     stat_fit_tidy(method = "lm",
 #'                   label.x = "right",
 #'                   method.args = list(formula = y ~ x),
-#'                   mapping = aes(label = sprintf("Slope = %.3g, p-value = %.3g",
-#'                                                 after_stat(x_estimate),
-#'                                                 after_stat(x_p.value))))
+#'                   mapping = aes(label = after_stat(
+#'                                           sprintf("Slope = %.3g, p-value = %.3g",
+#'                                                   x_estimate, x_p.value))))
 #'
 #' # Weighted regression example
 #' if (broom.installed)
@@ -785,9 +799,9 @@ StatFitAugment <-
 #'     stat_fit_tidy(method = "lm",
 #'                   label.x = "right",
 #'                   method.args = list(formula = y ~ x, weights = quote(weight)),
-#'                   mapping = aes(label = sprintf("Slope = %.3g\np-value = %.3g",
-#'                                                 after_stat(x_estimate),
-#'                                                 after_stat(x_p.value))))
+#'                   mapping = aes(label = after_stat(
+#'                                           sprintf("Slope = %.3g\np-value = %.3g",
+#'                                                   x_estimate, x_p.value))))
 #'
 stat_fit_tidy <- function(mapping = NULL,
                           data = NULL,

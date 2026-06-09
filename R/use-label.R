@@ -78,7 +78,7 @@
 #'   geom_point() +
 #'   stat_poly_line(formula = formula) +
 #'   stat_poly_eq(mapping = use_label("eq", "F"),
-#'               formula = formula)
+#'                formula = formula)
 #'
 #' # user specified label components and separator
 #' ggplot(data = my.data,
@@ -93,8 +93,9 @@
 #'        mapping = aes(x = x, y = y2, colour = group)) +
 #'   geom_point() +
 #'   stat_poly_line(formula = formula) +
-#'   stat_poly_eq(mapping = f_use_label("R2", "F",
-#'                                      format = "\"Estimates: \"*%s*\" with \"*%s*\" works!\""),
+#'   stat_poly_eq(mapping =
+#'                  f_use_label("R2", "F",
+#'                              format = "\"Estimates: \"*%s*\" with \"*%s*\" works!\""),
 #'                formula = formula)
 #'
 #' # combine the mapping to the label aesthetic with other mappings
@@ -208,36 +209,35 @@ use_label <- function(...,
     switch(length(labels),
            ggplot2::aes(label =
                           ggplot2::after_stat(.data[[labels[1]]])),
-           ggplot2::aes(label =
-                          paste(ggplot2::after_stat(.data[[labels[1]]]),
-                                ggplot2::after_stat(.data[[labels[2]]]),
-                                sep = sep)),
-           ggplot2::aes(label =
-                          paste(ggplot2::after_stat(.data[[labels[1]]]),
-                                ggplot2::after_stat(.data[[labels[2]]]),
-                                ggplot2::after_stat(.data[[labels[3]]]),
-                                sep = sep)),
-           ggplot2::aes(label =
-                          paste(ggplot2::after_stat(.data[[labels[1]]]),
-                                ggplot2::after_stat(.data[[labels[2]]]),
-                                ggplot2::after_stat(.data[[labels[3]]]),
-                                ggplot2::after_stat(.data[[labels[4]]]),
-                                sep = sep)),
-           ggplot2::aes(label =
-                          paste(ggplot2::after_stat(.data[[labels[1]]]),
-                                ggplot2::after_stat(.data[[labels[2]]]),
-                                ggplot2::after_stat(.data[[labels[3]]]),
-                                ggplot2::after_stat(.data[[labels[4]]]),
-                                ggplot2::after_stat(.data[[labels[5]]]),
-                                sep = sep)),
-           ggplot2::aes(label =
-                          paste(ggplot2::after_stat(.data[[labels[1]]]),
-                                ggplot2::after_stat(.data[[labels[2]]]),
-                                ggplot2::after_stat(.data[[labels[3]]]),
-                                ggplot2::after_stat(.data[[labels[4]]]),
-                                ggplot2::after_stat(.data[[labels[5]]]),
-                                ggplot2::after_stat(.data[[labels[6]]]),
-                                sep = sep))
+           ggplot2::aes(label = ggplot2::after_stat(
+             paste(.data[[labels[1]]],
+                   .data[[labels[2]]], sep = sep))),
+           ggplot2::aes(label = ggplot2::after_stat(
+             paste(.data[[labels[1]]],
+                   .data[[labels[2]]],
+                   .data[[labels[3]]],
+                   sep = sep))),
+           ggplot2::aes(label = ggplot2::after_stat(
+             paste(.data[[labels[1]]],
+                   .data[[labels[2]]],
+                   .data[[labels[3]]],
+                   .data[[labels[4]]],
+                   sep = sep))),
+           ggplot2::aes(label = ggplot2::after_stat(
+             paste(.data[[labels[1]]],
+                   .data[[labels[2]]],
+                   .data[[labels[3]]],
+                   .data[[labels[4]]],
+                   .data[[labels[5]]],
+                   sep = sep))),
+           ggplot2::aes(label = ggplot2::after_stat(
+             paste(.data[[labels[1]]],
+                   .data[[labels[2]]],
+                   .data[[labels[3]]],
+                   .data[[labels[4]]],
+                   .data[[labels[5]]],
+                   .data[[labels[6]]],
+                   sep = sep)))
     )
   if (!is.null(other.mapping)) {
     utils::modifyList(other.mapping, label.mapping)
@@ -248,11 +248,11 @@ use_label <- function(...,
 
 #' @rdname use_label
 #'
-#' @param format character A string with as many \code{\%s} place-holders as
-#'   labels being mapped. \strong{The format must have markup matching the
-#'   \code{output.type} used! With the default geometries,
+#' @param format character A string with as many %s place-holders as
+#'   labels being mapped. \strong{The format string must have mark-up matching the
+#'   \code{output.type} used!} With the default geometries,
 #'   \code{output.type = "expression"} requiring that the character string can
-#    be parsed in valid \code{\link[grDevices]{plotmath}}} expressions.
+#    be parsed in valid \code{\link[grDevices]{plotmath}} expressions.
 #'
 #' @export
 #'
@@ -309,39 +309,38 @@ f_use_label <- function(...,
   # make mapping to label aesthetic
   label.mapping <-
     switch(length(labels),
-           ggplot2::aes(label =
-                          sprintf(fmt = format,
-                          ggplot2::after_stat(.data[[labels[1]]]))),
-           ggplot2::aes(label =
-                          sprintf(fmt = format,
-                                  ggplot2::after_stat(.data[[labels[1]]]),
-                                  ggplot2::after_stat(.data[[labels[2]]]))),
-           ggplot2::aes(label =
-                          sprintf(fmt = format,
-                                  paste(ggplot2::after_stat(.data[[labels[1]]]),
-                                ggplot2::after_stat(.data[[labels[2]]]),
-                                ggplot2::after_stat(.data[[labels[3]]])))),
-           ggplot2::aes(label =
-                          sprintf(fmt = format,
-                                  ggplot2::after_stat(.data[[labels[1]]]),
-                                  ggplot2::after_stat(.data[[labels[2]]]),
-                                  ggplot2::after_stat(.data[[labels[3]]]),
-                                  ggplot2::after_stat(.data[[labels[4]]]))),
-           ggplot2::aes(label =
-                          sprintf(fmt = format,
-                                  ggplot2::after_stat(.data[[labels[1]]]),
-                                  ggplot2::after_stat(.data[[labels[2]]]),
-                                  ggplot2::after_stat(.data[[labels[3]]]),
-                                  ggplot2::after_stat(.data[[labels[4]]]),
-                                  ggplot2::after_stat(.data[[labels[5]]]))),
-           ggplot2::aes(label =
-                          sprintf(fmt = format,
-                                  ggplot2::after_stat(.data[[labels[1]]]),
-                                  ggplot2::after_stat(.data[[labels[2]]]),
-                                  ggplot2::after_stat(.data[[labels[3]]]),
-                                  ggplot2::after_stat(.data[[labels[4]]]),
-                                  ggplot2::after_stat(.data[[labels[5]]]),
-                                  ggplot2::after_stat(.data[[labels[6]]])))
+           ggplot2::aes(label = ggplot2::after_stat(
+             sprintf(fmt = format, .data[[labels[1]]]))),
+           ggplot2::aes(label = ggplot2::after_stat(
+             sprintf(fmt = format,
+                     .data[[labels[1]]],
+                     .data[[labels[2]]]))),
+           ggplot2::aes(label = ggplot2::after_stat(
+             sprintf(fmt = format,
+                     paste(.data[[labels[1]]],
+                           .data[[labels[2]]],
+                           .data[[labels[3]]])))),
+           ggplot2::aes(label = ggplot2::after_stat(
+             sprintf(fmt = format,
+                     .data[[labels[1]]],
+                     .data[[labels[2]]],
+                     .data[[labels[3]]],
+                     .data[[labels[4]]]))),
+           ggplot2::aes(label = ggplot2::after_stat(
+             sprintf(fmt = format,
+                     .data[[labels[1]]],
+                     .data[[labels[2]]],
+                     .data[[labels[3]]],
+                     .data[[labels[4]]],
+                     .data[[labels[5]]]))),
+           ggplot2::aes(label = ggplot2::after_stat(
+             sprintf(fmt = format,
+                     .data[[labels[1]]],
+                     .data[[labels[2]]],
+                     .data[[labels[3]]],
+                     .data[[labels[4]]],
+                     .data[[labels[5]]],
+                     .data[[labels[6]]])))
     )
   if (!is.null(other.mapping)) {
     utils::modifyList(other.mapping, label.mapping)

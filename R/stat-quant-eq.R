@@ -340,8 +340,9 @@
 #'   stat_quant_line(method = "rq", formula = formula,
 #'                   quantiles = c(0.05, 0.5, 0.95),
 #'                   linewidth = 0.5) +
-#'   stat_quant_eq(mapping = aes(label = paste(after_stat(grp.label), "*\": \"*",
-#'                                             after_stat(eq.label), sep = "")),
+#'   stat_quant_eq(mapping = aes(label =
+#'                             after_stat(
+#'                               paste(grp.label, "*\": \"*", eq.label, sep = ""))),
 #'                 quantiles = c(0.05, 0.5, 0.95),
 #'                 formula = formula, size = 3)
 #'
@@ -350,9 +351,9 @@
 #'   geom_point() +
 #'   stat_quant_band(method = "rq", formula = formula,
 #'                   quantiles = c(0.05, 0.5, 0.95)) +
-#'   stat_quant_eq(mapping = aes(label = sprintf("%s*\": \"*%s",
-#'                                               after_stat(grp.label),
-#'                                               after_stat(eq.label))),
+#'   stat_quant_eq(mapping = aes(label =
+#'                             after_stat(
+#'                               sprintf("%s*\": \"*%s", grp.label, eq.label))),
 #'                 quantiles = c(0.05, 0.5, 0.95),
 #'                 formula = formula, size = 3)
 #'
