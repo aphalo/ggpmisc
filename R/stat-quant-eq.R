@@ -808,6 +808,10 @@ quant_eq_compute_group_fun <- function(data,
   z[["fm.formula"]] <- formula.ls
   z[["fm.formula.chr"]] <- format(formula.ls)
 
+  if (interactive()) {
+    show_labels(z)
+  }
+
   # Compute label positions
   # we need to use scale limits as observations are not necessarily plotted
   x.range <- scales$x$range$range

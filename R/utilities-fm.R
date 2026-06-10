@@ -367,10 +367,11 @@ fit_models_internal <- function(data,
   } else if (!(inherits(fm, "lm") || inherits(fm, "lmrob") ||
                inherits(fm, "gls") || inherits(fm, "lts") ||
                inherits(fm, "lqs") || inherits(fm, "sma") ||
+               inherits(fm, "nls") || # inherits(fm, "onls") ||
                accept.rq && (inherits(fm, "rq") || inherits(fm, "rqs")))) {
     message("Method \"", method.name,
             "\" did not return a ",
-            "\"lm\", \"lmrob\", \"lqs\", \"lts\", \"gls\", \"sma\", ",
+            "\"lm\", \"nls\", \"lmrob\", \"lqs\", \"lts\", \"gls\", \"sma\", ",
             ifelse(accept.rq, "\"rq\", \"rqs\"", ""),
             "object, possible failure ahead.")
   }
@@ -379,7 +380,6 @@ fit_models_internal <- function(data,
        method.args = fun.args,
        fit.seed = fit.seed)
 }
-
 
 # extract_weights ---------------------------------------------------------
 

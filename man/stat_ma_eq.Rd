@@ -649,14 +649,6 @@ ggplot(my.data, aes(x, y)) +
   stat_ma_eq(formula = x ~ y,
              mapping = use_label("eq", "R2", "P"))
 
-# modifying both variables within aes()
-ggplot(my.data, aes(log(x + 10), log(y + 10))) +
-  geom_point() +
-  stat_poly_line() +
-  stat_poly_eq(mapping = use_label("eq"),
-               eq.x.rhs = "~~log(x+10)",
-               eq.with.lhs = "log(y+10)~~`=`~~")
-
 # grouping
 ggplot(my.data, aes(x, y, color = group)) +
   geom_point() +

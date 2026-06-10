@@ -1070,6 +1070,10 @@ poly_eq_compute_group_fun <- function(data,
   )
   z <- cbind(z, zz)
 
+  if (interactive()) {
+    show_labels(z)
+  }
+
   # Compute label positions
   if (is.character(label.x)) {
     if (npc.used) {

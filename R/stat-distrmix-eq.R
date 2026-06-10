@@ -447,6 +447,10 @@ distrmix_eq_compute_group_fun <-
       warning("Ignoring bad 'components' argument: \"", components, "\"")
     }
 
+    if (interactive()) {
+      show_labels(fm_params.tb)
+    }
+
     # Compute label positions
     if (is.character(label.x)) {
       margin.npc <- 0.05

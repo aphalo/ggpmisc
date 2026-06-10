@@ -541,6 +541,10 @@ cor_test_compute_fun <- function(data,
     }
   }
 
+  if (interactive()) {
+    show_labels(z)
+  }
+
   # Compute label positions
   if (is.character(label.x)) {
     if (npc.used) {

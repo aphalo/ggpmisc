@@ -1443,3 +1443,42 @@ check_output_type <-
       output.type
     }
   }
+
+#' Message listing non-missing labels
+#'
+#' Issue a message listing labels that are available using their "nicknames".
+#'
+#' @param z data.frame from which to extract names of columns.
+#' @param show.nicknames logical Replace column names by short nicknames in the
+#'   message text.
+#'
+#' @details Columns of \code{z} with names ending in \code{.label} and
+#'   containing non-missing values are reported after replacing column names by
+#'   the shortnames used in function \code{\link{use_label}()} and
+#'   \code{f_use_label()}.
+#'
+#' @keywords internal
+#'
+show_labels <- function(z,
+                        show.nicknames = TRUE) {
+  labels.found <- grep("\\.label$",
+                       colnames(z)[!sapply(z, anyNA, USE.NAMES = FALSE)],
+                       value = TRUE)
+  if (length(labels.found)) {
+    if (show.nicknames) {
+      labels.found <-
+        labels.found |>
+        gsub("\\.label$", "", x = _) |>
+        gsub("rr", "R2", x = _) |>
+        gsub("p.value", "P", x = _) |>
+        gsub("f.value", "F", x = _) |>
+        gsub("t.value", "t", x = _) |>
+        gsub("z.value", "z", x = _) |>
+        gsub("S.value", "S", x = _)
+    }
+    message("Available labels: ",
+            paste(labels.found, collapse = ", "), ".")
+  } else {
+    message("No ready-made labels returned.")
+  }
+}

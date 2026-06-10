@@ -28,7 +28,7 @@ License: GPL (>= 2)
 LazyLoad: TRUE
 ByteCompile: TRUE
 Depends:
-    R (>= 4.1.0),
+    R (>= 4.2.0),
     ggpp (>= 0.6.0)
 Imports:
     grid,
