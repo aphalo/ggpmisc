@@ -1449,8 +1449,8 @@ check_output_type <-
 #' Issue a message listing labels that are available using their "nicknames".
 #'
 #' @param z data.frame from which to extract names of columns.
-#' @param show.nicknames logical Replace column names by short nicknames in the
-#'   message text.
+#' @param show.what character One of \code{"nicknames"}, \code{"colnames"} or
+#'   \code{"none"}.
 #'
 #' @details Columns of \code{z} with names ending in \code{.label} and
 #'   containing non-missing values are reported after replacing column names by
@@ -1460,12 +1460,16 @@ check_output_type <-
 #' @keywords internal
 #'
 show_labels <- function(z,
-                        show.nicknames = TRUE) {
+                        show.what = "nicknames") {
+  if (!any(c("colnames", "nicknames") %in% show.what)) {
+    # nothing to do
+    return()
+  }
   labels.found <- grep("\\.label$",
                        colnames(z)[!sapply(z, anyNA, USE.NAMES = FALSE)],
                        value = TRUE)
   if (length(labels.found)) {
-    if (show.nicknames) {
+    if (show.what == "nicknames") {
       labels.found <-
         labels.found |>
         gsub("\\.label$", "", x = _) |>
@@ -1480,5 +1484,38 @@ show_labels <- function(z,
             paste(labels.found, collapse = ", "), ".")
   } else {
     message("No ready-made labels returned.")
+  }
+}
+
+#' Message listing non-missing columns
+#'
+#' Issue a message listing column names that are available for mapping to
+#' aesthetics.
+#'
+#' @param z data.frame from which to extract names of columns.
+#' @param show.what character Replace column names by short nicknames in the
+#'   message text.
+#'
+#' @details Columns of \code{z} with names ending in \code{.label} and
+#'   containing non-missing values are reported after replacing column names by
+#'   the shortnames used in function \code{\link{use_label}()} and
+#'   \code{f_use_label()}.
+#'
+#' @keywords internal
+#'
+show_colnames <- function(z,
+                          show.what = "colnames") {
+  if (show.what != "colnames") {
+    # nothing to do
+    return()
+  }
+  cols.found <- colnames(z)[sapply(z,
+                                   function(x) {!all(is.na(x))},
+                                   USE.NAMES = FALSE)]
+  if (length(cols.found)) {
+    message("Available variables: ",
+            paste(cols.found, collapse = ", "), ".")
+  } else {
+    message("No variables with non-missing data returned.")
   }
 }

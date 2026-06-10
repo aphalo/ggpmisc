@@ -95,22 +95,28 @@ deviations_compute_group_fun <- function(data,
   weights.ls <- extract_weights(fm, n.row = nrow(data))
 
   if (orientation == "y") {
-    data.frame(x = data$x,
-               y = data$y,
-               x.fitted = fitted.vals,
-               y.fitted = data$y,
-               weights = weights.ls[["weight.vals"]],
-               robustness.weights = weights.ls[["rob.weight.vals"]],
-               hjust = 0)
+    z <- data.frame(x = data$x,
+                    y = data$y,
+                    x.fitted = fitted.vals,
+                    y.fitted = data$y,
+                    weights = weights.ls[["weight.vals"]],
+                    robustness.weights = weights.ls[["rob.weight.vals"]],
+                    hjust = 0)
   } else {
-    data.frame(x = data$x,
-               y = data$y,
-               x.fitted = data$x,
-               y.fitted = fitted.vals,
-               weights = weights.ls[["weight.vals"]],
-               robustness.weights = weights.ls[["rob.weight.vals"]],
-               hjust = 0)
+    z <- data.frame(x = data$x,
+                    y = data$y,
+                    x.fitted = data$x,
+                    y.fitted = fitted.vals,
+                    weights = weights.ls[["weight.vals"]],
+                    robustness.weights = weights.ls[["rob.weight.vals"]],
+                    hjust = 0)
   }
+
+  if (interactive()) {
+    show_colnames(z)
+  }
+
+  z
 }
 
 #' @rdname ggpmisc-ggproto
@@ -219,12 +225,18 @@ fitted_compute_group_fun <- function(data,
   fitted.vals <- extract_fitted(fm, n.row = nrow(data))
 
   if (orientation == "y") {
-    data.frame(x = fitted.vals,
-               y = data$y)
+    z <- data.frame(x = fitted.vals,
+                    y = data$y)
   } else {
-    data.frame(x = data$x,
-               y = fitted.vals)
+    z <- data.frame(x = data$x,
+                    y = fitted.vals)
   }
+
+  if (interactive()) {
+    show_colnames(z)
+  }
+
+  z
 }
 
 #' @rdname ggpmisc-ggproto

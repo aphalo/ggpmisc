@@ -336,20 +336,26 @@ residuals_compute_group_fun <- function(data,
   weights.ls <- extract_weights(fm, n.row = nrow(data))
 
   if (orientation == "y") {
-    data.frame(y = data$y,
-               x = fit.residuals,
-               x.resid = fit.residuals,
-               y.resid = NA_real_,
-               weights = weights.ls[["weight.vals"]],
-               robustness.weights = weights.ls[["rob.weight.vals"]])
+    z <- data.frame(y = data$y,
+                    x = fit.residuals,
+                    x.resid = fit.residuals,
+                    y.resid = NA_real_,
+                    weights = weights.ls[["weight.vals"]],
+                    robustness.weights = weights.ls[["rob.weight.vals"]])
   } else {
-    data.frame(x = data$x,
-               y = fit.residuals,
-               y.resid = fit.residuals,
-               x.resid = NA_real_,
-               weights = weights.ls[["weight.vals"]],
-               robustness.weights = weights.ls[["rob.weight.vals"]])
+    z <- data.frame(x = data$x,
+                    y = fit.residuals,
+                    y.resid = fit.residuals,
+                    x.resid = NA_real_,
+                    weights = weights.ls[["weight.vals"]],
+                    robustness.weights = weights.ls[["rob.weight.vals"]])
   }
+
+  if (interactive()) {
+    show_colnames(z)
+  }
+
+  z
 }
 
 #' @rdname ggpmisc-ggproto

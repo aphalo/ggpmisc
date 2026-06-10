@@ -332,10 +332,16 @@ peaks_compute_group_fun <- function(data,
     peaks.df[["y.label"]] <- ifelse(peaks.df$is.peak,
                                     sprintf(y.label.fmt, peaks.df[["y"]]),
                                     "")
-    peaks.df
+    z <- peaks.df
   } else {
-    data.frame()
+    z <- data.frame()
   }
+
+  if (interactive()) {
+    show_labels(z)
+  }
+
+  z
 }
 
 # Define here to avoid a note in check as the imports are not seen by checks
@@ -422,10 +428,16 @@ valleys_compute_group_fun <- function(data,
     valleys.df[["y.label"]] <- ifelse(valleys.df$is.valley,
                                       sprintf(y.label.fmt, valleys.df[["y"]]),
                                       "")
-    valleys.df
+    z <- valleys.df
   } else {
-    data.frame()
+    z <- data.frame()
   }
+
+  if (interactive()) {
+    show_labels(z)
+  }
+
+  z
 }
 
 #' \code{Stat*} Objects

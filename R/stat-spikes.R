@@ -236,10 +236,16 @@ spikes_compute_group_fun <- function(data,
     spikes.df[["y.label"]] <- ifelse(spikes.df$is.spike,
                                     sprintf(y.label.fmt, spikes.df[["y"]]),
                                     "")
-    spikes.df
+    z <- spikes.df
   } else {
-    data.frame()
+    z <- data.frame()
   }
+
+  if (interactive()) {
+    show_labels(z)
+  }
+
+  z
 }
 
 #' \code{Stat*} Objects

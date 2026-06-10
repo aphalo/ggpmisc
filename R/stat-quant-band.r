@@ -217,7 +217,13 @@ quant_band_compute_group_fun <- function(data,
   }
 
   newdata[["flipped_aes"]] <- flipped_aes
-  ggplot2::flip_data(newdata, flipped_aes)
+  z <- ggplot2::flip_data(newdata, flipped_aes)
+
+  if (interactive()) {
+    show_colnames(z)
+  }
+
+  z
 }
 
 #' @rdname ggpmisc-ggproto

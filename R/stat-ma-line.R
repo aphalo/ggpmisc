@@ -272,7 +272,13 @@ ma_line_compute_group_fun <-
       prediction[["fm.formula.chr"]] <- format(prediction[["fm.formula"]])
     }
     prediction$flipped_aes <- flipped_aes
-    ggplot2::flip_data(prediction, flipped_aes)
+    z <- ggplot2::flip_data(prediction, flipped_aes)
+
+    if (interactive()) {
+      show_colnames(z)
+    }
+
+    z
   }
 
 #' @rdname ggpmisc-ggproto
