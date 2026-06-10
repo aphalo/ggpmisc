@@ -58,7 +58,16 @@
 #'
 #' @inheritSection check_output_type Output types
 #'
-#' @section Computed variables: If output.type is \code{"numeric"} the returned
+#' @section Computed variables:
+#'
+#'   Computed variables and their names can vary depending on the \code{method}
+#'   used to fit a model or the \code{output.type} in use. They can also depend
+#'   for a given \code{method} on other arguments passed when fitting a model or
+#'   extracting estimates and other computed values. A message is issued listing
+#'   the short names for formatted labels as recognized by functions
+#'   \code{\link{use_label}()} and \code{\link{use_label}()}.
+#'
+#'  If output.type is \code{"numeric"} the returned
 #'   tibble contains the columns listed below with variations depending on the
 #'   \code{method}. If the model fit function used does not return a value, the
 #'   variable is set to \code{NA_real_}.
@@ -541,7 +550,7 @@ cor_test_compute_fun <- function(data,
     }
   }
 
-  if (interactive()) {
+  if (interactive() && output.type != "numeric") {
     show_labels(z)
   }
 
@@ -591,6 +600,10 @@ cor_test_compute_fun <- function(data,
     z$npcx <- NA_real_
     z$y <- label.y
     z$npcy <- NA_real_
+  }
+
+  if (interactive() && output.type == "numeric") {
+    show_colnames(z)
   }
 
   z

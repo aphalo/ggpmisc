@@ -330,7 +330,10 @@
 #'   \code{n} rows, is returned with a message.
 #'
 #' @section Variables returned by `stat_poly_line()`:
-#'   Some of the variables depend on the orientation.
+#'
+#'   Some of the variables can have missing values or depend on
+#'   \code{orientation} and/or \code{method}. A message is issued listing
+#'   the column names containing non-missing values.
 #'
 #'   \describe{ \item{y \strong{or} x}{predicted value}
 #'   \item{ymin \strong{or} xmin}{lower confidence limit around the fitted line}
@@ -345,6 +348,13 @@
 #'   observations in a fit.
 #'
 #' @section Variables returned by \code{\link{stat_poly_eq}()}:
+#'
+#'   Computed variables and their names can vary depending on the \code{method}
+#'   used to fit a model or the \code{output.type} in use. They can also depend
+#'   for a given \code{method} on other arguments passed when fitting a model or
+#'   extracting estimates and other computed values. A message is issued listing
+#'   the short names for formatted labels as recognized by functions
+#'   \code{\link{use_label}()} and \code{\link{use_label}()}.
 #'
 #' For all \code{output.type} arguments the following values are returned.
 #' \describe{
@@ -1070,7 +1080,7 @@ poly_eq_compute_group_fun <- function(data,
   )
   z <- cbind(z, zz)
 
-  if (interactive()) {
+  if (interactive() && output.type != "numeric") {
     show_labels(z)
   }
 
@@ -1116,6 +1126,10 @@ poly_eq_compute_group_fun <- function(data,
     z$npcx <- NA_real_
     z$y <- label.y
     z$npcy <- NA_real_
+  }
+
+  if (interactive() && output.type == "numeric") {
+    show_colnames(z)
   }
 
   z

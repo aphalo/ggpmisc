@@ -265,6 +265,13 @@ While \code{stat_poly_line()} and \code{stat_poly_eq()} fit
 \section{Variables returned by \code{stat_quant_eq()}}{
 
 
+  Computed variables and their names can vary depending on the \code{method}
+  used to fit a model or the \code{output.type} in use. They can also depend
+  for a given \code{method} on other arguments passed when fitting a model or
+  extracting estimates and other computed values. A message is issued listing
+  the short names for formatted labels as recognized by functions
+  \code{\link{use_label}()} and \code{\link{use_label}()}.
+
 If output.type is \code{"numeric"} the returned tibble contains columns
  in addition to a modified version of the original \code{group}:
 \describe{
@@ -303,6 +310,10 @@ of \code{\link[gginnards]{geom_debug}} as shown in the example below.
 \section{Variables returned by \code{stat_quant_line()}}{
 
 
+  Some of the variables can have missing values or depend on
+  \code{orientation} and/or \code{method}. A message is issued listing
+  the column names containing non-missing values.
+
   \describe{
   \item{y \strong{or} x}{predicted value}
   \item{ymin \strong{or} xmin}{lower confidence limit around the fitted line}
@@ -318,6 +329,10 @@ of \code{\link[gginnards]{geom_debug}} as shown in the example below.
 
 \section{Variables returned by \code{stat_quant_band()}}{
 
+
+  Some of the variables can have missing values or depend on
+  \code{orientation} and/or \code{method}. A message is issued listing
+  the column names containing non-missing values.
 
   \describe{
   \item{y \strong{or} x}{Regression prediction for the middle quantile, if three quantiles are passed as argument}

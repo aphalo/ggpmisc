@@ -76,7 +76,10 @@
 #' @inheritSection stat_poly_eq Position of labels
 #'
 #' @section Variables computed by \code{stat_distrmix_line()}:
-#'   Some of the returned variables depend on the orientation.
+#'
+#'   Some of the variables can have missing values or depend on
+#'   \code{orientation} and/or \code{method}. A message is issued listing
+#'   the column names containing non-missing values.
 #'
 #'   \describe{\item{density}{predicted density values}
 #'   \item{x}{the \code{n} values for the quantiles}
@@ -96,6 +99,14 @@
 #'   by group depending on the outcome of model fitting.
 #'
 #' @section Variables computed by \code{stat_distrmix_eq()}:
+#'
+#'   Computed variables and their names can vary depending on the \code{method}
+#'   used to fit a model or the \code{output.type} in use. They can also depend
+#'   for a given \code{method} on other arguments passed when fitting a model or
+#'   extracting estimates and other computed values. A message is issued listing
+#'   the short names for formatted labels as recognized by functions
+#'   \code{\link{use_label}()} and \code{\link{use_label}()}.
+#'
 #'   Some of the variables depend on the orientation:
 #'   \describe{\item{x}{the location of text labels}
 #'   \item{y}{the location of text labels}
@@ -447,7 +458,7 @@ distrmix_eq_compute_group_fun <-
       warning("Ignoring bad 'components' argument: \"", components, "\"")
     }
 
-    if (interactive()) {
+    if (interactive() && output.type != "numeric") {
       show_labels(fm_params.tb)
     }
 
@@ -477,6 +488,10 @@ distrmix_eq_compute_group_fun <-
       fm_params.tb$x <- I(label.x)
       fm_params.tb$npcy <- NA_real_
       fm_params.tb$y <- I(label.y)
+    }
+
+    if (interactive() && output.type == "numeric") {
+      show_colnames(fm_params.tb)
     }
 
     fm_params.tb

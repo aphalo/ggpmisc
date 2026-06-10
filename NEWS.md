@@ -11,6 +11,8 @@ editor_options:
 abrupt transitions from the baseline.
 - Add `f_use_label()` like `use_label()` but relying on a `format` to build the
 combined character string mapped to the `label` aesthetic.
+- Update all statistics so that they issue a message listing short names of
+formatted labels or names of variables available for mapping to aesthetics.
 - Update `check_poly_formula()` to issue warnings when the model formula includes 
 on-the-fly transformations in the rhs or lhs, indicating the need to pass a
 matching argument to `eq.x.rhs` or `eq.lhs`. Fix parsing failures leading to

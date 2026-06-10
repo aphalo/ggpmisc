@@ -99,6 +99,13 @@
 #'
 #' @section Variables returned by \code{stat_quant_eq()}:
 #'
+#'   Computed variables and their names can vary depending on the \code{method}
+#'   used to fit a model or the \code{output.type} in use. They can also depend
+#'   for a given \code{method} on other arguments passed when fitting a model or
+#'   extracting estimates and other computed values. A message is issued listing
+#'   the short names for formatted labels as recognized by functions
+#'   \code{\link{use_label}()} and \code{\link{use_label}()}.
+#'
 #' If output.type is \code{"numeric"} the returned tibble contains columns
 #'  in addition to a modified version of the original \code{group}:
 #' \describe{
@@ -135,6 +142,10 @@
 #'
 #' @section Variables returned by \code{stat_quant_line()}:
 #'
+#'   Some of the variables can have missing values or depend on
+#'   \code{orientation} and/or \code{method}. A message is issued listing
+#'   the column names containing non-missing values.
+#'
 #'   \describe{
 #'   \item{y \strong{or} x}{predicted value}
 #'   \item{ymin \strong{or} xmin}{lower confidence limit around the fitted line}
@@ -148,6 +159,10 @@
 #'   or hiding of the model fit line based on the number of observations.
 #'
 #' @section Variables returned by \code{stat_quant_band()}:
+#'
+#'   Some of the variables can have missing values or depend on
+#'   \code{orientation} and/or \code{method}. A message is issued listing
+#'   the column names containing non-missing values.
 #'
 #'   \describe{
 #'   \item{y \strong{or} x}{Regression prediction for the middle quantile, if three quantiles are passed as argument}
@@ -808,7 +823,7 @@ quant_eq_compute_group_fun <- function(data,
   z[["fm.formula"]] <- formula.ls
   z[["fm.formula.chr"]] <- format(formula.ls)
 
-  if (interactive()) {
+  if (interactive() && output.type != "numeric") {
     show_labels(z)
   }
 
@@ -907,6 +922,10 @@ quant_eq_compute_group_fun <- function(data,
     z[["npcx"]] <- NA_real_
     z[["y"]] <- if (rev.y.pos) rev(label.y) else label.y
     z[["npcy"]] <- NA_real_
+  }
+
+  if (interactive() && output.type == "numeric") {
+    show_colnames(z)
   }
 
   z

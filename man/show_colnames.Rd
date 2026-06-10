@@ -21,5 +21,13 @@ Columns of \code{z} with names ending in \code{.label} and
   containing non-missing values are reported after replacing column names by
   the shortnames used in function \code{\link{use_label}()} and
   \code{f_use_label()}.
+
+  Computed variables and their names can vary depending on the
+  \code{method} used to fit a model or the \code{output.type} in use. They
+  can also depend for a given \code{method} on other arguments passed when
+  fitting a model or extracting estimates and other computed values. A
+  message is issued listing the short names for formatted labels as
+  recognized by functions \code{\link{use_label}()} and
+  \code{\link{use_label}()}.
 }
 \keyword{internal}

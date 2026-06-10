@@ -157,6 +157,15 @@ Currently \code{coef.keep.zeros} is ignored, with trailing zeros always
   plotmath expressions (i.e., when \code{output.type = "expression"}).
 }
 \section{Computed variables}{
+
+
+  Computed variables and their names can vary depending on the \code{method}
+  used to fit a model or the \code{output.type} in use. They can also depend
+  for a given \code{method} on other arguments passed when fitting a model or
+  extracting estimates and other computed values. A message is issued listing
+  the short names for formatted labels as recognized by functions
+  \code{\link{use_label}()} and \code{\link{use_label}()}.
+
  If output.type is \code{"numeric"} the returned
   tibble contains the columns listed below with variations depending on the
   \code{method}. If the model fit function used does not return a value, the

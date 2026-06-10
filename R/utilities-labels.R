@@ -1457,6 +1457,14 @@ check_output_type <-
 #'   the shortnames used in function \code{\link{use_label}()} and
 #'   \code{f_use_label()}.
 #'
+#'   Computed variables and their names can vary depending on the
+#'   \code{method} used to fit a model or the \code{output.type} in use. They
+#'   can also depend for a given \code{method} on other arguments passed when
+#'   fitting a model or extracting estimates and other computed values. A
+#'   message is issued listing the short names for formatted labels as
+#'   recognized by functions \code{\link{use_label}()} and
+#'   \code{\link{use_label}()}.
+#'
 #' @keywords internal
 #'
 show_labels <- function(z,
@@ -1480,10 +1488,10 @@ show_labels <- function(z,
         gsub("z.value", "z", x = _) |>
         gsub("S.value", "S", x = _)
     }
-    message("Available labels: ",
+    message("Available labels (", nrow(z), " rows): ",
             paste(labels.found, collapse = ", "), ".")
   } else {
-    message("No ready-made labels returned.")
+    message("No ready-formatted labels returned (", nrow(z), " rows).")
   }
 }
 
@@ -1501,6 +1509,14 @@ show_labels <- function(z,
 #'   the shortnames used in function \code{\link{use_label}()} and
 #'   \code{f_use_label()}.
 #'
+#'   Computed variables and their names can vary depending on the
+#'   \code{method} used to fit a model or the \code{output.type} in use. They
+#'   can also depend for a given \code{method} on other arguments passed when
+#'   fitting a model or extracting estimates and other computed values. A
+#'   message is issued listing the short names for formatted labels as
+#'   recognized by functions \code{\link{use_label}()} and
+#'   \code{\link{use_label}()}.
+#'
 #' @keywords internal
 #'
 show_colnames <- function(z,
@@ -1513,9 +1529,10 @@ show_colnames <- function(z,
                                    function(x) {!all(is.na(x))},
                                    USE.NAMES = FALSE)]
   if (length(cols.found)) {
-    message("Available variables: ",
+    message("Available variables (", nrow(z), " rows): ",
             paste(cols.found, collapse = ", "), ".")
   } else {
-    message("No variables with non-missing data returned.")
+    message("No variables with non-missing data returned (",
+            nrow(z), " rows).")
   }
 }

@@ -243,6 +243,10 @@ Statistics \code{stat_ma_line()} and \code{stat_ma_eq} fit major
 \section{Variables returned by `stat_ma_line()`}{
 
 
+  Some of the variables can have missing values or depend on
+  \code{orientation} and/or \code{method}. A message is issued listing
+  the column names containing non-missing values.
+
   \describe{ \item{y \strong{or} x}{predicted value}
   \item{ymin \strong{or} xmin}{lower pointwise confidence interval around the mean}
   \item{ymax \strong{or} xmax}{upper pointwise confidence interval around the mean}
@@ -259,7 +263,14 @@ Statistics \code{stat_ma_line()} and \code{stat_ma_eq} fit major
 \section{Variables returned by `stat_ma_eq()`}{
 
 
-If output.type is \code{"numeric"} the returned tibble contains columns
+  Computed variables and their names can vary depending on the \code{method}
+  used to fit a model or the \code{output.type} in use. They can also depend
+  for a given \code{method} on other arguments passed when fitting a model or
+  extracting estimates and other computed values. A message is issued listing
+  the short names for formatted labels as recognized by functions
+  \code{\link{use_label}()} and \code{\link{use_label}()}.
+
+If \code{output.type} is \code{"numeric"} the returned tibble contains columns
 listed below. If the model fit function used does not return a value,
 the variable is set to \code{NA_real_}.
 \describe{
