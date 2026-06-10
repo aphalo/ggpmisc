@@ -164,7 +164,7 @@ Currently \code{coef.keep.zeros} is ignored, with trailing zeros always
   for a given \code{method} on other arguments passed when fitting a model or
   extracting estimates and other computed values. A message is issued listing
   the short names for formatted labels as recognized by functions
-  \code{\link{use_label}()} and \code{\link{use_label}()}.
+  \code{\link{use_label}()} and \code{\link{f_use_label}()}.
 
  If output.type is \code{"numeric"} the returned
   tibble contains the columns listed below with variations depending on the
@@ -334,8 +334,7 @@ ggplot(my.data, aes(x, y)) +
                                    r.label, p.value.label, t.value.label))))
 
 # Inspecting the returned data using geom_debug_group()
-# This provides a quick way of finding out the names of the variables that
-# are available for mapping to aesthetics with after_stat().
+# This provides a quick way of printing the returned data frame.
 
 gginnards.installed <- requireNamespace("gginnards", quietly = TRUE)
 
@@ -352,16 +351,6 @@ if (gginnards.installed)
   ggplot(my.data, aes(x, y)) +
     geom_point() +
     stat_correlation(geom = "debug_group", method = "pearson")
-
-if (gginnards.installed)
-  ggplot(my.data, aes(x, y)) +
-    geom_point() +
-    stat_correlation(geom = "debug_group", method = "kendall")
-
-if (gginnards.installed)
-  ggplot(my.data, aes(x, y)) +
-    geom_point() +
-    stat_correlation(geom = "debug_group", method = "spearman")
 
 if (gginnards.installed)
   ggplot(my.data, aes(x, y)) +

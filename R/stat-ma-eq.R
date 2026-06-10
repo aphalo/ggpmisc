@@ -112,7 +112,7 @@
 #'   for a given \code{method} on other arguments passed when fitting a model or
 #'   extracting estimates and other computed values. A message is issued listing
 #'   the short names for formatted labels as recognized by functions
-#'   \code{\link{use_label}()} and \code{\link{use_label}()}.
+#'   \code{\link{use_label}()} and \code{\link{f_use_label}()}.
 #'
 #' If \code{output.type} is \code{"numeric"} the returned tibble contains columns
 #' listed below. If the model fit function used does not return a value,
@@ -228,8 +228,7 @@
 #'   theme_classic()
 #'
 #' # Inspecting the returned data using geom_debug_group()
-#' # This provides a quick way of finding out the names of the variables that
-#' # are available for mapping to aesthetics with after_stat().
+#' # This provides a quick way of printing the returned data frame.
 #'
 #' gginnards.installed <- requireNamespace("gginnards", quietly = TRUE)
 #'
@@ -241,25 +240,6 @@
 #'   ggplot(my.data, aes(x, y)) +
 #'     geom_point() +
 #'     stat_ma_eq(geom = "debug_group")
-#'
-#' \dontrun{
-#' if (gginnards.installed)
-#'   ggplot(my.data, aes(x, y)) +
-#'     geom_point() +
-#'     stat_ma_eq(mapping = aes(label = after_stat(eq.label)),
-#'                geom = "debug_group",
-#'                output.type = "markdown")
-#'
-#' if (gginnards.installed)
-#'   ggplot(my.data, aes(x, y)) +
-#'     geom_point() +
-#'     stat_ma_eq(geom = "debug_group", output.type = "text")
-#'
-#' if (gginnards.installed)
-#'   ggplot(my.data, aes(x, y)) +
-#'     geom_point() +
-#'     stat_ma_eq(geom = "debug_group", output.type = "numeric")
-#' }
 #'
 #' @export
 #'

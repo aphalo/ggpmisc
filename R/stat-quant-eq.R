@@ -104,7 +104,7 @@
 #'   for a given \code{method} on other arguments passed when fitting a model or
 #'   extracting estimates and other computed values. A message is issued listing
 #'   the short names for formatted labels as recognized by functions
-#'   \code{\link{use_label}()} and \code{\link{use_label}()}.
+#'   \code{\link{use_label}()} and \code{\link{f_use_label}()}.
 #'
 #' If output.type is \code{"numeric"} the returned tibble contains columns
 #'  in addition to a modified version of the original \code{group}:
@@ -381,8 +381,7 @@
 #'                 quantiles = 0.5)
 #'
 #' # Inspecting the returned data using geom_debug_group()
-#' # This provides a quick way of finding out the names of the variables that
-#' # are available for mapping to aesthetics using after_stat().
+#' # This provides a quick way of printing the returned data frame.
 #'
 #' gginnards.installed <- requireNamespace("gginnards", quietly = TRUE)
 #'
@@ -396,50 +395,6 @@
 #' if (gginnards.installed)
 #'   ggplot(my.data, aes(x, y)) +
 #'     stat_quant_band(geom = "debug_group")
-#'
-#' if (gginnards.installed)
-#'   ggplot(my.data, aes(x, y)) +
-#'     geom_point() +
-#'     stat_quant_eq(formula = formula, geom = "debug_group")
-#'
-#' \dontrun{
-#' if (gginnards.installed)
-#'   ggplot(mpg, aes(displ, hwy)) +
-#'     stat_quant_line(geom = "debug_group", fm.values = TRUE)
-#'
-#' if (gginnards.installed)
-#'   ggplot(my.data, aes(x, y)) +
-#'     stat_quant_band(geom = "debug_group", fm.values = TRUE)
-#'
-#' if (gginnards.installed)
-#'   ggplot(my.data, aes(x, y)) +
-#'     geom_point() +
-#'     stat_quant_eq(mapping = aes(label = after_stat(eq.label)),
-#'                   formula = formula, geom = "debug_group",
-#'                   output.type = "markdown")
-#'
-#' if (gginnards.installed)
-#'   ggplot(my.data, aes(x, y)) +
-#'     geom_point() +
-#'     stat_quant_eq(formula = formula, geom = "debug_group", output.type = "text")
-#'
-#' if (gginnards.installed)
-#'   ggplot(my.data, aes(x, y)) +
-#'     geom_point() +
-#'     stat_quant_eq(formula = formula, geom = "debug_group", output.type = "numeric")
-#'
-#' if (gginnards.installed)
-#'   ggplot(my.data, aes(x, y)) +
-#'     geom_point() +
-#'     stat_quant_eq(formula = formula, quantiles = c(0.25, 0.5, 0.75),
-#'                   geom = "debug_group", output.type = "text")
-#'
-#' if (gginnards.installed)
-#'   ggplot(my.data, aes(x, y)) +
-#'     geom_point() +
-#'     stat_quant_eq(formula = formula, quantiles = c(0.25, 0.5, 0.75),
-#'                   geom = "debug_group", output.type = "numeric")
-#' }
 #'
 #' @export
 #'

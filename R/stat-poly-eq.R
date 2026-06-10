@@ -354,7 +354,7 @@
 #'   for a given \code{method} on other arguments passed when fitting a model or
 #'   extracting estimates and other computed values. A message is issued listing
 #'   the short names for formatted labels as recognized by functions
-#'   \code{\link{use_label}()} and \code{\link{use_label}()}.
+#'   \code{\link{use_label}()} and \code{\link{f_use_label}()}.
 #'
 #' For all \code{output.type} arguments the following values are returned.
 #' \describe{
@@ -556,9 +556,7 @@
 #'                formula = formula)
 #'
 #' # Inspecting the returned data using geom_debug_group()
-#' # This provides a quick way of finding out the names of the variables that
-#' # are available for mapping to aesthetics with after_stat().
-#'
+#' # This provides a quick way of printing the data frame returned.
 #' gginnards.installed <- requireNamespace("gginnards", quietly = TRUE)
 #'
 #' if (gginnards.installed)
@@ -571,42 +569,6 @@
 #'     stat_poly_eq(formula = formula,
 #'                  geom = "debug_group")
 #'
-#' if (gginnards.installed)
-#'   ggplot(my.data, aes(x, y)) +
-#'     geom_point() +
-#'     stat_poly_line(formula = formula) +
-#'     stat_poly_eq(formula = formula,
-#'                  geom = "debug_group",
-#'                  output.type = "numeric")
-#'
-#' # names of the variables
-#' if (gginnards.installed)
-#'   ggplot(my.data, aes(x, y)) +
-#'     geom_point() +
-#'     stat_poly_line(formula = formula) +
-#'     stat_poly_eq(formula = formula,
-#'                  geom = "debug_group",
-#'                  dbgfun.data = colnames)
-#'
-#' # only data$eq.label
-#' if (gginnards.installed)
-#'   ggplot(my.data, aes(x, y)) +
-#'     geom_point() +
-#'     stat_poly_line(formula = formula) +
-#'     stat_poly_eq(formula = formula,
-#'                  geom = "debug_group",
-#'                  output.type = "expression",
-#'                  dbgfun.data = function(x) {x[["eq.label"]]})
-#'
-#' # only data$eq.label
-#' if (gginnards.installed)
-#'   ggplot(my.data, aes(x, y)) +
-#'     geom_point() +
-#'     stat_poly_line(formula = formula) +
-#'     stat_poly_eq(formula = formula,
-#'                  geom = "debug_group",
-#'                  output.type = "text",
-#'                  dbgfun.data = function(x) {x[["eq.label"]]})
 #'
 #' @export
 #'

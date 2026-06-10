@@ -105,7 +105,7 @@
 #'   for a given \code{method} on other arguments passed when fitting a model or
 #'   extracting estimates and other computed values. A message is issued listing
 #'   the short names for formatted labels as recognized by functions
-#'   \code{\link{use_label}()} and \code{\link{use_label}()}.
+#'   \code{\link{use_label}()} and \code{\link{f_use_label}()}.
 #'
 #'   Some of the variables depend on the orientation:
 #'   \describe{\item{x}{the location of text labels}
@@ -223,8 +223,8 @@
 #' if (gginnards.installed)
 #'   ggplot(faithful, aes(x = waiting)) +
 #'     stat_distrmix_eq(geom = "debug_group",
-#'                       components = "members",
-#'                       fm.values = TRUE)
+#'                      components = "members",
+#'                      fm.values = TRUE)
 #'
 #' @export
 #'

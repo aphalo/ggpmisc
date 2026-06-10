@@ -146,6 +146,12 @@
 #'   Variables (= columns) as described under \strong{Computed variables}.
 #'
 #' @section Computed variables:
+#'
+#'   Computed variables and their names can vary depending on the \code{method}
+#'   used to fit a model or the \code{output.type} in use. They can also depend
+#'   for a given \code{method} on the \code{contrasts}. A message is issued listing
+#'   the names of the variables in the returned data frame.
+#'
 #' If \code{output.type = "numeric"} and
 #' \code{label.type = "bars"} the returned tibble contains
 #' columns listed below. In all cases if the model fit function used does not return a value,
@@ -893,6 +899,11 @@ multcomp_compute_panel_fun <-
       # The data frame returned by a panel function must have a "group" column
       z[["group"]] <- -1L
     }
+
+    if (interactive()) {
+      show_colnames(z)
+    }
+
     z
   }
 

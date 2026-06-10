@@ -30,7 +30,7 @@ reference:
     - stat_fit_tb
     - stat_multcomp
   - subtitle: Model fitting with helpers from 'broom'
-    desc: Support additional types of models with no pre-built text strings..
+    desc: Support additional types of models with no pre-built text strings.
     contents:
     - stat_fit_augment
     - stat_fit_glance
@@ -113,7 +113,7 @@ navbar:
       - text: ------
       - text: 'Annotating Plot Matrices'
         href: https://www.r4photobiology.info/galleries/ggally-ggpairs.html
-      - text: 'Fitted-model labels in annimations'
+      - text: 'Fitted-model labels in animations'
         href: https://www.r4photobiology.info/galleries/plot-animation.html
       - text: 'Volcano and quadrant plots'
         href: https://www.r4photobiology.info/galleries/quadrant-volcano-plots.html
