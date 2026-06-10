@@ -4,7 +4,7 @@
 \alias{show_colnames}
 \title{Message listing non-missing columns}
 \usage{
-show_colnames(z, show.what = "colnames")
+show_colnames(z, show.what = NULL)
 }
 \arguments{
 \item{z}{data.frame from which to extract names of columns.}

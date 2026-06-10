@@ -1468,7 +1468,16 @@ check_output_type <-
 #' @keywords internal
 #'
 show_labels <- function(z,
-                        show.what = "nicknames") {
+                        show.what = NULL) {
+  if (is.null(show.what)) {
+    if (interactive()) {
+      default <- "nicknames"
+    } else {
+      default <- "skip"
+    }
+    show.what <- getOption("ggpmisc.stat.vars.message",
+                           default = default)
+  }
   if (!any(c("colnames", "nicknames") %in% show.what)) {
     # nothing to do
     return()
@@ -1520,8 +1529,17 @@ show_labels <- function(z,
 #' @keywords internal
 #'
 show_colnames <- function(z,
-                          show.what = "colnames") {
-  if (show.what != "colnames") {
+                          show.what = NULL) {
+  if (is.null(show.what)) {
+    if (interactive()) {
+      default <- "colnames"
+    } else {
+      default <- "skip"
+    }
+    show.what <- getOption("ggpmisc.names.message",
+                           default = default)
+  }
+  if (!grepl("names", x = show.what)) {
     # nothing to do
     return()
   }

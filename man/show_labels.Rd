@@ -4,7 +4,7 @@
 \alias{show_labels}
 \title{Message listing non-missing labels}
 \usage{
-show_labels(z, show.what = "nicknames")
+show_labels(z, show.what = NULL)
 }
 \arguments{
 \item{z}{data.frame from which to extract names of columns.}
