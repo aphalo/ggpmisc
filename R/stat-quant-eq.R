@@ -778,10 +778,6 @@ quant_eq_compute_group_fun <- function(data,
   z[["fm.formula"]] <- formula.ls
   z[["fm.formula.chr"]] <- format(formula.ls)
 
-  if (interactive() && output.type != "numeric") {
-    show_labels(z)
-  }
-
   # Compute label positions
   # we need to use scale limits as observations are not necessarily plotted
   x.range <- scales$x$range$range
@@ -879,8 +875,10 @@ quant_eq_compute_group_fun <- function(data,
     z[["npcy"]] <- NA_real_
   }
 
-  if (interactive() && output.type == "numeric") {
+  if (output.type == "numeric") {
     show_colnames(z)
+  } else {
+    show_labels(z)
   }
 
   z

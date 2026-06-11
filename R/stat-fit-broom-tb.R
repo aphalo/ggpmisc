@@ -569,9 +569,7 @@ fit_tb_compute_panel_fun <- function(data,
     z$npcy <- NA_real_
   }
 
-  if (interactive()) {
-    show_colnames(z)
-  }
+  show_colnames(z)
 
   z
 }

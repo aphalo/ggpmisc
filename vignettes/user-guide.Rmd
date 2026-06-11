@@ -1487,7 +1487,32 @@ ggplot(Orange, aes(age, circumference, colour = Tree)) +
 
 ### How to find out what variables are computed
 
-When using `stat_fit_glance()`, `stat_fit_tidy()`, `stat_fit_augment()` and `stat_fit_tb()` the documentation cannot describe the variables present in the returned `data` because they call methods using their generic interface and the exact specialization used depends on the argument passed to method, which can be even one that I have not been aware of and never tested. Thanks to package 'gginnards' and its `gginnards::geom_debug_group()` we can find this out with a temporary change to the plot code.
+When using `stat_fit_glance()`, `stat_fit_tidy()`, `stat_fit_augment()` and `stat_fit_tb()` the documentation cannot describe the variables present in the returned `data` because they call methods using their generic interface and the exact specialization used depends on the argument passed to method, which can be even one that I have not been aware of and never tested. Even in the case of other model fitting statistics like `stat_poly_eq()` which variables are present or are set to `NA` depends on the model fit `method` used and in some cases also on the arguments passed to the method.
+
+In 'ggpmisc' (>= 1.0.0) when executed in an *interactive* R session statistics display by default a message listing either the names of variables in the returned data frame containing non-missing data or the short names of the formatted variables.
+
+As other messages in R, these messages can be silenced. They can also be controlled specifically using R option `"ggpmisc.stat.vars.message"` which can take values `"colnames"`, `"nicknames"` and `"skip"`. As the documentation is generated in an R session that is not interactive, the option needs to be set here to display a message.
+
+```{r, eval=(eval_broom && eval_gginnards), message=TRUE}
+old.options <- options(ggpmisc.stat.vars.message = "colnames")
+# formula <- y ~ poly(x, 3, raw = TRUE)
+# broom::augment does not handle poly() correctly
+formula <- y ~ x + I(x^2) + I(x^3)
+ggplot(my.data, aes(x, y.poly)) +
+  geom_point() +
+  stat_poly_line(formula = formula) +
+  stat_fit_glance(aes(label = 
+                        after_stat(
+                          sprintf("italic(P)*\"-value = \"*%.3g", 
+                                  p.value))),
+                  parse = TRUE,
+                  method.args = list(formula = formula),
+                  label.x = "right",
+                  label.y = "bottom")
+options <- old.options
+```
+
+In addition package 'gginnards' exports `gginnards::geom_debug_group()` that prints the data frame, making it possible to explore its contents by temporarily substituting other geoms with in the plot code.
 
 `gginnards::geom_debug_group()` uses by default `head()` to echo to the R console the data it receives as input. It ignores the aesthetic mappings so it can be used with any statistics or directly as a layer function. However, unrecognised aesthetics can trigger warnings during plot rendering. These warnings can be ignored in most cases.
 
@@ -1495,16 +1520,18 @@ When using `stat_fit_glance()`, `stat_fit_tidy()`, `stat_fit_augment()` and `sta
 # formula <- y ~ poly(x, 3, raw = TRUE)
 # broom::augment does not handle poly() correctly!
 formula <- y ~ x + I(x^2) + I(x^3)
-ggplot(my.data, aes(x, y.poly.grp, colour = group)) +
+ggplot(my.data, aes(x, y.poly)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_fit_glance(geom = "debug_group",
+  stat_fit_glance(aes(label = 
+                        after_stat(
+                          sprintf("italic(P)*\"-value = \"*%.3g", 
+                                  p.value))),
+#                  parse = TRUE,
+                  geom = "debug_group",
                   method.args = list(formula = formula),
                   label.x = "right",
-                  label.y = "bottom",
-                  aes(label = sprintf("italic(P)*\"-value = \"*%.3g", 
-                                      after_stat(p.value))),
-                  parse = TRUE)
+                  label.y = "bottom")
 ```
 
 In the case of `stat_fit_tb()` the computed variables returned include a list column containing embedded data frames. In this case, function `str()` is more informative than `head()`, so we can pass it as argument overriding the default.
@@ -1522,11 +1549,12 @@ ggplot(my.data, aes(x, y.poly)) +
                           "s.e." = "std.error", 
                           "italic(t)" = "statistic", 
                           "italic(P)" = "p.value"),
-              label.y = "top", label.x = "left",
-              parse = TRUE)
+#              parse = TRUE,
+              label.y = "top",
+              label.x = "left")
 ```
 
-`gginnards::geom_debug_group()` can be used with 'ggplot2' and its extensions. More examples are given in the [documentation of package 'gginnards'](https://docs.r4photobiology.info/gginnards/).
+`gginnards::geom_debug_group()` can be used with stats from 'ggplot2' and its extensions. More examples are given in the [documentation of package 'gginnards'](https://docs.r4photobiology.info/gginnards/).
 
 ## Scales
 

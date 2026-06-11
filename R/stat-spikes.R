@@ -241,9 +241,7 @@ spikes_compute_group_fun <- function(data,
     z <- data.frame()
   }
 
-  if (interactive()) {
-    show_labels(z)
-  }
+  show_labels(z)
 
   z
 }

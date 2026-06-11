@@ -244,9 +244,7 @@ quant_line_compute_group_fun <- function(data,
   z[["flipped_aes"]] <- flipped_aes
   z <- ggplot2::flip_data(z, flipped_aes)
 
-  if (interactive()) {
-    show_colnames(z)
-  }
+  show_colnames(z)
 
   z
 }

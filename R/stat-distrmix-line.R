@@ -191,7 +191,9 @@ distrmix_compute_group_fun <-
     }
 
     prediction[["flipped_aes"]] <- flipped_aes
-    ggplot2::flip_data(prediction, flipped_aes)
+    z <- ggplot2::flip_data(prediction, flipped_aes)
+    show_colnames(z)
+    z
   }
 
 #' @rdname ggpmisc-ggproto

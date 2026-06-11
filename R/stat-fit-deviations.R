@@ -112,9 +112,7 @@ deviations_compute_group_fun <- function(data,
                     hjust = 0)
   }
 
-  if (interactive()) {
-    show_colnames(z)
-  }
+  show_colnames(z)
 
   z
 }
@@ -232,9 +230,7 @@ fitted_compute_group_fun <- function(data,
                     y = fitted.vals)
   }
 
-  if (interactive()) {
-    show_colnames(z)
-  }
+  show_colnames(z)
 
   z
 }

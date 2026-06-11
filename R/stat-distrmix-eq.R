@@ -458,10 +458,6 @@ distrmix_eq_compute_group_fun <-
       warning("Ignoring bad 'components' argument: \"", components, "\"")
     }
 
-    if (interactive() && output.type != "numeric") {
-      show_labels(fm_params.tb)
-    }
-
     # Compute label positions
     if (is.character(label.x)) {
       margin.npc <- 0.05
@@ -490,8 +486,10 @@ distrmix_eq_compute_group_fun <-
       fm_params.tb$y <- I(label.y)
     }
 
-    if (interactive() && output.type == "numeric") {
+    if (output.type == "numeric") {
       show_colnames(fm_params.tb)
+    } else {
+      show_labels(fm_params.tb)
     }
 
     fm_params.tb

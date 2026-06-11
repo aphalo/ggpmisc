@@ -351,9 +351,7 @@ residuals_compute_group_fun <- function(data,
                     robustness.weights = weights.ls[["rob.weight.vals"]])
   }
 
-  if (interactive()) {
-    show_colnames(z)
-  }
+  show_colnames(z)
 
   z
 }
