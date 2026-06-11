@@ -36,7 +36,7 @@
 #'
 #' @export
 #'
-#' @family Functions for quadrant and volcano plots
+#' @family scales for omics data
 #'
 #' @examples
 #'

@@ -421,8 +421,12 @@ This statistic uses the implementation of Tests of General Linear
   \code{\link[multcomp]{summary.glht}} and \code{\link[stats]{p.adjust}}
   for the supported tests and the references therein for the theory
   behind them.
+
+  Please, see the articles at
+  \href{https://docs.r4photobiology.info/ggpmisc/}{online-only documentation}
+  for additional use examples and guidance.
 }
-\concept{ggplot statistics for multiple comparisons}
+\concept{\emph{statistics} for multiple comparison annotations}
 \section{Aesthetics}{
 
 \code{stat_multcomp()} understands the following aesthetics. Required aesthetics are displayed in bold and defaults are displayed for optional aesthetics:

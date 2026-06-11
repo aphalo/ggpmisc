@@ -354,7 +354,10 @@
 #'   for a given \code{method} on other arguments passed when fitting a model or
 #'   extracting estimates and other computed values. A message is issued listing
 #'   the short names for formatted labels as recognized by functions
-#'   \code{\link{use_label}()} and \code{\link{f_use_label}()}.
+#'   \code{\link{use_label}()} and \code{\link{f_use_label}()}, except when
+#'   \code{output.type = "numeric"} is passed, in which case the
+#'   names of all variables accessible by \code{after_stat()} within a call to
+#'   \code{aes()} are listed.
 #'
 #' For all \code{output.type} arguments the following values are returned.
 #' \describe{
@@ -404,11 +407,16 @@
 #'   for the details and additional arguments that can be passed to
 #'   them by name through parameter \code{method.args}.
 #'
-#'   Please, see the articles in
+#'   Please, see the articles at
 #'   \href{https://docs.r4photobiology.info/ggpmisc/}{online-only documentation}
 #'   for additional use examples and guidance.
 #'
-#' @family 'ggpmisc' statistics for model fits
+#' \emph{statistics} from 'ggpmisc' for model fit annotations:
+#' \code{\link{stat_poly_eq}()}, \code{\link{stat_quant_eq}()},
+#' \code{\link{stat_ma_eq}()} and \code{\link{stat_distrmix_eq}()}, and for
+#' model fit predictions: \code{\link{stat_poly_line}()},
+#' \code{\link{stat_quant_line}()}, \code{\link{stat_quant_band}()},
+#' \code{\link{stat_ma_line}()} and \code{\link{stat_distrmix_line}()}.
 #'
 #' @examples
 #' # generate artificial data

@@ -17,6 +17,8 @@
 #' This function does the model fitting and returns a fitted model object. It
 #' decodes the method, sorts the quantiles and does the fit.
 #'
+#' @family model-fitting helper functions
+#'
 #' @examples
 #'
 #' ggpmisc:::quant_helper_fun(data.frame(x = mpg$displ, y = mpg$hwy), method = "br")

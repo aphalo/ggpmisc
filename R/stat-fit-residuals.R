@@ -1,9 +1,9 @@
 #' Residuals and fitted values from model fit
 #'
-#' Statistic \code{stat_fit_residuals} fits a model and plots residuals vs.
-#' \emph{x}. Statistic \code{stat_fit_deviations} fits a model and and
+#' Statistic \code{stat_fit_residuals()} fits a model and plots residuals vs.
+#' \code{x}. Statistic \code{stat_fit_deviations()} fits a model and and
 #' highlighting residuals as segments in a \emph{y} vs. \emph{x} plot. Statistic
-#' \code{stat_fit_fitted} plots the fitetd values vs. \emph{x}.
+#' \code{stat_fit_fitted()} plots the fitted values vs. \emph{x}.
 #'
 #' @inheritParams stat_poly_eq
 #' @param resid.type character passed to \code{\link[stats]{residuals}()} as
@@ -111,9 +111,16 @@
 #'   \item{y}{y coordinates of observations or fitted}
 #'   }
 #'
-#' @inherit stat_poly_eq seealso
+#' @inherit stat_poly_eq
 #'
-#' @family 'ggpmisc' statistics for model fits
+#' @seealso \code{\link[stats]{residuals}()} and \code{\link[stats]{weights}()}
+#'   and their specializations for the \code{method} used.
+#'
+#'   Please, see the articles at
+#'   \href{https://docs.r4photobiology.info/ggpmisc/}{online-only documentation}
+#'   for additional use examples and guidance.
+#'
+#' @family \emph{statistics} for model fits residuals
 #'
 #' @examples
 #' # generate artificial data

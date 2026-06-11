@@ -216,7 +216,11 @@
 #'   for the supported tests and the references therein for the theory
 #'   behind them.
 #'
-#' @family ggplot statistics for multiple comparisons
+#'   Please, see the articles at
+#'   \href{https://docs.r4photobiology.info/ggpmisc/}{online-only documentation}
+#'   for additional use examples and guidance.
+#'
+#' @family \emph{statistics} for multiple comparison annotations
 #'
 #' @references
 #'

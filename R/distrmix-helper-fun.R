@@ -13,6 +13,8 @@
 #' estimates for the parameters. It is a wrapper on functions from package
 #' 'mixtools'.
 #'
+#' @family model-fitting helper functions
+#'
 distrmix_helper_fun <-
   function(data,
            aes.name = "x",

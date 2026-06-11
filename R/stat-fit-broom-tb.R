@@ -67,7 +67,7 @@
 #'   For details on predefined table themes see
 #'   \code{\link[ggpp]{ttheme_gtdefault}}.
 #'
-#' @family 'ggpmisc' statistics for model fits
+#' @family 'broom'-based \emph{statistics} for model fits
 #'
 #' @export
 #'

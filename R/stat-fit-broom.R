@@ -57,7 +57,7 @@
 #' @seealso Package \code{\link[broom]{broom}} for details on how the tidying of
 #'   the result of model fits is done.
 #'
-#' @family 'ggpmisc' statistics for model fits
+#' @family 'broom'-based \emph{statistics} for model fits
 #'
 #' @export
 #'
@@ -434,10 +434,10 @@ StatFitGlance <-
 #'   on the model fitting function and model formula we suggest the use of
 #'   \code{\link[gginnards]{geom_debug}}. An example is shown below.
 #'
-#' @family ggplot statistics for model fits
-#'
 #' @seealso Package \code{\link[broom]{broom}} for details on how the tidying of
 #'   the result of model fits is done.
+#'
+#' @family 'broom'-based \emph{statistics} for model fits
 #'
 #' @export
 #'
@@ -731,7 +731,7 @@ StatFitAugment <-
 #' @seealso Package \code{\link[broom]{broom}} for details on how the tidying of
 #'   the result of model fits is done.
 #'
-#' @family 'ggpmisc' statistics for model fits
+#' @family 'broom'-based \emph{statistics} for model fits
 #'
 #' @export
 #'

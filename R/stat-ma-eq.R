@@ -112,7 +112,10 @@
 #'   for a given \code{method} on other arguments passed when fitting a model or
 #'   extracting estimates and other computed values. A message is issued listing
 #'   the short names for formatted labels as recognized by functions
-#'   \code{\link{use_label}()} and \code{\link{f_use_label}()}.
+#'   \code{\link{use_label}()} and \code{\link{f_use_label}()}, except when
+#'   \code{output.type = "numeric"} is passed, in which case the
+#'   names of all variables accessible by \code{after_stat()} within a call to
+#'   \code{aes()} are listed.
 #'
 #' If \code{output.type} is \code{"numeric"} the returned tibble contains columns
 #' listed below. If the model fit function used does not return a value,
@@ -147,11 +150,18 @@
 #' @inheritSection stat_poly_eq Model fit methods supported
 #'
 #' @seealso The major axis regression model is fitted with function
-#'   \code{\link[lmodel2]{lmodel2}()}, please consult its documentation. Statistic
-#'   \code{stat_ma_eq()} can return different ready formatted labels depending
-#'   on the argument passed to \code{output.type}.
+#'   \code{\link[lmodel2]{lmodel2}()}, please consult its documentation.
 #'
-#' @family 'ggpmisc' statistics for model fits
+#'   Please, see the articles in
+#'   \href{https://docs.r4photobiology.info/ggpmisc/}{online-only documentation}
+#'   for additional use examples and guidance.
+#'
+#' \emph{statistics} from 'ggpmisc' for model fit annotations:
+#' \code{\link{stat_poly_eq}()}, \code{\link{stat_quant_eq}()},
+#' \code{\link{stat_ma_eq}()} and \code{\link{stat_distrmix_eq}()}, and for
+#' model fit predictions: \code{\link{stat_poly_line}()},
+#' \code{\link{stat_quant_line}()}, \code{\link{stat_quant_band}()},
+#' \code{\link{stat_ma_line}()} and \code{\link{stat_distrmix_line}()}.
 #'
 #' @examples
 #' # generate artificial data

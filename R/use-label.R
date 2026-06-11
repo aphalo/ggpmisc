@@ -43,11 +43,15 @@
 #'   \code{\link[ggplot2]{aes}()}, ready to be passed as argument to the
 #'   \code{mapping} parameter of the supported statistics.
 #'
-#' @seealso Function \code{use_label()} can be used to generate an argument
-#'   passed to formal parameter \code{mapping} of the statistics
-#'   \code{\link{stat_poly_eq}}, \code{\link{stat_ma_eq}},
-#'   \code{\link{stat_quant_eq}} and \code{\link{stat_correlation}}. Please,
-#'   see their documentation for the labels they generate.
+#' @seealso Functions \code{use_label()} and \code{f_use_label()} are wrappers
+#'   on function \code{\link[ggplot2]{aes}()} and can be used to create
+#'   mappings to the \code{label} aesthetic. These functions are matched to
+#'   \emph{statistics} for annotations from package 'ggpmisc'. Please,
+#'   see their documentation for the formatted character labels they generate.
+#'
+#'   Please, see the articles at
+#'   \href{https://docs.r4photobiology.info/ggpmisc/}{online-only documentation}
+#'   for additional use examples and guidance.
 #'
 #' @export
 #'

@@ -234,7 +234,10 @@ lines, \code{stat_distrmix_eq()} adds textual labels to a plot.
   for a given \code{method} on other arguments passed when fitting a model or
   extracting estimates and other computed values. A message is issued listing
   the short names for formatted labels as recognized by functions
-  \code{\link{use_label}()} and \code{\link{f_use_label}()}.
+  \code{\link{use_label}()} and \code{\link{f_use_label}()}, except when
+  \code{output.type = "numeric"} is passed, in which case the
+  names of all variables accessible by \code{after_stat()} within a call to
+  \code{aes()} are listed.
 
   Some of the variables depend on the orientation:
   \describe{\item{x}{the location of text labels}
@@ -401,16 +404,17 @@ if (gginnards.installed)
 
 }
 \seealso{
-Other 'ggpmisc' statistics for model fits:
-\code{\link[=stat_fit_deviations]{stat_fit_deviations()}},
-\code{\link[=stat_fit_glance]{stat_fit_glance()}},
-\code{\link[=stat_fit_tb]{stat_fit_tb()}},
-\code{\link[=stat_fit_tidy]{stat_fit_tidy()}},
-\code{\link[=stat_ma_eq]{stat_ma_eq()}},
-\code{\link[=stat_poly_eq]{stat_poly_eq()}},
-\code{\link[=stat_quant_band]{stat_quant_band()}}
+For the underlying computations see for mixes of two or more Normal
+  distributions \code{\link[mixtools]{normalmixEM}()} and for a single Normal
+  distribution \code{\link[MASS]{fitdistr}()}.
+
+  \emph{statistics} from 'ggpmisc' for model fit annotations:
+  \code{\link{stat_poly_eq}()}, \code{\link{stat_quant_eq}()},
+  \code{\link{stat_ma_eq}()} and \code{\link{stat_distrmix_eq}()}, and for
+  model fit predictions: \code{\link{stat_poly_line}()},
+  \code{\link{stat_quant_line}()}, \code{\link{stat_quant_band}()},
+  \code{\link{stat_ma_line}()} and \code{\link{stat_distrmix_line}()}.
 }
-\concept{'ggpmisc' statistics for model fits}
 \section{Aesthetics}{
 
 \code{stat_distrmix_eq()} understands the following aesthetics. Required aesthetics are displayed in bold and defaults are displayed for optional aesthetics:

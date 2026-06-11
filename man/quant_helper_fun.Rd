@@ -75,4 +75,9 @@ decodes the method, sorts the quantiles and does the fit.
 ggpmisc:::quant_helper_fun(data.frame(x = mpg$displ, y = mpg$hwy), method = "br")
 
 }
+\seealso{
+Other model-fitting helper functions:
+\code{\link[=distrmix_helper_fun]{distrmix_helper_fun()}}
+}
+\concept{model-fitting helper functions}
 \keyword{internal}

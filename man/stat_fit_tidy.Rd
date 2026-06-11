@@ -333,16 +333,12 @@ if (broom.installed)
 Package \code{\link[broom]{broom}} for details on how the tidying of
   the result of model fits is done.
 
-Other 'ggpmisc' statistics for model fits:
-\code{\link[=stat_distrmix_eq]{stat_distrmix_eq()}},
-\code{\link[=stat_fit_deviations]{stat_fit_deviations()}},
+Other 'broom'-based \emph{statistics} for model fits:
+\code{\link[=stat_fit_augment]{stat_fit_augment()}},
 \code{\link[=stat_fit_glance]{stat_fit_glance()}},
-\code{\link[=stat_fit_tb]{stat_fit_tb()}},
-\code{\link[=stat_ma_eq]{stat_ma_eq()}},
-\code{\link[=stat_poly_eq]{stat_poly_eq()}},
-\code{\link[=stat_quant_band]{stat_quant_band()}}
+\code{\link[=stat_fit_tb]{stat_fit_tb()}}
 }
-\concept{'ggpmisc' statistics for model fits}
+\concept{'broom'-based \emph{statistics} for model fits}
 \section{Aesthetics}{
 
 \code{stat_fit_tidy()} understands the following aesthetics. Required aesthetics are displayed in bold and defaults are displayed for optional aesthetics:

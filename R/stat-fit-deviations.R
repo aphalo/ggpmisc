@@ -1,5 +1,7 @@
 #' @rdname stat_fit_residuals
 #'
+#' @family \emph{statistics} for model fits residuals
+#'
 #' @export
 #'
 stat_fit_deviations <- function(mapping = NULL,

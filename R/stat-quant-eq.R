@@ -73,9 +73,9 @@
 #' @param coef.digits,rho.digits integer Number of significant digits to use for
 #'   the fitted coefficients and rho in labels.
 #'
+#' @aesthetics StatQuantEq
 #' @aesthetics StatQuantLine
 #' @aesthetics StatQuantBand
-#' @aesthetics StatQuantEq
 #'
 #' @inheritSection check_output_type Output types
 #'
@@ -104,7 +104,10 @@
 #'   for a given \code{method} on other arguments passed when fitting a model or
 #'   extracting estimates and other computed values. A message is issued listing
 #'   the short names for formatted labels as recognized by functions
-#'   \code{\link{use_label}()} and \code{\link{f_use_label}()}.
+#'   \code{\link{use_label}()} and \code{\link{f_use_label}()}, except when
+#'   \code{output.type = "numeric"} is passed, in which case the
+#'   names of all variables accessible by \code{after_stat()} within a call to
+#'   \code{aes()} are listed.
 #'
 #' If output.type is \code{"numeric"} the returned tibble contains columns
 #'  in addition to a modified version of the original \code{group}:
@@ -184,7 +187,16 @@
 #' @seealso \code{\link[quantreg]{rq}}, \code{\link[quantreg]{rqss}} and
 #'   \code{\link[quantreg]{qss}}.
 #'
-#' @family 'ggpmisc' statistics for model fits
+#'   Please, see the articles at
+#'   \href{https://docs.r4photobiology.info/ggpmisc/}{online-only documentation}
+#'   for additional use examples and guidance.
+#'
+#' \emph{statistics} from 'ggpmisc' for model fit annotations:
+#' \code{\link{stat_poly_eq}()}, \code{\link{stat_quant_eq}()},
+#' \code{\link{stat_ma_eq}()} and \code{\link{stat_distrmix_eq}()}, and for
+#' model fit predictions: \code{\link{stat_poly_line}()},
+#' \code{\link{stat_quant_line}()}, \code{\link{stat_quant_band}()},
+#' \code{\link{stat_ma_line}()} and \code{\link{stat_distrmix_line}()}.
 #'
 #' @import quantreg
 #'

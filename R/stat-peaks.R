@@ -81,8 +81,10 @@
 #'   \code{geom_line()}, \code{geom_rug()}, \code{geom_hline()} and
 #'   \code{geom_vline()} by just passing an argument to \code{geom}.
 #'
-#' @seealso \code{\link{find_peaks}}, for the functions used to located the
+#' @seealso \code{\link{find_peaks}()}, for the function used to located the
 #'   peaks and valleys.
+#'
+#' @family \emph{statistics} for peak, valley and spikes annotation
 #'
 #' @examples
 #' # lynx and Nile are time.series objects recognized by
@@ -475,6 +477,8 @@ StatPeaks <-
   )
 
 #' @rdname stat_peaks
+#'
+#' @family \emph{statistics} for peak, valley and spikes annotation
 #'
 #' @export
 #'

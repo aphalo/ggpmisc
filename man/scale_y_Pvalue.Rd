@@ -113,11 +113,13 @@ ggplot(my.df, aes(x, y)) +
 
 }
 \seealso{
-Other Functions for quadrant and volcano plots:
+Other scales for omics data:
 \code{\link[=FC_format]{FC_format()}},
 \code{\link[=outcome2factor]{outcome2factor()}},
+\code{\link[=scale_colour_logFC]{scale_colour_logFC()}},
 \code{\link[=scale_colour_outcome]{scale_colour_outcome()}},
 \code{\link[=scale_shape_outcome]{scale_shape_outcome()}},
+\code{\link[=scale_x_logFC]{scale_x_logFC()}},
 \code{\link[=xy_outcomes2factor]{xy_outcomes2factor()}}
 }
-\concept{Functions for quadrant and volcano plots}
+\concept{scales for omics data}

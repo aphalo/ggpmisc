@@ -34,8 +34,10 @@
 #'
 #' @inheritSection stat_peaks Label positioning and formatting
 #'
-#' @seealso \code{\link{find_spikes}}, for the function used to located the
+#' @seealso \code{\link{find_spikes}()}, for the function used to located the
 #'   spikes.
+#'
+#' @family \emph{statistics} for peak, valley and spikes annotation
 #'
 #' @examples
 #' # lynx and Nile are time.series objects recognized by

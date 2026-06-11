@@ -105,7 +105,10 @@
 #'   for a given \code{method} on other arguments passed when fitting a model or
 #'   extracting estimates and other computed values. A message is issued listing
 #'   the short names for formatted labels as recognized by functions
-#'   \code{\link{use_label}()} and \code{\link{f_use_label}()}.
+#'   \code{\link{use_label}()} and \code{\link{f_use_label}()}, except when
+#'   \code{output.type = "numeric"} is passed, in which case the
+#'   names of all variables accessible by \code{after_stat()} within a call to
+#'   \code{aes()} are listed.
 #'
 #'   Some of the variables depend on the orientation:
 #'   \describe{\item{x}{the location of text labels}
@@ -136,7 +139,18 @@
 #'
 #' @inherit stat_poly_eq seealso
 #'
-#' @family 'ggpmisc' statistics for model fits
+#' @seealso For the underlying computations see for mixes of two or more Normal
+#'   distributions \code{\link[mixtools]{normalmixEM}()} and for a single Normal
+#'   distribution \code{\link[MASS]{fitdistr}()}.
+#'
+#'   \emph{statistics} from 'ggpmisc' for model fit annotations:
+#'   \code{\link{stat_poly_eq}()}, \code{\link{stat_quant_eq}()},
+#'   \code{\link{stat_ma_eq}()} and \code{\link{stat_distrmix_eq}()}, and for
+#'   model fit predictions: \code{\link{stat_poly_line}()},
+#'   \code{\link{stat_quant_line}()}, \code{\link{stat_quant_band}()},
+#'   \code{\link{stat_ma_line}()} and \code{\link{stat_distrmix_line}()}.
+#'
+#' @export
 #'
 #' @examples
 #' ggplot(faithful, aes(x = waiting)) +
@@ -225,8 +239,6 @@
 #'     stat_distrmix_eq(geom = "debug_group",
 #'                      components = "members",
 #'                      fm.values = TRUE)
-#'
-#' @export
 #'
 stat_distrmix_eq <- function(mapping = NULL,
                              data = NULL,

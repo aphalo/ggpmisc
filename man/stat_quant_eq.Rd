@@ -270,7 +270,10 @@ While \code{stat_poly_line()} and \code{stat_poly_eq()} fit
   for a given \code{method} on other arguments passed when fitting a model or
   extracting estimates and other computed values. A message is issued listing
   the short names for formatted labels as recognized by functions
-  \code{\link{use_label}()} and \code{\link{f_use_label}()}.
+  \code{\link{use_label}()} and \code{\link{f_use_label}()}, except when
+  \code{output.type = "numeric"} is passed, in which case the
+  names of all variables accessible by \code{after_stat()} within a call to
+  \code{aes()} are listed.
 
 If output.type is \code{"numeric"} the returned tibble contains columns
  in addition to a modified version of the original \code{group}:
@@ -770,17 +773,31 @@ Cardoso, G. C. (2019) Double quantile regression accurately assesses
 \code{\link[quantreg]{rq}}, \code{\link[quantreg]{rqss}} and
   \code{\link[quantreg]{qss}}.
 
-Other 'ggpmisc' statistics for model fits:
-\code{\link[=stat_distrmix_eq]{stat_distrmix_eq()}},
-\code{\link[=stat_fit_deviations]{stat_fit_deviations()}},
-\code{\link[=stat_fit_glance]{stat_fit_glance()}},
-\code{\link[=stat_fit_tb]{stat_fit_tb()}},
-\code{\link[=stat_fit_tidy]{stat_fit_tidy()}},
-\code{\link[=stat_ma_eq]{stat_ma_eq()}},
-\code{\link[=stat_poly_eq]{stat_poly_eq()}}
+  Please, see the articles at
+  \href{https://docs.r4photobiology.info/ggpmisc/}{online-only documentation}
+  for additional use examples and guidance.
+
+\emph{statistics} from 'ggpmisc' for model fit annotations:
+\code{\link{stat_poly_eq}()}, \code{\link{stat_quant_eq}()},
+\code{\link{stat_ma_eq}()} and \code{\link{stat_distrmix_eq}()}, and for
+model fit predictions: \code{\link{stat_poly_line}()},
+\code{\link{stat_quant_line}()}, \code{\link{stat_quant_band}()},
+\code{\link{stat_ma_line}()} and \code{\link{stat_distrmix_line}()}.
 }
-\concept{'ggpmisc' statistics for model fits}
 \section{Aesthetics}{
+
+\code{stat_quant_eq()} understands the following aesthetics. Required aesthetics are displayed in bold and defaults are displayed for optional aesthetics:
+\tabular{rll}{
+ • \tab \strong{\code{\link[ggplot2:aes_position]{x}}} \tab   \cr
+ • \tab \strong{\code{\link[ggplot2:aes_position]{y}}} \tab   \cr
+ • \tab \code{\link[ggplot2:aes_group_order]{group}} \tab → inferred \cr
+ • \tab \code{grp.label} \tab   \cr
+ • \tab \code{hjust} \tab → \code{"inward"} \cr
+ • \tab \code{label} \tab → \code{after_stat(eq.label)} \cr
+ • \tab \code{npcx} \tab → \code{after_stat(npcx)} \cr
+ • \tab \code{npcy} \tab → \code{after_stat(npcy)} \cr
+ • \tab \code{vjust} \tab → \code{"inward"} \cr
+}
 
 \code{stat_quant_line()} understands the following aesthetics. Required aesthetics are displayed in bold and defaults are displayed for optional aesthetics:
 \tabular{rll}{
@@ -795,19 +812,6 @@ Other 'ggpmisc' statistics for model fits:
  • \tab \strong{\code{\link[ggplot2:aes_position]{x}}} \tab   \cr
  • \tab \strong{\code{\link[ggplot2:aes_position]{y}}} \tab   \cr
  • \tab \code{\link[ggplot2:aes_group_order]{group}} \tab → inferred \cr
-}
-
-\code{stat_quant_eq()} understands the following aesthetics. Required aesthetics are displayed in bold and defaults are displayed for optional aesthetics:
-\tabular{rll}{
- • \tab \strong{\code{\link[ggplot2:aes_position]{x}}} \tab   \cr
- • \tab \strong{\code{\link[ggplot2:aes_position]{y}}} \tab   \cr
- • \tab \code{\link[ggplot2:aes_group_order]{group}} \tab → inferred \cr
- • \tab \code{grp.label} \tab   \cr
- • \tab \code{hjust} \tab → \code{"inward"} \cr
- • \tab \code{label} \tab → \code{after_stat(eq.label)} \cr
- • \tab \code{npcx} \tab → \code{after_stat(npcx)} \cr
- • \tab \code{npcy} \tab → \code{after_stat(npcy)} \cr
- • \tab \code{vjust} \tab → \code{"inward"} \cr
 }
 
 Learn more about setting these aesthetics in \code{vignette("ggplot2-specs")}.

@@ -323,8 +323,13 @@ if (broom.installed)
 \seealso{
 Package \code{\link[broom]{broom}} for details on how the tidying of
   the result of model fits is done.
+
+Other 'broom'-based \emph{statistics} for model fits:
+\code{\link[=stat_fit_glance]{stat_fit_glance()}},
+\code{\link[=stat_fit_tb]{stat_fit_tb()}},
+\code{\link[=stat_fit_tidy]{stat_fit_tidy()}}
 }
-\concept{ggplot statistics for model fits}
+\concept{'broom'-based \emph{statistics} for model fits}
 \section{Aesthetics}{
 
 \code{stat_fit_augment()} understands the following aesthetics. Required aesthetics are displayed in bold and defaults are displayed for optional aesthetics:

@@ -61,4 +61,9 @@ This function does the model fitting and returns a data frame with the
 estimates for the parameters. It is a wrapper on functions from package
 'mixtools'.
 }
+\seealso{
+Other model-fitting helper functions:
+\code{\link[=quant_helper_fun]{quant_helper_fun()}}
+}
+\concept{model-fitting helper functions}
 \keyword{internal}

@@ -164,7 +164,10 @@ Currently \code{coef.keep.zeros} is ignored, with trailing zeros always
   for a given \code{method} on other arguments passed when fitting a model or
   extracting estimates and other computed values. A message is issued listing
   the short names for formatted labels as recognized by functions
-  \code{\link{use_label}()} and \code{\link{f_use_label}()}.
+  \code{\link{use_label}()} and \code{\link{f_use_label}()}, except when
+  \code{output.type = "numeric"} is passed, in which case the
+  names of all variables accessible by \code{after_stat()} within a call to
+  \code{aes()} are listed.
 
  If output.type is \code{"numeric"} the returned
   tibble contains the columns listed below with variations depending on the
@@ -371,7 +374,7 @@ if (gginnards.installed)
 \seealso{
 \code{\link[stats]{cor.test}} for details on the computations.
 }
-\concept{ggplot statistics for correlation.}
+\concept{statistics for correlation-test annotation}
 \section{Aesthetics}{
 
 \code{stat_correlation()} understands the following aesthetics. Required aesthetics are displayed in bold and defaults are displayed for optional aesthetics:

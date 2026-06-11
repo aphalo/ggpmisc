@@ -14,8 +14,6 @@
 #'   \code{scale_shape_manual()}. Please, see
 #'   documentation for \code{\link[ggplot2]{scale_manual}} for details.
 #'
-#' @family Functions for quadrant and volcano plots
-#'
 #' @export
 #'
 #' @family scales for omics data
