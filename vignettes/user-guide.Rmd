@@ -378,8 +378,10 @@ Using the numeric values returned it is possible to set other aesthetics on-the-
 ```{r}
 ggplot(my.data, aes(x, y.grp)) +
   geom_point() +
-  stat_correlation(mapping = aes(color = ifelse(after_stat(cor) > 0.955,
-                                                "red", "black"))) +
+  stat_correlation(mapping = 
+                     aes(color = 
+                           after_stat(ifelse(cor > 0.955, 
+                                             "red", "black")))) +
   scale_color_identity() +
   facet_wrap(~group)
 ```
@@ -465,11 +467,13 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y.poly)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label =  paste(after_stat(eq.label), "*\" with \"*", 
-                                  after_stat(rr.label), "*\", \"*", 
-                                  after_stat(f.value.label), "*\", and \"*",
-                                  after_stat(p.value.label), "*\".\"",
-                                  sep = "")),
+  stat_poly_eq(aes(label =  
+                     after_stat(
+                       paste(eq.label, "*\" with \"*", 
+                             rr.label, "*\", \"*", 
+                             f.value.label, "*\", and \"*",
+                             p.value.label, "*\".\"",
+                             sep = ""))),
                formula = formula, size = 3)
 ```
 
@@ -491,8 +495,10 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y.poly)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label = paste("atop(", after_stat(AIC.label), ",", 
-                                 after_stat(BIC.label), ")", sep = "")), 
+  stat_poly_eq(aes(label = 
+                     after_stat(
+                       paste("atop(", AIC.label, ",", 
+                             BIC.label, ")", sep = ""))), 
                formula = formula)
 ```
 
@@ -575,10 +581,12 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y.poly)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label =  ifelse(after_stat(adj.r.squared > 0.3),
-                                   paste(after_stat(eq.label), after_stat(adj.rr.label), 
+  stat_poly_eq(aes(label = 
+                     after_stat(
+                       ifelse(adj.r.squared > 0.3,
+                                   paste(eq.label, adj.rr.label, 
                                          sep = "*\", \"*"),
-                                   after_stat(adj.rr.label))),
+                                   adj.rr.label))),
                formula = formula) +
   labs(x = expression(italic(x)), y = expression(italic(y)))
 ```
@@ -602,7 +610,8 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y.poly.grp)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label = after_stat(eq.label)), size = 2.5,
+  stat_poly_eq(aes(label = after_stat(eq.label)), 
+               size = 2.5,
                formula = formula) +
   facet_wrap(~group, scales = "free_y")
 ```
@@ -611,20 +620,25 @@ _Grouping works as expected._ In this example we create groups using the colour 
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y.poly.grp, colour = group)) +
+ggplot(my.data, 
+       aes(x, y.poly.grp, colour = group)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label = after_stat(eq.label)), formula = formula, vstep = 0.06)
+  stat_poly_eq(aes(label = after_stat(eq.label)), 
+               formula = formula, 
+               vstep = 0.06)
 ```
 
 To add a label to the equation for each group, we map it to a pseudo-aesthetic named `grp.label`.
 
 ```{r, eval=eval_flag}
 formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y.poly.grp, colour = group, grp.label = group)) +
+ggplot(my.data, 
+       aes(x, y.poly.grp, colour = group, grp.label = group)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label = after_stat(paste("bold(", grp.label, "*\":\")~~", 
+  stat_poly_eq(aes(label = 
+                     after_stat(paste("bold(", grp.label, "*\":\")~~", 
                                       eq.label, sep = ""))),
                formula = formula)
 ```
@@ -633,10 +647,12 @@ Being able to label equations allows us to dispense with the use of colour, whic
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y.poly.grp, linetype = group, grp.label = group)) +
+ggplot(my.data, 
+       aes(x, y.poly.grp, linetype = group, grp.label = group)) +
   geom_point() +
   stat_poly_line(formula = formula, color = "black") +
-  stat_poly_eq(aes(label = after_stat(paste("bold(", grp.label, "*':')~~~", 
+  stat_poly_eq(aes(label = 
+                     after_stat(paste("bold(", grp.label, "*':')~~~", 
                                       eq.label, sep = ""))),
                formula = formula)
 ```
@@ -645,7 +661,8 @@ User supplied label positions relative to the ranges of the *x* and *y* scales a
 
 ```{r, eval=eval_flag}
 formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y.poly.grp, colour = group)) +
+ggplot(my.data,
+       aes(x, y.poly.grp, colour = group)) +
   geom_point() +
   stat_poly_line(formula = formula) +
   stat_poly_eq(aes(label = after_stat(eq.label)),
@@ -657,11 +674,14 @@ The default locations are based on normalized coordinates, and consequently thes
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y.poly.grp, fill = block, colour = block)) +
+ggplot(my.data, 
+       aes(x, y.poly.grp, fill = block, colour = block)) +
   geom_point(shape = 21, size = 3) +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label = after_stat(rr.label)), size = 2.7,
-               geom = "label_npc", alpha = 0.05,
+  stat_poly_eq(aes(label = after_stat(rr.label)),
+               size = 2.7,
+               geom = "label_npc", 
+               alpha = 0.05,
                formula = formula) +
   facet_wrap(~group, scales = "free_y")
 ```
@@ -672,10 +692,13 @@ In some cases gaps may be desirable to highlight the missing groups, but when no
 
 ```{r, eval=eval_flag}
 formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y.poly.grp, colour = group.abcd)) +
+ggplot(my.data, 
+       aes(x, y.poly.grp, colour = group.abcd)) +
   geom_point(shape = 21, size = 3) +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label = after_stat(rr.label)), size = 3, formula = formula) +
+  stat_poly_eq(aes(label = after_stat(rr.label)), 
+               size = 3, 
+               formula = formula) +
   facet_wrap(~group, scales = "free_y")
 ```
 
@@ -683,10 +706,13 @@ When setting positions manually with arguments (in `npc` units, 0..1) passed as 
 
 ```{r, eval=eval_flag}
 formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y.poly.grp, colour = group.abcd)) +
+ggplot(my.data, 
+       aes(x, y.poly.grp, colour = group.abcd)) +
   geom_point(shape = 21, size = 3) +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(use_label("R2"), size = 3, label.y = c(0.95, 0.95, 0.9, 0.9),
+  stat_poly_eq(use_label("R2"),
+               size = 3, 
+               label.y = c(0.95, 0.95, 0.9, 0.9),
                formula = formula) +
   facet_wrap(~group, scales = "free_y")
 ```
@@ -695,11 +721,15 @@ In the plot below the simultaneous mapping to both colour and fill aesthetics cr
 
 ```{r, eval=eval_flag}
 formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y.poly.grp, colour = group, fill = block)) +
+ggplot(my.data, 
+       aes(x, y.poly.grp, colour = group, fill = block)) +
   geom_point(shape = 21, size = 3) +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label = after_stat(rr.label)), size = 3, alpha = 0.1,
-               geom = "label_npc", label.y = c(0.95, 0.85, 0.95, 0.85),
+  stat_poly_eq(aes(label = after_stat(rr.label)),
+               size = 3, 
+               alpha = 0.1,
+               geom = "label_npc", 
+               label.y = c(0.95, 0.85, 0.95, 0.85),
                formula = formula) +
   facet_wrap(~group, scales = "free_y")
 ```
@@ -708,11 +738,15 @@ It is possible to use `ggplot2::geom_text()` and `ggplot2::geom_label()` instead
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
-ggplot(my.data, aes(x, y.poly.grp, colour = group)) +
+ggplot(my.data, 
+       aes(x, y.poly.grp, colour = group)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(geom = "text", aes(label = after_stat(eq.label)),
-               label.x = c(10, 9), label.y = c(-0.15, 2.5), hjust = "inward",
+  stat_poly_eq(geom = "text", 
+               aes(label = after_stat(eq.label)),
+               label.x = c(10, 9), 
+               label.y = c(-0.15, 2.5),
+               hjust = "inward",
                formula = formula)
 ```
 
@@ -749,9 +783,14 @@ ggplot(my.data, aes(x, y.sd3)) +
 ggplot(my.data, aes(x, y.sd3)) +
   geom_point() +
   stat_ma_line(color = "blue") +
-  stat_ma_eq(mapping = use_label("R2", "eq"), color = "blue") +
-  stat_ma_line(color = "red", orientation = "y", linetype = "dashed") +
-  stat_ma_eq(mapping = use_label("R2", "eq"), color = "red", orientation = "y",
+  stat_ma_eq(mapping = use_label("R2", "eq"), 
+             color = "blue") +
+  stat_ma_line(color = "red",
+               orientation = "y",
+               linetype = "dashed") +
+  stat_ma_eq(mapping = use_label("R2", "eq"),
+             color = "red", 
+             orientation = "y",
              label.y = 0.9)
 ```
 
@@ -780,7 +819,8 @@ Overriding the values for `quantiles` we find a boundary containing 90% of the o
 ```{r, warning=FALSE}
 ggplot(my.data, aes(x, y.poly)) +
   geom_point() +
-  stat_quant_line(formula = y ~ poly(x, 2), quantiles = c(0.05, 0.95))
+  stat_quant_line(formula = y ~ poly(x, 2), 
+                  quantiles = c(0.05, 0.95))
 ```
 
 A line for the quantile regression plus a confidence band for it is the default for a single quantile. (This is similar to the behaviour of `ggplot2::stat_smooth()`.)
@@ -788,7 +828,8 @@ A line for the quantile regression plus a confidence band for it is the default 
 ```{r, warning=FALSE}
 ggplot(my.data, aes(x, y.poly)) +
   geom_point() +
-  stat_quant_line(formula = y ~ poly(x, 2), quantiles = 0.5)
+  stat_quant_line(formula = y ~ poly(x, 2), 
+                  quantiles = 0.5)
 ```
 
 With `stat_quant_eq()` we add the fitted equations to the first example in this section (we also override the use of colour).
@@ -796,9 +837,13 @@ With `stat_quant_eq()` we add the fitted equations to the first example in this 
 ```{r, warning=FALSE}
 ggplot(my.data, aes(x, y.poly)) +
   geom_point() +
-  stat_quant_band(formula = formula, color = "black", fill = "grey60") +
-  stat_quant_eq(aes(label = paste(after_stat(qtl.label), "*\": \"*",
-                                  after_stat(eq.label), sep = "")),
+  stat_quant_band(formula = formula, 
+                  color = "black", 
+                  fill = "grey60") +
+  stat_quant_eq(aes(label = 
+                      after_stat(
+                        paste(qtl.label, "*\": \"*", eq.label, 
+                              sep = ""))),
                 formula = formula) +
   theme_classic()
 ```
@@ -809,8 +854,10 @@ Grouping and faceting are supported by `stat_quant_eq()`, `stat_quant_line()` an
 ggplot(my.data, aes(x, y.poly.grp, color = group)) +
   geom_point() +
   stat_quant_line(formula = formula) +
-  stat_quant_eq(aes(label = paste(after_stat(qtl.label), "*\": \"*",
-                                  after_stat(eq.label), sep = "")),
+  stat_quant_eq(aes(label = 
+                      after_stat(
+                        paste(qtl.label, "*\": \"*", eq.label, 
+                              sep = ""))),
                 size = 2.7,
                 formula = formula)
 ```
@@ -818,15 +865,22 @@ ggplot(my.data, aes(x, y.poly.grp, color = group)) +
 Grouping can be combined with a group label by mapping in `aes()` a character variable to `grp.label`.
 
 ```{r, warning=FALSE}
-ggplot(my.data, aes(x, y.poly.grp, group = group, linetype = group, 
-                    shape = group, grp.label = group)) +
+ggplot(my.data, 
+       aes(x, y.poly.grp, group = group, linetype = group, 
+           shape = group, grp.label = group)) +
   geom_point() +
-  stat_quant_line(formula = formula, quantiles = c(0.05, 0.95), color = "black") +
-  stat_quant_eq(aes(label = paste(after_stat(grp.label), "*\", \"*",
-                                  after_stat(qtl.label), "*\": \"*",
-                                  after_stat(eq.label), sep = "")),
+  stat_quant_line(formula = formula, 
+                  quantiles = c(0.05, 0.95), 
+                  color = "black") +
+  stat_quant_eq(aes(label = 
+                      after_stat(
+                        paste(grp.label, "*\", \"*",
+                              qtl.label, "*\": \"*",
+                              eq.label,
+                              sep = ""))),
                 size = 2.7,
-                formula = formula, quantiles = c(0.05, 0.95)) +
+                formula = formula, 
+                quantiles = c(0.05, 0.95)) +
   theme_classic()
 ```
 
@@ -1151,10 +1205,13 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
               se = FALSE) +
   stat_fit_glance(method = "nls", 
                   method.args = list(formula = micmen.formula),
-                  aes(label = paste("AIC = ", signif(after_stat(AIC), digits = 3), 
-                                    ", BIC = ", signif(after_stat(BIC), digits = 3),
-                                    sep = "")),
-                  label.x = "centre", label.y = "bottom")
+                  aes(label = 
+                        after_stat(
+                          paste("AIC = ", signif(AIC, digits = 3), 
+                                ", BIC = ", signif(BIC, digits = 3),
+                                sep = ""))),
+                  label.x = "centre", 
+                  label.y = "bottom")
 ```
 
 ### stat_fit_tb
@@ -1290,11 +1347,13 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
                 method.args = list(formula = micmen.formula),
                 label.x = "right",
                 label.y = "bottom",
-                aes(label = paste("V[m]~`=`~", signif(after_stat(Vm_estimate), digits = 3),
-                                  "%+-%", signif(after_stat(Vm_se), digits = 2),
-                                  "~~~~K~`=`~", signif(after_stat(K_estimate), digits = 3),
-                                  "%+-%", signif(after_stat(K_se), digits = 2),
-                                  sep = "")),
+                aes(label = 
+                      after_stat(
+                        paste("V[m]~`=`~", signif(Vm_estimate, digits = 3),
+                              "%+-%", signif(Vm_se, digits = 2),
+                              "~~~~K~`=`~", signif(K_estimate, digits = 3),
+                              "%+-%", signif(K_se, digits = 2),
+                              sep = ""))),
                 parse = TRUE)
 ```
 
@@ -1313,9 +1372,12 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
                 label.x = "center",
                 label.y = "bottom",
                 vstep = 0.12,
-                aes(label = paste("V~`=`~frac(", signif(after_stat(Vm_estimate), digits = 2), "~C,",
-                                  signif(after_stat(K_estimate), digits = 2), "+C)",
-                                  sep = "")),
+                aes(label =
+                      after_stat(
+                        paste("V~`=`~frac(",
+                              signif(Vm_estimate, digits = 2), "~C,",
+                              signif(K_estimate, digits = 2), "+C)",
+                              sep = ""))),
                 parse = TRUE) +
   labs(x = "C", y = "V")
 ```
@@ -1328,9 +1390,12 @@ stat_micmen_eq <- function(vstep = 0.12,
                            ...) {
   stat_fit_tidy(method = "nls", 
                 method.args = list(formula = micmen.formula),
-                aes(label = paste("V~`=`~frac(", signif(after_stat(Vm_estimate), digits = 2), "~C,",
-                                  signif(after_stat(K_estimate), digits = 2), "+C)",
-                                  sep = "")),
+                aes(label =
+                      after_stat(
+                        paste("V~`=`~frac(",
+                              signif(Vm_estimate, digits = 2), "~C,",
+                              signif(K_estimate, digits = 2), "+C)",
+                              sep = ""))),
                 parse = TRUE,
                 vstep = vstep,
                 size = size,
@@ -1356,17 +1421,19 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
 
 ```{r, eval=eval_broom}
 my_formula <- y ~ x
-
+my.format <- 'y~"="~%.3g+%.3g~x*", with "*italic(P)~"="~%.3f'
 ggplot(mpg, aes(displ, 1 / hwy)) +
   geom_point() +
   stat_quantile(quantiles = 0.5, formula = my_formula) +
   stat_fit_tidy(method = "rq",
                 method.args = list(formula = y ~ x, tau = 0.5), 
                 tidy.args = list(se.type = "nid"),
-                mapping = aes(label = sprintf('y~"="~%.3g+%.3g~x*", with "*italic(P)~"="~%.3f',
-                                              after_stat(Intercept_estimate), 
-                                              after_stat(x_estimate),
-                                              after_stat(x_p.value))),
+                mapping = aes(label = 
+                                after_stat(
+                                  sprintf(fmt = my.format,
+                                          Intercept_estimate, 
+                                          x_estimate,
+                                          x_p.value))),
                 parse = TRUE)
 ```
 
@@ -1377,13 +1444,17 @@ stat_rq_eqn <-
   function(formula = y ~ x, 
            tau = 0.5,
            method = "br",
-           mapping = aes(label = sprintf('y~"="~%.3g+%.3g~x*", with "*italic(P)~"="~%.3f',
-                                         after_stat(Intercept_estimate), 
-                                         after_stat(x_estimate),
-                                         after_stat(x_p.value))),
+           mapping = 
+             aes(label = 
+                   after_stat(
+                     sprintf(
+                       'y~"="~%.3g+%.3g~x*", with "*italic(P)~"="~%.3f',
+                       Intercept_estimate, x_estimate, x_p.value))),
            parse = TRUE,
            ...) {
-    method.args <- list(formula = formula, tau = tau, method = method)
+    method.args <- list(formula = formula, 
+                        tau = tau, 
+                        method = method)
     stat_fit_tidy(method = "rq",
                   method.args = method.args, 
                   tidy.args = list(se.type = "nid"),
@@ -1485,16 +1556,30 @@ ggplot(Orange, aes(age, circumference, colour = Tree)) +
                    geom = "line")
 ```
 
-### How to find out what variables are computed
+### Inspecting computed variables and labels
 
-When using `stat_fit_glance()`, `stat_fit_tidy()`, `stat_fit_augment()` and `stat_fit_tb()` the documentation cannot describe the variables present in the returned `data` because they call methods using their generic interface and the exact specialization used depends on the argument passed to method, which can be even one that I have not been aware of and never tested. Even in the case of other model fitting statistics like `stat_poly_eq()` which variables are present or are set to `NA` depends on the model fit `method` used and in some cases also on the arguments passed to the method.
+In the case of model fitting statistics like `stat_poly_eq()` and `stat_poly_line()`, which variables are present or are not set to `NA` depends on the model fit `method` used and frequently also on the arguments passed to the parameters of the stats including method `method.args`.
 
-In 'ggpmisc' (>= 1.0.0) when executed in an *interactive* R session statistics display by default a message listing either the names of variables in the returned data frame containing non-missing data or the short names of the formatted variables.
+In 'ggpmisc' (>= 1.0.0) when executed in an *interactive* R session statistics display by default a message listing either the names of variables in the returned data frame containing non-missing (tested with `is.na()`) data or the short names of non-missing formatted character strings. The messages also display the number of rows returned by compute function, per data group or per panel. In the case of column names, they can be mapped to any aesthetics using `aes()`, or to the `label` aesthetic using `use_label()` or `f_use_label()`. Functions `use_label()` or `f_use_label()` recognize short names or _nicknames_ for the formatted text labels.
 
 As other messages in R, these messages can be silenced. They can also be controlled specifically using R option `"ggpmisc.stat.vars.message"` which can take values `"colnames"`, `"nicknames"` and `"skip"`. As the documentation is generated in an R session that is not interactive, the option needs to be set here to display a message.
 
-```{r, eval=(eval_broom && eval_gginnards), message=TRUE}
-old.options <- options(ggpmisc.stat.vars.message = "colnames")
+```{r}
+# force same behavious as in an interactive R session
+old.options <- options(ggpmisc.stat.vars.message = "nicknames")
+```
+
+```{r}
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y.poly)) +
+  geom_point() +
+  stat_poly_line(formula = formula) +
+  stat_poly_eq(formula = formula)
+```
+
+Moreover, when using `stat_fit_glance()`, `stat_fit_tidy()`, `stat_fit_augment()` and `stat_fit_tb()` the documentation cannot describe the variables present in the returned `data` because they call methods using their generic interface and the exact specialization used depends on the argument passed to `method`, which can be easily be one that has not been tested during the development of 'ggpmisc'. These statistics do not automatically generate formatted labels and the message lists all columns in the returned data frame containing available data.
+
+```{r, eval=(eval_broom)}
 # formula <- y ~ poly(x, 3, raw = TRUE)
 # broom::augment does not handle poly() correctly
 formula <- y ~ x + I(x^2) + I(x^3)
@@ -1509,7 +1594,12 @@ ggplot(my.data, aes(x, y.poly)) +
                   method.args = list(formula = formula),
                   label.x = "right",
                   label.y = "bottom")
-options <- old.options
+```
+
+We restore the options to their previous state.
+
+```{r}
+options(old.options)
 ```
 
 In addition package 'gginnards' exports `gginnards::geom_debug_group()` that prints the data frame, making it possible to explore its contents by temporarily substituting other geoms with in the plot code.
