@@ -149,7 +149,8 @@ For the first example we use defaults to add an annotation with Pearson's correl
 ```{r}
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  stat_correlation(geom = "latex", hjust = 0, vjust = 1)
+  stat_correlation(geom = "latex",
+                   hjust = 0, vjust = 1)
 ```
 
 Grouping is supported.
@@ -157,7 +158,8 @@ Grouping is supported.
 ```{r}
 ggplot(my.data, aes(x, y, color = group)) +
   geom_point() +
-  stat_correlation(geom = "latex", hjust = 0, vjust = 1)
+  stat_correlation(geom = "latex", 
+                   hjust = 0, vjust = 1)
 ```
 
 We can also compute Spearman's rank correlation. (The symbol used for it is the letter rho to distinguish it from Pearson's correlation for which *R* or *r* are used as symbols.)
@@ -166,7 +168,8 @@ We can also compute Spearman's rank correlation. (The symbol used for it is the 
 ggplot(my.data, aes(x, y, color = group)) +
   geom_point() +
   stat_correlation(method = "spearman", 
-                   geom = "latex", hjust = 0, vjust = 1)
+                   geom = "latex", 
+                   hjust = 0, vjust = 1)
 ```
 
 Statistic `stat_correlation()` generates multiple labels as listed in the tables above. We can combine them freely within a call to `aes()` to customize the annotations, or we can use the convenience function `use_label()` to create the mapping.
@@ -174,8 +177,10 @@ Statistic `stat_correlation()` generates multiple labels as listed in the tables
 ```{r}
 ggplot(my.data, aes(x, y, color = group)) +
   geom_point() +
-  stat_correlation(mapping = use_label("R", "t", "P", "n", sep = ", "),
-                   geom = "latex", hjust = 0, vjust = 1)
+  stat_correlation(mapping =
+                     use_label("R", "t", "P", "n", sep = ", "),
+                   geom = "latex", 
+                   hjust = 0, vjust = 1)
 ```
 
 Facets are also supported.
@@ -192,9 +197,11 @@ Using the numeric values returned it is possible to set other aesthetics on-the-
 ```{r}
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  stat_correlation(mapping = aes(color = ifelse(after_stat(cor) > 0.955,
-                                                "red", "black")),
-                   geom = "latex", hjust = 0, vjust = 1) +
+  stat_correlation(mapping = 
+                     aes(color = ifelse(after_stat(cor) > 0.955,
+                                        "red", "black")),
+                   geom = "latex",
+                   hjust = 0, vjust = 1) +
   scale_color_identity() +
   facet_wrap(~group)
 ```
@@ -224,7 +231,8 @@ ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
   stat_poly_eq(formula = formula,
-               geom = "latex", hjust = 0, vjust = 1)
+               geom = "latex", 
+               hjust = 0, vjust = 1)
 ```
 
 ```{r}
@@ -236,6 +244,8 @@ ggplot(my.data, aes(x, y)) +
                geom = "latex", hjust = 0, vjust = 1)
 ```
 
+Mapping to `label` aesthetic created with `use_label()` which is based on `paste()`.  The backslash `"\"` in R `character` strings has to be escaped as `"\\"`, so $\LaTeX$ markup for newline, `\\`, becomes `\\\\`.
+
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
@@ -243,25 +253,42 @@ ggplot(my.data, aes(x, y)) +
   stat_poly_line(formula = formula) +
   stat_poly_eq(mapping = use_label("eq", "adj.R2", sep = "\\\\"),
                formula = formula, 
-               geom = "latex", hjust = 0, vjust = 1) +
-  labs(x = expression(italic(x)), y = expression(italic(y)))
+               geom = "latex",
+               hjust = 0, vjust = 1)
 ```
+
+Mapping to `label` aesthetic created with `f_use_label()` which is based on `sprintf()`. 
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = formula) +
-  stat_poly_eq(aes(label =  paste(after_stat(eq.label), "\\\\", 
-                                  after_stat(rr.label), ", ", 
-                                  after_stat(f.value.label), ", ",
-                                  after_stat(p.value.label),
-                                  sep = "")),
+  stat_poly_eq(f_use_label("eq", "R2", "F", "P",
+                           format = "%s\\\\%s, %s, %s"),
                formula = formula, size = 4,
-               geom = "latex", hjust = 0, vjust = 1)
+               geom = "latex", 
+               hjust = 0, vjust = 1)
 ```
 
-Replacing the *lhs*, requires $\LaTeX$ encoding.
+Mapping to `label` aesthetic created with `aes()` together with `paste()`.
+
+```{r}
+formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_poly_line(formula = formula) +
+  stat_poly_eq(aes(label =
+                     after_stat(
+                       paste(eq.label, "\\\\", 
+                             rr.label, ", ", f.value.label, ", ", p.value.label,
+                             sep = ""))),
+               formula = formula, size = 4,
+               geom = "latex", 
+               hjust = 0, vjust = 1)
+```
+
+Replacing the *lhs*, requires $\LaTeX$ encoding, and, as above, escaping `"\"` in R `character` strings as `"\\"`.
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -271,10 +298,11 @@ ggplot(my.data, aes(x, y)) +
   stat_poly_eq(mapping = use_label("eq"),
                eq.with.lhs = "\\hat{y} = ",
                formula = formula,
-               geom = "latex", hjust = 0, vjust = 1)
+               geom = "latex", 
+               hjust = 0, vjust = 1)
 ```
 
-Replacing both the *lhs* and the variable symbol used on the *rhs*. 
+Replacing both the *lhs* and the independent variable symbol used on the *rhs*. 
 
 ```{r}
 formula <- y ~ poly(x, 3, raw = TRUE)
@@ -285,7 +313,8 @@ ggplot(my.data, aes(x, y)) +
                eq.with.lhs = "h = ",
                eq.x.rhs = "z",
                formula = formula,
-               geom = "latex", hjust = 0, vjust = 1)
+               geom = "latex", 
+               hjust = 0, vjust = 1)
 ```
 
 ```{r}
@@ -297,7 +326,8 @@ ggplot(my.data, aes(x, log10(y + 1e6))) +
                eq.with.lhs = "\\log_{10}(\\delta + 10^6) = ",
                eq.x.rhs = "\\Omega",
                formula = formula,
-               geom = "latex", hjust = 0, vjust = 1) +
+               geom = "latex", 
+               hjust = 0, vjust = 1) +
   labs(y = "$\\log_{10}(\\delta + 10^6)$", x = "$\\Omega$")
 ```
 
@@ -307,11 +337,11 @@ formula <- y ~ poly(x, 3, raw = TRUE)
 ggplot(my.data, aes(x, y2, linetype = group, grp.label = group)) +
   geom_point() +
   stat_poly_line(formula = formula, color = "black") +
-  stat_poly_eq(
-    aes(label = after_stat(paste("\\strong{", grp.label, ": }\\ ", 
-                                 eq.label, sep = ""))),
+  stat_poly_eq(f_use_label("grp", "eq", format = "\\strong{%s:}\\ %s"),
     formula = formula,
-    geom = "latex", hjust = 0, vjust = 1, vstep = 0.07)
+    geom = "latex", 
+    hjust = 0, vjust = 1, 
+    vstep = 0.07)
 ```
 
 ```{r}
@@ -320,12 +350,16 @@ ggplot(my.data, aes(x, y)) +
   stat_poly_line(color = "blue") +
   stat_poly_eq(mapping = use_label("R2", "eq", sep = ", "), 
                color = "blue", 
-               geom = "latex", hjust = 0, vjust = 1) +
-  stat_poly_line(color = "red", orientation = "y") +
+               geom = "latex",
+               hjust = 0, vjust = 1) +
+  stat_poly_line(color = "red", 
+                 orientation = "y") +
   stat_poly_eq(mapping = use_label("R2", "eq", sep = ", "),
                color = "red", 
-               geom = "latex", hjust = 0, vjust = 1, 
-               orientation = "y", label.y = 0.9)
+               geom = "latex", 
+               hjust = 0, vjust = 1, 
+               orientation = "y", 
+               label.y = 0.9)
 ```
 
 ### stat_ma_eq() and stat_ma_line()
@@ -335,7 +369,8 @@ ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_ma_line() +
   stat_ma_eq(mapping = use_label("eq", "R2", "P", "theta", sep = ", "),
-             geom = "latex", hjust = 0, vjust = 1)
+             geom = "latex", 
+             hjust = 0, vjust = 1)
 ```
 
 
@@ -344,24 +379,26 @@ ggplot(my.data, aes(x, y)) +
 ```{r, warning=FALSE}
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  stat_quant_band(formula = formula, color = "black", fill = "grey60") +
+  stat_quant_band(formula = formula, 
+                  color = "black", fill = "grey60") +
   stat_quant_eq(formula = formula,
-                geom = "latex", hjust = 0, vjust = 1)
+                geom = "latex", 
+                hjust = 0, vjust = 1)
 ```
 
 ```{r, warning=FALSE}
 ggplot(my.data, aes(x, y)) +
   geom_point() +
-  stat_quant_band(formula = formula, color = "black", fill = "grey60") +
-  stat_quant_eq(aes(label = paste(after_stat(qtl.label), ": ",
-                                  after_stat(eq.label), sep = "")),
+  stat_quant_band(formula = formula, 
+                  color = "black", fill = "grey60") +
+  stat_quant_eq(f_use_label("qtl", "eq", format = "\\strong{%s:}\\ %s"),
                 formula = formula,
                 geom = "latex", hjust = 0, vjust = 1, vstep = 0.07)
 ```
 
 ### `stat_multcomp()`
 
-`stat_multcomp()` depends on `geom_text_pairwise()` from package 'ggpp', which does not have a $\LaTeX$-based equivalent.
+`stat_multcomp()` depends on `geom_text_pairwise()` from package 'ggpp', which does not have a $\LaTeX$-based equivalent yet.
 
 ```{r}
 # position of contrasts' bars (manual)
@@ -384,7 +421,7 @@ ggplot(my.data, aes(x, y)) +
                     label.x = "left",
                     mapping = aes(
                       label = italic_label(after_stat(count), "n",
-                                   output.type = "latex.eqn"))
+                                           output.type = "latex.eqn"))
   )
 ```
 
@@ -400,7 +437,7 @@ ggplot(my.data[sample(1:nrow(my.data), 12), ], aes(x, y)) +
 
 ### Geom element of theme
 
-Currently, for it to use 'ggplot2' (>= 4.0.0) theme's geom element, `GeomLatex` from 'xdvir' needs to be updated.
+Currently, for `GeomLatex` from 'xdvir' to obey 'ggplot2' (>= 4.0.0) theme's geom element, it needs to be updated using `update_geom_defaults()` from 'ggplot2'.
 
 ```{r}
 update_geom_defaults(

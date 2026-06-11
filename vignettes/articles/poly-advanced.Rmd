@@ -44,10 +44,11 @@ Both functions are designed for flexibility while still attempting to keep their
 _Function `stat_poly_eq()` requires that the model `formula` is a regular polynomial (with no missing intermediate power terms), with the exception that the intercept can be missing._ Function `stat_poly_line()` has fewer requirements for the argument passed to `formula`. 
 
 Both statistics:
-* Accept any R function or its name as argument for `method`,
-* as long as the fitted model object belongs to classes `"lm"`, `"rlm"`, `"lqs"`, `"lts"` or `"gls"`, as tested with `inherits()`, and additionally models of other classes as long as query methods are available.
-* Their implementation tolerates some missing methods and fields in model fit objects and their summary, i.e., returning `NA_real_` or empty `character` strings depending on the case.
-* The formula used to construct the equation is, whenever possible, extracted from the fitted model object. Only exceptionally, with this approach fails, the formula passed as argument for `formula` in the call is used with a warning.
+
+  - Accept any R function or its name as argument for `method`,
+  - as long as the fitted model object belongs to classes `"lm"`, `"rlm"`, `"lqs"`, `"lts"` or `"gls"`, as tested with `inherits()`, and additionally models of other classes as long as query methods are available.
+  - Their implementation tolerates some missing methods and fields in model fit objects and their summary, i.e., returning `NA_real_` or empty `character` strings depending on the case.
+  - The formula used to construct the equation is, whenever possible, extracted from the fitted model object. Only exceptionally, with this approach fails, the formula passed as argument for `formula` in the call is used with a warning.
 
 This design makes it possible to use as `method` existing model fit functions that return an object of one of the classes specifically supported, wrapper functions that call such functions, or in some other way return an object of a _known_ class such as `"lm"` or a class with suitable methods implemented.
 
@@ -408,12 +409,12 @@ my.formula <- y ~ lspline::lspline(x, knots = cp)
 ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
   stat_poly_eq(aes(label = 
-                     paste("\"L : \"*y~`=`~", round(after_stat(b_0), 2),
-                           round(after_stat(b_1), 2), "~x",
-                           "*\"; R: \"*y~`=`~", 
-                           round(after_stat(b_0) + cp * after_stat(b_1), 2), 
-                           round(after_stat(b_2), 2), "~x",
-                           sep = "")), 
+                     after_stat(
+                       paste("\"L : \"*y~`=`~", round(b_0, 2),
+                           round(b_1, 2), "~x*\"; R: \"*y~`=`~", 
+                           round(b_0 + cp * b_1, 2), 
+                           round(b_2, 2), "~x",
+                           sep = ""))), 
                parse = TRUE, output.type = "numeric",
                label.x = "right",
                formula = my.formula,
@@ -475,12 +476,13 @@ ggplot(mpg, aes(displ, hwy)) +
                       show.legend = TRUE,
                       geom = "point") +
   stat_poly_eq(aes(label =
-                     paste("\"L : \"*y~`=`~", round(after_stat(b_0), 2),
-                           round(after_stat(b_1), 2), "~x",
+                     after_stat(
+                     paste("\"L : \"*y~`=`~", round(b_0, 2),
+                           round(b_1, 2), "~x",
                            "*\"; R: \"*y~`=`~", 
-                           round(after_stat(b_0) + cp * after_stat(b_1), 2), 
-                           round(after_stat(b_2), 2), "~x",
-                           sep = "")), 
+                           round(b_0 + cp * b_1, 2), 
+                           round(b_2, 2), "~x",
+                           sep = ""))), 
                parse = TRUE, 
                output.type = "numeric",
                label.x = "right",
@@ -550,22 +552,17 @@ ggplot(mpg, aes(displ, hwy)) +
                  formula = my.formula)+
   geom_point() +
   stat_poly_eq(aes(label = 
-                     paste("x[cp]~`=`~", 
-                           round(after_stat(knots)[[1]][1], 2), 
-                           " %+-% ",
-                           round(after_stat(knots.se)[[1]][1], 2),
-                           "*\"; L: \"*y~`=`~", 
-                           round(after_stat(b_0), 2), # "+",
-                           round(after_stat(b_1), 2), "~x",
-                           "*\"; R: \"*y~`=`~", 
-                           round(after_stat(b_0) + 
-                                   after_stat(knots)[[1]][1] * 
-                                   (after_stat(b_1) - after_stat(b_2)),
-                                 2),
-                           "+",
-                           round(after_stat(b_2), 2), "~x",
-                           sep = "")), 
-               parse = TRUE, output.type = "numeric",
+                     after_stat(
+                       paste("x[cp]~`=`~", 
+                             round(knots[[1]][1], 2), " %+-% ",
+                             round(knots.se[[1]][1], 2), "*\"; L: \"*y~`=`~", 
+                             round(b_0, 2), # "+",
+                             round(b_1, 2), "~x*\"; R: \"*y~`=`~", 
+                             round(b_0 + knots[[1]][1] * (b_1 - b_2), 2),"+",
+                             round(b_2, 2), "~x",
+                             sep = ""))), 
+               parse = TRUE, 
+               output.type = "numeric",
                label.x = "right",
                formula = my.formula,
                method = "segreg") +
@@ -695,7 +692,8 @@ my.formula <- y ~ splines::ns(x, knots = cp)
 ggplot(mpg, aes(displ, hwy)) +
   stat_fit_deviations(formula = my.formula,
                       method = "lmrob",
-                      mapping = aes(colour = after_stat(robustness.weights)),
+                      mapping = aes(colour = 
+                                      after_stat(robustness.weights)),
                       show.legend = TRUE,
                       geom = "point") +
   stat_poly_eq(use_label("R2", "n", "method"), 
@@ -937,8 +935,10 @@ ggplot(mpg, aes(displ, hwy)) +
 
 ggplot(mpg, aes(displ, hwy, color = class)) +
   geom_point() +
-  stat_poly_line(formula = y ~ poly(x, 3, raw = TRUE), method = "best_poly_lm") +
-  stat_poly_eq(formula = y ~ poly(x, 3, raw = TRUE), method = "best_poly_lm",
+  stat_poly_line(formula = y ~ poly(x, 3, raw = TRUE), 
+                 method = "best_poly_lm") +
+  stat_poly_eq(formula = y ~ poly(x, 3, raw = TRUE), 
+               method = "best_poly_lm",
                mapping = use_label("eq", "AIC"),
                label.x = "right",
                vstep = 0.035) +
@@ -1042,20 +1042,15 @@ A more complex example with labels, assembled within the call to `aes()`. In add
 ```{r, fig.width = 7, fig.height = 5}
 ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
-  stat_poly_eq(aes(label = 
-                     paste("italic(x)[cp]~`=`~", 
-                           round(after_stat(knots)[[1]][1], 2), 
-                           "*\"; L: \"*y~`=`~", 
-                           round(after_stat(b_0), 2), #"+",
-                           round(after_stat(b_1), 2), "~x",
-                           "*\"; R: \"*y~`=`~", 
-                           round(after_stat(b_0) + 
-                                   after_stat(knots)[[1]][1] *
-                                   (after_stat(b_1) - after_stat(b_2)),
-                                 2),
-                           "+",
-                           round(after_stat(b_2), 2), "~x",
-                           sep = "")), 
+  stat_poly_eq(aes(label =
+                     after_stat(
+                       paste("italic(x)[cp]~`=`~", 
+                             round(knots[[1]][1], 2), "*\"; L: \"*y~`=`~", 
+                             round(b_0, 2), #"+",
+                             round(b_1, 2), "~x*\"; R: \"*y~`=`~", 
+                             round(b_0 + knots[[1]][1] * (b_1 - b_2), 2), "+",
+                             round(b_2, 2), "~x",
+                             sep = ""))), 
                parse = TRUE, output.type = "numeric",
                label.x = "right",
                formula = y ~ x,
@@ -1166,8 +1161,9 @@ ggplot(mpg, aes(x = displ, y = hwy)) +
                  method = "lm_EIV",
                  method.args = list(sigma.sq.u = 0)) +
   stat_poly_eq(aes(y = hwy, 
-                   label = paste(after_stat(eq.label), after_stat(rr.label), 
-                                 sep = "~~")),
+                   label = 
+                     after_stat(
+                       paste(eq.label, rr.label, sep = "~~"))),
                method = "lm_EIV",
                method.args = list(sigma.sq.u = 0),
                label.x = "right") +
@@ -1183,8 +1179,9 @@ ggplot(mpg, aes(x = displ, y = hwy)) +
                  method = "lm_EIV",
                  method.args = list(sigma.sq.u = 0.01)) +
   stat_poly_eq(aes(y = hwy, 
-                   label = paste(after_stat(eq.label), after_stat(rr.label), 
-                                 sep = "~~")),
+                   label = 
+                     after_stat(
+                       paste(eq.label, rr.label, sep = "~~"))),
                method = "lm_EIV",
                method.args = list(sigma.sq.u = 0.01),
                label.x = "right") +
@@ -1193,11 +1190,11 @@ ggplot(mpg, aes(x = displ, y = hwy)) +
 
 ## New data for prediction
 
-Like in `stat_mooth()` from 'ggplot2', parameter `fullrange` in `stat_poly_line()`, `stat_quant_line()`, `stat_quant_band()` and `stat_ma_line()` can be used to switch between prediction based on the range of the explanatory variable data or based on the limits of the scale of the corresponding aesthetic. Meanwhile, `n` controls the number of equally spaced points at which the prediction will be computed. In most use cases these two alternatives are enough.
+Like in `stat_smooth()` from 'ggplot2', parameter `fullrange` in `stat_poly_line()`, `stat_quant_line()`, `stat_quant_band()` and `stat_ma_line()` can be used to switch between prediction based on the range of the explanatory variable data or based on the limits of the scale of the corresponding aesthetic. Meanwhile, `n` controls the number of equally spaced points at which the prediction will be computed. In most use cases these two alternatives are enough.
 
 However, in some cases, finer control is useful. In plots with facets, with major axis (MA) regression and possibly other model fits, it can be useful to constrain the range of the prediction to that of the response variable. Furthermore, in MA regression, the fitted line is the same for `y ~ x` and `x ~ y` , thus simultaneously restricting the range based on both `x` and `y` seems logically preferable. Another case that cannot be automated with `stat_mooth()` are predictions covering user-defined ranges or for specific values of the explanatory variable.
 
-In 'ggpmisc' (>= 0.7.1) the new `limit.to` parameter provides the necessary control. The `character` strings `"x"`, `"y"`, `"xy"` and `"none"` make it possible for user to set which data range to use as limit.
+In 'ggpmisc' (>= 1.0.0) the new `limit.to` parameter provides the necessary control. The `character` strings `"x"`, `"y"`, `"xy"` and `"none"` make it possible for user to set which data range to use as limit.
 
 For these examples I expanded the `x` scale limits, so that they are clearly broader than the default ones. These are rather contrived examples demonstrating how fine control works.
 

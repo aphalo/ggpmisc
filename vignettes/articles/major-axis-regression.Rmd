@@ -351,13 +351,13 @@ ggplot(my.data, aes(x, y)) +
 
 The same caveats as for `stat_ma_eq()` and `stat_ma_line()` apply. In addition:
 
-*  _The plotted confidence band does not take into account the uncertainty of the intercept estimate, only the slope._
+  *  _The plotted confidence band does not take into account the uncertainty of the intercept estimate, only the slope._
+  
+  *  _Currently labels for $F$-value or $R^2_\mathrm{adj}$ are not available when using 'smatr' together with `stat_poly_eq()`._
+  
+  *  _Attempts to pass invalid model formulas will trigger errors within 'smatr' code._
 
-*  _Currently labels for $F$-value or $R^2_\mathrm{adj}$ are not available when using 'smatr' together with `stat_poly_eq()`._
-
-*  _Attempts to pass invalid model formulas will trigger errors within 'smatr' code._
-
-*  _When applying a log10 transformation in the call to `smatr::sma`, the estimates are not back-transformed and consequently, currently this way of applying transformations is not supported._
+  *  _When applying a log10 transformation in the call to `smatr::sma`, the estimates are not back-transformed and consequently, currently this way of applying transformations is not supported._
 
 ## New data for prediction
 

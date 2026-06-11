@@ -44,7 +44,7 @@ Which of these output types is returned by the statistics from 'ggpmisc' is dete
 
 ### Preliminaries
 
-Package 'xdvir' depends on 'tinytex' and 'grid'. The default $\TeX$ engine is 'luatex', but as it is not yet fully supported, it is currentöy safer to use 'xetex' instead.
+Package 'xdvir' depends on 'tinytex' and 'grid'. The default $\TeX$ engine is 'luatex', but as it is not yet fully supported, it is currently safer to use 'xetex' instead.
 
 ```{r}
 ## Math typesetting by LuaTeX can fall back into mode=base
@@ -59,14 +59,12 @@ library(ggpmisc)
 library(xdvir)
 library(ggtext)
 library(marquee)
-
-options(xdvir.engine="xetex") # luatex can fail
 ```
 
 For debugging 'xdvir' created plots, longer messages can be very helpful.
 
 ```{r, include=FALSE}
-options(tinytex.verbose = TRUE)
+options(tinytex.verbose = FALSE)
 ```
 
 Attaching package 'ggpmisc' also attaches package 'ggpp' as it provides several of the geometries used by default in the statistics described below. Package 'ggpp' can be loaded and attached on its own, and has [separate documentation](https://docs.r4photobiology.info/ggpp/).
@@ -140,7 +138,7 @@ ggplot(my.data, aes(x, y)) +
                hjust = 0, vjust = 1)
 ```
 
-With `geom = "text"` the label text and default location are the same, but if the location is modified using numerical values, this should be expressed in data units.
+With `geom = "text"` the label text and default location are the same, but if the location is modified using numerical values, these should be expressed in data units.
 
 ```{r}
 my.formula <- y ~ poly(x, 3, raw = TRUE)
@@ -208,7 +206,20 @@ ggplot(my.data, aes(x, y)) +
                geom = "latex", hjust = 0, vjust = 1)
 ```
 
-To produce a single display-mode maths equation from multiple labels, we set `output.type = "latex"`. This returns the math-mode-formatted equation without enabling math-mode. We paste the math-formatted labels, and enclose the combined labels in `$$` to enable math-mode, only once so that the pasted labels as a whole are typeset as a single equation.
+To produce a single display-mode maths equation from multiple labels, we set `output.type = "latex"`. This returns the math-mode-formatted equation without enabling math-mode. In a call to `f_use_label()` the math-formatted labels are combined and enclosed in `$$`, enabling math-mode only once, so that the whole label is typeset as a single $\LaTeX$ equation.
+
+```{r}
+my.formula <- y ~ poly(x, 3, raw = TRUE)
+ggplot(my.data, aes(x, y)) +
+  geom_point() +
+  stat_poly_line(formula = my.formula) +
+  stat_poly_eq(f_use_label("eq", "adj.R2", format = "$$%s, %s$$"),
+               formula = my.formula,
+               output.type = "latex",
+               geom = "latex", hjust = 0, vjust = 1)
+```
+
+The same result can be also achieved using `aes()`, `after_stat()` and `paste()` (shown here) or `sprintf()` (not shown).
 
 ```{r}
 my.formula <- y ~ poly(x, 3, raw = TRUE)
@@ -216,8 +227,7 @@ ggplot(my.data, aes(x, y)) +
   geom_point() +
   stat_poly_line(formula = my.formula) +
   stat_poly_eq(mapping = aes(label = 
-                               paste("$$ ",
-                                     after_stat(eq.label), ", ",
+                               paste("$$ ", after_stat(eq.label), ", ",
                                      after_stat(adj.rr.label), " $$", 
                                      sep = "")),
                formula = my.formula,

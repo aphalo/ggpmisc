@@ -1,5 +1,5 @@
 ---
-title: "Major axis regression"
+title: "Non-linear model fits"
 subtitle: "'ggpmisc' `r packageVersion('ggpmisc')`"
 author: "Pedro J. Aphalo"
 date: "`r Sys.Date()`"
@@ -33,9 +33,16 @@ print(citation(package = "ggpmisc", auto = TRUE), bibtex = FALSE)
 
 ## Introduction
 
-Layer functions in 'ggpmisc' can be used for fitting non-linear models, but given the diversity of possible model formulas, automatic generation of annotations for the model fit equations have not been implemented.
+Layer functions in 'ggpmisc' can be used for fitting non-linear models, but
+given the diversity of possible model formulas, automatic generation of
+annotations for the model fit equations have not been implemented.
 
-This article gives examples using the 'broom' based statistics, which have been available for several years, and tests the use of `stat_poly_eq()` and `stat_poly_line()` which in 'ggpmisc' (>= 1.0.0) are much less strict in their requirements for the model fit objects.
+This article gives examples of non-linear model fits using both
+`stat_poly_line()` together with `stat_poly_eq()`, and with the 'broom' based
+statistics, `stat_fit_augnment`, `stat_fit_tidy()` and `stat_fit_glance`. In
+earlier version of 'ggpmisc' only the 'broom'-based approach was available.
+However, in 'ggpmisc' (>= 1.0.0) `stat_poly_eq()` and `stat_poly_line()` can
+also be used to fit non-linear models.
 
 ## Preliminaries
 
@@ -63,7 +70,55 @@ As we will add text and labels onto the plotting area we change the default them
 old_theme <- theme_set(theme_bw())
 ```
 
-## 'broom'-based approach
+## `nls()` with 'ggpmisc' native approach
+
+Easiest is to use formatted `character` strings to be parsed into `plotmath`
+expressions. We can in this case create the mapping to the `label` aesthetic
+with function `use_label()` (shown below) of with function `f_use_label()` (not 
+shown).
+
+```{r}
+micmen.formula <- y ~ SSmicmen(x, Vm, K) 
+ggplot(Puromycin, aes(conc, rate, colour = state)) +
+  geom_point() +
+  stat_poly_line(method = "nls", 
+                 formula = micmen.formula,
+                 se = FALSE) +
+  stat_poly_eq(use_label("AIC", "BIC"),
+               method = "nls", 
+               formula = micmen.formula,
+               label.x = "centre", label.y = "bottom") +
+  labs(x = "C", y = "V")
+```
+
+No pre-formatted equation label is available, and we have to assemble it from
+the numeric values of the fitted parameter estimates.
+
+```{r}
+micmen.formula <- y ~ SSmicmen(x, Vm, K) 
+ggplot(Puromycin, aes(conc, rate, colour = state)) +
+  geom_point() +
+  stat_poly_line(method = "nls", 
+                 formula = micmen.formula,
+                 se = FALSE) +
+  stat_poly_eq(aes(label =
+                     after_stat(
+                       paste("V~`=`~frac(",
+                             signif(b_0, digits = 2), "~C,",
+                             signif(b_1, digits = 2), "+C)",
+                             sep = ""))),
+               parse = TRUE,
+               method = "nls",
+               output.type = "numeric",
+               formula = micmen.formula,
+               vstep = 0.1, size = 3,
+               label.x = "centre", label.y = "bottom") +
+  labs(x = "C", y = "V")
+```
+
+## `nls()` with 'broom'-based approach
+
+The statistics based on methods from package 'broom' always return only numeric values and formatted strings need to be assembled in user's R code within a call to `aes()`. The examples below produce figures nearly identical to the two first examples in the previous section. 
 
 ```{r, eval=eval_broom}
 micmen.formula <- y ~ SSmicmen(x, Vm, K) 
@@ -72,26 +127,37 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
   stat_smooth(method = "nls", 
               formula = micmen.formula,
               se = FALSE) +
-  stat_fit_glance(method = "nls", 
-                  method.args = list(formula = micmen.formula),
-                  aes(label = 
+  stat_fit_glance(aes(label = 
                         after_stat(
                           paste("AIC = ", signif(AIC, digits = 3), 
                                 ", BIC = ", signif(BIC, digits = 3),
                                 sep = ""))),
-                  label.x = "centre", label.y = "bottom")
+                  method = "nls", 
+                  method.args = list(formula = micmen.formula),
+                  label.x = "centre", label.y = "bottom") +
+  labs(x = "C", y = "V")
 ```
 
 ```{r, eval=eval_broom}
 micmen.formula <- y ~ SSmicmen(x, Vm, K) 
 ggplot(Puromycin, aes(conc, rate, colour = state)) +
   geom_point() +
-  stat_poly_line(method = "nls", 
+  stat_smooth(method = "nls", 
               formula = micmen.formula,
               se = FALSE) +
-  stat_poly_eq(use_label("AIC"),
-               method = "nls",
-               formula = micmen.formula,
-               label.x = "centre", label.y = "bottom")
+  stat_fit_tidy(aes(label =
+                      after_stat(
+                        paste("V~`=`~frac(",
+                              signif(Vm_estimate, digits = 2), "~C,",
+                              signif(K_estimate, digits = 2), "+C)",
+                              sep = ""))),
+                parse = TRUE,
+                method = "nls", 
+                method.args = list(formula = micmen.formula),
+                size = 3,
+                label.x = "center",
+                label.y = "bottom",
+                vstep = 0.12) +
+  labs(x = "C", y = "V")
 ```
 

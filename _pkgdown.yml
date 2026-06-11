@@ -104,6 +104,8 @@ navbar:
         href: articles/major-axis-regression.html
       - text: 'Mixture Models'
         href: articles/mixture-models.html
+      - text: 'Non-linear model fits'
+        href: articles/non-linear-models.html
       - text: 'Peaks and Valleys'
         href: articles/peaks-and-valleys.html
       - text: 'Using LaTeX for annotations'

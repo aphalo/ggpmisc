@@ -112,10 +112,10 @@ for the components and their sums are plotted.
 ggplot(faithful, aes(x = waiting)) +
   geom_histogram(aes(y = after_stat(density)), alpha = 0.33, bins = 20) +
   stat_distrmix_line(aes(colour = after_stat(component),
-                          fill = after_stat(component)),
-                      outline.type = "upper",
-                      geom = "area", linewidth = 1, alpha = 0.25,
-                      fit.seed = 123) +
+                         fill = after_stat(component)),
+                     outline.type = "upper",
+                     geom = "area", linewidth = 1, alpha = 0.25,
+                     fit.seed = 123) +
   stat_distrmix_eq(aes(colour = after_stat(component)), fit.seed = 123) +
   expand_limits(y = 0.06) # make space for the equation above the histogram
 ```
@@ -129,25 +129,24 @@ individual equations.
 ggplot(faithful, aes(x = waiting)) +
   geom_histogram(aes(y = after_stat(density)), alpha = 0.33, bins = 20) +
   stat_distrmix_line(aes(colour = after_stat(component),
-                          fill = after_stat(component)),
-                      outline.type = "upper",
-                      geom = "area", linewidth = 1, alpha = 0.25,
-                      components = "members", fit.seed = 123) +
+                         fill = after_stat(component)),
+                     outline.type = "upper",
+                     geom = "area", linewidth = 1, alpha = 0.25,
+                     components = "members", fit.seed = 123) +
   stat_distrmix_eq(aes(colour = after_stat(component)), 
-                    components = "members", fit.seed = 123,
-                    eq.digits = 3)
+                   components = "members", fit.seed = 123,
+                   eq.digits = 3)
 ```
 
 Below, only the sum of the members is plotted.
 
 ```{r, warning=FALSE, results='hide', fig.keep='all'}
- ggplot(faithful, aes(x = waiting)) +
+ggplot(faithful, aes(x = waiting)) +
   geom_histogram(aes(y = after_stat(density)), alpha = 0.33, bins = 20) +
   stat_distrmix_line(geom = "area", linewidth = 1, alpha = 0.25,
-                      colour = "black", outline.type = "upper",
-                      components = "sum", se = FALSE, fit.seed = 123) +
+                     colour = "black", outline.type = "upper",
+                     components = "sum", se = FALSE, fit.seed = 123) +
   stat_distrmix_eq(components = "sum", fit.seed = 123)
-
 ```
 
 By default standard errors for the estimated parameters are not computed, but
@@ -156,11 +155,11 @@ bootstrap. SE is shown in the equation between parantheses following each
 parameter estimate.
 
 ```{r, warning=FALSE, results='hide', fig.keep='all'}
- ggplot(faithful, aes(x = waiting)) +
+ggplot(faithful, aes(x = waiting)) +
   geom_histogram(aes(y = after_stat(density)), alpha = 0.33, bins = 20) +
   stat_distrmix_line(geom = "area", linewidth = 1, alpha = 0.25,
-                      colour = "black", outline.type = "upper",
-                      components = "sum", se = FALSE, fit.seed = 123) +
+                     colour = "black", outline.type = "upper",
+                     components = "sum", se = FALSE, fit.seed = 123) +
   stat_distrmix_eq(components = "sum", fit.seed = 123, se = TRUE) +
   expand_limits(y = 0.06) # make space for the equation above the histogram
 ```
@@ -177,12 +176,12 @@ good to plot a histogram in the background of a fitted Normal mixture._
 ggplot(faithful, aes(x = waiting)) +
   geom_histogram(aes(y = after_stat(density)), alpha = 0.33, bins = 20) +
   stat_distrmix_line(aes(colour = after_stat(component),
-                          fill = after_stat(component)),
-                      outline.type = "upper",
-                      geom = "area", linewidth = 1, alpha = 0.25,
-                      fit.seed = 123, k = 1) +
+                         fill = after_stat(component)),
+                     outline.type = "upper",
+                     geom = "area", linewidth = 1, alpha = 0.25,
+                     fit.seed = 123, k = 1) +
   stat_distrmix_eq(aes(colour = after_stat(component)), se = TRUE,
-                    fit.seed = 123, k = 1)
+                   fit.seed = 123, k = 1)
 ```
 
 With the `galaxies` data about the speed of galaxies, the fit is not very good,
@@ -194,12 +193,12 @@ components.
 ggplot(data.frame(speed = galaxies * 1e-3), aes(x = speed)) +
   geom_histogram(aes(y = after_stat(density)), alpha = 0.33, bins = 20) +
   stat_distrmix_line(aes(colour = after_stat(component),
-                          fill = after_stat(component)),
-                      outline.type = "upper",
-                      geom = "area", linewidth = 0.5, alpha = 0.25,
-                      k = 3, fit.seed = 123) +
+                         fill = after_stat(component)),
+                     outline.type = "upper",
+                     geom = "area", linewidth = 0.5, alpha = 0.25,
+                     k = 3, fit.seed = 123) +
   stat_distrmix_eq(aes(colour = after_stat(component)), 
-                    k = 3, fit.seed = 123, geom = "label_npc", size = 3.2) +
+                   k = 3, fit.seed = 123, geom = "label_npc", size = 3.2) +
   expand_limits(y = 0.27)
 ```
 
@@ -212,13 +211,13 @@ supported by scientific theory that suggests a reasonable value for `k`.
 ggplot(data.frame(speed = galaxies * 1e-3), aes(x = speed)) +
   geom_histogram(aes(y = after_stat(density)), alpha = 0.33, bins = 20) +
   stat_distrmix_line(outline.type = "upper", colour = "black",
-                      geom = "area", linewidth = 1, alpha = 0.25,
-                      k = 6, fit.seed = 123, components = "sum") +
+                     geom = "area", linewidth = 1, alpha = 0.25,
+                     k = 6, fit.seed = 123, components = "sum") +
   stat_distrmix_line(outline.type = "upper", colour = "black",
-                      geom = "line", linewidth = 0.25,
-                      k = 6, fit.seed = 123, components = "members") +
+                     geom = "line", linewidth = 0.25,
+                     k = 6, fit.seed = 123, components = "members") +
   stat_distrmix_eq(k = 6, fit.seed = 123, components = "members", 
-                    eq.with.lhs = FALSE, size = 3)
+                   eq.with.lhs = FALSE, size = 3)
 ```
 
 For comparison, `stat_density()` from 'ggplot2' uses R function `density()`,

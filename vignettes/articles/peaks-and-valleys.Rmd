@@ -398,11 +398,28 @@ p.lx0 +
   expand_limits(y = 8200)
 ```
 
-It is easy to combine _x_ and _y_ labels within a call to `aes()`. Function `paste()` or any other character string manipulation function can be used within a call to `aes()` to "edit" the text to be added to the plot.
+A mapping to the `label` aesthetic can be created with function `use_label()`.
 
 ```{r}
 p.lx0 +
-  stat_peaks(aes(label = paste(after_stat(x.label), after_stat(y.label))),
+  stat_peaks(use_label("x", "y", sep = " "),
+             x.label.fmt = "%Y:",
+             y.label.fmt = "%i",
+             geom = "text_repel",
+             direction = "y",
+             box.padding = 0.1,
+             point.padding = 1,
+             position = position_nudge_keep(y = 150),
+             angle = 90) +
+  stat_peaks(colour = "red") +
+  expand_limits(y = 9000)
+```
+
+It is also easy to combine _x_ and _y_ labels within a call to `aes()`. Function `paste()` or any other character string manipulation function can be used within a call to `aes()` to "edit" the text to be added to the plot.
+
+```{r}
+p.lx0 +
+  stat_peaks(aes(label = after_stat(paste(x.label, y.label))),
              x.label.fmt = "%Y:",
              y.label.fmt = "%i",
              geom = "text_repel",
@@ -437,10 +454,7 @@ To use multiple geoms to annotate peaks, the stat must be called multiple times,
 
 ```{r}
 p.lx0 +
-  stat_peaks(aes(label = paste(after_stat(y.label),
-                               "lynx skins in year",
-                               after_stat(x.label))),
-             x.label.fmt = "%Y",
+  stat_peaks(f_use_label("y", "x", format = "%s lynx skins in year %s"),             x.label.fmt = "%Y",
              y.label.fmt = "%i",
              span = NULL,
              geom = "text_s",
@@ -457,9 +471,7 @@ p.lx0 +
              geom = "hline",
              alpha = 1/5,
              colour = "red") +
-  stat_valleys(aes(label = paste(after_stat(y.label),
-                                 "lynx skins in year",
-                                 after_stat(x.label))),
+  stat_valleys(f_use_label("y", "x", format = "%s lynx skins in year %s"),
                x.label.fmt = "%Y",
                y.label.fmt = "%i",
                span = NULL,
@@ -484,9 +496,7 @@ With a few more tweaks we can modify the design of the annotations in the plot a
 
 ```{r}
 p.lx0 +
-  stat_peaks(aes(label = paste(after_stat(y.label),
-                               "lynx skins in year",
-                               after_stat(x.label))),
+  stat_peaks(f_use_label("y", "x", format = "%s lynx skins in year %s"),
              x.label.fmt = "%Y",
              y.label.fmt = "%i",
              span = NULL,
@@ -502,9 +512,7 @@ p.lx0 +
              xend = -Inf,
                alpha = 1/3,
              colour = "red") +
-  stat_valleys(aes(label = paste(after_stat(y.label),
-                                 "lynx skins in year",
-                                 after_stat(x.label))),
+  stat_valleys(f_use_label("y", "x", format = "%s lynx skins in year %s"),
                x.label.fmt = "%Y",
                y.label.fmt = "%i",
                span = NULL,
