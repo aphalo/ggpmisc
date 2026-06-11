@@ -588,9 +588,9 @@ cor_test_compute_fun <- function(data,
   }
 
   if (output.type == "numeric") {
-    show_colnames(z)
+    show_colnames(z, stat.name = "stat_correlation")
   } else {
-    show_labels(z)
+    show_labels(z, stat.name = "stat_correlation")
   }
 
   z

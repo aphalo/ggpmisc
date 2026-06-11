@@ -900,7 +900,7 @@ multcomp_compute_panel_fun <-
       z[["group"]] <- -1L
     }
 
-    show_colnames(z)
+    show_colnames(z, stat.name = "stat_multcomp")
 
     z
   }

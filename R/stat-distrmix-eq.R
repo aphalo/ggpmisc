@@ -487,9 +487,9 @@ distrmix_eq_compute_group_fun <-
     }
 
     if (output.type == "numeric") {
-      show_colnames(fm_params.tb)
+      show_colnames(fm_params.tb, stat.name = "stat_distrmix_eq")
     } else {
-      show_labels(fm_params.tb)
+      show_labels(fm_params.tb, stat.name = "stat_distrmix_eq")
     }
 
     fm_params.tb

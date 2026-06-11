@@ -112,7 +112,7 @@ deviations_compute_group_fun <- function(data,
                     hjust = 0)
   }
 
-  show_colnames(z)
+  show_colnames(z, stat.name = "stat_fit_deviations")
 
   z
 }
@@ -230,7 +230,7 @@ fitted_compute_group_fun <- function(data,
                     y = fitted.vals)
   }
 
-  show_colnames(z)
+  show_colnames(z, stat.name = "stat_fit_fitted")
 
   z
 }

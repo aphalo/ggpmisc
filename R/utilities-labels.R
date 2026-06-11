@@ -1451,6 +1451,7 @@ check_output_type <-
 #' @param z data.frame from which to extract names of columns.
 #' @param show.what character One of \code{"nicknames"}, \code{"colnames"} or
 #'   \code{"none"}.
+#' @param stat.name character Name to be included in the message text.
 #'
 #' @details Columns of \code{z} with names ending in \code{.label} and
 #'   containing non-missing values are reported after replacing column names by
@@ -1468,17 +1469,17 @@ check_output_type <-
 #' @keywords internal
 #'
 show_labels <- function(z,
-                        show.what = NULL) {
+                        show.what = NULL,
+                        stat.name = "stat") {
   if (is.null(show.what)) {
     if (interactive()) {
       default <- "nicknames"
     } else {
       default <- "skip"
     }
-    show.what <- getOption("ggpmisc.stat.vars.message",
-                           default = default)
+    show.what <- getOption("ggpmisc.stat.vars.message", default = default)
   }
-  if (!any(c("colnames", "nicknames") %in% show.what)) {
+  if (!any(c("colnames", "nicknames", "names") %in% show.what)) {
     # nothing to do
     return()
   }
@@ -1497,10 +1498,10 @@ show_labels <- function(z,
         gsub("z.value", "z", x = _) |>
         gsub("S.value", "S", x = _)
     }
-    message("Available labels (", nrow(z), " rows): ",
+    message("'", stat.name, "' labels (", nrow(z), " rows): ",
             paste(labels.found, collapse = ", "), ".")
   } else {
-    message("No ready-formatted labels returned (", nrow(z), " rows).")
+    message("'", stat.name, "' labels (", nrow(z), " rows): NONE returned!")
   }
 }
 
@@ -1512,6 +1513,7 @@ show_labels <- function(z,
 #' @param z data.frame from which to extract names of columns.
 #' @param show.what character Replace column names by short nicknames in the
 #'   message text.
+#' @param stat.name character Name to be included in the message text.
 #'
 #' @details Columns of \code{z} with names ending in \code{.label} and
 #'   containing non-missing values are reported after replacing column names by
@@ -1529,28 +1531,29 @@ show_labels <- function(z,
 #' @keywords internal
 #'
 show_colnames <- function(z,
-                          show.what = NULL) {
+                          show.what = NULL,
+                          stat.name = "stat") {
   if (is.null(show.what)) {
     if (interactive()) {
-      default <- "colnames"
+      default <- "names"
     } else {
       default <- "skip"
     }
-    show.what <- getOption("ggpmisc.names.message",
-                           default = default)
+    show.what <- getOption("ggpmisc.stat.vars.message", default = default)
   }
-  if (!grepl("names", x = show.what)) {
+
+  if (!any(c("colnames", "nicknames", "names") %in% show.what)) {
     # nothing to do
     return()
   }
+
   cols.found <- colnames(z)[sapply(z,
                                    function(x) {!all(is.na(x))},
                                    USE.NAMES = FALSE)]
   if (length(cols.found)) {
-    message("Available variables (", nrow(z), " rows): ",
+    message("'", stat.name, "' variables (", nrow(z), " rows): ",
             paste(cols.found, collapse = ", "), ".")
   } else {
-    message("No variables with non-missing data returned (",
-            nrow(z), " rows).")
+    message("'", stat.name, "' variables (", nrow(z), " rows): NONE returned!")
   }
 }

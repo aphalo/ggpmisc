@@ -241,7 +241,7 @@ spikes_compute_group_fun <- function(data,
     z <- data.frame()
   }
 
-  show_labels(z)
+  show_labels(z, stat.name = "stat_spikes")
 
   z
 }

@@ -671,9 +671,9 @@ ma_eq_compute_group_fun <- function(data,
   }
 
   if (output.type == "numeric") {
-    show_colnames(z)
+    show_colnames(z, stat.name = "stat_ma_eq")
   } else {
-    show_labels(z)
+    show_labels(z, stat.name = "stat_ma_eq")
   }
 
   z

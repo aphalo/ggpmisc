@@ -284,7 +284,7 @@ poly_line_compute_group_fun <-
      prediction$flipped_aes <- flipped_aes
      z <- ggplot2::flip_data(prediction, flipped_aes)
 
-     show_colnames(z)
+     show_colnames(z, stat.name = "stat_poly_line")
 
      z
   }

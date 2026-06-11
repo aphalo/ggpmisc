@@ -354,7 +354,7 @@ fit_glance_compute_group_fun <- function(data,
     z$npcy <- NA_real_
   }
 
-  show_colnames(z)
+  show_colnames(z, stat.name = "stat_fit_glance")
 
   z
 }
@@ -639,7 +639,7 @@ fit_augment_compute_group_fun <- function(data,
   z[["fm.formula"]] <- rep_len(fail_safe_formula(fm, method.args), nrow(z))
   z[["fm.formula.chr"]] <- format(z[["fm.formula"]])
 
-  show_colnames(z)
+  show_colnames(z, stat.name = "stat_fit_augment")
 
   z
 }
@@ -1022,7 +1022,7 @@ fit_tidy_compute_group_fun <- function(data,
   z[["fm.formula"]] <- rep_len(fail_safe_formula(fm, method.args), nrow(z))
   z[["fm.formula.chr"]] <- format(z[["fm.formula"]])
 
-  show_colnames(z)
+  show_colnames(z, stat.name = "stat_fit_tidy")
 
   z
 }

@@ -569,7 +569,7 @@ fit_tb_compute_panel_fun <- function(data,
     z$npcy <- NA_real_
   }
 
-  show_colnames(z)
+  show_colnames(z, stat.name = "stat_fit_tb")
 
   z
 }

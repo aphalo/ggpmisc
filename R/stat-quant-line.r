@@ -244,7 +244,7 @@ quant_line_compute_group_fun <- function(data,
   z[["flipped_aes"]] <- flipped_aes
   z <- ggplot2::flip_data(z, flipped_aes)
 
-  show_colnames(z)
+  show_colnames(z, stat.name = "stat_quant_line")
 
   z
 }

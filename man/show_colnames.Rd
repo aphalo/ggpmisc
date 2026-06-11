@@ -4,13 +4,15 @@
 \alias{show_colnames}
 \title{Message listing non-missing columns}
 \usage{
-show_colnames(z, show.what = NULL)
+show_colnames(z, show.what = NULL, stat.name = "stat")
 }
 \arguments{
 \item{z}{data.frame from which to extract names of columns.}
 
 \item{show.what}{character Replace column names by short nicknames in the
 message text.}
+
+\item{stat.name}{character Name to be included in the message text.}
 }
 \description{
 Issue a message listing column names that are available for mapping to

@@ -4,13 +4,15 @@
 \alias{show_labels}
 \title{Message listing non-missing labels}
 \usage{
-show_labels(z, show.what = NULL)
+show_labels(z, show.what = NULL, stat.name = "stat")
 }
 \arguments{
 \item{z}{data.frame from which to extract names of columns.}
 
 \item{show.what}{character One of \code{"nicknames"}, \code{"colnames"} or
 \code{"none"}.}
+
+\item{stat.name}{character Name to be included in the message text.}
 }
 \description{
 Issue a message listing labels that are available using their "nicknames".
