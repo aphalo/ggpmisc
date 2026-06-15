@@ -64,28 +64,28 @@ Statistics that help with reporting the results of model fits are:
 | Statistic | Returned values<br> (*default geometry*) | Methods |
 |:---|:---|:---|
 | **Model equation** | *parameter estimates* |  |
-| `stat_poly_eq()` | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lm, rlm, lts, gls, ma, sma, etc. (1, 2, 7) |
+| `stat_poly_eq()` | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lm, rlm, lts, gls, ma, sma, nls, onls, etc. (1, 2, 7) |
 | `stat_ma_eq()` | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | lmodel2 (6, 7) |
 | `stat_quant_eq()` | equation, *P*, etc. (`text_npc`) | rq (1, 3, 4, 7) |
 | `stat_distrmix_eq()` | equation(s) (`text_npc`) | normalmixEM (2, 7) |
 | `stat_correlation()` | correlation, *P*-value, CI (`text_npc`) | Pearson (*t*), Kendall (*z*), Spearman (*S*) |
 | `stat_fit_glance()` | equation, *R*<sup>2</sup>, *P*, etc. (`text_npc`) | those supported by ‘broom’ |
 | **Model line** | *predicted and fitted values* |  |
-| `stat_poly_line()` | line + conf. (`smooth`) | lm, rlm, lts, gls, ma, sma, etc. (1, 2, 7) |
+| `stat_poly_line()` | line + conf. (`smooth`) | lm, rlm, lts, gls, ma, sma, nls, onls, etc. (1, 2, 7) |
 | `stat_ma_line()` | line + slope conf. (`smooth`) | lmodel2 (6, 7) |
 | `stat_quant_line()` | line + conf. (`smooth`) | rq, rqss (1, 3, 4, 7) |
 | `stat_quant_band()` | line + band, 2 or 3 quantiles (`smooth`) | rq, rqss (1, 4, 5, 7) |
 | `stat_distrmix_line()` | lines(s) (`line`) | normalmixEM (2, 7) |
 | `stat_fit_augment()` | predicted and other values (`smooth`) | those supported by ‘broom’ |
-| `stat_fit_fitted()` | fitted values (`point`) | lm, rlm, lts, rq, gls, ma, sma, etc. (1, 2, 4, 7, 9) |
-| `stat_fit_deviations()` | deviations from observations (`segment`) | lm, rlm, lts, rq, gls, ma, sma, etc. (1, 2, 4, 7, 9) |
+| `stat_fit_fitted()` | fitted values (`point`) | lm, rlm, lts, rq, gls, ma, sma, nls, onls, etc. (1, 2, 4, 7, 9) |
+| `stat_fit_deviations()` | deviations from observations (`segment`) | lm, rlm, lts, rq, gls, ma, sma, nls, onls, etc. (1, 2, 4, 7, 9) |
 | **Model table** | *parameter estimates and significance* |  |
 | `stat_fit_tb()` | ANOVA and summary tables (`table_npc`) | those supported by ‘broom’ |
 | `stat_fit_tidy()` | fit results, e.g., for equation (`text_npc`) | those supported by ‘broom’ |
 | **Contrasts** | *Tukey, Dunnet and arbitrary pairwise* |  |
 | `stat_multcomp()` | Multiple comparisons (`label_pairwise` or `text`) | those supported by `glht` (1, 2, 7) |
 | **Residuals** | *model fit residuals* |  |
-| `stat_fit_residuals()` | residuals (`point`) | lm, rlm, lts, rq, gls, ma, sma, etc. (1, 2, 4, 7, 9) |
+| `stat_fit_residuals()` | residuals (`point`) | lm, rlm, lts, rq, gls, ma, sma, nls, onls, etc. (1, 2, 4, 7, 9) |
 
 Notes: (1) *weight* aesthetic supported; (2) user defined model fit
 functions including wrappers of supported methods are accepted even if
@@ -423,7 +423,7 @@ citation("ggpmisc")
 #> To cite package 'ggpmisc' in publications use:
 #> 
 #>   Aphalo P (2026). _ggpmisc: Miscellaneous Extensions to 'ggplot2'_. R
-#>   package version 0.7.0.9002,
+#>   package version 0.7.0.9004,
 #>   <https://docs.r4photobiology.info/ggpmisc/>.
 #> 
 #> A BibTeX entry for LaTeX users is
@@ -432,7 +432,7 @@ citation("ggpmisc")
 #>     title = {ggpmisc: Miscellaneous Extensions to 'ggplot2'},
 #>     author = {Pedro J. Aphalo},
 #>     year = {2026},
-#>     note = {R package version 0.7.0.9002},
+#>     note = {R package version 0.7.0.9004},
 #>     url = {https://docs.r4photobiology.info/ggpmisc/},
 #>   }
 ```

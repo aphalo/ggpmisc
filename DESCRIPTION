@@ -2,7 +2,7 @@ Package: ggpmisc
 Type: Package
 Title: Miscellaneous Extensions to 'ggplot2'
 Version: 0.7.0.9004
-Date: 2026-06-11
+Date: 2026-06-15
 Authors@R:
     c(
     person("Pedro J.", "Aphalo", email = "pedro.aphalo@helsinki.fi", role = c("aut", "cre"), comment = c(ORCID = "0000-0003-3385-972X")),
@@ -60,6 +60,7 @@ Suggests:
     multcompView (>= 0.1-11),
     mixtools (>= 2.0.0.1),
     segmented (>= 2.2-1),
+    onls (>= 0.1-4),
     gginnards (>= 0.2.0),
     ggrepel (>= 0.9.8),
     ggtext (>= 0.1.2),

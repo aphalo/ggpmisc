@@ -48,20 +48,22 @@ also be used to fit non-linear models.
 
 We load the packages used in the examples. Those imported always, and those suggested, when available.
 
-```{r, message=FALSE}
+```{r, message=TRUE}
 library(ggpmisc)
 library(tibble)
 library(dplyr)
 library(quantreg)
 
+eval_onls <-  requireNamespace("onls", quietly = TRUE)
+if (eval_onls) library(onls) else message("Please, install 'onls'")
 eval_nlme <-  requireNamespace("nlme", quietly = TRUE)
-if (eval_nlme) library(nlme)
+if (eval_nlme) library(nlme) else message("Please, install 'nlme'")
 eval_broom <-  requireNamespace("broom", quietly = TRUE)
-if (eval_broom) library(broom)
+if (eval_broom) library(broom) else message("Please, install 'broom'")
 eval_broom_mixed <-  requireNamespace("broom.mixed", quietly = TRUE)
-if (eval_broom_mixed) library(broom.mixed)
+if (eval_broom_mixed) library(broom.mixed) else message("Please, install 'broom.mixed'")
 eval_gginnards <-  requireNamespace("gginnards", quietly = TRUE)
-if (eval_gginnards) library(gginnards)
+if (eval_gginnards) library(gginnards) else message("Please, install 'gginnards'")
 ```
 
 As we will add text and labels onto the plotting area we change the default theme to an uncluttered one with a white canvas.
@@ -70,7 +72,22 @@ As we will add text and labels onto the plotting area we change the default them
 old_theme <- theme_set(theme_bw())
 ```
 
-## `nls()` with 'ggpmisc' native approach
+## Non linear least-squares regression
+
+The fitting of models that are non-linear in their parameters are fit using iterative approximation algorithms, as no analytical solution is available.
+These methods are computation intensive, and require starting values for the
+estimation of parameters. Geometrically, the deviations used to compute the
+mean squares, are not different to those used for the analytical solution to 
+estimation of parameters of linear models by ordinary least squares (OLS).
+
+In R, `nls()` is the workhorse for non-linear least-squares regression. R also defines _self starting_ functions describing non-linear models. These objects include both the function to be fit, and a function implementing a method of obtaining starting values for the iterative algorithm. Starting values are rough approximations, not useful by themselves, but are good enough as starting points for the search for better estimates.
+
+**Non linearity in the parameters** _In this context non-linearity does not refer to the shape of the fitted model when plotted. Polynomials are models linear in their parameters as these parameters are multiplier of the terms in the model equation. When the parameters being estimated appear in the model formula as power exponents, or similar, then we call such models non-linear in their parameters._
+
+### `nls()` with 'ggpmisc' native approach
+
+Function `SSmicmen()` is a self starting function for the Michaelis-Menthen equation for the rate of a chemical reaction $V$ as a function of the concentrtaion, $C$, of its precursor. It has two parameters, $V_m$, the asymptotic maximum $V$, and $K$, a reaction constant.
+
 
 Easiest is to use formatted `character` strings to be parsed into `plotmath`
 expressions. We can in this case create the mapping to the `label` aesthetic
@@ -116,9 +133,35 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
   labs(x = "C", y = "V")
 ```
 
-## `nls()` with 'broom'-based approach
+Deviations can be highlighted.
 
-The statistics based on methods from package 'broom' always return only numeric values and formatted strings need to be assembled in user's R code within a call to `aes()`. The examples below produce figures nearly identical to the two first examples in the previous section. 
+```{r}
+micmen.formula <- y ~ SSmicmen(x, Vm, K) 
+ggplot(Puromycin, aes(conc, rate, colour = state)) +
+  geom_point() +
+  stat_poly_line(method = "nls", 
+                 formula = micmen.formula,
+                 se = FALSE) +
+  stat_fit_deviations(
+               method = "nls",
+               formula = micmen.formula) +
+  labs(x = "C", y = "V")
+```
+
+Residuals can be plotted
+
+
+```{r}
+micmen.formula <- y ~ SSmicmen(x, Vm, K) 
+ggplot(Puromycin, aes(conc, rate, colour = state)) +
+  stat_fit_residuals(
+               method = "nls",
+               formula = micmen.formula) +
+  labs(x = "C", y = "V residuals")
+```
+### `nls()` with 'broom'-based approach
+
+The statistics based on methods from package 'broom' always return numeric values and formatted strings need to be assembled for all parameters in user's R code within a call to `aes()`. The examples below produce figures nearly identical to the two first examples in the previous section. 
 
 ```{r, eval=eval_broom}
 micmen.formula <- y ~ SSmicmen(x, Vm, K) 
@@ -161,3 +204,147 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
   labs(x = "C", y = "V")
 ```
 
+## Orthogonal Nonlinear Least-Squares Regression
+
+Orthogonal least-squares is similar in concept to model II and MA regression, but applicable to models that when plotted are curves, including models non-linear in their parameters. These methods are useful when explanatory variables are measured with error, and the intention is to describe a relationship. This is a common case in allometry (the estimation of the relative size of different parts of organs in an organism) and other data with similar properties. These and related methods, are usually described as for _errors in variables_ (EIV) problems.
+
+R package 'onls' implements function `onls()` that works similarly to R's `nls()` but which does not make use of the self-starting estimates, which have always to be supplied explicitly.
+
+The fit is done in two steps, NLS fit followed by the ONLS fit. The values from both fits are returned.
+
+I use this data set here but in this context NLS is the correct approach. In fact only one of NLS or ONLS can be expected to suit a given data set. Anyway, it remains didactically useful to compare the application of both methods to the same data set.
+
+### `onls()` with 'ggpmisc' native approach
+
+Easiest is to use formatted `character` strings to be parsed into `plotmath`
+expressions. We can in this case create the mapping to the `label` aesthetic
+with function `use_label()` (shown below) of with function `f_use_label()` (not 
+shown).
+
+```{r, eval=eval_onls}
+micmen.formula <- y ~ SSmicmen(x, Vm, K) 
+ggplot(Puromycin, aes(conc, rate, colour = state)) +
+  geom_point() +
+  stat_poly_line(method = "onls", 
+                 method.args = list(start = list(Vm = 200, K = 0.1)),
+                 formula = micmen.formula,
+                 se = FALSE) +
+  stat_poly_eq(use_label("AIC", "BIC"),
+               method = "onls", 
+               method.args = list(start = list(Vm = 200, K = 0.1)),
+               formula = micmen.formula,
+               label.x = "centre", label.y = "bottom") +
+  labs(x = "C", y = "V")
+```
+
+No pre-formatted equation label is available, and we have to assemble it from
+the numeric values of the fitted parameter estimates.
+
+```{r}
+micmen.formula <- y ~ SSmicmen(x, Vm, K) 
+ggplot(Puromycin, aes(conc, rate, colour = state)) +
+  geom_point() +
+  stat_poly_line(method = "onls", 
+                 method.args = list(start = list(Vm = 200, K = 0.1)),
+                 formula = micmen.formula,
+                 se = FALSE) +
+  stat_poly_eq(aes(label =
+                     after_stat(
+                       paste("V~`=`~frac(",
+                             signif(b_0, digits = 2), "~C,",
+                             signif(b_1, digits = 2), "+C)",
+                             sep = ""))),
+               parse = TRUE,
+               method = "onls",
+                 method.args = list(start = list(Vm = 200, K = 0.1)),
+               output.type = "numeric",
+               formula = micmen.formula,
+               vstep = 0.1, size = 3,
+               label.x = "centre", label.y = "bottom") +
+  labs(x = "C", y = "V")
+```
+
+Deviations can be highlighted
+
+So these deviations or residuals are **not** those whose squares have been minimized, but instead, computed as is OLS but relative to the curve fitted by ONOLS, i.e., using residuals orthogonal to the fitted curve.
+
+```{r}
+micmen.formula <- y ~ SSmicmen(x, Vm, K) 
+ggplot(Puromycin, aes(conc, rate, colour = state)) +
+  geom_point() +
+  stat_poly_line(method = "onls", 
+                 method.args = list(start = list(Vm = 200, K = 0.1)),
+                 formula = micmen.formula,
+                 se = FALSE) +
+  stat_fit_deviations(method = "onls",
+                      method.args = list(start = list(Vm = 200, K = 0.1)),
+                      formula = micmen.formula) +
+  labs(x = "C", y = "V")
+```
+
+### `onls()` with 'broom'-based approach
+
+The statistics based on methods from package 'broom' always return only numeric values and formatted strings need to be assembled in user's R code within a call to `aes()`. The examples below produce figures nearly identical to the two first examples in the previous section. 
+
+```{r, eval=eval_broom}
+micmen.formula <- y ~ SSmicmen(x, Vm, K) 
+ggplot(Puromycin, aes(conc, rate, colour = state)) +
+  geom_point() +
+  stat_smooth(method = "onls", 
+              method.args = list(start = list(Vm = 200, K = 0.1)),
+              formula = micmen.formula,
+              se = FALSE) +
+  stat_fit_glance(aes(label = 
+                        after_stat(
+                          paste("AIC = ", signif(AIC, digits = 3), 
+                                ", BIC = ", signif(BIC, digits = 3),
+                                sep = ""))),
+                  method = "onls", 
+                  method.args = list(formula = micmen.formula,
+                                     start = list(Vm = 200, K = 0.1)),
+                  label.x = "centre", label.y = "bottom") +
+  labs(x = "C", y = "V")
+```
+
+```{r, eval=eval_broom}
+micmen.formula <- y ~ SSmicmen(x, Vm, K) 
+ggplot(Puromycin, aes(conc, rate, colour = state)) +
+  geom_point() +
+  stat_smooth(method = "onls", 
+              method.args = list(start = list(Vm = 200, K = 0.1)),
+              formula = micmen.formula,
+              se = FALSE) +
+  stat_fit_tidy(aes(label =
+                      after_stat(
+                        paste("V~`=`~frac(",
+                              signif(Vm_estimate, digits = 2), "~C,",
+                              signif(K_estimate, digits = 2), "+C)",
+                              sep = ""))),
+                parse = TRUE,
+                method = "onls", 
+                method.args = list(formula = micmen.formula,
+                                   start = list(Vm = 200, K = 0.1)),
+                size = 3,
+                label.x = "center",
+                label.y = "bottom",
+                vstep = 0.12) +
+  labs(x = "C", y = "V")
+```
+
+## Comparison of ONLS to NLS
+
+```{r}
+micmen.formula <- y ~ SSmicmen(x, Vm, K) 
+ggplot(Puromycin, aes(conc, rate, colour = state)) +
+  stat_poly_line(method = "nls", 
+                 formula = micmen.formula,
+                 linetype = "dashed",
+                 se = FALSE,
+                 limit.to = seq(0, 1.2, length.out = 80)) +
+  stat_poly_line(method = "onls", 
+                 method.args = list(start = list(Vm = 200, K = 0.1)),
+                 formula = micmen.formula,
+                 se = FALSE,
+                 limit.to = seq(0, 1.2, length.out = 80)) +
+  labs(x = "C", y = "V")
+```

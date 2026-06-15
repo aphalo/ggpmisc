@@ -269,7 +269,10 @@ fit_models_internal <- function(data,
                      gls = "gls:REML",
                      sma = "sma:SMA",
                      ma = "sma:MA",
-                     segreg = "segreg",
+#                     segreg = "segreg",
+#                     nls = "nls",
+#                     onls = "onls",
+#                    lspline = "lspline",
                      method)
     method.name <- method
     method <- strsplit(x = method, split = ":", fixed = TRUE)[[1]]
@@ -290,6 +293,10 @@ fit_models_internal <- function(data,
                        {rlang::check_installed("quantreg",
                                                reason = "to use method \"rq\"");
                          quantreg::rq},
+                     rqss =
+                       {rlang::check_installed("quantreg",
+                                               reason = "to use method \"rqss\"");
+                         quantreg::rqss},
                      lqs =
                        {rlang::check_installed("MASS",
                                                reason = "to use method \"lqs\"");
@@ -318,6 +325,18 @@ fit_models_internal <- function(data,
                        {rlang::check_installed("segmented",
                                                reason = "to use method \"segreg\"");
                          segmented::segreg},
+                     nls =
+                       {rlang::check_installed("stats",
+                                               reason = "to use method \"nls\"");
+                         stats::nls},
+                     onls =
+                       {rlang::check_installed("onls",
+                                               reason = "to use method \"onls\"");
+                         onls::onls},
+                     lspline =
+                       {rlang::check_installed(c("stats", "lspline"),
+                                               reason = "to use method \"lspline\"");
+                        stats::lm},
                      match.fun(method))
   } else if (is.function(method)) {
     fun.method <- character()
