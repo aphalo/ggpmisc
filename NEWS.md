@@ -17,6 +17,8 @@ formatted labels or names of variables available for mapping to aesthetics.
 on-the-fly transformations in the rhs or lhs, indicating the need to pass a
 matching argument to `eq.x.rhs` or `eq.lhs`. Fix parsing failures leading to
 wrong test outcomes in some edge cases.
+- Support methods `"nls"` and `"onls"` in `stat_poly_line()` and 
+`stat_poly_eq()`.
 - Add parameter `limit.to` to `stat_poly_line()` and `stat_ma_line()` as an 
 enhancement of parameter `fullrange` providing full control on the `newdata`
 used to compute the prediction line.

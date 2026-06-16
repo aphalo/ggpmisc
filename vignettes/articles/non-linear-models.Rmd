@@ -99,8 +99,7 @@ micmen.formula <- y ~ SSmicmen(x, Vm, K)
 ggplot(Puromycin, aes(conc, rate, colour = state)) +
   geom_point() +
   stat_poly_line(method = "nls", 
-                 formula = micmen.formula,
-                 se = FALSE) +
+                 formula = micmen.formula) +
   stat_poly_eq(use_label("AIC", "BIC"),
                method = "nls", 
                formula = micmen.formula,
@@ -116,13 +115,12 @@ micmen.formula <- y ~ SSmicmen(x, Vm, K)
 ggplot(Puromycin, aes(conc, rate, colour = state)) +
   geom_point() +
   stat_poly_line(method = "nls", 
-                 formula = micmen.formula,
-                 se = FALSE) +
+                 formula = micmen.formula) +
   stat_poly_eq(aes(label =
                      after_stat(
                        paste("V~`=`~frac(",
-                             signif(b_0, digits = 2), "~C,",
-                             signif(b_1, digits = 2), "+C)",
+                             signif(b_0, digits = 3), "~C,",
+                             signif(b_1, digits = 3), "+C)",
                              sep = ""))),
                parse = TRUE,
                method = "nls",
@@ -140,8 +138,7 @@ micmen.formula <- y ~ SSmicmen(x, Vm, K)
 ggplot(Puromycin, aes(conc, rate, colour = state)) +
   geom_point() +
   stat_poly_line(method = "nls", 
-                 formula = micmen.formula,
-                 se = FALSE) +
+                 formula = micmen.formula) +
   stat_fit_deviations(
                method = "nls",
                formula = micmen.formula) +
@@ -159,6 +156,21 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
                formula = micmen.formula) +
   labs(x = "C", y = "V residuals")
 ```
+
+There is rarely a reason to do so, but `nls()` can be also used to fit linear models as it is a generally applicable procedure.
+
+```{r}
+poly.formula <- y ~ b0 + b1 * x + b2 * I(x^2)
+ggplot(Puromycin, aes(conc, rate, colour = state)) +
+  geom_point() +
+  stat_poly_line(method = "nls", 
+                 method.args = list(start = list(b0 = 0, b1 = 1, b2 = 0)),
+                 formula = y ~ b0 + b1 * x + b2 * I(x^2),
+                 se = FALSE) +
+  labs(x = "C", y = "V")
+```
+
+
 ### `nls()` with 'broom'-based approach
 
 The statistics based on methods from package 'broom' always return numeric values and formatted strings need to be assembled for all parameters in user's R code within a call to `aes()`. The examples below produce figures nearly identical to the two first examples in the previous section. 
@@ -167,9 +179,8 @@ The statistics based on methods from package 'broom' always return numeric value
 micmen.formula <- y ~ SSmicmen(x, Vm, K) 
 ggplot(Puromycin, aes(conc, rate, colour = state)) +
   geom_point() +
-  stat_smooth(method = "nls", 
-              formula = micmen.formula,
-              se = FALSE) +
+  stat_poly_line(method = "nls", 
+                 formula = micmen.formula) +
   stat_fit_glance(aes(label = 
                         after_stat(
                           paste("AIC = ", signif(AIC, digits = 3), 
@@ -185,14 +196,13 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
 micmen.formula <- y ~ SSmicmen(x, Vm, K) 
 ggplot(Puromycin, aes(conc, rate, colour = state)) +
   geom_point() +
-  stat_smooth(method = "nls", 
-              formula = micmen.formula,
-              se = FALSE) +
+  stat_poly_line(method = "nls", 
+                 formula = micmen.formula) +
   stat_fit_tidy(aes(label =
                       after_stat(
                         paste("V~`=`~frac(",
-                              signif(Vm_estimate, digits = 2), "~C,",
-                              signif(K_estimate, digits = 2), "+C)",
+                              signif(Vm_estimate, digits = 3), "~C,",
+                              signif(K_estimate, digits = 3), "+C)",
                               sep = ""))),
                 parse = TRUE,
                 method = "nls", 
@@ -227,8 +237,7 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
   geom_point() +
   stat_poly_line(method = "onls", 
                  method.args = list(start = list(Vm = 200, K = 0.1)),
-                 formula = micmen.formula,
-                 se = FALSE) +
+                 formula = micmen.formula) +
   stat_poly_eq(use_label("AIC", "BIC"),
                method = "onls", 
                method.args = list(start = list(Vm = 200, K = 0.1)),
@@ -246,13 +255,12 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
   geom_point() +
   stat_poly_line(method = "onls", 
                  method.args = list(start = list(Vm = 200, K = 0.1)),
-                 formula = micmen.formula,
-                 se = FALSE) +
+                 formula = micmen.formula) +
   stat_poly_eq(aes(label =
                      after_stat(
                        paste("V~`=`~frac(",
-                             signif(b_0, digits = 2), "~C,",
-                             signif(b_1, digits = 2), "+C)",
+                             signif(b_0, digits = 3), "~C,",
+                             signif(b_1, digits = 3), "+C)",
                              sep = ""))),
                parse = TRUE,
                method = "onls",
@@ -274,11 +282,36 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
   geom_point() +
   stat_poly_line(method = "onls", 
                  method.args = list(start = list(Vm = 200, K = 0.1)),
-                 formula = micmen.formula,
-                 se = FALSE) +
+                 formula = micmen.formula) +
   stat_fit_deviations(method = "onls",
                       method.args = list(start = list(Vm = 200, K = 0.1)),
                       formula = micmen.formula) +
+  labs(x = "C", y = "V")
+```
+
+The same residuals as highlighted above can be plotted. However, _these are not the orthogonal residuals used to fit the model_.
+
+```{r}
+micmen.formula <- y ~ SSmicmen(x, Vm, K) 
+ggplot(Puromycin, aes(conc, rate, colour = state)) +
+  stat_fit_residuals(
+               method = "onls",
+               method.args = list(start = list(Vm = 200, K = 0.1)),
+               formula = micmen.formula) +
+  labs(x = "C", y = "V residuals")
+```
+
+Function  `onls()` can also be used to fit linear models using the orthogonal least-squares approach.
+
+```{r}
+poly.formula <- y ~ b0 + b1 * x + b2 * I(x^2)
+ggplot(Puromycin, aes(conc, rate, colour = state)) +
+  geom_point() +
+  stat_poly_line(method = "onls", 
+                 method.args = 
+                   list(start = list(b0 = 0, b1 = 1, b2 = 0)),
+                 formula = poly.formula,
+                 se = FALSE) +
   labs(x = "C", y = "V")
 ```
 
@@ -290,10 +323,9 @@ The statistics based on methods from package 'broom' always return only numeric 
 micmen.formula <- y ~ SSmicmen(x, Vm, K) 
 ggplot(Puromycin, aes(conc, rate, colour = state)) +
   geom_point() +
-  stat_smooth(method = "onls", 
-              method.args = list(start = list(Vm = 200, K = 0.1)),
-              formula = micmen.formula,
-              se = FALSE) +
+  stat_poly_line(method = "onls", 
+                 method.args = list(start = list(Vm = 200, K = 0.1)),
+                 formula = micmen.formula) +
   stat_fit_glance(aes(label = 
                         after_stat(
                           paste("AIC = ", signif(AIC, digits = 3), 
@@ -310,15 +342,14 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
 micmen.formula <- y ~ SSmicmen(x, Vm, K) 
 ggplot(Puromycin, aes(conc, rate, colour = state)) +
   geom_point() +
-  stat_smooth(method = "onls", 
-              method.args = list(start = list(Vm = 200, K = 0.1)),
-              formula = micmen.formula,
-              se = FALSE) +
+  stat_poly_line(method = "onls", 
+                 method.args = list(start = list(Vm = 200, K = 0.1)),
+                 formula = micmen.formula) +
   stat_fit_tidy(aes(label =
                       after_stat(
                         paste("V~`=`~frac(",
-                              signif(Vm_estimate, digits = 2), "~C,",
-                              signif(K_estimate, digits = 2), "+C)",
+                              signif(Vm_estimate, digits = 3), "~C,",
+                              signif(K_estimate, digits = 3), "+C)",
                               sep = ""))),
                 parse = TRUE,
                 method = "onls", 
@@ -339,7 +370,6 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
   stat_poly_line(method = "nls", 
                  formula = micmen.formula,
                  linetype = "dashed",
-                 se = FALSE,
                  limit.to = seq(0, 1.2, length.out = 80)) +
   stat_poly_line(method = "onls", 
                  method.args = list(start = list(Vm = 200, K = 0.1)),
@@ -347,4 +377,30 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
                  se = FALSE,
                  limit.to = seq(0, 1.2, length.out = 80)) +
   labs(x = "C", y = "V")
+```
+
+## Limitations and caveats
+
+Non-linear models are fit by approximation using an iterative approach. Convergence depends on the "goodness" of the guesses for parameter values passed as a named list to `start`. Solutions may be not unique and local optima can derail the search for the global best fit, and it is recommended, when not using self starting functions to repeat the fit with different starting values. When some parameter values can lead to computation errors, boundaries must be set so that the search avoids these "forbidden" conditions. In addition, different algorithms used for minimization differ in computational efficiency but also in the problems for which they may fail completly. In case of failure, it can be worthwhile to try a different `algorithm`.
+
+Even if these methods are supported, model fitting can easily fail. Thus, if errors are encountered, it is necessary to run `nls()` or `onls()` on their own, to diagnose the reason of the failure to converge on a solution, arithmetic errors, or problems.
+
+As the stats fit the model one data group at a time, when debugging, it is necessary to subset the data in the same way as `ggplot()` does.
+
+```{r}
+fm1 <- nls(rate ~ SSmicmen(conc, Vm, K),
+           data = subset(Puromycin, state == "treated"))
+summary(fm1)
+coef(fm1)
+predict(fm1)
+```
+
+
+```{r}
+fm2 <- onls(rate ~ SSmicmen(conc, Vm, K),
+            start = list(Vm = 200, K = 0.1),
+            data = subset(Puromycin, state == "treated"))
+summary(fm2)
+coef(fm2)
+predict(fm2)
 ```
