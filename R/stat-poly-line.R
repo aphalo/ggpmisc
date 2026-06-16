@@ -48,7 +48,7 @@ stat_poly_line <- function(mapping = NULL,
   }
 
   if (is.null(se)) {
-    se <- ifelse(grepl("gls|lqs", method.name), FALSE, TRUE)
+    se <- ifelse(grepl("gls|lqs|nls|onls", method.name), FALSE, TRUE)
   }
 
   temp <- guess_orientation(orientation = orientation,
@@ -174,16 +174,31 @@ poly_line_compute_group_fun <-
         )
         if (inherits(prediction, "try-error")) {
           warning("Prediction failed!")
-          prediction <- rep_len(NA_real_, nrow(data))
+          prediction <-
+            data.frame(y = rep_len(NA_real_, nrow(newdata)))
         }
       }
       if (se) {
-        if (exists("fit", prediction)) {
+        if (is.list(prediction) && "fit" %in% names(prediction)) {
           prediction <- as.data.frame(prediction[["fit"]])
         }
-        names(prediction) <- c("y", "ymin", "ymax")
-      } else {
-        prediction <- data.frame(y = as.vector(prediction))
+        if ((is.matrix(prediction) || is.data.frame(prediction)) &&
+            ncol(prediction) == 3) {
+          names(prediction) <- c("y", "ymin", "ymax")
+        } else if (is.numeric(prediction)) {
+          # the call to as.numeric() deletes attributes if present
+          message("Prediction for 'method = \"", method.name,
+                  "\"' does not report a confidence band.")
+          prediction <-
+            data.frame(y = as.numeric(prediction))
+        } else {
+          warning("Prediction failed!")
+          prediction <-
+            data.frame(y = rep_len(NA_real_, nrow(newdata)))
+        }
+      } else { # se is FALSE
+        prediction <-
+          data.frame(y = as.vector(prediction))
       }
       prediction <- cbind(newdata, prediction)
     } else { # does not have predict method
