@@ -23,7 +23,7 @@ eval_flag <- TRUE # evaluate all code chunks
 
 Package 'ggpmisc' makes it easier to add to plots created using 'ggplot2' annotations based on fitted models and other statistics. It does this by wrapping existing model fit and other functions from base R and various R packages. The same annotations can be produced by calling the model fit functions, extracting the desired estimates and adding them to plots. There are two advantages in wrapping these functions in an extension to package 'ggplot2': 1) it ensures the coupling of graphical elements and the annotations by building all elements of the plot using the same data and a consistent grammar and 2) it makes it easier to annotate plots to the casual user of R, already familiar with the grammar of graphics.
 
-_To avoid confusion it is good to make clear what may seem obvious to some: if no plot is needed, then there is no reason to use this package. The values shown as annotations are not computed by 'ggpmisc' but instead by the usual model-fit and statistical functions from R and other packages. The same is true for model predictions, residuals, etc. that some of the functions in 'ggpmisc' display as lines, segments, or other graphical elements._
+_To avoid confusion it is good to make clear what may seem obvious to most readers: if no plot is needed, then there is no reason to use this package. The values shown as annotations are not computed by 'ggpmisc' but instead by the usual model-fit and statistical functions from R and other packages. The same is true for model predictions, residuals, etc. that some of the functions in 'ggpmisc' display as lines, segments, or other graphical elements._
 
 It is also important to remember that in most cases data analysis including exploratory and other stages should take place before annotated plots for publication are produced. Even though data analysis can benefit from combined numerical and graphical representation of the results, the use I envision for 'ggpmisc' is mainly for the production of plots for publication or communication. In any case, whether plots created with functions and methods from 'ggpmisc' are used for analysis or communication, it is crucial that users cite and refer both to 'ggpmisc' and to the underlying R and R packages used to fit models or to do other statistical computations.
 
@@ -33,16 +33,26 @@ print(citation(package = "ggpmisc", auto = TRUE), bibtex = FALSE)
 
 ## Introduction
 
-Layer functions in 'ggpmisc' can be used for fitting non-linear models, but
-given the diversity of possible model formulas, automatic generation of
-annotations for the model fit equations have not been implemented.
+Layer functions in 'ggpmisc' can be used for fitting non-linear models as well
+as linear models, but given the diversity of possible model formulas, automatic
+generation of annotations for the model fit equations have not been implemented.
+
+Whether confidence bands can be plotted for the fitted model lines depends on
+whether the `predict()` method for the fitted model object computes them. This
+is not the case for `nls()` and `onls()` functions described in this article.
+There are ways of calculating them, one being through bootstrapping, which is
+computation intensive as implemented, for example, in R package 'nlraa'. These
+approaches are currently not supported by the layer functions in 'ggpmisc'. In
+the case of `nls()` and `onls()` informative messages are issued if `se = TRUE`
+is passed to `stat_poly_eq()`, but in other cases, errors with criptic 
+messages can be triggered in 'ggplot2' code.
 
 This article gives examples of non-linear model fits using both
 `stat_poly_line()` together with `stat_poly_eq()`, and with the 'broom' based
 statistics, `stat_fit_augnment`, `stat_fit_tidy()` and `stat_fit_glance`. In
-earlier version of 'ggpmisc' only the 'broom'-based approach was available.
+'ggpmisc' (< 1.0.0) only the 'broom'-based approach was available.
 However, in 'ggpmisc' (>= 1.0.0) `stat_poly_eq()` and `stat_poly_line()` can
-also be used to fit non-linear models.
+also be used to fit a broader range of models, including non-linear models.
 
 ## Preliminaries
 
