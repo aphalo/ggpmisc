@@ -284,7 +284,7 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
 
 Deviations can be highlighted
 
-So these deviations or residuals are **not** those whose squares have been minimized, but instead, computed as is OLS but relative to the curve fitted by ONOLS, i.e., using residuals orthogonal to the fitted curve.
+So these deviations or residuals are **not** those whose squares have been minimized, but instead, computed as is OLS but relative to the curve fitted by ONLS, i.e., using residuals orthogonal to the fitted curve.
 
 ```{r}
 micmen.formula <- y ~ SSmicmen(x, Vm, K) 
