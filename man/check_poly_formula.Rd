@@ -8,15 +8,20 @@ check_poly_formula(
   formula,
   x.name = "x",
   warn.incr.poly.text = "'formula' not an increasing polynomial: 'eq.label' set to NA!",
-  warn.transf.rhs.txt = paste0("rhs includes transformations requiring an argument for ",
+  warn.transf.rhs.txt =
+    paste0("'formula' rhs includes transformations requiring an argument for ",
     "'eq.x.rhs': 'eq.label' set to NA!."),
-  warn.transf.lhs.txt = paste0("lhs includes transformations requiring an argument for ",
+  warn.transf.lhs.txt =
+    paste0("'formula' lhs includes transformations requiring an argument for ",
     "'eq.with.lhs': 'eq.label' set to NA!."),
-  warn.as.is.txt = paste0("Power (^) terms in model formula of a polynomial need to ",
+  warn.spline.rhs.txt = paste0("'formula' rhs includes a spline base function: ",
+    " 'eq.label' set to NA!."),
+  warn.as.is.txt = paste0("Power (^) terms in 'formula' for a polynomial need to ",
     "be protected by 'I()': 'eq.label' set to NA!."),
-  warn.poly.raw.txt = paste0("'poly()' in model formula has to be passed 'raw = TRUE': ",
+  warn.poly.raw.txt = paste0("'poly()' in 'formula' has to be passed 'raw = TRUE': ",
     "'eq.label' set to NA!"),
-  stop.pow.poly.text = "Both 'poly()' and power (^) terms in model formula.",
+  stop.pow.poly.text =
+    "Both 'poly()' and power (^) terms in 'formula', use one or the other.",
   check.transf.rhs = TRUE,
   check.transf.lhs = TRUE
 )
@@ -26,7 +31,8 @@ check_poly_formula(
 
 \item{x.name}{character The name of the explanatory variable in the formula.}
 
-\item{warn.incr.poly.text, warn.transf.lhs.txt, warn.transf.rhs.txt, warn.as.is.txt, warn.poly.raw.txt, stop.pow.poly.text}{character Text for warnings and errors.}
+\item{warn.incr.poly.text, warn.transf.lhs.txt, warn.transf.rhs.txt, warn.spline.rhs.txt, warn.as.is.txt, warn.poly.raw.txt, stop.pow.poly.text}{character Text for warnings and errors. If \code{NULL} the warning is not
+issued and failure reported silently to the caller.}
 
 \item{check.transf.rhs, check.transf.lhs}{logical flag enabling test for
 transformation of variables.}
@@ -43,22 +49,24 @@ algorithm used to generate the equation-label.
 }
 \details{
 The assumption is that this function will be called from within a
-  ggplot2 compatible layer function, and that model formulas will always have
-  a single explanatory variable, variables will be \code{x} and \code{y}. Its
-  behaviour is undefined or erroneous in other cases.
+  'ggplot2' compatible layer function, and that model formulas will always
+  have a single explanatory variable, variables will be \code{x} and
+  \code{y}. Its behaviour is undefined or erroneous in other cases. This
+  validation check cannot be demonstrated to be always correct, as it is
+  difficult to test, or even list all possible variations of supported vs.
+  unsupported formulas.
 
-  This validation check could return a false positive or a false negative
-  results with some formulas as it is difficult to test, or even list all
-  possible variations of supported vs. unsupported formulas. This makes
-  testing difficult. In addition, many valid model formulas that can be
-  succesfully fitted, are not correctly converted into character labels.
-  Thus, this function triggers a warning in case of failure, not an error,
-  and returns a logic value. If this value is \code{FALSE}, the statistics in
-  'ggpmisc' skip the generation of an equation label, setting it to
-  \code{NA}. However, if the formula is accepted by the model fit function,
-  other labels and the numeric estimates of the fitted coefficients remain
-  usable. The stats can be used also with models that are not polynomials or
-  containing transformations.
+  Many valid model formulas that can be successfully fitted, cannot
+  be automatically converted into correct character labels by functions in
+  'ggpmisc'. Thus, this function triggers a
+  warning in case of a test failure, not an error, returning a logic value. If
+  this value is \code{FALSE}, the statistics in 'ggpmisc' skip the generation
+  of an equation label, setting it to \code{NA}, while returning other
+  character labels and the numeric estimates
+  of the fitted coefficients. Thus, the stats can be used also
+  with models that are not polynomials or containing transformations, but in
+  this case the model equation when needed needs to be assembled in user's
+  code within a call to `aes()`.
 
   Model formulas with and without an intercept term are accepted as valid, as
   \code{+0}, \code{-1} and \code{+1} are accepted. If a single \code{as.is}
@@ -69,10 +77,13 @@ The assumption is that this function will be called from within a
 
   If two or more terms are \code{as.is} (\code{I( )} protected) powers
   (\code{^}), they are expected to be in increasing order with no missing
-  intermediate power terms. If \code{poly()} is used in the model formula, a
-  single term is expected. When calling function \code{poly()},
-  \code{raw = TRUE} must be passed to obtain suitable estimates for the
-  fitted coefficients, and this is also checked.
+  intermediate power terms.
+
+  Spline base functions \code{ns()}, \code{bs()} and \code{lspline()} are
+  searched for and flagged, while \code{poly()} is accepted. If \code{poly()}
+  is used in the model formula, a single term is expected. When calling
+  function \code{poly()}, \code{raw = TRUE} must be passed to obtain suitable
+  estimates for the fitted coefficients, and this is also checked.
 
   When the formula \emph{rhs} contains more than one power term, all power
   terms defined using \code{^} must be protected as \code{"as.is"}
@@ -81,8 +92,8 @@ The assumption is that this function will be called from within a
 
   If the warning text is \code{NULL} or \code{character(0)} no warning is
   issued, but the test is done. In contrast, \code{check.transf.rhs,check =
-  FALSE} and \code{transf.lhs = FALSE} skip these two tests. The caller
-  always receives a length-1 logical as returned value.
+  FALSE} and \code{transf.lhs = FALSE} skip these two tests on with
+  \code{raw = TRUE}.
 }
 \examples{
 # polynomials
@@ -111,5 +122,10 @@ check_poly_formula(y ~ x + I(x^3) + I(x^2))
 # polynomials using poly()
 check_poly_formula(y ~ poly(x, 2, raw = TRUE)) # label o.k.
 check_poly_formula(y ~ poly(x, 2)) # orthogonal polynomial -> bad label
+
+# spline terms not accepted
+check_poly_formula(y ~ ns(x))
+check_poly_formula(y ~ bs(x))
+check_poly_formula(y ~ lspline(x))
 
 }
