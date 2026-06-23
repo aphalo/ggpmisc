@@ -34,13 +34,13 @@ prediction range.
 - Fix bug in support of `smatr::ma()` and `smatr::sma()` in `stat_poly_eq()` 
 with `- 1` or `+ 0` in `formula`: $x^2$ shown instead of $x$.
 - Rewrite `find_spikes()` with changes in behaviour and formal parameters. Old
-version did not work as documented, or usefully and had never used in
-a statistic definition.
+version did not work as documented, or usefully.
 - Streamline source of documentation using 'roxygen2' inheritance and expand
 and clarify explanations. List supported methods in tables in help pages.
 Merge help for closely related statistics.
 - Update the _User Guide_ with new/better examples and explanations including
 use of new features.
+- Update and expand the articles in the documentation website of 'ggpmisc'.
 
 # ggpmisc 0.7.0
 

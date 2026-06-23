@@ -328,34 +328,32 @@ print(citation(package = "nlme", auto = TRUE), bibtex = FALSE)
 library(nlme)
 ```
 
-In 'ggpmisc' (>= 0.6.2) function `gls()` from package 'nlme' is supported natively by functions `stat_poly_line()` and `stat_poly_eq()`. In this example, using a variance covariate. _Currently, support is limited in 'ggpmisc' to the prediction line,
-and labels.
+In 'ggpmisc' (>= 0.6.2) function `gls()` from package 'nlme' is supported natively by functions `stat_poly_line()` and `stat_poly_eq()`. In this example, using a variance covariate. _Currently, support is limited to the prediction line, and labels._
 
 ```{r, fig.width = 7, fig.height = 5}
 ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
    geom_point() +
    stat_poly_line(method = "gls", 
-                  method.args = list(weights = nlme::varPower()), 
-                  se = FALSE) +
+                  method.args = list(weights = nlme::varPower())) +
    stat_poly_eq(method = "gls", 
                 method.args = list(weights = nlme::varPower()),
                 mapping = use_label("eq", "n", "method"),
    label.x = "right")
 ```
 
-Fitted values and deviations highlighted.
+Fitted values and deviations highlighted. Posterior weights, in this case fitted using a power of variance covariate are not values in the range between 0 and 1 as in robust and resistant regression approaches. Thus, their interpretation is different. In this example instead of mapping the weights to the colour of points, we map them to the segments.
 
 ```{r, fig.width = 7, fig.height = 5}
 ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
-   stat_poly_line(method = "gls", 
-                  method.args = list(weights = nlme::varPower()), 
-                  se = FALSE) +
+  stat_poly_line(method = "gls", 
+                 method.args = list(weights = nlme::varPower())) +
   stat_fit_fitted(method = "gls", 
                   method.args = list(weights = nlme::varPower()),
                   shape = "cross") +
   stat_fit_deviations(method = "gls", 
                   method.args = list(weights = nlme::varPower()),
-                  linewidth = 0.3) +
+                  linewidth = 0.3,
+                  mapping = aes(colour = after_stat(robustness.weights))) +
   geom_point()
 ```
 
@@ -366,7 +364,8 @@ ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
   geom_hline(yintercept = 0, linetype = "dotted") +
   stat_fit_residuals(method = "gls", 
                      method.args = list(weights = nlme::varPower()),
-                     resid.type = "response") +
+                     resid.type = "response",
+                     mapping = aes(colour = after_stat(robustness.weights))) +
   labs(y = "Response residuals")
 ```
 
@@ -375,7 +374,8 @@ ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
   geom_hline(yintercept = 0, linetype = "dotted") +
   stat_fit_residuals(method = "gls", 
                      method.args = list(weights = nlme::varPower()),
-                     resid.type = "pearson") +
+                     resid.type = "pearson",
+                     mapping = aes(colour = after_stat(robustness.weights))) +
   labs(y = "Pearson residuals")
 ```
 
@@ -384,7 +384,8 @@ ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
   geom_hline(yintercept = 0, linetype = "dotted") +
   stat_fit_residuals(method = "gls", 
                      method.args = list(weights = nlme::varPower()),
-                     resid.type = "normalized") +
+                     resid.type = "normalized",
+                     mapping = aes(colour = after_stat(robustness.weights))) +
   labs(y = "Normalized residuals")
 ```
 
@@ -393,6 +394,8 @@ ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
 Splines are used when a flexible curve is required to efficiently describe a relationship between variables. Splines are composed of segments connected at knots. The simplest possible are linear splines where each segment is a straight line. In higher degree splines the segments are polynomials and conditions are imposed to ensure continuity at knots even for their derivative, to ensure smooth transition at each not. Except for linear splines the fitted parameters for each segment and not locations are too complex to be informative.
 
 Even when model fit equations are not useful or are not generated automatically, other labels constructed by `stat_poly_eq()` remain useful. This stat not only returns ready made labels but also numeric values for parameter estimates.
+
+The approach to splines described here is that using base functions within the model `formula`. This approach makes it possible to use existing model fitting functions such as `lm()` for linear models, to fit models that include terms that describe splines.
 
 ### Linear Splines ('lspline')
 
@@ -404,7 +407,7 @@ print(citation(package = "lspline", auto = TRUE), bibtex = FALSE)
 library(lspline)
 ```
 
-Package 'lspline' provides functions that can be used to fit linear splines with function `lm()`. These functions are called from the model formula, and do not fit the change points where the knots are located. These functions, `lspline()`, `qlspline()` amd `elspline()` can be used directly in the model formula passed to `stat_poly_line()`. They can be used also with `stat_poly_eq()` but the equation label returned is incorrect, with the terms for the different segments displayed as the terms for the powers of a polynomial. Thus, it is necessary to construct in the call to `aes()` the equations for the different segments. The other labels are correctly generated.
+Package 'lspline' provides base functions that can be used to fit linear splines. In this first example function `lm()` is used. Spline base functions are included as terms in the model formula. The functions from package 'lspline' do not fit the change points where the knots are located. Functions, `lspline()`, `qlspline()` amd `elspline()` can be used directly in the model formula passed to `stat_poly_line()`. They can be used also with `stat_poly_eq()` but no equation label is returned. Thus, it is necessary to construct in the call to `aes()` the equations for the different segments. Other character labels are generated normally.
 
 ```{r, fig.width = 7, fig.height = 5}
 cp <- 4.1 # a guess
@@ -520,13 +523,15 @@ ggplot(mpg, aes(displ, hwy)) +
 
 ### Linear Splines ('segmented')
 
-Package 'segmented' has a design that makes it easy to use. The fitted model
-used has a structure consistent with that returned by `lm()`. Any differences
-are smoothed by query/extract functions that are consistent with those for
-`"lm"` objects. As segmented linear models are not polynomials, no `eq.label`
-is automatically generated. Another difference is that the location of change
-points is estimated and returned. Starting from 'ggpmisc' (>= 0.6.3) this
-information is returned by `stat_poly_eq()` and can be used to in user-assembled
+Package 'segmented' has a design that makes it easy to use with 'ggpmisc'. The
+splines are fitted with a special model fitting function. The fitted model used
+has a structure consistent with that returned by `lm()`. Any differences are
+smoothed by query/extract functions that are consistent with those for `"lm"`
+objects. As segmented linear models are not polynomials, no `eq.label` is
+automatically generated. Another difference compared to `lspline()`, described
+above, is that the location of change points is estimated and returned. Starting
+from 'ggpmisc' (>= 0.6.3) the estimates of the change point are returned by
+`stat_poly_eq()` and can be used in user-assembled model-"equation"- and other 
 labels as shown in the examples below.
 
 ```{r}
@@ -649,8 +654,14 @@ print(citation(package = "splines", auto = TRUE), bibtex = FALSE)
 library(splines)
 ```
 
-Standard package 'splines', part of the R distribution, provides functions that can be used to fit splines with function `lm()`. These functions are called from the model formula. Functions, `bs()` amd `ns()` can be used
-directly in the model formula passed to `stat_poly_line()`. They can be used with `stat_poly_eq()` but the equation label returned is incorrect. The other labels are correctly generated.
+Package 'splines', part of the R distribution, provides function `ns()` that can
+be used to fit natural splines. The approach used in 'splines' is the same as
+described above for 'lspline', `ns()` is added as a term in the model `formula`
+passed to model fit functions such as `lm()`. Function `ns()` can be part of the
+model formula passed to `stat_poly_line()` and `stat_poly_eq()`. However,
+`stat_poly_eq()` does not return a ready formatted character label for the model
+equation, while other formatted character labels are generated as for
+polynomials.
 
 ```{r, fig.width = 7, fig.height = 5}
 cp <- 4.1 # a guess
@@ -687,7 +698,8 @@ ggplot(mpg, aes(displ, hwy)) +
   labs(y = "Residuals")
 ```
 
-It is possible to use `rlm()` or `lmrob()` instead of `lm()`.
+It is possible to use `rlm()` or `lmrob()` instead of `lm()`, for resistant and
+robust approaches to the fitting of splines.
 
 ```{r, fig.width = 7, fig.height = 5}
 cp <- 4.1
@@ -739,8 +751,14 @@ print(citation(package = "splines", auto = TRUE), bibtex = FALSE)
 library(splines)
 ```
 
-Standard package 'splines', part of the R distribution, provides functions that can be used to fit splines with function `lm()`. These functions are called from the model formula. Functions, `bs()` amd `ns()` can be used
-directly in the model formula passed to `stat_poly_line()`. They can be used with `stat_poly_eq()` but the equation label returned is incorrect. The other labels are correctly generated.
+Package 'splines', part of the R distribution, provides function `bs()` that can
+be used to fit b-splines. The approach used in 'splines' is the same as
+described above for 'lspline', `bs()` is added as a term in the model `formula`
+passed to model fit functions such as `lm()`. Function `bs()` can be part of the
+model formula passed to `stat_poly_line()` and `stat_poly_eq()`. However,
+`stat_poly_eq()` does not return a ready formatted character label for the model
+equation, while other formatted character labels are generated as for
+polynomials.
 
 ```{r, fig.width = 7, fig.height = 5}
 cp <- 4.1 # a guess
@@ -766,7 +784,8 @@ ggplot(mpg, aes(displ, hwy)) +
   labs(y = "Residuals")
 ```
 
-It is posisble to use `rlm()` or `lmrob()` instead of `lm()`.
+It is possible to use `rlm()` or `lmrob()` instead of `lm()`, for resistant and
+robust approaches to the fitting of splines.
 
 ```{r, fig.width = 7, fig.height = 5}
 cp <- 4.1
@@ -809,11 +828,11 @@ ggplot(mpg, aes(displ, hwy)) +
 
 As mentioned above, layer functions `stat_poly_line()` and `stat_poly_eq()` support the use of several different model fit functions, as long as the estimates and predictions can be extracted. In the case of `stat_poly_eq()`, the model formula embedded in this object must be a polynomial. The variables mapped to _x_ and _y_ aesthetics must be continuous numeric, times or dates. Models are fitted separately to each group and plot panel, similarly as by `ggplot2::stat_smooth()`. 'ggpmisc' provides additional flexibility by delaying some decisions until after the models have been fit to the observations.
 
-**`stat_poly_line()` and `stat_poly_eq()` adjust their behaviour based on the class of the model object returned by the method, not the name of the method passed in the call as argument.** Thus, the class of the model fit object returned can vary in response to data, and thus also be different for different panels or groups in the same plot. 
+**`stat_poly_line()` and `stat_poly_eq()` adjust their behaviour based on the class of the model object returned by the method, not the name of the method passed in the call as argument.** Thus, the class of the model fit object returned can vary in response to data, and thus also be different for different panels or groups in the same plot.
 
 **`stat_poly_eq()` builds the fitted model equation based on the model formula extracted from the model fit object, which can differ from that passed as argument to `formula` when calling the statistic.** Thus, the model formula returned by the function passed as argument for `method` can vary by group and/or panel. As the examples below demonstrate, this approach can be very useful. In addition, `NA` as return value from the function passed as argument to `method` can be used to signal to `stat_poly_line()` and `stat_poly_eq()` that no model has been fit for a group or panel.
 
-Below I use `lm()` and `"lm"` model fit objects in most examples, but the same approaches can be applied to objects of other classes, including `"rlm"`, `"lmrob"`, '"lqs"`, `"lts"`, and `"gls"`.
+Below I use `lm()` and `"lm"` model fit objects in most examples, but the same approaches can be applied to objects of other classes, including `"nls"`, `"onls"`, `"rlm"`, `"lmrob"`, `"lqs"`, `"lts"`, `"gls"`, or any other class for with the usual query functions `coef()`, `predict()`, `summary()`, `AIC()`, `BIC()`, etc., have been implemented. Unavailable query functions result only in the estimates affected being returned as `NA`.
 
 ### Fit or not
 
@@ -853,10 +872,33 @@ ggplot(mpg, aes(displ, hwy)) +
   facet_wrap(~class, ncol = 2)
 ```
 
+Currently, this can be achieved in a simpler way, but the simple examples above serve as an introduction to the more complex examples in the next sections.
+
+```{r, eval=FALSE}
+#| fig.asp: 1.25
+
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  stat_poly_line(n.min = 5) +
+  stat_poly_eq(n.min = 5, 
+               mapping = use_label("eq", "R2"),
+               label.x = "right") +
+  stat_panel_counts(label.x = "left", label.y = "bottom") +
+  theme(legend.position = "bottom") +
+  facet_wrap(~class, ncol = 2)
+```
+
+```{r, eval=FALSE}
+#| fig.asp: 1.25
+
+ggplot(mpg, aes(displ, hwy)) +
+  stat_fit_residuals(n.min = 5) +
+  facet_wrap(~class, ncol = 2)
+```
+
 ### Degree of polynomial
 
 Not fitting a model, is a drastic solution. An alternative is implemented next, to plot the mean when the slope of the linear regression is not significantly different from zero. In the example below instead of using `stats::lm()` as method, we define a different wrapper function that tests for the significance of the slope in linear regression, and if not significant, fits the mean instead. _This works because the model formula is extracted from the fitted model rather than using the argument passed by the user in the call to the statistics._
-
 
 _Fitting different models to different panels is supported._ User-defined method functions are required to return an object that inherits from class `"lm"` or of another supported method. The function is applied per group and panel, and the model `formula` fitted and can differ among them, as it is retrieved from this object to construct the equation label.
 
