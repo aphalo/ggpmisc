@@ -201,13 +201,7 @@ fail_safe_formula <- function(fm,
 #' @param data data.frame containing the variables in the model.
 #' @param formula a formula object. Using aesthetic names \code{x} and \code{y}
 #'   instead of original variable names.
-#' @param method function or character If character, "lm", "rlm", "lmrob",
-#'   "lts", "gls", "ma", "sma", "segreg", "rq" or the name of a model fit
-#'   function are accepted, possibly followed by the fit function's
-#'   \code{method} argument separated by a colon (e.g. \code{"rlm:M"}). If a
-#'   function is different to \code{lm()}, \code{rlm()}, \code{ltsReg()},
-#'   \code{gls()}, \code{ma}, \code{sma}, it must have formal parameters named
-#'   \code{formula}, \code{data}, and \code{weights}. See Details.
+#' @param method,method.name function and character, respectively.
 #' @param method.args named list with additional arguments. Not \code{data}
 #'   or \code{weights} which are always passed through aesthetic mappings.
 #' @param n.min integer Minimum number of distinct values in the explanatory

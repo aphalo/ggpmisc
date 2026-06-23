@@ -1,3 +1,151 @@
+# Internal function with shared code --------------------------------------
+
+#' Fit an lmodel2 model
+#'
+#' Fit models using 'lmoldel2' translating some arguments
+#' to make possible use of consistent arguments across calls to
+#' stats.
+#'
+#' @param data data.frame containing the variables in the model.
+#' @param formula a formula object. Using aesthetic names \code{x} and \code{y}
+#'   instead of original variable names.
+#' @param range.y,range.x character Pass "relative" or "interval" if method
+#'   "RMA" is to be computed.
+#' @param method,method.name function and character, respectively.
+#' @param method.args named list with additional arguments. Not \code{data}
+#'   or \code{weights} which are always passed through aesthetic mappings.
+#' @param n.min integer Minimum number of distinct values in the explanatory
+#'   variable (on the rhs of formula) for fitting to the attempted.
+#' @param fit.seed RNG seed argument passed to
+#'   \code{\link[base:Random]{set.seed}()}. Defaults to \code{NA}, indicating
+#'   that \code{set.seed()} should not be called.
+#' @param orientation character Either "x" or "y" controlling the default for
+#'   \code{formula}. The letter indicates the aesthetic considered the
+#'   explanatory variable in the model fit.
+#' @param nperm integer Number of permutation used to estimate significance.
+#'
+#' @return A list with three named members: \code{fm} the fitted model object
+#'   and \code{method.args}, the arguments passed to the model fit function as a
+#'   nested named list, \code{fit.seed} the seed used and \code{method.name},
+#'   the name of the model fit function passed as arguemnt, which can differ
+#'   from the class of \code{fm}.
+#'
+#' @note Called by \code{\link{stat_ma_line}()},
+#'   and \code{\link{stat_ma_eq}()}.
+#'
+#' @keywords internal
+#'
+fit_lmodel2_internal <- function(data,
+                                 method,
+                                 method.name,
+                                 method.args,
+                                 n.min,
+                                 formula,
+                                 range.y,
+                                 range.x,
+                                 fit.seed,
+                                 orientation,
+                                 nperm) {
+
+  stopifnot(!any(c("formula", "data") %in% names(method.args)))
+
+  if (is.null(data$weight)) {
+    data$weight <- 1
+  }
+
+  if (length(unique(data[[orientation]])) < n.min) {
+    return(list())
+  }
+
+  # If method was specified as a character string, replace with
+  # the corresponding function. Some model fit functions themselves have a
+  # method parameter accepting character strings as argument. We support
+  # these by splitting strings passed as argument at a colon.
+  if (is.character(method)) {
+    if (method %in% c("MA", "SMA", "RMA", "OLS")) {
+      method <- paste("lmodel2", method, sep = ":")
+    }
+    if (method == "lmodel2") {
+      method <- "lmodel2:MA"
+    }
+    method.name <- method
+    method <- strsplit(x = method, split = ":", fixed = TRUE)[[1]]
+    if (length(method) > 1L) {
+      fun.method <- method[2]
+      method <- method[1]
+    } else {
+      fun.method <- character()
+    }
+    if (method == "lmodel2") {
+      method <- lmodel2::lmodel2
+    } else {
+      method <- match.fun(method)
+    }
+  } else if (is.function(method)) {
+    fun.method <- method.args[["method"]]
+    if (!length(fun.method)) {
+      fun.method <- "MA"
+    } else {
+      method.args[["method"]] <- NULL
+    }
+    if (is.name(quote(method))) {
+      method.name <- as.character(quote(method))
+    } else {
+      method.name <- "function"
+    }
+    method.name <- paste(method.name, fun.method, sep = ":")
+  }
+
+  if (! fun.method %in% c("MA", "SMA", "RMA", "OLS")) {
+    warning("Method \"", method, "\" unknown, using \"MA\" instead.")
+    method <- "MA"
+  }
+
+  if (fun.method == "RMA") {
+    fit.args <-
+      list(formula = formula,
+           data = data,
+           range.y = range.y,
+           range.x = range.x,
+           nperm = nperm
+      )
+  } else {
+    fit.args <-
+      list(formula = formula,
+           data = data,
+           nperm = nperm
+      )
+  }
+
+  if (!grepl("^lmodel2", method.name)) {
+    fit.args <- c(fit.args, method.args)
+  }
+
+  if (!is.na(fit.seed)) {
+    set.seed(fit.seed)
+  }
+  # lmodel2 issues a warning that is irrelevant here
+  # so we silence it selectively
+  withCallingHandlers({
+    fm <- do.call(what = method, args = fit.args)
+  }, message = function(w) {
+    if (grepl("RMA was not requested", conditionMessage(w), fixed = TRUE)) {
+      invokeRestart("muffleMessage")
+    }
+  })
+
+  if (!length(fm) || (is.atomic(fm) && is.na(fm))) {
+    return(data.frame())
+  } else if (!inherits(fm, "lmodel2")) {
+    stop("Method \"", method.name, "\" did not return a \"lmodel2\" object")
+  }
+  list(fm = fm,
+       method.name = method.name,
+       fun.method = fun.method, # must get rid of this
+       method.args = fit.args,
+       fit.seed = fit.seed)
+}
+
 #' Extract Model Coefficients
 #'
 #' \code{coef} is a generic function which extracts model coefficients from
