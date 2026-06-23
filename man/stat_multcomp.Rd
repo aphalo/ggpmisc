@@ -10,7 +10,7 @@ stat_multcomp(
   geom = NULL,
   position = "identity",
   ...,
-  orientation = "x",
+  orientation = NA,
   formula = y ~ factor(x),
   method = "lm",
   method.args = list(),
@@ -52,7 +52,7 @@ can include aesthetics whose values you want to set, not map. See
 
 \item{orientation}{character Either "x" or "y" controlling the default for
 \code{formula}. \strong{Support for \code{orientation} is not yet
-implemented but is planned.}}
+implemented .}}
 
 \item{formula}{a formula object. Using aesthetic names \code{x} and \code{y}
 instead of original variable names. The rhs must include a call to
@@ -383,6 +383,14 @@ p1 +
 p1 +
   stat_multcomp(label.type = "letters",
                 mc.critical.p.value = 0.01)
+
+## Flipping is currently usable only with "letters" and "LETTERS"
+p2 <- ggplot(mpg, aes(hwy, factor(cyl))) +
+  geom_boxplot(width = 0.33)
+
+p2 +
+  stat_multcomp(label.type = "letters") +
+  scale_y_discrete(expand = expansion(add = c(1.2, 0.5)))
 
 # Inspecting the returned data using geom_debug_panel()
 # This provides a quick way of finding out the names of the variables that

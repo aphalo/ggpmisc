@@ -61,7 +61,17 @@ test_that("multcomp_noload", {
 
 library(ggpmisc)
 
-
+test_that("flipping works", {
+  vdiffr::expect_doppelganger("smltc_letters_flipped",
+                              ggplot(my.data, aes(y2, group)) +
+                                stat_boxplot() +
+                                stat_multcomp(contrasts = "Tukey",
+                                              label.type = "letters") +
+                                scale_y_discrete(expand = expansion(add = c(1.2, 0.5))),
+                              variant = snap_version
+  )
+}
+          )
 test_that("smltc_contrast_type", {
   set.seed(4321)
 

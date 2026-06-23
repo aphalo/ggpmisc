@@ -83,7 +83,7 @@
 #'   "markdown" or "numeric". The default depends on the \code{geom} argument.
 #' @param orientation character Either "x" or "y" controlling the default for
 #'   \code{formula}. \strong{Support for \code{orientation} is not yet
-#'   implemented but is planned.}
+#'   implemented .}
 #' @param parse logical Passed to the geom. If \code{TRUE}, the labels will be
 #'   parsed into expressions and displayed as described in \code{?plotmath}.
 #'   Default is \code{TRUE} if \code{output.type = "expression"} and
@@ -315,6 +315,14 @@
 #'   stat_multcomp(label.type = "letters",
 #'                 mc.critical.p.value = 0.01)
 #'
+#' ## Flipping is currently usable only with "letters" and "LETTERS"
+#' p2 <- ggplot(mpg, aes(hwy, factor(cyl))) +
+#'   geom_boxplot(width = 0.33)
+#'
+#' p2 +
+#'   stat_multcomp(label.type = "letters") +
+#'   scale_y_discrete(expand = expansion(add = c(1.2, 0.5)))
+#'
 #' # Inspecting the returned data using geom_debug_panel()
 #' # This provides a quick way of finding out the names of the variables that
 #' # are available for mapping to aesthetics with after_stat().
@@ -347,7 +355,7 @@ stat_multcomp <- function(mapping = NULL,
                           geom = NULL,
                           position = "identity",
                           ...,
-                          orientation = "x",
+                          orientation = NA,
                           formula = y ~ factor(x),
                           method = "lm",
                           method.args = list(),
@@ -368,7 +376,6 @@ stat_multcomp <- function(mapping = NULL,
                           parse = NULL,
                           show.legend = FALSE,
                           inherit.aes = TRUE) {
-  stopifnot("Flipping with 'orientation = y' is not supported" = orientation == "x")
   if (is.character(contrasts)) {
     stopifnot("Character argument to 'contrasts' should be \"Tukey\" or \"Dunnet\"" =
                 all(contrasts %in% c("Tukey", "Dunnet")))
@@ -405,6 +412,28 @@ stat_multcomp <- function(mapping = NULL,
     parse <- output.type == "expression"
   }
 
+  stopifnot("Args 'formula' and/or 'data' in 'method.args'" =
+              !any(c("formula", "data") %in% names(method.args)))
+
+  if (is.character(method)) {
+    method <- trimws(method, which = "both")
+    method.name <- method
+  } else if (is.function(method)) {
+    method.name <- deparse(substitute(method))
+    if (grepl("^function[ ]*[(]", method.name[1])) {
+      method.name <- "function"
+    }
+  } else {
+    method.name <- "missing"
+  }
+
+  # temp <- guess_orientation(orientation = orientation,
+  #                           formula = formula,
+  #                           default.formula = y ~ factor(x),
+  #                           formula.on.x = FALSE)
+  # orientation <- temp[["orientation"]]
+  # formula <-  temp[["formula"]]
+  #
   ggplot2::layer(
     data = data,
     mapping = mapping,
@@ -416,6 +445,7 @@ stat_multcomp <- function(mapping = NULL,
     params =
       rlang::list2(formula = formula,
                    method = method,
+                   method.name = method.name,
                    method.args = method.args,
                    contrasts = contrasts,
                    p.adjust.method = p.adjust.method,
@@ -447,7 +477,8 @@ stat_multcomp <- function(mapping = NULL,
 multcomp_compute_panel_fun <-
   function(data,
            scales,
-           method = "lm",
+           method,
+           method.name,
            method.args = list(),
            contrasts = "Tukey",
            p.adjust.method = "holm",
@@ -465,8 +496,8 @@ multcomp_compute_panel_fun <-
            vstep = NULL,
            output.type = expression(),
            na.rm = FALSE,
+           flipped_aes = NA,
            orientation = "x") {
-    force(data)
 
     rlang::check_installed(c("multcomp", "multcompView"),
                            reason = "to use stat_multcomp()")
@@ -480,31 +511,20 @@ multcomp_compute_panel_fun <-
       decimal.mark <- "."
     }
 
-    stopifnot(!any(c("formula", "data") %in% names(method.args)))
-    # we guess formula from orientation
-    if (is.null(formula)) {
-      if (is.na(orientation) || orientation == "x") {
-        formula = y ~ factor(x)
-      } else if (orientation == "y") {
-        formula = x ~ factor(y)
-      }
-    }
-    # we guess orientation from formula
+    data <- ggplot2::flip_data(data, flipped_aes)
     if (is.na(orientation)) {
-      orientation <- unname(c(x = "y", y = "x")[as.character(formula)[2]])
-    }
-
-    if (orientation == "x") {
-      if (length(unique(data[["x"]])) < 2) {
-        return(data.frame())
-      }
-    } else if (orientation == "y") {
-      if (length(unique(data[["y"]])) < 2) {
-        return(data.frame())
+      if (flipped_aes) {
+        orientation <- "y"
+      } else {
+        orientation <- "x"
       }
     }
 
-    num.levels <- length(unique(data[[orientation]]))
+    if (length(unique(data[["x"]])) < 2) {
+      return(data.frame())
+    }
+
+    num.levels <- length(unique(data[["x"]]))
     if (length(contrasts) == 1 &&
             (contrasts == "Tukey" && num.levels > 5 && label.type == "bars")) {
       warning("Tukey contrasts with bars support at most five groups, not ",
@@ -557,71 +577,32 @@ multcomp_compute_panel_fun <-
       group.idx <- NA_integer_
     }
 
-    # If method was specified as a character string, replace with
-    # the corresponding function. Some model fit functions themselves have a
-    # method parameter accepting character strings as argument. We support
-    # these by splitting strings passed as argument at a colon.
-    if (is.character(method)) {
-      method <- switch(method,
-                       lm = "lm:qr",
-                       aov = "aov",
-                       rlm = "rlm:M",
-                       method)
-      method.name <- method
-      method <- strsplit(x = method, split = ":", fixed = TRUE)[[1]]
-      if (length(method) > 1L) {
-        fun.method <- method[2]
-        method <- method[1]
-      } else {
-        fun.method <- character()
-      }
-      method <- switch(method,
-                       lm = stats::lm,
-                       aov = stats::aov,
-                       rlm =
-                         {rlang::check_installed("MASS",
-                                                 reason = "to use method \"rlm\"");
-                           MASS::rlm},
-                       match.fun(method))
-    } else if (is.function(method)) {
-      fun.method <- character()
-      if (is.name(quote(method))) {
-        method.name <- as.character(quote(method))
-      } else {
-        method.name <- "function"
-      }
+    temp.ls <- fit_models_internal(data = data,
+                                   method = method,
+                                   method.name = method.name,
+                                   method.args = method.args,
+                                   n.min = 2,
+                                   formula = formula,
+                                   fit.seed = fit.seed,
+                                   orientation = "x") # data already flipped
+    if (!length(temp.ls) || !length(temp.ls[["fm"]])) {
+      # An empty data.frame results in no plot layer when passed to geoms
+      return(data.frame())
     }
+    fm <- temp.ls[["fm"]]
+    method.name <- temp.ls[["method.name"]] # argument or default which varies
+    method.args <- temp.ls[["method.args"]] # argument or default which varies
 
-    fun.args <- list(quote(formula),
-                     data = quote(data),
-                     weights = data[["weight"]])
-    fun.args <- c(fun.args, method.args)
-    if (length(fun.method)) {
-      fun.args[["method"]] <- fun.method
+    fm.class <- class(fm)
+    if (fm.class[1] == "aov") {
+      fm.class <- fm.class[-1]
+      class(fm) <- fm.class
     }
-
-    if (!is.na(fit.seed)) {
-      set.seed(fit.seed)
-    }
-    # some model fit functions can contain code with partial matching of names!
-    # so we silence selectively only these warnings
-    withCallingHandlers({
-      fm <- do.call(method, args = fun.args)
-      fm.class <- class(fm)
-      if (fm.class[1] == "aov") {
-        fm.class <- fm.class[-1]
-        class(fm) <- fm.class
-      }
-      fm.summary <- summary(fm)
-    }, warning = function(w) {
-      if (startsWith(conditionMessage(w), "partial match of 'coef'") ||
-          startsWith(conditionMessage(w), "partial argument match of 'contrasts'"))
-        invokeRestart("muffleWarning")
-    })
+    fm.summary <- summary(fm)
 
     # allow model formula selection by the model fit method
     # extract formula from fitted model if possible, but fall back on argument if needed
-    formula.ls <- fail_safe_formula(fm, fun.args, verbose = TRUE)
+    formula.ls <- fail_safe_formula(fm, method.args, verbose = TRUE)
 
     if ("fstatistic" %in% names(fm.summary)) {
       f.value <- fm.summary[["fstatistic"]]["value"]
@@ -868,7 +849,12 @@ multcomp_compute_panel_fun <-
       }
     }
 
-    y.range <- scales$y$range$range
+
+    if (orientation == "x") {
+      obs.range <- scales$y$range$range
+    } else {
+      obs.range <- scales$x$range$range
+    }
 
     if (is.character(label.y)) {
       # we need to use scale limits as observations are not necessarily plotted
@@ -878,22 +864,22 @@ multcomp_compute_panel_fun <-
       }
       if (label.y == "top") {
         if (vstep == 0) {
-          z[["y"]] <- y.range[2] + (y.range[2] - y.range[1]) * 0.08
+          z[["y"]] <- obs.range[2] + (obs.range[2] - obs.range[1]) * 0.08
         } else {
-          z[["y"]] <- y.range[2] + (y.range[2] - y.range[1]) * vstep * seq_along(z[["x"]])
+          z[["y"]] <- obs.range[2] + (obs.range[2] - obs.range[1]) * vstep * seq_along(z[["x"]])
         }
       } else {
         if (vstep == 0) {
-          z[["y"]] <- y.range[1] - (y.range[2] - y.range[1]) * 0.08
+          z[["y"]] <- obs.range[1] - (obs.range[2] - obs.range[1]) * 0.08
         } else {
-          z[["y"]] <- y.range[1] - (y.range[2] - y.range[1]) * vstep * seq_along(z[["x"]])
+          z[["y"]] <- obs.range[1] - (obs.range[2] - obs.range[1]) * vstep * seq_along(z[["x"]])
         }
       }
     } else if (is.numeric(label.y)) {
       # manual locations
       if (label.type == "bars" && length(label.y) == 1) {
-        z[["y"]] <- label.y + (y.range[2] - y.range[1]) * vstep *
-          (seq_along(z[["x"]]) - 1) * sign(label.y - 0.5 * (y.range[2] + y.range[1]))
+        z[["y"]] <- label.y + (obs.range[2] - obs.range[1]) * vstep *
+          (seq_along(z[["x"]]) - 1) * sign(label.y - 0.5 * (obs.range[2] + obs.range[1]))
       } else {
         z[["y"]] <- rep_len(label.y, nrow(z))
       }
@@ -903,6 +889,9 @@ multcomp_compute_panel_fun <-
       # The data frame returned by a panel function must have a "group" column
       z[["group"]] <- -1L
     }
+
+    z$flipped_aes <- flipped_aes
+    z <- ggplot2::flip_data(z, flipped_aes)
 
     show_colnames(z, stat.name = "stat_multcomp")
 
@@ -916,12 +905,23 @@ multcomp_compute_panel_fun <-
 StatMultcomp <-
   ggplot2::ggproto("StatMultcomp", ggplot2::Stat,
                    extra_params = c("na.rm", "parse"),
+                   setup_params = function(data, params) {
+                     params[["flipped_aes"]] <-
+                       ggplot2::has_flipped_aes(data = data,
+                                                params = params,
+                                                main_is_orthogonal = TRUE,
+                                                group_has_equal = TRUE,
+                                                ambiguous = FALSE)
+                     params
+                   },
                    compute_panel = multcomp_compute_panel_fun,
                    default_aes = ggplot2::aes(xmin = after_stat(x.left.tip),
                                               xmax = after_stat(x.right.tip),
                                               label = after_stat(default.label),
                                               weight = 1,
                                               size = 2.5,
+                                              # angle = ifelse(orientation == "y",
+                                              #                -90, 0),
                                               hjust = after_stat(just)),
                    dropped_aes = "weight",
                    required_aes = c("x", "y"),
