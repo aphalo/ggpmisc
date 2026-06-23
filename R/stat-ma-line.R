@@ -154,88 +154,25 @@ ma_line_compute_group_fun <-
       xseq <- seq(from = xrange[1], to = xrange[2], length.out = n)
     }
 
-    # If method was specified as a character string, replace with
-    # the corresponding function. Some model fit functions themselves have a
-    # method parameter accepting character strings as argument. We support
-    # these by splitting strings passed as argument at a colon.
-    if (is.character(method)) {
-      if (method %in% c("MA", "SMA", "RMA", "OLS")) {
-        method <- paste("lmodel2", method, sep = ":")
-      }
-      if (method == "lmodel2") {
-        method <- "lmodel2:MA"
-      }
-      method.name <- method
-      method <- strsplit(x = method, split = ":", fixed = TRUE)[[1]]
-      if (length(method) > 1L) {
-        fun.method <- method[2]
-        method <- method[1]
-      } else {
-        fun.method <- character()
-      }
-      if (method == "lmodel2") {
-        method <- lmodel2::lmodel2
-      } else {
-        method <- match.fun(method)
-      }
-    } else if (is.function(method)) {
-      fun.method <- method.args[["method"]]
-      if (!length(fun.method)) {
-        fun.method <- "MA"
-      } else {
-        method.args[["method"]] <- NULL
-      }
-      if (is.name(quote(method))) {
-        method.name <- as.character(quote(method))
-      } else {
-        method.name <- "function"
-      }
-      method.name <- paste(method.name, fun.method, sep = ":")
-    }
+    temp.ls <- fit_lmodel2_internal(data = data,
+                                    method = method,
+                                    method.args = method.args,
+                                    n.min = n.min,
+                                    formula = formula,
+                                    range.y = range.y,
+                                    range.x = range.x,
+                                    fit.seed = fit.seed,
+                                    orientation = orientation,
+                                    nperm = nperm)
 
-    if (! fun.method %in% c("MA", "SMA", "RMA", "OLS")) {
-      warning("Method \"", method, "\" unknown, using \"MA\" instead.")
-      method <- "MA"
-    }
-
-    if (fun.method == "RMA") {
-      fit.args <-
-        list(formula = formula,
-             data = data,
-             range.y = range.y,
-             range.x = range.x,
-             nperm = nperm
-        )
-    } else {
-      fit.args <-
-        list(formula = formula,
-             data = data,
-             nperm = nperm
-        )
-    }
-
-    if (!grepl("^lmodel2", method.name)) {
-      fit.args <- c(fit.args, method.args)
-    }
-
-    if (!is.na(fit.seed)) {
-      set.seed(fit.seed)
-    }
-    # lmodel2 issues a warning that is irrelevant here
-    # so we silence it selectively
-    withCallingHandlers({
-      fm <- do.call(what = method, args = fit.args)
-    }, message = function(w) {
-      if (grepl("RMA was not requested", conditionMessage(w), fixed = TRUE)) {
-        invokeRestart("muffleMessage")
-      }
-    })
-
-    if (!length(fm) || (is.atomic(fm) && is.na(fm))) {
+    if (!length(temp.ls) || !length(temp.ls[["fm"]])) {
+      # An empty data.frame results in no plot layer when passed to geoms
       return(data.frame())
-    } else if (!inherits(fm, "lmodel2")) {
-      stop("Method \"", method.name, "\" did not return a \"lmodel2\" object")
     }
+    fm <- temp.ls[["fm"]]
+    method.name <- temp.ls[["method.name"]] # argument or default which varies
+    fun.method <- temp.ls[["fun.method"]]
+    method.args <- temp.ls[["method.args"]] # argument or default which varies
 
     newdata <- data.frame(x = xseq)
 
