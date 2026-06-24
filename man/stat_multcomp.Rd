@@ -22,7 +22,7 @@ stat_multcomp(
   mc.critical.p.value = 0.05,
   small.p = getOption("ggpmisc.small.p", default = FALSE),
   adj.method.tag = 4,
-  p.digits = 3,
+  p.digits = NULL,
   label.type = "bars",
   label.y = NULL,
   vstep = NULL,

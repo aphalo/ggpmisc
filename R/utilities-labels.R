@@ -41,7 +41,10 @@ sprintf_dm <- function(fmt,
 #' @param value numeric The value of the estimate.
 #' @param digits integer Number of digits to which numeric values are formatted.
 #' @param format character One of "e", "f" or "g" for exponential, fixed, or
-#' significant digits formatting.
+#'   significant digits formatting.
+#' @param drop.trailing logical If \code{drop.trailing = TRUE} trailing zeros
+#'   are dropped with \code{format = "f"} by not adding \code{#} to the format
+#'   string.
 #' @param output.type character One of "expression", "latex", "tex", "text",
 #'   "tikz", "markdown", "marquee".
 #'
@@ -59,12 +62,17 @@ sprintf_dm <- function(fmt,
 value2char <- function(value,
                        digits = Inf,
                        format = "g",
+                       drop.trailing = FALSE,
                        output.type = "expression",
                        decimal.mark = getOption("OutDec", default = ".")) {
 
   stopifnot("Bad 'format' argument" = format %in% c("f", "g", "e"))
 
-  format <- paste("%#.*", format, sep = "")
+  if (drop.trailing) {
+    format <- paste("%.*", format, sep = "")
+  } else {
+    format <- paste("%#.*", format, sep = "")
+  }
   protected.format <- paste("\"", format, "\"", sep = "")
 
   if (output.type == "expression") {
@@ -115,6 +123,8 @@ value2char <- function(value,
 #' @param digits integer Number of digits to which numeric values are formatetd.
 #' @param fixed logical Interpret \code{digits} as indicating a number of
 #'   digits after the decimal mark or as the number of significant digits.
+#' @param drop.trailing logical If both \code{drop.trailing = TRUE} and
+#'   \code{fixed = TRUE} trailing zeros are dropped.
 #' @param output.type character One of "expression", "latex", "tex", "text",
 #'   "tikz", "markdown". "marquee".
 #' @param decimal.mark character Defaults to the value of R option
@@ -150,6 +160,7 @@ plain_label <- function(value,
                         value.name,
                         digits = 3,
                         fixed = FALSE,
+                        drop.trailing = FALSE,
                         output.type = "expression",
                         decimal.mark = getOption("OutDec", default = ".")) {
 
@@ -165,6 +176,7 @@ plain_label <- function(value,
     value.char <- sapply(value,
                          value2char,
                          digits = digits,
+                         drop.trailing = drop.trailing,
                          output.type = output.type,
                          decimal.mark = decimal.mark,
                          format = ifelse(fixed, "f", "g")
@@ -208,6 +220,7 @@ italic_label <- function(value,
                          value.name,
                          digits = 3,
                          fixed = FALSE,
+                         drop.trailing = FALSE,
                          output.type = "expression",
                          decimal.mark = getOption("OutDec", default = ".")) {
 
@@ -226,6 +239,7 @@ italic_label <- function(value,
       value.char <- sapply(value,
                            value2char,
                            digits = digits,
+                           drop.trailing = drop.trailing,
                            output.type = output.type,
                            decimal.mark = decimal.mark,
                            format = ifelse(fixed, "f", "g")
@@ -277,6 +291,7 @@ bold_label <- function(value,
                        value.name,
                        digits = 3,
                        fixed = FALSE,
+                       drop.trailing = FALSE,
                        output.type = "expression",
                        decimal.mark = getOption("OutDec", default = ".")) {
 
@@ -291,6 +306,7 @@ bold_label <- function(value,
   } else {
     value.char <- value2char(value = value,
                            digits = digits,
+                           drop.trailing = drop.trailing,
                            output.type = output.type,
                            decimal.mark = decimal.mark,
                            format = ifelse(fixed, "f", "g"))
@@ -354,6 +370,7 @@ p_value_label <- function(value,
                           superscript = "",
                           digits = 4,
                           fixed = NULL,
+                          drop.trailing = FALSE,
                           output.type = "expression",
                           decimal.mark = getOption("OutDec", default = ".")) {
 
@@ -403,6 +420,7 @@ p_value_label <- function(value,
 
   p.value.char <- value2char(value = p.value,
                              digits = digits,
+                             drop.trailing = drop.trailing,
                              output.type = output.type,
                              decimal.mark = decimal.mark,
                              format = format)
@@ -504,6 +522,7 @@ f_value_label <- function(value,
                           df2 = NULL,
                           digits = 4,
                           fixed = FALSE,
+                          drop.trailing = FALSE,
                           output.type = "expression",
                           decimal.mark = getOption("OutDec", default = ".")) {
 
@@ -535,6 +554,7 @@ f_value_label <- function(value,
 
   f.value.char <- value2char(value = f.value,
                              digits = digits,
+                             drop.trailing = drop.trailing,
                              output.type = output.type,
                              decimal.mark = decimal.mark,
                              format = ifelse(fixed, "f", "g"))
@@ -587,6 +607,7 @@ t_value_label <- function(value,
                           df = NULL,
                           digits = 4,
                           fixed = FALSE,
+                          drop.trailing = FALSE,
                           output.type = "expression",
                           decimal.mark = getOption("OutDec", default = ".")) {
 
@@ -609,6 +630,7 @@ t_value_label <- function(value,
 
   t.value.char <- value2char(value = t.value,
                              digits = digits,
+                             drop.trailing = drop.trailing,
                              output.type = output.type,
                              decimal.mark = decimal.mark,
                              format = ifelse(fixed, "f", "g"))
@@ -645,6 +667,7 @@ t_value_label <- function(value,
 z_value_label <- function(value,
                           digits = 4,
                           fixed = FALSE,
+                          drop.trailing = FALSE,
                           output.type = "expression",
                           decimal.mark = getOption("OutDec", default = ".")) {
 
@@ -663,6 +686,7 @@ z_value_label <- function(value,
 S_value_label <- function(value,
                           digits = 4,
                           fixed = FALSE,
+                          drop.trailing = FALSE,
                           output.type = "expression",
                           decimal.mark = getOption("OutDec", default = ".")) {
 
@@ -681,6 +705,7 @@ S_value_label <- function(value,
 mean_value_label <- function(value,
                              digits = 4,
                              fixed = FALSE,
+                             drop.trailing = FALSE,
                              output.type = "expression",
                              decimal.mark = getOption("OutDec", default = ".")) {
 
@@ -707,10 +732,11 @@ mean_value_label <- function(value,
 #' @export
 #'
 var_value_label <- function(value,
-                             digits = 4,
-                             fixed = FALSE,
-                             output.type = "expression",
-                             decimal.mark = getOption("OutDec", default = ".")) {
+                            digits = 4,
+                            fixed = FALSE,
+                            drop.trailing = FALSE,
+                            output.type = "expression",
+                            decimal.mark = getOption("OutDec", default = ".")) {
 
   value.name <- if (output.type == "expression") {
     "sigma^2"
@@ -739,6 +765,7 @@ var_value_label <- function(value,
 sd_value_label <- function(value,
                            digits = 4,
                            fixed = FALSE,
+                           drop.trailing = FALSE,
                            output.type = "expression",
                            decimal.mark = getOption("OutDec", default = ".")) {
 
@@ -769,6 +796,7 @@ sd_value_label <- function(value,
 se_value_label <- function(value,
                            digits = 4,
                            fixed = FALSE,
+                           drop.trailing = FALSE,
                            output.type = "expression",
                            decimal.mark = getOption("OutDec", default = ".")) {
 
@@ -802,6 +830,7 @@ r_label <- function(value,
                     small.r = getOption("ggpmisc.small.r", default = FALSE),
                     digits = 3,
                     fixed = TRUE,
+                    drop.trailing = FALSE,
                     output.type = "expression",
                     decimal.mark = getOption("OutDec", default = ".")) {
 
@@ -834,6 +863,7 @@ r_label <- function(value,
 
   r.value.char <- value2char(value = r.value,
                              digits = digits,
+                             drop.trailing = drop.trailing,
                              output.type = output.type,
                              decimal.mark = decimal.mark,
                              format = format)
@@ -933,6 +963,7 @@ rr_label <- function(value,
                      digits = 3,
                      pc.out = FALSE,
                      fixed = TRUE,
+                     drop.trailing = FALSE,
                      output.type = "expression",
                      decimal.mark = getOption("OutDec", default = ".")) {
 
@@ -964,6 +995,7 @@ rr_label <- function(value,
 
   rr.value.char <- value2char(value = rr.value,
                               digits = digits,
+                              drop.trailing = drop.trailing,
                               output.type = output.type,
                               decimal.mark = decimal.mark,
                               format = format)
@@ -1068,6 +1100,7 @@ adj_rr_label <- function(value,
                          digits = 3,
                          pc.out = FALSE,
                          fixed = TRUE,
+                         drop.trailing = FALSE,
                          output.type = "expression",
                          decimal.mark = getOption("OutDec", default = ".")) {
 
@@ -1099,6 +1132,7 @@ adj_rr_label <- function(value,
 
   adj.rr.value.char <- value2char(value = adj.rr.value,
                                   digits = digits,
+                                  drop.trailing = drop.trailing,
                                   output.type = output.type,
                                   decimal.mark = decimal.mark,
                                   format = format)
@@ -1199,6 +1233,7 @@ rr_ci_label <- function(value,
                         range.sep = NULL,
                         digits = 2,
                         fixed = TRUE,
+                        drop.trailing = FALSE,
                         output.type = "expression",
                         decimal.mark = getOption("OutDec", default = ".")) {
 
@@ -1240,11 +1275,13 @@ rr_ci_label <- function(value,
   rr.ci.char <- character(2)
   rr.ci.char[1] <- value2char(value = rr.ci.value[1],
                               digits = digits,
+                              drop.trailing = drop.trailing,
                               output.type = "text",
                               decimal.mark = decimal.mark,
                               format = ifelse(fixed, "f", "g"))
   rr.ci.char[2] <- value2char(value = rr.ci.value[2],
                               digits = digits,
+                              drop.trailing = drop.trailing,
                               output.type = "text",
                               decimal.mark = decimal.mark,
                               format = ifelse(fixed, "f", "g"))
@@ -1292,6 +1329,7 @@ r_ci_label <- function(value,
                        range.sep = NULL,
                        digits = 2,
                        fixed = TRUE,
+                       drop.trailing = FALSE,
                        output.type = "expression",
                        decimal.mark = getOption("OutDec", default = ".")) {
 
@@ -1331,11 +1369,13 @@ r_ci_label <- function(value,
   r.ci.char <- character(2)
   r.ci.char[1] <- value2char(value = r.ci.value[1],
                              digits = digits,
+                             drop.trailing = drop.trailing,
                              output.type = "text",
                              decimal.mark = decimal.mark,
                              format = ifelse(fixed, "f", "g"))
   r.ci.char[2] <- value2char(value = r.ci.value[2],
                              digits = digits,
+                             drop.trailing = drop.trailing,
                              output.type = "text",
                              decimal.mark = decimal.mark,
                              format = ifelse(fixed, "f", "g"))

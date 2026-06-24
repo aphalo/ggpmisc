@@ -344,7 +344,7 @@ stat_multcomp <- function(mapping = NULL,
                           mc.critical.p.value = 0.05,
                           small.p = getOption("ggpmisc.small.p", default = FALSE),
                           adj.method.tag = 4,
-                          p.digits = 3,
+                          p.digits = NULL,
                           label.type = "bars",
                           label.y = NULL,
                           vstep = NULL,
@@ -353,6 +353,10 @@ stat_multcomp <- function(mapping = NULL,
                           parse = NULL,
                           show.legend = FALSE,
                           inherit.aes = TRUE) {
+  if (!label.type %in% c("bars", "letters", "LETTERS", "numeric")) {
+    stop("Unrecognized 'label.type = ", label.type, "'.")
+  }
+
   if (is.character(contrasts)) {
     stopifnot("Character argument to 'contrasts' should be \"Tukey\" or \"Dunnet\"" =
                 all(contrasts %in% c("Tukey", "Dunnet")))
@@ -360,16 +364,21 @@ stat_multcomp <- function(mapping = NULL,
     # same default as p.adjust()
     p.adjust.method <- "holm"
   }
-  force(geom)
+
   # dynamic defaults
   if (is.null(geom)) {
     if (label.type == "bars") {
       geom <- "label_pairwise" #"text_pairwise"
     } else if (label.type %in% c("letters", "LETTERS", "numeric")) {
       geom <- "text" # "label"
-    } else {
-      stop("Unrecognized 'label.type = ", label.type, "'.")
     }
+  }
+
+  if (is.null(p.digits)) {
+    p.crit.digits <- NA # drop trailing zeros
+    p.digits <- 3
+  } else {
+    p.crit.digits <- p.digits
   }
 
   if (label.type %in% c("letters", "LETTERS") &&
@@ -423,6 +432,7 @@ stat_multcomp <- function(mapping = NULL,
                    small.p = small.p,
                    adj.method.tag = adj.method.tag,
                    p.digits = p.digits,
+                   p.crit.digits = p.crit.digits,
                    label.type = label.type,
                    label.y = label.y,
                    fm.cutoff.p.value = fm.cutoff.p.value,
@@ -458,6 +468,7 @@ multcomp_compute_panel_fun <-
            adj.method.tag = 4,
            fit.seed = NA,
            p.digits = 3,
+           p.crit.digits = NA,
            label.type = "bars",
            fm.cutoff.p.value = 1,
            mc.cutoff.p.value = 1,
@@ -776,13 +787,26 @@ multcomp_compute_panel_fun <-
                                       reversed = TRUE)[["Letters"]]
 
       if (adj.method.legend) {
-        p.crit.label <- p_value_label(value = mc.critical.p.value,
-                                      subscript = adj.label,
-                                      superscript = "crit",
-                                      small.p = small.p,
-                                      digits = p.digits,
-                                      output.type = output.type,
-                                      decimal.mark = decimal.mark)
+        if (is.na(p.crit.digits)) {
+          p.crit.label <- p_value_label(value = mc.critical.p.value,
+                                        subscript = adj.label,
+                                        superscript = "crit",
+                                        small.p = small.p,
+                                        digits = ifelse(mc.critical.p.value > 1e-12,
+                                                        3, Inf),
+                                        fixed = FALSE,
+                                        drop.trailing = TRUE,
+                                        output.type = output.type,
+                                        decimal.mark = decimal.mark)
+        } else {
+          p.crit.label <- p_value_label(value = mc.critical.p.value,
+                                        subscript = adj.label,
+                                        superscript = "crit",
+                                        small.p = small.p,
+                                        digits = p.crit.digits,
+                                        output.type = output.type,
+                                        decimal.mark = decimal.mark)
+        }
         z <- tibble::tibble(x = c(0.1, 1:num.levels),
                             x.left.tip = NA_real_,
                             x.right.tip = NA_real_,

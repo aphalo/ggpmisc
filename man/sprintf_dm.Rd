@@ -11,6 +11,7 @@ value2char(
   value,
   digits = Inf,
   format = "g",
+  drop.trailing = FALSE,
   output.type = "expression",
   decimal.mark = getOption("OutDec", default = ".")
 )
@@ -29,6 +30,8 @@ attempted and the value returned by \code{sprintf()} is returned as is.}
 
 \item{format}{character One of "e", "f" or "g" for exponential, fixed, or
 significant digits formatting.}
+
+\item{drop.trailing}{logical If \code{TRUE} trailing zeros are dropped.}
 
 \item{output.type}{character One of "expression", "latex", "tex", "text",
 "tikz", "markdown", "marquee".}

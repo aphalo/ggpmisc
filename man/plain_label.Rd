@@ -25,6 +25,7 @@ plain_label(
   value.name,
   digits = 3,
   fixed = FALSE,
+  drop.trailing = FALSE,
   output.type = "expression",
   decimal.mark = getOption("OutDec", default = ".")
 )
@@ -34,6 +35,7 @@ italic_label(
   value.name,
   digits = 3,
   fixed = FALSE,
+  drop.trailing = FALSE,
   output.type = "expression",
   decimal.mark = getOption("OutDec", default = ".")
 )
@@ -43,6 +45,7 @@ bold_label(
   value.name,
   digits = 3,
   fixed = FALSE,
+  drop.trailing = FALSE,
   output.type = "expression",
   decimal.mark = getOption("OutDec", default = ".")
 )
@@ -54,6 +57,7 @@ p_value_label(
   superscript = "",
   digits = 4,
   fixed = NULL,
+  drop.trailing = FALSE,
   output.type = "expression",
   decimal.mark = getOption("OutDec", default = ".")
 )
@@ -64,6 +68,7 @@ f_value_label(
   df2 = NULL,
   digits = 4,
   fixed = FALSE,
+  drop.trailing = FALSE,
   output.type = "expression",
   decimal.mark = getOption("OutDec", default = ".")
 )
@@ -73,6 +78,7 @@ t_value_label(
   df = NULL,
   digits = 4,
   fixed = FALSE,
+  drop.trailing = FALSE,
   output.type = "expression",
   decimal.mark = getOption("OutDec", default = ".")
 )
@@ -81,6 +87,7 @@ z_value_label(
   value,
   digits = 4,
   fixed = FALSE,
+  drop.trailing = FALSE,
   output.type = "expression",
   decimal.mark = getOption("OutDec", default = ".")
 )
@@ -89,6 +96,7 @@ S_value_label(
   value,
   digits = 4,
   fixed = FALSE,
+  drop.trailing = FALSE,
   output.type = "expression",
   decimal.mark = getOption("OutDec", default = ".")
 )
@@ -97,6 +105,7 @@ mean_value_label(
   value,
   digits = 4,
   fixed = FALSE,
+  drop.trailing = FALSE,
   output.type = "expression",
   decimal.mark = getOption("OutDec", default = ".")
 )
@@ -105,6 +114,7 @@ var_value_label(
   value,
   digits = 4,
   fixed = FALSE,
+  drop.trailing = FALSE,
   output.type = "expression",
   decimal.mark = getOption("OutDec", default = ".")
 )
@@ -113,6 +123,7 @@ sd_value_label(
   value,
   digits = 4,
   fixed = FALSE,
+  drop.trailing = FALSE,
   output.type = "expression",
   decimal.mark = getOption("OutDec", default = ".")
 )
@@ -121,6 +132,7 @@ se_value_label(
   value,
   digits = 4,
   fixed = FALSE,
+  drop.trailing = FALSE,
   output.type = "expression",
   decimal.mark = getOption("OutDec", default = ".")
 )
@@ -131,6 +143,7 @@ r_label(
   small.r = getOption("ggpmisc.small.r", default = FALSE),
   digits = 3,
   fixed = TRUE,
+  drop.trailing = FALSE,
   output.type = "expression",
   decimal.mark = getOption("OutDec", default = ".")
 )
@@ -141,6 +154,7 @@ rr_label(
   digits = 3,
   pc.out = FALSE,
   fixed = TRUE,
+  drop.trailing = FALSE,
   output.type = "expression",
   decimal.mark = getOption("OutDec", default = ".")
 )
@@ -151,6 +165,7 @@ adj_rr_label(
   digits = 3,
   pc.out = FALSE,
   fixed = TRUE,
+  drop.trailing = FALSE,
   output.type = "expression",
   decimal.mark = getOption("OutDec", default = ".")
 )
@@ -162,6 +177,7 @@ rr_ci_label(
   range.sep = NULL,
   digits = 2,
   fixed = TRUE,
+  drop.trailing = FALSE,
   output.type = "expression",
   decimal.mark = getOption("OutDec", default = ".")
 )
@@ -174,6 +190,7 @@ r_ci_label(
   range.sep = NULL,
   digits = 2,
   fixed = TRUE,
+  drop.trailing = FALSE,
   output.type = "expression",
   decimal.mark = getOption("OutDec", default = ".")
 )
@@ -189,6 +206,8 @@ name.}
 
 \item{fixed}{logical Interpret \code{digits} as indicating a number of
 digits after the decimal mark or as the number of significant digits.}
+
+\item{drop.trailing}{logical If \code{TRUE} trailing zeros are dropped.}
 
 \item{output.type}{character One of "expression", "latex", "tex", "text",
 "tikz", "markdown". "marquee".}
