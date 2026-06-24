@@ -65,7 +65,7 @@ test_that("normalmix_line works attached", {
 
   vdiffr::expect_doppelganger("stat_distrmix_line_n",
                               ggplot(my.data, aes(x.2means)) +
-                                stat_distrmix_line(geom = "point", n = 30, fit.seed = 123)
+                                stat_distrmix_line(n = 30, fit.seed = 123)
   )
 
   vdiffr::expect_doppelganger("stat_distrmix_line_geom",

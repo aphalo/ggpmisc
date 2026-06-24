@@ -45,6 +45,7 @@ stat_distrmix_line(
   orientation = NA,
   method = "normalmixEM",
   se = NULL,
+  quantiles = NA,
   fit.seed = NA,
   fm.values = FALSE,
   n = min(100 + 50 * k, 300),
@@ -148,20 +149,21 @@ than combining with them. This is most useful for helper functions that
 define both data and aesthetics and shouldn't inherit behaviour from the
 default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
 
+\item{quantiles}{numeric The boundaries for tails given by two
+\emph{P}-values in the range 0 to 1, with \code{NA} being equivalent to
+\code{quantiles = c(0, 1)}. If a longer vector is passed as argument, its
+range is used.}
+
 \item{n}{Number of points at which to predict with the fitted model.}
 
 \item{fullrange}{logical Should the fit prediction span the full
 range of the plot, or just the range of the explanatory variable?}
 }
 \value{
-The value returned by the statistic is a data frame, with \code{n}
-  rows of predicted density for each component of the mixture plus their
-  sum and the corresponding vector of \code{x} values. Optionally it will
-  also include additional values related to the model fit.
-
-The value returned by \code{stat_distrmix_line()} is a data frame, with \code{n}
-  rows of predicted density for each component of the mixture plus their
-  sum and the corresponding vector of \code{x} values.
+The value returned by \code{stat_distrmix_line()} is a data frame,
+  with \code{n} rows of predictions or possibly fewer in the case when
+  \code{fullrange = FALSE} is passed in the call. Predictions for each
+  component of the mixture plus for their sum are returned in long form.
 
   The value returned by \code{stat_distrmix_eq()} is a data frame, with one
   row of estimates for each group of data in the plot.
@@ -171,21 +173,29 @@ The value returned by \code{stat_distrmix_line()} is a data frame, with \code{n}
 }
 \description{
 Statistics \code{stat_distrmix_line()} and \code{stat_distrmix_eq()} fit a
-Normal mixture model. While \code{stat_distrmix_line()} adds prediction
-lines, \code{stat_distrmix_eq()} adds textual labels to a plot.
+Normal mixture model. \code{stat_distrmix_line()} adds a layer with
+prediction lines or areas, optionally with tail quantiles highlighted, and
+\code{stat_distrmix_eq()} adds a layer with textual labels of parameter
+estimates to a plot.
 }
 \details{
 \code{stat_distrmix_line()} is similar to
   \code{\link[ggplot2]{stat_density}} but in addition to fitting a single
-  distribution it can fit a mixture of two or more Normal distributions,
+  Normal distribution it can fit a mixture of two or more Normal distributions,
   using an approach related to clustering. Defaults are consistent between
   \code{stat_distrmix_line()} and \code{stat_distrmix_eq()}.
   \code{stat_distrmix_eq()} can be used to add matched textual annotations.
 
-  If \code{k >= 2} a mixture of Normals model is fitted with
+  If \code{k >= 2} a mixture-of-Normals model is fitted with
   \code{\link[mixtools]{normalmixEM}()}, while if \code{k == 1} a single
   Normal distribution is fitted with function \code{\link[MASS]{fitdistr}()}.
   Only for \code{k == 1} the SE values are exact estimates.
+
+  In \code{stat_distrmix_line()}, predictions are computed to cover 0.999 of
+  the integral in all cases, trimming to the range of the data with
+  \code{fullrange = FALSE} is done as the last step. This ensures correct
+  estimates of the cumulated density (CDF) and of tail quantiles, whose
+  locations are estimated based on the CDF.
 
   Parameter \code{fit.seed} if not \code{NA} is used in a call to
   \code{set.seed()} immediately before calling the model fit function. As the
@@ -195,11 +205,13 @@ lines, \code{stat_distrmix_eq()} adds textual labels to a plot.
   \code{stat_distrmix_eq()} can ensure consistency, and more generally,
   reproducibility.
 
-  The minimum number of observations with distinct values in the explanatory
+  The minimum number of observations with distinct values in the data
   variable can be set through parameter \code{n.min}. The default depends on
   \code{k}, the number of components in the mix. Model fits with too few
   observations are unreliable, thus, using larger values of \code{n.min} than
-  the default is wise.
+  the default is wise. The value of \code{n}, instead, sets the number of
+  predicted values, which affects the smoothness of the plotted curve and
+  the accuracy with which the location of the quantiles is predicted.
 }
 \section{Variables computed by \code{stat_distrmix_line()}}{
 
@@ -208,9 +220,11 @@ lines, \code{stat_distrmix_eq()} adds textual labels to a plot.
   \code{orientation} and/or \code{method}. A message is issued listing
   the column names containing non-missing values.
 
-  \describe{\item{density}{predicted density values}
-  \item{x}{the \code{n} values for the quantiles}
-  \item{component}{A factor indexing the components and/or their sum}}
+  \describe{\item{x}{\code{n} or fewer values}
+  \item{component}{A factor indexing the components and/or their sum}
+  \item{density}{predicted density values}
+  \item{cum.density}{predicted cumulated density values}
+  \item{in.tails}{logical, \code{TRUE} if in a tail exceeding the values of the \code{quantiles}}}
 
   If \code{fm.values = TRUE} is passed then columns with diagnosis and
   parameters estimates are added, with the same value in each row within a
@@ -221,6 +235,7 @@ lines, \code{stat_distrmix_eq()} adds textual labels to a plot.
   \item{fm.class}{\code{character} the most derived class of the fitted model object}
   \item{fm.method}{\code{character} the method, as given by the \code{ft}
   field of the fitted model objects}}
+
   This provides a simple and robust
   approach to achieve effects like colouring or hiding annotations
   by group depending on the outcome of model fitting.
@@ -317,6 +332,12 @@ is \code{"expression"}. Invalid values as argument trigger an error.
 \examples{
 ggplot(faithful, aes(x = waiting)) +
   stat_distrmix_line(components = "sum") +
+  stat_distrmix_eq()
+
+ggplot(faithful, aes(x = waiting)) +
+  stat_distrmix_line(components = "sum",
+                     quantiles = c(0.025, 0.975),
+                     geom = "area") +
   stat_distrmix_eq()
 
 ggplot(faithful, aes(x = waiting)) +
@@ -431,6 +452,7 @@ For the underlying computations see for mixes of two or more Normal
 \code{stat_distrmix_line()} understands the following aesthetics. Required aesthetics are displayed in bold and defaults are displayed for optional aesthetics:
 \tabular{rll}{
  • \tab \strong{\code{\link[ggplot2:aes_position]{x}} \emph{or} \code{\link[ggplot2:aes_position]{y}}} \tab   \cr
+ • \tab \code{\link[ggplot2:aes_colour_fill_alpha]{fill}} \tab → \code{after_stat(in.tails)} \cr
  • \tab \code{\link[ggplot2:aes_group_order]{group}} \tab → \code{after_stat(component)} \cr
  • \tab \code{weight} \tab → \code{NULL} \cr
 }
