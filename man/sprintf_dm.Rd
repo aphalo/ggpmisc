@@ -31,7 +31,9 @@ attempted and the value returned by \code{sprintf()} is returned as is.}
 \item{format}{character One of "e", "f" or "g" for exponential, fixed, or
 significant digits formatting.}
 
-\item{drop.trailing}{logical If \code{TRUE} trailing zeros are dropped.}
+\item{drop.trailing}{logical If \code{drop.trailing = TRUE} trailing zeros
+are dropped with \code{format = "f"} by not adding \code{#} to the format
+string.}
 
 \item{output.type}{character One of "expression", "latex", "tex", "text",
 "tikz", "markdown", "marquee".}

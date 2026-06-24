@@ -139,6 +139,7 @@
 #'   \item{contrasts}{Contrasts as two levels' ordinal "numbers" separated by a dash, character.}
 #'   \item{tstat}{\emph{t}-statistic estimates for the pairwise contrasts, numeric.}
 #'   \item{p.value}{\emph{P}-value for the pairwise contrasts.}
+#'   \item{p.signif}{logical for the pairwise contrasts significance.}
 #'   \item{fm.method}{Set according \code{method} used.}
 #'   \item{fm.class}{Most derived class of the fitted model object.}
 #'   \item{fm.formula}{Formula extracted from the fitted model object if available, or the formula argument.}
@@ -216,7 +217,7 @@
 #'   stat_multcomp()
 #'
 #' p1 +
-#'   stat_multcomp(adj.method.tag = 0)
+#'   stat_multcomp(adj.method.tag = FALSE)
 #'
 #' # test against a control, with first level being the control
 #' # change order of factor levels in data to set the control group
@@ -243,11 +244,6 @@
 #' p1 +
 #'   stat_multcomp(p.adjust.method = "none")
 #'
-#' # sometimes we need to expand the plotting area
-#' p1 +
-#'   stat_multcomp(geom = "text_pairwise") +
-#'   scale_y_continuous(expand = expansion(mult = c(0.05, 0.10)))
-#'
 #' # position of contrasts' bars (based on scale limits)
 #' p1 +
 #'   stat_multcomp(label.y = "bottom")
@@ -263,6 +259,12 @@
 #' # control smallest P-value displayed and number of digits
 #' p1 +
 #'   stat_multcomp(p.digits = 4)
+#'
+#' # highlight significant differences
+#' p1 +
+#'   stat_multcomp(aes(alpha = after_stat(p.signif)),
+#'                 alpha.target = c("text", "segment", "box.line")) +
+#'   scale_alpha_manual(values =  c(0.33, 1))
 #'
 #' # label only significant differences
 #' # but test and correct for all pairwise contrasts!
@@ -712,6 +714,7 @@ multcomp_compute_panel_fun <-
                           contrasts = pairwise.contrasts,
                           tstat = pairwise.tstat,
                           p.value = pairwise.p.values,
+                          p.signif = p.value < mc.critical.p.value,
                           fm.method = method.name,
                           fm.class = fm.class[1],
                           fm.formula = formula.ls,

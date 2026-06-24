@@ -1024,20 +1024,20 @@ ggplot(mpg, aes(factor(cyl), hwy)) +
                 contrasts = "Dunnet")
 ```
 
-The returned value includes numeric values in addition to character strings mapped to the `label` aesthetic. The numeric values can be used to encode the outcomes using additional or different aesthetics than the default.
+The returned value includes numeric and logical values in addition to character strings mapped to the `label` aesthetic. These values can be used to encode the outcomes using additional or different aesthetics than the default ones. Variable `p.signif` is `TRUE` if `p.value < mc.critical.p.value`. In this example `colour` is used to highlight significant pairwise differences based on the default critical value of 0.05.
 
 ```{r}
-# use colour to show significance
 ggplot(mpg, aes(factor(cyl), hwy)) +
   geom_boxplot(width = 0.33) +
-  stat_multcomp(aes(colour = after_stat(p.value) < 0.01),
+  stat_multcomp(aes(colour = after_stat(p.signif)),
                 size = 2.75) +
   scale_colour_manual(values = c("grey60", "black")) +
   theme_bw()
 ```
 
+Alternatively, the test can be done against the `numeric` variable `p.value`. In this example `fill` is used to highlight significant pairwise differences and arrows heads added to segments.
+
 ```{r}
-# add arrow heads to segments and use fill to show significance
 ggplot(mpg, aes(factor(cyl), hwy)) +
   geom_boxplot(width = 0.33) +
   stat_multcomp(aes(fill = after_stat(p.value) < 0.01),

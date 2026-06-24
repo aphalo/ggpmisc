@@ -207,7 +207,8 @@ name.}
 \item{fixed}{logical Interpret \code{digits} as indicating a number of
 digits after the decimal mark or as the number of significant digits.}
 
-\item{drop.trailing}{logical If \code{TRUE} trailing zeros are dropped.}
+\item{drop.trailing}{logical If both \code{drop.trailing = TRUE} and
+\code{fixed = TRUE} trailing zeros are dropped.}
 
 \item{output.type}{character One of "expression", "latex", "tex", "text",
 "tikz", "markdown". "marquee".}
