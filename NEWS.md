@@ -16,7 +16,12 @@ formatted labels or names of variables available for mapping to aesthetics.
 - Update `check_poly_formula()` to issue warnings when the model formula includes 
 on-the-fly transformations in the rhs or lhs, indicating the need to pass a
 matching argument to `eq.x.rhs` or `eq.lhs`. Fix parsing failures leading to
-wrong test outcomes in some edge cases.
+wrong test outcomes in some edge cases. Reject formulas containing spline
+base functions.
+- Support flipping of orientation and guess default `orientation` automatically
+from the aesthetic mapping in `stat_multcomp()`.
+- Guess default `orientation` automatically from the aesthetic mapping in 
+`stat_distrmix_line()` and `stat_distrmix_eq()`.
 - Support methods `"nls"` and `"onls"` in `stat_poly_line()` and 
 `stat_poly_eq()`.
 - Add parameter `limit.to` to `stat_poly_line()` and `stat_ma_line()` as an 
@@ -29,8 +34,6 @@ prediction range.
 `"gls"`, (`"lme"` and `"nlme"`). These weights are NOT scaled to values in 0..1!
 - Change default from `show.legend = FALSE` to `show.legend = TRUE` in 
 `stat_fit_residuals()` and `stat_fit_deviations()`.
-- Derive default `orientation` automatically from the aesthetic mapping in 
-`stat_distrmix_line()` and `stat_distrmix_eq()`.
 - Fix bug in support of `smatr::ma()` and `smatr::sma()` in `stat_poly_eq()` 
 with `- 1` or `+ 0` in `formula`: $x^2$ shown instead of $x$.
 - Rewrite `find_spikes()` with changes in behaviour and formal parameters. Old
@@ -40,7 +43,8 @@ and clarify explanations. List supported methods in tables in help pages.
 Merge help for closely related statistics.
 - Update the _User Guide_ with new/better examples and explanations including
 use of new features.
-- Update and expand the articles in the documentation website of 'ggpmisc'.
+- Update the documentation website of 'ggpmisc' editing existing and adding
+mew articles.
 
 # ggpmisc 0.7.0
 
