@@ -46,7 +46,7 @@ stat_distrmix_line <- function(mapping = NULL,
   }
 
   if (is.null(k)) {
-    k <- k
+    k <- 2
   } else if (k < 1) {
     stop("Expected k >= 1, but k = ", k)
   }

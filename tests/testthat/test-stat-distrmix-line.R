@@ -40,7 +40,46 @@ test_that("stat_distrmix_line works not attached", {
 
 library(ggpmisc)
 
-test_that("normalmix_line works attached", {
+test_that("stat_distrmix_area works attached", {
+  vdiffr::expect_doppelganger("stat_distrmix_area_default",
+                              ggplot(my.data, aes(x.2means)) +
+                                stat_distrmix_area(fit.seed = 123)
+  )
+
+  vdiffr::expect_doppelganger("stat_distrmix_area_orientation_implicit",
+                              ggplot(my.data, aes(y = x.2means)) +
+                                stat_distrmix_area(fit.seed = 123)
+  )
+
+  # Error: The vdiffr package's device does not support colour gradients.
+  # vdiffr::expect_doppelganger("stat_distrmix_area_quantile_5pc",
+  #                             ggplot(my.data, aes(x.2means)) +
+  #                               stat_distrmix_area(aes(fill = after_stat(factor(is.tail))),
+  #                                                  fit.seed = 123,
+  #                                                  quantiles = c(0.025, 0.975)) +
+  #                               scale_fill_manual(values = c("white", "black"))
+  # )
+
+  vdiffr::expect_doppelganger("stat_distrmix_area_quantile_0pc",
+                              ggplot(my.data, aes(x.2means)) +
+                                stat_distrmix_area(aes(fill = after_stat(factor(is.tail))),
+                                                   fit.seed = 123,
+                                                   quantiles = c(0, 1)) +
+                                scale_fill_manual(values = c("white", "black"))
+  )
+
+  # Error: The vdiffr package's device does not support colour gradients.
+  # vdiffr::expect_doppelganger("stat_distrmix_area_quantile_99pc",
+  #                             ggplot(my.data, aes(x.2means)) +
+  #                               stat_distrmix_area(aes(fill = after_stat(factor(is.tail))),
+  #                                                  fit.seed = 123,
+  #                                                  quantiles = c(0.495, 0.505)) +
+  #                               scale_fill_manual(values = c("white", "black"))
+  # )
+
+})
+
+test_that("stat_distrmix_line works attached", {
   vdiffr::expect_doppelganger("stat_distrmix_line_geom_point",
                               ggplot(my.data, aes(x.2means)) +
                                 stat_distrmix_line(geom = "point", fit.seed = 123)
