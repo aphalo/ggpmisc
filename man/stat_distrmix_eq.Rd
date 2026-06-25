@@ -3,6 +3,7 @@
 \name{stat_distrmix_eq}
 \alias{stat_distrmix_eq}
 \alias{stat_distrmix_line}
+\alias{stat_distrmix_area}
 \title{Mixture model prediction and annotations}
 \usage{
 stat_distrmix_eq(
@@ -56,6 +57,32 @@ stat_distrmix_line(
   free.mean = TRUE,
   free.sd = TRUE,
   components = "all",
+  n.min = 10L * k,
+  na.rm = FALSE,
+  show.legend = NA,
+  inherit.aes = TRUE
+)
+
+stat_distrmix_area(
+  mapping = NULL,
+  data = NULL,
+  geom = "area",
+  position = "identity",
+  ...,
+  orientation = NA,
+  method = "normalmixEM",
+  se = NULL,
+  quantiles = NA,
+  fit.seed = NA,
+  fm.values = FALSE,
+  n = min(100 + 50 * k, 300),
+  fullrange = TRUE,
+  level = 0.95,
+  method.args = list(),
+  k = 2,
+  free.mean = TRUE,
+  free.sd = TRUE,
+  components = "sum",
   n.min = 10L * k,
   na.rm = FALSE,
   show.legend = NA,
@@ -179,23 +206,27 @@ prediction lines or areas, optionally with tail quantiles highlighted, and
 estimates to a plot.
 }
 \details{
-\code{stat_distrmix_line()} is similar to
-  \code{\link[ggplot2]{stat_density}} but in addition to fitting a single
-  Normal distribution it can fit a mixture of two or more Normal distributions,
-  using an approach related to clustering. Defaults are consistent between
-  \code{stat_distrmix_line()} and \code{stat_distrmix_eq()}.
-  \code{stat_distrmix_eq()} can be used to add matched textual annotations.
+\code{stat_distrmix_line()} and \code{stat_distrmix_area()} are
+  similar to \code{\link[ggplot2]{stat_density}} but they fit the Normal
+  distribution to observations. In addition to a single Normal distribution
+  they can fit a mixture of two or more Normal distributions, using an
+  approach related to clustering. Defaults related to how fitting is done are
+  consistent between \code{stat_distrmix_line()}, \code{stat_distrmix_area()}
+  and \code{stat_distrmix_eq()}. \code{stat_distrmix_eq()} can be used to add
+  matched textual annotations, while \code{stat_distrmix_line()} and
+  \code{stat_distrmix_area()} only differ in their default arguments,
+  including the \code{geom}.
 
   If \code{k >= 2} a mixture-of-Normals model is fitted with
   \code{\link[mixtools]{normalmixEM}()}, while if \code{k == 1} a single
   Normal distribution is fitted with function \code{\link[MASS]{fitdistr}()}.
   Only for \code{k == 1} the SE values are exact estimates.
 
-  In \code{stat_distrmix_line()}, predictions are computed to cover 0.999 of
+  In \code{stat_distrmix_line()}, predictions are computed to cover >= 0.999 of
   the integral in all cases, trimming to the range of the data with
-  \code{fullrange = FALSE} is done as the last step. This ensures correct
-  estimates of the cumulated density (CDF) and of tail quantiles, whose
-  locations are estimated based on the CDF.
+  \code{fullrange = FALSE} is done as the last step in the computations. This
+  ensures correct estimates of the cumulated density (CDF) and of tail
+  quantiles, whose locations are estimated based on the CDF.
 
   Parameter \code{fit.seed} if not \code{NA} is used in a call to
   \code{set.seed()} immediately before calling the model fit function. As the
@@ -224,7 +255,7 @@ estimates to a plot.
   \item{component}{A factor indexing the components and/or their sum}
   \item{density}{predicted density values}
   \item{cum.density}{predicted cumulated density values}
-  \item{in.tails}{logical, \code{TRUE} if in a tail exceeding the values of the \code{quantiles}}}
+  \item{is.tail}{logical, \code{TRUE} if in a tail exceeding the values of the \code{quantiles}}}
 
   If \code{fm.values = TRUE} is passed then columns with diagnosis and
   parameters estimates are added, with the same value in each row within a
@@ -331,14 +362,17 @@ is \code{"expression"}. Invalid values as argument trigger an error.
 
 \examples{
 ggplot(faithful, aes(x = waiting)) +
-  stat_distrmix_line(components = "sum") +
+  stat_distrmix_line() +
   stat_distrmix_eq()
 
 ggplot(faithful, aes(x = waiting)) +
-  stat_distrmix_line(components = "sum",
-                     quantiles = c(0.025, 0.975),
-                     geom = "area") +
+  stat_distrmix_area() +
   stat_distrmix_eq()
+
+ggplot(faithful, aes(x = waiting)) +
+  stat_distrmix_area(aes(fill = after_stat(is.tail)),
+                     quantiles = c(0.025, 0.975),
+                     show.legend = FALSE)
 
 ggplot(faithful, aes(x = waiting)) +
   stat_distrmix_line(components = "sum") +
@@ -452,7 +486,6 @@ For the underlying computations see for mixes of two or more Normal
 \code{stat_distrmix_line()} understands the following aesthetics. Required aesthetics are displayed in bold and defaults are displayed for optional aesthetics:
 \tabular{rll}{
  • \tab \strong{\code{\link[ggplot2:aes_position]{x}} \emph{or} \code{\link[ggplot2:aes_position]{y}}} \tab   \cr
- • \tab \code{\link[ggplot2:aes_colour_fill_alpha]{fill}} \tab → \code{after_stat(in.tails)} \cr
  • \tab \code{\link[ggplot2:aes_group_order]{group}} \tab → \code{after_stat(component)} \cr
  • \tab \code{weight} \tab → \code{NULL} \cr
 }

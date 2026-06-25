@@ -144,12 +144,13 @@ distrmix_compute_group_fun <-
     fm_params.tb <- fm_params.tb[-nrow(fm_params.tb), ]
 
     # x range used for prediction
-    # ensure that the component Normals are fully predicted
-    pred.range <- range(qnorm(p = 0.0005,
+    # ensure that all the component Normals are fully predicted
+    # by passing vectors of fitted parameters to qnorm()
+    pred.range <- range(qnorm(p = 0.000125 * min(k, 4),
                               mean = fm_params.tb[["mu"]],
                               sd = fm_params.tb[["sigma"]],
                               lower.tail = TRUE),
-                        qnorm(p = 0.0005,
+                        qnorm(p = 0.000125 * min(k, 4),
                               mean = fm_params.tb[["mu"]],
                               sd = fm_params.tb[["sigma"]],
                               lower.tail = FALSE),
@@ -201,12 +202,12 @@ distrmix_compute_group_fun <-
       quantiles <- c(0, 1)
     }
     prediction[["cum.density"]] <- numeric(nrow(prediction))
-    prediction[["in.tails"]] <- logical(nrow(prediction))
+    prediction[["is.tail"]] <- logical(nrow(prediction))
     for (comp in comp.names) {
       selector <- which(prediction[["component"]] == comp)
       temp <- cumsum(prediction[selector, "density", drop = TRUE])
       prediction[selector, "cum.density"] <- temp / max(temp) * lambdas[comp]
-      prediction[selector, "in.tails"] <-
+      prediction[selector, "is.tail"] <-
         prediction[selector, "cum.density", drop = TRUE] < (quantiles[1] * lambdas[comp]) |
         prediction[selector, "cum.density", drop = TRUE] > (quantiles[2] * lambdas[comp])
     }
@@ -269,8 +270,60 @@ StatDistrmixLine <-
                      ggplot2::aes(x = after_stat(density),
                                   y = after_stat(density),
                                   group = after_stat(component),
-                                  fill = after_stat(in.tails),
                                   weight = NULL),
                    dropped_aes = "weight",
                    required_aes = "x|y"
   )
+
+#' @rdname stat_distrmix_eq
+#'
+#' @export
+#'
+stat_distrmix_area <- function(mapping = NULL,
+                               data = NULL,
+                               geom = "area",
+                               position = "identity",
+                               ...,
+                               orientation = NA,
+                               method = "normalmixEM",
+                               se = NULL,
+                               quantiles = NA,
+                               fit.seed = NA,
+                               fm.values = FALSE,
+                               n = min(100 + 50 * k, 300),
+                               fullrange = TRUE,
+                               level = 0.95,
+                               method.args = list(),
+                               k = 2,
+                               free.mean = TRUE,
+                               free.sd = TRUE,
+                               components = "sum",
+                               n.min = 10L * k,
+                               na.rm = FALSE,
+                               show.legend = NA,
+                               inherit.aes = TRUE) {
+
+  stat_distrmix_line(mapping = mapping,
+                     data = data,
+                     geom = geom,
+                     position = position,
+                     ... = ...,
+                     orientation = orientation,
+                     method = method,
+                     se = se,
+                     quantiles = quantiles,
+                     fit.seed = fit.seed,
+                     fm.values = fm.values,
+                     n = n,
+                     fullrange = fullrange,
+                     level = level,
+                     method.args = method.args,
+                     k = k,
+                     free.mean = free.mean,
+                     free.sd = free.sd,
+                     components = components,
+                     n.min = n.min,
+                     na.rm = na.rm,
+                     show.legend = show.legend,
+                     inherit.aes = inherit.aes)
+}

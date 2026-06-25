@@ -36,23 +36,27 @@
 #' @aesthetics StatDistrmixEq
 #' @aesthetics StatDistrmixLine
 #'
-#' @details \code{stat_distrmix_line()} is similar to
-#'   \code{\link[ggplot2]{stat_density}} but in addition to fitting a single
-#'   Normal distribution it can fit a mixture of two or more Normal distributions,
-#'   using an approach related to clustering. Defaults are consistent between
-#'   \code{stat_distrmix_line()} and \code{stat_distrmix_eq()}.
-#'   \code{stat_distrmix_eq()} can be used to add matched textual annotations.
+#' @details \code{stat_distrmix_line()} and \code{stat_distrmix_area()} are
+#'   similar to \code{\link[ggplot2]{stat_density}} but they fit the Normal
+#'   distribution to observations. In addition to a single Normal distribution
+#'   they can fit a mixture of two or more Normal distributions, using an
+#'   approach related to clustering. Defaults related to how fitting is done are
+#'   consistent between \code{stat_distrmix_line()}, \code{stat_distrmix_area()}
+#'   and \code{stat_distrmix_eq()}. \code{stat_distrmix_eq()} can be used to add
+#'   matched textual annotations, while \code{stat_distrmix_line()} and
+#'   \code{stat_distrmix_area()} only differ in their default arguments,
+#'   including the \code{geom}.
 #'
 #'   If \code{k >= 2} a mixture-of-Normals model is fitted with
 #'   \code{\link[mixtools]{normalmixEM}()}, while if \code{k == 1} a single
 #'   Normal distribution is fitted with function \code{\link[MASS]{fitdistr}()}.
 #'   Only for \code{k == 1} the SE values are exact estimates.
 #'
-#'   In \code{stat_distrmix_line()}, predictions are computed to cover 0.999 of
+#'   In \code{stat_distrmix_line()}, predictions are computed to cover >= 0.999 of
 #'   the integral in all cases, trimming to the range of the data with
-#'   \code{fullrange = FALSE} is done as the last step. This ensures correct
-#'   estimates of the cumulated density (CDF) and of tail quantiles, whose
-#'   locations are estimated based on the CDF.
+#'   \code{fullrange = FALSE} is done as the last step in the computations. This
+#'   ensures correct estimates of the cumulated density (CDF) and of tail
+#'   quantiles, whose locations are estimated based on the CDF.
 #'
 #'   Parameter \code{fit.seed} if not \code{NA} is used in a call to
 #'   \code{set.seed()} immediately before calling the model fit function. As the
@@ -95,7 +99,7 @@
 #'   \item{component}{A factor indexing the components and/or their sum}
 #'   \item{density}{predicted density values}
 #'   \item{cum.density}{predicted cumulated density values}
-#'   \item{in.tails}{logical, \code{TRUE} if in a tail exceeding the values of the \code{quantiles}}}
+#'   \item{is.tail}{logical, \code{TRUE} if in a tail exceeding the values of the \code{quantiles}}}
 #'
 #'   If \code{fm.values = TRUE} is passed then columns with diagnosis and
 #'   parameters estimates are added, with the same value in each row within a
@@ -167,13 +171,16 @@
 #'
 #' @examples
 #' ggplot(faithful, aes(x = waiting)) +
-#'   stat_distrmix_line(components = "sum") +
+#'   stat_distrmix_line() +
 #'   stat_distrmix_eq()
 #'
 #' ggplot(faithful, aes(x = waiting)) +
-#'   stat_distrmix_line(components = "sum",
+#'   stat_distrmix_area() +
+#'   stat_distrmix_eq()
+#'
+#' ggplot(faithful, aes(x = waiting)) +
+#'   stat_distrmix_area(aes(fill = after_stat(is.tail)),
 #'                      quantiles = c(0.025, 0.975),
-#'                      geom = "area",
 #'                      show.legend = FALSE)
 #'
 #' ggplot(faithful, aes(x = waiting)) +
