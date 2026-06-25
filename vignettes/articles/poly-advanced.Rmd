@@ -9,7 +9,8 @@ date: "`r Sys.Date()`"
 knitr::opts_chunk$set(fig.align = 'center', 
                       collapse = TRUE,
                       comment = "#>",
-                      fig.show = 'hold', fig.width = 7, fig.height = 7)
+                      fig.show = 'hold', fig.width = 7, fig.height = 7,
+                      dev = "svg")
 
 options(warnPartialMatchArgs = FALSE,
         tibble.print.max = 4,

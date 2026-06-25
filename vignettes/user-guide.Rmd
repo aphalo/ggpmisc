@@ -15,7 +15,8 @@ vignette: >
 ```{r, include=FALSE, echo=FALSE}
 library(knitr)
 opts_chunk$set(fig.align = 'center', 
-               fig.show = 'hold', fig.width = 6.5, fig.height = 4)
+               fig.show = 'hold', fig.width = 6.5, fig.height = 4,
+               dev = "svg")
 options(warnPartialMatchArgs = FALSE,
         tibble.print.max = 4,
         tibble.print.min = 4,
