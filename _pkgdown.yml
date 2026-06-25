@@ -11,7 +11,7 @@ reference:
     - '`ggpmisc-package`'
   - title: Statistics
     desc: Fitted models, tests and summaries enrich data visualizations allowing deeper understanding.
-  - subtitle: Model fitting y ~ x
+  - subtitle: Model fitting y ~ x / x ~ y
     desc:  Display estimates from regression models graphically and as textual annotations.
     contents:
     - stat_correlation
@@ -20,11 +20,11 @@ reference:
     - stat_quant_eq
     - stat_fit_residuals
     - use_label
-  - subtitle: Model fitting ~ x
-    desc: Display estimates from univariate distributions and their mixes graphically and as textual annotations.
+  - subtitle: Model fitting ~ x / ~ y
+    desc: Display estimates from univariate distributions and their mixtures graphically and as textual annotations.
     contents:
     - stat_distrmix_eq
-  - subtitle: ANOVA and multiple comparisons
+  - subtitle: ANOVA and multiple comparisons y ~ x
     desc: Display test results and estimates as inset tables and as textual annotations.
     contents:
     - stat_fit_tb

@@ -910,6 +910,66 @@ ggplot(my.data, aes(x, y.sd3)) +
 
 Please, see the section on `stat_poly_eq()` for additional examples, as here we have highlighted mainly the differences between these two statistics.
 
+### stat_distrmix_eq(), stat_distrmix_line() and stat_distrmix_area()
+
+Package 'mixtools' implements the fitting of mixture models. Currently, 'ggpmisc' only supports fitting of mixtures of Normals with function `normalmixEM()`. Fiting of a single Normal is also supported. The fit is done numerically based on maximum likelihood with an EM or ECM algorithm.
+
+In the case of density distributions the position of quantiles, especially near the tails is a frequent addition to plots, and these are computed in `stat_distrmix_line()` and `stat_distrmix_area()` from the cumulated density (CDF) both for the mix and for its components. The DF, CDF and quantile positions are all returned.
+
+With the default `fullrange = TRUE` the dendity distributions are extended to the limits of the scale. In contrast, with `fullrange = FALSE` the distributions are trimmed to the range of the data.
+
+```{r}
+ggplot(faithful, aes(x = waiting)) +
+   stat_distrmix_line() +
+   stat_distrmix_eq() +
+  scale_x_continuous(limits = c(0, 110))
+```
+
+Orientation is set automatically based on the mapping of the data to the `x` pf the `y` aesthetic.
+
+```{r}
+ggplot(faithful, aes(y = waiting)) +
+   stat_distrmix_line() +
+   stat_distrmix_eq(label.x = "right", lable.y = "bottom")
+```
+
+The default for `stat_distrmix_line()` is to return densities for components and their sum, below only the sum is returned. With `"members"` only the components would have been returned.  
+
+```{r}
+ggplot(faithful, aes(x = waiting)) +
+   stat_distrmix_line(components = "sum") +
+   stat_distrmix_eq(label.x = "middle", label.y = "bottom")
+```
+
+`stat_distrmix_area()` returns by default only the sum of the components and plots it with `geom_area()`.
+
+```{r}
+ ggplot(faithful, aes(x = waiting)) +
+   stat_distrmix_area() +
+   stat_distrmix_eq(colour = "white", 
+                    label.x = "middle", label.y = 0.08)
+```
+
+The position of the quantiles can be highlighted in a single plot layer by mapping the returned logical variable `is.tail` to the `fill` aesthetic.
+
+```{r}
+ ggplot(faithful, aes(x = waiting)) +
+   stat_distrmix_area(aes(fill = after_stat(is.tail)), 
+                      colour = "black", outline.type = "upper",
+                      quantiles = c(0.025, 0.975),
+                      show.legend = FALSE) +
+  scale_fill_manual(values = c("grey80", "grey20"))
+```
+
+
+```{r}
+ ggplot(faithful, aes(x = waiting)) +
+   stat_distrmix_area(aes(y = after_stat(cum.density)), 
+                      fill = "grey70",
+                      colour = "black", 
+                      outline.type = "upper")
+```
+
 ### stat_multcomp
 
 _This section is still preliminary._ Multiple comparisons are frequently used when the effect of different levels of a factor are individually of interest. Function `stat_multcomp()` computes adjusted _P_-values for pairwise comparison using Tukey or Dunnet contrasts using function `glht()` from package 'multcomp'. To complement the examples in the documentation of the function, we show below examples that override several defaults. 
@@ -993,6 +1053,17 @@ We can override the default use of `geom_text()` and also remove the _P_ critica
 ```{r}
 # Using other geometries
 ggplot(mpg, aes(factor(cyl), hwy)) +
+  geom_boxplot(width = 0.33) +
+  stat_multcomp(label.type = "letters",
+                adj.method.tag = FALSE,
+                geom = "label")
+```
+
+Orientation is set automatically based on the mapping of a factor to either the _x_ or _y_ aesthetic. _Currently, `label.type = "bars"` is not supported in flipped plots like this one._
+
+```{r}
+# Using other geometries
+ggplot(mpg, aes(hwy, factor(cyl))) +
   geom_boxplot(width = 0.33) +
   stat_multcomp(label.type = "letters",
                 adj.method.tag = FALSE,
