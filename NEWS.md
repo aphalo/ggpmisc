@@ -22,6 +22,14 @@ base functions.
 from the aesthetic mapping in `stat_multcomp()`.
 - Guess default `orientation` automatically from the aesthetic mapping in 
 `stat_distrmix_line()` and `stat_distrmix_eq()`.
+- Implement computation of cumulated density and highlighting of distribution's
+tail locations based on quantiles in `stat_distrmix_line()`.
+- Improve in `stat_distrmix_line()` the behaviour of `fullrange = TRUE` so that
+it extends the prediction to ensure that at least 0.999 of the cumulated 
+density is plotted and to cover the scale range if broader. Rendered plots
+differ slightly from those rendered in earlier versions.
+- Add `stat_distrmix_area()` as a wrapper on `stat_distrmix_line()` with
+defaults plotting the sum of components as an area.
 - Support methods `"nls"` and `"onls"` in `stat_poly_line()` and 
 `stat_poly_eq()`.
 - Add parameter `limit.to` to `stat_poly_line()` and `stat_ma_line()` as an 
