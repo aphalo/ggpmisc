@@ -10,6 +10,7 @@ stat_fit_glance(
   geom = "text_npc",
   position = "identity",
   ...,
+  orientation = NA,
   method = "lm",
   method.args = list(formula = y ~ x),
   n.min = 2L,
@@ -40,6 +41,10 @@ layer.}
 \item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This
 can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
+
+\item{orientation}{character Either "x" or "y" controlling the default for
+\code{formula}. The letter indicates the aesthetic considered the
+explanatory variable in the model fit.}
 
 \item{method}{function or character If character, "lm", "rlm", "lmrob",
 "lts", "gls", "ma", "sma", "segreg", "rq" or the name of a model fit

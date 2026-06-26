@@ -161,6 +161,7 @@ stat_fit_glance <- function(mapping = NULL,
                             geom = "text_npc",
                             position = "identity",
                             ...,
+                            orientation = NA,
                             method = "lm",
                             method.args = list(formula = y ~ x),
                             n.min = 2L,
@@ -188,6 +189,7 @@ stat_fit_glance <- function(mapping = NULL,
                    vstep = vstep,
                    npc.used = grepl("_npc", geom),
                    na.rm = na.rm,
+                   orientation = orientation,
                    ...)
   )
 }
@@ -210,11 +212,22 @@ fit_glance_compute_group_fun <- function(data,
                                          label.y = "top",
                                          hstep = 0,
                                          vstep = 0.1,
-                                         npc.used = TRUE) {
+                                         npc.used = TRUE,
+                                         flipped_aes = NA,
+                                         orientation = "x") {
 
   rlang::check_installed("broom", reason = "to use `stat_fit_glance()`")
 
-  force(data) # needed because it appears only wihtin quote()
+#  force(data) # needed because it appears only wihtin quote()
+
+  data <- ggplot2::flip_data(data, flipped_aes)
+  if (is.na(orientation)) {
+    if (flipped_aes) {
+      orientation <- "y"
+    } else {
+      orientation <- "x"
+    }
+  }
 
   if (length(unique(data$x)) < n.min) {
     # Not enough data to perform fit
@@ -322,7 +335,7 @@ fit_glance_compute_group_fun <- function(data,
     )
     if (!npc.used) {
       # we need to use scale limits as observations are not necessarily plotted
-      x.range <- scales$x$range$range
+      x.range <- scales$ggplot2::flipped_names(flipped_aes)$x$range$range
       label.x <- label.x * diff(x.range) + x.range[1]
     }
   }
@@ -338,7 +351,7 @@ fit_glance_compute_group_fun <- function(data,
     )
     if (!npc.used) {
       # we need to use scale limits as observations are not necessarily plotted
-      y.range <- scales$y$range$range
+      y.range <- scales$ggplot2::flipped_names(flipped_aes)$y$range$range
       label.y <- label.y * diff(y.range) + y.range[1]
     }
   }
@@ -354,6 +367,10 @@ fit_glance_compute_group_fun <- function(data,
     z$npcy <- NA_real_
   }
 
+  z$flipped_aes <- flipped_aes
+  # no flipping here because x and y give the table position extracted
+  # from user arguments or flipped scale limits!
+
   show_colnames(z, stat.name = "stat_fit_glance")
 
   z
@@ -365,6 +382,16 @@ fit_glance_compute_group_fun <- function(data,
 #' @export
 StatFitGlance <-
   ggplot2::ggproto("StatFitGlance", ggplot2::Stat,
+                   extra_params = c("na.rm", "parse"),
+                   setup_params = function(data, params) {
+                     params[["flipped_aes"]] <-
+                       ggplot2::has_flipped_aes(data = data,
+                                                params = params,
+                                                main_is_orthogonal = TRUE,
+                                                group_has_equal = TRUE,
+                                                ambiguous = FALSE)
+                     params
+                   },
                    compute_group = fit_glance_compute_group_fun,
                    dropped_aes = "weight",
                    default_aes =
@@ -528,6 +555,7 @@ stat_fit_augment <- function(mapping = NULL,
                              geom = "smooth",
                              position = "identity",
                              ...,
+                             orientation = NA,
                              method = "lm",
                              method.args = list(formula = y ~ x),
                              n.min = 2L,
@@ -550,6 +578,7 @@ stat_fit_augment <- function(mapping = NULL,
                    level = level,
                    y.out = y.out,
                    na.rm = na.rm,
+                   orientation = orientation,
                    ...)
   )
 }
@@ -570,6 +599,9 @@ fit_augment_compute_group_fun <- function(data,
                                           augment.args = list(),
                                           level = 0.95,
                                           y.out = ".fitted",
+                                          flipped_aes = NA,
+                                          orientation = "x",
+                                          na.rm = FALSE,
                                           ...) {
   unAsIs <- function(X) {
     if ("AsIs" %in% class(X)) {
@@ -580,8 +612,18 @@ fit_augment_compute_group_fun <- function(data,
 
   rlang::check_installed("broom", reason = "to use `stat_fit_augment()`")
 
-  force(data)
-  data <- na.omit(data)
+  if (na.rm) {
+    data <- na.omit(data)
+  }
+
+  data <- ggplot2::flip_data(data, flipped_aes)
+  if (is.na(orientation)) {
+    if (flipped_aes) {
+      orientation <- "y"
+    } else {
+      orientation <- "x"
+    }
+  }
 
   if (length(unique(data[["x"]])) < n.min) {
     # Not enough data to perform fit
@@ -639,6 +681,9 @@ fit_augment_compute_group_fun <- function(data,
   z[["fm.formula"]] <- rep_len(fail_safe_formula(fm, method.args), nrow(z))
   z[["fm.formula.chr"]] <- format(z[["fm.formula"]])
 
+  z$flipped_aes <- flipped_aes
+  z <- ggplot2::flip_data(z, flipped_aes)
+
   show_colnames(z, stat.name = "stat_fit_augment")
 
   z
@@ -651,6 +696,16 @@ fit_augment_compute_group_fun <- function(data,
 StatFitAugment <-
   ggplot2::ggproto("StatFitAugment",
                    ggplot2::Stat,
+                   extra_params = c("na.rm"),
+                   setup_params = function(data, params) {
+                     params[["flipped_aes"]] <-
+                       ggplot2::has_flipped_aes(data = data,
+                                                params = params,
+                                                main_is_orthogonal = TRUE,
+                                                group_has_equal = TRUE,
+                                                ambiguous = FALSE)
+                     params
+                   },
                    compute_group = fit_augment_compute_group_fun,
                    dropped_aes = "weight",
                    default_aes =
@@ -812,6 +867,7 @@ stat_fit_tidy <- function(mapping = NULL,
                           geom = "text_npc",
                           position = "identity",
                           ...,
+                          orientation = NA,
                           method = "lm",
                           method.args = list(formula = y ~ x),
                           n.min = 2L,
@@ -845,6 +901,7 @@ stat_fit_tidy <- function(mapping = NULL,
                    sanitize.names = sanitize.names,
                    npc.used = grepl("_npc", geom),
                    na.rm = na.rm,
+                   orientation = orientation,
                    ...)
   )
 }
@@ -868,8 +925,19 @@ fit_tidy_compute_group_fun <- function(data,
                                        hstep = 0,
                                        vstep = NULL,
                                        sanitize.names = FALSE,
-                                       npc.used = TRUE) {
+                                       npc.used = TRUE,
+                                       flipped_aes = NA,
+                                       orientation = "x") {
   rlang::check_installed("broom", reason = "to use `stat_fit_tidy()`")
+
+  data <- ggplot2::flip_data(data, flipped_aes)
+  if (is.na(orientation)) {
+    if (flipped_aes) {
+      orientation <- "y"
+    } else {
+      orientation <- "x"
+    }
+  }
 
   force(data)
   if (length(unique(data$x)) < n.min) {
@@ -982,7 +1050,7 @@ fit_tidy_compute_group_fun <- function(data,
     )
     if (!npc.used) {
       # we need to use scale limits as observations are not necessarily plotted
-      x.range <- scales$x$range$range
+      x.range <- scales$ggplot2::flipped_names(flipped_aes)$x$range$range
       label.x <- label.x * diff(x.range) + x.range[1]
     }
   }
@@ -998,7 +1066,7 @@ fit_tidy_compute_group_fun <- function(data,
     )
     if (!npc.used) {
       # we need to use scale limits as observations are not necessarily plotted
-      y.range <- scales$y$range$range
+      y.range <- scales$ggplot2::flipped_names(flipped_aes)$y$range$range
       label.y <- label.y * diff(y.range) + y.range[1]
     }
   }
@@ -1022,6 +1090,10 @@ fit_tidy_compute_group_fun <- function(data,
   z[["fm.formula"]] <- rep_len(fail_safe_formula(fm, method.args), nrow(z))
   z[["fm.formula.chr"]] <- format(z[["fm.formula"]])
 
+  z$flipped_aes <- flipped_aes
+  # no flipping here because x and y give the label/text position extracted
+  # from user arguments or flipped scale limits!
+
   show_colnames(z, stat.name = "stat_fit_tidy")
 
   z
@@ -1033,6 +1105,16 @@ fit_tidy_compute_group_fun <- function(data,
 #' @export
 StatFitTidy <-
   ggplot2::ggproto("StatFitTidy", ggplot2::Stat,
+                   extra_params = c("na.rm", "parse"),
+                   setup_params = function(data, params) {
+                     params[["flipped_aes"]] <-
+                       ggplot2::has_flipped_aes(data = data,
+                                                params = params,
+                                                main_is_orthogonal = TRUE,
+                                                group_has_equal = TRUE,
+                                                ambiguous = FALSE)
+                     params
+                   },
                    compute_group = fit_tidy_compute_group_fun,
                    dropped_aes = "weight",
                    default_aes =

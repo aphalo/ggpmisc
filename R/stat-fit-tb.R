@@ -562,7 +562,7 @@ fit_tb_compute_panel_fun <- function(data,
     )
     if (!npc.used) {
       # we need to use scale limits as observations are not necessarily plotted
-      x.range <- scales$flipped_names(flipped_aes)$x$range$range
+      x.range <- scales$ggplot2::flipped_names(flipped_aes)$x$range$range
       label.x <- label.x * diff(x.range) + x.range[1]
     }
   }
@@ -592,6 +592,10 @@ fit_tb_compute_panel_fun <- function(data,
     z$y <- label.y
     z$npcy <- NA_real_
   }
+
+  z$flipped_aes <- flipped_aes
+  # no flipping here because x and y give the table position extracted
+  # from flipped scale limits!
 
   show_colnames(z, stat.name = "stat_fit_tb")
 
