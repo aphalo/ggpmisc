@@ -10,6 +10,7 @@ stat_fit_tb(
   geom = "table_npc",
   position = "identity",
   ...,
+  orientation = NA,
   method = "lm",
   method.args = list(formula = y ~ x),
   n.min = 2L,
@@ -48,6 +49,10 @@ layer.}
 \item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This
 can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
+
+\item{orientation}{character Either "x" or "y" controlling the default for
+\code{formula}. The letter indicates the aesthetic considered the
+explanatory variable in the model fit.}
 
 \item{method}{function or character If character, "lm", "rlm", "lmrob",
 "lts", "gls", "ma", "sma", "segreg", "rq" or the name of a model fit
@@ -134,12 +139,27 @@ A tibble with columns named \code{fm.tb} (a tibble returned by
 \details{
 \code{stat_fit_tb()} Applies a model fitting function per panel,
   using the grouping factors from aesthetic mappings in the fitted model.
-  This is suitable, for example for analysis of variance used to test for
-  differences among groups.
+  When continuous variables are mapped to both \code{x} and \code{y} the
+  argument passed to orientation determines if the data are flipped or not
+  before fitting the model. When a factor is mapped to one of \code{x} or
+  \code{y} the orientation is set automatically, with the factor used as
+  the \emph{x} in the model equation. In the first case a regression model
+  is fitted, and in the second case an analysis of variance is performed
+  to test for differences among groups.
 
   The argument to \code{method} can be any fit method for which a suitable
   \code{tidy()} method is available, including non-linear regression. Fit
-  methods retain their default arguments unless overridden.
+  methods retain their default arguments unless overridden with named
+  arguments passed in list as argument to \code{method.args}.
+
+  As an ANOVA or summary table of estimated parameter values takes a
+  considerable space in the plotting canvas, in most cases either the scale
+  expansion or its limits need to be manually modified to ensure that other
+  elements in the plot, such as the observations are not occluded or
+  interfere. The effect can be different: manually setting the limits fixes
+  them, while adding a multiplicative expansion to the scale modifies the
+  width of the empty margin between the limits and the edge of the plotting
+  area, with limits set automatically based on the data.
 }
 \section{Computed variables}{
  The output of \code{tidy()} is returned as a
@@ -290,16 +310,13 @@ if (broom.installed)
   ggplot(my.df, aes(covariate, x)) +
     geom_point() +
     stat_fit_tb() +
-    expand_limits(y = 70)
+    expand_limits(y = 70) # make space
 
-# we can use geom_debug_panel() and str() to inspect the returned value
-# and discover the variables that can be mapped to aesthetics with
-# after_stat()
-if (broom.installed && gginnards.installed)
+if (broom.installed)
   ggplot(my.df, aes(covariate, x)) +
     geom_point() +
-    stat_fit_tb(geom = "debug_panel", dbgfun.data = str) +
-    expand_limits(y = 70)
+    stat_fit_tb() +
+    scale_y_continuous(expand = expansion(mult = c(0.075, 0.3))) # make space
 
 # Linear regression fit summary, with default formatting
 if (broom.installed)

@@ -32,12 +32,27 @@
 #'
 #' @details \code{stat_fit_tb()} Applies a model fitting function per panel,
 #'   using the grouping factors from aesthetic mappings in the fitted model.
-#'   This is suitable, for example for analysis of variance used to test for
-#'   differences among groups.
+#'   When continuous variables are mapped to both \code{x} and \code{y} the
+#'   argument passed to orientation determines if the data are flipped or not
+#'   before fitting the model. When a factor is mapped to one of \code{x} or
+#'   \code{y} the orientation is set automatically, with the factor used as
+#'   the \emph{x} in the model equation. In the first case a regression model
+#'   is fitted, and in the second case an analysis of variance is performed
+#'   to test for differences among groups.
 #'
 #'   The argument to \code{method} can be any fit method for which a suitable
 #'   \code{tidy()} method is available, including non-linear regression. Fit
-#'   methods retain their default arguments unless overridden.
+#'   methods retain their default arguments unless overridden with named
+#'   arguments passed in list as argument to \code{method.args}.
+#'
+#'   As an ANOVA or summary table of estimated parameter values takes a
+#'   considerable space in the plotting canvas, in most cases either the scale
+#'   expansion or its limits need to be manually modified to ensure that other
+#'   elements in the plot, such as the observations are not occluded or
+#'   interfere. The effect can be different: manually setting the limits fixes
+#'   them, while adding a multiplicative expansion to the scale modifies the
+#'   width of the empty margin between the limits and the edge of the plotting
+#'   area, with limits set automatically based on the data.
 #'
 #' @inheritSection stat_poly_eq Model formula and model fitting
 #'
@@ -96,16 +111,13 @@
 #'   ggplot(my.df, aes(covariate, x)) +
 #'     geom_point() +
 #'     stat_fit_tb() +
-#'     expand_limits(y = 70)
+#'     expand_limits(y = 70) # make space
 #'
-#' # we can use geom_debug_panel() and str() to inspect the returned value
-#' # and discover the variables that can be mapped to aesthetics with
-#' # after_stat()
-#' if (broom.installed && gginnards.installed)
+#' if (broom.installed)
 #'   ggplot(my.df, aes(covariate, x)) +
 #'     geom_point() +
-#'     stat_fit_tb(geom = "debug_panel", dbgfun.data = str) +
-#'     expand_limits(y = 70)
+#'     stat_fit_tb() +
+#'     scale_y_continuous(expand = expansion(mult = c(0.075, 0.3))) # make space
 #'
 #' # Linear regression fit summary, with default formatting
 #' if (broom.installed)
@@ -293,6 +305,7 @@ stat_fit_tb <- function(mapping = NULL,
                         geom = "table_npc",
                         position = "identity",
                         ...,
+                        orientation = NA,
                         method = "lm",
                         method.args = list(formula = y ~ x),
                         n.min = 2L,
@@ -334,8 +347,9 @@ stat_fit_tb <- function(mapping = NULL,
                    table.rownames = table.rownames,
                    table.colnames = table.colnames,
                    table.hjust = table.hjust,
-                   parse = parse,
                    na.rm = na.rm,
+                   orientation = orientation,
+                   parse = parse,
                    ...)
   )
 }
@@ -361,11 +375,21 @@ fit_tb_compute_panel_fun <- function(data,
                                      p.digits = digits,
                                      npc.used = TRUE,
                                      label.x = "center",
-                                     label.y = "top") {
+                                     label.y = "top",
+                                     flipped_aes = NA,
+                                     orientation = NA) {
 
   rlang::check_installed("broom", reason = "to use stat_fit_tb()")
 
-  force(data)
+  data <- ggplot2::flip_data(data, flipped_aes)
+  if (is.na(orientation)) {
+    if (flipped_aes) {
+      orientation <- "y"
+    } else {
+      orientation <- "x"
+    }
+  }
+
   if (length(unique(data$x)) < n.min) {
     # Not enough data to perform fit
     return(data.frame())
@@ -538,7 +562,7 @@ fit_tb_compute_panel_fun <- function(data,
     )
     if (!npc.used) {
       # we need to use scale limits as observations are not necessarily plotted
-      x.range <- scales$x$range$range
+      x.range <- scales$flipped_names(flipped_aes)$x$range$range
       label.x <- label.x * diff(x.range) + x.range[1]
     }
   }
@@ -552,7 +576,7 @@ fit_tb_compute_panel_fun <- function(data,
     )
     if (!npc.used) {
       # we need to use scale limits as observations are not necessarily plotted
-      y.range <- scales$y$range$range
+      y.range <- scales$flipped_aes(flipped_aes)$y$range$range
       label.y <- label.y * diff(y.range) + y.range[1]
     }
   }
@@ -581,6 +605,15 @@ fit_tb_compute_panel_fun <- function(data,
 StatFitTb <-
   ggplot2::ggproto("StatFitTb",
                    ggplot2::Stat,
+                   extra_params = c("na.rm", "parse"),
+                   setup_params = function(data, params) {
+                     params[["flipped_aes"]] <-
+                       ggplot2::has_flipped_aes(data = data,
+                                                params = params,
+                                                group_has_equal = TRUE,
+                                                ambiguous = FALSE)
+                     params
+                   },
                    compute_panel = fit_tb_compute_panel_fun,
                    dropped_aes = "weight",
                    default_aes =
