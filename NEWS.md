@@ -19,7 +19,8 @@ matching argument to `eq.x.rhs` or `eq.lhs`. Fix parsing failures leading to
 wrong test outcomes in some edge cases. Detect formulas containing spline
 base functions as not being regular polynomials.
 - Support flipping of orientation and guess default `orientation` automatically
-from the aesthetic mapping in `stat_multcomp()`.
+from the aesthetic mapping in `stat_multcomp()`, and when possible in 
+`stat_fit_tb()`, `stat_fit_glance()`, `stat_fit_tidy()` and `stat_fit_augment()`.
 - Add `stat_distrmix_area()` as a wrapper on `stat_distrmix_line()` with
 defaults plotting the sum of components as an area.
 - Guess default `orientation` automatically from the aesthetic mapping in 

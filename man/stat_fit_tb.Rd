@@ -294,10 +294,10 @@ if (broom.installed)
   library(broom)
 
 # data for examples
-  x <- c(44.4, 45.9, 41.9, 53.3, 44.7, 44.1, 50.7, 45.2, 60.1)
-  covariate <- sqrt(x) + rnorm(9)
+  response <- c(44.4, 45.9, 41.9, 53.3, 44.7, 44.1, 50.7, 45.2, 60.1)
+  covariate <- sqrt(response) + rnorm(9)
   group <- factor(c(rep("A", 4), rep("B", 5)))
-  my.df <- data.frame(x, group, covariate)
+  my.df <- data.frame(response, group, covariate)
 
 gginnards.installed  <- requireNamespace("gginnards", quietly = TRUE)
 
@@ -307,27 +307,33 @@ if (gginnards.installed)
 ## covariate is a numeric or continuous variable
 # Linear regression fit summary, all defaults
 if (broom.installed)
-  ggplot(my.df, aes(covariate, x)) +
+  ggplot(my.df, aes(covariate, response)) +
     geom_point() +
     stat_fit_tb() +
-    expand_limits(y = 70) # make space
+    expand_limits(y = 65) # make space
 
 if (broom.installed)
-  ggplot(my.df, aes(covariate, x)) +
+  ggplot(my.df, aes(covariate, response)) +
+    geom_point() +
+    stat_fit_tb(orientation = "y") + # data flipped for regression
+    expand_limits(y = 65) # make space
+
+if (broom.installed)
+  ggplot(my.df, aes(covariate, response)) +
     geom_point() +
     stat_fit_tb() +
     scale_y_continuous(expand = expansion(mult = c(0.075, 0.3))) # make space
 
 # Linear regression fit summary, with default formatting
 if (broom.installed)
-  ggplot(my.df, aes(covariate, x)) +
+  ggplot(my.df, aes(covariate, response)) +
     geom_point() +
     stat_fit_tb(tb.type = "fit.summary") +
-    expand_limits(y = 70)
+    expand_limits(y = 65)
 
 # Linear regression fit summary, with manual table formatting
 if (broom.installed)
-  ggplot(my.df, aes(covariate, x)) +
+  ggplot(my.df, aes(covariate, response)) +
     geom_point() +
     stat_fit_tb(digits = 2,
                 p.digits = 4,
@@ -336,18 +342,18 @@ if (broom.installed)
                             "italic(s)" = 3, "italic(t)" = 4,
                             "italic(P)" = 5),
                 parse = TRUE) +
-    expand_limits(y = 70)
+    expand_limits(y = 65)
 
 # Linear regression ANOVA table, with default formatting
 if (broom.installed)
-  ggplot(my.df, aes(covariate, x)) +
+  ggplot(my.df, aes(covariate, response)) +
     geom_point() +
     stat_fit_tb(tb.type = "fit.anova") +
-    expand_limits(y = 70)
+    expand_limits(y = 65)
 
 # Linear regression ANOVA table, with manual table formatting
 if (broom.installed)
-  ggplot(my.df, aes(covariate, x)) +
+  ggplot(my.df, aes(covariate, response)) +
     geom_point() +
     stat_fit_tb(tb.type = "fit.anova",
                 tb.params = c("Covariate" = 1, 2),
@@ -355,61 +361,67 @@ if (broom.installed)
                             "M.S." = 4, "italic(F)" = 5,
                             "italic(P)" = 6),
                 parse = TRUE) +
-    expand_limits(y = 67)
+    expand_limits(y = 65)
 
 # Linear regression fit coeficients, with default formatting
 if (broom.installed)
-  ggplot(my.df, aes(covariate, x)) +
+  ggplot(my.df, aes(covariate, response)) +
     geom_point() +
     stat_fit_tb(tb.type = "fit.coefs") +
-    expand_limits(y = 67)
+    expand_limits(y = 65)
 
 # Linear regression fit coeficients, with manual table formatting
 if (broom.installed)
-  ggplot(my.df, aes(covariate, x)) +
+  ggplot(my.df, aes(covariate, response)) +
     geom_point() +
     stat_fit_tb(tb.type = "fit.coefs",
                 tb.params = c(a = 1, b = 2),
                 tb.vars = c(Term = 1, Estimate = 2)) +
-    expand_limits(y = 67)
+    expand_limits(y = 65)
 
-## x is also a numeric or continuous variable
+## response is also a numeric or continuous variable
 # Polynomial regression, with default formatting
 if (broom.installed)
-  ggplot(my.df, aes(covariate, x)) +
+  ggplot(my.df, aes(covariate, response)) +
     geom_point() +
     stat_fit_tb(method.args = list(formula = y ~ poly(x, 2))) +
-    expand_limits(y = 70)
+    expand_limits(y = 65)
 
 # Polynomial regression, with manual table formatting
 if (broom.installed)
-  ggplot(my.df, aes(covariate, x)) +
+  ggplot(my.df, aes(covariate, response)) +
     geom_point() +
     stat_fit_tb(method.args = list(formula = y ~ poly(x, 2)),
                 tb.params = c("x^0" = 1, "x^1" = 2, "x^2" = 3),
                 tb.vars = c("Term" = 1, "Estimate" = 2, "S.E." = 3,
                             "italic(t)" = 4, "italic(P)" = 5),
                 parse = TRUE) +
-    expand_limits(y = 70)
+    expand_limits(y = 65)
 
 ## group is a factor or discrete variable
 # ANOVA summary, with default formatting
 if (broom.installed)
-  ggplot(my.df, aes(group, x)) +
+  ggplot(my.df, aes(group, response)) +
     geom_point() +
     stat_fit_tb() +
-    expand_limits(y = 70)
+    expand_limits(y = 65)
+
+if (broom.installed)
+  ggplot(my.df, aes(response, group)) +
+    geom_point() +
+    stat_fit_tb() +
+    expand_limits(y = 2.5)
 
 # ANOVA table, with default formatting
 if (broom.installed)
-  ggplot(my.df, aes(group, x)) +
+  ggplot(my.df, aes(group, response)) +
     geom_point() +
     stat_fit_tb(tb.type = "fit.anova") +
-    expand_limits(y = 70)
+    expand_limits(y = 65)
 
 # ANOVA table, with manual table formatting
 if (broom.installed)
-  ggplot(my.df, aes(group, x)) +
+  ggplot(my.df, aes(group, response)) +
     geom_point() +
     stat_fit_tb(tb.type = "fit.anova",
                 tb.vars = c(Effect = "term", "df", "italic(F)" = "statistic",
@@ -420,7 +432,7 @@ if (broom.installed)
 # ANOVA table, with manual table formatting
 # using column names with partial matching
 if (broom.installed)
-  ggplot(my.df, aes(group, x)) +
+  ggplot(my.df, aes(group, response)) +
     geom_point() +
     stat_fit_tb(tb.type = "fit.anova",
                 tb.vars = c(Effect = "term", "df", "italic(F)" = "stat",
@@ -430,22 +442,22 @@ if (broom.installed)
 
 # ANOVA summary, with default formatting
 if (broom.installed)
-  ggplot(my.df, aes(group, x)) +
+  ggplot(my.df, aes(group, response)) +
     geom_point() +
     stat_fit_tb() +
-    expand_limits(y = 70)
+    expand_limits(y = 65)
 
 ## covariate is a numeric variable and group is a factor
 # ANCOVA (covariate not plotted) ANOVA table, with default formatting
 if (broom.installed)
-  ggplot(my.df, aes(group, x, z = covariate)) +
+  ggplot(my.df, aes(group, response, z = covariate)) +
     geom_point() +
     stat_fit_tb(tb.type = "fit.anova",
                 method.args = list(formula = y ~ x + z))
 
 # ANCOVA (covariate not plotted) ANOVA table, with manual table formatting
 if (broom.installed)
-  ggplot(my.df, aes(group, x, z = covariate)) +
+  ggplot(my.df, aes(group, response, z = covariate)) +
     geom_point() +
     stat_fit_tb(tb.type = "fit.anova",
                 method.args = list(formula = y ~ x + z),
@@ -460,7 +472,7 @@ if (broom.installed)
 ## group is a factor or discrete variable
 # t-test, minimal output, with manual table formatting
 if (broom.installed)
-  ggplot(my.df, aes(group, x)) +
+  ggplot(my.df, aes(group, response)) +
     geom_point() +
     stat_fit_tb(method = "t.test",
               tb.vars = c("italic(t)" = "statistic",
@@ -469,7 +481,7 @@ if (broom.installed)
 
 # t-test, more detailed output, with manual table formatting
 if (broom.installed)
-  ggplot(my.df, aes(group, x)) +
+  ggplot(my.df, aes(group, response)) +
     geom_point() +
     stat_fit_tb(method = "t.test",
               tb.vars = c("\"Delta \"*italic(x)" = "estimate",
@@ -477,12 +489,12 @@ if (broom.installed)
                           "italic(t)" = "statistic",
                           "italic(P)" = "p.value"),
               parse = TRUE) +
-    expand_limits(y = 67)
+    expand_limits(y = 65)
 
 # t-test (equal variances assumed), minimal output, with manual
 # table formatting
 if (broom.installed)
-  ggplot(my.df, aes(group, x)) +
+  ggplot(my.df, aes(group, response)) +
     geom_point() +
     stat_fit_tb(method = "t.test",
                 method.args = list(formula = y ~ x, var.equal = TRUE),
@@ -493,7 +505,7 @@ if (broom.installed)
 ## covariate is a numeric or continuous variable
 # Linear regression using a table theme and non-default position
 if (broom.installed)
-  ggplot(my.df, aes(covariate, x)) +
+  ggplot(my.df, aes(covariate, response)) +
     geom_point() +
     stat_fit_tb(table.theme = ttheme_gtlight,
                 npcx = "left", npcy = "bottom") +

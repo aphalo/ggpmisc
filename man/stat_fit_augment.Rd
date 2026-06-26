@@ -100,6 +100,12 @@ default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
   corresponding to the \code{method} used to fit the model. Be aware that
   \code{se_fit = FALSE} is the default in these methods even when supported.
 
+  This statistics is meant to be used in situations when all of
+  \code{\link{stat_poly_line}()}, \code{\link{stat_quant_line}()},
+  \code{\link{stat_ma_line}()}, \code{\link{stat_quant_band}()},
+  \code{\link{stat_fit_residuals}()} and \code{\link{stat_fit_fitted}()} are
+  unsuitable.
+
   \strong{Warning!} Not all \code{augment()} method specializations are
   defined in package 'broom'. \code{augment()} specializations for mixed
   models fits of classes \code{"lme"}, \code{"nlme"}, \code{"lme4"} and many

@@ -115,6 +115,11 @@ The output of the \code{glance()} methods is returned almost as is in
   carefully read the documentation for the version of \code{glance()}
   corresponding to the \code{method} used to fit the model.
 
+  This statistics is meant to be used in situations when all of
+  \code{\link{stat_poly_eq}()}, \code{\link{stat_quant_eq}()},
+  \code{\link{stat_ma_eq}()} and \code{\link{stat_correlation}()} are
+  unsuitable.
+
   \strong{Warning!} Not all \code{glance()} methods are defined in package
   'broom'. \code{glance()} specializations for mixed models fits of classes
   \code{"lme"}, \code{"nlme"}, \code{"lme4"} and many others are defined in
@@ -123,8 +128,8 @@ The output of the \code{glance()} methods is returned almost as is in
 \section{Handling of grouping}{
  \code{stat_fit_glance} applies the function
   given by \code{method} separately to each group of observations, and
-  factors mapped to aesthetics, including \code{x} and \code{y}, create a
-  separate group for each factor level. Because of this,
+  factors mapped to aesthetics, including \code{x} and \code{y} aesthetics,
+  create a separate group for each factor level. Because of this,
   \code{stat_fit_glance} is not useful for annotating plots with results from
   \code{t.test()}, ANOVA or ANCOVA. In such cases use the
   \code{stat_fit_tb()} statistic which applies the model fitting per panel.
@@ -255,24 +260,12 @@ if (broom.installed) {
   library(broom)
 }
 
-if (gginnards.installed) {
-    library(gginnards)
-}
-
-# Inspecting the returned data using geom_debug_group()
-  if (broom.installed && gginnards.installed) {
-    ggplot(mtcars, aes(x = disp, y = mpg)) +
-      stat_smooth(method = "lm") +
-      geom_point(aes(colour = factor(cyl))) +
-      stat_fit_glance(method = "lm",
-                      method.args = list(formula = y ~ x),
-                      geom = "debug_group")
-}
-
-if (broom.installed)
 # Regression by panel example
+# simpler alternative: stat_poly_eq()
+#
+if (broom.installed)
   ggplot(mtcars, aes(x = disp, y = mpg)) +
-    stat_smooth(method = "lm", formula = y ~ x) +
+    stat_poly_line() +
     geom_point(aes(colour = factor(cyl))) +
     stat_fit_glance(method = "lm",
                     label.y = "bottom",
@@ -285,9 +278,11 @@ if (broom.installed)
                     parse = TRUE)
 
 # Regression by group example
+# simpler alternative: stat_poly_eq()
+#
 if (broom.installed)
   ggplot(mtcars, aes(x = disp, y = mpg, colour = factor(cyl))) +
-    stat_smooth(method = "lm") +
+    stat_poly_line() +
     geom_point() +
     stat_fit_glance(method = "lm",
                     label.y = "bottom",
@@ -299,9 +294,11 @@ if (broom.installed)
                     parse = TRUE)
 
 # Weighted regression example
+# simpler alternative: stat_poly_eq()
+#
 if (broom.installed)
   ggplot(mtcars, aes(x = disp, y = mpg, weight = cyl)) +
-    stat_smooth(method = "lm") +
+    stat_poly_line() +
     geom_point(aes(colour = factor(cyl))) +
     stat_fit_glance(method = "lm",
                     label.y = "bottom",
@@ -314,6 +311,8 @@ if (broom.installed)
                     parse = TRUE)
 
 # correlation test
+# simpler alternative: stat_correlation()
+#
 if (broom.installed)
   ggplot(mtcars, aes(x = disp, y = mpg)) +
     geom_point() +
@@ -339,6 +338,21 @@ if (broom.installed)
                         sprintf('r[Spearman]~"="~\%.3f~~italic(P)~"="~\%.2g',
                                 estimate, p.value))),
                     parse = TRUE)
+
+# Inspecting the returned data using geom_debug_group()
+#
+if (gginnards.installed) {
+    library(gginnards)
+}
+
+if (broom.installed && gginnards.installed) {
+    ggplot(mtcars, aes(x = disp, y = mpg)) +
+      stat_smooth(method = "lm") +
+      geom_point(aes(colour = factor(cyl))) +
+      stat_fit_glance(method = "lm",
+                      method.args = list(formula = y ~ x),
+                      geom = "debug_group")
+}
 
 }
 \seealso{

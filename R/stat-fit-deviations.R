@@ -203,8 +203,11 @@ fitted_compute_group_fun <- function(data,
                                      n.min = 2L,
                                      formula =  y ~ x,
                                      fit.seed = NA,
-                                     orientation = "x",
-                                     return.fitted = FALSE) {
+                                     return.fitted = FALSE,
+                                     flipped_aes = NA,
+                                     orientation = "x") {
+
+  # we flip the model formula, not the data
 
   temp.ls <- fit_models_internal(data = data,
                                  method = method,
@@ -232,6 +235,9 @@ fitted_compute_group_fun <- function(data,
                     y = fitted.vals)
   }
 
+  z$flipped_aes <- flipped_aes
+  # no need to flip the results, but we record the flipping
+
   show_colnames(z, stat.name = "stat_fit_fitted")
 
   z
@@ -245,7 +251,13 @@ fitted_compute_group_fun <- function(data,
 #'
 StatFitFitted <-
   ggplot2::ggproto("StatFitFitted", ggplot2::Stat,
+                   setup_params = function(data, params) {
+                     params[["flipped_aes"]] <-
+                       ggplot2::has_flipped_aes(data, params, ambiguous = TRUE)
+                     params
+                   },
                    extra_params = c("na.rm", "orientation"),
                    compute_group = fitted_compute_group_fun,
+                   dropped_aes = c("weight"),
                    required_aes = c("x", "y")
   )

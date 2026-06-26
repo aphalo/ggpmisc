@@ -27,6 +27,11 @@
 #'   carefully read the documentation for the version of \code{glance()}
 #'   corresponding to the \code{method} used to fit the model.
 #'
+#'   This statistics is meant to be used in situations when all of
+#'   \code{\link{stat_poly_eq}()}, \code{\link{stat_quant_eq}()},
+#'   \code{\link{stat_ma_eq}()} and \code{\link{stat_correlation}()} are
+#'   unsuitable.
+#'
 #'   \strong{Warning!} Not all \code{glance()} methods are defined in package
 #'   'broom'. \code{glance()} specializations for mixed models fits of classes
 #'   \code{"lme"}, \code{"nlme"}, \code{"lme4"} and many others are defined in
@@ -34,8 +39,8 @@
 #'
 #' @section Handling of grouping: \code{stat_fit_glance} applies the function
 #'   given by \code{method} separately to each group of observations, and
-#'   factors mapped to aesthetics, including \code{x} and \code{y}, create a
-#'   separate group for each factor level. Because of this,
+#'   factors mapped to aesthetics, including \code{x} and \code{y} aesthetics,
+#'   create a separate group for each factor level. Because of this,
 #'   \code{stat_fit_glance} is not useful for annotating plots with results from
 #'   \code{t.test()}, ANOVA or ANCOVA. In such cases use the
 #'   \code{stat_fit_tb()} statistic which applies the model fitting per panel.
@@ -71,24 +76,12 @@
 #'   library(broom)
 #' }
 #'
-#' if (gginnards.installed) {
-#'     library(gginnards)
-#' }
-#'
-#' # Inspecting the returned data using geom_debug_group()
-#'   if (broom.installed && gginnards.installed) {
-#'     ggplot(mtcars, aes(x = disp, y = mpg)) +
-#'       stat_smooth(method = "lm") +
-#'       geom_point(aes(colour = factor(cyl))) +
-#'       stat_fit_glance(method = "lm",
-#'                       method.args = list(formula = y ~ x),
-#'                       geom = "debug_group")
-#' }
-#'
-#' if (broom.installed)
 #' # Regression by panel example
+#' # simpler alternative: stat_poly_eq()
+#' #
+#' if (broom.installed)
 #'   ggplot(mtcars, aes(x = disp, y = mpg)) +
-#'     stat_smooth(method = "lm", formula = y ~ x) +
+#'     stat_poly_line() +
 #'     geom_point(aes(colour = factor(cyl))) +
 #'     stat_fit_glance(method = "lm",
 #'                     label.y = "bottom",
@@ -101,9 +94,11 @@
 #'                     parse = TRUE)
 #'
 #' # Regression by group example
+#' # simpler alternative: stat_poly_eq()
+#' #
 #' if (broom.installed)
 #'   ggplot(mtcars, aes(x = disp, y = mpg, colour = factor(cyl))) +
-#'     stat_smooth(method = "lm") +
+#'     stat_poly_line() +
 #'     geom_point() +
 #'     stat_fit_glance(method = "lm",
 #'                     label.y = "bottom",
@@ -115,9 +110,11 @@
 #'                     parse = TRUE)
 #'
 #' # Weighted regression example
+#' # simpler alternative: stat_poly_eq()
+#' #
 #' if (broom.installed)
 #'   ggplot(mtcars, aes(x = disp, y = mpg, weight = cyl)) +
-#'     stat_smooth(method = "lm") +
+#'     stat_poly_line() +
 #'     geom_point(aes(colour = factor(cyl))) +
 #'     stat_fit_glance(method = "lm",
 #'                     label.y = "bottom",
@@ -130,6 +127,8 @@
 #'                     parse = TRUE)
 #'
 #' # correlation test
+#' # simpler alternative: stat_correlation()
+#' #
 #' if (broom.installed)
 #'   ggplot(mtcars, aes(x = disp, y = mpg)) +
 #'     geom_point() +
@@ -155,6 +154,21 @@
 #'                         sprintf('r[Spearman]~"="~%.3f~~italic(P)~"="~%.2g',
 #'                                 estimate, p.value))),
 #'                     parse = TRUE)
+#'
+#' # Inspecting the returned data using geom_debug_group()
+#' #
+#' if (gginnards.installed) {
+#'     library(gginnards)
+#' }
+#'
+#' if (broom.installed && gginnards.installed) {
+#'     ggplot(mtcars, aes(x = disp, y = mpg)) +
+#'       stat_smooth(method = "lm") +
+#'       geom_point(aes(colour = factor(cyl))) +
+#'       stat_fit_glance(method = "lm",
+#'                       method.args = list(formula = y ~ x),
+#'                       geom = "debug_group")
+#' }
 #'
 stat_fit_glance <- function(mapping = NULL,
                             data = NULL,
@@ -335,7 +349,7 @@ fit_glance_compute_group_fun <- function(data,
     )
     if (!npc.used) {
       # we need to use scale limits as observations are not necessarily plotted
-      x.range <- scales$ggplot2::flipped_names(flipped_aes)$x$range$range
+      x.range <- scales$flipped_names(flipped_aes)$x$range$range
       label.x <- label.x * diff(x.range) + x.range[1]
     }
   }
@@ -351,7 +365,7 @@ fit_glance_compute_group_fun <- function(data,
     )
     if (!npc.used) {
       # we need to use scale limits as observations are not necessarily plotted
-      y.range <- scales$ggplot2::flipped_names(flipped_aes)$y$range$range
+      y.range <- scales$flipped_names(flipped_aes)$y$range$range
       label.y <- label.y * diff(y.range) + y.range[1]
     }
   }
@@ -433,6 +447,12 @@ StatFitGlance <-
 #'   carefully read the documentation for the version of \code{augment()}
 #'   corresponding to the \code{method} used to fit the model. Be aware that
 #'   \code{se_fit = FALSE} is the default in these methods even when supported.
+#'
+#'   This statistics is meant to be used in situations when all of
+#'   \code{\link{stat_poly_line}()}, \code{\link{stat_quant_line}()},
+#'   \code{\link{stat_ma_line}()}, \code{\link{stat_quant_band}()},
+#'   \code{\link{stat_fit_residuals}()} and \code{\link{stat_fit_fitted}()} are
+#'   unsuitable.
 #'
 #'   \strong{Warning!} Not all \code{augment()} method specializations are
 #'   defined in package 'broom'. \code{augment()} specializations for mixed
@@ -699,13 +719,10 @@ StatFitAugment <-
                    extra_params = c("na.rm"),
                    setup_params = function(data, params) {
                      params[["flipped_aes"]] <-
-                       ggplot2::has_flipped_aes(data = data,
-                                                params = params,
-                                                main_is_orthogonal = TRUE,
-                                                group_has_equal = TRUE,
-                                                ambiguous = FALSE)
+                       ggplot2::has_flipped_aes(data, params, ambiguous = TRUE)
                      params
                    },
+                   extra_params = c("na.rm", "orientation"),
                    compute_group = fit_augment_compute_group_fun,
                    dropped_aes = "weight",
                    default_aes =
@@ -730,11 +747,11 @@ StatFitAugment <-
 #'
 #' @aesthetics StatFitTidy
 #'
-#' @details \code{stat_fit_tidy} together with \code{\link{stat_fit_glance}}
+#' @details \code{stat_fit_tidy()} together with \code{\link{stat_fit_glance}()}
 #'   and \code{\link{stat_fit_augment}}, based on package 'broom' can be used
 #'   with a broad range of model fitting functions as supported at any given
-#'   time by 'broom'. In contrast to \code{\link{stat_poly_eq}} which can
-#'   generate text or expression labels automatically, for these functions the
+#'   time by 'broom'. In contrast to \code{\link{stat_poly_eq}()} which can
+#'   generate formatted text labels automatically, for these functions the
 #'   mapping of aesthetic \code{label} needs to be explicitly supplied in the
 #'   call, and labels built on the fly.
 #'
@@ -745,6 +762,11 @@ StatFitAugment <-
 #'   the \code{method} used to fit the model. You will also need to manually
 #'   install the package, such as 'broom', where the tidier you intend to use
 #'   are defined.
+#'
+#'   This statistics is meant to be used in situations when all of
+#'   \code{\link{stat_poly_eq}()}, \code{\link{stat_quant_eq}()},
+#'   \code{\link{stat_ma_eq}()} and \code{\link{stat_correlation}()} are
+#'   unsuitable.
 #'
 #'   \strong{Warning!} Not all \code{tidy()} methods are defined in package
 #'   'broom'. \code{glance()} specializations for mixed models fits of classes
@@ -801,31 +823,6 @@ StatFitAugment <-
 #'   library(broom)
 #' }
 #'
-#' # Inspecting the returned data using geom_debug_group()
-#'   if (gginnards.installed) {
-#'     library(gginnards)
-#' }
-#'
-#' # Regression by panel, inspecting data
-#' if (broom.installed && gginnards.installed) {
-#'
-#' # Regression by panel, default column names
-#'   ggplot(mtcars, aes(x = disp, y = mpg)) +
-#'     stat_smooth(method = "lm", formula = y ~ x + I(x^2)) +
-#'     geom_point(aes(colour = factor(cyl))) +
-#'     stat_fit_tidy(method = "lm",
-#'                   method.args = list(formula = y ~ x + I(x^2)),
-#'                   geom = "debug_group")
-#'
-#' # Regression by panel, sanitized column names
-#'   ggplot(mtcars, aes(x = disp, y = mpg)) +
-#'     stat_smooth(method = "lm", formula = y ~ x + I(x^2)) +
-#'     geom_point(aes(colour = factor(cyl))) +
-#'     stat_fit_tidy(method = "lm",
-#'                   method.args = list(formula = y ~ x + I(x^2)),
-#'                   geom = "debug_group", sanitize.names = TRUE)
-#' }
-#'
 #' # Regression by panel example
 #' if (broom.installed)
 #'   ggplot(mtcars, aes(x = disp, y = mpg)) +
@@ -861,6 +858,20 @@ StatFitAugment <-
 #'                   mapping = aes(label = after_stat(
 #'                                           sprintf("Slope = %.3g\np-value = %.3g",
 #'                                                   x_estimate, x_p.value))))
+#'
+#' # Inspecting the returned data using geom_debug_group()
+#'   if (gginnards.installed) {
+#'     library(gginnards)
+#' }
+#'
+#' # Regression by panel, default column names
+#' if (broom.installed && gginnards.installed)
+#'   ggplot(mtcars, aes(x = disp, y = mpg)) +
+#'     stat_smooth(method = "lm", formula = y ~ x + I(x^2)) +
+#'     geom_point(aes(colour = factor(cyl))) +
+#'     stat_fit_tidy(method = "lm",
+#'                   method.args = list(formula = y ~ x + I(x^2)),
+#'                   geom = "debug_group")
 #'
 stat_fit_tidy <- function(mapping = NULL,
                           data = NULL,
@@ -1050,7 +1061,7 @@ fit_tidy_compute_group_fun <- function(data,
     )
     if (!npc.used) {
       # we need to use scale limits as observations are not necessarily plotted
-      x.range <- scales$ggplot2::flipped_names(flipped_aes)$x$range$range
+      x.range <- scales$flipped_names(flipped_aes)$x$range$range
       label.x <- label.x * diff(x.range) + x.range[1]
     }
   }
@@ -1066,7 +1077,7 @@ fit_tidy_compute_group_fun <- function(data,
     )
     if (!npc.used) {
       # we need to use scale limits as observations are not necessarily plotted
-      y.range <- scales$ggplot2::flipped_names(flipped_aes)$y$range$range
+      y.range <- scales$flipped_names(flipped_aes)$y$range$range
       label.y <- label.y * diff(y.range) + y.range[1]
     }
   }

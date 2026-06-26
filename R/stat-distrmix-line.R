@@ -154,7 +154,7 @@ distrmix_compute_group_fun <-
                               mean = fm_params.tb[["mu"]],
                               sd = fm_params.tb[["sigma"]],
                               lower.tail = FALSE),
-                        scales$ggplot2::flipped_names(flipped_aes)$x$dimension())
+                        scales[[orientation]]$dimension())
 
     k <- length(fm_params.tb[["lambda"]])
 

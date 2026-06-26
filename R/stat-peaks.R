@@ -460,12 +460,6 @@ StatPeaks <-
   ggplot2::ggproto("StatPeaks", ggplot2::Stat,
                    setup_params = function(data, params) {
                      params$flipped_aes <- ggplot2::has_flipped_aes(data, params)
-
-                     has_x <- !(is.null(data$x) && is.null(params$x))
-                     has_y <- !(is.null(data$y) && is.null(params$y))
-                     if (!has_x || !has_y) {
-                       rlang::abort("stat_peaks() requires both x and y aesthetics.")
-                     }
                      params
                    },
                    extra_params = c("na.rm", "orientation"),
@@ -538,13 +532,6 @@ StatValleys <-
   ggplot2::ggproto("StatValleys", ggplot2::Stat,
                    setup_params = function(data, params) {
                      params$flipped_aes <- ggplot2::has_flipped_aes(data, params)
-
-                     has_x <- !(is.null(data$x) && is.null(params$x))
-                     has_y <- !(is.null(data$y) && is.null(params$y))
-                     if (!has_x || !has_y) {
-                       rlang::abort("stat_valleys() requires both x and y aesthetics.")
-                     }
-
                      params
                    },
                    extra_params = c("na.rm", "orientation"),
