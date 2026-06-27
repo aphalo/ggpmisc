@@ -289,6 +289,19 @@ if (broom.installed)
                                           sprintf("Slope = \%.3g\np-value = \%.3g",
                                                   x_estimate, x_p.value))))
 
+# Flipped regression by panel example
+if (broom.installed)
+  ggplot(mtcars, aes(x = disp, y = mpg)) +
+    stat_smooth(method = "lm", formula = y ~ x) +
+    geom_point(aes(colour = factor(cyl))) +
+    stat_fit_tidy(method = "lm",
+                  orientation = "y",
+                  label.x = "right",
+                  method.args = list(formula = y ~ x),
+                  mapping = aes(label = after_stat(
+                                          sprintf("Slope = \%.3g\np-value = \%.3g",
+                                                  x_estimate, x_p.value))))
+
 # Regression by group example
 if (broom.installed)
   ggplot(mtcars, aes(x = disp, y = mpg, colour = factor(cyl))) +

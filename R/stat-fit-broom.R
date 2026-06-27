@@ -188,11 +188,24 @@ stat_fit_glance <- function(mapping = NULL,
                             na.rm = FALSE,
                             show.legend = FALSE,
                             inherit.aes = TRUE) {
+  if (is.character(method)) {
+    method <- trimws(method, which = "both")
+    method.name <- method
+  } else if (is.function(method)) {
+    method.name <- deparse(substitute(method))
+    if (grepl("^function[ ]*[(]", method.name[1])) {
+      method.name <- "function"
+    }
+  } else {
+    method.name <- "missing"
+  }
+
   ggplot2::layer(
     stat = StatFitGlance, data = data, mapping = mapping, geom = geom,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
     params =
       rlang::list2(method = method,
+                   method.name = method.name,
                    method.args = method.args,
                    glance.args = glance.args,
                    n.min = n.min,
@@ -218,6 +231,7 @@ stat_fit_glance <- function(mapping = NULL,
 fit_glance_compute_group_fun <- function(data,
                                          scales,
                                          method = "lm",
+                                         method.name = "lm",
                                          method.args = list(formula = y ~ x),
                                          n.min = 2L,
                                          fit.seed = NA,
@@ -268,13 +282,6 @@ fit_glance_compute_group_fun <- function(data,
     label.y <- label.y[group.idx]
   } else if (length(label.y) > 0) {
     label.y <- label.y[1]
-  }
-
-  if (is.character(method)) {
-    method.name <- method
-    method <- match.fun(method)
-  } else {
-    method.name <- deparse(substitute(method))
   }
 
   if ("data" %in% names(method.args)) {
@@ -403,7 +410,7 @@ StatFitGlance <-
                                                 params = params,
                                                 main_is_orthogonal = TRUE,
                                                 group_has_equal = TRUE,
-                                                ambiguous = FALSE)
+                                                ambiguous = TRUE)
                      params
                    },
                    compute_group = fit_glance_compute_group_fun,
@@ -499,26 +506,19 @@ StatFitGlance <-
 #'   library(broom)
 #' }
 #'
-#' # Inspecting the returned data using geom_debug_group()
-#'   if (gginnards.installed) {
-#'     library(gginnards)
-#' }
-#'
-#' # Regression by panel, inspecting data
-#' if (broom.installed & gginnards.installed) {
-#'     ggplot(mtcars, aes(x = disp, y = mpg)) +
-#'       geom_point(aes(colour = factor(cyl))) +
-#'       stat_fit_augment(method = "lm",
-#'                        method.args = list(formula = y ~ x),
-#'                        geom = "debug_group",
-#'                        dbgfun.data = colnames)
-#' }
-#'
 #' # Regression by panel example
 #' if (broom.installed)
 #'   ggplot(mtcars, aes(x = disp, y = mpg)) +
 #'     geom_point(aes(colour = factor(cyl))) +
 #'     stat_fit_augment(method = "lm",
+#'                      method.args = list(formula = y ~ x))
+#'
+#' # Flipped regression by panel example
+#' if (broom.installed)
+#'   ggplot(mtcars, aes(x = disp, y = mpg)) +
+#'     geom_point(aes(colour = factor(cyl))) +
+#'     stat_fit_augment(method = "lm",
+#'                      orientation = "y",
 #'                      method.args = list(formula = y ~ x))
 #'
 #' if (broom.installed)
@@ -570,6 +570,21 @@ StatFitGlance <-
 #'                                         weights = quote(weight)),
 #'                      y.out = ".resid")
 #'
+#' # Inspecting the returned data using geom_debug_group()
+#'   if (gginnards.installed) {
+#'     library(gginnards)
+#' }
+#'
+#' # Regression by panel, inspecting data
+#' if (broom.installed & gginnards.installed) {
+#'     ggplot(mtcars, aes(x = disp, y = mpg)) +
+#'       geom_point(aes(colour = factor(cyl))) +
+#'       stat_fit_augment(method = "lm",
+#'                        method.args = list(formula = y ~ x),
+#'                        geom = "debug_group",
+#'                        dbgfun.data = colnames)
+#' }
+#'
 stat_fit_augment <- function(mapping = NULL,
                              data = NULL,
                              geom = "smooth",
@@ -586,11 +601,24 @@ stat_fit_augment <- function(mapping = NULL,
                              na.rm = FALSE,
                              show.legend = FALSE,
                              inherit.aes = TRUE) {
+  if (is.character(method)) {
+    method <- trimws(method, which = "both")
+    method.name <- method
+  } else if (is.function(method)) {
+    method.name <- deparse(substitute(method))
+    if (grepl("^function[ ]*[(]", method.name[1])) {
+      method.name <- "function"
+    }
+  } else {
+    method.name <- "missing"
+  }
+
   ggplot2::layer(
     stat = StatFitAugment, data = data, mapping = mapping, geom = geom,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
     params =
       rlang::list2(method = method,
+                   method.name = method.name,
                    method.args = method.args,
                    augment.args = augment.args,
                    n.min = n.min,
@@ -613,6 +641,7 @@ stat_fit_augment <- function(mapping = NULL,
 fit_augment_compute_group_fun <- function(data,
                                           scales,
                                           method = "lm",
+                                          method.name = method.name,
                                           method.args = list(formula = y ~ x),
                                           n.min = 2L,
                                           fit.seed = NA,
@@ -648,12 +677,6 @@ fit_augment_compute_group_fun <- function(data,
   if (length(unique(data[["x"]])) < n.min) {
     # Not enough data to perform fit
     return(data.frame())
-  }
-  if (is.character(method)) {
-    method.name <- method
-    method <- match.fun(method)
-  } else {
-    method.name <- deparse(substitute(method))
   }
 
   if ("data" %in% names(method.args)) {
@@ -835,6 +858,19 @@ StatFitAugment <-
 #'                                           sprintf("Slope = %.3g\np-value = %.3g",
 #'                                                   x_estimate, x_p.value))))
 #'
+#' # Flipped regression by panel example
+#' if (broom.installed)
+#'   ggplot(mtcars, aes(x = disp, y = mpg)) +
+#'     stat_smooth(method = "lm", formula = y ~ x) +
+#'     geom_point(aes(colour = factor(cyl))) +
+#'     stat_fit_tidy(method = "lm",
+#'                   orientation = "y",
+#'                   label.x = "right",
+#'                   method.args = list(formula = y ~ x),
+#'                   mapping = aes(label = after_stat(
+#'                                           sprintf("Slope = %.3g\np-value = %.3g",
+#'                                                   x_estimate, x_p.value))))
+#'
 #' # Regression by group example
 #' if (broom.installed)
 #'   ggplot(mtcars, aes(x = disp, y = mpg, colour = factor(cyl))) +
@@ -892,11 +928,24 @@ stat_fit_tidy <- function(mapping = NULL,
                           na.rm = FALSE,
                           show.legend = FALSE,
                           inherit.aes = TRUE) {
+  if (is.character(method)) {
+    method <- trimws(method, which = "both")
+    method.name <- method
+  } else if (is.function(method)) {
+    method.name <- deparse(substitute(method))
+    if (grepl("^function[ ]*[(]", method.name[1])) {
+      method.name <- "function"
+    }
+  } else {
+    method.name <- "missing"
+  }
+
   ggplot2::layer(
     stat = StatFitTidy, data = data, mapping = mapping, geom = geom,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
     params =
       rlang::list2(method = method,
+                   method.name = method.name,
                    method.args = method.args,
                    n.min = n.min,
                    fit.seed = fit.seed,
@@ -927,6 +976,7 @@ stat_fit_tidy <- function(mapping = NULL,
 fit_tidy_compute_group_fun <- function(data,
                                        scales,
                                        method = "lm",
+                                       method.name = "lm",
                                        method.args = list(formula = y ~ x),
                                        n.min = 2L,
                                        fit.seed = NA,
@@ -987,13 +1037,6 @@ fit_tidy_compute_group_fun <- function(data,
     label.y <- label.y[group.idx]
   } else if (length(label.y) > 0) {
     label.y <- label.y[1]
-  }
-
-  if (is.character(method)) {
-    method.name <- method
-    method <- match.fun(method)
-  } else {
-    method.name <- deparse(substitute(method))
   }
 
   if ("data" %in% names(method.args)) {
@@ -1123,7 +1166,7 @@ StatFitTidy <-
                                                 params = params,
                                                 main_is_orthogonal = TRUE,
                                                 group_has_equal = TRUE,
-                                                ambiguous = FALSE)
+                                                ambiguous = TRUE)
                      params
                    },
                    compute_group = fit_tidy_compute_group_fun,

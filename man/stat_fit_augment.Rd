@@ -259,26 +259,19 @@ if (broom.installed) {
   library(broom)
 }
 
-# Inspecting the returned data using geom_debug_group()
-  if (gginnards.installed) {
-    library(gginnards)
-}
-
-# Regression by panel, inspecting data
-if (broom.installed & gginnards.installed) {
-    ggplot(mtcars, aes(x = disp, y = mpg)) +
-      geom_point(aes(colour = factor(cyl))) +
-      stat_fit_augment(method = "lm",
-                       method.args = list(formula = y ~ x),
-                       geom = "debug_group",
-                       dbgfun.data = colnames)
-}
-
 # Regression by panel example
 if (broom.installed)
   ggplot(mtcars, aes(x = disp, y = mpg)) +
     geom_point(aes(colour = factor(cyl))) +
     stat_fit_augment(method = "lm",
+                     method.args = list(formula = y ~ x))
+
+# Flipped regression by panel example
+if (broom.installed)
+  ggplot(mtcars, aes(x = disp, y = mpg)) +
+    geom_point(aes(colour = factor(cyl))) +
+    stat_fit_augment(method = "lm",
+                     orientation = "y",
                      method.args = list(formula = y ~ x))
 
 if (broom.installed)
@@ -329,6 +322,21 @@ if (broom.installed)
                      method.args = list(formula = y ~ x,
                                         weights = quote(weight)),
                      y.out = ".resid")
+
+# Inspecting the returned data using geom_debug_group()
+  if (gginnards.installed) {
+    library(gginnards)
+}
+
+# Regression by panel, inspecting data
+if (broom.installed & gginnards.installed) {
+    ggplot(mtcars, aes(x = disp, y = mpg)) +
+      geom_point(aes(colour = factor(cyl))) +
+      stat_fit_augment(method = "lm",
+                       method.args = list(formula = y ~ x),
+                       geom = "debug_group",
+                       dbgfun.data = colnames)
+}
 
 }
 \seealso{

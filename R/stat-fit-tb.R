@@ -338,11 +338,24 @@ stat_fit_tb <- function(mapping = NULL,
                         na.rm = FALSE,
                         show.legend = FALSE,
                         inherit.aes = TRUE) {
+  if (is.character(method)) {
+    method <- trimws(method, which = "both")
+    method.name <- method
+  } else if (is.function(method)) {
+    method.name <- deparse(substitute(method))
+    if (grepl("^function[ ]*[(]", method.name[1])) {
+      method.name <- "function"
+    }
+  } else {
+    method.name <- "missing"
+  }
+
   ggplot2::layer(
     stat = StatFitTb, data = data, mapping = mapping, geom = geom,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
     params =
       rlang::list2(method = method,
+                   method.name = method.name,
                    method.args = method.args,
                    n.min = n.min,
                    fit.seed = fit.seed,
@@ -376,6 +389,7 @@ stat_fit_tb <- function(mapping = NULL,
 fit_tb_compute_panel_fun <- function(data,
                                      scales,
                                      method = "lm",
+                                     method.name = "lm",
                                      method.args = list(formula = y ~ x),
                                      n.min = 2L,
                                      fit.seed = NA,
@@ -418,13 +432,6 @@ fit_tb_compute_panel_fun <- function(data,
     label.y <- label.y[panel.idx]
   } else if (length(label.y) > 0) {
     label.y <- label.y[1]
-  }
-
-  if (is.character(method)) {
-    method.name <- method
-    method <- match.fun(method)
-  } else {
-    method.name <- deparse(substitute(method))
   }
 
   if ("data" %in% names(method.args)) {
