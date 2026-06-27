@@ -10,6 +10,7 @@ stat_fit_tidy(
   geom = "text_npc",
   position = "identity",
   ...,
+  orientation = NA,
   method = "lm",
   method.args = list(formula = y ~ x),
   n.min = 2L,
@@ -41,6 +42,10 @@ layer.}
 \item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This
 can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
+
+\item{orientation}{character Either "x" or "y" controlling the default for
+\code{formula}. The letter indicates the aesthetic considered the
+explanatory variable in the model fit.}
 
 \item{method}{function or character If character, "lm", "rlm", "lmrob",
 "lts", "gls", "ma", "sma", "segreg", "rq" or the name of a model fit
@@ -111,11 +116,11 @@ The output of \code{tidy()} is returned after reshaping it into a
   packages 'broom', 'broom.mixed', or other sources.
 }
 \details{
-\code{stat_fit_tidy} together with \code{\link{stat_fit_glance}}
+\code{stat_fit_tidy()} together with \code{\link{stat_fit_glance}()}
   and \code{\link{stat_fit_augment}}, based on package 'broom' can be used
   with a broad range of model fitting functions as supported at any given
-  time by 'broom'. In contrast to \code{\link{stat_poly_eq}} which can
-  generate text or expression labels automatically, for these functions the
+  time by 'broom'. In contrast to \code{\link{stat_poly_eq}()} which can
+  generate formatted text labels automatically, for these functions the
   mapping of aesthetic \code{label} needs to be explicitly supplied in the
   call, and labels built on the fly.
 
@@ -126,6 +131,11 @@ The output of \code{tidy()} is returned after reshaping it into a
   the \code{method} used to fit the model. You will also need to manually
   install the package, such as 'broom', where the tidier you intend to use
   are defined.
+
+  This statistics is meant to be used in situations when all of
+  \code{\link{stat_poly_eq}()}, \code{\link{stat_quant_eq}()},
+  \code{\link{stat_ma_eq}()} and \code{\link{stat_correlation}()} are
+  unsuitable.
 
   \strong{Warning!} Not all \code{tidy()} methods are defined in package
   'broom'. \code{glance()} specializations for mixed models fits of classes
@@ -267,37 +277,25 @@ if (broom.installed) {
   library(broom)
 }
 
-# Inspecting the returned data using geom_debug_group()
-  if (gginnards.installed) {
-    library(gginnards)
-}
-
-# Regression by panel, inspecting data
-if (broom.installed && gginnards.installed) {
-
-# Regression by panel, default column names
-  ggplot(mtcars, aes(x = disp, y = mpg)) +
-    stat_smooth(method = "lm", formula = y ~ x + I(x^2)) +
-    geom_point(aes(colour = factor(cyl))) +
-    stat_fit_tidy(method = "lm",
-                  method.args = list(formula = y ~ x + I(x^2)),
-                  geom = "debug_group")
-
-# Regression by panel, sanitized column names
-  ggplot(mtcars, aes(x = disp, y = mpg)) +
-    stat_smooth(method = "lm", formula = y ~ x + I(x^2)) +
-    geom_point(aes(colour = factor(cyl))) +
-    stat_fit_tidy(method = "lm",
-                  method.args = list(formula = y ~ x + I(x^2)),
-                  geom = "debug_group", sanitize.names = TRUE)
-}
-
 # Regression by panel example
 if (broom.installed)
   ggplot(mtcars, aes(x = disp, y = mpg)) +
     stat_smooth(method = "lm", formula = y ~ x) +
     geom_point(aes(colour = factor(cyl))) +
     stat_fit_tidy(method = "lm",
+                  label.x = "right",
+                  method.args = list(formula = y ~ x),
+                  mapping = aes(label = after_stat(
+                                          sprintf("Slope = \%.3g\np-value = \%.3g",
+                                                  x_estimate, x_p.value))))
+
+# Flipped regression by panel example
+if (broom.installed)
+  ggplot(mtcars, aes(x = disp, y = mpg)) +
+    stat_smooth(method = "lm", formula = y ~ x) +
+    geom_point(aes(colour = factor(cyl))) +
+    stat_fit_tidy(method = "lm",
+                  orientation = "y",
                   label.x = "right",
                   method.args = list(formula = y ~ x),
                   mapping = aes(label = after_stat(
@@ -327,6 +325,20 @@ if (broom.installed)
                   mapping = aes(label = after_stat(
                                           sprintf("Slope = \%.3g\np-value = \%.3g",
                                                   x_estimate, x_p.value))))
+
+# Inspecting the returned data using geom_debug_group()
+  if (gginnards.installed) {
+    library(gginnards)
+}
+
+# Regression by panel, default column names
+if (broom.installed && gginnards.installed)
+  ggplot(mtcars, aes(x = disp, y = mpg)) +
+    stat_smooth(method = "lm", formula = y ~ x + I(x^2)) +
+    geom_point(aes(colour = factor(cyl))) +
+    stat_fit_tidy(method = "lm",
+                  method.args = list(formula = y ~ x + I(x^2)),
+                  geom = "debug_group")
 
 }
 \seealso{

@@ -847,7 +847,6 @@ multcomp_compute_panel_fun <-
       }
     }
 
-
     if (orientation == "x") {
       obs.range <- scales$y$range$range
     } else {

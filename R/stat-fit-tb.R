@@ -32,12 +32,27 @@
 #'
 #' @details \code{stat_fit_tb()} Applies a model fitting function per panel,
 #'   using the grouping factors from aesthetic mappings in the fitted model.
-#'   This is suitable, for example for analysis of variance used to test for
-#'   differences among groups.
+#'   When continuous variables are mapped to both \code{x} and \code{y} the
+#'   argument passed to orientation determines if the data are flipped or not
+#'   before fitting the model. When a factor is mapped to one of \code{x} or
+#'   \code{y} the orientation is set automatically, with the factor used as
+#'   the \emph{x} in the model equation. In the first case a regression model
+#'   is fitted, and in the second case an analysis of variance is performed
+#'   to test for differences among groups.
 #'
 #'   The argument to \code{method} can be any fit method for which a suitable
 #'   \code{tidy()} method is available, including non-linear regression. Fit
-#'   methods retain their default arguments unless overridden.
+#'   methods retain their default arguments unless overridden with named
+#'   arguments passed in list as argument to \code{method.args}.
+#'
+#'   As an ANOVA or summary table of estimated parameter values takes a
+#'   considerable space in the plotting canvas, in most cases either the scale
+#'   expansion or its limits need to be manually modified to ensure that other
+#'   elements in the plot, such as the observations are not occluded or
+#'   interfere. The effect can be different: manually setting the limits fixes
+#'   them, while adding a multiplicative expansion to the scale modifies the
+#'   width of the empty margin between the limits and the edge of the plotting
+#'   area, with limits set automatically based on the data.
 #'
 #' @inheritSection stat_poly_eq Model formula and model fitting
 #'
@@ -80,10 +95,10 @@
 #'   library(broom)
 #'
 #' # data for examples
-#'   x <- c(44.4, 45.9, 41.9, 53.3, 44.7, 44.1, 50.7, 45.2, 60.1)
-#'   covariate <- sqrt(x) + rnorm(9)
+#'   response <- c(44.4, 45.9, 41.9, 53.3, 44.7, 44.1, 50.7, 45.2, 60.1)
+#'   covariate <- sqrt(response) + rnorm(9)
 #'   group <- factor(c(rep("A", 4), rep("B", 5)))
-#'   my.df <- data.frame(x, group, covariate)
+#'   my.df <- data.frame(response, group, covariate)
 #'
 #' gginnards.installed  <- requireNamespace("gginnards", quietly = TRUE)
 #'
@@ -93,30 +108,33 @@
 #' ## covariate is a numeric or continuous variable
 #' # Linear regression fit summary, all defaults
 #' if (broom.installed)
-#'   ggplot(my.df, aes(covariate, x)) +
+#'   ggplot(my.df, aes(covariate, response)) +
 #'     geom_point() +
 #'     stat_fit_tb() +
-#'     expand_limits(y = 70)
+#'     expand_limits(y = 65) # make space
 #'
-#' # we can use geom_debug_panel() and str() to inspect the returned value
-#' # and discover the variables that can be mapped to aesthetics with
-#' # after_stat()
-#' if (broom.installed && gginnards.installed)
-#'   ggplot(my.df, aes(covariate, x)) +
+#' if (broom.installed)
+#'   ggplot(my.df, aes(covariate, response)) +
 #'     geom_point() +
-#'     stat_fit_tb(geom = "debug_panel", dbgfun.data = str) +
-#'     expand_limits(y = 70)
+#'     stat_fit_tb(orientation = "y") + # data flipped for regression
+#'     expand_limits(y = 65) # make space
+#'
+#' if (broom.installed)
+#'   ggplot(my.df, aes(covariate, response)) +
+#'     geom_point() +
+#'     stat_fit_tb() +
+#'     scale_y_continuous(expand = expansion(mult = c(0.075, 0.3))) # make space
 #'
 #' # Linear regression fit summary, with default formatting
 #' if (broom.installed)
-#'   ggplot(my.df, aes(covariate, x)) +
+#'   ggplot(my.df, aes(covariate, response)) +
 #'     geom_point() +
 #'     stat_fit_tb(tb.type = "fit.summary") +
-#'     expand_limits(y = 70)
+#'     expand_limits(y = 65)
 #'
 #' # Linear regression fit summary, with manual table formatting
 #' if (broom.installed)
-#'   ggplot(my.df, aes(covariate, x)) +
+#'   ggplot(my.df, aes(covariate, response)) +
 #'     geom_point() +
 #'     stat_fit_tb(digits = 2,
 #'                 p.digits = 4,
@@ -125,18 +143,18 @@
 #'                             "italic(s)" = 3, "italic(t)" = 4,
 #'                             "italic(P)" = 5),
 #'                 parse = TRUE) +
-#'     expand_limits(y = 70)
+#'     expand_limits(y = 65)
 #'
 #' # Linear regression ANOVA table, with default formatting
 #' if (broom.installed)
-#'   ggplot(my.df, aes(covariate, x)) +
+#'   ggplot(my.df, aes(covariate, response)) +
 #'     geom_point() +
 #'     stat_fit_tb(tb.type = "fit.anova") +
-#'     expand_limits(y = 70)
+#'     expand_limits(y = 65)
 #'
 #' # Linear regression ANOVA table, with manual table formatting
 #' if (broom.installed)
-#'   ggplot(my.df, aes(covariate, x)) +
+#'   ggplot(my.df, aes(covariate, response)) +
 #'     geom_point() +
 #'     stat_fit_tb(tb.type = "fit.anova",
 #'                 tb.params = c("Covariate" = 1, 2),
@@ -144,61 +162,67 @@
 #'                             "M.S." = 4, "italic(F)" = 5,
 #'                             "italic(P)" = 6),
 #'                 parse = TRUE) +
-#'     expand_limits(y = 67)
+#'     expand_limits(y = 65)
 #'
 #' # Linear regression fit coeficients, with default formatting
 #' if (broom.installed)
-#'   ggplot(my.df, aes(covariate, x)) +
+#'   ggplot(my.df, aes(covariate, response)) +
 #'     geom_point() +
 #'     stat_fit_tb(tb.type = "fit.coefs") +
-#'     expand_limits(y = 67)
+#'     expand_limits(y = 65)
 #'
 #' # Linear regression fit coeficients, with manual table formatting
 #' if (broom.installed)
-#'   ggplot(my.df, aes(covariate, x)) +
+#'   ggplot(my.df, aes(covariate, response)) +
 #'     geom_point() +
 #'     stat_fit_tb(tb.type = "fit.coefs",
 #'                 tb.params = c(a = 1, b = 2),
 #'                 tb.vars = c(Term = 1, Estimate = 2)) +
-#'     expand_limits(y = 67)
+#'     expand_limits(y = 65)
 #'
-#' ## x is also a numeric or continuous variable
+#' ## response is also a numeric or continuous variable
 #' # Polynomial regression, with default formatting
 #' if (broom.installed)
-#'   ggplot(my.df, aes(covariate, x)) +
+#'   ggplot(my.df, aes(covariate, response)) +
 #'     geom_point() +
 #'     stat_fit_tb(method.args = list(formula = y ~ poly(x, 2))) +
-#'     expand_limits(y = 70)
+#'     expand_limits(y = 65)
 #'
 #' # Polynomial regression, with manual table formatting
 #' if (broom.installed)
-#'   ggplot(my.df, aes(covariate, x)) +
+#'   ggplot(my.df, aes(covariate, response)) +
 #'     geom_point() +
 #'     stat_fit_tb(method.args = list(formula = y ~ poly(x, 2)),
 #'                 tb.params = c("x^0" = 1, "x^1" = 2, "x^2" = 3),
 #'                 tb.vars = c("Term" = 1, "Estimate" = 2, "S.E." = 3,
 #'                             "italic(t)" = 4, "italic(P)" = 5),
 #'                 parse = TRUE) +
-#'     expand_limits(y = 70)
+#'     expand_limits(y = 65)
 #'
 #' ## group is a factor or discrete variable
 #' # ANOVA summary, with default formatting
 #' if (broom.installed)
-#'   ggplot(my.df, aes(group, x)) +
+#'   ggplot(my.df, aes(group, response)) +
 #'     geom_point() +
 #'     stat_fit_tb() +
-#'     expand_limits(y = 70)
+#'     expand_limits(y = 65)
+#'
+#' if (broom.installed)
+#'   ggplot(my.df, aes(response, group)) +
+#'     geom_point() +
+#'     stat_fit_tb() +
+#'     expand_limits(y = 2.5)
 #'
 #' # ANOVA table, with default formatting
 #' if (broom.installed)
-#'   ggplot(my.df, aes(group, x)) +
+#'   ggplot(my.df, aes(group, response)) +
 #'     geom_point() +
 #'     stat_fit_tb(tb.type = "fit.anova") +
-#'     expand_limits(y = 70)
+#'     expand_limits(y = 65)
 #'
 #' # ANOVA table, with manual table formatting
 #' if (broom.installed)
-#'   ggplot(my.df, aes(group, x)) +
+#'   ggplot(my.df, aes(group, response)) +
 #'     geom_point() +
 #'     stat_fit_tb(tb.type = "fit.anova",
 #'                 tb.vars = c(Effect = "term", "df", "italic(F)" = "statistic",
@@ -209,7 +233,7 @@
 #' # ANOVA table, with manual table formatting
 #' # using column names with partial matching
 #' if (broom.installed)
-#'   ggplot(my.df, aes(group, x)) +
+#'   ggplot(my.df, aes(group, response)) +
 #'     geom_point() +
 #'     stat_fit_tb(tb.type = "fit.anova",
 #'                 tb.vars = c(Effect = "term", "df", "italic(F)" = "stat",
@@ -219,22 +243,22 @@
 #'
 #' # ANOVA summary, with default formatting
 #' if (broom.installed)
-#'   ggplot(my.df, aes(group, x)) +
+#'   ggplot(my.df, aes(group, response)) +
 #'     geom_point() +
 #'     stat_fit_tb() +
-#'     expand_limits(y = 70)
+#'     expand_limits(y = 65)
 #'
 #' ## covariate is a numeric variable and group is a factor
 #' # ANCOVA (covariate not plotted) ANOVA table, with default formatting
 #' if (broom.installed)
-#'   ggplot(my.df, aes(group, x, z = covariate)) +
+#'   ggplot(my.df, aes(group, response, z = covariate)) +
 #'     geom_point() +
 #'     stat_fit_tb(tb.type = "fit.anova",
 #'                 method.args = list(formula = y ~ x + z))
 #'
 #' # ANCOVA (covariate not plotted) ANOVA table, with manual table formatting
 #' if (broom.installed)
-#'   ggplot(my.df, aes(group, x, z = covariate)) +
+#'   ggplot(my.df, aes(group, response, z = covariate)) +
 #'     geom_point() +
 #'     stat_fit_tb(tb.type = "fit.anova",
 #'                 method.args = list(formula = y ~ x + z),
@@ -249,7 +273,7 @@
 #' ## group is a factor or discrete variable
 #' # t-test, minimal output, with manual table formatting
 #' if (broom.installed)
-#'   ggplot(my.df, aes(group, x)) +
+#'   ggplot(my.df, aes(group, response)) +
 #'     geom_point() +
 #'     stat_fit_tb(method = "t.test",
 #'               tb.vars = c("italic(t)" = "statistic",
@@ -258,7 +282,7 @@
 #'
 #' # t-test, more detailed output, with manual table formatting
 #' if (broom.installed)
-#'   ggplot(my.df, aes(group, x)) +
+#'   ggplot(my.df, aes(group, response)) +
 #'     geom_point() +
 #'     stat_fit_tb(method = "t.test",
 #'               tb.vars = c("\"Delta \"*italic(x)" = "estimate",
@@ -266,12 +290,12 @@
 #'                           "italic(t)" = "statistic",
 #'                           "italic(P)" = "p.value"),
 #'               parse = TRUE) +
-#'     expand_limits(y = 67)
+#'     expand_limits(y = 65)
 #'
 #' # t-test (equal variances assumed), minimal output, with manual
 #' # table formatting
 #' if (broom.installed)
-#'   ggplot(my.df, aes(group, x)) +
+#'   ggplot(my.df, aes(group, response)) +
 #'     geom_point() +
 #'     stat_fit_tb(method = "t.test",
 #'                 method.args = list(formula = y ~ x, var.equal = TRUE),
@@ -282,7 +306,7 @@
 #' ## covariate is a numeric or continuous variable
 #' # Linear regression using a table theme and non-default position
 #' if (broom.installed)
-#'   ggplot(my.df, aes(covariate, x)) +
+#'   ggplot(my.df, aes(covariate, response)) +
 #'     geom_point() +
 #'     stat_fit_tb(table.theme = ttheme_gtlight,
 #'                 npcx = "left", npcy = "bottom") +
@@ -293,6 +317,7 @@ stat_fit_tb <- function(mapping = NULL,
                         geom = "table_npc",
                         position = "identity",
                         ...,
+                        orientation = NA,
                         method = "lm",
                         method.args = list(formula = y ~ x),
                         n.min = 2L,
@@ -313,11 +338,24 @@ stat_fit_tb <- function(mapping = NULL,
                         na.rm = FALSE,
                         show.legend = FALSE,
                         inherit.aes = TRUE) {
+  if (is.character(method)) {
+    method <- trimws(method, which = "both")
+    method.name <- method
+  } else if (is.function(method)) {
+    method.name <- deparse(substitute(method))
+    if (grepl("^function[ ]*[(]", method.name[1])) {
+      method.name <- "function"
+    }
+  } else {
+    method.name <- "missing"
+  }
+
   ggplot2::layer(
     stat = StatFitTb, data = data, mapping = mapping, geom = geom,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
     params =
       rlang::list2(method = method,
+                   method.name = method.name,
                    method.args = method.args,
                    n.min = n.min,
                    fit.seed = fit.seed,
@@ -334,8 +372,9 @@ stat_fit_tb <- function(mapping = NULL,
                    table.rownames = table.rownames,
                    table.colnames = table.colnames,
                    table.hjust = table.hjust,
-                   parse = parse,
                    na.rm = na.rm,
+                   orientation = orientation,
+                   parse = parse,
                    ...)
   )
 }
@@ -350,6 +389,7 @@ stat_fit_tb <- function(mapping = NULL,
 fit_tb_compute_panel_fun <- function(data,
                                      scales,
                                      method = "lm",
+                                     method.name = "lm",
                                      method.args = list(formula = y ~ x),
                                      n.min = 2L,
                                      fit.seed = NA,
@@ -361,11 +401,21 @@ fit_tb_compute_panel_fun <- function(data,
                                      p.digits = digits,
                                      npc.used = TRUE,
                                      label.x = "center",
-                                     label.y = "top") {
+                                     label.y = "top",
+                                     flipped_aes = NA,
+                                     orientation = NA) {
 
   rlang::check_installed("broom", reason = "to use stat_fit_tb()")
 
-  force(data)
+  data <- ggplot2::flip_data(data, flipped_aes)
+  if (is.na(orientation)) {
+    if (flipped_aes) {
+      orientation <- "y"
+    } else {
+      orientation <- "x"
+    }
+  }
+
   if (length(unique(data$x)) < n.min) {
     # Not enough data to perform fit
     return(data.frame())
@@ -382,13 +432,6 @@ fit_tb_compute_panel_fun <- function(data,
     label.y <- label.y[panel.idx]
   } else if (length(label.y) > 0) {
     label.y <- label.y[1]
-  }
-
-  if (is.character(method)) {
-    method.name <- method
-    method <- match.fun(method)
-  } else {
-    method.name <- deparse(substitute(method))
   }
 
   if ("data" %in% names(method.args)) {
@@ -538,7 +581,7 @@ fit_tb_compute_panel_fun <- function(data,
     )
     if (!npc.used) {
       # we need to use scale limits as observations are not necessarily plotted
-      x.range <- scales$x$range$range
+      x.range <- scales$flipped_names(flipped_aes)$x$range$range
       label.x <- label.x * diff(x.range) + x.range[1]
     }
   }
@@ -552,7 +595,7 @@ fit_tb_compute_panel_fun <- function(data,
     )
     if (!npc.used) {
       # we need to use scale limits as observations are not necessarily plotted
-      y.range <- scales$y$range$range
+      y.range <- scales$flipped_aes(flipped_aes)$y$range$range
       label.y <- label.y * diff(y.range) + y.range[1]
     }
   }
@@ -569,6 +612,10 @@ fit_tb_compute_panel_fun <- function(data,
     z$npcy <- NA_real_
   }
 
+  z$flipped_aes <- flipped_aes
+  # no flipping here because x and y give the table position extracted
+  # from flipped scale limits!
+
   show_colnames(z, stat.name = "stat_fit_tb")
 
   z
@@ -581,6 +628,15 @@ fit_tb_compute_panel_fun <- function(data,
 StatFitTb <-
   ggplot2::ggproto("StatFitTb",
                    ggplot2::Stat,
+                   extra_params = c("na.rm", "parse"),
+                   setup_params = function(data, params) {
+                     params[["flipped_aes"]] <-
+                       ggplot2::has_flipped_aes(data = data,
+                                                params = params,
+                                                group_has_equal = TRUE,
+                                                ambiguous = FALSE)
+                     params
+                   },
                    compute_panel = fit_tb_compute_panel_fun,
                    dropped_aes = "weight",
                    default_aes =

@@ -319,7 +319,10 @@ residuals_compute_group_fun <- function(data,
                                         fit.seed = NA,
                                         resid.type = NULL,
                                         weighted = FALSE,
+                                        flipped_aes = NA,
                                         orientation = "x") {
+
+  # we flip the model formula, not the data
 
   temp.ls <- fit_models_internal(data = data,
                                  method = method,
@@ -358,6 +361,9 @@ residuals_compute_group_fun <- function(data,
                     robustness.weights = weights.ls[["rob.weight.vals"]])
   }
 
+  z$flipped_aes <- flipped_aes
+  # no need to flip the results, but we record the flipping
+
   show_colnames(z, stat.name = "stat_fit_residuals")
 
   z
@@ -369,6 +375,12 @@ residuals_compute_group_fun <- function(data,
 #' @export
 StatFitResiduals <-
   ggplot2::ggproto("StatFitResiduals", ggplot2::Stat,
+                   setup_params = function(data, params) {
+                     params[["flipped_aes"]] <-
+                       ggplot2::has_flipped_aes(data, params, ambiguous = TRUE)
+                     params
+                   },
+                   extra_params = c("na.rm", "orientation"),
                    compute_group = residuals_compute_group_fun,
                    dropped_aes = "weight",
                    required_aes = c("x", "y")

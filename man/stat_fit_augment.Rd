@@ -10,6 +10,7 @@ stat_fit_augment(
   geom = "smooth",
   position = "identity",
   ...,
+  orientation = NA,
   method = "lm",
   method.args = list(formula = y ~ x),
   n.min = 2L,
@@ -38,6 +39,10 @@ layer.}
 \item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}. This
 can include aesthetics whose values you want to set, not map. See
 \code{\link[ggplot2]{layer}} for more details.}
+
+\item{orientation}{character Either "x" or "y" controlling the default for
+\code{formula}. The letter indicates the aesthetic considered the
+explanatory variable in the model fit.}
 
 \item{method}{function or character If character, "lm", "rlm", "lmrob",
 "lts", "gls", "ma", "sma", "segreg", "rq" or the name of a model fit
@@ -94,6 +99,12 @@ default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
   carefully read the documentation for the version of \code{augment()}
   corresponding to the \code{method} used to fit the model. Be aware that
   \code{se_fit = FALSE} is the default in these methods even when supported.
+
+  This statistics is meant to be used in situations when all of
+  \code{\link{stat_poly_line}()}, \code{\link{stat_quant_line}()},
+  \code{\link{stat_ma_line}()}, \code{\link{stat_quant_band}()},
+  \code{\link{stat_fit_residuals}()} and \code{\link{stat_fit_fitted}()} are
+  unsuitable.
 
   \strong{Warning!} Not all \code{augment()} method specializations are
   defined in package 'broom'. \code{augment()} specializations for mixed
@@ -248,26 +259,19 @@ if (broom.installed) {
   library(broom)
 }
 
-# Inspecting the returned data using geom_debug_group()
-  if (gginnards.installed) {
-    library(gginnards)
-}
-
-# Regression by panel, inspecting data
-if (broom.installed & gginnards.installed) {
-    ggplot(mtcars, aes(x = disp, y = mpg)) +
-      geom_point(aes(colour = factor(cyl))) +
-      stat_fit_augment(method = "lm",
-                       method.args = list(formula = y ~ x),
-                       geom = "debug_group",
-                       dbgfun.data = colnames)
-}
-
 # Regression by panel example
 if (broom.installed)
   ggplot(mtcars, aes(x = disp, y = mpg)) +
     geom_point(aes(colour = factor(cyl))) +
     stat_fit_augment(method = "lm",
+                     method.args = list(formula = y ~ x))
+
+# Flipped regression by panel example
+if (broom.installed)
+  ggplot(mtcars, aes(x = disp, y = mpg)) +
+    geom_point(aes(colour = factor(cyl))) +
+    stat_fit_augment(method = "lm",
+                     orientation = "y",
                      method.args = list(formula = y ~ x))
 
 if (broom.installed)
@@ -318,6 +322,21 @@ if (broom.installed)
                      method.args = list(formula = y ~ x,
                                         weights = quote(weight)),
                      y.out = ".resid")
+
+# Inspecting the returned data using geom_debug_group()
+  if (gginnards.installed) {
+    library(gginnards)
+}
+
+# Regression by panel, inspecting data
+if (broom.installed & gginnards.installed) {
+    ggplot(mtcars, aes(x = disp, y = mpg)) +
+      geom_point(aes(colour = factor(cyl))) +
+      stat_fit_augment(method = "lm",
+                       method.args = list(formula = y ~ x),
+                       geom = "debug_group",
+                       dbgfun.data = colnames)
+}
 
 }
 \seealso{

@@ -96,22 +96,6 @@ test_that("broom_noload", {
 library(ggpmisc)
 
 test_that("glance_methods", {
-  # ggplot(my.data, aes(x, y)) +
-  #   geom_point() +
-  #   stat_fit_glance(geom = "debug_group")
-  #
-  # ggplot(my.data, aes(x, y)) +
-  #   geom_point() +
-  #   stat_fit_glance(method = "rq", geom = "debug_group")
-  #
-  # ggplot(my.data, aes(x, y)) +
-  #   geom_point() +
-  #   stat_fit_glance(method = "cor.test", method.args = list(formula = ~ x + y), geom = "debug_group")
-  #
-  # ggplot(my.data, aes(x, y)) +
-  #   geom_point() +
-  #   stat_fit_glance(method = "cor.test", method.arg = list(x = "x", y = "y"), geom = "debug_group")
-
   vdiffr::expect_doppelganger("glance_method_default",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
@@ -125,10 +109,24 @@ test_that("glance_methods", {
                                                     after_stat(df.residual))))
   )
 
+  vdiffr::expect_doppelganger("glance_method_flipped",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_fit_glance(mapping =
+                                                  aes(label = sprintf("%.3g, %.3f, %.3f, %.3g, %.3g, %.3g",
+                                                                      after_stat(p.value),
+                                                                      after_stat(r.squared),
+                                                                      after_stat(adj.r.squared),
+                                                                      after_stat(AIC),
+                                                                      after_stat(BIC),
+                                                                      after_stat(df.residual))),
+                                                orientation = "y")
+  )
+
   vdiffr::expect_doppelganger("glance_method_lm_fun",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
-                                stat_fit_glance(method = "lm",
+                                stat_fit_glance(method = lm,
                                                 mapping =
                                                   aes(label = sprintf("%.3g, %.3f, %.3f, %.3g, %.3g, %.3g",
                                                                       after_stat(p.value),
@@ -238,6 +236,22 @@ test_that("tidy_methods", {
                                                                       after_stat(x_se))))
   )
 
+  vdiffr::expect_doppelganger("tidy_method_flipped",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_fit_tidy(orientation = "y",
+                                              mapping =
+                                                aes(label = sprintf("%.3g, %.3g, %.3g, %.3g\n%.3g, %.3g, %.3g, %.3g",
+                                                                    after_stat(Intercept_estimate),
+                                                                    after_stat(Intercept_p.value),
+                                                                    after_stat(Intercept_stat),
+                                                                    after_stat(Intercept_se),
+                                                                    after_stat(x_estimate),
+                                                                    after_stat(x_p.value),
+                                                                    after_stat(x_stat),
+                                                                    after_stat(x_se))))
+  )
+
   vdiffr::expect_doppelganger("tidy_method_lm_fun",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
@@ -334,6 +348,13 @@ test_that("augment_methods", {
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
                                 stat_fit_augment(),
+                              variant = snap_version
+  )
+
+  vdiffr::expect_doppelganger("augment_method_flipped",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_fit_augment(orientation = "y"),
                               variant = snap_version
   )
 
