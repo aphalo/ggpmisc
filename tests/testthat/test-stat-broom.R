@@ -236,6 +236,22 @@ test_that("tidy_methods", {
                                                                       after_stat(x_se))))
   )
 
+  vdiffr::expect_doppelganger("tidy_method_flipped",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_fit_tidy(orientation = "y",
+                                              mapping =
+                                                aes(label = sprintf("%.3g, %.3g, %.3g, %.3g\n%.3g, %.3g, %.3g, %.3g",
+                                                                    after_stat(Intercept_estimate),
+                                                                    after_stat(Intercept_p.value),
+                                                                    after_stat(Intercept_stat),
+                                                                    after_stat(Intercept_se),
+                                                                    after_stat(x_estimate),
+                                                                    after_stat(x_p.value),
+                                                                    after_stat(x_stat),
+                                                                    after_stat(x_se))))
+  )
+
   vdiffr::expect_doppelganger("tidy_method_lm_fun",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
@@ -332,6 +348,13 @@ test_that("augment_methods", {
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
                                 stat_fit_augment(),
+                              variant = snap_version
+  )
+
+  vdiffr::expect_doppelganger("augment_method_flipped",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_fit_augment(orientation = "y"),
                               variant = snap_version
   )
 

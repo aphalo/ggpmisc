@@ -277,6 +277,24 @@ if (broom.installed)
                                   r.squared, p.value))),
                     parse = TRUE)
 
+# Flipped regression by panel example
+# simpler alternative: stat_poly_eq()
+#
+if (broom.installed)
+  ggplot(mtcars, aes(x = disp, y = mpg)) +
+    stat_poly_line(orientation = "y") +
+    geom_point(aes(colour = factor(cyl))) +
+    stat_fit_glance(method = "lm",
+                    orientation = "y",
+                    label.y = "bottom",
+                    method.args = list(formula = y ~ x),
+                    mapping =
+                      aes(label =
+                        after_stat(
+                          sprintf('italic(r)^2~"="~\%.3f~~italic(P)~"="~\%.2g',
+                                  r.squared, p.value))),
+                    parse = TRUE)
+
 # Regression by group example
 # simpler alternative: stat_poly_eq()
 #
