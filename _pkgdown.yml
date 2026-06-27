@@ -106,6 +106,8 @@ navbar:
         href: articles/mixture-models.html
       - text: 'Non-linear model fits'
         href: articles/non-linear-models.html
+      - text: 'Multiple comparisons'
+        href: articles/multcomp.html
       - text: 'Peaks and Valleys'
         href: articles/peaks-and-valleys.html
       - text: 'Using LaTeX for annotations'
@@ -119,8 +121,6 @@ navbar:
         href: https://www.r4photobiology.info/galleries/plot-animation.html
       - text: 'Volcano and quadrant plots'
         href: https://www.r4photobiology.info/galleries/quadrant-volcano-plots.html
-      - text: 'Multiple comparisons'
-        href: https://www.r4photobiology.info/galleries/multcomp.html
       - text: 'Fitted-model labels in Markdown'
         href: https://www.r4photobiology.info/galleries/plot-equations-markdown.html
     tutorials:

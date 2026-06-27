@@ -6,9 +6,6 @@ editor_options:
 
 # ggpmisc 1.0.0
 
-- Add `stat_spikes()` with similar functionality as `stat_peaks()` and 
-`stat_valleys()` but targeting very narrow peaks and valleys with unusually
-abrupt transitions from the baseline.
 - Add `f_use_label()` like `use_label()` but relying on a `format` to build the
 combined character string mapped to the `label` aesthetic.
 - Update all statistics so that they issue a message listing short names of
@@ -18,6 +15,9 @@ on-the-fly transformations in the rhs or lhs, indicating the need to pass a
 matching argument to `eq.x.rhs` or `eq.lhs`. Fix parsing failures leading to
 wrong test outcomes in some edge cases. Detect formulas containing spline
 base functions as not being regular polynomials.
+- Add `stat_spikes()` with similar functionality as `stat_peaks()` and 
+`stat_valleys()` but targeting very narrow peaks and valleys with unusually
+abrupt transitions from the baseline.
 - Support flipping of orientation and guess default `orientation` automatically
 from the aesthetic mapping in `stat_multcomp()`, and when possible in 
 `stat_fit_tb()`, `stat_fit_glance()`, `stat_fit_tidy()` and `stat_fit_augment()`.
@@ -41,11 +41,14 @@ used to compute the prediction line.
 - Add parameters `fullrange` and `limit.to` to `stat_quant_line()` and
 `stat_quant_band()` for consistency, adding previously lacking control over the
 prediction range.
-- Support extraction of posterior weights for models fitted with methods
+- **Breaking:** as robustness weights are just one type of posterior weights, the 
+name of the returned variable has been changed from `robustness.weights` into
+`posterior.weights`.
+- Add support for extraction of posterior weights for models fitted with methods
 `"gls"`, (`"lme"` and `"nlme"`). These weights are NOT scaled to values in 0..1!
 - Change default from `show.legend = FALSE` to `show.legend = TRUE` in 
 `stat_fit_residuals()` and `stat_fit_deviations()`.
-- Fix bug in support of `smatr::ma()` and `smatr::sma()` in `stat_poly_eq()` 
+- Fix **bug** in support of `smatr::ma()` and `smatr::sma()` in `stat_poly_eq()` 
 with `- 1` or `+ 0` in `formula`: $x^2$ shown instead of $x$.
 - Rewrite `find_spikes()` with changes in behaviour and formal parameters. Old
 version did not work as documented, or even usefully.

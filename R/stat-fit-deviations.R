@@ -102,7 +102,7 @@ deviations_compute_group_fun <- function(data,
                     x.fitted = fitted.vals,
                     y.fitted = data$y,
                     weights = weights.ls[["weight.vals"]],
-                    robustness.weights = weights.ls[["rob.weight.vals"]],
+                    posterior.weights = weights.ls[["rob.weight.vals"]],
                     hjust = 0)
   } else {
     z <- data.frame(x = data$x,
@@ -110,7 +110,7 @@ deviations_compute_group_fun <- function(data,
                     x.fitted = data$x,
                     y.fitted = fitted.vals,
                     weights = weights.ls[["weight.vals"]],
-                    robustness.weights = weights.ls[["rob.weight.vals"]],
+                    posterior.weights = weights.ls[["rob.weight.vals"]],
                     hjust = 0)
   }
 

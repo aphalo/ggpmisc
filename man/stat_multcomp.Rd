@@ -346,10 +346,6 @@ p1 +
 p1 +
   stat_multcomp(p.adjust.method = "fdr")
 
-# no correction, useful only for comparison
-p1 +
-  stat_multcomp(p.adjust.method = "none")
-
 # position of contrasts' bars (based on scale limits)
 p1 +
   stat_multcomp(label.y = "bottom")
@@ -391,10 +387,6 @@ p1 +
   stat_multcomp(label.type = "letters",
                 label.y = "top")
 
-p1 +
-  stat_multcomp(label.type = "letters",
-                label.y = 0)
-
 # stricter critical p-value than default used for test
 p1 +
   stat_multcomp(label.type = "letters",
@@ -425,12 +417,6 @@ p1 +
 if (gginnards.installed)
 p1 +
   stat_multcomp(label.type = "letters",
-                geom = "debug_panel")
-
-if (gginnards.installed)
-p1 +
-  stat_multcomp(label.type = "bars",
-                output.type = "numeric",
                 geom = "debug_panel")
 
 }

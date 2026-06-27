@@ -83,7 +83,7 @@ In the case of outliers, many methods are available, and each fit function usual
 
 _Prior_ numerical weights are passed by mapping a variable to the `weight` aesthetic (and used as argument to the `weights` parameter of model fit funcitons). _Posterior_ weights are computed in connection with the fitting of the model, sometimes by comparison to OLS. 
 
-Even if these approaches work "automatically", similarly as when discarding observations manually, it is important to investigate the origin of outliers, and which observations are bing ignored or down-weighted during model fitting. To ensure reproducibility and interpretability it is crucial to report the results of analyses clearly showing the weights used for different observations. For this reason `stat_poly_line()` and `stat_fit_deviations()` in 'ggpmisc' (>= 0.7.0) include in the returned `data` objects (the input to geoms) whenever they are available, both _prior_ `weights` and _posterior_ `robustness.weights`. The former being those passed by mapping a variable to the `weight` aesthetic and used as argument for the `weights` parameter of model fit function, and the latter being those actually used, and possibly computed during model fitting.
+Even if these approaches work "automatically", similarly as when discarding observations manually, it is important to investigate the origin of outliers, and which observations are bing ignored or down-weighted during model fitting. To ensure reproducibility and interpretability it is crucial to report the results of analyses clearly showing the weights used for different observations. For this reason `stat_poly_line()` and `stat_fit_deviations()` in 'ggpmisc' (>= 0.7.0) include in the returned `data` objects (the input to geoms) whenever they are available, both _prior_ `weights` and _posterior_ `posterior.weights`. The former being those passed by mapping a variable to the `weight` aesthetic and used as argument for the `weights` parameter of model fit function, and the latter being those actually used, and possibly computed during model fitting.
 
 ### Robust regression ('MASS')
 
@@ -106,7 +106,7 @@ ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
                label.x = "right",
                method = "rlm") +
   stat_fit_deviations(method = "rlm",
-                      mapping = aes(colour = after_stat(robustness.weights)),
+                      mapping = aes(colour = after_stat(posterior.weights)),
                       show.legend = TRUE,
                       geom = "point") +
   scale_color_gradient(low = "red", high = "blue", limits = c(0, 1)) +
@@ -121,7 +121,7 @@ ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
   stat_fit_fitted(method = "rlm", shape = "cross") +
   stat_fit_deviations(method = "rlm", linewidth = 0.3) +
   stat_fit_deviations(method = "rlm",
-                      mapping = aes(colour = after_stat(robustness.weights)),
+                      mapping = aes(colour = after_stat(posterior.weights)),
                       show.legend = TRUE,
                       geom = "point")+
   scale_color_gradient(low = "red", high = "blue", limits = c(0, 1)) +
@@ -135,7 +135,7 @@ ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
   geom_hline(yintercept = 0, linetype = "dotted") +
   stat_fit_residuals(method = "rlm",
                      resid.type = "response",
-                     mapping = aes(colour = after_stat(robustness.weights)),
+                     mapping = aes(colour = after_stat(posterior.weights)),
                      show.legend = TRUE,
                      geom = "point") +
   labs(y = "Response residuals") +
@@ -148,7 +148,7 @@ ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
   geom_hline(yintercept = 0, linetype = "dotted") +
   stat_fit_residuals(method = "rlm",
                      resid.type = "pearson",
-                     mapping = aes(colour = after_stat(robustness.weights)),
+                     mapping = aes(colour = after_stat(posterior.weights)),
                      show.legend = TRUE,
                      geom = "point") +
   labs(y = "Pearson residuals") +
@@ -168,7 +168,7 @@ ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
   stat_poly_line(method = "rlm", 
                  formula = my.formula,
                  colour = "black") +
-  stat_fit_deviations(mapping = aes(colour = after_stat(robustness.weights)),
+  stat_fit_deviations(mapping = aes(colour = after_stat(posterior.weights)),
                       method = "rlm",
                       formula = my.formula,
                       show.legend = TRUE,
@@ -186,7 +186,7 @@ ggplot(mpg, aes(displ, hwy)) +
   stat_poly_eq(method = "rlm", mapping = use_label("eq", "n"),
                label.x = "right") +
     stat_fit_deviations(method = "rlm",
-                      mapping = aes(colour = after_stat(robustness.weights)),
+                      mapping = aes(colour = after_stat(posterior.weights)),
                       show.legend = TRUE,
                       geom = "point") +
   facet_wrap(~class, ncol = 2) +
@@ -215,7 +215,7 @@ ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
                label.x = "right",
                method = "lmrob") +
   stat_fit_deviations(method = "lmrob",
-                      mapping = aes(colour = after_stat(robustness.weights)),
+                      mapping = aes(colour = after_stat(posterior.weights)),
                       show.legend = TRUE,
                       geom = "point") +
   scale_color_gradient(low = "red", high = "blue", limits = c(0, 1)) +
@@ -230,7 +230,7 @@ ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
   stat_fit_fitted(method = "lmrob", shape = "cross") +
   stat_fit_deviations(method = "lmrob", linewidth = 0.3) +
   stat_fit_deviations(method = "lmrob",
-                      mapping = aes(colour = after_stat(robustness.weights)),
+                      mapping = aes(colour = after_stat(posterior.weights)),
                       show.legend = TRUE,
                       geom = "point")+
   scale_color_gradient(low = "red", high = "blue", limits = c(0, 1)) +
@@ -245,7 +245,7 @@ ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
   geom_hline(yintercept = 0, linetype = "dotted") +
   stat_fit_residuals(method = "lmrob",
                      resid.type = "response",
-                     mapping = aes(colour = after_stat(robustness.weights)),
+                     mapping = aes(colour = after_stat(posterior.weights)),
                      show.legend = TRUE,
                      geom = "point") +
   labs(y = "Response residuals") +
@@ -276,7 +276,7 @@ ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
                label.x = "right",
                method = "lts") +
   stat_fit_deviations(method = "lts",
-                      mapping = aes(colour = after_stat(robustness.weights)),
+                      mapping = aes(colour = after_stat(posterior.weights)),
                       show.legend = TRUE,
                       geom = "point") +
   scale_color_gradient(low = "red", high = "blue", limits = c(0, 1)) +
@@ -292,7 +292,7 @@ ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
   stat_fit_fitted(method = "lts", shape = "cross") +
   stat_fit_deviations(method = "lts", linewidth = 0.3) +
   stat_fit_deviations(method = "lts",
-                      mapping = aes(colour = after_stat(robustness.weights)),
+                      mapping = aes(colour = after_stat(posterior.weights)),
                       show.legend = TRUE,
                       geom = "point")+
   scale_color_gradient(low = "red", high = "blue", limits = c(0, 1)) +
@@ -305,7 +305,7 @@ Residuals plotted.
 ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
   geom_hline(yintercept = 0, linetype = "dotted") +
   stat_fit_residuals(method = "lts",
-                     mapping = aes(colour = after_stat(robustness.weights)),
+                     mapping = aes(colour = after_stat(posterior.weights)),
                      show.legend = TRUE,
                      geom = "point") +
   labs(y = "Response residuals") +
@@ -354,7 +354,7 @@ ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
   stat_fit_deviations(method = "gls", 
                   method.args = list(weights = nlme::varPower()),
                   linewidth = 0.3,
-                  mapping = aes(colour = after_stat(robustness.weights))) +
+                  mapping = aes(colour = after_stat(posterior.weights))) +
   geom_point()
 ```
 
@@ -366,7 +366,7 @@ ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
   stat_fit_residuals(method = "gls", 
                      method.args = list(weights = nlme::varPower()),
                      resid.type = "response",
-                     mapping = aes(colour = after_stat(robustness.weights))) +
+                     mapping = aes(colour = after_stat(posterior.weights))) +
   labs(y = "Response residuals")
 ```
 
@@ -376,7 +376,7 @@ ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
   stat_fit_residuals(method = "gls", 
                      method.args = list(weights = nlme::varPower()),
                      resid.type = "pearson",
-                     mapping = aes(colour = after_stat(robustness.weights))) +
+                     mapping = aes(colour = after_stat(posterior.weights))) +
   labs(y = "Pearson residuals")
 ```
 
@@ -386,7 +386,7 @@ ggplot(subset(mpg, class == "suv"), aes(displ, hwy)) +
   stat_fit_residuals(method = "gls", 
                      method.args = list(weights = nlme::varPower()),
                      resid.type = "normalized",
-                     mapping = aes(colour = after_stat(robustness.weights))) +
+                     mapping = aes(colour = after_stat(posterior.weights))) +
   labs(y = "Normalized residuals")
 ```
 
@@ -480,7 +480,7 @@ my.formula <- y ~ lspline(x, knots = cp)
 ggplot(mpg, aes(displ, hwy)) +
   stat_fit_deviations(formula = my.formula,
                       method = "lmrob",
-                      mapping = aes(colour = after_stat(robustness.weights)),
+                      mapping = aes(colour = after_stat(posterior.weights)),
                       show.legend = TRUE,
                       geom = "point") +
   stat_poly_eq(aes(label =
@@ -514,7 +514,7 @@ ggplot(mpg, aes(displ, hwy)) +
   geom_hline(yintercept = 0, linetype = "dotted") +
   stat_fit_residuals(method = "lmrob", 
                      formula = my.formula,
-                     mapping = aes(colour = after_stat(robustness.weights)),
+                     mapping = aes(colour = after_stat(posterior.weights)),
                      show.legend = TRUE) +
   scale_color_gradient(name = "Weights", 
                        low = "red", high = "blue", 
@@ -710,7 +710,7 @@ ggplot(mpg, aes(displ, hwy)) +
   stat_fit_deviations(formula = my.formula,
                       method = "lmrob",
                       mapping = aes(colour = 
-                                      after_stat(robustness.weights)),
+                                      after_stat(posterior.weights)),
                       show.legend = TRUE,
                       geom = "point") +
   stat_poly_eq(use_label("R2", "n", "method"), 
@@ -730,7 +730,7 @@ ggplot(mpg, aes(displ, hwy)) +
   geom_hline(yintercept = 0, linetype = "dotted") +
   stat_fit_residuals(method = "rlm", 
                      formula = my.formula,
-                     mapping = aes(colour = after_stat(robustness.weights)),
+                     mapping = aes(colour = after_stat(posterior.weights)),
                      show.legend = TRUE) +
   scale_color_gradient(name = "Weights", 
                        low = "red", high = "blue", 
@@ -795,7 +795,7 @@ my.formula <- y ~ splines::bs(x, knots = cp)
 ggplot(mpg, aes(displ, hwy)) +
   stat_fit_deviations(formula = my.formula,
                       method = "lmrob",
-                      mapping = aes(colour = after_stat(robustness.weights)),
+                      mapping = aes(colour = after_stat(posterior.weights)),
                       show.legend = TRUE,
                       geom = "point") +
   stat_poly_eq(use_label("R2", "n", "method"), 
@@ -816,7 +816,7 @@ ggplot(mpg, aes(displ, hwy)) +
   geom_hline(yintercept = 0, linetype = "dotted") +
   stat_fit_residuals(method = "lmrob", 
                      formula = my.formula,
-                     mapping = aes(colour = after_stat(robustness.weights)),
+                     mapping = aes(colour = after_stat(posterior.weights)),
                      show.legend = TRUE) +
   scale_color_gradient(name = "Weights", 
                        low = "red", high = "blue", 

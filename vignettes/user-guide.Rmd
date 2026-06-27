@@ -247,7 +247,7 @@ Statistics `stat_poly_line()`, `stat_ma_line()`, `stat_quant_line()`, `stat_quan
 
 ### Fitted lines, confidence bands and residuals
 
-Statistics `stat_poly_line()`, `stat_ma_line()`, `stat_quant_line()` and `stat_quant_band()` return numeric data suitable for plotting lines or lines plus bands. They are similar to `ggplot2::stat_smooth()` in their use. They return a basic set of variables, `x`, `y`, `ymin,` `ymax`, `weights` and `robustness.weights` which can be expanded by passing `fm.values = TRUE`. The expanded returned `data` contains in addition `n`, `r.squared`, `adj.r.squared` and `p.value` when available. These numeric variables make it possible to conditionally hide or highlight using aesthetics, fitted lines that fulfil conditions tested on these variables. The number of rows per `group` and `panel` in the plot, i.e., number of points used to plot the smooth line, is that given by parameter `n` with default `n = 80`. The user interface and default arguments are consistent with those of statistics `stat_poly_eq()`, `stat_ma_eq()` and `stat_quant_eq()` described above.
+Statistics `stat_poly_line()`, `stat_ma_line()`, `stat_quant_line()` and `stat_quant_band()` return numeric data suitable for plotting lines or lines plus bands. They are similar to `ggplot2::stat_smooth()` in their use. They return a basic set of variables, `x`, `y`, `ymin,` `ymax`, `weights` and `posterior.weights` which can be expanded by passing `fm.values = TRUE`. The expanded returned `data` contains in addition `n`, `r.squared`, `adj.r.squared` and `p.value` when available. These numeric variables make it possible to conditionally hide or highlight using aesthetics, fitted lines that fulfil conditions tested on these variables. The number of rows per `group` and `panel` in the plot, i.e., number of points used to plot the smooth line, is that given by parameter `n` with default `n = 80`. The user interface and default arguments are consistent with those of statistics `stat_poly_eq()`, `stat_ma_eq()` and `stat_quant_eq()` described above.
 
 Statistics `stat_fit_residuals()` and `stat_fit_deviations()` can be used to plot the residuals of model fits on their own and to highlight them in a plot of the fitted model curve, respectively.
 
@@ -1133,15 +1133,15 @@ ggplot(my.data, aes(x, y.otlr, colour = group)) +
   stat_fit_residuals()
 ```
 
-Depending on the model fit `method`, two types of _weights_ are available: prior weights given by a numeric variable mapped to `weight` aesthetic and posterior weights, actually used, and possibly computed during model fitting. Depending on the model fit `method`, prior and posterior weights can be the same or not. Function `stat_fit_residuals()` returns the _prior_ weights supplied as input in the variable named `weights` and the posterior actually used weights, possibly computed "robustness" weights, in the variable named `robustness.weights`. Both weights can be mapped to aesthetics, in the example below `robustness.weights` are mapped to `size`. In a model fit with `lm()`, prior and posterior weights are the same, and by default equal to 1. In a fit with `rlm()` prior and posterior weights differ.
+Depending on the model fit `method`, two types of _weights_ are available: prior weights given by a numeric variable mapped to `weight` aesthetic and posterior weights, actually used, and possibly computed during model fitting. Depending on the model fit `method`, prior and posterior weights can be the same or not. Function `stat_fit_residuals()` returns the _prior_ weights supplied as input in the variable named `weights` and the posterior actually used weights, possibly computed "robustness" weights, in the variable named `posterior.weights`. Both weights can be mapped to aesthetics, in the example below `posterior.weights` are mapped to `size`. In a model fit with `lm()`, prior and posterior weights are the same, and by default equal to 1. In a fit with `rlm()` prior and posterior weights differ.
 
 ```{r}
 ggplot(my.data, aes(x, y.otlr, colour = group)) +
   geom_hline(yintercept = 0, linetype = "dashed") +
   stat_fit_residuals(method = "rlm",
-                     mapping = aes(size = after_stat(robustness.weights)),
+                     mapping = aes(size = after_stat(posterior.weights)),
                      alpha = 1/2) +
-  scale_size_area(name = "Robustness\nweights", max_size = 3)
+  scale_size_area(name = "Posterior\nweights", max_size = 3)
 ```
 
 Of course it is also possible to plot the weights themselves.
@@ -1152,9 +1152,9 @@ ggplot(my.data, aes(x, y.otlr, colour = group)) +
   stat_fit_residuals(method = "rlm",
                      mapping = 
                        aes(y = stage(start = y.otlr,
-                                     after_stat = robustness.weights)),
+                                     after_stat = posterior.weights)),
                      alpha = 1/2) +
-  scale_y_continuous(name = "Robustness weights")
+  scale_y_continuous(name = "Posterior weights")
 ```
 
 Weighted residuals are available, and in this case they differ from the raw residuals as we have mapped variable `wght.otlr` to the `weight` aesthetic. Compare the two figures below.
@@ -1165,9 +1165,9 @@ ggplot(my.data, aes(x, y.otlr,
                     colour = group)) +
   geom_hline(yintercept = 0, linetype = "dashed") +
   stat_fit_residuals(formula = formula, 
-                     mapping = aes(size = after_stat(robustness.weights)),
+                     mapping = aes(size = after_stat(posterior.weights)),
                      weighted = FALSE) +
-  scale_size_area(name = "Robustness\nweights", max_size = 3)
+  scale_size_area(name = "Posterior\nweights", max_size = 3)
 ```
 
 ```{r}
@@ -1176,9 +1176,9 @@ ggplot(my.data, aes(x, y.otlr,
                     colour = group)) +
   geom_hline(yintercept = 0, linetype = "dashed") +
   stat_fit_residuals(formula = formula, 
-                     mapping = aes(size = after_stat(robustness.weights)),
+                     mapping = aes(size = after_stat(posterior.weights)),
                      weighted = TRUE) +
-  scale_size_area(name = "Robustness\nweights", max_size = 3)
+  scale_size_area(name = "Posterior\nweights", max_size = 3)
 ```
 
 ### stat_fit_deviations
@@ -1208,9 +1208,9 @@ When weights are available, either supplied by the user, or computed as part of 
 ggplot(my.data, aes(x, y.otlr)) +
   stat_poly_line(method = "rlm") +
   stat_fit_deviations(formula = formula, method = "rlm",
-                      mapping = aes(colour = after_stat(robustness.weights)),
+                      mapping = aes(colour = after_stat(posterior.weights)),
                       show.legend = TRUE) +
-  scale_color_gradient(name = "Robustness\nweight",
+  scale_color_gradient(name = "Posterior\nweight",
                        low = "red", high = "blue", limits = c(0, 1)) +
   geom_point()
 ```
@@ -1224,7 +1224,7 @@ ggplot(my.data, aes(x, y.sdinc)) +
   stat_fit_deviations(method = "gls", 
                       method.args = list(weights = varPower(form = ~ x)),
                       mapping = 
-                        aes(colour = after_stat(robustness.weights)),
+                        aes(colour = after_stat(posterior.weights)),
                       show.legend = TRUE) +
   scale_color_gradient(name = "Power of variance\nweight",
                        low = "red", high = "blue") +
@@ -1240,7 +1240,7 @@ ggplot(my.data, aes(x, y.sdinc)) +
                      geom = "line",
                      mapping = 
                        aes(y = stage(start = y.otlr,
-                                     after_stat = robustness.weights))) +
+                                     after_stat = posterior.weights))) +
   scale_y_continuous(name = "Power of variance, fitted weight")
 ```
 

@@ -155,7 +155,7 @@ test_that("stat_fit_deviations works with different methods", {
                               ggplot(my.data, aes(x, y.otlr, weight = wght)) +
                                 geom_point() +
                                 stat_poly_line(method = "lm") +
-                                stat_fit_deviations(aes(colour = after_stat(robustness.weights)),
+                                stat_fit_deviations(aes(colour = after_stat(posterior.weights)),
                                                     method = "lm")
   )
   vdiffr::expect_doppelganger("fit_deviations_rlm",
@@ -168,7 +168,7 @@ test_that("stat_fit_deviations works with different methods", {
                               ggplot(my.data, aes(x, y.otlr)) +
                                 geom_point() +
                                 stat_poly_line(method = "rlm") +
-                                stat_fit_deviations(aes(colour = after_stat(robustness.weights)),
+                                stat_fit_deviations(aes(colour = after_stat(posterior.weights)),
                                                         method = "rlm")
   )
   vdiffr::expect_doppelganger("fit_deviations_lts",
@@ -181,7 +181,7 @@ test_that("stat_fit_deviations works with different methods", {
                               ggplot(my.data, aes(x, y.otlr)) +
                                 geom_point() +
                                 stat_poly_line(method = "lts") +
-                                stat_fit_deviations(aes(colour = after_stat(robustness.weights)),
+                                stat_fit_deviations(aes(colour = after_stat(posterior.weights)),
                                                     method = "lts")
   )
   vdiffr::expect_doppelganger("fit_deviations_gls",
@@ -194,7 +194,7 @@ test_that("stat_fit_deviations works with different methods", {
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
                                 stat_poly_line(method = "gls") +
-                                stat_fit_deviations(aes(colour = after_stat(robustness.weights)),
+                                stat_fit_deviations(aes(colour = after_stat(posterior.weights)),
                                                     method = "gls",
                                                     show.legend = TRUE)
   )
@@ -203,7 +203,7 @@ test_that("stat_fit_deviations works with different methods", {
                                 geom_point() +
                                 stat_poly_line(method = "gls",
                                                method.args = list(weights = nlme::varPower())) +
-                                stat_fit_deviations(aes(colour = after_stat(robustness.weights)),
+                                stat_fit_deviations(aes(colour = after_stat(posterior.weights)),
                                                     method = "gls",
                                                     method.args = list(weights = nlme::varPower()))
   )
@@ -230,7 +230,7 @@ test_that("stat_fit_deviations works with different methods", {
                                 stat_quant_line(method = "rq",
                                                 quantiles = 0.5,
                                                 se = FALSE) +
-                                stat_fit_deviations(aes(colour = after_stat(robustness.weights)),
+                                stat_fit_deviations(aes(colour = after_stat(posterior.weights)),
                                                     method = "rq")
   )
   # vdiffr::expect_doppelganger("fit_deviations_sma",
@@ -280,7 +280,7 @@ test_that("stat_fit_residuals works with different methods", {
   )
   vdiffr::expect_doppelganger("fit_residuals_lm_weights",
                               ggplot(my.data, aes(x, y.otlr)) +
-                                stat_fit_residuals(aes(colour = after_stat(robustness.weights)),
+                                stat_fit_residuals(aes(colour = after_stat(posterior.weights)),
                                                    method = "lm")
   )
   vdiffr::expect_doppelganger("fit_residuals_rlm",
@@ -289,7 +289,7 @@ test_that("stat_fit_residuals works with different methods", {
   )
   vdiffr::expect_doppelganger("fit_residuals_rlm_weights",
                               ggplot(my.data, aes(x, y.otlr)) +
-                                 stat_fit_residuals(aes(colour = after_stat(robustness.weights)),
+                                 stat_fit_residuals(aes(colour = after_stat(posterior.weights)),
                                                    method = "rlm")
   )
   vdiffr::expect_doppelganger("fit_residuals_lts",
@@ -298,7 +298,7 @@ test_that("stat_fit_residuals works with different methods", {
   )
   vdiffr::expect_doppelganger("fit_residuals_lts_weigths",
                               ggplot(my.data, aes(x, y.otlr)) +
-                                stat_fit_residuals(aes(colour = after_stat(robustness.weights)),
+                                stat_fit_residuals(aes(colour = after_stat(posterior.weights)),
                                                    method = "lts")
   )
   vdiffr::expect_doppelganger("fit_residuals_gls",
@@ -307,13 +307,13 @@ test_that("stat_fit_residuals works with different methods", {
   )
   vdiffr::expect_doppelganger("fit_residuals_gls_weights",
                               ggplot(my.data, aes(x, y)) +
-                                stat_fit_residuals(aes(colour = after_stat(robustness.weights)),
+                                stat_fit_residuals(aes(colour = after_stat(posterior.weights)),
                                                    method = "gls",
                                                    show.legend = TRUE)
   )
   vdiffr::expect_doppelganger("fit_residuals_gls_weights_vPower",
                               ggplot(my.data, aes(x, y)) +
-                                stat_fit_residuals(aes(colour = after_stat(robustness.weights)),
+                                stat_fit_residuals(aes(colour = after_stat(posterior.weights)),
                                                    method = "gls",
                                                    method.args = list(weights = nlme::varPower()))
   )

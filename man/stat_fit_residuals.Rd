@@ -195,7 +195,7 @@ In the case of \code{method = "rq"} quantiles are fixed at \code{tau =
   or to other model fit functions
   using aesthetic weight. More generally the value returned by
   method \code{weights()} applied to the model fit object}
-  \item{robustness.weights}{the "weights"
+  \item{posterior.weights}{the "weights"
   of the applied minimization criterion relative to those of OLS in
   \code{rlm()} or \code{lmrob()} or the divisor weights from
    \code{gls()}, \code{lme()} or \code{nlme()}}
@@ -213,7 +213,7 @@ In the case of \code{method = "rq"} quantiles are fixed at \code{tau =
   \item{weights}{the weights passed as input to \code{lm()}, \code{rlm()}, or \code{lmrob()},
   using aesthetic weight. More generally the value returned by
   \code{weights()}}
-  \item{robustness.weights}{the "weights"
+  \item{posterior.weights}{the "weights"
   of the applied minimization criterion relative to those of OLS in
   \code{rlm()}, or \code{lmrob()}}
   }
@@ -542,7 +542,7 @@ my.data.outlier[6, "y"] <- my.data.outlier[6, "y"] * 5
 ggplot(my.data.outlier, aes(x, y)) +
   stat_poly_line(method = MASS::rlm, formula = my.formula) +
   stat_fit_deviations(formula = my.formula, method = "rlm",
-                      mapping = aes(colour = after_stat(robustness.weights)),
+                      mapping = aes(colour = after_stat(posterior.weights)),
                       show.legend = TRUE) +
   scale_color_gradient(low = "red", high = "blue", limits = c(0, 1),
                        guide = "colourbar") +
@@ -581,7 +581,7 @@ my.data.outlier <- my.data
 my.data.outlier[6, "y"] <- my.data.outlier[6, "y"] * 5
 ggplot(my.data.outlier, aes(x, y)) +
   stat_fit_residuals(formula = my.formula, method = "rlm",
-                      mapping = aes(colour = after_stat(robustness.weights)),
+                      mapping = aes(colour = after_stat(posterior.weights)),
                       show.legend = TRUE) +
   scale_color_gradient(low = "red", high = "blue", limits = c(0, 1),
                        guide = "colourbar")
@@ -591,7 +591,7 @@ ggplot(my.data.outlier) +
   stat_fit_residuals(formula = my.formula, method = "rlm",
                      mapping = aes(x = x,
                                    y = stage(start = y, after_stat = y * weights),
-                                   colour = after_stat(robustness.weights)),
+                                   colour = after_stat(posterior.weights)),
                      show.legend = TRUE) +
   scale_color_gradient(low = "red", high = "blue", limits = c(0, 1),
                        guide = "colourbar")
