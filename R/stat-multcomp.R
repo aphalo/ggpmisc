@@ -876,7 +876,7 @@ multcomp_compute_panel_fun <-
     z$flipped_aes <- flipped_aes
     z <- ggplot2::flip_data(z, flipped_aes)
 
-    show_colnames(z, stat.name = "stat_multcomp")
+    show_labels(z, stat.name = "stat_multcomp")
 
     z
   }
