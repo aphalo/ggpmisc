@@ -10,7 +10,7 @@ knitr::opts_chunk$set(fig.align = 'center',
                       collapse = TRUE,
                       comment = "#>",
                       fig.show = 'hold', fig.width = 7, fig.height = 5,
-                      dev = "svg")
+                      dev = "ragg_png")
 
 options(warnPartialMatchArgs = FALSE,
         tibble.print.max = 4,
