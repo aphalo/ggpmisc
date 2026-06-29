@@ -815,8 +815,7 @@ ggplot(my.data, aes(x, y.poly)) +
 
 Grouping and faceting are supported by `stat_quant_eq()`, `stat_quant_line()` and `stat_quant_band()` as described above for the other statistics described above. The main difference is that for each data group more than one model can be fit with one prediction line and one equation for each model. The positions are as in other cases computed automatically or set manually.
 
-```{r, warning=FALSE, eval=FALSE}
-# broken!
+```{r, warning=FALSE}
 ggplot(my.data, 
        aes(x, y.poly.grp, group = group, grp.label = group)) +
   geom_point() +
@@ -1193,9 +1192,10 @@ ggplot(my.data, aes(x, y.otlr)) +
   stat_poly_line(method = "rlm") +
   stat_fit_deviations(formula = formula, method = "rlm",
                       mapping = aes(colour = after_stat(posterior.weights)),
+                      linewidth = 1,
                       show.legend = TRUE) +
   scale_color_gradient(name = "Posterior\nweight",
-                       low = "red", high = "blue", limits = c(0, 1)) +
+                       low = "red", high = "grey60", limits = c(0, 1)) +
   geom_point()
 ```
 
@@ -1212,8 +1212,8 @@ ggplot(my.data, aes(x, y.sdinc)) +
   stat_poly_line(method = "gls", 
                  method.args = list(weights = varPower(form = ~ x))) +
   geom_point() +
-  scale_colour_steps2(name = "Power of variance\nweight",
-                      midpoint = 1, low = "blue", high = "red", mid = "grey80")
+  scale_colour_gradient2(name = "Power of variance\nweight",
+                         midpoint = 1, low = "blue", high = "red", mid = "grey60")
 ```
 
 Of course it is also possible to plot the weights themselves, most easily using `stat_fit_residuals()`. The weights when using a variance covariate with its defaults, like here, are a function of the *predicted* values rather than of the individual deviations.
@@ -1224,11 +1224,11 @@ ggplot(my.data, aes(x, y.sdinc)) +
                      method.args = list(weights = varPower(form = ~ x)),
                      geom = "point",
                      mapping = 
-                       aes(y = stage(start = y.otlr,
+                       aes(y = stage(start = y.sdinc,
                                      after_stat = posterior.weights),
                            colour = after_stat(posterior.weights))) +
-  scale_colour_steps2(name = "Power of\nvariance\nweight",
-                      midpoint = 1, low = "blue", high = "red", mid = "grey80")
+  scale_colour_gradient2(name = "Power of\nvariance\nweight",
+                         midpoint = 1, low = "blue", high = "red", mid = "grey80")
 ```
 
 ## stat_fit_glance

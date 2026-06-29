@@ -13,14 +13,16 @@
 #'   \code{\link[ggplot2]{aes}()} to be included in the returned value.
 #'
 #' @details Statistics \code{\link{stat_poly_eq}()}, \code{\link{stat_ma_eq}()},
-#'   \code{\link{stat_quant_eq}()} and \code{\link{stat_correlation}()} return
-#'   multiple text strings to be used individually or assembled into longer
-#'   character strings depending on the labels actually desired. Assembling and
-#'   mapping them requires verbose R code and familiarity with R expression
-#'   syntax. Function \code{use_label()} automates these two tasks and accepts
-#'   abbreviated familiar names for the parameters in addition to the name of
-#'   the columns in the data object returned by the statistics. The default
-#'   separator is suitable for \code{\link[grDevices]{plotmath}} expressions.
+#'   \code{\link{stat_quant_eq}()}, \code{\link{stat_distrmix_eq}()} and
+#'   \code{\link{stat_correlation}()} return multiple text strings to be used
+#'   individually or assembled into longer character strings depending on the
+#'   labels actually desired. Assembling and mapping them requires verbose R
+#'   code and familiarity with the syntax of the markup language used, by
+#'   default R \emph{\link[grDevices]{plotmath}} expression syntax. Function
+#'   \code{use_label()} automates these two tasks and accepts abbreviated
+#'   familiar names for the parameters in addition to the name of the columns in
+#'   the data object returned by the statistics. The default separator is
+#'   suitable for \code{\link[grDevices]{plotmath}} expressions.
 #'
 #'   These four statistics return several \code{character} variables with names
 #'   ending in \code{.label}. This ending can be omitted, as well as
@@ -28,7 +30,8 @@
 #'   \code{z.value.label}, \code{S.value.label} and \code{p.value.label}.
 #'   \code{R2} can be used in place of \code{rr}. Furthermore, case is ignored.
 #'   Thus, \code{use_label("eq", "R2")} is equivalent to
-#'   \code{aes(label = paste(after_stat(eq.label), after_stat(rr.label), sep = ", "))}
+#'   \code{aes(label = paste(after_stat(eq.label), after_stat(rr.label),
+#'   sep = "*\", \"*"))}.
 #'
 #'   Function \code{use_label()} calls \code{aes()} to create a mapping for
 #'   the \code{label} aesthetic to a text string assembled by calling
@@ -37,6 +40,11 @@
 #'   string with the correct number of place-holders for the strings.
 #'   Both functions can, when needed, combine this mapping to the \code{label}
 #'   aesthetic with other mappings created with \code{aes()}.
+#'
+#'   **When the number of labels does not match the number of fields in the
+#'   format, or the label names do not match the names of variables in
+#'   \code{data}, errors are triggered when the mapping is constructed, i.e.,
+#'   at the time the plot is rendered.**
 #'
 #' @return A mapping to the \code{label} aesthetic and optionally additional
 #'   mappings as an unevaluated R expression, built using function
@@ -180,34 +188,13 @@ use_label <- function(...,
       }
     }
   }
-  if (!length(labels)) {
-    labels <- c("eq", "p.value")
-  }
-
   if (length(labels) > 6) {
     warning("Pasting first 6 labels and discarding others.")
     labels <- labels[1:6]
   }
 
-  # accept upper case equivalents
-  labels <- tolower(labels)
-  # accept short names lacking ".label" as ending
-  truncated.labels <- !grepl("\\.label$|\\.f$", labels)
-  labels[truncated.labels] <-
-    paste(labels[truncated.labels], ".label", sep = "")
-  # accept R2 and CI
-  labels <- gsub("r2\\.", "rr.", labels)
-  labels <- gsub("ci\\.label$", "confint.label", labels)
-  # accept F and P
-  labels <- gsub("^f\\.label$", "f.value.label", labels)
-  labels <- gsub("^p\\.label$", "p.value.label", labels)
-  labels <- gsub("^t\\.label$", "t.value.label", labels)
-  labels <- gsub("^z\\.label$", "z.value.label", labels)
-  labels <- gsub("^s\\.label$", "s.value.label", labels)
-  # force AIC, BIC and S in capitals
-  labels <- gsub("^aic.label$", "AIC.label", labels)
-  labels <- gsub("^bic.label$", "BIC.label", labels)
-  labels <- gsub("^s.value.label$", "S.value.label", labels)
+  labels <- decode_label_names(labels)
+
   # make mapping to label aesthetic
   label.mapping <-
     switch(length(labels),
@@ -286,29 +273,11 @@ f_use_label <- function(...,
   }
 
   if (length(labels) > 6) {
-    warning("Pasting first 6 labels and discarding others.")
+    warning("Using first 6 labels and discarding others.")
     labels <- labels[1:6]
   }
 
-  # accept upper case equivalents
-  labels <- tolower(labels)
-  # accept short names lacking ".label" as ending
-  truncated.labels <- !grepl("\\.label$|\\.f$", labels)
-  labels[truncated.labels] <-
-    paste(labels[truncated.labels], ".label", sep = "")
-  # accept R2 and CI
-  labels <- gsub("r2\\.", "rr.", labels)
-  labels <- gsub("ci\\.label$", "confint.label", labels)
-  # accept F and P
-  labels <- gsub("^f\\.label$", "f.value.label", labels)
-  labels <- gsub("^p\\.label$", "p.value.label", labels)
-  labels <- gsub("^t\\.label$", "t.value.label", labels)
-  labels <- gsub("^z\\.label$", "z.value.label", labels)
-  labels <- gsub("^s\\.label$", "s.value.label", labels)
-  # force AIC, BIC and S in capitals
-  labels <- gsub("^aic.label$", "AIC.label", labels)
-  labels <- gsub("^bic.label$", "BIC.label", labels)
-  labels <- gsub("^s.value.label$", "S.value.label", labels)
+  labels <- decode_label_names(labels)
 
   # make mapping to label aesthetic
   label.mapping <-
@@ -321,9 +290,9 @@ f_use_label <- function(...,
                      .data[[labels[2]]]))),
            ggplot2::aes(label = ggplot2::after_stat(
              sprintf(fmt = format,
-                     paste(.data[[labels[1]]],
-                           .data[[labels[2]]],
-                           .data[[labels[3]]])))),
+                     .data[[labels[1]]],
+                     .data[[labels[2]]],
+                     .data[[labels[3]]]))),
            ggplot2::aes(label = ggplot2::after_stat(
              sprintf(fmt = format,
                      .data[[labels[1]]],
@@ -351,4 +320,39 @@ f_use_label <- function(...,
   } else {
     label.mapping
   }
+}
+
+#' Decode short names and variant names of labels
+#'
+#' @keywords internal
+#'
+#' @param label.names list or vector of character strings with mixed names.
+#'
+decode_label_names <- function(label.names = NULL) {
+
+  if (!length(label.names)) {
+    # use default
+    return("rr.label")
+  }
+
+  # accept upper case equivalents
+  label.names <- tolower(label.names)
+  # accept short names lacking ".label" as ending
+  truncated.label.names <- !grepl("\\.label$|\\.f$", label.names)
+  label.names[truncated.label.names] <-
+    paste(label.names[truncated.label.names], ".label", sep = "")
+  # accept R2 and CI
+  label.names <- gsub("r2\\.", "rr.", label.names)
+  label.names <- gsub("ci\\.label$", "confint.label", label.names)
+  # accept F and P
+  label.names <- gsub("^f\\.label$", "f.value.label", label.names)
+  label.names <- gsub("^p\\.label$", "p.value.label", label.names)
+  label.names <- gsub("^t\\.label$", "t.value.label", label.names)
+  label.names <- gsub("^z\\.label$", "z.value.label", label.names)
+  label.names <- gsub("^s\\.label$", "s.value.label", label.names)
+  # force AIC, BIC and S in capitals
+  label.names <- gsub("^aic.label$", "AIC.label", label.names)
+  label.names <- gsub("^bic.label$", "BIC.label", label.names)
+  label.names <- gsub("^s.value.label$", "S.value.label", label.names)
+  label.names
 }

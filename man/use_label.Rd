@@ -39,14 +39,16 @@ the \code{label} aesthetic.
 }
 \details{
 Statistics \code{\link{stat_poly_eq}()}, \code{\link{stat_ma_eq}()},
-  \code{\link{stat_quant_eq}()} and \code{\link{stat_correlation}()} return
-  multiple text strings to be used individually or assembled into longer
-  character strings depending on the labels actually desired. Assembling and
-  mapping them requires verbose R code and familiarity with R expression
-  syntax. Function \code{use_label()} automates these two tasks and accepts
-  abbreviated familiar names for the parameters in addition to the name of
-  the columns in the data object returned by the statistics. The default
-  separator is suitable for \code{\link[grDevices]{plotmath}} expressions.
+  \code{\link{stat_quant_eq}()}, \code{\link{stat_distrmix_eq}()} and
+  \code{\link{stat_correlation}()} return multiple text strings to be used
+  individually or assembled into longer character strings depending on the
+  labels actually desired. Assembling and mapping them requires verbose R
+  code and familiarity with the syntax of the markup language used, by
+  default R \emph{\link[grDevices]{plotmath}} expression syntax. Function
+  \code{use_label()} automates these two tasks and accepts abbreviated
+  familiar names for the parameters in addition to the name of the columns in
+  the data object returned by the statistics. The default separator is
+  suitable for \code{\link[grDevices]{plotmath}} expressions.
 
   These four statistics return several \code{character} variables with names
   ending in \code{.label}. This ending can be omitted, as well as
@@ -54,7 +56,8 @@ Statistics \code{\link{stat_poly_eq}()}, \code{\link{stat_ma_eq}()},
   \code{z.value.label}, \code{S.value.label} and \code{p.value.label}.
   \code{R2} can be used in place of \code{rr}. Furthermore, case is ignored.
   Thus, \code{use_label("eq", "R2")} is equivalent to
-  \code{aes(label = paste(after_stat(eq.label), after_stat(rr.label), sep = ", "))}
+  \code{aes(label = paste(after_stat(eq.label), after_stat(rr.label),
+  sep = "*\", \"*"))}.
 
   Function \code{use_label()} calls \code{aes()} to create a mapping for
   the \code{label} aesthetic to a text string assembled by calling
@@ -63,6 +66,11 @@ Statistics \code{\link{stat_poly_eq}()}, \code{\link{stat_ma_eq}()},
   string with the correct number of place-holders for the strings.
   Both functions can, when needed, combine this mapping to the \code{label}
   aesthetic with other mappings created with \code{aes()}.
+
+  **When the number of labels does not match the number of fields in the
+  format, or the label names do not match the names of variables in
+  \code{data}, errors are triggered when the mapping is constructed, i.e.,
+  at the time the plot is rendered.**
 }
 \examples{
 # generate artificial data
