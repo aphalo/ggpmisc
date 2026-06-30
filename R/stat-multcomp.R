@@ -198,7 +198,7 @@
 #'   \href{https://docs.r4photobiology.info/ggpmisc/}{online-only documentation}
 #'   for additional use examples and guidance.
 #'
-#' @family \emph{statistics} for multiple comparison annotations
+#' @family statistics for multiple comparison annotations
 #'
 #' @references
 #'

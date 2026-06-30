@@ -642,7 +642,7 @@ Originally written as an answer to question 7549694 at
   \href{https://docs.r4photobiology.info/ggpmisc/}{online-only documentation}
   for additional use examples and guidance.
 }
-\concept{\emph{statistics} for model fits residuals}
+\concept{statistics for display of model fit residuals}
 \section{Aesthetics}{
 
 \code{stat_fit_residuals()} understands the following aesthetics. Required aesthetics are displayed in bold and defaults are displayed for optional aesthetics:

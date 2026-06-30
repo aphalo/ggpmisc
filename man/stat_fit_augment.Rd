@@ -82,7 +82,10 @@ default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
 \code{stat_fit_augment()} fits a model and returns a "tidy"
   version of the model's data with prediction added, using \code{augmnent()}
   methods from packages 'broom', 'broom.mixed', or other sources. The
-  prediction can be added to the plot as a line.
+  prediction can be added to the plot as a line. The role played by
+  `augnebt()` is similar to that played by R's \code{fitted()},
+  \code{residuals()}, and in some cases also \code{weights()}, and
+  \code{predict()}.
 }
 \details{
 \code{stat_fit_augment()} together with
@@ -95,7 +98,9 @@ default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
 
   Although arguments passed to parameter \code{augment.args} will be
   passed to \code{\link[generics]{augment}()} whether they are silently
-  ignored or obeyed depends on each specialization of \code{augment()}, so do
+  ignored or obeyed depends on each specialization of \code{augment()}. In
+  particular, passing `newdata` to obtain a prediction can in some cases
+  result in other statisitcs being wrongly computed! Please, do
   carefully read the documentation for the version of \code{augment()}
   corresponding to the \code{method} used to fit the model. Be aware that
   \code{se_fit = FALSE} is the default in these methods even when supported.
@@ -117,8 +122,9 @@ default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
   'ggplot2' factors mapped to aesthetics generate a separate group for each
   level. Because of this, \code{stat_fit_augment()} is not useful for
   annotating plots with results from \code{t.test()} or ANOVA or ANCOVA
-  (e.g., when a factor is mapped to the _x_ or _y_ aesthetics. In such cases
-  use instead \code{stat_fit_tb()} which applies the model fitting per panel.
+  (e.g., when a factor is mapped to the \emph{x} or \emph{y} aesthetics). In
+  such cases use instead \code{stat_fit_tb()} which applies the model fitting
+  per panel.
 }
 
 \section{Computed variables}{
@@ -343,12 +349,12 @@ if (broom.installed & gginnards.installed) {
 Package \code{\link[broom]{broom}} for details on how the tidying of
   the result of model fits is done.
 
-Other 'broom'-based \emph{statistics} for model fits:
+Other 'broom'-based statistics for model fits:
 \code{\link[=stat_fit_glance]{stat_fit_glance()}},
 \code{\link[=stat_fit_tb]{stat_fit_tb()}},
 \code{\link[=stat_fit_tidy]{stat_fit_tidy()}}
 }
-\concept{'broom'-based \emph{statistics} for model fits}
+\concept{'broom'-based statistics for model fits}
 \section{Aesthetics}{
 
 \code{stat_fit_augment()} understands the following aesthetics. Required aesthetics are displayed in bold and defaults are displayed for optional aesthetics:

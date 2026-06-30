@@ -37,7 +37,7 @@
 #' @seealso \code{\link{find_spikes}()}, for the function used to located the
 #'   spikes.
 #'
-#' @family \emph{statistics} for peak, valley and spikes annotation
+#' @family statistics for peak, valley and spikes annotation
 #'
 #' @examples
 #' # lynx and Nile are time.series objects recognized by

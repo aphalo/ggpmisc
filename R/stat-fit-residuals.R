@@ -120,7 +120,7 @@
 #'   \href{https://docs.r4photobiology.info/ggpmisc/}{online-only documentation}
 #'   for additional use examples and guidance.
 #'
-#' @family \emph{statistics} for model fits residuals
+#' @family statistics for display of model fit residuals
 #'
 #' @examples
 #' # generate artificial data

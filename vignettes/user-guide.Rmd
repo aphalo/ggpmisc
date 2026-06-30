@@ -2,7 +2,7 @@
 title: "Fitted-Model-Based Annotations"
 subtitle: "'ggpmisc' `r packageVersion('ggpmisc')`"
 author: "Pedro J. Aphalo"
-date: "`r Sys.Date()`"
+date: "`r packageDate('ggpmisc')`"
 output: 
   rmarkdown::html_vignette:
     toc: yes
@@ -284,7 +284,7 @@ old_theme <- theme_set(theme_bw())
 
 # Examples for Statistics
 
-Several simple use examples are given in the help for each of the layer and other functions exported by package 'ggpmisc'. Additional examples, mostly more advanced, together with brief explanations are provided here. Additional examples illustrating possible uses of 'ggpmisc' together with other packages are available at [the 'ggpmisc' website](https://docs.r4photobiology.info/ggpmisc) as articles.
+Several simple use examples are given in the help for each of the layer and other functions exported by package 'ggpmisc'. Additional examples, mostly more advanced, together with brief explanations are provided here. Additional examples illustrating possible uses of 'ggpmisc' together with other packages are available at [the 'ggpmisc' website](https://docs.r4photobiology.info/ggpmisc/) as articles.
 
 ## stat_correlation()
 
@@ -714,7 +714,7 @@ ggplot(my.data, aes(x, y.sd3)) +
 
 In `stat_poly_eq()`, similarly as in `stat_smooth()` from 'ggplot2', the confidence band's $P$-value and the computation of the band boundaries are controlled by parameters `level` and `se`, respectively, while `n` controls the number of points at which the prediction is computed and parameter `fullrange` determines the range over which the prediction is computed. Parameter `limit.to`, not available in `stat_smooth`, adds finer control of this range.
 
-Examples of the use of `stat_poly_line()` and `stat_poly_eq()` with other model fitting functions and formulas are available as articles at [the 'ggpmisc' web site](https://docs.r4photobiology.info/ggpmisc).
+Examples of the use of `stat_poly_line()` and `stat_poly_eq()` with other model fitting functions and formulas are available as articles at [the 'ggpmisc' web site](https://docs.r4photobiology.info/ggpmisc/).
 
 ## stat_ma_eq() and stat_ma_line()
 
@@ -756,7 +756,7 @@ ggplot(my.data, aes(x, y.sd3)) +
 
 MA and SMA are models describing strictly linear relationships. Orthogonal least squares can be used to fit polynomials, and other models and is supported by `stat_poly_line()` and `stat_poly_eq().
 
-Additional examples of the use of `stat_ma_line()` and `stat_ma_equation()` and alternatives are available in articles at [the 'ggpmisc' web site](https://docs.r4photobiology.info/ggpmisc).
+Additional examples of the use of `stat_ma_line()` and `stat_ma_equation()` and alternatives are available in articles at [the 'ggpmisc' web site](https://docs.r4photobiology.info/ggpmisc/).
 
 ## stat_quant_eq(), stat_quant_line() and stat_quant_band()
 
@@ -873,7 +873,7 @@ ggplot(my.data, aes(x, y.sd3)) +
 ```
 
 Please, see examples in the previous sections, as they can be adapted. 
-Examples of the use of `stat_quant_line()`, `stat_quant_band()` and `stat_quant_eq()` with other model fitting functions and formulas are available as articles at [the 'ggpmisc' web site](https://docs.r4photobiology.info/ggpmisc).
+Examples of the use of `stat_quant_line()`, `stat_quant_band()` and `stat_quant_eq()` with other model fitting functions and formulas are available as articles at [the 'ggpmisc' web site](https://docs.r4photobiology.info/ggpmisc/).
 
 
 ## stat_distrmix_eq(), stat_distrmix_line() and stat_distrmix_area()

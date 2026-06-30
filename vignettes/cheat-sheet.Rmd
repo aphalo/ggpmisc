@@ -2,7 +2,7 @@
 title: "Fitted-Model-Based Annotations :: Cheat Sheet"
 subtitle: "'ggpmisc' `r packageVersion('ggpmisc')`"
 author: "Pedro J. Aphalo"
-date: "`r Sys.Date()`"
+date: "`r packageDate('ggpmisc')`"
 output: 
   rmarkdown::html_vignette:
     toc: yes
@@ -31,7 +31,7 @@ compatible with **geoms** from other R packages including
 
 If you are not already familiar with the grammar of graphics and **ggplot2** you should visit the [**ggplot2** Cheat Sheet](https://rstudio.github.io/cheatsheets/html/data-visualization.html) first, and afterwards come back to this Cheat Sheet.
 
-Differently to **ggplot2**, no geometries with the new stats as their default are provided. The plot layers described here are always added with a _stat_, and when necessary, their default `geom` argument can be overridden.
+Differently to **ggplot2**, no matching geometries with the new stats as their default are provided. The plot layers described here are always added with a _stat_, and when necessary, their default `geom` argument overridden.
 
 ```{r, eval=FALSE}
 library(ggpmisc)
@@ -43,7 +43,7 @@ The statistics that return predicted values for regressions return `x` and `y` w
 
 The statistics returning fitted or residual values return these values as variables `y.fitted`  or `x.fitted`, `y.resid` or `x.resid`, `weights` and `posterior.weights`. Variables `x` and `y` contain the observed values. When present, `weights` are the _prior_ weights, and `posterior.weights` are posterior weights, those actually used by the model fit function, possibly computed by it. 
 
-The statistics that return text labels for annotating plots, return in `x` and `y` the label coordinates, the values passed as arguments to parameters `label.x` and ` label.y`, or values computed based on them. The character strings are returned as variables with names ending in `.label`. These variables can be used in mappings created with `aes()` or with `use_label()`. The difference is that `use_label()` accepts short names for the labels, recognizes them as computed by the stats from package 'ggpmisc' and pastes them into a single character string (e.g., `use_label("eq", "R2", "n", sep = ", ")` is equivalent to `aes(paste(after_stat("eq.label"), after_stat("rr.label"), after_stat("n.label), sep = ", ")`, saving some typing. In most cases numeric values for the parameter estimates are also returned, making possible assembly of labels by user code.
+The statistics that return text labels for annotating plots, return in `x` and `y` as coordinates of the text or label annotaions the values passed as arguments to parameters `label.x` and ` label.y`, or values computed based on them. The character strings are returned as variables with names ending in `.label`. These variables can be used in mappings created with `aes()`, `use_label()` and `f_use_labels()`. The difference is that `use_label()` and `f_use_label()` accept short names for the labels, recognize them as computed by a stat and combine them into a single character string. For example, `use_label("eq", "R2", "n", sep = ", ")` is equivalent to `aes(label = paste(after_stat("eq.label", "rr.label", "n.label), sep = ", ")`, saving some typing. Numeric values for the parameter estimates are also returned, making possible 1) to assemble labels in user code within a call to `aes()` and 2) to map outcomes to additional aesthetics such as `fontface` or `colour` based on a threshold.
 
 ## Correlation
 
@@ -51,44 +51,47 @@ The statistics that return text labels for annotating plots, return in `x` and `
 
 ## Fitted models
 
-The statistics for fitted models come in matched pairs, one that adds a plot layer with one or more curves and confidence band(s), and one that annotates the plot with the fitted model equation and/or other parameter estimates. These depend on the type of fitted model and include $R^2$, $F$, $P$, $AIC$, $BIC$, $n$, and in most cases also the fitted-model equation. The curve plotting stats fulfil a similar role to `ggplot2::stat_smooth()` while the ones for textual annotations have no equivalent in 'ggplot2'.
+The statistics for fitted models come in matched pairs, one that adds a plot layer with one or more curves and confidence band(s), and one that annotates the plot with the fitted model equation and/or other parameter estimates. These depend on the type of fitted model and include $R^2$, $F$, $P$, $AIC$, $BIC$, $n$, and in many cases also the fitted-model equation. The curve plotting stats fulfil a role similar to `ggplot2::stat_smooth()` while the statistics for textual annotations have no equivalent in 'ggplot2'.
 
-* `stat_poly_line()` and `stat_poly_eq()` support _a broad set of model fit functions_: e.g., linear models (OLS, resistant and robust), general linear model (gls), linear splines, cubic splines, additive models (gam), major axis (MA) and standardised major axis (SMA) regression, etc. The fitted model equation is automatically generated for polynomials, but can be assembled manually for other model formulas.
+* `stat_poly_line()` and `stat_poly_eq()` support _a broad set of model fit functions_: e.g., linear models (OLS, resistant and robust), general linear model (gls), linear splines, cubic splines, additive models (gam), major axis (MA) and standardised major axis (SMA) regression, etc. The fitted model equation is automatically generated for regular polynomials, and can be assembled in user code for other model formulas.
 
-* `stat_quant_line()`, `stat_quant_band()` and `stat_quant_eq()` support _quantile regression_ based on both polynomials and smoothing splines (using 'quantreg').
+* `stat_quant_line()`, `stat_quant_band()` and `stat_quant_eq()` support _quantile regression_ based on both polynomials and smoothing splines (using 'quantreg'). The fitted model equation is automatically generated for regular polynomials, and can be assembled in user code for other model formulas. Prior and posterior weights are returned.
 
-* `stat_ma_line()` and `stat_ma_eq()` support _major axis (MA), standardised major axis (SMA) and ranged major axis (RMA) regression_ (using 'lmodel2').
+* `stat_ma_line()` and `stat_ma_eq()` support _major axis (MA), standardised major axis (SMA) and ranged major axis (RMA) regression_ (using 'lmodel2'). The fitted model equation is automatically generated for regular polynomials, and can be assembled in user code for other model formulas. Prior and posterior weights are returned.
 
-* `stat_distrmix_line()` and `stat_distrmix_eq()` support fitting of univariate Normal-distribution mixture models or a of a single Normal distribution.
+* `stat_distrmix_line()` and `stat_distrmix_eq()` support fitting of univariate Normal-distribution mixture models or a of a single Normal distribution. The fitted model equation is automatically generated for regular polynomials, and can be assembled in user code for other model formulas. The location of tail quantiles of the fitted distribution are computed.
 
-* `stat_fit_fitted()` and `stat_fit_deviations()` can be used to highlight the fitted values and their distance to the observations in a scatter plot supporting a wide range of model fit functions.
+* `stat_fit_fitted()` and `stat_fit_deviations()` can be used to plot the fitted values and to display them as segments between predicted and observed values (deviations), respectively. Prior and posterior weights are returned.
 
-* `stat_fit_residuals()` can be used to create consistent plots of residuals for many different model fit functions supporting a wide range of model fit functions.
+* `stat_fit_residuals()` can be used to create consistent plots of residuals for a wide range of model fit functions. Prior and posterior weights are returned.
 
-* `stat_fit_augment()` works with model fit functions supported by `broom::augment()` methods including non-linear models. Provides an alternative to `stat_poly_line()` for an even broader range of model fit functions. 
+* `stat_fit_augment()` (`broom::glance()`, similar to R's `fitted()` plus `residuals()` and possibly plus `weights()` and/or `predict()`) works with model fit functions supported by `broom::augment()` methods including non-linear models. Provides an alternative to `stat_poly_line()` for an even broader range of model fit functions. It only returns numeric values. 
 
-* `stat_fit_tidy()` works with model fit functions supported by `broom::tidy()` methods including non-linear models. Provides numeric values from which equation labels can be created for an even broader range of model fit functions than those supported by `stat_poly_eq()`. `broom::tidy()` is similar to R's `summary()` for
-fitted models.
+* `stat_fit_tidy()` (`broom::tidy()`, similar to R's `summary()`) works with model fit functions supported by `broom::tidy()` methods including non-linear models. Provides numeric values from which equation labels can be created for an even broader range of model fit functions than those supported by `stat_poly_eq()`. `broom::tidy()` is similar to R's `summary()` for fitted models. It only returns numeric values. 
 
-* `stat_fit_glance()` works with model fit functions supported by `broom::glance()` methods including non-linear models. Provides an alternative to `stat_poly_eq()` for an even broader range of model fit functions. `broom::glance()` is similar to R's `anova()` applied to a single fitted model object.
+* `stat_fit_glance()` (`broom::glance()`, similar to R's `anova()`) works with model fit functions supported by `broom::glance()` methods including non-linear models. Provides an alternative to `stat_poly_eq()` for an even broader range of model fit functions.  It only returns numeric values. 
 
 ## ANOVA or summary tables
 
-* `stat_fit_tb()` fits any model supported by a `broom::tidy()` method. Adds an ANOVA or Summary table. Which columns are included and their naming can be set by the user.
+* `stat_fit_tb()` fits any model supported by a `broom::tidy()` method. Adds an ANOVA or Summary table as a plot inset. Which columns and rows are included and their naming can be set by the user. The formatting of the table can be changed in part with aesthetic mappings and with table themes.
 
 ## Multiple comparisons
 
-* `stat_multcomp()` fits a model, computes ANOVA and subsequently calls functions from package 'multcomp' to test the significance of Tukey, Dunnet or arbitrary sets of pairwise contrasts, with a choice of the adjustment method for the _P_-values. Significance of differences can be indicated with letters, asterisks or _P_-values. Sizes of differences are also computed and available for user-assembled labels. 
+* `stat_multcomp()` fits a model, computes an ANOVA or equivalent and subsequently calls functions from package 'multcomp' to test the significance of Tukey, Dunnet or arbitrary sets of pairwise contrasts, with a choice of the adjustment method for the _P_-values. Significance of differences can be indicated with letters, asterisks or _P_-values. Sizes of differences are also computed and available for user-assembled labels. 
 
 ## Aesthetic mappings
 
-* Function `use_label()` pastes together the labels automatically generated by the stats and maps the combined string to the `label` aesthetic. 
+* Functions `use_label()` and `f_use_label()` combine together labels  generated by the stats as formatted `character` strings and map the combined `character` string to the `label` aesthetic. 
 
 ## Peaks and valleys
+
+Formatted character labels are returned both for `x` and `y` coordinates. Both `numeric`, time and dates can be mapped to `x` (or `y` with `orientation = "y"`).
 
 * `stat_peaks()` finds and labels peaks (= global or local maxima).
 
 * `stat_valleys()` finds and labels valleys (= global or local minima).
+
+* `stat_spikes()` finds and labels very narrow and prominent peaks and valleys (local disturbances).
 
 ## Volcano and quadrant plots
 
@@ -102,7 +105,7 @@ These plots are frequently used with gene expression data, and each of the many 
 
 ## Utility functions
 
-Most of the functions used to generate formatted labels in layers and scales are also exported.
+Most of the functions used to generate formatted labels in the statistics and scales listed above are also exported. However, several of them now have equivalents in recent versions of R package 'scales'.
 
 ------------------------------------------------------------------------
 

@@ -1,6 +1,6 @@
 #' @rdname stat_fit_residuals
 #'
-#' @family \emph{statistics} for model fits residuals
+#' @family statistics for display of model fit residuals
 #'
 #' @export
 #'

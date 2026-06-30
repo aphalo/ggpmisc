@@ -54,8 +54,8 @@ function is different to \code{lm()}, \code{rlm()}, \code{ltsReg()},
 \code{gls()}, \code{ma}, \code{sma}, it must have formal parameters named
 \code{formula}, \code{data}, and \code{weights}. See Details.}
 
-\item{method.args, glance.args}{list of arguments to pass to \code{method}
-and to [generics::glance()], respectively.}
+\item{method.args, glance.args}{list of named arguments to pass to
+\code{method} and to [generics::glance()], respectively.}
 
 \item{n.min}{integer Minimum number of distinct values in the explanatory
 variable (on the rhs of formula) for fitting to the attempted.}
@@ -98,7 +98,8 @@ The output of the \code{glance()} methods is returned almost as is in
 \description{
 \code{stat_fit_glance()} fits a model and returns a "tidy"
   version of the model's fit, using '\code{glance()} methods from packages
-  'broom', 'broom.mixed', or other sources.
+  'broom', 'broom.mixed', or other sources. The role played by `glance()` is
+  similar to that played by R's \code{anova()}.
 }
 \details{
 \code{stat_fit_glance()} together with \code{\link{stat_fit_tidy}()}
@@ -377,12 +378,12 @@ if (broom.installed && gginnards.installed) {
 Package \code{\link[broom]{broom}} for details on how the tidying of
   the result of model fits is done.
 
-Other 'broom'-based \emph{statistics} for model fits:
+Other 'broom'-based statistics for model fits:
 \code{\link[=stat_fit_augment]{stat_fit_augment()}},
 \code{\link[=stat_fit_tb]{stat_fit_tb()}},
 \code{\link[=stat_fit_tidy]{stat_fit_tidy()}}
 }
-\concept{'broom'-based \emph{statistics} for model fits}
+\concept{'broom'-based statistics for model fits}
 \section{Aesthetics}{
 
 \code{stat_fit_glance()} understands the following aesthetics. Required aesthetics are displayed in bold and defaults are displayed for optional aesthetics:

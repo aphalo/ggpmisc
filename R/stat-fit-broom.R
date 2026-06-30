@@ -4,12 +4,13 @@
 #'
 #' @description \code{stat_fit_glance()} fits a model and returns a "tidy"
 #'   version of the model's fit, using '\code{glance()} methods from packages
-#'   'broom', 'broom.mixed', or other sources.
+#'   'broom', 'broom.mixed', or other sources. The role played by `glance()` is
+#'   similar to that played by R's \code{anova()}.
 #'
 #' @inheritParams stat_poly_eq
 #'
-#' @param method.args,glance.args list of arguments to pass to \code{method}
-#'   and to [generics::glance()], respectively.
+#' @param method.args,glance.args list of named arguments to pass to
+#'   \code{method} and to [generics::glance()], respectively.
 #'
 #' @aesthetics StatFitGlance
 #'
@@ -62,7 +63,7 @@
 #' @seealso Package \code{\link[broom]{broom}} for details on how the tidying of
 #'   the result of model fits is done.
 #'
-#' @family 'broom'-based \emph{statistics} for model fits
+#' @family 'broom'-based statistics for model fits
 #'
 #' @export
 #'
@@ -447,7 +448,10 @@ StatFitGlance <-
 #' @description \code{stat_fit_augment()} fits a model and returns a "tidy"
 #'   version of the model's data with prediction added, using \code{augmnent()}
 #'   methods from packages 'broom', 'broom.mixed', or other sources. The
-#'   prediction can be added to the plot as a line.
+#'   prediction can be added to the plot as a line. The role played by
+#'   `augnebt()` is similar to that played by R's \code{fitted()},
+#'   \code{residuals()}, and in some cases also \code{weights()}, and
+#'   \code{predict()}.
 #'
 #' @inheritParams stat_poly_eq
 #'
@@ -467,7 +471,9 @@ StatFitGlance <-
 #'
 #'   Although arguments passed to parameter \code{augment.args} will be
 #'   passed to \code{\link[generics]{augment}()} whether they are silently
-#'   ignored or obeyed depends on each specialization of \code{augment()}, so do
+#'   ignored or obeyed depends on each specialization of \code{augment()}. In
+#'   particular, passing `newdata` to obtain a prediction can in some cases
+#'   result in other statisitcs being wrongly computed! Please, do
 #'   carefully read the documentation for the version of \code{augment()}
 #'   corresponding to the \code{method} used to fit the model. Be aware that
 #'   \code{se_fit = FALSE} is the default in these methods even when supported.
@@ -488,8 +494,9 @@ StatFitGlance <-
 #'   'ggplot2' factors mapped to aesthetics generate a separate group for each
 #'   level. Because of this, \code{stat_fit_augment()} is not useful for
 #'   annotating plots with results from \code{t.test()} or ANOVA or ANCOVA
-#'   (e.g., when a factor is mapped to the _x_ or _y_ aesthetics. In such cases
-#'   use instead \code{stat_fit_tb()} which applies the model fitting per panel.
+#'   (e.g., when a factor is mapped to the \emph{x} or \emph{y} aesthetics). In
+#'   such cases use instead \code{stat_fit_tb()} which applies the model fitting
+#'   per panel.
 #'
 #' @inheritSection stat_poly_eq Model formula and model fitting
 #'
@@ -508,7 +515,7 @@ StatFitGlance <-
 #' @seealso Package \code{\link[broom]{broom}} for details on how the tidying of
 #'   the result of model fits is done.
 #'
-#' @family 'broom'-based \emph{statistics} for model fits
+#' @family 'broom'-based statistics for model fits
 #'
 #' @export
 #'
@@ -777,7 +784,9 @@ StatFitAugment <-
 #'
 #' @description \code{stat_fit_tidy()} fits a model and returns a "tidy" version
 #'   of the model's summary, using \code{tidy()} method specializations from
-#'   packages 'broom', 'broom.mixed', or other sources.
+#'   packages 'broom', 'broom.mixed', or other sources. The role played by
+#'   `tidy()` in this statistics is similar to that played by R's
+#'   \code{summary()}.
 #'
 #' @inheritParams stat_poly_eq
 #' @param method.args,tidy.args list of arguments to pass to \code{method},
@@ -848,7 +857,7 @@ StatFitAugment <-
 #' @seealso Package \code{\link[broom]{broom}} for details on how the tidying of
 #'   the result of model fits is done.
 #'
-#' @family 'broom'-based \emph{statistics} for model fits
+#' @family 'broom'-based statistics for model fits
 #'
 #' @export
 #'

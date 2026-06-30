@@ -519,12 +519,12 @@ Package \code{\link[broom]{broom}} for details on how the tidying of
   For details on predefined table themes see
   \code{\link[ggpp]{ttheme_gtdefault}}.
 
-Other 'broom'-based \emph{statistics} for model fits:
+Other 'broom'-based statistics for model fits:
 \code{\link[=stat_fit_augment]{stat_fit_augment()}},
 \code{\link[=stat_fit_glance]{stat_fit_glance()}},
 \code{\link[=stat_fit_tidy]{stat_fit_tidy()}}
 }
-\concept{'broom'-based \emph{statistics} for model fits}
+\concept{'broom'-based statistics for model fits}
 \section{Aesthetics}{
 
 \code{stat_fit_tb()} understands the following aesthetics. Required aesthetics are displayed in bold and defaults are displayed for optional aesthetics:

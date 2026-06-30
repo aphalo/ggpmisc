@@ -84,7 +84,7 @@
 #' @seealso \code{\link{find_peaks}()}, for the function used to located the
 #'   peaks and valleys.
 #'
-#' @family \emph{statistics} for peak, valley and spikes annotation
+#' @family statistics for peak, valley and spikes annotation
 #'
 #' @examples
 #' # lynx and Nile are time.series objects recognized by
@@ -472,7 +472,7 @@ StatPeaks <-
 
 #' @rdname stat_peaks
 #'
-#' @family \emph{statistics} for peak, valley and spikes annotation
+#' @family statistics for peak, valley and spikes annotation
 #'
 #' @export
 #'

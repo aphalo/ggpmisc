@@ -113,7 +113,9 @@ The output of \code{tidy()} is returned after reshaping it into a
 \description{
 \code{stat_fit_tidy()} fits a model and returns a "tidy" version
   of the model's summary, using \code{tidy()} method specializations from
-  packages 'broom', 'broom.mixed', or other sources.
+  packages 'broom', 'broom.mixed', or other sources. The role played by
+  `tidy()` in this statistics is similar to that played by R's
+  \code{summary()}.
 }
 \details{
 \code{stat_fit_tidy()} together with \code{\link{stat_fit_glance}()}
@@ -345,12 +347,12 @@ if (broom.installed && gginnards.installed)
 Package \code{\link[broom]{broom}} for details on how the tidying of
   the result of model fits is done.
 
-Other 'broom'-based \emph{statistics} for model fits:
+Other 'broom'-based statistics for model fits:
 \code{\link[=stat_fit_augment]{stat_fit_augment()}},
 \code{\link[=stat_fit_glance]{stat_fit_glance()}},
 \code{\link[=stat_fit_tb]{stat_fit_tb()}}
 }
-\concept{'broom'-based \emph{statistics} for model fits}
+\concept{'broom'-based statistics for model fits}
 \section{Aesthetics}{
 
 \code{stat_fit_tidy()} understands the following aesthetics. Required aesthetics are displayed in bold and defaults are displayed for optional aesthetics:

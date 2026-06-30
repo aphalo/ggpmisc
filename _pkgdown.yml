@@ -12,7 +12,7 @@ reference:
     - '`ggpmisc-package`'
   - title: Statistics
     desc: Fitted models, tests and summaries enrich data visualizations allowing deeper understanding.
-  - subtitle: Model fitting y ~ x / x ~ y
+  - subtitle: Model fitting, y ~ x by group
     desc:  Display estimates from regression models graphically and as textual annotations.
     contents:
     - stat_correlation
@@ -21,23 +21,23 @@ reference:
     - stat_quant_eq
     - stat_fit_residuals
     - use_label
-  - subtitle: Model fitting ~ x / ~ y
+  - subtitle: Model fitting, ~ x by group
     desc: Display estimates from univariate distributions and their mixtures graphically and as textual annotations.
     contents:
     - stat_distrmix_eq
-  - subtitle: ANOVA and multiple comparisons y ~ x
+  - subtitle: ANOVA and multiple comparisons, y ~ x by panel
     desc: Display test results and estimates as inset tables and as textual annotations.
     contents:
     - stat_fit_tb
     - stat_multcomp
-  - subtitle: Model fitting with helpers from 'broom'
+  - subtitle: Model fitting with helpers from 'broom' y ~ x by group
     desc: Support additional types of models with no pre-built text strings.
     contents:
     - stat_fit_augment
     - stat_fit_glance
     - stat_fit_tidy
   - subtitle: Local features
-    desc: Highlight and label features.
+    desc: Highlight and label features, y ~ x by group
     contents:
     - stat_peaks
     - stat_spikes

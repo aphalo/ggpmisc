@@ -336,10 +336,10 @@ ggplot(lynx, as.numeric = FALSE) +
 \code{\link{find_peaks}()}, for the function used to located the
   peaks and valleys.
 
-Other \emph{statistics} for peak, valley and spikes annotation:
+Other statistics for peak, valley and spikes annotation:
 \code{\link[=stat_spikes]{stat_spikes()}}
 }
-\concept{\emph{statistics} for peak, valley and spikes annotation}
+\concept{statistics for peak, valley and spikes annotation}
 \section{Aesthetics}{
 
 \code{stat_peaks()} understands the following aesthetics. Required aesthetics are displayed in bold and defaults are displayed for optional aesthetics:
