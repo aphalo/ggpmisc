@@ -47,7 +47,9 @@
 #'   labelling all pairwise contrasts tested.
 #' @param mc.critical.p.value numeric The critical \emph{P}-value used for tests
 #'   when encoded as letters.
-#' @param label.y \code{numeric} with range 0..1 "normalized parent
+#' @param bjust numeric usually with range 0..1, the justification of the labels
+#'   relative to the bars.
+#' @param label.y numeric with range 0..1 "normalized parent
 #'   coordinates" (npc units) or character if using \code{geom_text_npc()} or
 #'   \code{geom_label_npc()}. If using \code{geom_text()} or \code{geom_label()}
 #'   numeric in native data units. \emph{In flipped plots, it refers to \code{x}
@@ -133,8 +135,8 @@
 #' columns listed below. In all cases if the model fit function used does not return a value,
 #' the label is set to \code{character(0L)} and the numeric value to \code{NA}.
 #' \describe{
-#'   \item{x,x.left.tip,x.right.tip}{x position, numeric.}
-#'   \item{y}{y position, numeric.}
+#'   \item{x,xmin,xmax}{x position, numeric.}
+#'   \item{y,ymin,ymax}{y position, numeric.}
 #'   \item{coefficients}{Delta estimate from pairwise contrasts, numeric.}
 #'   \item{contrasts}{Contrasts as two levels' ordinal "numbers" separated by a dash, character.}
 #'   \item{tstat}{\emph{t}-statistic estimates for the pairwise contrasts, numeric.}
@@ -165,8 +167,8 @@
 #' below.
 #'
 #' \describe{
-#'   \item{x,x.left.tip,x.right.tip}{x position, numeric.}
-#'   \item{y}{y position, numeric.}
+#'   \item{x,xmin,xmax}{x position, numeric.}
+#'   \item{y,ymin,ymax}{y position, numeric.}
 #'   \item{critical.p.value}{\emph{P}-value used in pairwise tests, numeric.}
 #'   \item{fm.method}{Set according \code{method} used.}
 #'   \item{fm.class}{Most derived class of the fitted model object.}
@@ -247,6 +249,21 @@
 #' p1 +
 #'   stat_multcomp(label.y = 11)
 #'
+#' # justification of label in bar, and text anchor point
+#' # for a compact display
+#'
+#' p1 +
+#'   stat_multcomp(geom = "text_pairwise",
+#'                 arrow = grid::arrow(ends = "both",
+#'                                     length = unit(1.5, "mm")),
+#'                 bjust = 0,
+#'                 hjust = 1.05,
+#'                 vjust = 0.5,
+#'                 vstep = 0.05,
+#'                 label.y = 14,
+#'                 adj.method.tag = 0) +
+#'   expand_limits(y = 0)
+#'
 #' # use different labels: difference and P-value from hypothesis tests
 #' p1 +
 #'   stat_multcomp(use_label("Delta", "P"),
@@ -286,13 +303,18 @@
 #'   stat_multcomp(label.type = "letters",
 #'                 mc.critical.p.value = 0.01)
 #'
-#' ## Flipping is currently usable only with "letters" and "LETTERS"
+#' ## Flipping is supported
 #' p2 <- ggplot(mpg, aes(hwy, factor(cyl))) +
 #'   geom_boxplot(width = 0.33)
 #'
 #' p2 +
 #'   stat_multcomp(label.type = "letters") +
 #'   scale_y_discrete(expand = expansion(add = c(1.2, 0.5)))
+#'
+#' p2 +
+#'   stat_multcomp(label.type = "bars",
+#'                 geom = "text_pairwise",
+#'                 size = 3)
 #'
 #' # Inspecting the returned data using geom_debug_panel()
 #' # This provides a quick way of finding out the names of the variables that
@@ -310,6 +332,16 @@
 #'
 #' if (gginnards.installed)
 #' p1 +
+#'   stat_multcomp(label.type = "letters",
+#'                 geom = "debug_panel")
+#'
+#' if (gginnards.installed)
+#' p2 +
+#'   stat_multcomp(label.type = "bars",
+#'                 geom = "debug_panel")
+#'
+#' if (gginnards.installed)
+#' p2 +
 #'   stat_multcomp(label.type = "letters",
 #'                 geom = "debug_panel")
 #'
@@ -334,6 +366,7 @@ stat_multcomp <- function(mapping = NULL,
                           adj.method.tag = 4,
                           p.digits = NULL,
                           label.type = "bars",
+                          bjust = 0.5,
                           label.y = NULL,
                           vstep = NULL,
                           output.type = NULL,
@@ -351,6 +384,16 @@ stat_multcomp <- function(mapping = NULL,
   } else if (is.null(p.adjust.method)) {
     # same default as p.adjust()
     p.adjust.method <- "holm"
+  }
+
+  if (!anyNA(bjust) && is.character(bjust)) {
+    if (all(bjust %in% c("left", "bottom", "center", "centre", "middle", "right", "top"))) {
+      bjust <-
+      c(left = 0, bottom = 0, center = 0.5, centre = 0.5, middle = 0.5, right = 1, top = 1)[bjust]
+    } else {
+      warning("Invalid 'bjust' character argument: ", bjust)
+      bjust <- 0.5
+    }
   }
 
   # dynamic defaults
@@ -422,6 +465,7 @@ stat_multcomp <- function(mapping = NULL,
                    p.digits = p.digits,
                    p.crit.digits = p.crit.digits,
                    label.type = label.type,
+                   bjust = bjust,
                    label.y = label.y,
                    fm.cutoff.p.value = fm.cutoff.p.value,
                    mc.cutoff.p.value = mc.cutoff.p.value,
@@ -461,6 +505,7 @@ multcomp_compute_panel_fun <-
            fm.cutoff.p.value = 1,
            mc.cutoff.p.value = 1,
            mc.critical.p.value = 0.05,
+           bjust = 0.5,
            label.y = NULL,
            vstep = NULL,
            output.type = expression(),
@@ -601,25 +646,25 @@ multcomp_compute_panel_fun <-
       if (is.vector(contrasts)) {
         contrasts <- matrix(contrasts, nrow = 1)
       }
-      x.left.tip <- x.right.tip <- numeric(nrow(contrasts))
+      near.tip <- far.tip <- numeric(nrow(contrasts))
       for (i in 1:nrow(contrasts)) {
-        x.tips <- which(contrasts[i, ] != 0)
-        if (length(x.tips) != 2) {
+        contrast.tips <- which(contrasts[i, ] != 0)
+        if (length(contrast.tips) != 2) {
           stop("Only pairwise contrasts are currently supported.")
         }
-        x.left.tip[i] <- x.tips[1]
-        x.right.tip[i] <- x.tips[2]
+        near.tip[i] <- contrast.tips[1]
+        far.tip[i] <- contrast.tips[2]
       }
     } else if (is.character(contrasts)) {
       if (contrasts == "Tukey") {
-        x.left.tip <- switch(num.levels,
+        near.tip <- switch(num.levels,
                              NA_real_,
                              1,
                              c(1, 1, 2),
                              c(1, 1, 1, 2, 2, 3),
                              c(1, 1, 1, 1, 2, 2, 2, 3, 3, 4)
         )
-        x.right.tip <- switch(num.levels,
+        far.tip <- switch(num.levels,
                               NA_real_,
                               2,
                               c(2, 3, 3),
@@ -627,12 +672,11 @@ multcomp_compute_panel_fun <-
                               c(2, 3, 4, 5, 3, 4, 5, 4, 5, 5)
         )
       } else if (contrasts == "Dunnet") {
-        x.left.tip <- rep(1, num.levels - 1)
-        x.right.tip <- 2:num.levels
+        near.tip <- rep(1, num.levels - 1)
+        far.tip <- 2:num.levels
       }
     }
 
-    # multiple comparisons test
     if (inherits(contrasts, "mcp")) {
       linfct.arg <- contrasts
       contrasts <- "mcp object"
@@ -687,15 +731,18 @@ multcomp_compute_panel_fun <-
     }
 
     if (label.type %in% c("bars")) {
-      # Labelled bar representation of multiple contrast results.
+      # Labelled bar representation of pairwise contrast outcomes
       #
-      # We build a data frame suitable for plotting with geom_text_pairwise()
-      # or geom_label_pairwise(). We return multiple results, but map only
-      # some.
-      #
-      z <- tibble::tibble(x = (x.left.tip + x.right.tip) / 2,
-                          x.left.tip,
-                          x.right.tip,
+      text.just <- if(bjust > 0.75) {
+        "right"
+      } else if (bjust < 0.25) {
+        "left"
+      } else {
+        "center"
+      }
+      z <- tibble::tibble(x = near.tip + (far.tip - near.tip) * bjust,
+                          xmin = near.tip,
+                          xmax = far.tip,
                           coefficients = pairwise.coefficients,
                           contrasts = pairwise.contrasts,
                           tstat = pairwise.tstat,
@@ -708,7 +755,8 @@ multcomp_compute_panel_fun <-
                           mc.adjusted = p.adjust.method,
                           mc.contrast = contrasts,
                           n = n,
-                          just = "center")
+                          just = text.just,
+                          orientation = orientation)
 
       # Drop unwanted labels
       z <- z[z[["p.value"]] <= mc.cutoff.p.value, ]
@@ -797,8 +845,8 @@ multcomp_compute_panel_fun <-
                                         decimal.mark = decimal.mark)
         }
         z <- tibble::tibble(x = c(0.1, 1:num.levels),
-                            x.left.tip = NA_real_,
-                            x.right.tip = NA_real_,
+                            xmin = NA_real_,
+                            xmax = NA_real_,
                             critical.p.value = mc.critical.p.value,
                             fm.method = method.name,
                             fm.class = fm.class,
@@ -809,11 +857,12 @@ multcomp_compute_panel_fun <-
                             n = n,
                             letters.label = c(p.crit.label ,
                                               Letters[order(as.numeric(names(Letters)))]),
-                            just = c("inward", rep("center", length(Letters))))
+                            just = c("inward", rep("center", length(Letters))),
+                            orientation = orientation)
       } else {
         z <- tibble::tibble(x = 1:num.levels,
-                            x.left.tip = NA_real_,
-                            x.right.tip = NA_real_,
+                            xmin = NA_real_,
+                            xmax = NA_real_,
                             critical.p.value = mc.critical.p.value,
                             fm.method = method.name,
                             fm.class = fm.class,
@@ -823,7 +872,8 @@ multcomp_compute_panel_fun <-
                             mc.contrast = contrasts,
                             n = n,
                             letters.label = Letters[order(as.numeric(names(Letters)))],
-                            just = rep("center", length(Letters)))
+                            just = rep("center", length(Letters)),
+                            orientation = orientation)
       }
 
       if (output.type == "numeric") {
@@ -873,6 +923,7 @@ multcomp_compute_panel_fun <-
       z[["group"]] <- -1L
     }
 
+    # this works only because we use xmin and xmax as names
     z$flipped_aes <- flipped_aes
     z <- ggplot2::flip_data(z, flipped_aes)
 
@@ -898,13 +949,13 @@ StatMultcomp <-
                      params
                    },
                    compute_panel = multcomp_compute_panel_fun,
-                   default_aes = ggplot2::aes(xmin = after_stat(x.left.tip),
-                                              xmax = after_stat(x.right.tip),
+                   default_aes = ggplot2::aes(xmin = after_stat(ifelse(flipped_aes, NA_real_, xmin)),
+                                              xmax = after_stat(ifelse(flipped_aes, NA_real_, xmax)),
+                                              ymin = after_stat(ifelse(flipped_aes, ymin, NA_real_)),
+                                              ymax = after_stat(ifelse(flipped_aes, ymax, NA_real_)),
                                               label = after_stat(default.label),
                                               weight = 1,
                                               size = 2.5,
-                                              # angle = ifelse(orientation == "y",
-                                              #                -90, 0),
                                               hjust = after_stat(just)),
                    dropped_aes = "weight",
                    required_aes = c("x", "y"),

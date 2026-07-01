@@ -134,11 +134,12 @@ theme_set(theme_bw())
 
 ## Using default labels
 
-Tukey's method for all pairwise contrasts using _honestly significant differences_.
+Tukey's method for all pairwise contrasts using _honestly significant differences_, while adjusting the size and position of the labels.
 
 ```{r}
 ggplot(mpg, aes(factor(cyl), cty)) +
-  stat_summary(fun.data = mean_cl_normal, colour = "red") +
+  stat_summary(fun.data = mean_cl_normal, 
+               colour = "red") +
   stat_multcomp(label.y = 12, 
                 size = 2.75, 
                 vstep = 0.05) +
@@ -240,7 +241,7 @@ ggplot(mpg, aes(factor(cyl), cty)) +
   stat_summary(fun = mean, geom = "col", width = 0.5) +
   stat_summary(fun.data = mean_cl_normal, colour = "red") +
   stat_multcomp(aes(x = stage(start = factor(cyl), 
-                              after_stat = x.right.tip)),
+                              after_stat = xmax)),
                 geom = "text",
                 label.y = -1, 
                 vstep = 0,
@@ -278,10 +279,10 @@ ggplot(mpg, aes(factor(cyl), cty)) +
 ggplot(mpg, aes(factor(cyl), cty)) +
   stat_summary(fun = mean, geom = "col", width = 0.5) +
   stat_summary(fun.data = mean_cl_normal, colour = "red") +
-  stat_multcomp(aes(x = stage(start = factor(cyl), after_stat = x.right.tip),
+  stat_multcomp(aes(x = stage(start = factor(cyl), after_stat = xmax),
                     label = after_stat(stars.label)),
                 geom = "text",
-                label.y = -1, 
+                label.y = -1,
                 vstep = 0,
                 contrasts = "Dunnet")
 ```

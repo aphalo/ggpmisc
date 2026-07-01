@@ -24,6 +24,7 @@ stat_multcomp(
   adj.method.tag = 4,
   p.digits = NULL,
   label.type = "bars",
+  bjust = 0.5,
   label.y = NULL,
   vstep = NULL,
   output.type = NULL,
@@ -120,7 +121,10 @@ three decimal places.}
 how the results of the multiple comparisons are displayed. Only "bars" can
 be used together with \code{contrasts = "Dunnet"}.}
 
-\item{label.y}{\code{numeric} with range 0..1 "normalized parent
+\item{bjust}{numeric usually with range 0..1, the justification of the labels
+relative to the bars.}
+
+\item{label.y}{numeric with range 0..1 "normalized parent
 coordinates" (npc units) or character if using \code{geom_text_npc()} or
 \code{geom_label_npc()}. If using \code{geom_text()} or \code{geom_label()}
 numeric in native data units. \emph{In flipped plots, it refers to \code{x}
@@ -230,8 +234,8 @@ If \code{output.type = "numeric"} and
 columns listed below. In all cases if the model fit function used does not return a value,
 the label is set to \code{character(0L)} and the numeric value to \code{NA}.
 \describe{
-  \item{x,x.left.tip,x.right.tip}{x position, numeric.}
-  \item{y}{y position, numeric.}
+  \item{x,xmin,xmax}{x position, numeric.}
+  \item{y,ymin,ymax}{y position, numeric.}
   \item{coefficients}{Delta estimate from pairwise contrasts, numeric.}
   \item{contrasts}{Contrasts as two levels' ordinal "numbers" separated by a dash, character.}
   \item{tstat}{\emph{t}-statistic estimates for the pairwise contrasts, numeric.}
@@ -262,8 +266,8 @@ If \code{output.type = "numeric"} and \code{label.type = "letters"} or
 below.
 
 \describe{
-  \item{x,x.left.tip,x.right.tip}{x position, numeric.}
-  \item{y}{y position, numeric.}
+  \item{x,xmin,xmax}{x position, numeric.}
+  \item{y,ymin,ymax}{y position, numeric.}
   \item{critical.p.value}{\emph{P}-value used in pairwise tests, numeric.}
   \item{fm.method}{Set according \code{method} used.}
   \item{fm.class}{Most derived class of the fitted model object.}
@@ -353,6 +357,21 @@ p1 +
 p1 +
   stat_multcomp(label.y = 11)
 
+# justification of label in bar, and text anchor point
+# for a compact display
+
+p1 +
+  stat_multcomp(geom = "text_pairwise",
+                arrow = grid::arrow(ends = "both",
+                                    length = unit(1.5, "mm")),
+                bjust = 0,
+                hjust = 1.05,
+                vjust = 0.5,
+                vstep = 0.05,
+                label.y = 14,
+                adj.method.tag = 0) +
+  expand_limits(y = 0)
+
 # use different labels: difference and P-value from hypothesis tests
 p1 +
   stat_multcomp(use_label("Delta", "P"),
@@ -392,13 +411,18 @@ p1 +
   stat_multcomp(label.type = "letters",
                 mc.critical.p.value = 0.01)
 
-## Flipping is currently usable only with "letters" and "LETTERS"
+## Flipping is supported
 p2 <- ggplot(mpg, aes(hwy, factor(cyl))) +
   geom_boxplot(width = 0.33)
 
 p2 +
   stat_multcomp(label.type = "letters") +
   scale_y_discrete(expand = expansion(add = c(1.2, 0.5)))
+
+p2 +
+  stat_multcomp(label.type = "bars",
+                geom = "text_pairwise",
+                size = 3)
 
 # Inspecting the returned data using geom_debug_panel()
 # This provides a quick way of finding out the names of the variables that
@@ -416,6 +440,16 @@ p1 +
 
 if (gginnards.installed)
 p1 +
+  stat_multcomp(label.type = "letters",
+                geom = "debug_panel")
+
+if (gginnards.installed)
+p2 +
+  stat_multcomp(label.type = "bars",
+                geom = "debug_panel")
+
+if (gginnards.installed)
+p2 +
   stat_multcomp(label.type = "letters",
                 geom = "debug_panel")
 
@@ -448,8 +482,10 @@ This statistic uses the implementation of Tests of General Linear
  • \tab \code{label} \tab → \code{after_stat(default.label)} \cr
  • \tab \code{\link[ggplot2:aes_linetype_size_shape]{size}} \tab → \code{2.5} \cr
  • \tab \code{weight} \tab → \code{1} \cr
- • \tab \code{\link[ggplot2:aes_position]{xmax}} \tab → \code{after_stat(x.right.tip)} \cr
- • \tab \code{\link[ggplot2:aes_position]{xmin}} \tab → \code{after_stat(x.left.tip)} \cr
+ • \tab \code{\link[ggplot2:aes_position]{xmax}} \tab → \code{after_stat(ifelse(flipped_aes, NA_real_, xmax))} \cr
+ • \tab \code{\link[ggplot2:aes_position]{xmin}} \tab → \code{after_stat(ifelse(flipped_aes, NA_real_, xmin))} \cr
+ • \tab \code{\link[ggplot2:aes_position]{ymax}} \tab → \code{after_stat(ifelse(flipped_aes, ymax, NA_real_))} \cr
+ • \tab \code{\link[ggplot2:aes_position]{ymin}} \tab → \code{after_stat(ifelse(flipped_aes, ymin, NA_real_))} \cr
 }
 
 Learn more about setting these aesthetics in \code{vignette("ggplot2-specs")}.

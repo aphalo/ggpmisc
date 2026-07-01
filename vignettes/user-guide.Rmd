@@ -181,8 +181,8 @@ In some cases it is desirable to alter the formatting based on the outcome from 
 | .size             |        | numeric   | n         | n       | n          | n             | n          | y             |
 | mc.adjusted       |        | character | n         | n       | n          | n             | y          | n             |
 | mc.contrast       |        | character | n         | n       | n          | n             | y          | n             |
-| x.left.tip        |        | numeric   | n         | n       | n          | n             | y (3)      | n             |
-| x.right.tip       |        | numeric   | n         | n       | n          | n             | y (3)      | n             |
+| xmin/ymin    |        | numeric   | n         | n       | n          | n             | y (3)      | n             |
+| xmax/ymax       |        | numeric   | n         | n       | n          | n             | y (3)      | n             |
 | x(2)              |        | numeric   | y         | y       | y          | y             | y          | y             |
 | y(2)              |        | numeric   | y         | y       | y          | y             | y          | y             |
 | npcx(2)           |        | numeric   | y         | y       | y          | y             | n          | y             |
@@ -1060,7 +1060,7 @@ With Dunnet contrasts, the use of bars can clutter a plot, and we can alternativ
 ggplot(mpg, aes(factor(cyl), hwy)) +
   geom_boxplot(width = 0.33) +
   stat_multcomp(aes(x = stage(start = factor(cyl),
-                              after_stat = x.right.tip)),
+                              after_stat = xmax)),
                 geom = "text",
                 label.y = "bottom",
                 vstep = 0,
@@ -1071,7 +1071,7 @@ ggplot(mpg, aes(factor(cyl), hwy)) +
 ggplot(mpg, aes(factor(cyl), hwy)) +
   geom_boxplot(width = 0.33) +
   stat_multcomp(aes(x = stage(start = factor(cyl),
-                              after_stat = x.right.tip),
+                              after_stat = xmax),
                     label = after_stat(stars.label)),
                 geom = "text",
                 label.y = "bottom",

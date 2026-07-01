@@ -61,6 +61,61 @@ test_that("multcomp_noload", {
 
 library(ggpmisc)
 
+test_that("non-default geoms work", {
+  vdiffr::expect_doppelganger("smltc_letters_label",
+                              ggplot(my.data, aes(group, y2)) +
+                                stat_boxplot() +
+                                stat_multcomp(geom = "label",
+                                              contrasts = "Tukey",
+                                              label.type = "letters"),
+                              variant = snap_version
+  )
+
+  vdiffr::expect_doppelganger("smltc_bars_text",
+                              ggplot(my.data, aes(group, y2)) +
+                                stat_boxplot() +
+                                stat_multcomp(geom = "text_pairwise",
+                                              contrasts = "Tukey"),
+                              variant = snap_version
+  )
+})
+
+test_that("non-default bar justification bjust works", {
+  vdiffr::expect_doppelganger("smltc_bars_bjust0",
+                              ggplot(my.data, aes(group, y2)) +
+                                stat_boxplot() +
+                                stat_multcomp(geom = "text_pairwise",
+                                              bjust = 0,
+                                              contrasts = "Tukey"),
+                              variant = snap_version
+  )
+
+  vdiffr::expect_doppelganger("smltc_bars_bjust1",
+                              ggplot(my.data, aes(group, y2)) +
+                                stat_boxplot() +
+                                stat_multcomp(geom = "text_pairwise",
+                                              bjust = 1,
+                                              contrasts = "Tukey"),
+                              variant = snap_version
+  )
+
+  vdiffr::expect_doppelganger("smltc_bars_hjust1_alljust",
+                              ggplot(my.data, aes(group, y2)) +
+                                stat_boxplot() +
+                                stat_multcomp(geom = "text_pairwise",
+                                              bjust = 0,
+                                              hjust = 1.05,
+                                              vjust = 0.5,
+                                              label.y = 170,
+                                              vstep = 0.05,
+                                              adj.method.tag = 0,
+                                              contrasts = "Tukey"),
+                              variant = snap_version
+  )
+
+})
+
+
 test_that("flipping works", {
   vdiffr::expect_doppelganger("smltc_letters_flipped",
                               ggplot(my.data, aes(y2, group)) +
@@ -70,8 +125,25 @@ test_that("flipping works", {
                                 scale_y_discrete(expand = expansion(add = c(1.2, 0.5))),
                               variant = snap_version
   )
-}
-          )
+
+  vdiffr::expect_doppelganger("smltc_bars_flipped",
+                              ggplot(my.data, aes(y2, group)) +
+                                stat_boxplot() +
+                                stat_multcomp(contrasts = "Tukey"),
+                              variant = snap_version
+  )
+
+  vdiffr::expect_doppelganger("smltc_bars_flipped_bjust0",
+                              ggplot(my.data, aes(y2, group)) +
+                                stat_boxplot() +
+                                stat_multcomp(geom = "text_pairwise",
+                                              contrasts = "Tukey",
+                                              bjust = 0),
+                              variant = snap_version
+  )
+
+})
+
 test_that("smltc_contrast_type", {
   set.seed(4321)
 

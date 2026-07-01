@@ -19,8 +19,11 @@ base functions as not being regular polynomials.
 `stat_valleys()` but targeting very narrow peaks and valleys with unusually
 abrupt transitions from the baseline.
 - Support flipping of orientation and guess default `orientation` automatically
-from the aesthetic mapping in `stat_multcomp()`, and when possible in 
-`stat_fit_tb()`, `stat_fit_glance()`, `stat_fit_tidy()` and `stat_fit_augment()`.
+from the aesthetic mapping in `stat_multcomp()` (**breaking** returned
+variables renamed, `x.left.tip` into `xmin` and `x.right.tip` into `xmax`).
+- Support flipping of orientation and guess default `orientation` automatically
+from the aesthetic mapping when possible in `stat_fit_tb()`,
+`stat_fit_glance()`, `stat_fit_tidy()` and `stat_fit_augment()`.
 - Add `stat_distrmix_area()` as a wrapper on `stat_distrmix_line()` with
 defaults plotting the sum of components as an area.
 - Guess default `orientation` automatically from the aesthetic mapping in 
