@@ -423,8 +423,7 @@ citation("ggpmisc")
 #> To cite package 'ggpmisc' in publications use:
 #> 
 #>   Aphalo P (2026). _ggpmisc: Miscellaneous Extensions to 'ggplot2'_. R
-#>   package version 0.7.0.9009,
-#>   <https://docs.r4photobiology.info/ggpmisc/>.
+#>   package version 1.0.0, <https://docs.r4photobiology.info/ggpmisc/>.
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
@@ -432,7 +431,7 @@ citation("ggpmisc")
 #>     title = {ggpmisc: Miscellaneous Extensions to 'ggplot2'},
 #>     author = {Pedro J. Aphalo},
 #>     year = {2026},
-#>     note = {R package version 0.7.0.9009},
+#>     note = {R package version 1.0.0},
 #>     url = {https://docs.r4photobiology.info/ggpmisc/},
 #>   }
 ```
@@ -453,11 +452,11 @@ significant contributions from several of the authors and maintainers of
 
 Aphalo, Pedro J. (2024) *Learn R: As a Language.* 2ed. The R Series.
 Boca Raton and London: Chapman and Hall/CRC Press. ISBN: 9781032516998.
-466 pp. 
+466 pp.
 
 Aphalo, Pedro J. (2020) *Learn R: As a Language.* 1ed. The R Series.
 Boca Raton and London: Chapman and Hall/CRC Press. ISBN: 9780367182533.
-350 pp. 
+350 pp.
 
 Wickham, Hadley. 2010. “A Layered Grammar of Graphics.” Journal of
 Computational and Graphical Statistics 19 (1): 3–28.
