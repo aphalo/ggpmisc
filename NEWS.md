@@ -6,26 +6,32 @@ editor_options:
 
 # ggpmisc 1.0.0
 
-- Add `f_use_label()` like `use_label()` but relying on a `format` to build the
-combined character string mapped to the `label` aesthetic.
-- Update all statistics so that they issue a message listing short names of
-formatted labels or names of variables available for mapping to aesthetics.
-- Update `check_poly_formula()` to issue warnings when the model formula includes 
-on-the-fly transformations in the rhs or lhs, indicating the need to pass a
-matching argument to `eq.x.rhs` or `eq.lhs`. Fix parsing failures leading to
-wrong test outcomes in some edge cases. Detect formulas containing spline
-base functions as not being regular polynomials.
+The main changes in this version are support for `orientation = "y"` in all 
+statistics, improved support for non-linear models, using ordinary or orthogonal
+least squares, the computation of the position of tail quantiles in fitted
+mixture of Normals models, and a major update of the documentation and website.
+
+- Add function `f_use_label()` similar to `use_label()` but relying on a 
+`format` to build the combined character string mapped to the `label` aesthetic.
+- Update all statistics so that they issue a message in _interactive R sessions_
+listing short names of formatted labels or full names of variables available 
+for mapping to aesthetics.
+- Update `check_poly_formula()` to issue warnings when the model formula 
+includes on-the-fly transformations in the rhs or lhs, indicating the need to 
+pass a matching argument to `eq.x.rhs` or `eq.lhs`. Fix parsing failures leading
+to wrong test outcomes in some edge cases. Detect formulas containing spline
+base functions `bs`, `ns` or `lspline` as not being regular polynomials.
 - Add `stat_spikes()` with similar functionality as `stat_peaks()` and 
 `stat_valleys()` but targeting very narrow peaks and valleys with unusually
 abrupt transitions from the baseline.
 - Support flipping of orientation and guess default `orientation` automatically
 from the aesthetic mapping in `stat_multcomp()` (**breaking** returned
-variables renamed, `x.left.tip` into `xmin` and `x.right.tip` into `xmax`).
+variables renamed: `x.left.tip` into `xmin` and `x.right.tip` into `xmax`).
 - Support flipping of orientation and guess default `orientation` automatically
 from the aesthetic mapping when possible in `stat_fit_tb()`,
 `stat_fit_glance()`, `stat_fit_tidy()` and `stat_fit_augment()`.
 - Add `stat_distrmix_area()` as a wrapper on `stat_distrmix_line()` with
-defaults plotting the sum of components as an area.
+default for plotting the sum of component Normals as an area.
 - Guess default `orientation` automatically from the aesthetic mapping in 
 `stat_distrmix_line()`, `stat_distrmix_area()` and `stat_distrmix_eq()`.
 - Add computation of cumulated density and highlighting of distribution's
@@ -45,7 +51,7 @@ used to compute the prediction line.
 `stat_quant_band()` for consistency, adding previously lacking control over the
 prediction range.
 - **Breaking:** as robustness weights are just one type of posterior weights, the 
-name of the returned variable has been changed from `robustness.weights` into
+name of the returned variable has changed from `robustness.weights` into
 `posterior.weights`.
 - Add support for extraction of posterior weights for models fitted with methods
 `"gls"`, (`"lme"` and `"nlme"`). These weights are NOT scaled to values in 0..1!
@@ -61,7 +67,7 @@ Merge help for closely related statistics.
 - Update the _User Guide_ with new/better examples and explanations including
 use of new features.
 - Update the documentation website of 'ggpmisc' editing existing and adding
-mew articles.
+two new articles: _Non-linear model fits_ and _Multiple comparisons_.
 
 # ggpmisc 0.7.0
 
