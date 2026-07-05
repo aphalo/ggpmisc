@@ -7,7 +7,7 @@
 find_quantiles(density, quantiles = c(0.025, 0.975), group = 1)
 }
 \arguments{
-\item{density}{numeric An density curve predicted at a large
+\item{density}{numeric A fitted density function predicted at a large
 number of equal steps without truncation.}
 
 \item{quantiles}{numeric The probabilities of the quantiles to locate.}
@@ -21,15 +21,16 @@ A factor with levels indicating the regions delimited by the
   quantiles. The levels are labelled by ordinal numbers.
 }
 \description{
-Find the location of quantiles in fitted 1D density within a call to
-\code{aes()} to map regions under the curve to the \code{fill} aesthetic.
+Find the location of quantiles in an univariate density function, such as
+within a call to \code{aes()}, to map regions under the curve that the
+quantiles delimit to the \code{fill} aesthetic in a ggplot layer.
 }
 \details{
-A running cummulated density function (CDF) is computed as
-  \code{cumsum(density)} assuming that \code{x} steps are uniform. Values are
-  subsequently compared to the target quantiles, to identify the regions they
-  delimit. No interpolation is done making it crucial that \code{density} is
-  a long vector, as controlled by parameter \code{n} in
+A running cumulated density function (CDF) is computed as
+  \code{cumsum(density)} assuming that \code{x} steps are uniform in size.
+  Values are subsequently compared to the target quantiles, to identify the
+  regions they delimit. No interpolation is done making it crucial that
+  \code{density} is a long vector, as controlled by parameter \code{n} in
   \code{\link[ggplot2:geom_density]{stat_density}()}.
 
   Unique and sorted values from the argument passed to \code{quantiles} are
@@ -37,13 +38,13 @@ A running cummulated density function (CDF) is computed as
   returned is always one less than the length of these "normalized"
   quantiles.
 
-  In 'ggplot2' (>= 4.0.0) \code{\link[ggplot2:geom_ribbon]{geom_area}} when
-  the \code{fill} aesthetic is mapped to a numeric variable or to a factor,
-  the fill is rendered as a gradient, making it possible to highlight
-  quantiles within a single plot layer. \emph{Currently, gradient fills are
-  supported in R (>= 4.1.0) and only by some graphic devices. This function
-  is of use only if gradient fills are supported!} The capabilities of the
-  currently active device can be tested with a call to
+  In 'ggplot2' (>= 4.0.0), \code{\link[ggplot2:geom_ribbon]{geom_area}()}
+  when the \code{fill} aesthetic is mapped to a numeric variable or to a
+  factor, the fill is rendered as a gradient, making it possible to highlight
+  multiple quantiles within a single plot layer. \emph{Gradient
+  fills are supported in R (>= 4.1.0) and only by some graphic devices. This
+  function is of use only if gradient fills are supported!} The capabilities
+  of the currently active device can be tested with a call to
   \code{\link[grDevices]{dev.capabilities}()} checking the field
   \code{"patterns"}.
 

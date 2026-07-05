@@ -59,7 +59,7 @@ The statistics for fitted models come in matched pairs, one that adds a plot lay
 
 * `stat_ma_line()` and `stat_ma_eq()` support _major axis (MA), standardised major axis (SMA) and ranged major axis (RMA) regression_ (using 'lmodel2'). The fitted model equation is automatically generated for regular polynomials, and can be assembled in user code for other model formulas. Prior and posterior weights are returned.
 
-* `stat_distrmix_line()` and `stat_distrmix_eq()` support fitting of univariate Normal-distribution mixture models or a of a single Normal distribution. The fitted model equation is automatically generated for regular polynomials, and can be assembled in user code for other model formulas. The location of tail quantiles of the fitted distribution are computed.
+* `stat_distrmix_line()`, `stat_distrmix_area()` and `stat_distrmix_eq()` support fitting of _univariate Normal-distribution mixture models_ or a of _a single Normal distribution_. The fitted model equation is automatically. The areas delimited by quantiles of the fitted distribution are tagged.
 
 * `stat_fit_fitted()` and `stat_fit_deviations()` can be used to plot the fitted values and to display them as segments between predicted and observed values (deviations), respectively. Prior and posterior weights are returned.
 

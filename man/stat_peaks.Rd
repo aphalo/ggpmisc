@@ -336,7 +336,6 @@ ggplot(lynx, as.numeric = FALSE) +
 \code{\link{find_spikes}()} for a function suitable for very
   narrow and steep peaks and valleys.
 }
-\concept{statistics for peak, valley and spikes annotation}
 \section{Aesthetics}{
 
 \code{stat_peaks()} understands the following aesthetics. Required aesthetics are displayed in bold and defaults are displayed for optional aesthetics:

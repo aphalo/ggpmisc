@@ -470,8 +470,6 @@ StatPeaks <-
 
 #' @rdname stat_peaks
 #'
-#' @family statistics for peak, valley and spikes annotation
-#'
 #' @export
 #'
 stat_valleys <- function(mapping = NULL,

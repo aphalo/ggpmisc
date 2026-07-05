@@ -211,14 +211,27 @@ supported by scientific theory that suggests a reasonable value for `k`.
 ```{r, warning=FALSE, results='hide', fig.keep='all'}
 ggplot(data.frame(speed = galaxies * 1e-3), aes(x = speed)) +
   geom_histogram(aes(y = after_stat(density)), alpha = 0.33, bins = 20) +
-  stat_distrmix_line(outline.type = "upper", colour = "black",
-                     geom = "area", linewidth = 1, alpha = 0.25,
+  stat_distrmix_area(outline.type = "upper", colour = "black",
+                     linewidth = 1, alpha = 0.25,
                      k = 6, fit.seed = 123, components = "sum") +
   stat_distrmix_line(outline.type = "upper", colour = "black",
-                     geom = "line", linewidth = 0.25,
+                     linewidth = 0.25,
                      k = 6, fit.seed = 123, components = "members") +
   stat_distrmix_eq(k = 6, fit.seed = 123, components = "members", 
                    eq.with.lhs = FALSE, size = 3)
+```
+
+
+```{r, warning=FALSE, results='hide', fig.keep='all'}
+ggplot(data.frame(speed = galaxies * 1e-3), aes(x = speed)) +
+  stat_distrmix_area(aes(fill = after_stat(quant.splits != 2)),
+                     k = 6, fit.seed = 123, quantiles = c(0.05, 0.95),
+                     outline.type = "upper", colour = "black", linewidth = 1,
+                     show.legend = FALSE) +
+  stat_distrmix_eq(k = 6, fit.seed = 123, 
+                   components = "members", 
+                   eq.with.lhs = FALSE, size = 3) +
+  scale_fill_grey(start = 0.7, end = 0.3)
 ```
 
 For comparison, `stat_density()` from 'ggplot2' uses R function `density()`,
@@ -232,5 +245,21 @@ ggplot(data.frame(speed = galaxies * 1e-3), aes(x = speed)) +
   stat_density(bw = 0.5,
                geom = "area", outline.type = "upper",
                colour = "black", linewidth = 1, alpha = 0.25) +
-  expand_limits(x = c(8.5, 35))
+  expand_limits(x = c(8, 37))
+```
+
+The quantiles can be highlighted similarly as in `stat_distrmix_area()` using
+function `find_quantiles()`.
+
+```{r, warning=FALSE, results='hide', fig.keep='all'}
+ggplot(data.frame(speed = galaxies * 1e-3), aes(x = speed)) +
+  stat_density(
+    aes(fill =
+          after_stat(find_quantiles(density, quantiles = c(0.05, 0.95)) != 2)),
+    bw = 0.5,
+    geom = "area", outline.type = "upper",
+    colour = "black",
+    show.legend = FALSE) +
+  scale_fill_grey(start = 0.7, end = 0.3) +
+  expand_limits(x = c(8, 37))
 ```

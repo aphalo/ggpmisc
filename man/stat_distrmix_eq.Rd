@@ -186,23 +186,20 @@ default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
 range of the plot, or just the range of the explanatory variable?}
 }
 \value{
-The value returned by \code{stat_distrmix_line()} is a data frame,
-  with \code{n} rows of predictions or possibly fewer in the case when
-  \code{fullrange = FALSE} is passed in the call. Predictions for each
-  component of the mixture plus for their sum are returned in long form.
+The value returned by \code{stat_distrmix_line()} and by
+  \code{stat_distrmix_area()} is a data frame, with \code{n} predictions
+  values or possibly fewer in the case when \code{fullrange = FALSE}.
+  Predictions for each component of the mixture plus for their sum are
+  returned in long form.
 
   The value returned by \code{stat_distrmix_eq()} is a data frame, with one
   row of estimates for each group of data in the plot.
-
-  Both statistics optionally also return additional values related to the
-  model fit.
 }
 \description{
-Statistics \code{stat_distrmix_line()} and \code{stat_distrmix_eq()} fit a
-Normal mixture model. \code{stat_distrmix_line()} adds a layer with
-prediction lines or areas, optionally with quantiles highlighted, and
-\code{stat_distrmix_eq()} adds a layer with textual labels of parameter
-estimates to a plot.
+Fit an univariate mixture of Normals model. \code{stat_distrmix_line()} and
+\code{stat_distrmix_area()} add a layer with prediction lines or areas,
+respectively, while \code{stat_distrmix_eq()} adds a layer with textual
+labels of parameter estimates.
 }
 \details{
 \code{stat_distrmix_line()} and \code{stat_distrmix_area()} are
