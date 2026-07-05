@@ -34,9 +34,12 @@ from the aesthetic mapping when possible in `stat_fit_tb()`,
 default for plotting the sum of component Normals as an area.
 - Guess default `orientation` automatically from the aesthetic mapping in 
 `stat_distrmix_line()`, `stat_distrmix_area()` and `stat_distrmix_eq()`.
-- Add computation of cumulated density and highlighting of distribution's
-tail locations based on quantiles in `stat_distrmix_line()` and 
+- Identify regions of the fitted component Normal distributions and their
+mixture delimited by arbitrary quantiles in `stat_distrmix_line()` and 
 `stat_distrmix_area()`.
+- Export function `find_quantiles()` for the identification of regions delimited
+by quantiles when mapping aesthetics in other statistics from 'ggplot2' or its
+extension packages.
 - Improve in `stat_distrmix_line()` and `stat_distrmix_area()` the 
 behaviour with `fullrange = TRUE` so that it extends the prediction to cover the
 scale range if broader, but never shrinks the range below that needed to
@@ -51,8 +54,7 @@ used to compute the prediction line.
 `stat_quant_band()` for consistency, adding previously lacking control over the
 prediction range.
 - **Breaking:** as robustness weights are just one type of posterior weights, the 
-name of the returned variable has changed from `robustness.weights` into
-`posterior.weights`.
+returned variable `robustness.weights` is renamed `posterior.weights`.
 - Add support for extraction of posterior weights for models fitted with methods
 `"gls"`, (`"lme"` and `"nlme"`). These weights are NOT scaled to values in 0..1!
 - Change default from `show.legend = FALSE` to `show.legend = TRUE` in 
