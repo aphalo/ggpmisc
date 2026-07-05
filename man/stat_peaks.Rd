@@ -333,11 +333,8 @@ ggplot(lynx, as.numeric = FALSE) +
 
 }
 \seealso{
-\code{\link{find_peaks}()}, for the function used to located the
-  peaks and valleys.
-
-Other statistics for peak, valley and spikes annotation:
-\code{\link[=stat_spikes]{stat_spikes()}}
+\code{\link{find_spikes}()} for a function suitable for very
+  narrow and steep peaks and valleys.
 }
 \concept{statistics for peak, valley and spikes annotation}
 \section{Aesthetics}{

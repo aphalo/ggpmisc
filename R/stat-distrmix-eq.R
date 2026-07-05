@@ -98,7 +98,6 @@
 #'   \describe{\item{x}{\code{n} or fewer values}
 #'   \item{component}{A factor indexing the components and/or their sum}
 #'   \item{density}{predicted density values}
-#'   \item{cum.density}{predicted cumulated density values}
 #'   \item{quant.splits}{integer, numbering sequentially the regions separated by the
 #'   the \code{quantiles}}}.
 #'

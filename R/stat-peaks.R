@@ -81,10 +81,8 @@
 #'   \code{geom_line()}, \code{geom_rug()}, \code{geom_hline()} and
 #'   \code{geom_vline()} by just passing an argument to \code{geom}.
 #'
-#' @seealso \code{\link{find_peaks}()}, for the function used to located the
-#'   peaks and valleys.
-#'
-#' @family statistics for peak, valley and spikes annotation
+#' @seealso \code{\link{find_spikes}()} for a function suitable for very
+#'   narrow and steep peaks and valleys.
 #'
 #' @examples
 #' # lynx and Nile are time.series objects recognized by

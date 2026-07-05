@@ -240,13 +240,9 @@ spectra. Chemometrics and Intelligent Laboratory Systems, 179, 82-84.
 \doi{10.1016/j.chemolab.2018.06.009}.
 }
 \seealso{
-\code{\link{find_spikes}()}, for the function used to located the
-  spikes.
-
-Other statistics for peak, valley and spikes annotation:
-\code{\link[=stat_peaks]{stat_peaks()}}
+\code{\link{find_peaks}()} for functions suitable for broader
+  peaks and valleys.
 }
-\concept{statistics for peak, valley and spikes annotation}
 \section{Aesthetics}{
 
 \code{stat_spikes()} understands the following aesthetics. Required aesthetics are displayed in bold and defaults are displayed for optional aesthetics:

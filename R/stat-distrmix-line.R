@@ -13,7 +13,7 @@ stat_distrmix_line <- function(mapping = NULL,
                                quantiles = NA,
                                fit.seed = NA,
                                fm.values = FALSE,
-                               n = min(100 + 50 * k, 300),
+                               n = 500,
                                fullrange = TRUE,
                                level = 0.95,
                                method.args = list(),
@@ -91,7 +91,7 @@ distrmix_compute_group_fun <-
            quantiles = NA,
            fit.seed = NA,
            fm.values = FALSE,
-           n = 80,
+           n = 500,
            fullrange = TRUE,
            xseq = NULL,
            level = 0.95,
@@ -196,25 +196,10 @@ distrmix_compute_group_fun <-
       warning("Ignoring bad 'components' argument: \"", components, "\"")
     }
 
-    quantiles <- sort(unique(c(0, na.omit(quantiles), 1)))
-    if (any(quantiles < 0 | quantiles > 1)) {
-      stop("'quantiles' contains values outside 0..1")
-    }
-
-    prediction[["cum.density"]] <- numeric(nrow(prediction))
-    prediction[["quant.splits"]] <- integer(nrow(prediction))
-    for (comp in comp.names) {
-      selector <- which(prediction[["component"]] == comp)
-      temp <- cumsum(prediction[selector, "density", drop = TRUE])
-      prediction[selector, "cum.density"] <- temp / max(temp) * lambdas[comp]
-      for (i in seq_along(quantiles)) {
-        prediction[selector, "quant.splits"] <-
-          ifelse(prediction[selector, "cum.density", drop = TRUE] >
-                   (quantiles[i] * lambdas[comp]),
-                 i,
-                 prediction[selector, "quant.splits", drop = TRUE])
-      }
-    }
+    prediction[["quant.splits"]] <-
+      find_quantiles(density = prediction[["density"]],
+                     quantiles = quantiles,
+                     group = prediction[["component"]])
 
     # to be able to obtain a valid cdf we constrain the range late
     if (!fullrange) {
@@ -294,7 +279,7 @@ stat_distrmix_area <- function(mapping = NULL,
                                quantiles = NA,
                                fit.seed = NA,
                                fm.values = FALSE,
-                               n = min(100 + 50 * k, 300),
+                               n = 500,
                                fullrange = TRUE,
                                level = 0.95,
                                method.args = list(),

@@ -49,7 +49,7 @@ stat_distrmix_line(
   quantiles = NA,
   fit.seed = NA,
   fm.values = FALSE,
-  n = min(100 + 50 * k, 300),
+  n = 500,
   fullrange = TRUE,
   level = 0.95,
   method.args = list(),
@@ -75,7 +75,7 @@ stat_distrmix_area(
   quantiles = NA,
   fit.seed = NA,
   fm.values = FALSE,
-  n = min(100 + 50 * k, 300),
+  n = 500,
   fullrange = TRUE,
   level = 0.95,
   method.args = list(),
@@ -252,7 +252,6 @@ estimates to a plot.
   \describe{\item{x}{\code{n} or fewer values}
   \item{component}{A factor indexing the components and/or their sum}
   \item{density}{predicted density values}
-  \item{cum.density}{predicted cumulated density values}
   \item{quant.splits}{integer, numbering sequentially the regions separated by the
   the \code{quantiles}}}.
 
