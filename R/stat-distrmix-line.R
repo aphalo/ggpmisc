@@ -196,20 +196,24 @@ distrmix_compute_group_fun <-
       warning("Ignoring bad 'components' argument: \"", components, "\"")
     }
 
-    if (length(unique(na.omit(quantiles))) >= 2) {
-      quantiles <- range(quantiles, na.rm = TRUE)
-    } else {
-      quantiles <- c(0, 1)
+    quantiles <- sort(unique(c(0, na.omit(quantiles), 1)))
+    if (any(quantiles < 0 | quantiles > 1)) {
+      stop("'quantiles' contains values outside 0..1")
     }
+
     prediction[["cum.density"]] <- numeric(nrow(prediction))
-    prediction[["is.tail"]] <- logical(nrow(prediction))
+    prediction[["quant.splits"]] <- integer(nrow(prediction))
     for (comp in comp.names) {
       selector <- which(prediction[["component"]] == comp)
       temp <- cumsum(prediction[selector, "density", drop = TRUE])
       prediction[selector, "cum.density"] <- temp / max(temp) * lambdas[comp]
-      prediction[selector, "is.tail"] <-
-        prediction[selector, "cum.density", drop = TRUE] < (quantiles[1] * lambdas[comp]) |
-        prediction[selector, "cum.density", drop = TRUE] > (quantiles[2] * lambdas[comp])
+      for (i in seq_along(quantiles)) {
+        prediction[selector, "quant.splits"] <-
+          ifelse(prediction[selector, "cum.density", drop = TRUE] >
+                   (quantiles[i] * lambdas[comp]),
+                 i,
+                 prediction[selector, "quant.splits", drop = TRUE])
+      }
     }
 
     # to be able to obtain a valid cdf we constrain the range late

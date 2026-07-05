@@ -22,9 +22,10 @@ reference:
     - stat_fit_residuals
     - use_label
   - subtitle: Model fitting, ~ x by group
-    desc: Display estimates from univariate distributions and their mixtures graphically and as textual annotations.
+    desc: Display estimates from fitted univariate distributions and their mixtures graphically and as textual annotations.
     contents:
     - stat_distrmix_eq
+    - find_quantiles
   - subtitle: ANOVA and multiple comparisons, y ~ x by panel
     desc: Display test results and estimates as inset tables and as textual annotations.
     contents:

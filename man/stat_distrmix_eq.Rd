@@ -176,10 +176,9 @@ than combining with them. This is most useful for helper functions that
 define both data and aesthetics and shouldn't inherit behaviour from the
 default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
 
-\item{quantiles}{numeric The boundaries for tails given by two
-\emph{P}-values in the range 0 to 1, with \code{NA} being equivalent to
-\code{quantiles = c(0, 1)}. If a longer vector is passed as argument, its
-range is used.}
+\item{quantiles}{numeric The boundaries for quantiles given by
+\emph{P}-values in the range 0 to 1, with \code{NULL} being equivalent to
+\code{quantiles = c(0, 1)}.}
 
 \item{n}{Number of points at which to predict with the fitted model.}
 
@@ -201,7 +200,7 @@ The value returned by \code{stat_distrmix_line()} is a data frame,
 \description{
 Statistics \code{stat_distrmix_line()} and \code{stat_distrmix_eq()} fit a
 Normal mixture model. \code{stat_distrmix_line()} adds a layer with
-prediction lines or areas, optionally with tail quantiles highlighted, and
+prediction lines or areas, optionally with quantiles highlighted, and
 \code{stat_distrmix_eq()} adds a layer with textual labels of parameter
 estimates to a plot.
 }
@@ -225,7 +224,7 @@ estimates to a plot.
   In \code{stat_distrmix_line()}, predictions are computed to cover >= 0.999 of
   the integral in all cases, trimming to the range of the data with
   \code{fullrange = FALSE} is done as the last step in the computations. This
-  ensures correct estimates of the cumulated density (CDF) and of tail
+  ensures correct estimates of the cumulated density (CDF) and of
   quantiles, whose locations are estimated based on the CDF.
 
   Parameter \code{fit.seed} if not \code{NA} is used in a call to
@@ -248,14 +247,14 @@ estimates to a plot.
 
 
   Some of the variables can have missing values or depend on
-  \code{orientation} and/or \code{method}. A message is issued listing
-  the column names containing non-missing values.
+  \code{orientation} and/or \code{method}.
 
   \describe{\item{x}{\code{n} or fewer values}
   \item{component}{A factor indexing the components and/or their sum}
   \item{density}{predicted density values}
   \item{cum.density}{predicted cumulated density values}
-  \item{is.tail}{logical, \code{TRUE} if in a tail exceeding the values of the \code{quantiles}}}
+  \item{quant.splits}{integer, numbering sequentially the regions separated by the
+  the \code{quantiles}}}.
 
   If \code{fm.values = TRUE} is passed then columns with diagnosis and
   parameters estimates are added, with the same value in each row within a
@@ -267,23 +266,13 @@ estimates to a plot.
   \item{fm.method}{\code{character} the method, as given by the \code{ft}
   field of the fitted model objects}}
 
-  This provides a simple and robust
-  approach to achieve effects like colouring or hiding annotations
-  by group depending on the outcome of model fitting.
+  This provides a simple and robust approach to achieve effects like
+  colouring or hiding annotations by group depending on the outcome of model
+  fitting.
 }
 
 \section{Variables computed by \code{stat_distrmix_eq()}}{
 
-
-  Computed variables and their names can vary depending on the \code{method}
-  used to fit a model or the \code{output.type} in use. They can also depend
-  for a given \code{method} on other arguments passed when fitting a model or
-  extracting estimates and other computed values. A message is issued listing
-  the short names for formatted labels as recognized by functions
-  \code{\link{use_label}()} and \code{\link{f_use_label}()}, except when
-  \code{output.type = "numeric"} is passed, in which case the
-  names of all variables accessible by \code{after_stat()} within a call to
-  \code{aes()} are listed.
 
   Some of the variables depend on the orientation:
   \describe{\item{x}{the location of text labels}
@@ -298,19 +287,21 @@ estimates to a plot.
   \item{component}{A factor indexing the components of the mixture and/or
   their sum}}
 
-  If \code{SE = TRUE} is passed then columns with standard errors for the
-  parameter estimates:
+  If \code{se = TRUE} is passed then columns with standard errors for the
+  parameter estimates are also returned:
   \describe{\item{lambda.se}{\code{numeric} the estimate of the contribution
   of the component of the mixture towards the joint density}
   \item{mu.se}{\code{numeric} the estimate of the mean}
   \item{sigma.se}{\code{numeric} the estimate of the standard deviation}}
 
-  If \code{fm.values = TRUE} the same additional columns are returned as by
-  \code{stat_distrmix_eq()}. This is wasteful of storage space as values are
-  stored in multiple copies and, thus, disabled by default. However, it
-  provides a simple and robust approach to achieve effects like colouring or
-  hiding of the model fit line by group depending on the outcome of model
-  fitting.
+  If \code{fm.values = TRUE} is passed then columns with diagnosis and
+  parameters estimates are added:
+  \describe{\item{converged}{\code{logical} indicating if convergence was achieved}
+  \item{n}{\code{numeric} the number of \code{x} values}
+  \item{.size}{\code{numeric} the number of \code{density} values}
+  \item{fm.class}{\code{character} the most derived class of the fitted model object}
+  \item{fm.method}{\code{character} the method, as given by the \code{ft}
+  field of the fitted model objects}}
 }
 
 \section{Output types}{
@@ -360,6 +351,32 @@ is \code{"expression"}. Invalid values as argument trigger an error.
   \code{label.y} is the currently available workaround.
 }
 
+\section{Which variables are available for mapping?}{
+
+  Computed variables and their names can vary depending on the \code{method}
+  used to fit a model or the \code{output.type} in use. They can also depend
+  for a given \code{method} on other arguments passed when fitting a model or
+  extracting estimates and other computed values. In many cases, when values
+  are not available, the variables are filled with \code{NA} values.
+
+  In the statistics returning formatted strings for use as annotations, a
+  message is issued by default in interactive R sessions, listing the short
+  names for available formatted labels as recognized by functions
+  \code{\link{use_label}()} and \code{\link{f_use_label}()}, except when
+  \code{output.type = "numeric"} is passed, in which case the names of all
+  variables accessible by \code{after_stat()} within a call to \code{aes()}
+  are listed. This default (\code{"nicknames"}) can be changed by setting R option
+  \code{"ggpmisc.stat.vars.message"} to one of \code{"names"},
+  \code{"colnames"} or \code{"none"}.
+
+  In the statistics that plot a prediction or more generally mainly return
+  numeric variables, a message is issued by default in interactive R
+  sessions, listing the names of all variables accessible by
+  \code{after_stat()} within a call to \code{aes()} with at least some
+  non-missing values. This default (\code{"colnames"}) can be changed by
+  setting R option \code{"ggpmisc.stat.vars.message"} to \code{"none"}.
+}
+
 \examples{
 ggplot(faithful, aes(x = waiting)) +
   stat_distrmix_line() +
@@ -370,7 +387,7 @@ ggplot(faithful, aes(x = waiting)) +
   stat_distrmix_eq()
 
 ggplot(faithful, aes(x = waiting)) +
-  stat_distrmix_area(aes(fill = after_stat(is.tail)),
+  stat_distrmix_area(aes(fill = after_stat(quant.splits != 2)),
                      quantiles = c(0.025, 0.975),
                      show.legend = FALSE)
 
@@ -431,31 +448,6 @@ ggplot(subset(faithful, waiting > 66), aes(x = waiting)) +
 ggplot(subset(faithful, waiting > 66), aes(x = waiting)) +
   stat_distrmix_line(k = 1) +
   stat_distrmix_eq(k = 1, se = TRUE)
-
-# Inspecting the returned data using geom_debug_group()
-gginnards.installed <- requireNamespace("gginnards", quietly = TRUE)
-
-if (gginnards.installed)
-  library(gginnards)
-
-if (gginnards.installed)
-  ggplot(faithful, aes(x = waiting)) +
-    stat_distrmix_line(geom = "debug_group", components = "all")
-    stat_distrmix_eq(geom = "debug_group", components = "all")
-
-if (gginnards.installed)
-  ggplot(faithful, aes(x = waiting)) +
-    stat_distrmix_eq(geom = "debug_group", components = "sum")
-
-if (gginnards.installed)
-  ggplot(faithful, aes(x = waiting)) +
-    stat_distrmix_eq(geom = "debug_group", components = "members")
-
-if (gginnards.installed)
-  ggplot(faithful, aes(x = waiting)) +
-    stat_distrmix_eq(geom = "debug_group",
-                     components = "members",
-                     fm.values = TRUE)
 
 }
 \seealso{

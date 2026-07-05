@@ -2,7 +2,7 @@ Package: ggpmisc
 Type: Package
 Title: Miscellaneous Extensions to 'ggplot2'
 Version: 1.0.0
-Date: 2026-07-02
+Date: 2026-07-05
 Authors@R:
     c(
     person("Pedro J.", "Aphalo", email = "pedro.aphalo@helsinki.fi", role = c("aut", "cre"), comment = c(ORCID = "0000-0003-3385-972X")),
@@ -25,8 +25,8 @@ Description: Extensions to 'ggplot2' respecting the grammar of graphics
     build volcano and quadrant plots based on
     outcomes, fold changes, p-values and false discovery rates.
 License: GPL (>= 2)
-LazyLoad: TRUE
-ByteCompile: TRUE
+LazyLoad: true
+ByteCompile: true
 Depends:
     R (>= 4.2.0),
     ggpp (>= 0.6.1)

@@ -67,9 +67,9 @@
 #'   depending on the orientation..
 #'
 #'   To explore the values returned by statistics we suggest the use of
-#'   \code{\link[gginnards]{geom_debug_group}()}. Examples are shown below,
-#'   where one can also see in addition to the computed values the default
-#'   mapping of the fitted values to aesthetics \code{xend} and \code{yend}.
+#'   \code{\link[gginnards]{geom_debug_group}()}.
+#'
+#' @inheritSection stat_fit_glance Which variables are available for mapping?
 #'
 #' @section Variables returned by \code{stat_fit_residuals()}:
 #'

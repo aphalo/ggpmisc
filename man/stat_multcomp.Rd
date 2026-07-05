@@ -226,8 +226,7 @@ R option \code{OutDec} is obeyed based on its value at the time the plot
 
   Computed variables and their names vary depending on the \code{method} used
   to fit a model or the \code{output.type} in use. They can also depend for a
-  given \code{method} on the \code{contrasts}. A message is issued listing
-  the names of the variables in the returned data frame.
+  given \code{method} on the \code{contrasts}.
 
 If \code{output.type = "numeric"} and
 \code{label.type = "bars"} the returned tibble contains
@@ -316,6 +315,32 @@ type used is \code{"marquee"}. For all other values of \code{geom} the default
 is \code{"expression"}. Invalid values as argument trigger an error.
 }
 
+\section{Which variables are available for mapping?}{
+
+  Computed variables and their names can vary depending on the \code{method}
+  used to fit a model or the \code{output.type} in use. They can also depend
+  for a given \code{method} on other arguments passed when fitting a model or
+  extracting estimates and other computed values. In many cases, when values
+  are not available, the variables are filled with \code{NA} values.
+
+  In the statistics returning formatted strings for use as annotations, a
+  message is issued by default in interactive R sessions, listing the short
+  names for available formatted labels as recognized by functions
+  \code{\link{use_label}()} and \code{\link{f_use_label}()}, except when
+  \code{output.type = "numeric"} is passed, in which case the names of all
+  variables accessible by \code{after_stat()} within a call to \code{aes()}
+  are listed. This default (\code{"nicknames"}) can be changed by setting R option
+  \code{"ggpmisc.stat.vars.message"} to one of \code{"names"},
+  \code{"colnames"} or \code{"none"}.
+
+  In the statistics that plot a prediction or more generally mainly return
+  numeric variables, a message is issued by default in interactive R
+  sessions, listing the names of all variables accessible by
+  \code{after_stat()} within a call to \code{aes()} with at least some
+  non-missing values. This default (\code{"colnames"}) can be changed by
+  setting R option \code{"ggpmisc.stat.vars.message"} to \code{"none"}.
+}
+
 \examples{
 
 p1 <- ggplot(mpg, aes(factor(cyl), hwy)) +
@@ -342,9 +367,6 @@ p1 +
 
 # different methods to adjust the contrasts
 p1 +
-  stat_multcomp(p.adjust.method = "bonferroni")
-
-p1 +
   stat_multcomp(p.adjust.method = "holm")
 
 p1 +
@@ -356,21 +378,6 @@ p1 +
 
 p1 +
   stat_multcomp(label.y = 11)
-
-# justification of label in bar, and text anchor point
-# for a compact display
-
-p1 +
-  stat_multcomp(geom = "text_pairwise",
-                arrow = grid::arrow(ends = "both",
-                                    length = unit(1.5, "mm")),
-                bjust = 0,
-                hjust = 1.05,
-                vjust = 0.5,
-                vstep = 0.05,
-                label.y = 14,
-                adj.method.tag = 0) +
-  expand_limits(y = 0)
 
 # use different labels: difference and P-value from hypothesis tests
 p1 +
@@ -397,19 +404,25 @@ p1 +
 p1 +
   stat_multcomp(label.type = "letters")
 
-# use capital letters
-p1 +
-  stat_multcomp(label.type = "LETTERS")
-
-# location
-p1 +
-  stat_multcomp(label.type = "letters",
-                label.y = "top")
-
 # stricter critical p-value than default used for test
 p1 +
   stat_multcomp(label.type = "letters",
                 mc.critical.p.value = 0.01)
+
+# justification of label in bar, and text anchor point
+# for a compact display
+
+p1 +
+  stat_multcomp(geom = "text_pairwise",
+                arrow = grid::arrow(ends = "both",
+                                    length = unit(1.5, "mm")),
+                bjust = 0,
+                hjust = 1.05,
+                vjust = 0.5,
+                vstep = 0.05,
+                label.y = 14,
+                adj.method.tag = 0) +
+  expand_limits(y = 0)
 
 ## Flipping is supported
 p2 <- ggplot(mpg, aes(hwy, factor(cyl))) +
@@ -423,35 +436,6 @@ p2 +
   stat_multcomp(label.type = "bars",
                 geom = "text_pairwise",
                 size = 3)
-
-# Inspecting the returned data using geom_debug_panel()
-# This provides a quick way of finding out the names of the variables that
-# are available for mapping to aesthetics with after_stat().
-
-gginnards.installed <- requireNamespace("gginnards", quietly = TRUE)
-
-if (gginnards.installed)
-  library(gginnards)
-
-if (gginnards.installed)
-p1 +
-  stat_multcomp(label.type = "bars",
-                geom = "debug_panel")
-
-if (gginnards.installed)
-p1 +
-  stat_multcomp(label.type = "letters",
-                geom = "debug_panel")
-
-if (gginnards.installed)
-p2 +
-  stat_multcomp(label.type = "bars",
-                geom = "debug_panel")
-
-if (gginnards.installed)
-p2 +
-  stat_multcomp(label.type = "letters",
-                geom = "debug_panel")
 
 }
 \references{

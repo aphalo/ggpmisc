@@ -87,11 +87,12 @@
 #'   \code{NULL}, a data frame with no rows or columns is returned and rendered
 #'   as an empty/invisible plot layer.
 #'
+#' @inheritSection stat_poly_eq Which variables are available for mapping?
+#'
 #' @section Variables returned by `stat_ma_line()`:
 #'
 #'   Some of the variables can have missing values or depend on
-#'   \code{orientation} and/or \code{method}. A message is issued listing
-#'   the column names containing non-missing values.
+#'   \code{orientation} and/or \code{method}.
 #'
 #'   \describe{ \item{y \strong{or} x}{predicted value}
 #'   \item{ymin \strong{or} xmin}{lower pointwise confidence interval around the mean}
@@ -106,16 +107,6 @@
 #'   based on P-values, r-squared or the number of observations.
 #'
 #' @section Variables returned by `stat_ma_eq()`:
-#'
-#'   Computed variables and their names can vary depending on the \code{method}
-#'   used to fit a model or the \code{output.type} in use. They can also depend
-#'   for a given \code{method} on other arguments passed when fitting a model or
-#'   extracting estimates and other computed values. A message is issued listing
-#'   the short names for formatted labels as recognized by functions
-#'   \code{\link{use_label}()} and \code{\link{f_use_label}()}, except when
-#'   \code{output.type = "numeric"} is passed, in which case the
-#'   names of all variables accessible by \code{after_stat()} within a call to
-#'   \code{aes()} are listed.
 #'
 #' If \code{output.type} is \code{"numeric"} the returned tibble contains columns
 #' listed below. If the model fit function used does not return a value,
@@ -236,20 +227,6 @@
 #'   stat_ma_line(color = "black") +
 #'   stat_ma_eq(mapping = use_label("grp", "eq", "R2")) +
 #'   theme_classic()
-#'
-#' # Inspecting the returned data using geom_debug_group()
-#' # This provides a quick way of printing the returned data frame.
-#'
-#' gginnards.installed <- requireNamespace("gginnards", quietly = TRUE)
-#'
-#' if (gginnards.installed)
-#'   library(gginnards)
-#'
-#' # default is output.type = "expression"
-#' if (gginnards.installed)
-#'   ggplot(my.data, aes(x, y)) +
-#'     geom_point() +
-#'     stat_ma_eq(geom = "debug_group")
 #'
 #' @export
 #'

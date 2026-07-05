@@ -244,8 +244,7 @@ Statistics \code{stat_ma_line()} and \code{stat_ma_eq} fit major
 
 
   Some of the variables can have missing values or depend on
-  \code{orientation} and/or \code{method}. A message is issued listing
-  the column names containing non-missing values.
+  \code{orientation} and/or \code{method}.
 
   \describe{ \item{y \strong{or} x}{predicted value}
   \item{ymin \strong{or} xmin}{lower pointwise confidence interval around the mean}
@@ -262,16 +261,6 @@ Statistics \code{stat_ma_line()} and \code{stat_ma_eq} fit major
 
 \section{Variables returned by `stat_ma_eq()`}{
 
-
-  Computed variables and their names can vary depending on the \code{method}
-  used to fit a model or the \code{output.type} in use. They can also depend
-  for a given \code{method} on other arguments passed when fitting a model or
-  extracting estimates and other computed values. A message is issued listing
-  the short names for formatted labels as recognized by functions
-  \code{\link{use_label}()} and \code{\link{f_use_label}()}, except when
-  \code{output.type = "numeric"} is passed, in which case the
-  names of all variables accessible by \code{after_stat()} within a call to
-  \code{aes()} are listed.
 
 If \code{output.type} is \code{"numeric"} the returned tibble contains columns
 listed below. If the model fit function used does not return a value,
@@ -603,6 +592,32 @@ is \code{"expression"}. Invalid values as argument trigger an error.
   }
 }
 
+\section{Which variables are available for mapping?}{
+
+  Computed variables and their names can vary depending on the \code{method}
+  used to fit a model or the \code{output.type} in use. They can also depend
+  for a given \code{method} on other arguments passed when fitting a model or
+  extracting estimates and other computed values. In many cases, when values
+  are not available, the variables are filled with \code{NA} values.
+
+  In the statistics returning formatted strings for use as annotations, a
+  message is issued by default in interactive R sessions, listing the short
+  names for available formatted labels as recognized by functions
+  \code{\link{use_label}()} and \code{\link{f_use_label}()}, except when
+  \code{output.type = "numeric"} is passed, in which case the names of all
+  variables accessible by \code{after_stat()} within a call to \code{aes()}
+  are listed. This default (\code{"nicknames"}) can be changed by setting R option
+  \code{"ggpmisc.stat.vars.message"} to one of \code{"names"},
+  \code{"colnames"} or \code{"none"}.
+
+  In the statistics that plot a prediction or more generally mainly return
+  numeric variables, a message is issued by default in interactive R
+  sessions, listing the names of all variables accessible by
+  \code{after_stat()} within a call to \code{aes()} with at least some
+  non-missing values. This default (\code{"colnames"}) can be changed by
+  setting R option \code{"ggpmisc.stat.vars.message"} to \code{"none"}.
+}
+
 \examples{
 # generate artificial data
 set.seed(98723)
@@ -676,20 +691,6 @@ ggplot(my.data,
   stat_ma_line(color = "black") +
   stat_ma_eq(mapping = use_label("grp", "eq", "R2")) +
   theme_classic()
-
-# Inspecting the returned data using geom_debug_group()
-# This provides a quick way of printing the returned data frame.
-
-gginnards.installed <- requireNamespace("gginnards", quietly = TRUE)
-
-if (gginnards.installed)
-  library(gginnards)
-
-# default is output.type = "expression"
-if (gginnards.installed)
-  ggplot(my.data, aes(x, y)) +
-    geom_point() +
-    stat_ma_eq(geom = "debug_group")
 
 }
 \seealso{

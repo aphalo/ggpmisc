@@ -90,18 +90,13 @@ default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
 }
 \value{
 The output of \code{tidy()} is returned after reshaping it into a
-  single row. Grouping is respected, and the model fitted separately to each
-  group of data. The returned \code{data} object has one row for each group
+  single row. The returned \code{data} object has one row for each group
   within a panel. To use the intercept, note that output of \code{tidy()} is
   renamed from \code{(Intercept)} to \code{Intercept}. Otherwise, the names
   of the columns in the returned data are based on those returned by the
   \code{tidy()} method for the model fit class returned by the fit function.
   These will frequently differ from the name of values returned by the print
-  methods corresponding to the fit or test function used. To explore the
-  values returned by this statistic including the name of variables/columns,
-  which vary depending on the model fitting function and model formula, we
-  suggest the use of \code{\link[gginnards]{geom_debug}}. An example is shown
-  below. Names of columns as returned by default are not always syntactically
+  methods corresponding to the fit or test function used. Names of columns as returned by default are not always syntactically
   valid R names making it necessary to use back ticks to access them.
   Syntactically valid names are guaranteed if \code{sanitize.names = TRUE} is
   added to the call.
@@ -266,6 +261,16 @@ The output of \code{tidy()} is returned after reshaping it into a
   "rqss", "rqss:sfn", "rqss:sfnc", "rqss:lasso" \tab \code{\link[quantreg]{rqss}()} \tab 'quantreg' \tab "rqss" \cr
   "SMA", "MA", "RMA", "OLS" \tab \code{\link[lmodel2]{lmodel2}()} \tab 'lmodel2' \tab ("list") \cr
   }
+}
+
+\section{Which variables are available for mapping?}{
+
+  Computed variables and their names vary following those used in the
+  specializations of 'broom' methods. A message is issued by default in
+  interactive R sessions, listing the names of all variables accessible by
+  \code{after_stat()} within a call to \code{aes()} with at least some
+  non-missing values. This default (\code{"colnames"}) can be changed by
+  setting R option \code{"ggpmisc.stat.vars.message"} to \code{"none"}.
 }
 
 \examples{

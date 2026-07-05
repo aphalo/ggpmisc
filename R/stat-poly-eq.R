@@ -329,11 +329,31 @@
 #'   and the returned data frame with as many rows as observations, instead of
 #'   \code{n} rows, is returned with a message.
 #'
-#' @section Variables returned by `stat_poly_line()`:
+#' @section Which variables are available for mapping?:
+#'   Computed variables and their names can vary depending on the \code{method}
+#'   used to fit a model or the \code{output.type} in use. They can also depend
+#'   for a given \code{method} on other arguments passed when fitting a model or
+#'   extracting estimates and other computed values. In many cases, when values
+#'   are not available, the variables are filled with \code{NA} values.
 #'
-#'   Some of the variables can have missing values or depend on
-#'   \code{orientation} and/or \code{method}. A message is issued listing
-#'   the column names containing non-missing values.
+#'   In the statistics returning formatted strings for use as annotations, a
+#'   message is issued by default in interactive R sessions, listing the short
+#'   names for available formatted labels as recognized by functions
+#'   \code{\link{use_label}()} and \code{\link{f_use_label}()}, except when
+#'   \code{output.type = "numeric"} is passed, in which case the names of all
+#'   variables accessible by \code{after_stat()} within a call to \code{aes()}
+#'   are listed. This default (\code{"nicknames"}) can be changed by setting R option
+#'   \code{"ggpmisc.stat.vars.message"} to one of \code{"names"},
+#'   \code{"colnames"} or \code{"none"}.
+#'
+#'   In the statistics that plot a prediction or more generally mainly return
+#'   numeric variables, a message is issued by default in interactive R
+#'   sessions, listing the names of all variables accessible by
+#'   \code{after_stat()} within a call to \code{aes()} with at least some
+#'   non-missing values. This default (\code{"colnames"}) can be changed by
+#'   setting R option \code{"ggpmisc.stat.vars.message"} to \code{"none"}.
+#'
+#' @section Variables returned by \code{stat_poly_line()}:
 #'
 #'   \describe{ \item{y \strong{or} x}{predicted value}
 #'   \item{ymin \strong{or} xmin}{lower confidence limit around the fitted line}
@@ -347,17 +367,7 @@
 #'   based on \eqn{P}, \eqn{R^2}, \eqn{R_{adj}^2} or the number of
 #'   observations in a fit.
 #'
-#' @section Variables returned by \code{\link{stat_poly_eq}()}:
-#'
-#'   Computed variables and their names can vary depending on the \code{method}
-#'   used to fit a model or the \code{output.type} in use. They can also depend
-#'   for a given \code{method} on other arguments passed when fitting a model or
-#'   extracting estimates and other computed values. A message is issued listing
-#'   the short names for formatted labels as recognized by functions
-#'   \code{\link{use_label}()} and \code{\link{f_use_label}()}, except when
-#'   \code{output.type = "numeric"} is passed, in which case the
-#'   names of all variables accessible by \code{after_stat()} within a call to
-#'   \code{aes()} are listed.
+#' @section Variables returned by \code{stat_poly_eq()}:
 #'
 #' For all \code{output.type} arguments the following values are returned.
 #' \describe{
@@ -562,21 +572,6 @@
 #'   stat_poly_line(formula = formula) +
 #'   stat_poly_eq(geom = "text", label.x = 100, label.y = 0, hjust = 1,
 #'                formula = formula)
-#'
-#' # Inspecting the returned data using geom_debug_group()
-#' # This provides a quick way of printing the data frame returned.
-#' gginnards.installed <- requireNamespace("gginnards", quietly = TRUE)
-#'
-#' if (gginnards.installed)
-#'   library(gginnards)
-#'
-#' if (gginnards.installed)
-#'   ggplot(my.data, aes(x, y)) +
-#'     geom_point() +
-#'     stat_poly_line(formula = formula) +
-#'     stat_poly_eq(formula = formula,
-#'                  geom = "debug_group")
-#'
 #'
 #' @export
 #'

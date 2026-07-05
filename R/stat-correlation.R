@@ -58,17 +58,9 @@
 #'
 #' @inheritSection check_output_type Output types
 #'
-#' @section Computed variables:
+#' @inheritSection stat_poly_eq Which variables are available for mapping?
 #'
-#'   Computed variables and their names can vary depending on the \code{method}
-#'   used to fit a model or the \code{output.type} in use. They can also depend
-#'   for a given \code{method} on other arguments passed when fitting a model or
-#'   extracting estimates and other computed values. A message is issued listing
-#'   the short names for formatted labels as recognized by functions
-#'   \code{\link{use_label}()} and \code{\link{f_use_label}()}, except when
-#'   \code{output.type = "numeric"} is passed, in which case the
-#'   names of all variables accessible by \code{after_stat()} within a call to
-#'   \code{aes()} are listed.
+#' @section Computed variables:
 #'
 #'  If output.type is \code{"numeric"} the returned
 #'   tibble contains the columns listed below with variations depending on the

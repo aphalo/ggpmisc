@@ -1513,35 +1513,41 @@ show_labels <- function(z,
                         stat.name = "stat") {
   if (is.null(show.what)) {
     if (interactive()) {
-      default <- "nicknames"
+      show.what <- getOption("ggpmisc.stat.vars.message",
+                             default = "nicknames")
     } else {
-      default <- "skip"
+      show.by.default <- "none"
     }
-    show.what <- getOption("ggpmisc.stat.vars.message", default = default)
   }
   if (!any(c("colnames", "nicknames", "names") %in% show.what)) {
     # nothing to do
     return()
   }
-  labels.found <- grep("\\.label$",
-                       colnames(z)[!sapply(z, anyNA, USE.NAMES = FALSE)],
-                       value = TRUE)
-  if (length(labels.found)) {
-    if (show.what == "nicknames") {
-      labels.found <-
-        labels.found |>
-        gsub("\\.label$", "", x = _) |>
-        gsub("rr", "R2", x = _) |>
-        gsub("p.value", "P", x = _) |>
-        gsub("f.value", "F", x = _) |>
-        gsub("t.value", "t", x = _) |>
-        gsub("z.value", "z", x = _) |>
-        gsub("S.value", "S", x = _)
-    }
-    message("'", stat.name, "' labels (", nrow(z), " rows): ",
-            paste(labels.found, collapse = ", "), ".")
+  if (show.what == "colnames") {
+    show_colnames(z,
+                  show.what = "names",
+                  stat.name = stat.name)
   } else {
-    message("'", stat.name, "' labels (", nrow(z), " rows): NONE returned!")
+    labels.found <- grep("\\.label$",
+                         colnames(z)[!sapply(z, anyNA, USE.NAMES = FALSE)],
+                         value = TRUE)
+    if (length(labels.found)) {
+      if (show.what == "nicknames") {
+        labels.found <-
+          labels.found |>
+          gsub("\\.label$", "", x = _) |>
+          gsub("rr", "R2", x = _) |>
+          gsub("p.value", "P", x = _) |>
+          gsub("f.value", "F", x = _) |>
+          gsub("t.value", "t", x = _) |>
+          gsub("z.value", "z", x = _) |>
+          gsub("S.value", "S", x = _)
+      }
+      message("'", stat.name, "' available labels (", nrow(z), " rows): ",
+              paste(labels.found, collapse = ", "), ".")
+    } else {
+      message("'", stat.name, "' available labels (", nrow(z), " rows): NONE returned!")
+    }
   }
 }
 
@@ -1575,11 +1581,11 @@ show_colnames <- function(z,
                           stat.name = "stat") {
   if (is.null(show.what)) {
     if (interactive()) {
-      default <- "names"
+      show.what <- getOption("ggpmisc.stat.vars.message",
+                             default = "colnames")
     } else {
       default <- "skip"
     }
-    show.what <- getOption("ggpmisc.stat.vars.message", default = default)
   }
 
   if (!any(c("colnames", "nicknames", "names") %in% show.what)) {
@@ -1591,9 +1597,9 @@ show_colnames <- function(z,
                                    function(x) {!all(is.na(x))},
                                    USE.NAMES = FALSE)]
   if (length(cols.found)) {
-    message("'", stat.name, "' variables (", nrow(z), " rows): ",
+    message("'", stat.name, "' available variables (", nrow(z), " rows): ",
             paste(cols.found, collapse = ", "), ".")
   } else {
-    message("'", stat.name, "' variables (", nrow(z), " rows): NONE returned!")
+    message("'", stat.name, "' available variables (", nrow(z), " rows): NONE returned!")
   }
 }

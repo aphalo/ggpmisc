@@ -127,9 +127,7 @@ The returned value is always a data frame with the same number of
   depending on the orientation..
 
   To explore the values returned by statistics we suggest the use of
-  \code{\link[gginnards]{geom_debug_group}()}. Examples are shown below,
-  where one can also see in addition to the computed values the default
-  mapping of the fitted values to aesthetics \code{xend} and \code{yend}.
+  \code{\link[gginnards]{geom_debug_group}()}.
 }
 \description{
 Statistic \code{stat_fit_residuals()} fits a model and plots residuals vs.
@@ -343,6 +341,16 @@ In the case of \code{method = "rq"} quantiles are fixed at \code{tau =
   }
 }
 
+\section{Which variables are available for mapping?}{
+
+  Computed variables and their names vary following those used in the
+  specializations of 'broom' methods. A message is issued by default in
+  interactive R sessions, listing the names of all variables accessible by
+  \code{after_stat()} within a call to \code{aes()} with at least some
+  non-missing values. This default (\code{"colnames"}) can be changed by
+  setting R option \code{"ggpmisc.stat.vars.message"} to \code{"none"}.
+}
+
 \section{Model equation label}{
 
   By default the equation label uses as symbols the names of the aesthetics,
@@ -409,12 +417,8 @@ In the case of \code{method = "rq"} quantiles are fixed at \code{tau =
   "smooth"} with \code{geom = "pointrange"}.
 }
 
-\section{Variables returned by `stat_poly_line()`}{
+\section{Variables returned by \code{stat_poly_line()}}{
 
-
-  Some of the variables can have missing values or depend on
-  \code{orientation} and/or \code{method}. A message is issued listing
-  the column names containing non-missing values.
 
   \describe{ \item{y \strong{or} x}{predicted value}
   \item{ymin \strong{or} xmin}{lower confidence limit around the fitted line}
@@ -429,18 +433,8 @@ In the case of \code{method = "rq"} quantiles are fixed at \code{tau =
   observations in a fit.
 }
 
-\section{Variables returned by \code{\link{stat_poly_eq}()}}{
+\section{Variables returned by \code{stat_poly_eq()}}{
 
-
-  Computed variables and their names can vary depending on the \code{method}
-  used to fit a model or the \code{output.type} in use. They can also depend
-  for a given \code{method} on other arguments passed when fitting a model or
-  extracting estimates and other computed values. A message is issued listing
-  the short names for formatted labels as recognized by functions
-  \code{\link{use_label}()} and \code{\link{f_use_label}()}, except when
-  \code{output.type = "numeric"} is passed, in which case the
-  names of all variables accessible by \code{after_stat()} within a call to
-  \code{aes()} are listed.
 
 For all \code{output.type} arguments the following values are returned.
 \describe{

@@ -285,6 +285,16 @@ A tibble with columns named \code{fm.tb} (a tibble returned by
   }
 }
 
+\section{Which variables are available for mapping?}{
+
+  Computed variables and their names vary following those used in the
+  specializations of 'broom' methods. A message is issued by default in
+  interactive R sessions, listing the names of all variables accessible by
+  \code{after_stat()} within a call to \code{aes()} with at least some
+  non-missing values. This default (\code{"colnames"}) can be changed by
+  setting R option \code{"ggpmisc.stat.vars.message"} to \code{"none"}.
+}
+
 \examples{
 # Package 'broom' needs to be installed to run these examples.
 # We check availability before running them to avoid errors.
@@ -298,11 +308,6 @@ if (broom.installed)
   covariate <- sqrt(response) + rnorm(9)
   group <- factor(c(rep("A", 4), rep("B", 5)))
   my.df <- data.frame(response, group, covariate)
-
-gginnards.installed  <- requireNamespace("gginnards", quietly = TRUE)
-
-if (gginnards.installed)
-  library(gginnards)
 
 ## covariate is a numeric or continuous variable
 # Linear regression fit summary, all defaults

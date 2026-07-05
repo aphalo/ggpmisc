@@ -887,7 +887,7 @@ In all cases the distributions are extended to encompass their whole range. The 
 Messages listing the available variables and labels are issued to the R console in interactive R sessions. In this case:
 
 ```
-'stat_distrmix_line' variables (600 rows): x, component, density, cum.density, is.tail, flipped_aes.
+'stat_distrmix_line' variables (600 rows): x, component, density, cum.density, quant.splits, flipped_aes.
 'stat_distrmix_eq' labels (1 rows): eq, n, method.
 ```
 
@@ -923,11 +923,11 @@ ggplot(faithful, aes(x = waiting)) +
                     label.x = "middle", label.y = 0.08)
 ```
 
-The position of the quantiles can be highlighted in a single plot layer by mapping the returned logical variable `is.tail` to the `fill` aesthetic.
+The position of the quantiles can be highlighted in a single plot layer by mapping the returned integer variable `quant.splits` to the `fill` aesthetic.
 
 ```{r}
  ggplot(faithful, aes(x = waiting)) +
-   stat_distrmix_area(aes(fill = after_stat(is.tail)), 
+   stat_distrmix_area(aes(fill = after_stat(quant.splits != 2)), 
                       colour = "black", outline.type = "upper",
                       quantiles = c(0.025, 0.975),
                       show.legend = FALSE) +

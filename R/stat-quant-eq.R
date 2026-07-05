@@ -97,17 +97,9 @@
 #'   \code{NULL}, a data frame with no rows or columns is returned, resulting
 #'   in an empty/invisible plot layer.
 #'
-#' @section Variables returned by \code{stat_quant_eq()}:
+#' @inheritSection stat_poly_eq Which variables are available for mapping?
 #'
-#'   Computed variables and their names can vary depending on the \code{method}
-#'   used to fit a model or the \code{output.type} in use. They can also depend
-#'   for a given \code{method} on other arguments passed when fitting a model or
-#'   extracting estimates and other computed values. A message is issued listing
-#'   the short names for formatted labels as recognized by functions
-#'   \code{\link{use_label}()} and \code{\link{f_use_label}()}, except when
-#'   \code{output.type = "numeric"} is passed, in which case the
-#'   names of all variables accessible by \code{after_stat()} within a call to
-#'   \code{aes()} are listed.
+#' @section Variables returned by \code{stat_quant_eq()}:
 #'
 #' If output.type is \code{"numeric"} the returned tibble contains columns
 #'  in addition to a modified version of the original \code{group}:
@@ -145,10 +137,6 @@
 #'
 #' @section Variables returned by \code{stat_quant_line()}:
 #'
-#'   Some of the variables can have missing values or depend on
-#'   \code{orientation} and/or \code{method}. A message is issued listing
-#'   the column names containing non-missing values.
-#'
 #'   \describe{
 #'   \item{y \strong{or} x}{predicted value}
 #'   \item{ymin \strong{or} xmin}{lower confidence limit around the fitted line}
@@ -162,10 +150,6 @@
 #'   or hiding of the model fit line based on the number of observations.
 #'
 #' @section Variables returned by \code{stat_quant_band()}:
-#'
-#'   Some of the variables can have missing values or depend on
-#'   \code{orientation} and/or \code{method}. A message is issued listing
-#'   the column names containing non-missing values.
 #'
 #'   \describe{
 #'   \item{y \strong{or} x}{Regression prediction for the middle quantile, if three quantiles are passed as argument}
@@ -391,22 +375,6 @@
 #'   stat_quant_eq(label.x = "left", label.y = "top",
 #'                 formula = formula,
 #'                 quantiles = 0.5)
-#'
-#' # Inspecting the returned data using geom_debug_group()
-#' # This provides a quick way of printing the returned data frame.
-#'
-#' gginnards.installed <- requireNamespace("gginnards", quietly = TRUE)
-#'
-#' if (gginnards.installed)
-#'   library(gginnards)
-#'
-#' if (gginnards.installed)
-#'   ggplot(my.data, aes(x, y)) +
-#'     stat_quant_line(geom = "debug_group")
-#'
-#' if (gginnards.installed)
-#'   ggplot(my.data, aes(x, y)) +
-#'     stat_quant_band(geom = "debug_group")
 #'
 #' @export
 #'

@@ -76,6 +76,8 @@
 #'   the model fitting function and model formula we suggest the use of
 #'   \code{\link[gginnards]{geom_debug}}.
 #'
+#' @inheritSection stat_fit_glance Which variables are available for mapping?
+#'
 #' @seealso Package \code{\link[broom]{broom}} for details on how the tidying of
 #'   the result of model fits is done. See \code{\link[ggpp]{geom_table}} for
 #'   details on how inset tables respond to mapped aesthetics and table themes.
@@ -99,11 +101,6 @@
 #'   covariate <- sqrt(response) + rnorm(9)
 #'   group <- factor(c(rep("A", 4), rep("B", 5)))
 #'   my.df <- data.frame(response, group, covariate)
-#'
-#' gginnards.installed  <- requireNamespace("gginnards", quietly = TRUE)
-#'
-#' if (gginnards.installed)
-#'   library(gginnards)
 #'
 #' ## covariate is a numeric or continuous variable
 #' # Linear regression fit summary, all defaults

@@ -136,6 +136,16 @@ The output of the \code{glance()} methods is returned almost as is in
   \code{stat_fit_tb()} statistic which applies the model fitting per panel.
 }
 
+\section{Which variables are available for mapping?}{
+
+  Computed variables and their names vary following those used in the
+  specializations of 'broom' methods. A message is issued by default in
+  interactive R sessions, listing the names of all variables accessible by
+  \code{after_stat()} within a call to \code{aes()} with at least some
+  non-missing values. This default (\code{"colnames"}) can be changed by
+  setting R option \code{"ggpmisc.stat.vars.message"} to \code{"none"}.
+}
+
 \section{Model formula and model fitting}{
 
   A ggplot statistic receives as \code{data} a data frame that is not the one

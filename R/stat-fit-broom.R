@@ -60,6 +60,14 @@
 #'   and model formula we suggest the use of
 #'   \code{\link[gginnards]{geom_debug}}. An example is shown below.
 #'
+#' @section Which variables are available for mapping?:
+#'   Computed variables and their names vary following those used in the
+#'   specializations of 'broom' methods. A message is issued by default in
+#'   interactive R sessions, listing the names of all variables accessible by
+#'   \code{after_stat()} within a call to \code{aes()} with at least some
+#'   non-missing values. This default (\code{"colnames"}) can be changed by
+#'   setting R option \code{"ggpmisc.stat.vars.message"} to \code{"none"}.
+#'
 #' @seealso Package \code{\link[broom]{broom}} for details on how the tidying of
 #'   the result of model fits is done.
 #'
@@ -502,15 +510,17 @@ StatFitGlance <-
 #'
 #' @inheritSection stat_poly_eq Model fit methods supported
 #'
-#' @section Computed variables: The output of \code{augment()} is
-#'   returned as is, except for \code{y} which is set based on \code{y.out} and
-#'   \code{y.observed} which preserves the \code{y} returned by the
-#'   \code{generics::augment} methods. This renaming is needed so that the geom
-#'   works as expected.
+#' @return A data.frame is returned, with a variable number of rows. The output
+#'   of \code{augment()} is returned as is, except for \code{y} which is set
+#'   based on \code{y.out} returned by \code{augment()} and \code{y.observed}
+#'   which preserves the \code{y} returned by the \code{generics::augment}
+#'   methods. This renaming is needed so that the geom works as expected.
 #'
 #'   To explore the values returned by this statistic, which vary depending
 #'   on the model fitting function and model formula we suggest the use of
 #'   \code{\link[gginnards]{geom_debug}}. An example is shown below.
+#'
+#' @inheritSection stat_fit_glance Which variables are available for mapping?
 #'
 #' @seealso Package \code{\link[broom]{broom}} for details on how the tidying of
 #'   the result of model fits is done.
@@ -834,18 +844,13 @@ StatFitAugment <-
 #' @inheritSection stat_poly_eq Model fit methods supported
 #'
 #' @return The output of \code{tidy()} is returned after reshaping it into a
-#'   single row. Grouping is respected, and the model fitted separately to each
-#'   group of data. The returned \code{data} object has one row for each group
+#'   single row. The returned \code{data} object has one row for each group
 #'   within a panel. To use the intercept, note that output of \code{tidy()} is
 #'   renamed from \code{(Intercept)} to \code{Intercept}. Otherwise, the names
 #'   of the columns in the returned data are based on those returned by the
 #'   \code{tidy()} method for the model fit class returned by the fit function.
 #'   These will frequently differ from the name of values returned by the print
-#'   methods corresponding to the fit or test function used. To explore the
-#'   values returned by this statistic including the name of variables/columns,
-#'   which vary depending on the model fitting function and model formula, we
-#'   suggest the use of \code{\link[gginnards]{geom_debug}}. An example is shown
-#'   below. Names of columns as returned by default are not always syntactically
+#'   methods corresponding to the fit or test function used. Names of columns as returned by default are not always syntactically
 #'   valid R names making it necessary to use back ticks to access them.
 #'   Syntactically valid names are guaranteed if \code{sanitize.names = TRUE} is
 #'   added to the call.
@@ -853,6 +858,8 @@ StatFitAugment <-
 #'   To explore the values returned by this statistic, which vary depending on
 #'   the model fitting function and model formula we suggest the use of
 #'   \code{\link[gginnards]{geom_debug}}. An example is shown below.
+#'
+#' @inheritSection stat_fit_glance Which variables are available for mapping?
 #'
 #' @seealso Package \code{\link[broom]{broom}} for details on how the tidying of
 #'   the result of model fits is done.

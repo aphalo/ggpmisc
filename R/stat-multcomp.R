@@ -123,12 +123,13 @@
 #'   \code{label.type = "letters"} and \code{label.type = "LETTERS"}.
 #'   Variables (= columns) as described under \strong{Computed variables}.
 #'
+#' @inheritSection stat_poly_eq Which variables are available for mapping?
+#'
 #' @section Computed variables:
 #'
 #'   Computed variables and their names vary depending on the \code{method} used
 #'   to fit a model or the \code{output.type} in use. They can also depend for a
-#'   given \code{method} on the \code{contrasts}. A message is issued listing
-#'   the names of the variables in the returned data frame.
+#'   given \code{method} on the \code{contrasts}.
 #'
 #' If \code{output.type = "numeric"} and
 #' \code{label.type = "bars"} the returned tibble contains
@@ -234,9 +235,6 @@
 #'
 #' # different methods to adjust the contrasts
 #' p1 +
-#'   stat_multcomp(p.adjust.method = "bonferroni")
-#'
-#' p1 +
 #'   stat_multcomp(p.adjust.method = "holm")
 #'
 #' p1 +
@@ -248,21 +246,6 @@
 #'
 #' p1 +
 #'   stat_multcomp(label.y = 11)
-#'
-#' # justification of label in bar, and text anchor point
-#' # for a compact display
-#'
-#' p1 +
-#'   stat_multcomp(geom = "text_pairwise",
-#'                 arrow = grid::arrow(ends = "both",
-#'                                     length = unit(1.5, "mm")),
-#'                 bjust = 0,
-#'                 hjust = 1.05,
-#'                 vjust = 0.5,
-#'                 vstep = 0.05,
-#'                 label.y = 14,
-#'                 adj.method.tag = 0) +
-#'   expand_limits(y = 0)
 #'
 #' # use different labels: difference and P-value from hypothesis tests
 #' p1 +
@@ -289,19 +272,25 @@
 #' p1 +
 #'   stat_multcomp(label.type = "letters")
 #'
-#' # use capital letters
-#' p1 +
-#'   stat_multcomp(label.type = "LETTERS")
-#'
-#' # location
-#' p1 +
-#'   stat_multcomp(label.type = "letters",
-#'                 label.y = "top")
-#'
 #' # stricter critical p-value than default used for test
 #' p1 +
 #'   stat_multcomp(label.type = "letters",
 #'                 mc.critical.p.value = 0.01)
+#'
+#' # justification of label in bar, and text anchor point
+#' # for a compact display
+#'
+#' p1 +
+#'   stat_multcomp(geom = "text_pairwise",
+#'                 arrow = grid::arrow(ends = "both",
+#'                                     length = unit(1.5, "mm")),
+#'                 bjust = 0,
+#'                 hjust = 1.05,
+#'                 vjust = 0.5,
+#'                 vstep = 0.05,
+#'                 label.y = 14,
+#'                 adj.method.tag = 0) +
+#'   expand_limits(y = 0)
 #'
 #' ## Flipping is supported
 #' p2 <- ggplot(mpg, aes(hwy, factor(cyl))) +
@@ -315,35 +304,6 @@
 #'   stat_multcomp(label.type = "bars",
 #'                 geom = "text_pairwise",
 #'                 size = 3)
-#'
-#' # Inspecting the returned data using geom_debug_panel()
-#' # This provides a quick way of finding out the names of the variables that
-#' # are available for mapping to aesthetics with after_stat().
-#'
-#' gginnards.installed <- requireNamespace("gginnards", quietly = TRUE)
-#'
-#' if (gginnards.installed)
-#'   library(gginnards)
-#'
-#' if (gginnards.installed)
-#' p1 +
-#'   stat_multcomp(label.type = "bars",
-#'                 geom = "debug_panel")
-#'
-#' if (gginnards.installed)
-#' p1 +
-#'   stat_multcomp(label.type = "letters",
-#'                 geom = "debug_panel")
-#'
-#' if (gginnards.installed)
-#' p2 +
-#'   stat_multcomp(label.type = "bars",
-#'                 geom = "debug_panel")
-#'
-#' if (gginnards.installed)
-#' p2 +
-#'   stat_multcomp(label.type = "letters",
-#'                 geom = "debug_panel")
 #'
 #' @export
 #'

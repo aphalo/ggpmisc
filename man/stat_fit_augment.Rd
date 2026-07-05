@@ -78,6 +78,17 @@ than combining with them. This is most useful for helper functions that
 define both data and aesthetics and shouldn't inherit behaviour from the
 default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
 }
+\value{
+A data.frame is returned, with a variable number of rows. The output
+  of \code{augment()} is returned as is, except for \code{y} which is set
+  based on \code{y.out} returned by \code{augment()} and \code{y.observed}
+  which preserves the \code{y} returned by the \code{generics::augment}
+  methods. This renaming is needed so that the geom works as expected.
+
+  To explore the values returned by this statistic, which vary depending
+  on the model fitting function and model formula we suggest the use of
+  \code{\link[gginnards]{geom_debug}}. An example is shown below.
+}
 \description{
 \code{stat_fit_augment()} fits a model and returns a "tidy"
   version of the model's data with prediction added, using \code{augmnent()}
@@ -125,18 +136,6 @@ default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
   (e.g., when a factor is mapped to the \emph{x} or \emph{y} aesthetics). In
   such cases use instead \code{stat_fit_tb()} which applies the model fitting
   per panel.
-}
-
-\section{Computed variables}{
- The output of \code{augment()} is
-  returned as is, except for \code{y} which is set based on \code{y.out} and
-  \code{y.observed} which preserves the \code{y} returned by the
-  \code{generics::augment} methods. This renaming is needed so that the geom
-  works as expected.
-
-  To explore the values returned by this statistic, which vary depending
-  on the model fitting function and model formula we suggest the use of
-  \code{\link[gginnards]{geom_debug}}. An example is shown below.
 }
 
 \section{Model formula and model fitting}{
@@ -252,6 +251,16 @@ default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
   "rqss", "rqss:sfn", "rqss:sfnc", "rqss:lasso" \tab \code{\link[quantreg]{rqss}()} \tab 'quantreg' \tab "rqss" \cr
   "SMA", "MA", "RMA", "OLS" \tab \code{\link[lmodel2]{lmodel2}()} \tab 'lmodel2' \tab ("list") \cr
   }
+}
+
+\section{Which variables are available for mapping?}{
+
+  Computed variables and their names vary following those used in the
+  specializations of 'broom' methods. A message is issued by default in
+  interactive R sessions, listing the names of all variables accessible by
+  \code{after_stat()} within a call to \code{aes()} with at least some
+  non-missing values. This default (\code{"colnames"}) can be changed by
+  setting R option \code{"ggpmisc.stat.vars.message"} to \code{"none"}.
 }
 
 \examples{
