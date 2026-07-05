@@ -887,7 +887,7 @@ In all cases the distributions are extended to encompass their whole range. The 
 Messages listing the available variables and labels are issued to the R console in interactive R sessions. In this case:
 
 ```
-'stat_distrmix_line' variables (600 rows): x, component, density, cum.density, quant.splits, flipped_aes.
+'stat_distrmix_line' variables (600 rows): x, component, density, quant.splits, flipped_aes.
 'stat_distrmix_eq' labels (1 rows): eq, n, method.
 ```
 
@@ -934,20 +934,15 @@ The position of the quantiles can be highlighted in a single plot layer by mappi
   scale_fill_manual(values = c("grey80", "grey20"))
 ```
 
-
-```{r}
- ggplot(faithful, aes(x = waiting)) +
-   stat_distrmix_area(aes(y = after_stat(cum.density)), 
-                      fill = "grey70",
-                      colour = "black", 
-                      outline.type = "upper")
-```
-
 ## stat_multcomp
 
 Multiple comparisons are frequently used when the effect of different levels of a factor are individually of interest. Function `stat_multcomp()` computes adjusted _P_-values for pairwise comparison using Tukey or Dunnet contrasts with function `glht()` from package 'multcomp'.
 
-The default is Tukey contrasts (all pairs) using Tukey's HSD (honestly significant difference) approach. The message displayed at the R console, xxxx
+The default is Tukey contrasts (all pairs) using Tukey's HSD (honestly significant difference) approach. The message displayed at the R console is:
+
+```
+'stat_multcomp' available labels (6 rows): stars, P, delta, t, default.
+```
 
 ```{r}
 ggplot(mpg, aes(factor(cyl), hwy)) +

@@ -54,7 +54,7 @@ test_that("stat_distrmix_area works attached", {
   # Error: The vdiffr package's device does not support colour gradients.
   # vdiffr::expect_doppelganger("stat_distrmix_area_quantile_5pc",
   #                             ggplot(my.data, aes(x.2means)) +
-  #                               stat_distrmix_area(aes(fill = after_stat(quant.splits != 2)),
+  #                               stat_distrmix_area(aes(fill = after_stat(quant.splits != "2")),
   #                                                  fit.seed = 123,
   #                                                  quantiles = c(0.025, 0.975)) +
   #                               scale_fill_manual(values = c("white", "black"))
@@ -62,10 +62,10 @@ test_that("stat_distrmix_area works attached", {
 
   vdiffr::expect_doppelganger("stat_distrmix_area_quantile_0pc",
                               ggplot(my.data, aes(x.2means)) +
-                                stat_distrmix_area(aes(fill = after_stat(factor(is.tail))),
+                                stat_distrmix_area(aes(fill = after_stat(quant.splits)),
                                                    fit.seed = 123,
                                                    quantiles = c(0, 1)) +
-                                scale_fill_manual(values = c("white", "black"))
+                                scale_fill_manual(values = c("grey30", "black"))
   )
 
   # Error: The vdiffr package's device does not support colour gradients.
@@ -104,12 +104,12 @@ test_that("stat_distrmix_line works attached", {
 
   vdiffr::expect_doppelganger("stat_distrmix_line_n",
                               ggplot(my.data, aes(x.2means)) +
-                                stat_distrmix_line(n = 30, fit.seed = 123)
+                                stat_distrmix_line(n = 300, fit.seed = 123)
   )
 
   vdiffr::expect_doppelganger("stat_distrmix_line_geom",
                               ggplot(my.data, aes(x.2means)) +
-                                stat_distrmix_line(geom = "point", n = 30, fit.seed = 123)
+                                stat_distrmix_line(geom = "point", n = 300, fit.seed = 123)
   )
 
   vdiffr::expect_doppelganger("stat_distrmix_line_fullrange",

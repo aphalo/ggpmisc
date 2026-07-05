@@ -7,10 +7,14 @@
 find_quantiles(density, quantiles = c(0.025, 0.975), group = 1)
 }
 \arguments{
-\item{density}{numeric An untruncated density curve predicted at a large
-number of equal steps.}
+\item{density}{numeric An density curve predicted at a large
+number of equal steps without truncation.}
 
 \item{quantiles}{numeric The probabilities of the quantiles to locate.}
+
+\item{group}{a ‘factor’ in the sense that \code{\link{as.factor}(f)} defines
+the grouping, or a list of such factors in which case their interaction is
+used for the grouping, used in a call to \code{\link{split}()}.}
 }
 \value{
 A factor with levels indicating the regions delimited by the
@@ -21,11 +25,11 @@ Find the location of quantiles in fitted 1D density within a call to
 \code{aes()} to map regions under the curve to the \code{fill} aesthetic.
 }
 \details{
-A running cummulated density function is computed as
-  \code{cumsum(density)} assuming that \code{x} steps uniform and compared to
-  the target quantiles, to identify the regions they delimit. No
-  interpolation is done making it crucial that \code{density} is a long
-  vector, as controlled by parameter \code{n} in
+A running cummulated density function (CDF) is computed as
+  \code{cumsum(density)} assuming that \code{x} steps are uniform. Values are
+  subsequently compared to the target quantiles, to identify the regions they
+  delimit. No interpolation is done making it crucial that \code{density} is
+  a long vector, as controlled by parameter \code{n} in
   \code{\link[ggplot2:geom_density]{stat_density}()}.
 
   Unique and sorted values from the argument passed to \code{quantiles} are
@@ -43,6 +47,13 @@ A running cummulated density function is computed as
   \code{\link[grDevices]{dev.capabilities}()} checking the field
   \code{"patterns"}.
 
+  Function \code{find_quantiles()} is used in
+  \code{\link{stat_distrmix_line}()} and \code{\link{stat_distrmix_area}()}
+  to tag the regions limited by \code{quantiles}. If used on its own to
+  create a mapping in a call to \code{\link[ggplot2]{aes}()}, data groupings
+  present in the ggplot must be described by the argument passed to
+  \code{group}.
+
   \emph{The approach used is approximate and relies on assumptions that are
   known to be fulfiled by the \code{density} estimates returned by specific
   'ggplot2' stats such as \code{stat_density()}.}
@@ -54,6 +65,7 @@ The approach used in \code{find_quantiles()} is very different to that
 }
 \examples{
 
+ # No grouping
  ggplot(diamonds, aes(carat)) +
    stat_density(
      geom = "area", outline.type = "upper", colour = "black",
@@ -61,12 +73,14 @@ The approach used in \code{find_quantiles()} is very different to that
    scale_fill_grey(guide = "none", end = 0.3, start = 0.7) +
    expand_limits(x = 0)
 
+ # a grouping from the mapping of cut to the fill aesthetic
  ggplot(diamonds, aes(carat, fill = cut)) +
    stat_density(
      geom = "area", outline.type = "upper", colour = "black",
      position = "stack",
-     aes(alpha = after_stat(find_quantiles(density, c(0.1, 0.9), group) != 2)),
+     aes(alpha =
+       after_stat(find_quantiles(density, c(0.1, 0.9), group) != 2)),
      show.legend = FALSE) +
-   expand_limits(x = -0.3)
+   expand_limits(x = c(0, 5.5))
 
 }
