@@ -1232,6 +1232,17 @@ Package 'broom' provides consistently formatted output from different model fitt
 
 As we have above given some simple examples, we here exemplify this statistic in a plot with grouping, and assemble a label for the *P*-value using a string parsed into a expression. We also change the default position of the labels.
 
+In an interactive R session the message shown below is issued twice, once for
+each group created by the mapping of `group` to the `colour` aesthetic. The
+message lists all variables returned by the statistics and accessible within a
+call to `aes()` using `after_stat()`.
+
+```
+'stat_fit_glance' variables (1 rows): r.squared, adj.r.squared, sigma, statistic, p.value, df, logLik, AIC, BIC, deviance, df.residual, nobs, fm.class, fm.method, fm.formula, fm.formula.chr, npcx, npcy, flipped_aes.
+```
+
+_Many of variable names, and are those returned by the call to the `glance()` method._
+
 ```{r, eval=eval_broom}
 # formula <- y ~ poly(x, 3, raw = TRUE)
 # broom::augment does not handle poly() correctly!
@@ -1249,6 +1260,12 @@ ggplot(my.data, aes(x, y.poly.grp, colour = group)) +
 ```
 
 It is also possible to fit a non-linear model using least squares (LS) with `method = "nls"`, and any other model for which a `broom::glance()` method exists. Do consult the documentation for package 'broom'. Here we fit the Michaelis-Menten equation to reaction rate versus concentration data.
+
+In this case the message issued in interactive R sessions is different to that for the example above.
+
+```
+'stat_fit_glance' variables (1 rows): sigma, isConv, finTol, logLik, AIC, BIC, deviance, df.residual, nobs, fm.class, fm.method, fm.formula, fm.formula.chr, npcx, npcy, flipped_aes.
+```
 
 ```{r, eval=eval_broom}
 micmen.formula <- y ~ SSmicmen(x, Vm, K) 
@@ -1391,6 +1408,11 @@ This stat makes it possible to add the equation for any fitted model for which `
 
 As first example we fit a non-linear model, the Michaelis-Menten equation of reaction kinetics, using `stats::nls()`. We use the self-starting function `stats::SSmicmen()` available in R.
 
+In an interactive R session the message displayed is:
+```
+'stat_fit_tidy' variables (1 rows): Vm_estimate, K_estimate, Vm_se, K_se, Vm_stat, K_stat, Vm_p.value, K_p.value, npcx, npcy, fm.class, fm.method, fm.formula, fm.formula.chr, flipped_aes.
+```
+
 ```{r, eval=eval_broom}
 micmen.formula <- y ~ SSmicmen(x, Vm, K) 
 ggplot(Puromycin, aes(conc, rate, colour = state)) +
@@ -1474,6 +1496,11 @@ ggplot(Puromycin, aes(conc, rate, colour = state)) +
 
 -   As a second example we show a quantile regression fit using function `quantreg::rq()` from package 'quantreg'.
 
+In an interactive R session the message below is displayed, giving all the information needed for constructing a character string and mapping it to the `label` aesthetic:
+```
+'stat_fit_tidy' variables (1 rows): Intercept_estimate, x_estimate, Intercept_se, x_se, Intercept_stat, x_stat, Intercept_p.value, x_p.value, Intercept_tau, x_tau, npcx, npcy, fm.class, fm.method, fm.formula, fm.formula.chr, flipped_aes.
+```
+
 ```{r, eval=eval_broom}
 my_formula <- y ~ x
 my.format <- 'y~"="~%.3g+%.3g~x*", with "*italic(P)~"="~%.3f'
@@ -1530,9 +1557,17 @@ ggplot(mpg, aes(displ, 1 / hwy)) +
 
 ## stat_fit_augment
 
-Use `ggplot2::stat_smooth`, `stat_poly_line()`, `stat_ma_line()`, `stat_quant_line()`, `stat_deviations()` or `stat_residuals()` instead of `stat_fit_augment` if possible.
+In simple cases `ggplot2::stat_smooth`, `stat_poly_line()`, `stat_ma_line()`, `stat_quant_line()`, `stat_deviations()` or `stat_residuals()` can be easier to use than `stat_fit_augment`. On the other hand `stat_fit_augment` supports a larger number of model fit functions.
 
 When statistics specific to the type of model fitted are available, their use is in general simpler that the use of `stat_fit_augment()`. On the other hand, `stat_fit_augment()` can handle any fitted model that is supported by package 'broom' or its extensions. All these statistics support grouping and facets.
+
+In an interactive R session the message below is displayed, giving all the information needed for constructing a character string and mapping it to the `label` aesthetic:
+
+```
+'stat_fit_augment' variables (100 rows): y, x, I(x^2), I(x^3), .fitted, .resid, .hat, .sigma, .cooksd, .std.resid, y.observed, t.value, .se.fit, fm.class, fm.method, fm.formula, fm.formula.chr, flipped_aes.
+```
+
+As the intention is to plot a line and/or band, the returned data frame has numerous rows per group, the number given by the arguments passed in the call (or their defaults).
 
 ```{r, eval=eval_broom}
 # formula <- y ~ poly(x, 3, raw = TRUE)
@@ -1541,14 +1576,6 @@ formula <- y ~ x + I(x^2) + I(x^3)
 ggplot(my.data, aes(x, y.poly)) +
   geom_point() +
   stat_fit_augment(method = "lm",
-                   method.args = list(formula = formula))
-```
-
-```{r, eval=eval_broom}
-formula <- y ~ x + I(x^2) + I(x^3)
-ggplot(my.data, aes(x, y.poly.grp, colour = group)) +
-  geom_point() +
-  stat_fit_augment(method = "lm", 
                    method.args = list(formula = formula))
 ```
 
