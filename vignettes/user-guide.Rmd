@@ -394,21 +394,21 @@ The statistics described below for adding equations of the fitted models and oth
 
 ## stat_poly_eq() and stat_poly_line()
 
-A frequently used annotation in plots showing fitted lines is the display of the parameters estimates from the model fit as an equation. `stat_poly_eq()` automates this for models of *y* on *x* or *x* on *y* fitted with different model fit functions when the model `formula` is that of a regular polynomial, possibly lacking an intercept term. Even user-defined wrappers on model fitting functions can implement model selection or method selection. When the argument for `formula` is not a regular polynomial, the formatted character string for the model equation is set to `NA` but otherwise, all numeric values and all `character` labels for which estimates are available, are returned normally.
-
-By default `stat_poly_line()` uses `method = "lm"` irrespective of the number of observations, while `stat_smooth()` from 'ggplot2' the method used by default depends on the number of observations. `stat_poly_line()` also adds features that provide additional flexibility in the control of the model prediction. 
-
 While `stat_poly_line()` displays the model prediction graphically like `stat_smooth()`, `stat_poly_eq()` is a "twin" that returns the parameter estimates and other statistics from the model fit both as formatted character strings ready to be added as annotations and as numeric values.
 
-A frequently used annotation in plots showing fitted lines is the display of the parameters estimates from the model fit as an equation. `stat_poly_eq()` automates when the model `formula` is that of a regular polynomial, possibly lacking an intercept term. When the argument for `formula` is not a regular polynomial, this formatted character string is set to `NA`, but all numeric values and all `character` labels for which estimates are available, are returned normally. The formatted strings use different markup encodings depending on the geometry used: plotmath expressions, $\LaTeX$ for 'xdvir', markdown for 'ggtext', markdown for 'marquee' and plain ASCII text. Nevertheless, all examples below use R's expression syntax.
+The formatted strings use different markup encodings depending on the geometry in use: plotmath expressions by default, and $\LaTeX$ for 'xdvir', markdown for 'ggtext', and markdown for 'marquee', while plain ASCII text is always selected manually. All examples below use R's expression syntax, while examples depending on additional packages are published on-line.
 
-The statistic `stat_poly_line()` has an user interface and default arguments matching those of `stat_poly_eq()`. It also supports natively a wide range of model fit functions including wrapper functions that do model selection and/or method selection based on data on a per group basis.
+A frequently used annotation in plots showing fitted lines is the display of the parameters estimates from the model fit as an equation. `stat_poly_eq()` automates this for models of *y* on *x* or *x* on *y* fitted with different model fit functions when the model `formula` is that of a regular polynomial, possibly lacking an intercept term. Even user-defined wrappers on model fitting functions can implement model selection or method selection. When the argument for `formula` is not a regular polynomial, the formatted character string for the model equation is set to `NA` but otherwise, all numeric values and all `character` labels for which estimates are available, are returned normally.
+
+By default `stat_poly_line()` and `stat_poly_eq()` use `method = "lm"` irrespective of the number of observations, while in `stat_smooth()` from 'ggplot2' the method used by default depends on the number of observations. `stat_poly_line()` also adds features that provide additional flexibility in the control of the model prediction. 
+
+The statistic `stat_poly_line()` and `stat_poly_eq()` have matched user interfaces and default arguments. They support natively a wide range of model fit functions including wrapper functions that do model selection and/or method selection based on data on a per group basis.
 
 First, one example using defaults except for the model `formula`. The best practice, ensuring that the formula used in both *statistics* is the same is to assign the formula to a variable, as shown here. This is because the same model is fit twice to the same `data`, once in `stat_poly_line()` and once in `stat_poly_eq()`.
 
 The terms in model formula for a polynomial can be entered individually or using R's function `poly()`. When using function `poly()` it is necessary to set `raw = TRUE` as the default is to use orthogonal polynomials which although fitting the same line will have different estimates for the coefficients than those in the usual *raw* polynomials.
 
-As above, messages are displayed in R interactive sessions, one by each of the two stats. Names of labels that are not available, i.e., set to `NA` are not listed.
+As above, messages are displayed in R interactive sessions, one by each of the two stats, for each data group. Names of labels that are not available, i.e., set to `NA` are not listed in the message. The message displayed when running the code below is:
 
 ```
 'stat_poly_line' variables (80 rows): x, y, ymin, ymax, flipped_aes.
@@ -1659,32 +1659,41 @@ ggplot(my.data, aes(x, y.poly)) +
   stat_poly_eq(formula = formula)
 ```
 
-Moreover, when using `stat_fit_glance()`, `stat_fit_tidy()`, `stat_fit_augment()` and `stat_fit_tb()` the documentation cannot describe the variables present in the returned `data` because they call methods using their generic interface and the exact specialization used depends on the argument passed to `method`, which can be easily one that has not been tested during the development of 'ggpmisc'. These statistics do not automatically generate formatted labels and the message lists all columns in the returned data frame containing available data.
+In interactive R sessions the code above issues the message:
 
-```{r, eval=(eval_broom)}
-# formula <- y ~ poly(x, 3, raw = TRUE)
-# broom::augment does not handle poly() correctly
-formula <- y ~ x + I(x^2) + I(x^3)
-ggplot(my.data, aes(x, y.poly)) +
-  geom_point() +
-  stat_poly_line(formula = formula) +
-  stat_fit_glance(aes(label = 
-                        after_stat(
-                          sprintf("italic(P)*\"-value = \"*%.3g", 
-                                  p.value))),
-                  parse = TRUE,
-                  method.args = list(formula = formula),
-                  label.x = "right",
-                  label.y = "bottom")
+```
+'stat_poly_line' available variables (80 rows): x, y, ymin, ymax, flipped_aes.
+'stat_poly_eq' available labels (1 rows): eq, R2, adj.R2, R2.confint, AIC, BIC, F, P, n, grp, method.
 ```
 
-We restore the options to their previous state.
+After executing:
+
+```{r}
+options(ggpmisc.stat.vars.message = "colnames")
+```
+
+The same plot code above, issues a message listing all variables, rather than the nicknames for labels.
+
+```
+'stat_poly_line' available variables (80 rows): x, y, ymin, ymax, flipped_aes.
+'stat_poly_eq' available variables (1 rows): eq.label, rr.label, adj.rr.label, rr.confint.label, AIC.label, BIC.label, f.value.label, p.value.label, n.label, grp.label, method.label, coefs, coefs.names, rr.confint.level, rr.confint.low, rr.confint.high, f.value, f.df1, f.df2, r.squared, adj.r.squared, p.value, AIC, BIC, n, fm.method, fm.class, fm.formula, fm.formula.chr, npcx, npcy.
+```
+
+After setting the option to `"skip"` the messages listing the names and labels are disabled.
+
+```{r}
+options(ggpmisc.stat.vars.message = "skip")
+```
+
+Moreover, when using `stat_fit_glance()`, `stat_fit_tidy()`, `stat_fit_augment()` and `stat_fit_tb()` the documentation cannot describe the variables present in the returned `data` because they call methods using their generic interface and the exact specialization used depends on the argument passed to `method`, which can be easily one that has not been tested during the development of 'ggpmisc'. These statistics do not automatically generate formatted labels and the message lists all columns in the returned data frame containing available data.
+
+It is recommended to always restore the options to their previous state, even in cases like this in which options do not affect the returned values.
 
 ```{r}
 options(old.options)
 ```
 
-In addition package 'gginnards' exports `gginnards::geom_debug_group()` that prints the data frame, making it possible to explore its contents by temporarily substituting other geoms with in the plot code.
+In addition package 'gginnards' exports `gginnards::geom_debug_group()` that prints the data frame, making it possible to explore its contents in detail by temporarily substituting other geoms by `geom_debug_group()` in the plot code.
 
 `gginnards::geom_debug_group()` uses by default `head()` to echo to the R console the data it receives as input. It ignores the aesthetic mappings so it can be used with any statistics or directly as a layer function. However, unrecognised aesthetics can trigger warnings during plot rendering. These warnings can be ignored in most cases.
 
