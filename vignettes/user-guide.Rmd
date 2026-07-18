@@ -1647,7 +1647,7 @@ In 'ggpmisc' (>= 1.0.0) when executed in an *interactive* R session statistics d
 As other messages in R, these messages can be silenced. They can also be controlled specifically using R option `"ggpmisc.stat.vars.message"` which can take values `"colnames"`, `"nicknames"` and `"skip"`. As the documentation is generated in an R session that is not interactive, the option needs to be set here to display a message.
 
 ```{r}
-# force same behavious as in an interactive R session
+# force same behaviours as in an interactive R session
 old.options <- options(ggpmisc.stat.vars.message = "nicknames")
 ```
 
@@ -1659,7 +1659,7 @@ ggplot(my.data, aes(x, y.poly)) +
   stat_poly_eq(formula = formula)
 ```
 
-Moreover, when using `stat_fit_glance()`, `stat_fit_tidy()`, `stat_fit_augment()` and `stat_fit_tb()` the documentation cannot describe the variables present in the returned `data` because they call methods using their generic interface and the exact specialization used depends on the argument passed to `method`, which can be easily be one that has not been tested during the development of 'ggpmisc'. These statistics do not automatically generate formatted labels and the message lists all columns in the returned data frame containing available data.
+Moreover, when using `stat_fit_glance()`, `stat_fit_tidy()`, `stat_fit_augment()` and `stat_fit_tb()` the documentation cannot describe the variables present in the returned `data` because they call methods using their generic interface and the exact specialization used depends on the argument passed to `method`, which can be easily one that has not been tested during the development of 'ggpmisc'. These statistics do not automatically generate formatted labels and the message lists all columns in the returned data frame containing available data.
 
 ```{r, eval=(eval_broom)}
 # formula <- y ~ poly(x, 3, raw = TRUE)

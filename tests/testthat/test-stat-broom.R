@@ -109,6 +109,21 @@ test_that("glance_methods", {
                                                     after_stat(df.residual))))
   )
 
+  vdiffr::expect_doppelganger("glance_method_geomtext",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_fit_glance(geom = "text",
+                                                hjust = 0,
+                                                mapping =
+                                                  aes(label = sprintf("%.3g, %.3f, %.3f, %.3g, %.3g, %.3g",
+                                                                      after_stat(p.value),
+                                                                      after_stat(r.squared),
+                                                                      after_stat(adj.r.squared),
+                                                                      after_stat(AIC),
+                                                                      after_stat(BIC),
+                                                                      after_stat(df.residual))))
+  )
+
   vdiffr::expect_doppelganger("glance_method_flipped",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
@@ -236,6 +251,23 @@ test_that("tidy_methods", {
                                                                       after_stat(x_se))))
   )
 
+  vdiffr::expect_doppelganger("tidy_method_geomtext",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_fit_tidy(geom = "text",
+                                              hjust = 0,
+                                              mapping =
+                                                aes(label = sprintf("%.3g, %.3g, %.3g, %.3g\n%.3g, %.3g, %.3g, %.3g",
+                                                                    after_stat(Intercept_estimate),
+                                                                    after_stat(Intercept_p.value),
+                                                                    after_stat(Intercept_stat),
+                                                                    after_stat(Intercept_se),
+                                                                    after_stat(x_estimate),
+                                                                    after_stat(x_p.value),
+                                                                    after_stat(x_stat),
+                                                                    after_stat(x_se))))
+  )
+
   vdiffr::expect_doppelganger("tidy_method_flipped",
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
@@ -348,6 +380,13 @@ test_that("augment_methods", {
                               ggplot(my.data, aes(x, y)) +
                                 geom_point() +
                                 stat_fit_augment(),
+                              variant = snap_version
+  )
+
+  vdiffr::expect_doppelganger("augment_method_geomline",
+                              ggplot(my.data, aes(x, y)) +
+                                geom_point() +
+                                stat_fit_augment(geom = "line"),
                               variant = snap_version
   )
 

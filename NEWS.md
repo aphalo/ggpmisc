@@ -4,6 +4,13 @@ editor_options:
     wrap: 72
 ---
 
+# ggpmisc 1.0.1
+
+- Fix bug in `stat_fit_tb()`, `stat_fit_glance()`, `stat_fit_tidy()` and 
+`stat_fit_augment()`. The extraction of the ranges of  scale _X_ and _y_
+scales could fail when using non-default geoms, with label positions given
+as _x_ and _y_ coordinates based on user data instead of NPC.
+
 # ggpmisc 1.0.0
 
 The main changes in this version are support for `orientation = "y"` in all 
