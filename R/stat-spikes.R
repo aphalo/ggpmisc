@@ -21,6 +21,8 @@
 #'   extracted from the input \code{data} or all rows in data. Added columns
 #'   contain the labels.
 #'
+#' @inheritSection stat_poly_eq Which variables are available for mapping?
+#'
 #' @section Computed and copied variables in the returned data frame:
 #' \describe{
 #'   \item{x}{x-values at the spikes as numeric.}
@@ -88,25 +90,6 @@
 #'   stat_spikes(colour = "red",
 #'               spike.direction = "up",
 #'               height.threshold = NA)
-#'
-#' # Inspecting the returned data using geom_debug_group()
-#' # This provides a quick way of finding out the names of the variables that
-#' # are available for mapping to aesthetics with after_stat().
-#'
-#' gginnards.installed <- requireNamespace("gginnards", quietly = TRUE)
-#'
-#' if (gginnards.installed)
-#'   library(gginnards)
-#'
-#' if (gginnards.installed)
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_line() +
-#'   stat_spikes(geom = "debug_group")
-#'
-#' if (gginnards.installed)
-#' ggplot(my.data, aes(x, y)) +
-#'   geom_line() +
-#'   stat_spikes(geom = "debug_group", extract.spikes = FALSE)
 #'
 #' @export
 #'

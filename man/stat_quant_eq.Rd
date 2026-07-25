@@ -295,9 +295,6 @@ columns below in addition to a modified version of the original \code{group}:
   \item{quantile}{Numeric value of the quantile used for the fit}
   \item{quantile.f}{Factor with a level for each quantile}
   }
-
-To explore the computed values returned for a given input we suggest the use
-of \code{\link[gginnards]{geom_debug}} as shown in the example below.
 }
 
 \section{Variables returned by \code{stat_quant_line()}}{
@@ -538,12 +535,12 @@ is \code{"expression"}. Invalid values as argument trigger an error.
 }
 
 \section{Which variables are available for mapping?}{
-
-  Computed variables and their names can vary depending on the \code{method}
-  used to fit a model or the \code{output.type} in use. They can also depend
-  for a given \code{method} on other arguments passed when fitting a model or
-  extracting estimates and other computed values. In many cases, when values
-  are not available, the variables are filled with \code{NA} values.
+ Computed variables and
+  their names can vary depending on the \code{method} used to fit a model or
+  the \code{output.type} in use. They can also depend for a given
+  \code{method} on other arguments passed when fitting a model or extracting
+  estimates and other computed values. In many cases, when values are not
+  available, the variables are filled with \code{NA} values.
 
   In the statistics returning formatted strings for use as annotations, a
   message is issued by default in interactive R sessions, listing the short
@@ -551,8 +548,8 @@ is \code{"expression"}. Invalid values as argument trigger an error.
   \code{\link{use_label}()} and \code{\link{f_use_label}()}, except when
   \code{output.type = "numeric"} is passed, in which case the names of all
   variables accessible by \code{after_stat()} within a call to \code{aes()}
-  are listed. This default (\code{"nicknames"}) can be changed by setting R option
-  \code{"ggpmisc.stat.vars.message"} to one of \code{"names"},
+  are listed. This default (\code{"nicknames"}) can be changed by setting R
+  option \code{"ggpmisc.stat.vars.message"} to one of \code{"names"},
   \code{"colnames"} or \code{"none"}.
 
   In the statistics that plot a prediction or more generally mainly return
@@ -561,6 +558,9 @@ is \code{"expression"}. Invalid values as argument trigger an error.
   \code{after_stat()} within a call to \code{aes()} with at least some
   non-missing values. This default (\code{"colnames"}) can be changed by
   setting R option \code{"ggpmisc.stat.vars.message"} to \code{"none"}.
+
+  To explore the whole returned data frame for a given input we suggest the
+  use of \code{\link[gginnards]{geom_debug}()}.
 }
 
 \examples{

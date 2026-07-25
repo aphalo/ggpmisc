@@ -135,9 +135,6 @@
 #'   \item{method.label}{Set according \code{method} used.}
 #'   \item{r.squared, theta, p.value, n}{numeric values, from the model fit object}}
 #'
-#' To explore the computed values returned for a given input we suggest the use
-#' of \code{\link[gginnards]{geom_debug}()} as shown in the last examples below.
-#'
 #' @inheritSection stat_poly_eq Model fit methods supported
 #'
 #' @seealso The major axis regression model is fitted with function

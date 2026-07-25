@@ -144,6 +144,10 @@ The output of the \code{glance()} methods is returned almost as is in
   \code{after_stat()} within a call to \code{aes()} with at least some
   non-missing values. This default (\code{"colnames"}) can be changed by
   setting R option \code{"ggpmisc.stat.vars.message"} to \code{"none"}.
+
+  To explore the whole data frame returned by this statistic, which varies
+  depending on the model fitting function and model formula we suggest the
+  use of \code{\link[gginnards]{geom_debug}}.
 }
 
 \section{Model formula and model fitting}{

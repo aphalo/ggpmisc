@@ -100,10 +100,6 @@ The output of \code{tidy()} is returned after reshaping it into a
   valid R names making it necessary to use back ticks to access them.
   Syntactically valid names are guaranteed if \code{sanitize.names = TRUE} is
   added to the call.
-
-  To explore the values returned by this statistic, which vary depending on
-  the model fitting function and model formula we suggest the use of
-  \code{\link[gginnards]{geom_debug}}. An example is shown below.
 }
 \description{
 \code{stat_fit_tidy()} fits a model and returns a "tidy" version
@@ -271,6 +267,10 @@ The output of \code{tidy()} is returned after reshaping it into a
   \code{after_stat()} within a call to \code{aes()} with at least some
   non-missing values. This default (\code{"colnames"}) can be changed by
   setting R option \code{"ggpmisc.stat.vars.message"} to \code{"none"}.
+
+  To explore the whole data frame returned by this statistic, which varies
+  depending on the model fitting function and model formula we suggest the
+  use of \code{\link[gginnards]{geom_debug}}.
 }
 
 \examples{

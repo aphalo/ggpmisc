@@ -49,6 +49,8 @@
 #'   extracted from the input \code{data} or all rows in data. Added columns
 #'   contain the labels.
 #'
+#' @inheritSection stat_poly_eq Which variables are available for mapping?
+#'
 #' @section Computed and copied variables in the returned data frame:
 #' \describe{
 #'   \item{x}{x-value at the peak (or valley) as numeric.}

@@ -84,10 +84,6 @@ A data.frame is returned, with a variable number of rows. The output
   based on \code{y.out} returned by \code{augment()} and \code{y.observed}
   which preserves the \code{y} returned by the \code{generics::augment}
   methods. This renaming is needed so that the geom works as expected.
-
-  To explore the values returned by this statistic, which vary depending
-  on the model fitting function and model formula we suggest the use of
-  \code{\link[gginnards]{geom_debug}}. An example is shown below.
 }
 \description{
 \code{stat_fit_augment()} fits a model and returns a "tidy"
@@ -261,6 +257,10 @@ A data.frame is returned, with a variable number of rows. The output
   \code{after_stat()} within a call to \code{aes()} with at least some
   non-missing values. This default (\code{"colnames"}) can be changed by
   setting R option \code{"ggpmisc.stat.vars.message"} to \code{"none"}.
+
+  To explore the whole data frame returned by this statistic, which varies
+  depending on the model fitting function and model formula we suggest the
+  use of \code{\link[gginnards]{geom_debug}}.
 }
 
 \examples{

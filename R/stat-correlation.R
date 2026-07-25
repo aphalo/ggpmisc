@@ -91,9 +91,6 @@
 #'   \item{n.label}{Number of observations used in the fit, as a character string.}
 #'   \item{grp.label}{Set according to mapping in \code{aes}, as a character string.}}
 #'
-#' To explore the computed values returned for a given input we suggest the use
-#' of \code{\link[gginnards]{geom_debug}} as shown in the last examples below.
-#'
 #' @note Currently \code{coef.keep.zeros} is ignored, with trailing zeros always
 #'   retained in the \code{character} labels returned but not protected from
 #'   being dropped by R when these \code{character} strings are parsed into
@@ -189,40 +186,6 @@
 #'                          after_stat(
 #'                            sprintf("%s*\" with \"*%s*\" for \"*%s",
 #'                                    r.label, p.value.label, t.value.label))))
-#'
-#' # Inspecting the returned data using geom_debug_group()
-#' # This provides a quick way of printing the returned data frame.
-#'
-#' gginnards.installed <- requireNamespace("gginnards", quietly = TRUE)
-#'
-#' if (gginnards.installed)
-#'   library(gginnards)
-#'
-#' # the whole of computed data
-#' if (gginnards.installed)
-#'   ggplot(my.data, aes(x, y)) +
-#'     geom_point() +
-#'     stat_correlation(geom = "debug_group")
-#'
-#' if (gginnards.installed)
-#'   ggplot(my.data, aes(x, y)) +
-#'     geom_point() +
-#'     stat_correlation(geom = "debug_group", method = "pearson")
-#'
-#' if (gginnards.installed)
-#'   ggplot(my.data, aes(x, y)) +
-#'     geom_point() +
-#'     stat_correlation(geom = "debug_group", output.type = "numeric")
-#'
-#' if (gginnards.installed)
-#'   ggplot(my.data, aes(x, y)) +
-#'     geom_point() +
-#'     stat_correlation(geom = "debug_group", output.type = "markdown")
-#'
-#' if (gginnards.installed)
-#'   ggplot(my.data, aes(x, y)) +
-#'     geom_point() +
-#'     stat_correlation(geom = "debug_group", output.type = "LaTeX")
 #'
 #' @export
 #'

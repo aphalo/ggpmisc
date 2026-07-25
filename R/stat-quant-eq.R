@@ -132,9 +132,6 @@
 #'   \item{quantile.f}{Factor with a level for each quantile}
 #'   }
 #'
-#' To explore the computed values returned for a given input we suggest the use
-#' of \code{\link[gginnards]{geom_debug}} as shown in the example below.
-#'
 #' @section Variables returned by \code{stat_quant_line()}:
 #'
 #'   \describe{

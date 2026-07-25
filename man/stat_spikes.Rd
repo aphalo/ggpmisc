@@ -139,6 +139,35 @@ Spikes are detected based on a modified \eqn{Z} score calculated
 }
 }
 
+\section{Which variables are available for mapping?}{
+ Computed variables and
+  their names can vary depending on the \code{method} used to fit a model or
+  the \code{output.type} in use. They can also depend for a given
+  \code{method} on other arguments passed when fitting a model or extracting
+  estimates and other computed values. In many cases, when values are not
+  available, the variables are filled with \code{NA} values.
+
+  In the statistics returning formatted strings for use as annotations, a
+  message is issued by default in interactive R sessions, listing the short
+  names for available formatted labels as recognized by functions
+  \code{\link{use_label}()} and \code{\link{f_use_label}()}, except when
+  \code{output.type = "numeric"} is passed, in which case the names of all
+  variables accessible by \code{after_stat()} within a call to \code{aes()}
+  are listed. This default (\code{"nicknames"}) can be changed by setting R
+  option \code{"ggpmisc.stat.vars.message"} to one of \code{"names"},
+  \code{"colnames"} or \code{"none"}.
+
+  In the statistics that plot a prediction or more generally mainly return
+  numeric variables, a message is issued by default in interactive R
+  sessions, listing the names of all variables accessible by
+  \code{after_stat()} within a call to \code{aes()} with at least some
+  non-missing values. This default (\code{"colnames"}) can be changed by
+  setting R option \code{"ggpmisc.stat.vars.message"} to \code{"none"}.
+
+  To explore the whole returned data frame for a given input we suggest the
+  use of \code{\link[gginnards]{geom_debug}()}.
+}
+
 \section{Label positioning and formatting}{
  \code{stat_peaks()},
   \code{stat_valleys()} and \code{stat_spikes()} work nicely together with
@@ -213,25 +242,6 @@ ggplot(my.data, aes(x, y)) +
   stat_spikes(colour = "red",
               spike.direction = "up",
               height.threshold = NA)
-
-# Inspecting the returned data using geom_debug_group()
-# This provides a quick way of finding out the names of the variables that
-# are available for mapping to aesthetics with after_stat().
-
-gginnards.installed <- requireNamespace("gginnards", quietly = TRUE)
-
-if (gginnards.installed)
-  library(gginnards)
-
-if (gginnards.installed)
-ggplot(my.data, aes(x, y)) +
-  geom_line() +
-  stat_spikes(geom = "debug_group")
-
-if (gginnards.installed)
-ggplot(my.data, aes(x, y)) +
-  geom_line() +
-  stat_spikes(geom = "debug_group", extract.spikes = FALSE)
 
 }
 \references{

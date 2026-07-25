@@ -68,6 +68,10 @@
 #'   non-missing values. This default (\code{"colnames"}) can be changed by
 #'   setting R option \code{"ggpmisc.stat.vars.message"} to \code{"none"}.
 #'
+#'   To explore the whole data frame returned by this statistic, which varies
+#'   depending on the model fitting function and model formula we suggest the
+#'   use of \code{\link[gginnards]{geom_debug}}.
+#'
 #' @seealso Package \code{\link[broom]{broom}} for details on how the tidying of
 #'   the result of model fits is done.
 #'
@@ -524,10 +528,6 @@ StatFitGlance <-
 #'   which preserves the \code{y} returned by the \code{generics::augment}
 #'   methods. This renaming is needed so that the geom works as expected.
 #'
-#'   To explore the values returned by this statistic, which vary depending
-#'   on the model fitting function and model formula we suggest the use of
-#'   \code{\link[gginnards]{geom_debug}}. An example is shown below.
-#'
 #' @inheritSection stat_fit_glance Which variables are available for mapping?
 #'
 #' @seealso Package \code{\link[broom]{broom}} for details on how the tidying of
@@ -862,10 +862,6 @@ StatFitAugment <-
 #'   valid R names making it necessary to use back ticks to access them.
 #'   Syntactically valid names are guaranteed if \code{sanitize.names = TRUE} is
 #'   added to the call.
-#'
-#'   To explore the values returned by this statistic, which vary depending on
-#'   the model fitting function and model formula we suggest the use of
-#'   \code{\link[gginnards]{geom_debug}}. An example is shown below.
 #'
 #' @inheritSection stat_fit_glance Which variables are available for mapping?
 #'

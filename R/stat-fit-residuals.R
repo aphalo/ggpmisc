@@ -66,9 +66,6 @@
 #'   columns returned vary between the three statistics, and for each statistic
 #'   depending on the orientation..
 #'
-#'   To explore the values returned by statistics we suggest the use of
-#'   \code{\link[gginnards]{geom_debug_group}()}.
-#'
 #' @inheritSection stat_fit_glance Which variables are available for mapping?
 #'
 #' @section Variables returned by \code{stat_fit_residuals()}:
@@ -210,38 +207,6 @@
 #'                      show.legend = TRUE) +
 #'   scale_color_gradient(low = "red", high = "blue", limits = c(0, 1),
 #'                        guide = "colourbar")
-#'
-#' # inspecting the returned data
-#' gginnards.installed <- requireNamespace("gginnards", quietly = TRUE)
-#'
-#' if (gginnards.installed)
-#'   library(gginnards)
-#'
-#' # plot, using geom_debug_group() to explore the after_stat data
-#' if (gginnards.installed)
-#'   ggplot(my.data, aes(x, y)) +
-#'     stat_fit_deviations(formula = my.formula,
-#'                         geom = "debug_group")
-#'
-#' if (gginnards.installed)
-#'   ggplot(my.data.outlier, aes(x, y)) +
-#'     stat_fit_deviations(formula = my.formula, method = "rlm",
-#'                         geom = "debug_group")
-#'
-#' if (gginnards.installed)
-#'   ggplot(my.data, aes(x, y)) +
-#'    stat_fit_residuals(formula = my.formula, resid.type = "working",
-#'                       geom = "debug_group")
-#'
-#' if (gginnards.installed)
-#'   ggplot(my.data, aes(x, y)) +
-#'     stat_fit_residuals(formula = my.formula, method = "rlm",
-#'                        geom = "debug_group")
-#'
-#' if (gginnards.installed)
-#'   ggplot(my.data, aes(x, y)) +
-#'    stat_fit_fitted(formula = my.formula,
-#'                    geom = "debug_group")
 #'
 #' @export
 #'

@@ -125,9 +125,6 @@ The returned value is always a data frame with the same number of
   the model fitting, in which case a data frame with no rows is returned. The
   columns returned vary between the three statistics, and for each statistic
   depending on the orientation..
-
-  To explore the values returned by statistics we suggest the use of
-  \code{\link[gginnards]{geom_debug_group}()}.
 }
 \description{
 Statistic \code{stat_fit_residuals()} fits a model and plots residuals vs.
@@ -349,6 +346,10 @@ In the case of \code{method = "rq"} quantiles are fixed at \code{tau =
   \code{after_stat()} within a call to \code{aes()} with at least some
   non-missing values. This default (\code{"colnames"}) can be changed by
   setting R option \code{"ggpmisc.stat.vars.message"} to \code{"none"}.
+
+  To explore the whole data frame returned by this statistic, which varies
+  depending on the model fitting function and model formula we suggest the
+  use of \code{\link[gginnards]{geom_debug}}.
 }
 
 \section{Model equation label}{
@@ -472,9 +473,6 @@ does not return a value, the variable is set to \code{NA_real_}.
   \item{coef.ls}{list containing the "coefficients" matrix from the summary of the fit object}
   \item{b_0.constant}{TRUE is polynomial is forced through the origin}
   \item{b_i}{One or more columns with the coefficient estimates}}
-
-To explore the computed values returned for a given input we suggest the use
-of \code{\link[gginnards]{geom_debug}()} as shown in the last examples below.
 }
 
 \section{Output types}{
@@ -589,38 +587,6 @@ ggplot(my.data.outlier) +
                      show.legend = TRUE) +
   scale_color_gradient(low = "red", high = "blue", limits = c(0, 1),
                        guide = "colourbar")
-
-# inspecting the returned data
-gginnards.installed <- requireNamespace("gginnards", quietly = TRUE)
-
-if (gginnards.installed)
-  library(gginnards)
-
-# plot, using geom_debug_group() to explore the after_stat data
-if (gginnards.installed)
-  ggplot(my.data, aes(x, y)) +
-    stat_fit_deviations(formula = my.formula,
-                        geom = "debug_group")
-
-if (gginnards.installed)
-  ggplot(my.data.outlier, aes(x, y)) +
-    stat_fit_deviations(formula = my.formula, method = "rlm",
-                        geom = "debug_group")
-
-if (gginnards.installed)
-  ggplot(my.data, aes(x, y)) +
-   stat_fit_residuals(formula = my.formula, resid.type = "working",
-                      geom = "debug_group")
-
-if (gginnards.installed)
-  ggplot(my.data, aes(x, y)) +
-    stat_fit_residuals(formula = my.formula, method = "rlm",
-                       geom = "debug_group")
-
-if (gginnards.installed)
-  ggplot(my.data, aes(x, y)) +
-   stat_fit_fitted(formula = my.formula,
-                   geom = "debug_group")
 
 }
 \references{
