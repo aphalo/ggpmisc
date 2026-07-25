@@ -383,7 +383,11 @@ fit_glance_compute_group_fun <- function(data,
     )
     if (!npc.used) {
       # we need to use scale limits as observations are not necessarily plotted
-      x.range <- scales$flipped_names(flipped_aes)$x$range$range
+      if (flipped_aes) {
+        x.range <- scales$y$range$range
+      } else {
+        x.range <- scales$x$range$range
+      }
       label.x <- label.x * diff(x.range) + x.range[1]
     }
   }
@@ -399,7 +403,11 @@ fit_glance_compute_group_fun <- function(data,
     )
     if (!npc.used) {
       # we need to use scale limits as observations are not necessarily plotted
-      y.range <- scales$flipped_names(flipped_aes)$y$range$range
+      if (flipped_aes) {
+        y.range <- scales$x$range$range
+      } else {
+        y.range <- scales$y$range$range
+      }
       label.y <- label.y * diff(y.range) + y.range[1]
     }
   }
@@ -1137,7 +1145,11 @@ fit_tidy_compute_group_fun <- function(data,
     )
     if (!npc.used) {
       # we need to use scale limits as observations are not necessarily plotted
-      x.range <- scales$flipped_names(flipped_aes)$x$range$range
+      if (flipped_aes) {
+        x.range <- scales$y$range$range
+      } else {
+        x.range <- scales$x$range$range
+      }
       label.x <- label.x * diff(x.range) + x.range[1]
     }
   }
@@ -1153,7 +1165,11 @@ fit_tidy_compute_group_fun <- function(data,
     )
     if (!npc.used) {
       # we need to use scale limits as observations are not necessarily plotted
-      y.range <- scales$flipped_names(flipped_aes)$y$range$range
+      if (flipped_aes) {
+        y.range <- scales$x$range$range
+      } else {
+        y.range <- scales$y$range$range
+      }
       label.y <- label.y * diff(y.range) + y.range[1]
     }
   }
