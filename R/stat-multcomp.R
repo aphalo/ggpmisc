@@ -84,6 +84,12 @@
 #'   the set for the main effect of "treatments" as a condition to apply the
 #'   pairwise tests.
 #'
+#'   \strong{Packages 'multcomp' and 'multcompView' on which these functions
+#'   rely, are not installed automatically when 'ggpmisc' is installed. If
+#'   packages 'multcomp' and 'multcompView' are not available when a plot
+#'   including layers created with \code{stat_multcomp()} is rendered, a message
+#'   is issued to alert the user.}
+#'
 #'   One variable mapped to either \emph{x} or \emph{y} aesthetic must be a
 #'   factor, and the other variable a continuous one. Mapping a factor creates
 #'   the required grouping and determines the default orientation, i.e.,

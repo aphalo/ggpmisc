@@ -103,6 +103,13 @@ A data.frame is returned, with a variable number of rows. The output
   automatically, for these functions the mapping of aesthetic \code{label}
   needs to be explicitly supplied in the call, and labels built on the fly.
 
+  \strong{Package 'broom' on which this function relies, is not installed
+  automatically when 'ggpmisc' is installed. If package 'broom' is not
+  available when a plot including layers created with
+  \code{\link{stat_fit_glance}()}, \code{\link{stat_fit_tidy}()} and/or
+  \code{stat_fit_augment()} is rendered, a message is issued to alert
+  the user.}
+
   Although arguments passed to parameter \code{augment.args} will be
   passed to \code{\link[generics]{augment}()} whether they are silently
   ignored or obeyed depends on each specialization of \code{augment()}. In

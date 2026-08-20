@@ -22,6 +22,13 @@
 #'   the mapping of aesthetic \code{label} needs to be explicitly supplied in
 #'   the call, and labels built on the fly in the mapping to geom aesthetics.
 #'
+#'   \strong{Package 'broom' on which this function relies, is not installed
+#'   automatically when 'ggpmisc' is installed. If package 'broom' is not
+#'   available when a plot including layers created with
+#'   \code{stat_fit_glance()}, \code{\link{stat_fit_tidy}()} and/or
+#'   \code{\link{stat_fit_augment}()} is rendered, a message is issued to alert
+#'   the user.}
+#'
 #'   Although arguments passed to parameter \code{glance.args} are
 #'   passed to \code{\link[generics]{glance}()} whether they are silently
 #'   ignored or obeyed depends on each specialization of \code{glance()}, so do
@@ -489,6 +496,13 @@ StatFitGlance <-
 #'   automatically, for these functions the mapping of aesthetic \code{label}
 #'   needs to be explicitly supplied in the call, and labels built on the fly.
 #'
+#'   \strong{Package 'broom' on which this function relies, is not installed
+#'   automatically when 'ggpmisc' is installed. If package 'broom' is not
+#'   available when a plot including layers created with
+#'   \code{\link{stat_fit_glance}()}, \code{\link{stat_fit_tidy}()} and/or
+#'   \code{stat_fit_augment()} is rendered, a message is issued to alert
+#'   the user.}
+#'
 #'   Although arguments passed to parameter \code{augment.args} will be
 #'   passed to \code{\link[generics]{augment}()} whether they are silently
 #'   ignored or obeyed depends on each specialization of \code{augment()}. In
@@ -822,6 +836,13 @@ StatFitAugment <-
 #'   mapping of aesthetic \code{label} needs to be explicitly supplied in the
 #'   call, and labels built on the fly.
 #'
+#'   \strong{Package 'broom' on which this function relies, is not installed
+#'   automatically when 'ggpmisc' is installed. If package 'broom' is not
+#'   available when a plot including layers created with
+#'   \code{\link{stat_fit_glance}()}, \code{stat_fit_tidy()} and/or
+#'   \code{\link{stat_fit_augment}()} is rendered, a message is issued to alert
+#'   the user.}
+#'
 #'   Although arguments passed to parameter \code{tidy.args} will be passed
 #'   to \code{\link[generics]{tidy}()} whether they are silently ignored or
 #'   obeyed depends on each specialization of \code{tidy()}, so do carefully
@@ -858,7 +879,8 @@ StatFitAugment <-
 #'   of the columns in the returned data are based on those returned by the
 #'   \code{tidy()} method for the model fit class returned by the fit function.
 #'   These will frequently differ from the name of values returned by the print
-#'   methods corresponding to the fit or test function used. Names of columns as returned by default are not always syntactically
+#'   methods corresponding to the fit or test function used. Names of columns as
+#'   returned by default are not always syntactically
 #'   valid R names making it necessary to use back ticks to access them.
 #'   Syntactically valid names are guaranteed if \code{sanitize.names = TRUE} is
 #'   added to the call.

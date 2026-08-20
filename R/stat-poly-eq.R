@@ -93,7 +93,13 @@
 #'   functions.
 #'   \code{\link{stat_poly_eq}()} adds textual labels for
 #'   \eqn{R^2}, adjusted \eqn{R^2}, the fitted model equation, \eqn{P}, and
-#'   other parameters from a fitted model to a plot.
+#'   other parameter estimates from a fitted model to a plot.
+#'
+#'   \strong{Several supported model-fit functions are in suggested packages,
+#'   that are not automatically installed when 'ggpmisc' is installed. If the
+#'   method in a call depends on a model fit function from one of these
+#'   packages, and the package is not currently installed, a message is issued
+#'   to alert the user.}
 #'
 #'   Lack of methods or explicit support for extraction of individual parameters
 #'   results in the affected estimates and corresponding labels being set to

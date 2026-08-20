@@ -45,6 +45,13 @@
 #'   \code{stat_distrmix_area()} only differ in their default arguments,
 #'   including the \code{geom}.
 #'
+#'   \strong{Package 'mixtools' on which this function relies, is not installed
+#'   automatically when 'ggpmisc' is installed. If package 'mixtools' is not
+#'   available when a plot including layers created with
+#'   \code{stat_distrmix_line()}, \code{stat_distrmix_area()} and/or
+#'   \code{stat_distrmix_eq()} is rendered, a message is issued to alert
+#'   the user.}
+#'
 #'   If \code{k >= 2} a mixture-of-Normals model is fitted with
 #'   \code{\link[mixtools]{normalmixEM}()}, while if \code{k == 1} a single
 #'   Normal distribution is fitted with function \code{\link[MASS]{fitdistr}()}.

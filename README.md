@@ -387,6 +387,13 @@ Installation of the current unstable version from GitHub (from sources):
 remotes::install_github("aphalo/ggpmisc")
 ```
 
+*When ‘ggpmisc’ is installed only a small set of packages containing
+frequently used model fit functions are installed automatically. Other
+suggested packages have to be installed separately before using the
+model fit functions they export as `method`. At plot rendering time when
+they are needed, layer functions from ‘ggpmisc’ check if these packages
+are installed, and if not, a message is issued informing the user.*
+
 ## Documentation
 
 HTML documentation for the package, including help pages and the *User
@@ -423,7 +430,8 @@ citation("ggpmisc")
 #> To cite package 'ggpmisc' in publications use:
 #> 
 #>   Aphalo P (2026). _ggpmisc: Miscellaneous Extensions to 'ggplot2'_. R
-#>   package version 1.0.0, <https://docs.r4photobiology.info/ggpmisc/>.
+#>   package version 1.0.0.9000,
+#>   <https://docs.r4photobiology.info/ggpmisc/>.
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
@@ -431,7 +439,7 @@ citation("ggpmisc")
 #>     title = {ggpmisc: Miscellaneous Extensions to 'ggplot2'},
 #>     author = {Pedro J. Aphalo},
 #>     year = {2026},
-#>     note = {R package version 1.0.0},
+#>     note = {R package version 1.0.0.9000},
 #>     url = {https://docs.r4photobiology.info/ggpmisc/},
 #>   }
 ```

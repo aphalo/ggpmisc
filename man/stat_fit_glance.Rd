@@ -110,6 +110,13 @@ The output of the \code{glance()} methods is returned almost as is in
   the mapping of aesthetic \code{label} needs to be explicitly supplied in
   the call, and labels built on the fly in the mapping to geom aesthetics.
 
+  \strong{Package 'broom' on which this function relies, is not installed
+  automatically when 'ggpmisc' is installed. If package 'broom' is not
+  available when a plot including layers created with
+  \code{stat_fit_glance()}, \code{\link{stat_fit_tidy}()} and/or
+  \code{\link{stat_fit_augment}()} is rendered, a message is issued to alert
+  the user.}
+
   Although arguments passed to parameter \code{glance.args} are
   passed to \code{\link[generics]{glance}()} whether they are silently
   ignored or obeyed depends on each specialization of \code{glance()}, so do

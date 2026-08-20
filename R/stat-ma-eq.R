@@ -35,6 +35,12 @@
 #'   MA and SMA regressions are supported also by \code{stat_poly_line()} and
 #'   \code{stat_poly_eq()} using package 'smatr' instead of 'lmodel2'.
 #'
+#'   \strong{Package 'lmodel2' on which this function relies, is not installed
+#'   automatically when 'ggpmisc' is installed. If package 'lmodel2' is not
+#'   available when a plot including layers created with
+#'   \code{stat_ma_line()} and/or \code{stat_ma_eq()} is rendered, a message is
+#'   issued to alert the user.}
+#'
 #'   \code{stat_ma_line()} adds the predicted line and confidence band based on
 #'   the uncertainty of the slope estimate.\code{stat_ma_eq()}
 #'   adds textual annotations with the fitted model equation and other parameter
