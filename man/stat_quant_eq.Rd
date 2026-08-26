@@ -267,13 +267,6 @@ While \code{stat_poly_line()} and \code{stat_poly_eq()} fit
   \code{output-type}, but if labels that need parsing are formatted from
   \code{numeric} output within a call to \code{aes()}, or if the name of a
   geom is not recognized, it can be necessary to override this default.
-
-  A ggplot statistic receives as \code{data} a data frame that is not the one
-  passed as argument by the user, but instead a data frame with the variables
-  mapped to aesthetics, named according to the aesthetics. \code{cor.test()}
-  is always applied to the variables mapped to the \code{x} and \code{y}
-  aesthetics, so the scales used for \code{x} and \code{y} should both be
-  continuous scales rather than discrete.
 }
 \section{Variables returned by \code{stat_quant_eq()}}{
 

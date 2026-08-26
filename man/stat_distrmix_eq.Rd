@@ -255,9 +255,10 @@ labels of parameter estimates.
 
   A ggplot statistic receives as \code{data} a data frame that is not the one
   passed as argument by the user, but instead a data frame with the variables
-  mapped to aesthetics, named according to the aesthetics. \code{cor.test()}
-  is always applied to the variables mapped to the \code{x} and \code{y}
-  aesthetics, so the scales used for \code{x} and \code{y} should both be
+  mapped to aesthetics, named according to the aesthetics.
+  \code{stat_distrmix_line()} and \code{stat_distrmix_area()} are always fit
+  the 1D distribution to a variable mapped to the \code{x} or \code{y}
+  aesthetics, so the scale used for \code{x} or \code{y} should both be
   continuous scales rather than discrete.
 }
 \section{Variables computed by \code{stat_distrmix_line()}}{

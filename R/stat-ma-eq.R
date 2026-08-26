@@ -80,13 +80,6 @@
 #'   \code{numeric} output within a call to \code{aes()}, or if the name of a
 #'   geom is not recognized, it can be necessary to override this default.
 #'
-#'   A ggplot statistic receives as \code{data} a data frame that is not the one
-#'   passed as argument by the user, but instead a data frame with the variables
-#'   mapped to aesthetics, named according to the aesthetics. \code{cor.test()}
-#'   is always applied to the variables mapped to the \code{x} and \code{y}
-#'   aesthetics, so the scales used for \code{x} and \code{y} should both be
-#'   continuous scales rather than discrete.
-#'
 #' @inheritSection check_output_type Output types
 #'
 #' @inheritSection stat_poly_eq Model formula and model fitting
