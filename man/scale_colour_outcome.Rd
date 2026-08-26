@@ -74,7 +74,7 @@ the same time, via aesthetics = c("colour", "fill").}
 }
 \description{
 Manual scales for colour and fill aesthetics with defaults suitable for the
-three way outcome from some statistical tests.
+three way outcomes from statistical tests.
 }
 \details{
 These scales only alter the \code{breaks}, \code{values}, and

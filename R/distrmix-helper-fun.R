@@ -30,7 +30,13 @@ distrmix_helper_fun <-
            fm.values = TRUE,
            verbose = getOption("verbose", default = FALSE)) {
     if (k == 1) {
-      message("With k = 1 one Normal distribution is fitted. Irrelevant parameters ignored!")
+      if (verbose) {
+        message("With k = 1 one Normal distribution is fitted, and arguments for ",
+                "'method', 'free.mean', 'free.sd' ignored.")
+      }
+      if (!is.na(fit.seed)) {
+        set.seed(fit.seed)
+      }
       fm <- MASS::fitdistr(data[[aes.name]], "normal")
       # extract fitted parameter estimates
       if (se) {

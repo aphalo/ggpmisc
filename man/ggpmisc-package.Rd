@@ -18,7 +18,7 @@ Package 'ggpmisc' is over 10 years-old but its development has
 
   The focus of package 'ggpmisc' is on statistical annotations, providing
   stats that generate labels useful to annotate plots and matching stats
-  for consitenly adding prediction lines and bands. Model fitting is done
+  for consistently adding prediction lines and bands. Model fitting is done
   by calling functions already available in R and other R packages. No new
   model fit method or algorithms are implemented, instead what 'ggpmisc'
   provides are new simpler ways of adding fitted values and other statistics
@@ -27,12 +27,13 @@ Package 'ggpmisc' is over 10 years-old but its development has
   Several geometries for annotations from package 'ggpp' are used by default
   in 'ggpmisc' statistics, with labels formatted by default ready to be
   parsed into R's plotmath expressions. However, other geometries can be also
-  used. Two variations of Markdown-formatted labels work smoothly with geoms
+  used. Two variations of Markdown-formatted labels are avaialble, for geoms
   from package 'ggtext' or from package 'marquee'. LaTeX-formatted labels
-  work smoothly with package 'xdvir' and most likely also with other
-  approaches to the use of 'LaTeX' and 'TeX' formatted labels.
-  'LaTeX'-formatted labels can be generated as bare maths-mode-encoded text,
-  or enclosed in "fences" that enable either in-line or display-maths modes.
+  work with \code{\link[xdvir]{geom_latex}()} from package 'xdvir' and most
+  likely also with other implementations of the rendering of 'LaTeX' and
+  'TeX' formatted labels. 'LaTeX'-formatted labels can be generated as bare
+  maths-mode-encoded text, or enclosed in "fences" that enable either in-line
+  or display-maths modes.
 
   The label formatting functions used to implement the statistics and scales
   are exported and can be used as an aid in building customised labels and
@@ -40,17 +41,16 @@ Package 'ggpmisc' is over 10 years-old but its development has
 
 Extensions provided:
 \itemize{
-\item Statistics for annotations for parametric and non-parametric
-correlations.
+\item Statistics for annotations of parametric and non-parametric
+correlation estimates.
 \item Statistics for generation of labels for fitted models, including
-formatted equations. By default labels are R's plotmath expressions but LaTeX,
-markdown and plain text formatted labels are optionally returned.
+formatted fitted model equations.
 \item Matching statistics for plotting curves and confidence bands bands for
 the same fitted models.
 \item Statistics for adding ANOVA tables and fitted model summaries as inset
 tables in plots.
 \item Statistic for adding annotations based on pairwise multiple
-comparisons based on arbitrary contrasts and a choice of \emph{P} adjustment
+comparisons for arbitrary contrasts with user-selected \emph{P} adjustment
 methods.
 \item Statistics for locating and tagging "peaks" and "valleys" (local or
 global maxima and minima) and spikes (very narrow peaks or valleys).
@@ -58,12 +58,13 @@ global maxima and minima) and spikes (very narrow peaks or valleys).
 \link[ggpp:ggpp-package]{package ggpp}.}
 }
 \note{
-The signatures of \code{stat_peaks()} and \code{stat_valleys()} from
-  'ggpmisc' are nearly identical to those of \code{stat_peaks()} and
-  \code{stat_valleys()} from package 'ggspectra'. While those from 'ggpmisc'
-  are designed for numeric or time objects mapped to the \emph{x} aesthetic,
-  those from 'ggspectra' are for light spectra and expect a numeric variable
-  describing wavelength mapped to the \emph{x} aesthetic.
+The signatures of \code{stat_peaks()}, \code{stat_valleys()} and
+  \code{stat_spikes()} from 'ggpmisc' are nearly identical to those of
+  \code{stat_peaks()} and \code{stat_valleys()} from package 'ggspectra'.
+  However, while those from 'ggpmisc' are designed for numeric or time
+  objects mapped to the \emph{x} aesthetic, those from 'ggspectra' are for
+  light spectra and expect a numeric variable describing wavelength mapped to
+  the \emph{x} aesthetic.
 }
 \examples{
 

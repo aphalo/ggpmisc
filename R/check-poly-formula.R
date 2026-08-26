@@ -2,7 +2,7 @@
 #'
 #' Analyse a model formula to determine if it describes a polynomial with
 #' terms in order of increasing powers, and fulfils the expectations of the
-#' algorithm used to generate the equation-label.
+#' algorithm used to generate the fitted-model-equation label.
 #'
 #' @param formula A model formula in \code{x.name}.
 #' @param x.name character The name of the explanatory variable in the formula.
@@ -124,7 +124,7 @@ check_poly_formula <-
            check.transf.rhs = TRUE,
            check.transf.lhs = TRUE) {
 
-  transf.ok <- TRUE # flag use below
+  transf.ok <- TRUE # flag used below
 
   # parsing
   lhs <- as.character(formula)[2]

@@ -91,8 +91,8 @@ stat_distrmix_area(
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
-\code{\link[ggplot2]{aes}()}. Only needs to be set at the layer level if you
-are overriding the plot defaults.}
+\code{\link[ggplot2]{aes}()}. Only needs to be set at the layer level if
+you are overriding the plot defaults.}
 
 \item{data}{A layer specific dataset, only needed if you want to override the
 plot defaults.}
@@ -246,6 +246,19 @@ labels of parameter estimates.
   the default is wise. The value of \code{n}, instead, sets the number of
   predicted values, which affects the smoothness of the plotted curve and
   the accuracy with which the location of the quantiles is predicted.
+
+  The default argument used for \code{output.type} is guessed from the name
+  of the geometry. The default argument for \code{parse} is set based on
+  \code{output-type}, but if labels that need parsing are formatted from
+  \code{numeric} output within a call to \code{aes()}, or if the name of a
+  geom is not recognized, it can be necessary to override this default.
+
+  A ggplot statistic receives as \code{data} a data frame that is not the one
+  passed as argument by the user, but instead a data frame with the variables
+  mapped to aesthetics, named according to the aesthetics. \code{cor.test()}
+  is always applied to the variables mapped to the \code{x} and \code{y}
+  aesthetics, so the scales used for \code{x} and \code{y} should both be
+  continuous scales rather than discrete.
 }
 \section{Variables computed by \code{stat_distrmix_line()}}{
 

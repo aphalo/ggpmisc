@@ -18,7 +18,7 @@
 #'   compared to an estimate of the baseline variation of the differences,
 #'   approximating a baseline \eqn{Z} from MAD and a baseline value from the
 #'   median differences. Currently, a single estimate of MAD is used but running
-#'   medians, when posisble, as baseline. This comparison detects running
+#'   medians, when possible, as baseline. This comparison detects running
 #'   differences that are unusually large, in most cases signalling a transition
 #'   between values near the baseline and far from it, in both directions.
 #'

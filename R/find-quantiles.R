@@ -1,8 +1,8 @@
 #' Find the location of quantiles
 #'
 #' Find the location of quantiles in an univariate density function, such as
-#' within a call to \code{aes()}, to map regions under the curve that the
-#' quantiles delimit to the \code{fill} aesthetic in a ggplot layer.
+#' within a call to \code{aes()}, to map to the \code{fill} aesthetic regions
+#' under a curve delimited by quantiles.
 #'
 #' @param density numeric A fitted density function predicted at a large
 #'   number of equal steps without truncation.
@@ -41,7 +41,7 @@
 #'   \code{group}.
 #'
 #'   \emph{The approach used is approximate and relies on assumptions that are
-#'   known to be fulfiled by the \code{density} estimates returned by specific
+#'   known to be fulfilled by the \code{density} estimates returned by specific
 #'   'ggplot2' stats such as \code{stat_density()}.}
 #'
 #' @return A factor with levels indicating the regions delimited by the

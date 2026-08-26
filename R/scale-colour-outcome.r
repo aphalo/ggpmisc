@@ -1,7 +1,7 @@
 #' Colour and fill scales for ternary outcomes
 #'
 #' Manual scales for colour and fill aesthetics with defaults suitable for the
-#' three way outcome from some statistical tests.
+#' three way outcomes from statistical tests.
 #'
 #' @param ... other named arguments passed to \code{scale_colour_manual}.
 #' @param name The name of the scale, used for the axis-label.

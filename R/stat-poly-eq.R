@@ -9,8 +9,8 @@
 #' @param data A layer specific dataset, only needed if you want to override the
 #'   plot defaults.
 #' @param mapping The aesthetic mapping, usually constructed with
-#'   \code{\link[ggplot2]{aes}()}. Only needs to be set at the layer level if you
-#'   are overriding the plot defaults.
+#'   \code{\link[ggplot2]{aes}()}. Only needs to be set at the layer level if
+#'   you are overriding the plot defaults.
 #' @param geom The geometric object to use display the data
 #' @param position The position adjustment to use for overlapping points on this
 #'   layer.
@@ -148,6 +148,19 @@
 #'   With methods other than \code{"lm"}, the model fit functions simply fail in
 #'   case of singularity, e.g., singular fits are not implemented in
 #'   \code{"rlm"}.
+#'
+#'   The default argument used for \code{output.type} is guessed from the name
+#'   of the geometry. The default argument for \code{parse} is set based on
+#'   \code{output-type}, but if labels that need parsing are formatted from
+#'   \code{numeric} output within a call to \code{aes()}, or if the name of a
+#'   geom is not recognized, it can be necessary to override this default.
+#'
+#'   A ggplot statistic receives as \code{data} a data frame that is not the one
+#'   passed as argument by the user, but instead a data frame with the variables
+#'   mapped to aesthetics, named according to the aesthetics. \code{cor.test()}
+#'   is always applied to the variables mapped to the \code{x} and \code{y}
+#'   aesthetics, so the scales used for \code{x} and \code{y} should both be
+#'   continuous scales rather than discrete.
 #'
 #' @inheritSection check_output_type Output types
 #'

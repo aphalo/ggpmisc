@@ -38,8 +38,8 @@ stat_correlation(
 }
 \arguments{
 \item{mapping}{The aesthetic mapping, usually constructed with
-\code{\link[ggplot2]{aes}()}. Only needs to be set at the layer level if you
-are overriding the plot defaults.}
+\code{\link[ggplot2]{aes}()}. Only needs to be set at the layer level if
+you are overriding the plot defaults.}
 
 \item{data}{A layer specific dataset, only needed if you want to override the
 plot defaults.}
@@ -126,29 +126,32 @@ using \code{"kendall"} or \code{"spearman"} methods. It adds textual labels
 to a plot.
 }
 \details{
-This statistic can be used to annotate a plot with the correlation
-  coefficient and the outcome of its test of significance. It supports
-  Pearson, Kendall and Spearman methods to compute correlation. This
-  statistic generates labels as R expressions by default but LaTeX (use TikZ
-  device), markdown (use package 'ggtext') and plain text are also supported,
-  as well as numeric values for user-generated text labels. The character
-  labels include the symbol describing the quantity together with the numeric
-  value. For the confidence interval (CI) the default is to follow the APA
-  recommendation of using square brackets. As the CI is computed by
-  bootstrapping, \code{fit.seed} if different to \code{NA} immediately before
-  this computation.
+\code{stat_correlation()} can be used to annotate a plot with the
+  correlation coefficient and the outcome of its test of significance. It
+  supports Pearson, Kendall and Spearman methods to compute correlation. It
+  is implemented as a wrapper on \code{\link[stats]{cor.test}()}.
 
-  The value of \code{parse} is set automatically based on \code{output-type},
-  but if you assemble labels that need parsing from \code{numeric} output,
-  the default needs to be overridden. By default the value of
-  \code{output.type} is guessed from the name of the geometry.
+  \code{stat_correlation()} generates labels as R expressions by default, but
+  LaTeX (package 'xdvir' or the TikZ graphic device), markdown ('ggtext' and
+  'marquee') and plain text are also supported, as well as numeric values for
+  user-generated text labels. The character labels include the symbol
+  describing the quantity together with the numeric value. For the confidence
+  interval (CI) the default is to follow the APA recommendation of using
+  square brackets. As the CI is computed by bootstrapping, \code{fit.seed} if
+  different to \code{NA} immediately before this computation.
+
+  The default argument used for \code{output.type} is guessed from the name
+  of the geometry. The default argument for \code{parse} is set based on
+  \code{output-type}, but if labels that need parsing are formatted from
+  \code{numeric} output within a call to \code{aes()}, or if the name of a
+  geom is not recognized, it can be necessary to override this default.
 
   A ggplot statistic receives as \code{data} a data frame that is not the one
   passed as argument by the user, but instead a data frame with the variables
-  mapped to aesthetics. \code{cor.test()} is always applied to the variables
-  mapped to the \code{x} and \code{y} aesthetics, so the scales used for
-  \code{x} and \code{y} should both be continuous scales rather than
-  discrete.
+  mapped to aesthetics, named according to the aesthetics. \code{cor.test()}
+  is always applied to the variables mapped to the \code{x} and \code{y}
+  aesthetics, so the scales used for \code{x} and \code{y} should both be
+  continuous scales rather than discrete.
 }
 \note{
 Currently \code{coef.keep.zeros} is ignored, with trailing zeros always
@@ -162,7 +165,7 @@ Currently \code{coef.keep.zeros} is ignored, with trailing zeros always
  If output.type is \code{"numeric"} the returned
   tibble contains the columns listed below with variations depending on the
   \code{method}. If the model fit function used does not return a value, the
-  variable is set to \code{NA_real_}.
+  value returned is \code{NA_real_}.
 \describe{
   \item{x,npcx}{x position}
   \item{y,npcy}{y position}
@@ -177,8 +180,8 @@ Currently \code{coef.keep.zeros} is ignored, with trailing zeros always
   \item{method, test}{character values}}
 
 If output.type different from \code{"numeric"} the returned tibble contains
-in addition to the columns listed above those listed below. If the numeric
-value is missing the label is set to \code{character(0L)}.
+in addition to the columns listed above those listed below. If a numeric
+value is missing the corresponding label is set to \code{character(0L)}.
 
 \describe{
   \item{r.label, and cor.label, tau.label or rho.label}{Correlation coefficient as a character string.}
@@ -354,7 +357,7 @@ ggplot(my.data, aes(x, y)) +
 
 }
 \seealso{
-\code{\link[stats]{cor.test}} for details on the computations.
+\code{\link[stats]{cor.test}()} for details on the computations.
 }
 \concept{statistics for correlation-test annotation}
 \section{Aesthetics}{

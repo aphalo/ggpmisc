@@ -45,7 +45,7 @@ A logical, TRUE if the formula describes an increasing polynomial
 \description{
 Analyse a model formula to determine if it describes a polynomial with
 terms in order of increasing powers, and fulfils the expectations of the
-algorithm used to generate the equation-label.
+algorithm used to generate the fitted-model-equation label.
 }
 \details{
 The assumption is that this function will be called from within a

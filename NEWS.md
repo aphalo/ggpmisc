@@ -10,6 +10,10 @@ editor_options:
 `stat_fit_augment()`. The extraction of the ranges of  scale _X_ and _y_
 scales could fail when using non-default geoms, with label positions given
 as _x_ and _y_ coordinates based on user data instead of NPC.
+- Fix bug: `fit.seed` argument ignored when fitting a single distribution with
+`stat_distrmix_eq()` or `stat_distrmix_line()`.
+- Better document the need to separately install the packages where some model
+fit functions are defined before these functions can be used as `method`.
 
 # ggpmisc 1.0.0
 
