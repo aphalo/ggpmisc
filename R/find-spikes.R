@@ -166,8 +166,8 @@ find_spikes <-
             i <- i + 1
             j <- j + 1
             # skip narrow spikes
-            while (spk.starts[i + 1] < spk.ends[j] && i < i.max) i <- i + 1
-            while (spk.ends[j + 1] < spk.starts[i + 1] && j < j.max) j <- j + 1
+            while (i < i.max && spk.starts[i + 1] < spk.ends[j]) i <- i + 1
+            while (j < j.max && spk.ends[j + 1] < spk.starts[i]) j <- j + 1
             # fill in the middle of wide spikes
             if (spk.starts[i] + 1 < spk.ends[j]) {
               outcomes.middle.up[(spk.starts[i] + 1):(spk.ends[j] - 1)] <- TRUE
@@ -220,8 +220,8 @@ find_spikes <-
             i <- i + 1
             j <- j + 1
             # skip narrow spikes
-            while (spk.starts[i + 1] < spk.ends[j] && i < i.max) i <- i + 1
-            while (spk.ends[j + 1] < spk.starts[i + 1] && j < j.max) j <- j + 1
+            while (i < i.max && spk.starts[i + 1] < spk.ends[j]) i <- i + 1
+            while (j < j.max && spk.ends[j + 1] < spk.starts[i]) j <- j + 1
             # fill in the middle of wide spikes
             if (spk.starts[i] + 1 < spk.ends[j]) {
               outcomes.middle.down[(spk.starts[i] + 1):(spk.ends[j] - 1)] <- TRUE
